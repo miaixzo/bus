@@ -30,62 +30,62 @@ import org.miaixz.bus.core.xyz.StringKit;
 public final class UserAgent {
 
     /**
-     * Original User-Agent text.
+     * Non-blank User-Agent text from which this classification was derived.
      */
     private final String value;
 
     /**
-     * Browser classifier.
+     * First matching browser classifier or the shared unknown classifier.
      */
     private final Browser browser;
 
     /**
-     * Device classifier.
+     * First matching device classifier or the shared unknown classifier.
      */
     private final Device device;
 
     /**
-     * Client OS classifier.
+     * First matching client operating-system classifier or the shared unknown classifier.
      */
     private final ClientOs clientOs;
 
     /**
-     * Engine classifier.
+     * First matching rendering-engine classifier or the shared unknown classifier.
      */
     private final Engine engine;
 
     /**
-     * Browser version.
+     * Optional first capture extracted by the browser's version rule.
      */
     private final String browserVersion;
 
     /**
-     * Engine version.
+     * Optional first capture extracted by the engine's version rule.
      */
     private final String engineVersion;
 
     /**
-     * Client OS version.
+     * Optional first capture extracted by the operating system's version rule.
      */
     private final String clientOsVersion;
 
     /**
-     * Mobile flag.
+     * Derived mobile classification after the macOS exclusion is applied.
      */
     private final boolean mobile;
 
     /**
-     * Creates a parsed User-Agent.
+     * Creates a fully parsed User-Agent snapshot.
      *
-     * @param value           raw value
-     * @param browser         browser
-     * @param device          device
-     * @param clientOs        client OS
-     * @param engine          engine
-     * @param browserVersion  browser version
-     * @param engineVersion   engine version
-     * @param clientOsVersion client OS version
-     * @param mobile          mobile flag
+     * @param value           original non-blank User-Agent text
+     * @param browser         selected browser classifier
+     * @param device          selected device classifier
+     * @param clientOs        selected client operating-system classifier
+     * @param engine          selected rendering-engine classifier
+     * @param browserVersion  extracted browser version, or {@code null}
+     * @param engineVersion   extracted engine version, or {@code null}
+     * @param clientOsVersion extracted operating-system version, or {@code null}
+     * @param mobile          derived mobile classification
      */
     private UserAgent(final String value, final Browser browser, final Device device, final ClientOs clientOs,
             final Engine engine, final String browserVersion, final String engineVersion, final String clientOsVersion,
@@ -102,10 +102,10 @@ public final class UserAgent {
     }
 
     /**
-     * Parses a User-Agent value.
+     * Classifies a non-blank User-Agent value and extracts available component versions.
      *
-     * @param text User-Agent text
-     * @return parsed User-Agent, or null when blank
+     * @param text User-Agent text to classify
+     * @return parsed snapshot, or {@code null} when the input is null, empty, or whitespace-only
      */
     public static UserAgent parse(final String text) {
         if (StringKit.isBlank(text)) {
@@ -123,7 +123,7 @@ public final class UserAgent {
     /**
      * Returns the original value.
      *
-     * @return value
+     * @return original non-blank User-Agent text
      */
     public String value() {
         return value;
@@ -132,7 +132,7 @@ public final class UserAgent {
     /**
      * Returns the browser.
      *
-     * @return browser
+     * @return selected browser classifier, possibly the shared unknown classifier
      */
     public Browser browser() {
         return browser;
@@ -141,7 +141,7 @@ public final class UserAgent {
     /**
      * Returns the device.
      *
-     * @return device
+     * @return selected device classifier, possibly the shared unknown classifier
      */
     public Device device() {
         return device;
@@ -150,7 +150,7 @@ public final class UserAgent {
     /**
      * Returns the client OS.
      *
-     * @return client OS
+     * @return selected client operating-system classifier, possibly the shared unknown classifier
      */
     public ClientOs clientOs() {
         return clientOs;
@@ -159,7 +159,7 @@ public final class UserAgent {
     /**
      * Returns the engine.
      *
-     * @return engine
+     * @return selected rendering-engine classifier, possibly the shared unknown classifier
      */
     public Engine engine() {
         return engine;
@@ -168,16 +168,16 @@ public final class UserAgent {
     /**
      * Returns the browser version.
      *
-     * @return browser version
+     * @return extracted browser version, or {@code null} when unavailable
      */
     public String browserVersion() {
         return browserVersion;
     }
 
     /**
-     * Returns the browser version.
+     * Returns the browser version through the compatibility alias.
      *
-     * @return browser version
+     * @return same value as {@link #browserVersion()}
      */
     public String version() {
         return browserVersion;
@@ -186,7 +186,7 @@ public final class UserAgent {
     /**
      * Returns the engine version.
      *
-     * @return engine version
+     * @return extracted rendering-engine version, or {@code null} when unavailable
      */
     public String engineVersion() {
         return engineVersion;
@@ -195,7 +195,7 @@ public final class UserAgent {
     /**
      * Returns the client OS version.
      *
-     * @return client OS version
+     * @return extracted client operating-system version, or {@code null} when unavailable
      */
     public String clientOsVersion() {
         return clientOsVersion;
@@ -204,7 +204,7 @@ public final class UserAgent {
     /**
      * Returns whether this User-Agent is mobile.
      *
-     * @return true when mobile
+     * @return {@code true} when the device or browser is mobile and the operating system is not classified as macOS
      */
     public boolean mobile() {
         return mobile;

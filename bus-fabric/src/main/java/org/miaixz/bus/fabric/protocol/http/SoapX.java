@@ -44,7 +44,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -66,60 +66,60 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 public final class SoapX {
 
     /**
-     * Runtime context.
+     * Runtime context used to build the backing HTTP exchange.
      */
     private final Context context;
 
     /**
-     * Target URL.
+     * Current HTTP target URL.
      */
     private UnoUrl url;
 
     /**
-     * SOAP protocol.
+     * SOAP envelope protocol version.
      */
     private Protocol protocol;
 
     /**
-     * Charset.
+     * Character encoding used for SOAP XML serialization.
      */
     private Charset charset;
 
     /**
-     * HTTP headers.
+     * Additional HTTP request headers supplied by the caller.
      */
     private final Headers.Builder headers;
 
     /**
-     * SOAPAction.
+     * Optional SOAPAction request header value.
      */
     private String action;
 
     /**
-     * SOAP-scoped message filter.
+     * Optional filter applied to the backing SOAP HTTP exchange.
      */
     private Filter filter;
 
     /**
-     * Message factory.
+     * Message factory matching the selected SOAP protocol version.
      */
     private MessageFactory factory;
 
     /**
-     * SOAP message.
+     * Mutable SOAP request message under construction.
      */
     private SOAPMessage message;
 
     /**
-     * Current method element.
+     * Current operation element in the SOAP body, or {@code null} before selection.
      */
     private SOAPBodyElement methodElement;
 
     /**
      * Creates a SOAP exchange.
      *
-     * @param context context
-     * @param url     target URL
+     * @param context runtime context used by the backing HTTP exchange
+     * @param url     initial HTTP target URL
      */
     private SoapX(final Context context, final UnoUrl url) {
         this.context = require(context, "Context");
@@ -133,8 +133,8 @@ public final class SoapX {
     /**
      * Creates a SOAP exchange with a default context.
      *
-     * @param url target URL
-     * @return SOAP exchange
+     * @param url HTTP target URL
+     * @return new SOAP exchange backed by a newly created context
      */
     public static SoapX of(final String url) {
         return of(Context.create(), UnoUrl.parse(url));
@@ -143,9 +143,9 @@ public final class SoapX {
     /**
      * Creates a SOAP exchange.
      *
-     * @param context context
-     * @param url     target URL
-     * @return SOAP exchange
+     * @param context runtime context used by the backing HTTP exchange
+     * @param url     HTTP target URL
+     * @return new SOAP exchange for the parsed target URL
      */
     public static SoapX of(final Context context, final String url) {
         return of(context, UnoUrl.parse(url));
@@ -154,9 +154,9 @@ public final class SoapX {
     /**
      * Creates a SOAP exchange.
      *
-     * @param context context
-     * @param url     target URL
-     * @return SOAP exchange
+     * @param context runtime context used by the backing HTTP exchange
+     * @param url     parsed HTTP target URL
+     * @return new SOAP exchange for the supplied context and target
      */
     public static SoapX of(final Context context, final UnoUrl url) {
         return new SoapX(context, url);
@@ -165,7 +165,7 @@ public final class SoapX {
     /**
      * Sets target URL.
      *
-     * @param url target URL
+     * @param url replacement HTTP target URL
      * @return this exchange
      */
     public SoapX url(final String url) {
@@ -191,7 +191,7 @@ public final class SoapX {
     /**
      * Sets charset.
      *
-     * @param charset charset
+     * @param charset XML character encoding, or {@code null} to restore UTF-8
      * @return this exchange
      */
     public SoapX charset(final Charset charset) {
@@ -203,7 +203,7 @@ public final class SoapX {
     /**
      * Sets SOAPAction.
      *
-     * @param action action
+     * @param action SOAPAction header value, or {@code null} to clear it
      * @return this exchange
      */
     public SoapX action(final String action) {
@@ -214,8 +214,8 @@ public final class SoapX {
     /**
      * Adds an HTTP header.
      *
-     * @param name  name
-     * @param value value
+     * @param name  HTTP request header name
+     * @param value HTTP request header value, or {@code null} for an empty value
      * @return this exchange
      */
     public SoapX header(final String name, final String value) {
@@ -226,7 +226,7 @@ public final class SoapX {
     /**
      * Sets SOAP-scoped message filter.
      *
-     * @param filter filter
+     * @param filter filter applied to the backing HTTP exchange
      * @return this exchange
      */
     public SoapX filter(final Filter filter) {
@@ -254,9 +254,9 @@ public final class SoapX {
     /**
      * Adds a SOAP header.
      *
-     * @param localName local name
+     * @param localName local name resolved against the current operation namespace
      * @param value     text value
-     * @return header element
+     * @return newly added SOAP header element containing the supplied text
      */
     public SOAPHeaderElement soapHeader(final String localName, final String value) {
         final SOAPHeaderElement element = soapHeader(headerName(localName));
@@ -267,8 +267,8 @@ public final class SoapX {
     /**
      * Adds a SOAP header.
      *
-     * @param name header name
-     * @return header element
+     * @param name qualified SOAP header name
+     * @return newly added SOAP header element
      */
     public SOAPHeaderElement soapHeader(final QName name) {
         try {
@@ -285,7 +285,7 @@ public final class SoapX {
     /**
      * Sets SOAP body method.
      *
-     * @param localName local name
+     * @param localName unqualified SOAP operation name
      * @return this exchange
      */
     public SoapX method(final String localName) {
@@ -295,8 +295,8 @@ public final class SoapX {
     /**
      * Sets SOAP body method.
      *
-     * @param namespace namespace
-     * @param localName local name
+     * @param namespace optional SOAP operation namespace URI
+     * @param localName SOAP operation local name
      * @return this exchange
      */
     public SoapX method(final String namespace, final String localName) {
@@ -309,7 +309,7 @@ public final class SoapX {
     /**
      * Sets SOAP body method.
      *
-     * @param name method name
+     * @param name qualified SOAP operation name
      * @return this exchange
      */
     public SoapX method(final QName name) {
@@ -327,8 +327,8 @@ public final class SoapX {
     /**
      * Adds a method parameter.
      *
-     * @param name  name
-     * @param value value
+     * @param name  parameter element name
+     * @param value parameter value or nested SOAP/map structure
      * @return this exchange
      */
     public SoapX param(final String name, final Object value) {
@@ -338,7 +338,7 @@ public final class SoapX {
     /**
      * Adds method parameters.
      *
-     * @param params params
+     * @param params parameter names and values, or {@code null} to add nothing
      * @return this exchange
      */
     public SoapX params(final Map<String, ?> params) {
@@ -351,8 +351,8 @@ public final class SoapX {
     /**
      * Adds a method parameter.
      *
-     * @param name            name
-     * @param value           value
+     * @param name            parameter element name
+     * @param value           parameter value or nested SOAP/map structure
      * @param useMethodPrefix whether nested elements use method prefix
      * @return this exchange
      */
@@ -367,7 +367,7 @@ public final class SoapX {
     /**
      * Returns the current SOAP message.
      *
-     * @return SOAP message
+     * @return mutable SOAP request message currently under construction
      */
     public SOAPMessage message() {
         return message;
@@ -376,7 +376,7 @@ public final class SoapX {
     /**
      * Returns the current method element.
      *
-     * @return method element
+     * @return current SOAP body operation element, or {@code null} when none is set
      */
     public SOAPBodyElement methodElement() {
         return methodElement;
@@ -385,7 +385,7 @@ public final class SoapX {
     /**
      * Returns the current SOAP XML.
      *
-     * @return XML text
+     * @return serialized SOAP XML using the configured charset
      */
     public String xml() {
         try {
@@ -401,7 +401,7 @@ public final class SoapX {
     /**
      * Returns the payload body for the current SOAP message.
      *
-     * @return body
+     * @return repeatable HTTP request body containing the current SOAP XML
      */
     public PayloadBody body() {
         return PayloadBody.of(Payload.of(xml(), charset), media());
@@ -410,14 +410,14 @@ public final class SoapX {
     /**
      * Returns HTTP request headers.
      *
-     * @return headers
+     * @return immutable HTTP request headers including SOAP content metadata
      */
     public Headers headers() {
         final Headers.Builder builder = Headers.builder();
         headers.build().asMap().forEach((name, values) -> values.forEach(value -> builder.add(name, value)));
-        builder.set(HTTP.CONTENT_TYPE, contentType());
+        builder.set(Http.Header.CONTENT_TYPE, contentType());
         if (StringKit.isNotBlank(action)) {
-            builder.set(HTTP.SOAPACTION, action);
+            builder.set(Http.Header.SOAP_ACTION, action);
         }
         return builder.build();
     }
@@ -425,7 +425,7 @@ public final class SoapX {
     /**
      * Creates a call for the current SOAP exchange.
      *
-     * @return response call
+     * @return new call for the current SOAP HTTP exchange
      */
     public Call<HttpResponse> call() {
         return exchange().call();
@@ -434,7 +434,7 @@ public final class SoapX {
     /**
      * Executes the current SOAP exchange.
      *
-     * @return HTTP response
+     * @return HTTP response produced by synchronous SOAP execution
      */
     public HttpResponse execute() {
         return exchange().execute();
@@ -443,7 +443,7 @@ public final class SoapX {
     /**
      * Executes the current SOAP exchange and returns response text.
      *
-     * @return response text
+     * @return SOAP HTTP response body decoded as text
      */
     public String executeText() {
         return execute().text();
@@ -452,7 +452,7 @@ public final class SoapX {
     /**
      * Enqueues the current SOAP exchange.
      *
-     * @return response call
+     * @return asynchronously enqueued call for the current SOAP exchange
      */
     public Call<HttpResponse> enqueue() {
         return call().enqueue();
@@ -461,7 +461,7 @@ public final class SoapX {
     /**
      * Executes the current SOAP exchange and parses the response message.
      *
-     * @return SOAP message
+     * @return parsed SOAP response message
      */
     public SOAPMessage executeMessage() {
         final HttpResponse response = execute();
@@ -478,7 +478,7 @@ public final class SoapX {
     /**
      * Sends the SOAP request and returns response text.
      *
-     * @return response text
+     * @return SOAP HTTP response body decoded as text
      */
     public String send() {
         return executeText();
@@ -487,7 +487,7 @@ public final class SoapX {
     /**
      * Sends the SOAP request and returns the HTTP response.
      *
-     * @return HTTP response
+     * @return HTTP response produced by the SOAP request
      */
     public HttpResponse sendForResponse() {
         return execute();
@@ -496,7 +496,7 @@ public final class SoapX {
     /**
      * Sends the SOAP request and parses the response message.
      *
-     * @return SOAP message
+     * @return parsed SOAP response message
      */
     public SOAPMessage sendForMessage() {
         return executeMessage();
@@ -505,8 +505,8 @@ public final class SoapX {
     /**
      * Extracts a SOAP fault when present.
      *
-     * @param message message
-     * @return fault or null
+     * @param message SOAP message whose body is inspected
+     * @return contained SOAP fault, or {@code null} when the body has no fault
      */
     public static SOAPFault fault(final SOAPMessage message) {
         try {
@@ -519,11 +519,11 @@ public final class SoapX {
     /**
      * Adds a SOAP element.
      *
-     * @param parent parent
-     * @param name   name
-     * @param value  value
-     * @param prefix optional prefix
-     * @return child element
+     * @param parent parent SOAP element receiving the child
+     * @param name   child element name
+     * @param value  scalar value, nested map, SOAP element, or {@code null}
+     * @param prefix optional namespace prefix inherited by nested map elements
+     * @return newly added child SOAP element
      */
     private static SOAPElement addElement(
             final SOAPElement parent,
@@ -551,8 +551,8 @@ public final class SoapX {
     /**
      * Returns a namespace-qualified header name for convenience local-name headers.
      *
-     * @param localName local name
-     * @return qualified header name
+     * @param localName unqualified header name
+     * @return qualified header name based on the operation or fallback namespace
      */
     private QName headerName(final String localName) {
         final String checked = name(localName, "SOAP header");
@@ -567,8 +567,8 @@ public final class SoapX {
     /**
      * Creates a SOAP message factory.
      *
-     * @param protocol protocol
-     * @return factory
+     * @param protocol selected SOAP protocol version
+     * @return Jakarta SOAP message factory for that protocol
      */
     private static MessageFactory factory(final Protocol protocol) {
         try {
@@ -597,8 +597,8 @@ public final class SoapX {
     /**
      * Builds MIME headers for SOAP response parsing.
      *
-     * @param headers headers
-     * @return MIME headers
+     * @param headers HTTP response headers to copy
+     * @return Jakarta SOAP MIME headers containing every supplied value
      */
     private static MimeHeaders mimeHeaders(final Headers headers) {
         final Headers checkedHeaders = require(headers, "Headers");
@@ -614,7 +614,7 @@ public final class SoapX {
     /**
      * Builds the backing HTTP exchange.
      *
-     * @return HTTP exchange
+     * @return configured HTTP POST exchange carrying the current SOAP message
      */
     private HttpX exchange() {
         return HttpX.builder(context).post(url.encoded()).headers(headers()).body(body())
@@ -624,7 +624,7 @@ public final class SoapX {
     /**
      * Returns request content type.
      *
-     * @return content type
+     * @return serialized media type value for the HTTP Content-Type header
      */
     private String contentType() {
         return media().value();
@@ -633,7 +633,7 @@ public final class SoapX {
     /**
      * Returns request media.
      *
-     * @return request media
+     * @return SOAP-version-specific request media type with the configured charset
      */
     private MediaType media() {
         final MediaType base = protocol == Protocol.SOAP_1_1 ? MediaType.TEXT_XML_TYPE
@@ -644,8 +644,8 @@ public final class SoapX {
     /**
      * Returns default SOAPAction.
      *
-     * @param name method name
-     * @return action
+     * @param name qualified SOAP operation name
+     * @return default SOAPAction derived from its namespace and local part
      */
     private static String defaultAction(final QName name) {
         final String namespace = name.getNamespaceURI();
@@ -661,9 +661,9 @@ public final class SoapX {
     /**
      * Validates a name.
      *
-     * @param value value
-     * @param field field
-     * @return value
+     * @param value candidate XML or header name
+     * @param field logical field name included in validation failures
+     * @return validated non-blank single-line name
      */
     private static String name(final String value, final String field) {
         final String checked = Assert
@@ -677,9 +677,9 @@ public final class SoapX {
     /**
      * Validates an optional single-line value.
      *
-     * @param value value
-     * @param field field
-     * @return value
+     * @param value candidate optional text
+     * @param field logical field name included in validation failures
+     * @return validated single-line text, or an empty string for {@code null}
      */
     private static String optionalLine(final String value, final String field) {
         if (value == null) {
@@ -694,10 +694,10 @@ public final class SoapX {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

@@ -59,6 +59,11 @@ public final class Http2Frame implements AutoCloseable {
     private volatile ByteString payload;
 
     /**
+     * Reader-owned unpadded DATA payload.
+     */
+    private Buffer dataPayload;
+
+    /**
      * Optional internal zero-copy payload owner.
      */
     private final PayloadLease payloadLease;
@@ -116,12 +121,12 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Creates a frame.
      *
-     * @param type             type
+     * @param type             HTTP/2 frame type code
      * @param streamId         stream id
-     * @param flags            flags
-     * @param payload          payload
-     * @param headers          headers
-     * @param settings         settings
+     * @param flags            frame flags valid for the selected type
+     * @param payload          encoded frame payload bytes
+     * @param headers          decoded header fields, or {@code null}
+     * @param settings         decoded settings values, or {@code null}
      * @param windowDelta      window delta
      * @param errorCode        error code
      * @param promisedStreamId promised stream id
@@ -136,12 +141,12 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Creates a frame.
      *
-     * @param type             type
+     * @param type             HTTP/2 frame type code
      * @param streamId         stream id
-     * @param flags            flags
-     * @param payload          payload
-     * @param headers          headers
-     * @param settings         settings
+     * @param flags            frame flags valid for the selected type
+     * @param payload          encoded frame payload bytes
+     * @param headers          decoded header fields, or {@code null}
+     * @param settings         decoded settings values, or {@code null}
      * @param windowDelta      window delta
      * @param errorCode        error code
      * @param promisedStreamId promised stream id
@@ -157,6 +162,19 @@ public final class Http2Frame implements AutoCloseable {
 
     /**
      * Full constructor including an internal leased payload.
+     *
+     * @param type             HTTP/2 frame type code
+     * @param streamId         stream identifier, or {@code 0} for connection frames
+     * @param flags            frame flags valid for the selected type
+     * @param payload          owned immutable payload bytes
+     * @param headers          decoded header fields, or {@code null}
+     * @param settings         decoded settings values, or {@code null}
+     * @param windowDelta      decoded flow-control increment
+     * @param errorCode        decoded HTTP/2 error code
+     * @param promisedStreamId decoded promised stream identifier
+     * @param priority         decoded priority metadata, or {@code null}
+     * @param alternateService decoded alternate-service metadata, or {@code null}
+     * @param payloadLease     bounded payload lease, or {@code null} for owned payload bytes
      */
     private Http2Frame(final int type, final int streamId, final int flags, final ByteString payload,
             final List<Http2Header> headers, final Http2Settings settings, final long windowDelta, final int errorCode,
@@ -186,7 +204,7 @@ public final class Http2Frame implements AutoCloseable {
      * Creates a DATA frame.
      *
      * @param streamId  stream id
-     * @param payload   payload
+     * @param payload   DATA bytes carried by the frame
      * @param endStream end stream flag
      * @return frame
      */
@@ -202,7 +220,7 @@ public final class Http2Frame implements AutoCloseable {
      * Creates a HEADERS frame.
      *
      * @param streamId  stream id
-     * @param headers   headers
+     * @param headers   header fields to encode in the frame
      * @param endStream end stream flag
      * @return frame
      */
@@ -214,7 +232,7 @@ public final class Http2Frame implements AutoCloseable {
      * Creates a HEADERS frame with optional priority metadata.
      *
      * @param streamId  stream id
-     * @param headers   headers
+     * @param headers   trailer fields to encode in the frame
      * @param endStream end stream flag
      * @param priority  priority metadata
      * @return frame
@@ -255,7 +273,7 @@ public final class Http2Frame implements AutoCloseable {
      *
      * @param streamId           stream id
      * @param dependencyStreamId dependency stream id
-     * @param weight             weight
+     * @param weight             HTTP/2 priority weight in the valid wire range
      * @param exclusive          exclusive flag
      * @return frame
      */
@@ -291,7 +309,7 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Creates a SETTINGS frame.
      *
-     * @param settings settings
+     * @param settings settings values to encode
      * @return frame
      */
     public static Http2Frame settings(final Http2Settings settings) {
@@ -319,10 +337,8 @@ public final class Http2Frame implements AutoCloseable {
      * @return frame
      */
     public static Http2Frame ping(final long payload, final boolean ack) {
-        final Buffer value = new Buffer();
-        value.writeLong(payload);
-        return new Http2Frame(Normal._6, Normal._0, ack ? Normal._1 : Normal._0, value.readByteString(), List.of(),
-                null, Normal._0, Normal._0, Normal._0);
+        return new Http2Frame(Normal._6, Normal._0, ack ? Normal._1 : Normal._0, longPayload(payload), List.of(), null,
+                Normal._0, Normal._0, Normal._0);
     }
 
     /**
@@ -337,28 +353,23 @@ public final class Http2Frame implements AutoCloseable {
         if (lastStreamId < Normal._0 || errorCode < Normal._0) {
             throw new ValidateException("Invalid HTTP/2 Normal._7 metadata");
         }
-        final Buffer payload = new Buffer();
-        payload.writeInt(lastStreamId & Integer.MAX_VALUE);
-        payload.writeInt(errorCode);
-        payload.write(debugData == null ? ByteString.EMPTY : debugData);
-        return new Http2Frame(Normal._7, Normal._0, Normal._0, payload.readByteString(), List.of(), null, Normal._0,
-                errorCode, Normal._0);
+        final ByteString payload = goAwayPayload(lastStreamId, errorCode, debugData);
+        return new Http2Frame(Normal._7, Normal._0, Normal._0, payload, List.of(), null, Normal._0, errorCode,
+                Normal._0);
     }
 
     /**
      * Creates a WINDOW_UPDATE frame.
      *
      * @param streamId stream id
-     * @param delta    delta
+     * @param delta    positive flow-control increment
      * @return frame
      */
     public static Http2Frame windowUpdate(final int streamId, final long delta) {
         if (streamId < Normal._0 || delta <= Normal._0 || delta > Integer.MAX_VALUE) {
             throw new ValidateException("Invalid HTTP/2 window update");
         }
-        final Buffer payload = new Buffer();
-        payload.writeInt((int) delta);
-        return new Http2Frame(Normal._8, streamId, Normal._0, payload.readByteString(), List.of(), null, delta,
+        return new Http2Frame(Normal._8, streamId, Normal._0, intPayload((int) delta), List.of(), null, delta,
                 Normal._0, Normal._0);
     }
 
@@ -374,9 +385,7 @@ public final class Http2Frame implements AutoCloseable {
         if (errorCode < Normal._0) {
             throw new ValidateException("HTTP/2 error code must be non-negative");
         }
-        final Buffer payload = new Buffer();
-        payload.writeInt(errorCode);
-        return new Http2Frame(Normal._3, streamId, Normal._0, payload.readByteString(), List.of(), null, Normal._0,
+        return new Http2Frame(Normal._3, streamId, Normal._0, intPayload(errorCode), List.of(), null, Normal._0,
                 errorCode, Normal._0);
     }
 
@@ -405,11 +414,11 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Creates a decoded frame.
      *
-     * @param type     type
+     * @param type     decoded HTTP/2 frame type code
      * @param streamId stream id
-     * @param flags    flags
-     * @param payload  payload
-     * @param headers  headers
+     * @param flags    decoded frame flags
+     * @param payload  decoded frame payload bytes
+     * @param headers  decoded header fields, or {@code null}
      * @return frame
      */
     static Http2Frame decoded(
@@ -424,11 +433,11 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Creates a decoded frame with pre-parsed extension metadata.
      *
-     * @param type             type
+     * @param type             decoded HTTP/2 frame type code
      * @param streamId         stream id
-     * @param flags            flags
-     * @param payload          payload
-     * @param headers          headers
+     * @param flags            decoded frame flags
+     * @param payload          decoded frame payload bytes
+     * @param headers          decoded header fields, or {@code null}
      * @param priority         priority metadata
      * @param alternateService alternate service metadata
      * @return frame
@@ -502,6 +511,8 @@ public final class Http2Frame implements AutoCloseable {
      * @return payload bytes
      */
     public ByteString payloadBytes() {
+        if (dataPayload != null)
+            return dataPayload.snapshot();
         ByteString current = payload;
         if (current.size() == Normal._0 && payloadLease != null && payloadLease.remaining() != Normal._0) {
             synchronized (this) {
@@ -517,12 +528,32 @@ public final class Http2Frame implements AutoCloseable {
     }
 
     /**
+     * Returns the decoded DATA payload size.
+     *
+     * @return payload size in bytes
+     */
+    int payloadSize() {
+        return dataPayload == null ? payloadBytes().size() : (int) dataPayload.size();
+    }
+
+    /**
+     * Transfers ownership of the decoded DATA payload to the caller.
+     *
+     * @return decoded DATA buffer, or {@code null} when no direct payload is retained
+     */
+    Buffer takeDataPayload() {
+        final Buffer direct = dataPayload;
+        dataPayload = null;
+        return direct;
+    }
+
+    /**
      * Returns headers snapshot.
      *
      * @return headers
      */
     public List<Http2Header> headers() {
-        return type == Normal._1 || type == Normal._5 ? List.copyOf(headers) : List.of();
+        return type == Normal._1 || type == Normal._5 ? headers : List.of();
     }
 
     /**
@@ -614,6 +645,7 @@ public final class Http2Frame implements AutoCloseable {
      */
     @Override
     public void close() {
+        dataPayload = null;
         if (payloadLease != null) {
             payloadLease.close();
         }
@@ -621,13 +653,22 @@ public final class Http2Frame implements AutoCloseable {
 
     /**
      * Returns an internal read-only payload slice without materializing ByteString.
+     *
+     * @return read-only view of the frame payload
      */
     ByteBuffer payloadBuffer() {
-        return payloadLease == null ? ByteBuffer.wrap(payload.toByteArray()).asReadOnlyBuffer() : payloadLease.buffer();
+        return payloadLease == null ? payload.asByteBuffer() : payloadLease.buffer();
     }
 
     /**
      * Creates a DATA/header-fragment frame backed by an internal bounded lease.
+     *
+     * @param type     decoded frame type
+     * @param streamId decoded stream identifier
+     * @param flags    decoded frame flags
+     * @param payload  bounded payload buffer owned by the lease
+     * @param releaser action returning the leased storage
+     * @return decoded frame backed by the lease when safe, otherwise by copied bytes
      */
     static Http2Frame decodedLeased(
             final int type,
@@ -653,6 +694,25 @@ public final class Http2Frame implements AutoCloseable {
     }
 
     /**
+     * Creates an unpadded DATA frame whose buffer ownership transfers to the dispatcher.
+     *
+     * @param streamId target stream identifier
+     * @param flags    DATA frame flags
+     * @param payload  decoded DATA payload whose ownership transfers to the frame
+     * @return decoded DATA frame
+     */
+    static Http2Frame decodedData(final int streamId, final int flags, final Buffer payload) {
+        positiveStream(streamId);
+        if (payload == null)
+            throw new ValidateException("HTTP/2 DATA buffer must not be null");
+        validateDecodedLength(Normal._0, streamId, flags, (int) payload.size());
+        final Http2Frame frame = new Http2Frame(Normal._0, streamId, flags, ByteString.EMPTY, List.of(), null,
+                Normal._0, Normal._0, Normal._0);
+        frame.dataPayload = payload;
+        return frame;
+    }
+
+    /**
      * Validates positive stream id.
      *
      * @param streamId stream id
@@ -665,6 +725,11 @@ public final class Http2Frame implements AutoCloseable {
 
     /**
      * Validates known decoded frame invariants before interpreting payload bytes.
+     *
+     * @param type     decoded frame type
+     * @param streamId decoded stream identifier
+     * @param flags    decoded frame flags
+     * @param payload  decoded payload bytes to validate
      */
     private static void validateDecoded(final int type, final int streamId, final int flags, final ByteString payload) {
         if (payload == null) {
@@ -678,6 +743,11 @@ public final class Http2Frame implements AutoCloseable {
 
     /**
      * Validates frame type/stream/length combinations without allocating.
+     *
+     * @param type     decoded frame type
+     * @param streamId decoded stream identifier
+     * @param flags    decoded frame flags
+     * @param length   decoded payload length
      */
     private static void validateDecodedLength(final int type, final int streamId, final int flags, final int length) {
         if (streamId < Normal._0 || length < Normal._0) {
@@ -717,6 +787,10 @@ public final class Http2Frame implements AutoCloseable {
 
     /**
      * Requires an exact control-frame payload length.
+     *
+     * @param actual   actual payload length
+     * @param expected required payload length
+     * @param type     frame type used in protocol diagnostics
      */
     private static void exactLength(final int actual, final int expected, final String type) {
         if (actual != expected) {
@@ -726,6 +800,10 @@ public final class Http2Frame implements AutoCloseable {
 
     /**
      * Reads a network-order int directly from immutable bytes.
+     *
+     * @param bytes  immutable source bytes
+     * @param offset index of the first encoded byte
+     * @return decoded signed 32-bit bit pattern
      */
     private static int intAt(final ByteString bytes, final int offset) {
         return ((bytes.getByte(offset) & 0xff) << 24) | ((bytes.getByte(offset + 1) & 0xff) << 16)
@@ -733,7 +811,69 @@ public final class Http2Frame implements AutoCloseable {
     }
 
     /**
+     * Encodes one network-order integer into an owned immutable payload.
+     *
+     * @param value integer bit pattern to encode
+     * @return four-byte network-order payload
+     */
+    private static ByteString intPayload(final int value) {
+        final byte[] payload = new byte[Normal._4];
+        writeInt(payload, Normal._0, value);
+        return new ByteString(payload);
+    }
+
+    /**
+     * Encodes one network-order long into an owned immutable payload.
+     *
+     * @param value long bit pattern to encode
+     * @return eight-byte network-order payload
+     */
+    private static ByteString longPayload(final long value) {
+        final byte[] payload = new byte[Normal._8];
+        writeInt(payload, Normal._0, (int) (value >>> 32));
+        writeInt(payload, Normal._4, (int) value);
+        return new ByteString(payload);
+    }
+
+    /**
+     * Encodes GOAWAY metadata and optional immutable debug bytes in one allocation.
+     *
+     * @param lastStreamId last peer-initiated stream identifier processed
+     * @param errorCode    HTTP/2 connection error code
+     * @param debugData    optional immutable diagnostic bytes
+     * @return encoded GOAWAY payload
+     */
+    private static ByteString goAwayPayload(final int lastStreamId, final int errorCode, final ByteString debugData) {
+        final ByteString debug = debugData == null ? ByteString.EMPTY : debugData;
+        final byte[] payload = new byte[Normal._8 + debug.size()];
+        writeInt(payload, Normal._0, lastStreamId & Integer.MAX_VALUE);
+        writeInt(payload, Normal._4, errorCode);
+        for (int index = Normal._0; index < debug.size(); index++) {
+            payload[Normal._8 + index] = debug.getByte(index);
+        }
+        return new ByteString(payload);
+    }
+
+    /**
+     * Writes one network-order integer into an owned byte array.
+     *
+     * @param target destination byte array
+     * @param offset index of the first destination byte
+     * @param value  integer bit pattern to encode
+     */
+    private static void writeInt(final byte[] target, final int offset, final int value) {
+        target[offset] = (byte) (value >>> 24);
+        target[offset + Normal._1] = (byte) (value >>> Normal._16);
+        target[offset + Normal._2] = (byte) (value >>> Normal._8);
+        target[offset + Normal._3] = (byte) value;
+    }
+
+    /**
      * Reads a network-order long directly from immutable bytes.
+     *
+     * @param bytes  immutable source bytes
+     * @param offset index of the first encoded byte
+     * @return decoded signed 64-bit bit pattern
      */
     private static long longAt(final ByteString bytes, final int offset) {
         return ((long) intAt(bytes, offset) << 32) | Integer.toUnsignedLong(intAt(bytes, offset + Normal._4));
@@ -754,7 +894,7 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Validates and snapshots headers.
      *
-     * @param headers headers
+     * @param headers header fields to validate and copy
      * @param message failure message
      * @return immutable snapshot
      */
@@ -769,36 +909,40 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Encodes settings payload.
      *
-     * @param settings settings
+     * @param settings settings values to encode in wire order
      * @return payload
      */
     private static ByteString settingsPayload(final Http2Settings settings) {
         final int[] ids = settings.ids();
-        final Buffer payload = new Buffer();
+        final byte[] payload = new byte[ids.length * Normal._6];
+        int offset = Normal._0;
         for (final int id : ids) {
-            payload.writeShort(id);
-            payload.writeInt((int) settings.getLong(id));
+            payload[offset++] = (byte) (id >>> Normal._8);
+            payload[offset++] = (byte) id;
+            final int value = (int) settings.getLong(id);
+            writeInt(payload, offset, value);
+            offset += Normal._4;
         }
-        return payload.readByteString();
+        return new ByteString(payload);
     }
 
     /**
      * Decodes a SETTINGS payload.
      *
-     * @param type    type
-     * @param flags   flags
-     * @param payload payload
+     * @param type    frame type used to verify SETTINGS semantics
+     * @param flags   frame flags controlling ACK behavior
+     * @param payload raw SETTINGS payload bytes
      * @return settings or null
      */
     private static Http2Settings decodedSettings(final int type, final int flags, final ByteString payload) {
         if (type != Normal._4 || (flags & Normal._1) != Normal._0 || payload == null || payload.size() == Normal._0) {
             return null;
         }
-        final Buffer view = new Buffer().write(payload);
         final Http2Settings settings = Http2Settings.defaults();
-        while (view.size() > Normal._0) {
-            final int id = view.readShort() & Normal._65535;
-            final long value = Integer.toUnsignedLong(view.readInt());
+        for (int offset = Normal._0; offset < payload.size(); offset += Normal._6) {
+            final int id = ((payload.getByte(offset) & 0xff) << Normal._8)
+                    | (payload.getByte(offset + Normal._1) & 0xff);
+            final long value = Integer.toUnsignedLong(intAt(payload, offset + Normal._2));
             if (id >= Normal._1 && id <= Normal._6) {
                 settings.set(id, value);
             }
@@ -809,22 +953,22 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Decodes window delta.
      *
-     * @param type    type
-     * @param payload payload
+     * @param type    frame type used to select window-delta semantics
+     * @param payload raw frame payload bytes
      * @return delta
      */
     private static long decodedWindowDelta(final int type, final ByteString payload) {
         if (type != Normal._8 || payload == null || payload.size() != Normal._4) {
             return Normal._0;
         }
-        return new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
+        return intAt(payload, Normal._0) & Integer.MAX_VALUE;
     }
 
     /**
      * Decodes error code.
      *
-     * @param type    type
-     * @param payload payload
+     * @param type    frame type used to select error-code semantics
+     * @param payload raw frame payload bytes
      * @return error code
      */
     private static int decodedErrorCode(final int type, final ByteString payload) {
@@ -832,12 +976,10 @@ public final class Http2Frame implements AutoCloseable {
             return Normal._0;
         }
         if (type == Normal._3 && payload.size() == Normal._4) {
-            return new Buffer().write(payload).readInt();
+            return intAt(payload, Normal._0);
         }
         if (type == Normal._7 && payload.size() >= Normal._4 * Normal._2) {
-            final Buffer view = new Buffer().write(payload);
-            view.readInt();
-            return view.readInt();
+            return intAt(payload, Normal._4);
         }
         return Normal._0;
     }
@@ -845,15 +987,15 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Decodes a promised stream id.
      *
-     * @param type    type
-     * @param payload payload
+     * @param type    frame type used to select PUSH_PROMISE semantics
+     * @param payload raw PUSH_PROMISE payload bytes
      * @return promised stream id
      */
     private static int decodedPromisedStreamId(final int type, final ByteString payload) {
         if (type != Normal._5 || payload == null || payload.size() < Normal._4) {
             return Normal._0;
         }
-        final int id = new Buffer().write(payload).readInt() & Integer.MAX_VALUE;
+        final int id = intAt(payload, Normal._0) & Integer.MAX_VALUE;
         if (id <= Normal._0) {
             throw new ProtocolException("Invalid HTTP/2 promised stream id");
         }
@@ -863,9 +1005,9 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Decodes priority metadata.
      *
-     * @param type     type
+     * @param type     frame type used to select priority semantics
      * @param streamId stream id
-     * @param payload  payload
+     * @param payload  raw priority payload bytes
      * @return priority or null
      */
     private static Http2Priority decodedPriority(final int type, final int streamId, final ByteString payload) {
@@ -878,9 +1020,9 @@ public final class Http2Frame implements AutoCloseable {
     /**
      * Decodes alternate-service metadata.
      *
-     * @param type     type
+     * @param type     frame type used to select ALTSVC semantics
      * @param streamId stream id
-     * @param payload  payload
+     * @param payload  raw ALTSVC payload bytes
      * @return alternate service or null
      */
     private static Http2AlternateService decodedAlternateService(
@@ -959,7 +1101,7 @@ public final class Http2Frame implements AutoCloseable {
             final ByteBuffer view = buffer();
             final byte[] copy = new byte[view.remaining()];
             view.get(copy);
-            return ByteString.of(copy);
+            return new ByteString(copy);
         }
 
         /**

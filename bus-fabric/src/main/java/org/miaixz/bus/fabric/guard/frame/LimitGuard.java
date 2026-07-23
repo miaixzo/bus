@@ -36,14 +36,14 @@ import org.miaixz.bus.fabric.guard.GuardResult;
 public final class LimitGuard {
 
     /**
-     * Maximum allowed bytes.
+     * Inclusive upper bound applied independently to a frame and to queued frame bytes.
      */
     private final long maxBytes;
 
     /**
      * Creates a limit guard.
      *
-     * @param maxBytes maximum allowed bytes
+     * @param maxBytes validated inclusive limit from 1 byte through 16 MiB
      */
     private LimitGuard(final long maxBytes) {
         this.maxBytes = validateMaxBytes(maxBytes);
@@ -52,8 +52,8 @@ public final class LimitGuard {
     /**
      * Creates a limit guard.
      *
-     * @param maxBytes maximum allowed bytes
-     * @return limit guard
+     * @param maxBytes inclusive frame and queue limit from 1 byte through 16 MiB
+     * @return new frame-length and queue-length guard
      */
     public static LimitGuard of(final long maxBytes) {
         return new LimitGuard(maxBytes);
@@ -62,8 +62,8 @@ public final class LimitGuard {
     /**
      * Checks a single frame length.
      *
-     * @param frame frame
-     * @return guard result
+     * @param frame non-null frame whose validated payload length is checked
+     * @return rejection when the frame length exceeds the configured limit; otherwise pass
      */
     public GuardResult check(final Frame frame) {
         final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
@@ -78,8 +78,8 @@ public final class LimitGuard {
     /**
      * Checks queued frame bytes.
      *
-     * @param queuedBytes queued bytes
-     * @return guard result
+     * @param queuedBytes non-negative number of frame bytes currently queued for writing
+     * @return rejection when the queue length exceeds the configured limit; otherwise pass
      */
     public GuardResult checkQueue(final long queuedBytes) {
         Assert.isTrue(queuedBytes >= Normal._0, () -> new ValidateException("Queued bytes must be non-negative"));
@@ -90,7 +90,7 @@ public final class LimitGuard {
     /**
      * Returns maximum bytes.
      *
-     * @return maximum bytes
+     * @return configured inclusive frame and queue limit
      */
     public long maxBytes() {
         return maxBytes;
@@ -99,7 +99,7 @@ public final class LimitGuard {
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return shared frame-limit guard name from {@link Builder}
      */
     public String name() {
         return Builder.GUARD_FRAME_LIMIT_GUARD_NAME;
@@ -108,8 +108,8 @@ public final class LimitGuard {
     /**
      * Validates maximum bytes.
      *
-     * @param maxBytes maximum bytes
-     * @return maximum bytes
+     * @param maxBytes candidate inclusive frame and queue limit
+     * @return unchanged limit from 1 byte through 16 MiB
      */
     private static long validateMaxBytes(final long maxBytes) {
         Assert.isTrue(

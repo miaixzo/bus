@@ -40,7 +40,7 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
 public final class SocketBody implements MessageBody, ProgressBody {
 
     /**
-     * Payload.
+     * Original socket message payload.
      */
     private final Payload payload;
 
@@ -57,7 +57,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a socket body.
      *
-     * @param payload payload
+     * @param payload socket message content source
      * @param media   media type
      */
     private SocketBody(final Payload payload, final MediaType media) {
@@ -67,7 +67,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a socket body.
      *
-     * @param payload  payload
+     * @param payload  socket message content source
      * @param media    media type
      * @param progress optional progress tracker
      */
@@ -80,8 +80,8 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param payload payload
-     * @return socket body
+     * @param payload binary socket message content source
+     * @return socket body using application/octet-stream metadata
      */
     public static SocketBody of(final Payload payload) {
         return of(payload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
@@ -90,7 +90,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a body with media metadata.
      *
-     * @param payload payload
+     * @param payload socket message content source
      * @param media   media type
      * @return socket body
      */
@@ -101,7 +101,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param bytes bytes
+     * @param bytes binary message bytes copied into a repeatable payload
      * @return socket body
      */
     public static SocketBody bytes(final byte[] bytes) {
@@ -111,7 +111,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a UTF-8 text body.
      *
-     * @param text text
+     * @param text text encoded as UTF-8
      * @return socket body
      */
     public static SocketBody text(final String text) {
@@ -121,8 +121,8 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a text body.
      *
-     * @param text    text
-     * @param charset charset
+     * @param text    text encoded into the message payload
+     * @param charset character encoding recorded in the media type
      * @return socket body
      */
     public static SocketBody text(final String text, final Charset charset) {
@@ -133,7 +133,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Returns a progress-aware copy of this socket body.
      *
-     * @param listener listener
+     * @param listener callback receiving transferred and total byte counts
      * @return progress-aware socket body
      */
     public SocketBody progress(final BiConsumer<Long, Long> listener) {
@@ -215,10 +215,10 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Validates a required value.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -227,7 +227,7 @@ public final class SocketBody implements MessageBody, ProgressBody {
     /**
      * Creates text media with charset metadata.
      *
-     * @param charset charset
+     * @param charset character encoding attached to text/plain metadata
      * @return media type
      */
     private static MediaType textMedia(final Charset charset) {

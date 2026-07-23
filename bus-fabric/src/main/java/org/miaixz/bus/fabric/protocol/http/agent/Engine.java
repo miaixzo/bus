@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.Builder;
 public final class Engine {
 
     /**
-     * Known engines.
+     * Shared rendering-engine registry in matching order.
      */
     private static final List<Engine> ENGINES = Instances.get(
             Engine.class.getName() + ".engines",
@@ -58,20 +58,20 @@ public final class Engine {
     private final String name;
 
     /**
-     * Match rule.
+     * Case-insensitive pattern used to recognize this engine.
      */
     private final Pattern rule;
 
     /**
-     * Version rule.
+     * Case-insensitive pattern derived from the engine name, with the version in capture group 1.
      */
     private final Pattern versionRule;
 
     /**
      * Creates an engine classifier.
      *
-     * @param name name
-     * @param rule match rule
+     * @param name non-blank engine name used to derive the version pattern
+     * @param rule regular expression used to recognize matching User-Agent text, or null to disable matching
      */
     public Engine(final String name, final String rule) {
         this.name = AgentRules.name(name);
@@ -82,8 +82,8 @@ public final class Engine {
     /**
      * Parses an engine.
      *
-     * @param text User-Agent text
-     * @return engine
+     * @param text User-Agent text to classify, or null
+     * @return first registered matching classifier, or the shared unknown classifier when none matches
      */
     public static Engine parse(final String text) {
         for (final Engine engine : ENGINES) {
@@ -97,8 +97,8 @@ public final class Engine {
     /**
      * Adds a custom engine classifier.
      *
-     * @param name name
-     * @param rule match rule
+     * @param name non-blank engine name used to derive the version pattern
+     * @param rule regular expression used to recognize matching User-Agent text, or null to disable matching
      */
     public static void addCustomEngine(final String name, final String rule) {
         ENGINES.add(new Engine(name, rule));
@@ -107,7 +107,7 @@ public final class Engine {
     /**
      * Returns known engine classifiers.
      *
-     * @return engines
+     * @return immutable snapshot of the current registry in matching order
      */
     public static List<Engine> engines() {
         return List.copyOf(ENGINES);
@@ -116,7 +116,7 @@ public final class Engine {
     /**
      * Returns the name.
      *
-     * @return name
+     * @return non-blank engine name
      */
     public String name() {
         return name;
@@ -125,8 +125,8 @@ public final class Engine {
     /**
      * Returns whether this engine matches the text.
      *
-     * @param text User-Agent text
-     * @return true when matched
+     * @param text User-Agent text to search, or null
+     * @return true when the recognition pattern occurs in the supplied text
      */
     public boolean matches(final String text) {
         return AgentRules.contains(rule, text);
@@ -135,8 +135,8 @@ public final class Engine {
     /**
      * Returns the parsed engine version.
      *
-     * @param text User-Agent text
-     * @return version or null
+     * @param text User-Agent text from which to extract a version, or null
+     * @return first capture of the name-derived version pattern, or null for an unknown classifier or absent match
      */
     public String version(final String text) {
         return unknown() ? null : AgentRules.group1(versionRule, text);
@@ -154,8 +154,8 @@ public final class Engine {
     /**
      * Compares rendering engine classifiers by name.
      *
-     * @param object object to compare
-     * @return true when names match
+     * @param object object to compare with this classifier
+     * @return true when the other object is an engine classifier with the same name
      */
     @Override
     public boolean equals(final Object object) {

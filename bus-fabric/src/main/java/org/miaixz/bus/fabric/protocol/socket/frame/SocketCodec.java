@@ -37,14 +37,14 @@ import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 public final class SocketCodec {
 
     /**
-     * Shared frame codec.
+     * Stateful fabric codec that performs the underlying framing operations.
      */
     private final FrameCodec codec;
 
     /**
      * Creates a codec.
      *
-     * @param codec frame codec
+     * @param codec non-null stateful frame codec to adapt
      */
     private SocketCodec(final FrameCodec codec) {
         this.codec = Assert.notNull(codec, () -> new ValidateException("Frame codec must not be null"));
@@ -53,8 +53,8 @@ public final class SocketCodec {
     /**
      * Wraps a shared frame codec.
      *
-     * @param codec frame codec
-     * @return socket codec
+     * @param codec non-null stateful frame codec to adapt
+     * @return socket-specific adapter backed by the supplied codec
      */
     public static SocketCodec of(final FrameCodec codec) {
         return new SocketCodec(codec);
@@ -63,8 +63,8 @@ public final class SocketCodec {
     /**
      * Decodes socket frames.
      *
-     * @param input input
-     * @return frames
+     * @param input non-null buffer containing newly available socket bytes
+     * @return immutable list of socket frames carrying the decoded fabric-frame payloads
      */
     public List<SocketFrame> decode(final Buffer input) {
         final Buffer checkedInput = Assert
@@ -80,8 +80,8 @@ public final class SocketCodec {
     /**
      * Encodes a socket frame.
      *
-     * @param frame  frame
-     * @param output output buffer
+     * @param frame  non-null socket frame whose payload is encoded
+     * @param output non-null destination buffer receiving encoded bytes
      */
     public void encode(final SocketFrame frame, final Buffer output) {
         final SocketFrame checkedFrame = Assert
@@ -92,7 +92,7 @@ public final class SocketCodec {
     }
 
     /**
-     * Resets decoder state.
+     * Resets the state retained by the underlying frame codec.
      */
     public void reset() {
         codec.reset();

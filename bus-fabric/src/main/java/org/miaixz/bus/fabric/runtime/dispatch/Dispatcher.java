@@ -128,7 +128,7 @@ public interface Dispatcher extends AutoCloseable {
      * Enqueues a short activity using its name as cancellation tag.
      *
      * @param key      dispatch key
-     * @param activity activity
+     * @param activity short activity to enqueue
      * @return dispatch handle
      */
     default DispatchHandle enqueue(final String key, final Activity activity) {
@@ -151,7 +151,7 @@ public interface Dispatcher extends AutoCloseable {
      *
      * @param key      dispatch key
      * @param tag      cancellation tag
-     * @param activity activity
+     * @param activity short activity to enqueue
      * @return dispatch handle
      */
     default DispatchHandle enqueue(final String key, final Object tag, final Activity activity) {
@@ -163,7 +163,7 @@ public interface Dispatcher extends AutoCloseable {
      *
      * @param key      dispatch key
      * @param tag      cancellation tag
-     * @param activity activity
+     * @param activity long-running activity to start
      * @return dispatch handle
      */
     default DispatchHandle background(final String key, final Object tag, final Activity activity) {
@@ -174,8 +174,8 @@ public interface Dispatcher extends AutoCloseable {
      * Schedules a short activity after a delay.
      *
      * @param key      dispatch key
-     * @param delay    delay
-     * @param activity activity
+     * @param delay    duration to wait before enqueueing
+     * @param activity short activity to schedule
      * @return dispatch handle
      */
     default DispatchHandle schedule(final String key, final Duration delay, final Activity activity) {
@@ -185,7 +185,7 @@ public interface Dispatcher extends AutoCloseable {
     /**
      * Cancels one known handle.
      *
-     * @param handle handle
+     * @param handle dispatch handle to cancel
      * @return true when cancellation changed work state
      */
     boolean cancel(DispatchHandle handle);
@@ -193,7 +193,7 @@ public interface Dispatcher extends AutoCloseable {
     /**
      * Cancels all known handles matching a tag.
      *
-     * @param tag tag
+     * @param tag cancellation tag identifying matching work
      * @return true when at least one task changed
      */
     boolean cancel(Object tag);
@@ -215,7 +215,7 @@ public interface Dispatcher extends AutoCloseable {
     /**
      * Registers a callback to run once all dispatcher channels become idle.
      *
-     * @param callback callback
+     * @param callback action to invoke after all channels become idle
      */
     void idle(Runnable callback);
 
@@ -303,7 +303,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Creates a production dispatcher.
      *
-     * @param observer observer
+     * @param observer event observer receiving dispatcher failures
      * @return dispatcher
      */
     static DefaultDispatcher create(final EventObserver observer) {
@@ -314,9 +314,9 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Creates a compatibility dispatcher with owned background resources.
      *
-     * @param queue     queue
-     * @param worker    worker
-     * @param scheduler scheduler
+     * @param queue     short-task dispatch queue
+     * @param worker    worker draining the short-task queue
+     * @param scheduler executor managing delayed work
      */
     DefaultDispatcher(final DispatchQueue queue, final DispatchWorker worker,
             final ScheduledExecutorService scheduler) {
@@ -326,11 +326,11 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Creates a fully specified dispatcher.
      *
-     * @param queue              queue
-     * @param worker             worker
-     * @param scheduler          scheduler
+     * @param queue              short-task dispatch queue
+     * @param worker             worker draining the short-task queue
+     * @param scheduler          executor managing delayed work
      * @param backgroundExecutor background executor
-     * @param observer           observer
+     * @param observer           event observer receiving dispatcher failures
      */
     DefaultDispatcher(final DispatchQueue queue, final DispatchWorker worker, final ScheduledExecutorService scheduler,
             final ExecutorService backgroundExecutor, final EventObserver observer) {
@@ -360,8 +360,8 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Runs one short runnable.
      *
-     * @param key      key
-     * @param runnable runnable
+     * @param key      serialization key for the queued work
+     * @param runnable action to execute
      * @return completion future
      */
     @Override
@@ -373,8 +373,8 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Runs one short supplier.
      *
-     * @param key      key
-     * @param supplier supplier
+     * @param key      serialization key for the queued work
+     * @param supplier value-producing action to execute
      * @param <T>      result type
      * @return result future
      */
@@ -400,6 +400,12 @@ final class DefaultDispatcher implements Dispatcher {
 
     /**
      * Runs one framework-owned blocking supplier on the background channel.
+     *
+     * @param key      ownership key recorded for the task
+     * @param tag      cancellation tag associated with the task
+     * @param supplier value-producing blocking action
+     * @param <T>      supplied result type
+     * @return independently cancellable result future
      */
     @Override
     public <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final Supplier<T> supplier) {
@@ -424,8 +430,8 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Enqueues a short activity with its name as tag.
      *
-     * @param key      key
-     * @param activity activity
+     * @param key      serialization key for the queued activity
+     * @param activity short activity to enqueue
      * @return handle
      */
     @Override
@@ -437,9 +443,9 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Enqueues a tagged short activity.
      *
-     * @param key      key
-     * @param tag      tag
-     * @param activity activity
+     * @param key      serialization key for the queued activity
+     * @param tag      cancellation tag associated with the handle
+     * @param activity short activity to enqueue
      * @return handle
      */
     @Override
@@ -461,9 +467,9 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Starts a tagged background activity.
      *
-     * @param key      key
-     * @param tag      tag
-     * @param activity activity
+     * @param key      ownership key recorded for the background activity
+     * @param tag      cancellation tag associated with the handle
+     * @param activity long-running activity to start
      * @return handle
      */
     @Override
@@ -495,9 +501,9 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Schedules a short activity.
      *
-     * @param key      key
-     * @param delay    delay
-     * @param activity activity
+     * @param key      serialization key for the scheduled activity
+     * @param delay    duration to wait before enqueueing
+     * @param activity short activity to schedule
      * @return handle
      */
     @Override
@@ -530,7 +536,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Cancels one known handle.
      *
-     * @param handle handle
+     * @param handle dispatch handle to cancel
      * @return true when changed
      */
     @Override
@@ -546,7 +552,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Cancels every known handle matching a tag.
      *
-     * @param tag tag
+     * @param tag cancellation tag identifying matching handles
      * @return true when changed
      */
     @Override
@@ -588,7 +594,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Registers an isolated idle callback.
      *
-     * @param callback callback
+     * @param callback action isolated and invoked when all channels are idle
      */
     @Override
     public void idle(final Runnable callback) {
@@ -646,8 +652,8 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Registers one handle and its terminal cleanup callback.
      *
-     * @param handle  handle
-     * @param channel channel
+     * @param handle  newly created handle to track
+     * @param channel dispatcher channel that owns the native work
      */
     private void register(final DispatchHandle handle, final Channel channel) {
         synchronized (registry) {
@@ -663,16 +669,17 @@ final class DefaultDispatcher implements Dispatcher {
      */
     private void promoteQueued() {
         final List<DispatchQueue.Entry> entries = queue.promoteEntries();
-        if (entries.size() > 1) {
-            worker.executeBatch(entries);
-            return;
-        }
-        for (final DispatchQueue.Entry entry : entries) {
+        if (entries.size() == 1) {
+            final DispatchQueue.Entry entry = entries.get(0);
             try {
                 worker.execute(entry);
             } catch (final RuntimeException | Error ignored) {
                 queue.finish(entry.handle());
             }
+            return;
+        }
+        if (entries.size() > 1) {
+            worker.executeBatch(entries);
         }
     }
 
@@ -706,6 +713,7 @@ final class DefaultDispatcher implements Dispatcher {
      * @param task background task
      */
     private void runBackground(final BackgroundDispatch task) {
+        task.runner = Thread.currentThread();
         task.started.set(true);
         final DispatchHandle handle = task.handle;
         try {
@@ -730,13 +738,14 @@ final class DefaultDispatcher implements Dispatcher {
         } finally {
             task.terminated.set(true);
             releaseBackground(task);
+            task.runner = null;
         }
     }
 
     /**
      * Cancels a handle according to its registered channel.
      *
-     * @param handle handle
+     * @param handle registered handle to cancel
      * @return true when state or native work changed
      */
     private boolean cancelKnown(final DispatchHandle handle) {
@@ -757,7 +766,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Cancels one delayed record before its handle.
      *
-     * @param handle handle
+     * @param handle delayed-work handle to cancel
      * @return true when changed
      */
     private boolean cancelDelayed(final DispatchHandle handle) {
@@ -782,7 +791,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Cancels one background handle and interrupts its native future.
      *
-     * @param handle handle
+     * @param handle background-work handle to cancel
      * @return true when changed
      */
     private boolean cancelBackground(final DispatchHandle handle) {
@@ -792,7 +801,7 @@ final class DefaultDispatcher implements Dispatcher {
         }
         final boolean changed = handle.cancel();
         boolean nativeChanged = false;
-        if (task != null && task.future != null) {
+        if (task != null && task.future != null && (changed || !task.started.get())) {
             nativeChanged = task.future.cancel(true);
             if (nativeChanged && !task.started.get()) {
                 task.terminated.set(true);
@@ -805,7 +814,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Handles a canonical future terminal event.
      *
-     * @param handle handle
+     * @param handle handle whose completion reached a terminal state
      */
     private void terminal(final DispatchHandle handle) {
         final Channel channel;
@@ -838,7 +847,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Releases one terminated background record and common registration.
      *
-     * @param task task
+     * @param task terminated background record to remove
      */
     private void releaseBackground(final BackgroundDispatch task) {
         if (!task.terminated.get()) {
@@ -856,7 +865,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Removes one delayed record and optionally cancels its native future.
      *
-     * @param task         task
+     * @param task         delayed record to remove
      * @param cancelFuture true to cancel native scheduling
      */
     private void removeDelayed(final DelayedDispatch task, final boolean cancelFuture) {
@@ -871,7 +880,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Removes one delayed record by handle.
      *
-     * @param handle handle
+     * @param handle handle identifying the delayed record
      */
     private void removeDelayed(final DispatchHandle handle) {
         synchronized (delayed) {
@@ -890,7 +899,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Fails a queued handle through the required running transition.
      *
-     * @param handle handle
+     * @param handle queued handle to transition through failure
      * @param cause  original failure
      */
     private static void failQueued(final DispatchHandle handle, final Throwable cause) {
@@ -902,7 +911,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Fails a running handle while tolerating a concurrent terminal winner.
      *
-     * @param handle handle
+     * @param handle running handle to fail
      * @param cause  original failure
      */
     private static void failRunning(final DispatchHandle handle, final Throwable cause) {
@@ -944,18 +953,31 @@ final class DefaultDispatcher implements Dispatcher {
      */
     private RuntimeException closeBackground(final RuntimeException failure) {
         RuntimeException current = failure;
+        final List<BackgroundDispatch> snapshot;
         synchronized (background) {
-            for (final BackgroundDispatch task : new ArrayList<>(background.values())) {
-                if (task.future != null) {
-                    task.future.cancel(true);
-                }
+            snapshot = new ArrayList<>(background.values());
+        }
+        // Never interrupt virtual threads while holding the registry monitor. A terminating task must acquire this
+        // monitor in releaseBackground; holding it across ThreadBoundFuture.cancel can form a shutdown lock cycle.
+        for (final BackgroundDispatch task : snapshot) {
+            if (task.future != null && task.handle.state() != Status.CANCELLED) {
+                task.future.cancel(true);
             }
         }
-        backgroundExecutor.shutdownNow();
+        // Protocol-owned tasks whose handles are already cancelled have already received their stronger native
+        // termination signal (for example socket abort). Give their finally blocks a cooperative exit window instead
+        // of re-entering the virtual-thread interrupt path that can block behind a pinned provider lock.
+        backgroundExecutor.shutdown();
         try {
             awaitTermination(backgroundExecutor, "Background executor");
         } catch (final RuntimeException e) {
-            current = append(current, e);
+            final String retained;
+            synchronized (background) {
+                retained = background.values().stream().map(
+                        task -> task.handle.key() + '[' + task.handle.state().name() + "]@" + topFrame(task.runner))
+                        .collect(java.util.stream.Collectors.joining(","));
+            }
+            current = append(current, new StatefulException(e.getMessage() + "; retained=" + retained));
         }
         synchronized (background) {
             background.clear();
@@ -963,10 +985,20 @@ final class DefaultDispatcher implements Dispatcher {
         return current;
     }
 
+    private static String topFrame(final Thread runner) {
+        if (runner == null)
+            return "not-running";
+        final StackTraceElement[] stack = runner.getStackTrace();
+        if (stack.length == 0)
+            return runner.getState().name();
+        return java.util.Arrays.stream(stack).limit(12L).map(StackTraceElement::toString)
+                .collect(java.util.stream.Collectors.joining("<-"));
+    }
+
     /**
      * Waits for one executor without direct thread sleeping.
      *
-     * @param executor executor
+     * @param executor executor whose termination is awaited
      * @param name     resource name
      */
     private static void awaitTermination(final ExecutorService executor, final String name) {
@@ -1001,7 +1033,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Runs one idle callback with observer-backed failure isolation.
      *
-     * @param callback callback
+     * @param callback idle action to invoke safely
      */
     private void runIdleCallback(final Runnable callback) {
         try {
@@ -1025,7 +1057,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Returns activities in one handle state.
      *
-     * @param state state
+     * @param state handle state used to filter activities
      * @return activities
      */
     private List<Activity> activities(final Status state) {
@@ -1070,7 +1102,7 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Unwraps one completion wrapper.
      *
-     * @param cause cause
+     * @param cause failure that may wrap the original cause
      * @return original cause
      */
     private static Throwable unwrap(final Throwable cause) {
@@ -1099,10 +1131,10 @@ final class DefaultDispatcher implements Dispatcher {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -1148,7 +1180,7 @@ final class DefaultDispatcher implements Dispatcher {
         /**
          * Creates a delayed record.
          *
-         * @param handle handle
+         * @param handle dispatch handle represented by the delayed record
          */
         private DelayedDispatch(final DispatchHandle handle) {
             this.handle = handle;
@@ -1181,10 +1213,13 @@ final class DefaultDispatcher implements Dispatcher {
          */
         private volatile Future<?> future;
 
+        /** Native runner retained only while the activity is executing. */
+        private volatile Thread runner;
+
         /**
          * Creates a background record.
          *
-         * @param handle handle
+         * @param handle dispatch handle represented by the background record
          */
         private BackgroundDispatch(final DispatchHandle handle) {
             this.handle = handle;

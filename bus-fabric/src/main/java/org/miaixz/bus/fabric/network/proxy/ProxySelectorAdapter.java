@@ -44,15 +44,24 @@ import org.miaixz.bus.fabric.UnoUrl;
  */
 public final class ProxySelectorAdapter {
 
+    /** Reuses the adapter for the process-wide selector without changing selector identity semantics. */
+    private static volatile ProxySelector cachedSelector;
+
+    /** Adapter paired with {@link #cachedSelector}. */
+    private static volatile ProxySelectorAdapter cachedAdapter;
+
+    /** Short cache avoids repeatedly parsing an unchanged platform proxy decision. */
+    private volatile SelectionCache selectionCache;
+
     /**
-     * JDK selector.
+     * Non-null JDK selector delegated to for decisions and failure reporting.
      */
     private final ProxySelector selector;
 
     /**
-     * Creates an adapter.
+     * Creates an adapter around a required JDK selector.
      *
-     * @param selector selector
+     * @param selector JDK proxy selector to delegate to
      */
     private ProxySelectorAdapter(final ProxySelector selector) {
         this.selector = Assert.notNull(selector, () -> new ValidateException("Proxy selector must not be null"));
@@ -61,18 +70,33 @@ public final class ProxySelectorAdapter {
     /**
      * Wraps a JDK selector.
      *
-     * @param selector selector
-     * @return adapter
+     * @param selector JDK proxy selector to delegate to
+     * @return fabric proxy-plan adapter over the supplied selector
+     * @throws ValidateException if {@code selector} is {@code null}
      */
     public static ProxySelectorAdapter of(final ProxySelector selector) {
-        return new ProxySelectorAdapter(selector);
+        final ProxySelector current = Assert
+                .notNull(selector, () -> new ValidateException("Proxy selector must not be null"));
+        final ProxySelectorAdapter adapter = cachedAdapter;
+        if (adapter != null && cachedSelector == current) {
+            return adapter;
+        }
+        synchronized (ProxySelectorAdapter.class) {
+            if (cachedAdapter == null || cachedSelector != current) {
+                cachedSelector = current;
+                cachedAdapter = new ProxySelectorAdapter(current);
+            }
+            return cachedAdapter;
+        }
     }
 
     /**
-     * Selects proxy plans for a URL.
+     * Converts a fabric URL to a URI and selects ordered proxy plans for it.
      *
-     * @param url URL
-     * @return plans
+     * @param url fabric URL passed to the wrapped selector as a URI
+     * @return immutable ordered proxy plans, with a direct fallback when the selector returns null or empty
+     * @throws ValidateException if {@code url} is {@code null} or the selector returns a null proxy element
+     * @throws ProtocolException if a selected non-direct proxy has an unsupported address type
      */
     public List<ProxyPlan> select(final UnoUrl url) {
         return select(Assert.notNull(url, () -> new ValidateException("URL must not be null")).toUri());
@@ -81,28 +105,40 @@ public final class ProxySelectorAdapter {
     /**
      * Selects proxy plans for a URI.
      *
-     * @param uri URI
-     * @return plans
+     * @param uri target URI passed unchanged to the wrapped selector
+     * @return immutable plans in selector order, with a direct fallback when the result is null or empty
+     * @throws ValidateException if {@code uri} is {@code null} or the selector returns a null proxy element
+     * @throws ProtocolException if a selected non-direct proxy has an unsupported address type
      */
     public List<ProxyPlan> select(final URI uri) {
         final URI current = Assert.notNull(uri, () -> new ValidateException("URI must not be null"));
+        final long now = System.nanoTime();
+        final SelectionCache cached = selectionCache;
+        if (cached != null && cached.expiresAtNanos() - now > 0L && cached.uri().equals(current)) {
+            return cached.plans();
+        }
         final List<Proxy> proxies = selector.select(current);
+        final List<ProxyPlan> selected;
         if (proxies == null || proxies.isEmpty()) {
-            return List.of(ProxyPlan.direct());
+            selected = List.of(ProxyPlan.direct());
+        } else {
+            final ArrayList<ProxyPlan> plans = new ArrayList<>(proxies.size());
+            for (final Proxy proxy : proxies) {
+                plans.add(plan(proxy));
+            }
+            selected = List.copyOf(plans);
         }
-        final ArrayList<ProxyPlan> plans = new ArrayList<>(proxies.size());
-        for (final Proxy proxy : proxies) {
-            plans.add(plan(proxy));
-        }
-        return List.copyOf(plans);
+        selectionCache = new SelectionCache(current, selected, now + 1_000_000_000L);
+        return selected;
     }
 
     /**
      * Reports connection failure to the selector.
      *
-     * @param uri     URI
-     * @param address socket address
-     * @param failure failure
+     * @param uri     target URI whose connection attempt failed
+     * @param address proxy socket address used by the failed attempt
+     * @param failure I/O failure reported to the wrapped selector
+     * @throws ValidateException if any argument is {@code null}
      */
     public void connectFailed(final URI uri, final SocketAddress address, final IOException failure) {
         selector.connectFailed(
@@ -114,8 +150,10 @@ public final class ProxySelectorAdapter {
     /**
      * Converts one JDK proxy decision into the route-level proxy model used by fabric connectors.
      *
-     * @param proxy JDK proxy returned by {@link ProxySelector}
-     * @return proxy plan
+     * @param proxy non-null JDK proxy returned by {@link ProxySelector#select(URI)}
+     * @return direct, HTTP, or SOCKS plan using the proxy host string and port
+     * @throws ValidateException if {@code proxy} is {@code null}
+     * @throws ProtocolException if a non-direct proxy address is not an {@link InetSocketAddress}
      */
     private static ProxyPlan plan(final Proxy proxy) {
         final Proxy current = Assert.notNull(proxy, () -> new ValidateException("Proxy must not be null"));
@@ -132,6 +170,16 @@ public final class ProxySelectorAdapter {
             case SOCKS -> ProxyPlan.socks(new Address(Protocol.TCP.name, host, port, Symbol.SLASH));
             case DIRECT -> ProxyPlan.direct();
         };
+    }
+
+    /**
+     * One bounded-lifetime selector result.
+     *
+     * @param uri            URI supplied to the selector
+     * @param plans          normalized proxy plans
+     * @param expiresAtNanos monotonic expiration time
+     */
+    private record SelectionCache(URI uri, List<ProxyPlan> plans, long expiresAtNanos) {
     }
 
 }

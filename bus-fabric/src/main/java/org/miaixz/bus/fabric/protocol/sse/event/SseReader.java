@@ -56,54 +56,54 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class SseReader implements AutoCloseable {
 
     /**
-     * Underlying source.
+     * UTF-8 event-stream source owned and closed by this reader.
      */
     private final Source input;
 
     /**
-     * Reusable source buffer.
+     * Intermediate buffer populated by the source before bytes are copied into {@link #inputBuffer}.
      */
     private final Buffer sourceBuffer;
 
     /**
-     * Lifecycle state.
+     * Reader lifecycle, transitioning from opened to running and finally closed.
      */
     private final AtomicReference<Status> state;
 
     /**
-     * Reusable line buffer.
+     * Expandable buffer containing the current line without its line terminator.
      */
     private byte[] line;
 
     /**
-     * Reusable input buffer.
+     * Fixed-size byte array used for batched reads from the intermediate source buffer.
      */
     private final byte[] inputBuffer;
 
     /**
-     * Current input buffer position.
+     * Index of the next unread byte in {@link #inputBuffer}.
      */
     private int inputPosition;
 
     /**
-     * Current input buffer limit.
+     * Exclusive limit of valid bytes in {@link #inputBuffer}.
      */
     private int inputLimit;
 
     /**
-     * Current line length.
+     * Number of valid bytes currently stored in {@link #line}.
      */
     private int lineLength;
 
     /**
-     * One pushed-back byte.
+     * Byte read beyond a carriage-return terminator, or -1 when no byte is pushed back.
      */
     private int pushed = Normal.__1;
 
     /**
      * Creates a reader over a UTF-8 SSE source.
      *
-     * @param input input source
+     * @param input non-null UTF-8 event-stream source transferred to this reader
      */
     public SseReader(final Source input) {
         this.input = Assert.notNull(input, () -> new ValidateException("SSE input source must not be null"));
@@ -116,7 +116,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Reads the next event from the stream.
      *
-     * @return event or null at EOF
+     * @return next event assembled from recognized fields, or null when closed or at EOF with no pending fields
      */
     public SseEvent next() {
         ensureReadable();
@@ -199,7 +199,7 @@ public final class SseReader implements AutoCloseable {
      * {@link #start(Context, SseSession, Cancellation, Events, EventObserver, Clock, String)} so blocking reads never
      * occupy the short-task queue.
      *
-     * @param handler event handler
+     * @param handler non-null consumer invoked for each assembled event
      */
     public void readLoop(final Consumer<SseEvent> handler) {
         Assert.notNull(handler, () -> new ValidateException("SSE event handler must not be null"));
@@ -220,7 +220,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Reads events until EOF or close with low-allocation callbacks on the caller's current thread.
      *
-     * @param handler event handler
+     * @param handler non-null callback receiving data-bearing events and valid retry directives
      */
     public void readEvents(final Events handler) {
         Assert.notNull(handler, () -> new ValidateException("SSE event handler must not be null"));
@@ -241,14 +241,14 @@ public final class SseReader implements AutoCloseable {
      * Runtime values are snapshots supplied by the owning runner. This reader validates them for one start but does not
      * retain Session, Observer, Clock, or operation ownership.
      *
-     * @param context      runtime context
-     * @param session      owning SSE session
-     * @param cancellation shared cancellation scope
-     * @param handler      event callbacks
-     * @param observer     shared observer
-     * @param clock        shared clock
-     * @param operationId  shared operation identifier
-     * @return background dispatch handle
+     * @param context      non-null runtime context whose dispatcher runs the blocking loop
+     * @param session      non-null open SSE session used as the background dispatch owner
+     * @param cancellation non-null cancellation scope that closes this reader when cancelled
+     * @param handler      non-null callback receiving parsed events and retry directives
+     * @param observer     non-null observer snapshot validated for the owning operation
+     * @param clock        non-null clock snapshot validated for the owning operation
+     * @param operationId  non-blank operation identifier validated for the owning operation
+     * @return handle for the submitted background reader task
      */
     public DispatchHandle start(
             final Context context,
@@ -316,7 +316,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Returns whether the reader remains open.
      *
-     * @return true when open
+     * @return true while the state is opened or running
      */
     private boolean opened() {
         final Status current = state.get();
@@ -324,7 +324,7 @@ public final class SseReader implements AutoCloseable {
     }
 
     /**
-     * Ensures reads are allowed.
+     * Marks an open reader as running; a closed reader remains closed and subsequent parsing returns no event.
      */
     private void ensureReadable() {
         if (!opened()) {
@@ -336,7 +336,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Reads one line and maps transport failures.
      *
-     * @return line length or -1 at EOF
+     * @return number of bytes before the CR, LF, or CRLF terminator, or -1 at EOF before any byte is read
      */
     private int readLine() {
         try {
@@ -394,7 +394,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Reads events through the callback path.
      *
-     * @param handler event handler
+     * @param handler callback receiving data-bearing events and valid retry directives
      */
     private void readCallbacks(final Events handler) {
         ensureReadable();
@@ -474,8 +474,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Reads one byte.
      *
-     * @return byte value or -1
-     * @throws IOException when reading fails
+     * @return unsigned byte value from 0 through 255, or -1 at EOF
+     * @throws IOException when the underlying source cannot be read
      */
     private int readByte() throws IOException {
         if (pushed >= Normal._0) {
@@ -496,8 +496,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Refills the reusable input buffer from the source.
      *
-     * @return byte count, or -1 at EOF
-     * @throws IOException when reading fails
+     * @return number of bytes copied into {@link #inputBuffer}, zero when no progress is made, or -1 at EOF
+     * @throws IOException when the underlying source cannot be read
      */
     private int fillInput() throws IOException {
         final long read = input.read(sourceBuffer, inputBuffer.length);
@@ -510,7 +510,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Appends one byte to the reusable line buffer.
      *
-     * @param value byte value
+     * @param value unsigned byte value whose low eight bits are appended
      */
     private void append(final int value) {
         ensureLine(1);
@@ -520,9 +520,9 @@ public final class SseReader implements AutoCloseable {
     /**
      * Appends a byte range to the reusable line buffer.
      *
-     * @param source source bytes
-     * @param start  start index
-     * @param end    end index
+     * @param source source byte array
+     * @param start  inclusive source index
+     * @param end    exclusive source index
      */
     private void append(final byte[] source, final int start, final int end) {
         final int length = end - start;
@@ -537,7 +537,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Ensures the reusable line buffer has free space.
      *
-     * @param additional additional bytes
+     * @param additional number of bytes about to be appended
      */
     private void ensureLine(final int additional) {
         final int required = lineLength + additional;
@@ -556,8 +556,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Finds the field separator.
      *
-     * @param length line length
-     * @return separator index or -1
+     * @param length number of valid bytes in the current line
+     * @return zero-based colon index, or -1 when the line has no colon
      */
     private int colon(final int length) {
         for (int i = Normal._0; i < length; i++) {
@@ -571,8 +571,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Returns the common SSE field code for colon-terminated field names.
      *
-     * @param length line length
-     * @return field code
+     * @param length number of valid bytes in the non-empty current line
+     * @return numeric code for a recognized field followed by a colon, or zero when no fast-path match exists
      */
     private int commonField(final int length) {
         return switch (line[0]) {
@@ -591,8 +591,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Returns the value start offset for common colon-terminated fields.
      *
-     * @param field field code
-     * @return value start offset
+     * @param field recognized numeric field code
+     * @return byte offset immediately after that field's colon
      */
     private static int commonValueStart(final int field) {
         return switch (field) {
@@ -606,8 +606,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Returns the field code.
      *
-     * @param nameEnd field name end
-     * @return field code
+     * @param nameEnd exclusive end offset of the field name
+     * @return numeric code for {@code data}, {@code event}, {@code id}, or {@code retry}; otherwise zero
      */
     private int field(final int nameEnd) {
         return switch (nameEnd) {
@@ -622,7 +622,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Returns a five-byte field code.
      *
-     * @return field code
+     * @return event or retry field code when the current five-byte name matches; otherwise zero
      */
     private int field5() {
         if (line[Normal._0] == 'e' && line[Normal._1] == 'v' && line[Normal._2] == 'e' && line[Normal._3] == 'n'
@@ -636,9 +636,9 @@ public final class SseReader implements AutoCloseable {
     /**
      * Decodes a UTF-8 field value.
      *
-     * @param start start index
-     * @param end   end index
-     * @return decoded value
+     * @param start inclusive value offset in the current line
+     * @param end   exclusive value offset in the current line
+     * @return decoded field value, using an ASCII fast path and UTF-8 for non-ASCII bytes
      */
     private String value(final int start, final int end) {
         if (start >= end) {
@@ -660,8 +660,8 @@ public final class SseReader implements AutoCloseable {
     /**
      * Appends one data field.
      *
-     * @param data  current data
-     * @param value field value
+     * @param data  accumulator containing previously decoded data fields
+     * @param value next decoded data-field value
      */
     private static void appendData(final StringBuilder data, final String value) {
         if (!data.isEmpty()) {
@@ -673,12 +673,12 @@ public final class SseReader implements AutoCloseable {
     /**
      * Creates an event from accumulated fields.
      *
-     * @param id          id
-     * @param event       event type
-     * @param data        single data line
-     * @param dataBuilder multi-line data
-     * @param retry       retry
-     * @return event
+     * @param id          last valid event identifier, or null
+     * @param event       last event type, or null
+     * @param data        single decoded data line, or null
+     * @param dataBuilder multi-line data accumulator, or null when at most one data line was seen
+     * @param retry       last valid retry delay, or null
+     * @return immutable event containing the accumulated field values
      */
     private static SseEvent event(
             final String id,
@@ -692,9 +692,9 @@ public final class SseReader implements AutoCloseable {
     /**
      * Parses retry milliseconds. Invalid values are ignored by SSE parsing.
      *
-     * @param start start index
-     * @param end   end index
-     * @return retry delay
+     * @param start inclusive retry-value offset in the current line
+     * @param end   exclusive retry-value offset in the current line
+     * @return non-negative millisecond delay, or null for empty, non-decimal, or overflowing input
      */
     private Duration parseRetry(final int start, final int end) {
         if (start >= end) {
@@ -719,16 +719,16 @@ public final class SseReader implements AutoCloseable {
         /**
          * Receives an event.
          *
-         * @param id    event identifier
-         * @param event event type
-         * @param data  event data
+         * @param id    most recent valid identifier in the current event block, or null
+         * @param event most recent event type in the current event block, or null
+         * @param data  decoded data fields joined with line-feed separators
          */
         void event(String id, String event, String data);
 
         /**
          * Receives a retry directive.
          *
-         * @param retry retry directive
+         * @param retry non-negative delay parsed from a valid retry directive
          */
         default void retry(final Duration retry) {
             // No initialization required.

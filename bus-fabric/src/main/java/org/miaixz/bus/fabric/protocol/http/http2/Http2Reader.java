@@ -55,9 +55,9 @@ public final class Http2Reader implements AutoCloseable {
     private final Function<Buffer, List<Http2Header>> headerDecoder;
 
     /**
-     * Incremental bytes retained when the network cannot provide a complete frame yet.
+     * Connection fast path consuming unpadded DATA directly from the incremental input buffer.
      */
-    private final Buffer input = new Buffer();
+    private final DataHandler dataHandler;
 
     /**
      * Reusable decoded frame-header holder; never escapes this reader.
@@ -67,12 +67,12 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Current peer-advertised maximum frame payload size in bytes.
      */
-    private int maxFrameSize = Normal._16384;
+    private int maxFrameSize = Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE;
 
     /**
      * Whether the reader has released its borrowed source and rejects further parsing.
      */
-    private boolean closed;
+    private volatile boolean closed;
 
     /**
      * True after the connection preface is parsed.
@@ -80,45 +80,74 @@ public final class Http2Reader implements AutoCloseable {
     private boolean prefaceRead;
 
     /**
+     * Incremental bytes retained when the network cannot provide a complete frame yet.
+     */
+    private final Buffer input = new Buffer();
+
+    /**
+     * Reusable contiguous HPACK block buffer; owned by the single reader loop.
+     */
+    private final Buffer headerBlock = new Buffer();
+
+    /**
      * Creates a parser borrowing network and HPACK capabilities from one connection.
      *
-     * @param connection owning connection
+     * @param connection HTTP/2 session owner supplying the network source and stateful HPACK decoder
+     * @throws ValidateException if {@code connection} is {@code null}
      */
     public Http2Reader(final Http2Connection connection) {
         final Http2Connection owner = require(connection, "HTTP/2 connection");
         this.source = IoKit.buffer(owner.network().source());
         this.headerDecoder = owner::decodeHeaders;
+        this.dataHandler = owner::dispatchData;
     }
 
     /**
      * Creates a parser over a network connection with an explicit connection-owned decoder.
      *
-     * @param connection network connection
-     * @param decoder    HPACK decoder callback
+     * @param connection network connection whose source is borrowed
+     * @param decoder    connection-owned stateful HPACK decoder callback
+     * @throws ValidateException if either collaborator is {@code null}
      */
     Http2Reader(final Connection connection, final Function<Buffer, List<Http2Header>> decoder) {
         final Connection checked = require(connection, "Network connection");
         this.source = IoKit.buffer(checked.source());
         this.headerDecoder = require(decoder, "HTTP/2 header decoder");
+        this.dataHandler = null;
     }
 
     /**
      * Reads the next recognized complete frame, skipping unknown extensions by their declared length.
      *
-     * @return parsed frame
+     * @return next recognized, validated, fully assembled frame
+     * @throws ProtocolException if frame metadata, padding, continuation ordering, or decoded content is invalid
+     * @throws SocketException   if the network source is truncated or cannot make progress
+     * @throws StatefulException if the reader is closed
      */
     public Http2Frame nextFrame() {
         ensureOpen();
         while (true) {
             final FrameHeader header = readHeader();
             if (!recognized(header.type())) {
-                readPayload(header.length());
+                skipPayload(header.length());
                 continue;
             }
             validateFrame(header);
             final int type = header.type();
             final int streamId = header.streamId();
             final int headerFlags = header.flags();
+            if (type == Normal._0 && (headerFlags & Normal._8) == Normal._0) {
+                ensureAvailable(header.length());
+                if (dataHandler != null) {
+                    if (!dataHandler.accept(streamId, headerFlags, input, header.length())) {
+                        throw new SocketException("HTTP/2 connection closed while reading DATA");
+                    }
+                    continue;
+                }
+                final Buffer data = new Buffer();
+                data.write(input, header.length());
+                return Http2Frame.decodedData(streamId, headerFlags, data);
+            }
             ByteString payload = readPayload(header.length());
             if (type == Normal._0 || type == Normal._1 || type == Normal._5) {
                 payload = removePadding(type, headerFlags, payload);
@@ -128,12 +157,11 @@ public final class Http2Reader implements AutoCloseable {
             final List<Http2Header> headers = switch (type) {
                 case Normal._1 -> {
                     priority = decodeHeaderPriority(streamId, headerFlags, payload);
-                    final ByteString block = headerBlock(streamId, headerFlags, headerFragment(headerFlags, payload));
-                    yield headerDecoder.apply(new Buffer().write(block));
+                    yield headerDecoder
+                            .apply(readHeaderBlock(streamId, headerFlags, headerFragment(headerFlags, payload)));
                 }
                 case Normal._5 -> {
-                    final ByteString block = headerBlock(streamId, headerFlags, pushHeaderFragment(payload));
-                    yield headerDecoder.apply(new Buffer().write(block));
+                    yield headerDecoder.apply(readHeaderBlock(streamId, headerFlags, pushHeaderFragment(payload)));
                 }
                 case Normal._2 -> {
                     priority = Http2Priority.decode(payload, streamId);
@@ -151,7 +179,20 @@ public final class Http2Reader implements AutoCloseable {
     }
 
     /**
-     * Parses the fixed client connection preface once.
+     * Internal direct DATA consumer used only by the connection-owned reader.
+     */
+    @FunctionalInterface
+    private interface DataHandler {
+
+        boolean accept(int streamId, int flags, Buffer source, int length);
+    }
+
+    /**
+     * Parses and consumes the fixed client connection preface exactly once.
+     *
+     * @throws ProtocolException if the preface bytes do not match
+     * @throws SocketException   if the source ends or fails before the preface is complete
+     * @throws StatefulException if the reader is closed or the preface was already consumed
      */
     public void readConnectionPreface() {
         ensureOpen();
@@ -170,10 +211,10 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Reads one frame header.
      *
-     * @return header value
+     * @return reusable holder populated with the next frame's decoded header fields
      */
     private FrameHeader readHeader() {
-        ensureAvailable(Normal._9);
+        ensureAvailable(Builder.HTTP2_FRAME_HEADER_BYTES);
         final int length = readMedium(input);
         final int type = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
         final int flags = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
@@ -188,11 +229,14 @@ public final class Http2Reader implements AutoCloseable {
      * Reads an exact byte count without taking ownership of the source.
      *
      * @param length byte count
-     * @return buffer
      */
     private void ensureAvailable(final int length) {
         while (input.size() < length) {
-            final long remaining = Math.min(length - input.size(), maxFrameSize);
+            // Read ahead enough for a frame header plus a useful part of its payload. Requesting only the missing
+            // nine header bytes forced a second transport/TLS read for virtually every frame.
+            final long missing = length - input.size();
+            final long remaining = Math
+                    .min(Math.max(missing, Normal._8192), (long) maxFrameSize + Builder.HTTP2_FRAME_HEADER_BYTES);
             final long read;
             try {
                 read = source.read(input, remaining);
@@ -210,6 +254,9 @@ public final class Http2Reader implements AutoCloseable {
 
     /**
      * Reads one payload from the reusable incremental buffer.
+     *
+     * @param length exact payload byte count
+     * @return immutable payload bytes
      */
     private ByteString readPayload(final int length) {
         ensureAvailable(length);
@@ -221,9 +268,24 @@ public final class Http2Reader implements AutoCloseable {
     }
 
     /**
+     * Discards an extension-frame payload without materializing an immutable byte snapshot.
+     *
+     * @param length exact payload byte count to discard
+     */
+    private void skipPayload(final int length) {
+        ensureAvailable(length);
+        try {
+            input.skip(length);
+        } catch (final IOException e) {
+            throw new SocketException("HTTP/2 extension frame payload is truncated", e);
+        }
+    }
+
+    /**
      * Validates metadata for every recognized standard frame.
      *
-     * @param header frame header
+     * @param header decoded metadata for a recognized frame type
+     * @throws ProtocolException if connection/stream scope, flags, or payload length violates frame rules
      */
     private static void validateFrame(final FrameHeader header) {
         final int type = header.type();
@@ -313,8 +375,9 @@ public final class Http2Reader implements AutoCloseable {
      *
      * @param type    frame type
      * @param flags   frame flags
-     * @param payload payload
-     * @return unpadded payload
+     * @param payload complete frame payload including pad length and trailing padding
+     * @return payload without the pad-length prefix or trailing padding
+     * @throws ProtocolException if the declared padding exceeds available payload bytes
      */
     private static ByteString removePadding(final int type, final int flags, final ByteString payload) {
         if ((flags & Normal._8) == Normal._0) {
@@ -336,14 +399,14 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Reads all contiguous CONTINUATION fragments for one header block.
      *
-     * @param streamId stream id
-     * @param flags    initial flags
-     * @param first    first fragment
+     * @param streamId stream identifier shared by the entire header block
+     * @param flags    flags from the initial HEADERS or PUSH_PROMISE frame
+     * @param first    encoded fragment from the initial frame
      * @return complete encoded block
      */
-    private ByteString headerBlock(final int streamId, final int flags, final ByteString first) {
-        final Buffer fragments = new Buffer();
-        int total = appendHeaderFragment(fragments, first, Normal._0);
+    private Buffer readHeaderBlock(final int streamId, final int flags, final ByteString first) {
+        headerBlock.clear();
+        int total = appendHeaderFragment(headerBlock, first, Normal._0);
         int currentFlags = flags;
         while ((currentFlags & Normal._4) == Normal._0) {
             final FrameHeader continuation = readHeader();
@@ -352,18 +415,19 @@ public final class Http2Reader implements AutoCloseable {
             }
             validateFlags(continuation.flags(), Normal._4);
             currentFlags = continuation.flags();
-            total = appendHeaderFragment(fragments, readPayload(continuation.length()), total);
+            total = appendHeaderFragment(headerBlock, readPayload(continuation.length()), total);
         }
-        return fragments.readByteString();
+        return headerBlock;
     }
 
     /**
      * Appends one encoded header fragment with a deterministic size limit.
      *
-     * @param fragments target
-     * @param fragment  fragment
-     * @param total     current total
-     * @return new total
+     * @param fragments reusable buffer receiving encoded HPACK bytes
+     * @param fragment  next contiguous header-block fragment
+     * @param total     bytes already accumulated
+     * @return accumulated byte count after appending the fragment
+     * @throws ProtocolException if accumulation overflows or exceeds the configured 64 KiB limit
      */
     private static int appendHeaderFragment(final Buffer fragments, final ByteString fragment, final int total) {
         final int next = total + fragment.size();
@@ -377,10 +441,10 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Decodes HEADERS priority metadata after an optional pad-length prefix was removed.
      *
-     * @param streamId stream id
-     * @param flags    flags
-     * @param payload  unpadded payload
-     * @return priority or null
+     * @param streamId current stream identifier used to reject self-dependency
+     * @param flags    HEADERS flags
+     * @param payload  unpadded payload retaining optional priority bytes
+     * @return decoded priority metadata, or {@code null} when the PRIORITY flag is absent
      */
     private static Http2Priority decodeHeaderPriority(final int streamId, final int flags, final ByteString payload) {
         return (flags & Normal._32) == Normal._0 ? null : Http2Priority.decode(payload, streamId);
@@ -389,9 +453,9 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Returns the HEADERS block fragment after optional priority metadata.
      *
-     * @param flags   flags
-     * @param payload unpadded payload
-     * @return block fragment
+     * @param flags   HEADERS flags
+     * @param payload unpadded payload retaining optional priority bytes
+     * @return HPACK fragment after removing optional five-byte priority metadata
      */
     private static ByteString headerFragment(final int flags, final ByteString payload) {
         return (flags & Normal._32) == Normal._0 ? payload : payload.substring(Normal._5);
@@ -400,8 +464,8 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Returns the PUSH_PROMISE block fragment after the promised stream id.
      *
-     * @param payload unpadded payload
-     * @return block fragment
+     * @param payload unpadded PUSH_PROMISE payload retaining the promised stream identifier
+     * @return HPACK fragment after removing the four-byte promised stream identifier
      */
     private static ByteString pushHeaderFragment(final ByteString payload) {
         return payload.substring(Normal._4);
@@ -420,8 +484,9 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Validates a frame flag mask.
      *
-     * @param flags   flags
-     * @param allowed allowed bits
+     * @param flags   received unsigned flag byte
+     * @param allowed bit mask accepted for the current frame type
+     * @throws ProtocolException if any unsupported bit is present
      */
     private static void validateFlags(final int flags, final int allowed) {
         if ((flags & ~allowed) != Normal._0) {
@@ -432,8 +497,8 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Reads an unsigned 24-bit integer.
      *
-     * @param buffer source buffer
-     * @return value
+     * @param buffer source buffer containing at least three bytes
+     * @return unsigned 24-bit integer consumed in network byte order
      */
     private static int readMedium(final Buffer buffer) {
         return ((buffer.readByte() & Builder.UNSIGNED_BYTE_MASK) << Normal._16)
@@ -443,9 +508,12 @@ public final class Http2Reader implements AutoCloseable {
 
     /**
      * Applies the currently effective peer-advertised frame limit.
+     *
+     * @param size maximum permitted frame payload bytes
+     * @throws ValidateException if the limit is outside the HTTP/2 range {@code 16384..16777215}
      */
     void maxFrameSize(final int size) {
-        if (size < Normal._16384 || size > Builder.BYTES_16_MIB - Normal._1) {
+        if (size < Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE || size > Builder.BYTES_16_MIB - Normal._1) {
             throw new ValidateException("HTTP/2 max frame size is out of range");
         }
         maxFrameSize = size;
@@ -459,6 +527,7 @@ public final class Http2Reader implements AutoCloseable {
         if (!closed) {
             closed = true;
             input.clear();
+            headerBlock.clear();
         }
     }
 
@@ -474,10 +543,11 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Validates a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

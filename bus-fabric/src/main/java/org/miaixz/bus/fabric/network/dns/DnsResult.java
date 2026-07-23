@@ -34,11 +34,11 @@ import org.miaixz.bus.fabric.Builder;
 /**
  * Immutable DNS resolution result.
  *
- * @param host       resolved host
- * @param addresses  address snapshot
- * @param resolvedAt resolution time
- * @param ttl        positive DNS ttl or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL} when no ttl is available
- * @param duration   resolution duration
+ * @param host       normalized queried host
+ * @param addresses  immutable, duplicate-free address snapshot in resolver order
+ * @param resolvedAt wall-clock completion time
+ * @param ttl        non-negative DNS TTL or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL} when unavailable
+ * @param duration   non-negative backend lookup duration
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -46,6 +46,13 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
 
     /**
      * Creates a DNS result.
+     *
+     * @param host       queried host
+     * @param addresses  resolved address snapshot
+     * @param resolvedAt wall-clock resolution time
+     * @param ttl        authoritative TTL or no-TTL sentinel
+     * @param duration   backend resolution duration
+     * @throws ValidateException if the host, addresses, timestamps, TTL, or duration are invalid
      */
     public DnsResult {
         host = NetKit.normalizeHost(host, "DNS host");
@@ -63,10 +70,11 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Creates a DNS result.
      *
-     * @param host      host
-     * @param addresses addresses
-     * @param duration  duration
-     * @return result
+     * @param host      queried host to normalize
+     * @param addresses resolved addresses to de-duplicate while preserving order
+     * @param duration  non-negative backend lookup duration
+     * @return result timestamped with the current wall clock and no authoritative TTL
+     * @throws ValidateException if the host, address list, or duration is invalid
      */
     public static DnsResult of(final String host, final List<InetAddress> addresses, final Duration duration) {
         return of(host, addresses, Instant.now(), Builder.DNS_NO_TTL, duration);
@@ -75,12 +83,13 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Creates a DNS result.
      *
-     * @param host       host
-     * @param addresses  addresses
-     * @param resolvedAt resolution time
-     * @param ttl        positive ttl or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
-     * @param duration   duration
-     * @return result
+     * @param host       queried host to normalize
+     * @param addresses  resolved addresses to de-duplicate while preserving order
+     * @param resolvedAt wall-clock completion time
+     * @param ttl        non-negative TTL or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
+     * @param duration   non-negative backend lookup duration
+     * @return validated immutable DNS result
+     * @throws ValidateException if any component is invalid
      */
     public static DnsResult of(
             final String host,
@@ -94,7 +103,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns the host.
      *
-     * @return host
+     * @return normalized queried host
      */
     @Override
     public String host() {
@@ -104,7 +113,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns address snapshot.
      *
-     * @return addresses
+     * @return immutable, duplicate-free addresses in original resolver order
      */
     @Override
     public List<InetAddress> addresses() {
@@ -114,7 +123,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns resolution time.
      *
-     * @return resolution time
+     * @return wall-clock time at which the lookup completed
      */
     @Override
     public Instant resolvedAt() {
@@ -124,7 +133,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns ttl metadata.
      *
-     * @return ttl or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
+     * @return authoritative non-negative TTL or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
      */
     @Override
     public Duration ttl() {
@@ -134,7 +143,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns duration.
      *
-     * @return duration
+     * @return non-negative backend lookup duration
      */
     @Override
     public Duration duration() {
@@ -144,7 +153,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns whether no addresses were resolved.
      *
-     * @return true when empty
+     * @return {@code true} when the resolver returned no addresses
      */
     public boolean empty() {
         return addresses.isEmpty();
@@ -153,7 +162,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns whether ttl metadata is available.
      *
-     * @return true when ttl is available
+     * @return {@code true} when {@link #ttl()} differs from the no-TTL sentinel
      */
     public boolean hasTtl() {
         return !Builder.DNS_NO_TTL.equals(ttl);
@@ -162,8 +171,9 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns a stable, duplicate-free address snapshot.
      *
-     * @param addresses addresses
-     * @return normalized addresses
+     * @param addresses resolver-ordered address list to validate and copy
+     * @return immutable list containing the first occurrence of each address
+     * @throws ValidateException if the list or any element is {@code null}
      */
     private static List<InetAddress> normalizeAddresses(final List<InetAddress> addresses) {
         final List<InetAddress> checkedAddresses = Assert

@@ -29,6 +29,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * <p>
  * This class validates routing and cancellation only. Concrete request preparation, transport work, callbacks and
  * resource ownership remain in the protocol runners and call lifecycle.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -45,11 +46,11 @@ public final class Mediator {
     /**
      * Executes a supported direct protocol type.
      *
-     * @param type         direct protocol type
-     * @param cancellation caller-owned cancellation scope
-     * @param invocation   concrete protocol invocation
-     * @param <T>          protocol result type
-     * @return protocol result
+     * @param type         non-null direct protocol type, excluding internal HTTP carrier types
+     * @param cancellation non-null caller-owned scope checked before invocation
+     * @param invocation   non-null operation receiving the same cancellation scope
+     * @param <T>          invocation result type
+     * @return result returned by the supplied invocation
      */
     public static <T> T execute(
             final Type type,
@@ -68,12 +69,12 @@ public final class Mediator {
     /**
      * Executes a supported protocol-carrier transition.
      *
-     * @param source       source protocol type
-     * @param target       target carrier type
-     * @param cancellation caller-owned cancellation scope
-     * @param invocation   concrete target protocol invocation
-     * @param <T>          protocol result type
-     * @return protocol result
+     * @param source       non-null logical protocol being carried
+     * @param target       non-null supported carrier protocol type
+     * @param cancellation non-null caller-owned scope checked before invocation
+     * @param invocation   non-null target operation receiving the same cancellation scope
+     * @param <T>          invocation result type
+     * @return result returned by the supplied invocation
      */
     public static <T> T convert(
             final Type source,
@@ -94,7 +95,7 @@ public final class Mediator {
     /**
      * Returns whether an operation is a supported direct client operation.
      *
-     * @param type protocol type
+     * @param type non-null protocol type to classify
      * @return {@code true} for a supported direct operation
      */
     private static boolean direct(final Type type) {
@@ -107,8 +108,8 @@ public final class Mediator {
     /**
      * Returns whether a source-to-target carrier transition is supported.
      *
-     * @param source source protocol type
-     * @param target target carrier type
+     * @param source non-null logical source protocol
+     * @param target non-null proposed carrier protocol
      * @return {@code true} for a supported transition
      */
     private static boolean transition(final Type source, final Type target) {
@@ -120,10 +121,10 @@ public final class Mediator {
     /**
      * Validates a required routing value.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return validated value
+     * @param value routing reference to validate
+     * @param name  field label included in the validation error
+     * @param <T>   routing reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -132,8 +133,8 @@ public final class Mediator {
     /**
      * Represents a typed invocation with one input and one result.
      *
-     * @param <I> input type
-     * @param <O> result type
+     * @param <I> invocation input type
+     * @param <O> invocation result type
      */
     @FunctionalInterface
     public interface Invocation<I, O> {
@@ -141,8 +142,8 @@ public final class Mediator {
         /**
          * Invokes the operation with the supplied input.
          *
-         * @param input invocation input
-         * @return invocation result
+         * @param input input supplied by the mediator
+         * @return operation-specific result
          */
         O invoke(I input);
 

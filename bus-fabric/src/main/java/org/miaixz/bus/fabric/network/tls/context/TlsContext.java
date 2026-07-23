@@ -19,13 +19,18 @@
 */
 package org.miaixz.bus.fabric.network.tls.context;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.security.Provider;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSessionContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
@@ -46,9 +51,31 @@ import org.miaixz.bus.fabric.network.tls.TlsSettings;
 public final class TlsContext {
 
     /**
+     * Shared empty protocol array.
+     */
+    private static final String[] EMPTY_PROTOCOLS = new String[0];
+
+    /**
      * SSL context.
      */
     private final SSLContext context;
+
+    /** Stable client socket factory owned by the immutable SSL context. */
+    private final SSLSocketFactory socketFactory;
+
+    /** Default enabled protocols captured from the context's client socket factory. */
+    private final String[] defaultProtocols;
+
+    /** Default enabled cipher suites captured from the context's client socket factory. */
+    private final String[] defaultCiphers;
+
+    /**
+     * Most recently resolved immutable engine configuration.
+     */
+    private volatile EngineConfiguration engineConfiguration;
+
+    /** Most recent immutable client-socket parameter template, including host-specific SNI. */
+    private volatile SocketConfiguration socketConfiguration;
 
     /**
      * Creates a TLS context.
@@ -57,6 +84,10 @@ public final class TlsContext {
      */
     private TlsContext(final SSLContext context) {
         this.context = Assert.notNull(context, () -> new ValidateException("SSL context must not be null"));
+        this.socketFactory = this.context.getSocketFactory();
+        final SSLParameters defaults = this.context.getDefaultSSLParameters();
+        this.defaultProtocols = defaults.getProtocols();
+        this.defaultCiphers = defaults.getCipherSuites();
     }
 
     /**
@@ -90,21 +121,50 @@ public final class TlsContext {
                 .notNull(address, () -> new ValidateException("TLS address must not be null"));
         final TlsSettings checkedSettings = Assert
                 .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        final EngineConfiguration configuration = configuration(checkedSettings);
         final SSLEngine engine = createEngine(checkedAddress.host(), checkedAddress.port());
         try {
             engine.setUseClientMode(true);
             TlsParameters.applyClient(
                     engine,
                     checkedAddress.host(),
-                    checkedSettings.versions().toArray(String[]::new),
-                    checkedSettings.ciphers().toArray(String[]::new),
-                    checkedSettings.applicationProtocols().toArray(String[]::new),
+                    configuration.versions,
+                    configuration.ciphers,
+                    configuration.applicationProtocols,
                     checkedSettings.supportsTlsExtensions(),
                     checkedSettings.verifyHostname());
             checkedSettings.clientAuthMode().apply(engine);
             return engine;
         } catch (final IllegalArgumentException e) {
             throw new ProtocolException("Unsupported TLS engine configuration", e);
+        }
+    }
+
+    /**
+     * Layers a configured blocking client TLS socket over an already connected transport socket.
+     *
+     * @param raw      connected transport socket
+     * @param address  logical peer address used for SNI and verification
+     * @param settings immutable TLS settings
+     * @return configured socket before handshake
+     */
+    public SSLSocket socket(final Socket raw, final Address address, final TlsSettings settings) {
+        final Socket checkedRaw = Assert.notNull(raw, () -> new ValidateException("TLS socket must not be null"));
+        final Address checkedAddress = Assert
+                .notNull(address, () -> new ValidateException("TLS address must not be null"));
+        final TlsSettings checkedSettings = Assert
+                .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        final EngineConfiguration configuration = configuration(checkedSettings);
+        try {
+            final SSLSocket socket = (SSLSocket) socketFactory
+                    .createSocket(checkedRaw, checkedAddress.host(), checkedAddress.port(), false);
+            socket.setUseClientMode(true);
+            // Apply the complete immutable policy once. Calling both enabled-array setters and then
+            // get/setSSLParameters clones the same arrays twice on every cold connection.
+            socket.setSSLParameters(socketParameters(checkedAddress.host(), checkedSettings, configuration));
+            return socket;
+        } catch (final IOException | IllegalArgumentException e) {
+            throw new ProtocolException("Unable to create TLS socket", e);
         }
     }
 
@@ -120,19 +180,18 @@ public final class TlsContext {
                 .notNull(address, () -> new ValidateException("TLS address must not be null"));
         final TlsSettings checkedSettings = Assert
                 .notNull(settings, () -> new ValidateException("TLS settings must not be null"));
+        final EngineConfiguration configuration = configuration(checkedSettings);
         try {
             final SSLEngine engine = createEngine(checkedAddress.host(), checkedAddress.port());
             engine.setUseClientMode(false);
-            engine.setEnabledProtocols(checkedSettings.versions().toArray(String[]::new));
-            engine.setEnabledCipherSuites(checkedSettings.ciphers().toArray(String[]::new));
+            engine.setEnabledProtocols(configuration.versions);
+            engine.setEnabledCipherSuites(configuration.ciphers);
 
             final SSLParameters parameters = engine.getSSLParameters();
             parameters.setServerNames(List.of());
             parameters.setEndpointIdentificationAlgorithm(null);
             parameters.setApplicationProtocols(
-                    checkedSettings.supportsTlsExtensions()
-                            ? checkedSettings.applicationProtocols().toArray(String[]::new)
-                            : new String[0]);
+                    checkedSettings.supportsTlsExtensions() ? configuration.applicationProtocols : EMPTY_PROTOCOLS);
             engine.setSSLParameters(parameters);
             checkedSettings.clientAuthMode().apply(engine);
             return engine;
@@ -212,6 +271,57 @@ public final class TlsContext {
     }
 
     /**
+     * Resolves reusable array views for one immutable TLS setting value.
+     *
+     * @param settings TLS settings
+     * @return reusable engine configuration
+     */
+    private EngineConfiguration configuration(final TlsSettings settings) {
+        EngineConfiguration current = engineConfiguration;
+        if (current == null || current.settings != settings && !current.settings.equals(settings)) {
+            current = new EngineConfiguration(settings, settings.versions().toArray(String[]::new),
+                    settings.ciphers().toArray(String[]::new), settings.applicationProtocols().toArray(String[]::new));
+            engineConfiguration = current;
+        }
+        return current;
+    }
+
+    /** Builds and reuses the host-specific parameter template copied by each newly created SSLSocket. */
+    private SSLParameters socketParameters(
+            final String host,
+            final TlsSettings settings,
+            final EngineConfiguration engine) {
+        SocketConfiguration current = socketConfiguration;
+        if (current != null && current.settings.equals(settings) && current.host.equals(host)) {
+            return current.parameters;
+        }
+        final SSLParameters parameters = new SSLParameters();
+        if (!Arrays.equals(engine.ciphers, defaultCiphers)) {
+            parameters.setCipherSuites(engine.ciphers);
+        }
+        if (!Arrays.equals(engine.versions, defaultProtocols)) {
+            parameters.setProtocols(engine.versions);
+        }
+        if (settings.supportsTlsExtensions()) {
+            parameters.setApplicationProtocols(engine.applicationProtocols);
+            TlsParameters.serverNames(host).ifPresent(parameters::setServerNames);
+        }
+        if (settings.verifyHostname()) {
+            parameters.setEndpointIdentificationAlgorithm(TlsParameters.HTTPS_ENDPOINT_IDENTIFICATION);
+        }
+        switch (settings.clientAuthMode()) {
+            case REQUIRE -> parameters.setNeedClientAuth(true);
+            case OPTIONAL -> parameters.setWantClientAuth(true);
+            case NONE -> {
+                // A newly created client socket already has both flags disabled.
+            }
+        }
+        current = new SocketConfiguration(settings, host, parameters);
+        socketConfiguration = current;
+        return parameters;
+    }
+
+    /**
      * Creates the default SSL context wrapper.
      *
      * @return TLS context
@@ -222,6 +332,28 @@ public final class TlsContext {
         } catch (final InternalException e) {
             throw new ProtocolException("Default TLS context is not available", e);
         }
+    }
+
+    /**
+     * Immutable TLS engine array snapshot.
+     *
+     * @param settings             settings identity
+     * @param versions             enabled protocol versions
+     * @param ciphers              enabled cipher suites
+     * @param applicationProtocols ALPN protocol names
+     */
+    private record EngineConfiguration(TlsSettings settings, String[] versions, String[] ciphers,
+            String[] applicationProtocols) {
+    }
+
+    /**
+     * Cached socket parameters for one settings and host pair.
+     *
+     * @param settings   settings identity
+     * @param host       peer host used for SNI and endpoint verification
+     * @param parameters immutable socket parameter template
+     */
+    private record SocketConfiguration(TlsSettings settings, String host, SSLParameters parameters) {
     }
 
 }

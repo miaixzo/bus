@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
@@ -75,25 +76,27 @@ public final class ClientOs {
                     new ClientOs("Java", "Java[\\s]+([\\d\\w\\.\\-]+)", "Java[\\s]+([\\d\\w\\.\\-]+)"))));
 
     /**
-     * System name.
+     * Validated display name and equality identity of this classifier.
      */
     private final String name;
 
     /**
-     * Match rule.
+     * Optional case-insensitive pattern used to identify this operating system.
      */
     private final Pattern rule;
 
     /**
-     * Version rule.
+     * Optional case-insensitive pattern whose first capture group contains the version.
      */
     private final Pattern versionRule;
 
     /**
-     * Creates a client OS classifier.
+     * Creates a client OS classifier without a version-extraction rule.
      *
-     * @param name name
-     * @param rule match rule
+     * @param name non-blank classifier name
+     * @param rule case-insensitive match regular expression, or {@code null} to disable matching
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
      */
     public ClientOs(final String name, final String rule) {
         this(name, rule, null);
@@ -102,9 +105,12 @@ public final class ClientOs {
     /**
      * Creates a client OS classifier.
      *
-     * @param name         name
-     * @param rule         match rule
-     * @param versionRegex version regex
+     * @param name         non-blank classifier name
+     * @param rule         case-insensitive match regular expression, or {@code null} to disable matching
+     * @param versionRegex case-insensitive version expression whose first group is returned, or {@code null} to disable
+     *                     version extraction
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if either non-null expression is invalid
      */
     public ClientOs(final String name, final String rule, final String versionRegex) {
         this.name = AgentRules.name(name);
@@ -113,10 +119,10 @@ public final class ClientOs {
     }
 
     /**
-     * Parses a client OS.
+     * Returns the first registered classifier whose match rule occurs in the User-Agent text.
      *
-     * @param text User-Agent text
-     * @return client OS
+     * @param text User-Agent text to classify, or {@code null}
+     * @return first matching classifier, or {@link Builder#HTTP_AGENT_CLIENT_OS_UNKNOWN} when no rule matches
      */
     public static ClientOs parse(final String text) {
         for (final ClientOs system : SYSTEMS) {
@@ -130,9 +136,11 @@ public final class ClientOs {
     /**
      * Adds a custom client OS classifier.
      *
-     * @param name         name
-     * @param rule         match rule
-     * @param versionRegex version regex
+     * @param name         non-blank classifier name
+     * @param rule         case-insensitive match regular expression, or {@code null} to disable matching
+     * @param versionRegex case-insensitive version expression whose first group is returned
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if either non-null expression is invalid
      */
     public static void addCustomOs(final String name, final String rule, final String versionRegex) {
         SYSTEMS.add(new ClientOs(name, rule, versionRegex));
@@ -141,9 +149,11 @@ public final class ClientOs {
     /**
      * Adds a custom client OS classifier through the operating-system alias.
      *
-     * @param name         name
-     * @param rule         match rule
-     * @param versionRegex version regex
+     * @param name         non-blank classifier name
+     * @param rule         case-insensitive match regular expression, or {@code null} to disable matching
+     * @param versionRegex case-insensitive version expression whose first group is returned
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if either non-null expression is invalid
      */
     public static void addCustomSystem(final String name, final String rule, final String versionRegex) {
         addCustomOs(name, rule, versionRegex);
@@ -152,7 +162,7 @@ public final class ClientOs {
     /**
      * Returns known client OS classifiers.
      *
-     * @return systems
+     * @return immutable snapshot of built-in classifiers followed by custom classifiers in registration order
      */
     public static List<ClientOs> systems() {
         return List.copyOf(SYSTEMS);
@@ -161,7 +171,7 @@ public final class ClientOs {
     /**
      * Returns the name.
      *
-     * @return name
+     * @return validated classifier name
      */
     public String name() {
         return name;
@@ -170,8 +180,8 @@ public final class ClientOs {
     /**
      * Returns whether this client OS matches the text.
      *
-     * @param text User-Agent text
-     * @return true when matched
+     * @param text User-Agent text to search, or {@code null}
+     * @return {@code true} when the configured rule finds a substring match
      */
     public boolean matches(final String text) {
         return AgentRules.contains(rule, text);
@@ -180,8 +190,10 @@ public final class ClientOs {
     /**
      * Returns the parsed client OS version.
      *
-     * @param text User-Agent text
-     * @return version or null
+     * @param text User-Agent text to search, or {@code null}
+     * @return first capture from the version rule, or {@code null} for an unknown classifier, absent rule or text, or
+     *         no match
+     * @throws IndexOutOfBoundsException if a matching version rule has no first capture group
      */
     public String version(final String text) {
         return unknown() ? null : AgentRules.group1(versionRule, text);
@@ -190,7 +202,7 @@ public final class ClientOs {
     /**
      * Returns whether this is macOS.
      *
-     * @return true when macOS
+     * @return {@code true} when the classifier name is exactly {@code OSX}
      */
     public boolean macOS() {
         return "OSX".equals(name);
@@ -199,7 +211,7 @@ public final class ClientOs {
     /**
      * Returns whether this classifier is unknown.
      *
-     * @return true when unknown
+     * @return {@code true} when the classifier name equals the shared unknown marker
      */
     public boolean unknown() {
         return Normal.UNKNOWN.equals(name);
@@ -208,8 +220,8 @@ public final class ClientOs {
     /**
      * Compares client OS classifiers by name.
      *
-     * @param object object to compare
-     * @return true when names match
+     * @param object object compared with this classifier
+     * @return {@code true} when the object is a {@code ClientOs} with the same name
      */
     @Override
     public boolean equals(final Object object) {

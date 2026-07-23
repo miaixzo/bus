@@ -36,20 +36,20 @@ import org.miaixz.bus.fabric.observe.window.RollingWindow;
 public final class MeterEventObserver implements EventObserver {
 
     /**
-     * Meter.
+     * Counter and timing registry updated by emitted events.
      */
     private final FabricMeter meter;
 
     /**
-     * Rolling event window.
+     * Rolling count window receiving one sample per emitted event.
      */
     private final RollingWindow window;
 
     /**
-     * Creates an observer.
+     * Creates an observer with explicit time and rolling-window dependencies.
      *
-     * @param clock  clock
-     * @param window rolling window
+     * @param clock  clock used by operation timers in the meter
+     * @param window rolling window receiving event-count samples
      */
     private MeterEventObserver(final Clock clock, final RollingWindow window) {
         final Clock checkedClock = Assert.notNull(clock, "Clock must not be null");
@@ -60,7 +60,7 @@ public final class MeterEventObserver implements EventObserver {
     /**
      * Creates an observer with a system clock and one-minute rolling window.
      *
-     * @return observer
+     * @return observer using the system clock and one-second buckets across one minute
      */
     public static MeterEventObserver create() {
         return create(Clock.system(), RollingWindow.of(Builder.DURATION_60_SECONDS, Builder.DURATION_1_SECOND));
@@ -69,18 +69,20 @@ public final class MeterEventObserver implements EventObserver {
     /**
      * Creates an observer with explicit time dependencies.
      *
-     * @param clock  clock
-     * @param window rolling window
-     * @return observer
+     * @param clock  clock used by operation timers in the meter
+     * @param window rolling window receiving event-count samples
+     * @return observer backed by a new meter and the supplied rolling window
+     * @throws IllegalArgumentException if {@code clock} or {@code window} is {@code null}
      */
     public static MeterEventObserver create(final Clock clock, final RollingWindow window) {
         return new MeterEventObserver(clock, window);
     }
 
     /**
-     * Emits an event into the meter and rolling window.
+     * Records marker counters, optional failure counters, one rolling event sample, and timing state for an event.
      *
-     * @param event event
+     * @param event immutable event to record
+     * @throws IllegalArgumentException if {@code event} is {@code null}
      */
     @Override
     public void emit(final FabricEvent event) {
@@ -98,7 +100,7 @@ public final class MeterEventObserver implements EventObserver {
     /**
      * Returns the meter.
      *
-     * @return meter
+     * @return mutable meter updated by this observer
      */
     public FabricMeter meter() {
         return meter;
@@ -107,16 +109,16 @@ public final class MeterEventObserver implements EventObserver {
     /**
      * Returns the rolling event window.
      *
-     * @return rolling window
+     * @return rolling window supplied when this observer was created
      */
     public RollingWindow window() {
         return window;
     }
 
     /**
-     * Starts or stops timing for the event family and tag set.
+     * Applies the marker's timing role using its family and the event operation identifier.
      *
-     * @param event event
+     * @param event event supplying marker timing metadata and tags
      */
     private void measure(final FabricEvent event) {
         final ObservationMarker marker = event.marker();

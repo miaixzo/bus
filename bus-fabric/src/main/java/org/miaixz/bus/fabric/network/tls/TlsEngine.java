@@ -19,11 +19,12 @@
 */
 package org.miaixz.bus.fabric.network.tls;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.nio.ByteBuffer;
 import java.security.cert.Certificate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
@@ -47,6 +48,19 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
  * @since Java 21+
  */
 public final class TlsEngine implements AutoCloseable {
+
+    /**
+     * Close-state CAS without a per-engine atomic wrapper.
+     */
+    private static final VarHandle CLOSED;
+
+    static {
+        try {
+            CLOSED = MethodHandles.lookup().findVarHandle(TlsEngine.class, "closed", int.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     /**
      * Target address.
@@ -73,17 +87,48 @@ public final class TlsEngine implements AutoCloseable {
      */
     private final Runnable task;
 
+    /** Reused one-element plaintext source array required by the SSLEngine bulk API. */
+    private final ByteBuffer[] wrapSources;
+
+    /** Reused one-element plaintext target array required by the SSLEngine bulk API. */
+    private final ByteBuffer[] unwrapTargets;
+
+    /**
+     * True after a FINISHED result freezes metadata for the stable application-data path.
+     */
+    private volatile boolean stable;
+
+    /**
+     * Session captured when the most recent handshake reached FINISHED.
+     */
+    private volatile SSLSession stableSession;
+
+    /**
+     * Non-null ALPN value captured with the stable session, empty when none was negotiated.
+     */
+    private volatile String stableApplicationProtocol;
+
+    /**
+     * Bounded packet-buffer size captured with the stable session.
+     */
+    private volatile int stablePacketBufferSize;
+
+    /**
+     * Bounded application-buffer size captured with the stable session.
+     */
+    private volatile int stableApplicationBufferSize;
+
     /**
      * Close flag.
      */
-    private final AtomicBoolean closed;
+    private volatile int closed;
 
     /**
      * Creates a TLS engine adapter.
      *
-     * @param context  TLS context
-     * @param address  peer address
-     * @param settings TLS settings
+     * @param context  non-null context that creates the JDK engine
+     * @param address  non-null peer address used for engine metadata and certificate checks
+     * @param settings non-null TLS configuration
      * @param client   true for a client engine, false for a server engine
      */
     private TlsEngine(final TlsContext context, final Address address, final TlsSettings settings,
@@ -96,16 +141,17 @@ public final class TlsEngine implements AutoCloseable {
                 : checkedContext.serverEngine(this.address, this.settings);
         this.client = client;
         this.task = this::runDelegatedTasks;
-        this.closed = new AtomicBoolean();
+        this.wrapSources = new ByteBuffer[1];
+        this.unwrapTargets = new ByteBuffer[1];
     }
 
     /**
      * Creates a TLS engine adapter.
      *
-     * @param context  TLS context
-     * @param address  target address
-     * @param settings TLS settings
-     * @return TLS engine
+     * @param context  non-null context that creates the client engine
+     * @param address  non-null target address used for SNI and certificate checks
+     * @param settings non-null client TLS configuration
+     * @return new client-side engine adapter
      */
     public static TlsEngine create(final TlsContext context, final Address address, final TlsSettings settings) {
         return new TlsEngine(context, address, settings, true);
@@ -126,7 +172,7 @@ public final class TlsEngine implements AutoCloseable {
     /**
      * Returns the wrapped engine.
      *
-     * @return SSL engine
+     * @return wrapped JDK engine
      */
     public SSLEngine engine() {
         return engine;
@@ -135,41 +181,51 @@ public final class TlsEngine implements AutoCloseable {
     /**
      * Wraps plain bytes into TLS records.
      *
-     * @param source source buffer
-     * @param target target buffer
-     * @return engine result
+     * @param source non-null plaintext or handshake source buffer
+     * @param target non-null destination for produced TLS records
+     * @return JDK engine result after updating stable-handshake metadata
      */
     public SSLEngineResult wrap(final ByteBuffer source, final ByteBuffer target) {
         Assert.notNull(source, () -> new ValidateException("TLS wrap buffers must not be null"));
         Assert.notNull(target, () -> new ValidateException("TLS wrap buffers must not be null"));
+        wrapSources[0] = source;
         try {
-            return engine.wrap(source, target);
+            final SSLEngineResult result = engine.wrap(wrapSources, 0, 1, target);
+            observe(result);
+            return result;
         } catch (final SSLException e) {
             throw new SocketException("TLS wrap failed", e);
+        } finally {
+            wrapSources[0] = null;
         }
     }
 
     /**
      * Unwraps TLS records into plain bytes.
      *
-     * @param source source buffer
-     * @param target target buffer
-     * @return engine result
+     * @param source non-null source containing TLS records
+     * @param target non-null destination for produced plaintext or handshake bytes
+     * @return JDK engine result after updating stable-handshake metadata
      */
     public SSLEngineResult unwrap(final ByteBuffer source, final ByteBuffer target) {
         Assert.notNull(source, () -> new ValidateException("TLS unwrap buffers must not be null"));
         Assert.notNull(target, () -> new ValidateException("TLS unwrap buffers must not be null"));
+        unwrapTargets[0] = target;
         try {
-            return engine.unwrap(source, target);
+            final SSLEngineResult result = engine.unwrap(source, unwrapTargets, 0, 1);
+            observe(result);
+            return result;
         } catch (final SSLException e) {
             throw new SocketException("TLS unwrap failed", e);
+        } finally {
+            unwrapTargets[0] = null;
         }
     }
 
     /**
      * Returns the delegated task runner.
      *
-     * @return task runner
+     * @return reusable action that drains all currently delegated JDK engine tasks
      */
     public Runnable task() {
         return task;
@@ -190,6 +246,9 @@ public final class TlsEngine implements AutoCloseable {
      * @return negotiated ALPN value, or an empty string when none was negotiated
      */
     public String applicationProtocol() {
+        if (stable) {
+            return stableApplicationProtocol;
+        }
         final String protocol = engine.getApplicationProtocol();
         return protocol == null ? "" : protocol;
     }
@@ -214,9 +273,10 @@ public final class TlsEngine implements AutoCloseable {
      * @return handshake metadata
      */
     public TlsHandshake handshake() {
-        final SSLSession session = engine.getSession();
+        final SSLSession session = stable ? stableSession : engine.getSession();
         final CertificateChain peer = CertificateChain.of(peerCertificates(session));
-        if (client && !peer.empty()) {
+        if (client && !peer.empty()
+                && (settings.certificate().chainCleaner() != null || !settings.certificate().pins().isEmpty())) {
             settings.certificate().checkPeer(address.host(), peer);
         }
         return TlsHandshake.of(session.getProtocol(), session.getCipherSuite(), peer);
@@ -243,19 +303,28 @@ public final class TlsEngine implements AutoCloseable {
     /**
      * Returns the current TLS packet buffer size.
      *
-     * @return packet buffer size
+     * @return positive provider packet-buffer hint capped by the fabric allocation limit
      */
     public int packetBufferSize() {
-        return bufferHint(engine.getSession().getPacketBufferSize());
+        return stable ? stablePacketBufferSize : bufferHint(engine.getSession().getPacketBufferSize());
     }
 
     /**
      * Returns the current TLS application buffer size.
      *
-     * @return application buffer size
+     * @return positive provider application-buffer hint capped by the fabric allocation limit
      */
     public int applicationBufferSize() {
-        return bufferHint(engine.getSession().getApplicationBufferSize());
+        return stable ? stableApplicationBufferSize : bufferHint(engine.getSession().getApplicationBufferSize());
+    }
+
+    /**
+     * Returns whether a completed handshake currently activates cached application-data metadata.
+     *
+     * @return true while the engine remains in its stable post-handshake state
+     */
+    public boolean stable() {
+        return stable;
     }
 
     /**
@@ -263,13 +332,23 @@ public final class TlsEngine implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (closed.compareAndSet(false, true)) {
+        if (CLOSED.compareAndSet(this, 0, 1)) {
             closeOutbound();
             try {
                 closeInbound();
             } catch (final SocketException ignored) {
                 // closeInbound may fail when no close_notify was received.
             }
+        }
+    }
+
+    /**
+     * Aborts a transport that is already known to be non-reusable without asking JSSE to validate a peer
+     * {@code close_notify}. The underlying conduit is closed by the channel immediately afterwards.
+     */
+    public void abort() {
+        if (CLOSED.compareAndSet(this, 0, 1)) {
+            closeOutbound();
         }
     }
 
@@ -285,7 +364,30 @@ public final class TlsEngine implements AutoCloseable {
     }
 
     /**
+     * Caches session metadata on handshake completion and leaves stable mode on a later handshake transition.
+     *
+     * @param result wrap or unwrap result whose handshake status is observed
+     */
+    private void observe(final SSLEngineResult result) {
+        if (!stable && result.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.FINISHED) {
+            final SSLSession session = engine.getSession();
+            stableSession = session;
+            final String protocol = engine.getApplicationProtocol();
+            stableApplicationProtocol = protocol == null ? "" : protocol;
+            stablePacketBufferSize = bufferHint(session.getPacketBufferSize());
+            stableApplicationBufferSize = bufferHint(session.getApplicationBufferSize());
+            stable = true;
+        } else if (stable && result.getHandshakeStatus() != SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING
+                && result.getHandshakeStatus() != SSLEngineResult.HandshakeStatus.FINISHED) {
+            stable = false;
+        }
+    }
+
+    /**
      * Bounds provider size hints before they reach buffer allocators.
+     *
+     * @param providerHint buffer size reported by the TLS provider
+     * @return validated allocation size
      */
     private static int bufferHint(final int providerHint) {
         if (providerHint <= 0) {
@@ -302,7 +404,7 @@ public final class TlsEngine implements AutoCloseable {
      */
     private static List<Certificate> peerCertificates(final SSLSession session) {
         try {
-            return List.copyOf(Arrays.asList(session.getPeerCertificates()));
+            return Arrays.asList(session.getPeerCertificates());
         } catch (final SSLPeerUnverifiedException e) {
             return List.of();
         }

@@ -50,12 +50,12 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 public final class Directory implements AutoCloseable {
 
     /**
-     * Registered ledgers.
+     * Ledgers indexed by normalized stable registry name.
      */
     private final ConcurrentHashMap<String, Ledger<?>> ledgers;
 
     /**
-     * Context-scoped shared services.
+     * Lazily created context-scoped services indexed by normalized name.
      */
     private final ConcurrentHashMap<String, Object> services;
 
@@ -65,7 +65,7 @@ public final class Directory implements AutoCloseable {
     private final Object serviceLock;
 
     /**
-     * Closed state.
+     * One-way state preventing new registry and service access after ownership ends.
      */
     private final AtomicBoolean closed;
 
@@ -80,7 +80,7 @@ public final class Directory implements AutoCloseable {
     private final ConnectionPool connectionPool;
 
     /**
-     * Shared selector.
+     * Lazily initialized route selector, cleared when the directory closes.
      */
     private volatile Selector selector;
 
@@ -88,6 +88,7 @@ public final class Directory implements AutoCloseable {
      * Creates a directory with one clock-bound connection pool.
      *
      * @param connectionPool clock-bound connection pool
+     * @param connections    shared connection registry
      */
     private Directory(final ConnectionPool connectionPool, final ConnectionRegistry connections) {
         this.ledgers = new ConcurrentHashMap<>();
@@ -101,7 +102,7 @@ public final class Directory implements AutoCloseable {
     /**
      * Creates a registry directory with default registry slots.
      *
-     * @return registry directory
+     * @return initialized directory using the system clock, default pool policy, and a new meter
      */
     public static Directory create() {
         return create(Clock.system());
@@ -110,8 +111,9 @@ public final class Directory implements AutoCloseable {
     /**
      * Creates a registry directory whose connection pool uses the supplied clock.
      *
-     * @param clock unique directory clock
-     * @return registry directory
+     * @param clock time source shared by the directory meter and connection pool
+     * @return initialized directory with default pool policy and a new meter
+     * @throws ValidateException if {@code clock} is {@code null}
      */
     public static Directory create(final Clock clock) {
         final Clock currentClock = require(clock, "Clock");
@@ -123,10 +125,11 @@ public final class Directory implements AutoCloseable {
      * Creates a directory whose registries share the supplied runtime services.
      *
      * @param clock      directory and connection-pool time source
-     * @param policy     connection-pool policy, or null to use the defaults
+     * @param policy     connection-pool policy, or {@code null} to use the pool defaults
      * @param meter      meter borrowed by the directory and its registries
-     * @param dispatcher dispatcher borrowed by the connection pool, or null for lazy ownership
+     * @param dispatcher dispatcher borrowed by the connection pool, or {@code null} for pool-owned dispatch
      * @return initialized registry directory
+     * @throws ValidateException if {@code clock} or {@code meter} is {@code null}
      */
     public static Directory create(
             final Clock clock,
@@ -158,11 +161,16 @@ public final class Directory implements AutoCloseable {
     }
 
     /**
-     * Registers a ledger.
+     * Registers or replaces a ledger under a normalized name.
+     * <p>
+     * A replaced ledger is not closed by this operation.
+     * </p>
      *
-     * @param name   ledger name
-     * @param ledger ledger instance
-     * @param <T>    value type
+     * @param name   non-blank, single-line registry name
+     * @param ledger non-null ledger stored under the name
+     * @param <T>    ledger value type
+     * @throws ValidateException if the name is invalid or {@code ledger} is {@code null}
+     * @throws StatefulException if the directory is closed
      */
     public <T> void register(final String name, final Ledger<T> ledger) {
         final String key = validateName(name);
@@ -176,9 +184,11 @@ public final class Directory implements AutoCloseable {
     /**
      * Reads a registered ledger.
      *
-     * @param name ledger name
-     * @param <T>  value type
-     * @return ledger or null
+     * @param name non-blank, single-line registry name
+     * @param <T>  expected ledger value type, not checked at runtime
+     * @return registered ledger cast to the requested generic type, or {@code null} when absent
+     * @throws ValidateException if the name is invalid
+     * @throws StatefulException if the directory is closed
      */
     public <T> Ledger<T> ledger(final String name) {
         ensureOpen();
@@ -186,9 +196,9 @@ public final class Directory implements AutoCloseable {
     }
 
     /**
-     * Returns an immutable directory snapshot.
+     * Returns an immutable weakly consistent snapshot of currently registered ledgers.
      *
-     * @return directory snapshot
+     * @return immutable name-to-ledger map; this method remains available after close and then normally returns empty
      */
     public Map<String, Ledger<?>> snapshot() {
         return Map.copyOf(ledgers);
@@ -197,7 +207,8 @@ public final class Directory implements AutoCloseable {
     /**
      * Returns the shared connection registry.
      *
-     * @return connection registry
+     * @return connection registry owned by this directory
+     * @throws StatefulException if the directory is closed
      */
     public ConnectionRegistry connections() {
         ensureOpen();
@@ -207,7 +218,8 @@ public final class Directory implements AutoCloseable {
     /**
      * Returns the shared connection pool.
      *
-     * @return connection pool
+     * @return connection pool owned by this directory
+     * @throws StatefulException if the directory is closed
      */
     public ConnectionPool connectionPool() {
         ensureOpen();
@@ -217,7 +229,8 @@ public final class Directory implements AutoCloseable {
     /**
      * Returns the shared selector.
      *
-     * @return selector
+     * @return lazily created selector shared by this directory
+     * @throws StatefulException if the directory is closed
      */
     public Selector selector() {
         ensureOpen();
@@ -238,16 +251,25 @@ public final class Directory implements AutoCloseable {
     /**
      * Returns one context-scoped service, invoking its factory at most once for a name.
      *
-     * @param name    stable service name
-     * @param type    required service type
-     * @param factory service factory
+     * @param name    non-blank, single-line service name
+     * @param type    runtime type required for existing and newly created values
+     * @param factory factory invoked under the service lock only when no value is stored
      * @param <T>     service type
-     * @return existing or newly created service
+     * @return existing service of the requested type or the newly stored factory result
+     * @throws ValidateException if an argument is invalid, the factory returns null, or a value has the wrong type
+     * @throws StatefulException if the directory is closed
      */
     public <T> T service(final String name, final Class<T> type, final SupplierX<? extends T> factory) {
         final String key = validateName(name);
         final Class<T> expectedType = require(type, "Service type");
         final SupplierX<? extends T> creator = require(factory, "Service factory");
+        final Object cached = services.get(key);
+        if (cached != null) {
+            if (!expectedType.isInstance(cached)) {
+                throw new ValidateException("Service " + key + " is not a " + expectedType.getName());
+            }
+            return expectedType.cast(cached);
+        }
         synchronized (serviceLock) {
             ensureOpen();
             final Object existing = services.get(key);
@@ -270,7 +292,10 @@ public final class Directory implements AutoCloseable {
     }
 
     /**
-     * Closes registered closeable ledgers.
+     * Atomically prevents new access, detaches services and ledgers, then closes closeable services, the connection
+     * pool, the connection registry, and closeable ledgers outside the service lock.
+     *
+     * @throws InternalException if one or more owned resources fail to close; later failures are suppressed
      */
     @Override
     public void close() {
@@ -327,6 +352,8 @@ public final class Directory implements AutoCloseable {
 
     /**
      * Rejects access after directory ownership has ended.
+     *
+     * @throws StatefulException if this directory is closed
      */
     private void ensureOpen() {
         if (closed.get()) {
@@ -337,8 +364,9 @@ public final class Directory implements AutoCloseable {
     /**
      * Validates registry names.
      *
-     * @param name registry name
-     * @return valid name
+     * @param name candidate registry or service name
+     * @return trimmed, non-blank, single-line name
+     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
      */
     private static String validateName(final String name) {
         if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
@@ -348,12 +376,12 @@ public final class Directory implements AutoCloseable {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

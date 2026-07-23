@@ -54,6 +54,17 @@ record WebSocketSnapshot(Context context, URI uri, Address address, Headers head
 
     /**
      * Creates a validated snapshot.
+     *
+     * @param context  runtime services used by the exchange
+     * @param uri      original target URI
+     * @param address  normalized upgrade address
+     * @param headers  upgrade request headers
+     * @param timeout  WebSocket timeout policy
+     * @param guard    optional WebSocket message guard
+     * @param filter   optional WebSocket message filter
+     * @param observer WebSocket lifecycle observer
+     * @param handler  inbound message handler
+     * @param listener session lifecycle listener
      */
     WebSocketSnapshot {
         context = require(context, "Context");
@@ -68,10 +79,10 @@ record WebSocketSnapshot(Context context, URI uri, Address address, Headers head
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

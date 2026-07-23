@@ -22,11 +22,11 @@ package org.miaixz.bus.fabric;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -46,14 +46,26 @@ public interface Payload {
      * @return empty payload
      */
     static Payload empty() {
-        return Instances.get(Payload.class.getName() + ".empty", () -> Payload.owned(ByteString.EMPTY));
+        return EmptyHolder.EMPTY;
+    }
+
+    /** Lazily initialized holder for the shared empty payload. */
+    final class EmptyHolder {
+
+        /**
+         * Shared immutable empty payload.
+         */
+        private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
+
+        private EmptyHolder() {
+        }
     }
 
     /**
      * Creates a repeatable payload from bytes.
      *
-     * @param bytes bytes
-     * @return byte-array payload
+     * @param bytes mutable bytes copied into an immutable snapshot
+     * @return repeatable payload backed by the copied byte snapshot
      */
     static Payload of(final byte[] bytes) {
         if (bytes == null) {
@@ -65,14 +77,14 @@ public interface Payload {
     /**
      * Creates a repeatable payload from immutable bytes.
      *
-     * @param bytes bytes
-     * @return byte-string payload
+     * @param bytes immutable byte string used as the payload snapshot
+     * @return repeatable payload backed by the immutable byte string
      */
     static Payload of(final ByteString bytes) {
         if (bytes == null) {
             throw new ValidateException("Payload bytes must not be null");
         }
-        return repeatable(ByteString.of(bytes.toByteArray()));
+        return bytes.size() == 0 ? empty() : repeatable(bytes);
     }
 
     /**
@@ -114,11 +126,72 @@ public interface Payload {
              */
             @Override
             public Source source() {
-                return new Buffer().write(snapshot);
+                return new Source() {
+
+                    /**
+                     * Next unread byte offset.
+                     */
+                    private int offset;
+
+                    /**
+                     * Closed state.
+                     */
+                    private boolean closed;
+
+                    /**
+                     * Copies snapshot bytes into the supplied sink.
+                     *
+                     * @param sink      destination buffer
+                     * @param byteCount maximum number of bytes to copy
+                     * @return copied byte count, {@code 0} for an empty request, or {@code -1} at EOF
+                     */
+                    @Override
+                    public long read(final Buffer sink, final long byteCount) {
+                        if (sink == null) {
+                            throw new ValidateException("Payload source sink must not be null");
+                        }
+                        if (byteCount < 0) {
+                            throw new ValidateException("Payload source byte count must not be negative");
+                        }
+                        if (closed) {
+                            throw new StatefulException("Payload source is closed");
+                        }
+                        if (byteCount == 0) {
+                            return 0;
+                        }
+                        if (offset == snapshot.size()) {
+                            return -1;
+                        }
+                        final int count = (int) Math.min(byteCount, snapshot.size() - offset);
+                        sink.write(snapshot.data, offset, count);
+                        offset += count;
+                        return count;
+                    }
+
+                    /**
+                     * Returns the source timeout policy.
+                     *
+                     * @return the non-expiring timeout policy
+                     */
+                    @Override
+                    public Timeout timeout() {
+                        return Timeout.NONE;
+                    }
+
+                    /**
+                     * Closes this snapshot cursor.
+                     */
+                    @Override
+                    public void close() {
+                        closed = true;
+                    }
+                };
             }
 
             /**
              * Returns the immutable owner without copying.
+             *
+             * @return immutable bytes owned by this repeatable payload
              */
             @Override
             public ByteString ownedBytes() {
@@ -153,7 +226,7 @@ public interface Payload {
             /**
              * Decodes the repeatable snapshot using the default threshold.
              *
-             * @param charset charset
+             * @param charset character encoding used to decode the snapshot
              * @return decoded text
              */
             @Override
@@ -164,7 +237,7 @@ public interface Payload {
             /**
              * Decodes the repeatable snapshot using an explicit threshold.
              *
-             * @param charset  charset
+             * @param charset  character encoding used to decode the snapshot
              * @param maxBytes maximum bytes to materialize
              * @return decoded text
              */
@@ -193,9 +266,9 @@ public interface Payload {
     /**
      * Creates a repeatable payload from text.
      *
-     * @param text    text
-     * @param charset charset
-     * @return text payload
+     * @param text    text encoded into the payload snapshot
+     * @param charset character encoding used to encode the text
+     * @return repeatable payload containing the encoded text
      */
     static Payload of(final String text, final Charset charset) {
         if (text == null) {
@@ -274,7 +347,7 @@ public interface Payload {
             /**
              * Decodes this one-shot stream using the default threshold.
              *
-             * @param charset charset
+             * @param charset character encoding used to decode the one-shot stream
              * @return decoded text
              */
             @Override
@@ -285,7 +358,7 @@ public interface Payload {
             /**
              * Decodes this one-shot stream using an explicit threshold.
              *
-             * @param charset  charset
+             * @param charset  character encoding used to decode the one-shot stream
              * @param maxBytes maximum bytes to materialize
              * @return decoded text
              */
@@ -317,7 +390,7 @@ public interface Payload {
     /**
      * Opens the payload source.
      *
-     * @return payload source
+     * @return newly opened source, subject to the implementation's repeatability
      */
     Source source();
 
@@ -343,7 +416,7 @@ public interface Payload {
     /**
      * Reads the payload as text.
      *
-     * @param charset charset
+     * @param charset character encoding used to decode payload bytes
      * @return payload text
      */
     default String text(final Charset charset) {
@@ -353,7 +426,7 @@ public interface Payload {
     /**
      * Reads the payload as text with an explicit materialize threshold.
      *
-     * @param charset  charset
+     * @param charset  character encoding used to decode payload bytes
      * @param maxBytes maximum bytes to materialize
      * @return payload text
      */
@@ -408,10 +481,32 @@ public interface Payload {
                     "Materialize size " + length + " bytes exceeds JVM byte array limit at " + source);
         }
         try (Source input = payload.source()) {
+            if (length >= Normal.LONG_ZERO) {
+                final byte[] result = new byte[(int) length];
+                final Buffer scratch = new Buffer();
+                int offset = Normal._0;
+                while (offset < result.length) {
+                    final long read = input.read(scratch, result.length - offset);
+                    if (read == Normal.__1) {
+                        throw new InternalException("Streaming payload ended before declared length at " + source);
+                    }
+                    if (read == Normal.LONG_ZERO) {
+                        continue;
+                    }
+                    final int count = (int) read;
+                    scratch.read(result, offset, count);
+                    offset += count;
+                }
+                if (input.read(scratch, Normal._1) != Normal.__1) {
+                    throw new InternalException("Streaming payload exceeded declared length at " + source);
+                }
+                return result;
+            }
             final Buffer buffer = new Buffer();
             long total = 0;
             while (true) {
-                final long read = input.read(buffer, Normal._8192);
+                final long requestBytes = length > total ? Math.min(length - total, Integer.MAX_VALUE) : Normal._1;
+                final long read = input.read(buffer, requestBytes);
                 if (read == -1) {
                     break;
                 }
@@ -436,8 +531,8 @@ public interface Payload {
     /**
      * Copies a payload stream to a sink without materializing it.
      *
-     * @param payload payload
-     * @param sink    sink
+     * @param payload payload whose source is streamed
+     * @param sink    destination receiving payload bytes and a final flush
      * @return copied byte count
      */
     static long copyTo(final Payload payload, final Sink sink) {
@@ -469,7 +564,7 @@ public interface Payload {
     /**
      * Validates a charset.
      *
-     * @param charset charset
+     * @param charset character encoding reference to validate
      */
     private static void validateCharset(final Charset charset) {
         if (charset == null) {

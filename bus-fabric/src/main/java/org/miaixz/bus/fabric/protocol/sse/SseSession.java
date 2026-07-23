@@ -47,7 +47,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Open SSE session.
+ * Open SSE session that owns reconnectable HTTP stream resources under one terminal lifecycle.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -60,81 +60,82 @@ public final class SseSession implements Session {
     private final Address address;
 
     /**
-     * Retry policy updated by events.
+     * Retry state whose current delay may be updated by received SSE events.
      */
     private final SseRetry retry;
 
     /**
-     * Shared cancellation scope.
+     * Cancellation scope shared by the initial connection, reconnects, and session termination.
      */
     private final Cancellation cancellation;
 
     /**
-     * Session attributes.
+     * Immutable session attributes containing the stable operation identifier.
      */
     private final Map<String, Object> attributes;
 
     /**
-     * Shared observer.
+     * Safe observer wrapper that replaces lifecycle-generated operation identifiers with the session identifier.
      */
     private final EventObserver observer;
 
     /**
-     * Current HTTP Call.
+     * Most recently installed HTTP stream call, if any.
      */
     private final AtomicReference<Call<HttpRunner.Stream>> httpCall;
 
     /**
-     * Current HTTP response.
+     * HTTP streaming response currently owned by the session, if any.
      */
     private final AtomicReference<HttpRunner.Stream> response;
 
     /**
-     * Current streaming reader.
+     * SSE reader currently consuming the response, if any.
      */
     private final AtomicReference<SseReader> reader;
 
     /**
-     * Current reader background handle.
+     * Dispatcher handle for the current reader task, if any.
      */
     private final AtomicReference<DispatchHandle> readerHandle;
 
     /**
-     * Current reconnect handle.
+     * Dispatcher handle for the currently scheduled reconnect task, if any.
      */
     private final AtomicReference<DispatchHandle> reconnectHandle;
 
     /**
-     * Background stream future.
+     * Session stream future whose success or failure drives terminal lifecycle transitions.
      */
     private final CompletableFuture<Void> stream;
 
     /**
-     * Factory removal hook.
+     * Replaceable factory-removal hook consumed by terminal cleanup.
      */
     private final AtomicReference<Runnable> onClose;
 
     /**
-     * Terminal cleanup guard.
+     * One-way guard granting exactly one caller ownership of terminal cleanup.
      */
     private final AtomicBoolean terminated;
 
     /**
-     * Lifecycle scope.
+     * Lifecycle state, listener, observer, and duration coordinator for this session.
      */
     private final LifecycleScope scope;
 
     /**
      * Creates an opened session sharing one cancellation and observation scope across reconnects.
      *
-     * @param address      session address
-     * @param retry        retry policy
-     * @param cancellation shared cancellation scope
-     * @param stream       stream completion
-     * @param listener     lifecycle listener
-     * @param observer     shared observer
-     * @param clock        shared clock
-     * @param operationId  stable operation identifier
+     * @param address      remote SSE endpoint address
+     * @param retry        mutable retry state shared across reconnects
+     * @param cancellation cancellation scope shared across the complete session
+     * @param stream       future representing background stream completion
+     * @param listener     lifecycle listener, or {@code null} when disabled
+     * @param observer     event observer, or {@code null} to use a safe no-op sink
+     * @param clock        clock used for lifecycle event timing
+     * @param operationId  stable identifier attached to all session events
+     * @throws ValidateException if a required argument is {@code null}
      */
     SseSession(final Address address, final SseRetry retry, final Cancellation cancellation,
             final CompletableFuture<Void> stream, final Listener<? super SseSession> listener,
@@ -177,7 +178,7 @@ public final class SseSession implements Session {
     /**
      * Returns the session address.
      *
-     * @return address
+     * @return remote SSE endpoint address
      */
     public Address address() {
         return address;
@@ -186,7 +187,7 @@ public final class SseSession implements Session {
     /**
      * Returns the lifecycle state.
      *
-     * @return lifecycle state
+     * @return current state maintained by the lifecycle scope
      */
     public Status state() {
         return scope.state();
@@ -195,25 +196,25 @@ public final class SseSession implements Session {
     /**
      * Returns current retry delay.
      *
-     * @return retry delay
+     * @return current reconnect delay from the shared retry state
      */
     public Duration retry() {
         return retry.current();
     }
 
     /**
-     * Closes the session.
+     * Runs the normal-close terminal path and releases owned stream resources.
      *
-     * @return true when this invocation changed the state
+     * @return {@code true} if this invocation owned termination and changed the lifecycle state
      */
     public boolean close() {
         return terminate(Termination.CLOSE, null);
     }
 
     /**
-     * Cancels the session.
+     * Cancels the shared scope with a session-cancelled failure and releases owned stream resources.
      *
-     * @return true when this invocation changed the state
+     * @return {@code true} if this invocation owned termination and changed the lifecycle state
      */
     public boolean cancel() {
         return terminate(Termination.CANCEL, new StatefulException("SSE session was cancelled"));
@@ -222,8 +223,9 @@ public final class SseSession implements Session {
     /**
      * Fails this session and releases all owned stream resources once.
      *
-     * @param cause failure cause
-     * @return true when this invocation terminated the session
+     * @param cause failure recorded by cancellation and lifecycle observation
+     * @return {@code true} if this invocation owned termination and changed the lifecycle state
+     * @throws ValidateException if {@code cause} is {@code null}
      */
     boolean failure(final Throwable cause) {
         return terminate(Termination.FAILURE, require(cause, "SSE failure cause"));
@@ -232,7 +234,7 @@ public final class SseSession implements Session {
     /**
      * Returns session attributes.
      *
-     * @return immutable attributes
+     * @return immutable map containing the stable operation identifier
      */
     @Override
     public Map<String, Object> attributes() {
@@ -242,16 +244,20 @@ public final class SseSession implements Session {
     /**
      * Returns the shared cancellation scope.
      *
-     * @return cancellation scope
+     * @return cancellation scope shared by this session and all reconnect attempts
      */
     Cancellation cancellation() {
         return cancellation;
     }
 
     /**
-     * Replaces the current HTTP Call before it starts.
+     * Installs the next HTTP stream call and cancels the previously installed call.
+     * <p>
+     * When termination has already begun, the incoming call is cancelled instead of being installed.
+     * </p>
      *
-     * @param next next HTTP Call
+     * @param next HTTP stream call to install
+     * @throws ValidateException if {@code next} is {@code null}
      */
     synchronized void replaceHttpCall(final Call<HttpRunner.Stream> next) {
         final Call<HttpRunner.Stream> current = require(next, "SSE HTTP Call");
@@ -263,11 +269,16 @@ public final class SseSession implements Session {
     }
 
     /**
-     * Installs a replacement response and reader, then releases the previous reader resources.
+     * Installs a call, streaming response, and reader, then cancels the previous reader handle and closes the previous
+     * response and reader.
+     * <p>
+     * When termination has already begun, the incoming call and resources are released immediately.
+     * </p>
      *
-     * @param call         HTTP Call that produced the response
-     * @param nextResponse next response
-     * @param nextReader   next reader
+     * @param call         HTTP call that produced the incoming response
+     * @param nextResponse incoming streaming response owned by the session
+     * @param nextReader   incoming reader consuming that response
+     * @throws ValidateException if any argument is {@code null}
      */
     synchronized void replaceReader(
             final Call<HttpRunner.Stream> call,
@@ -296,7 +307,8 @@ public final class SseSession implements Session {
     /**
      * Replaces the reader background handle.
      *
-     * @param next next reader handle
+     * @param next dispatcher handle for the replacement reader task
+     * @throws ValidateException if {@code next} is {@code null}
      */
     synchronized void replaceReaderHandle(final DispatchHandle next) {
         replaceHandle(readerHandle, require(next, "SSE reader handle"));
@@ -305,16 +317,22 @@ public final class SseSession implements Session {
     /**
      * Replaces the scheduled reconnect handle.
      *
-     * @param next next reconnect handle
+     * @param next dispatcher handle for the replacement reconnect task
+     * @throws ValidateException if {@code next} is {@code null}
      */
     synchronized void replaceReconnectHandle(final DispatchHandle next) {
         replaceHandle(reconnectHandle, require(next, "SSE reconnect handle"));
     }
 
     /**
-     * Registers the hook invoked once after terminal resource cleanup.
+     * Replaces the factory-removal hook that terminal cleanup invokes once.
+     * <p>
+     * A hook registered after termination runs immediately. The post-installation check closes the race with concurrent
+     * termination.
+     * </p>
      *
-     * @param hook close hook
+     * @param hook callback that removes this session from its factory registry
+     * @throws ValidateException if {@code hook} is {@code null}
      */
     void onClose(final Runnable hook) {
         final Runnable current = require(hook, "SSE close hook");
@@ -332,8 +350,8 @@ public final class SseSession implements Session {
     /**
      * Replaces one owned dispatcher handle or cancels it after termination.
      *
-     * @param reference handle reference
-     * @param next      next handle
+     * @param reference atomic slot containing the currently owned dispatcher handle
+     * @param next      replacement handle to install or cancel after termination
      */
     private void replaceHandle(final AtomicReference<DispatchHandle> reference, final DispatchHandle next) {
         if (terminated.get()) {
@@ -346,9 +364,9 @@ public final class SseSession implements Session {
     /**
      * Executes the single terminal path and releases all resources in their fixed order.
      *
-     * @param termination terminal outcome
-     * @param cause       terminal cause
-     * @return true when this invocation owned termination
+     * @param termination close, cancellation, or failure outcome to publish
+     * @param cause       terminal cause for cancellation or failure, or {@code null} for normal close
+     * @return {@code true} if this invocation owned cleanup and changed lifecycle state
      */
     private synchronized boolean terminate(final Termination termination, final Throwable cause) {
         if (!terminated.compareAndSet(false, true)) {
@@ -382,7 +400,7 @@ public final class SseSession implements Session {
     }
 
     /**
-     * Runs the Factory removal hook once.
+     * Atomically consumes and runs the current factory-removal hook, if one is installed.
      */
     private void notifyClose() {
         final Runnable hook = onClose.getAndSet(null);
@@ -394,7 +412,7 @@ public final class SseSession implements Session {
     /**
      * Cancels an optional Call.
      *
-     * @param call Call
+     * @param call call to cancel, or {@code null} when none is owned
      */
     private static void cancel(final Call<?> call) {
         if (call != null) {
@@ -405,7 +423,7 @@ public final class SseSession implements Session {
     /**
      * Cancels an optional dispatcher handle.
      *
-     * @param handle handle
+     * @param handle dispatcher handle to cancel, or {@code null} when none is owned
      */
     private static void cancel(final DispatchHandle handle) {
         if (handle != null) {
@@ -416,7 +434,7 @@ public final class SseSession implements Session {
     /**
      * Closes an optional resource.
      *
-     * @param resource resource
+     * @param resource resource to close, or {@code null} when none is owned
      */
     private static void close(final AutoCloseable resource) {
         if (resource == null) {
@@ -437,9 +455,10 @@ public final class SseSession implements Session {
     /**
      * Replaces LifecycleScope's generated operation tag with the runner-owned identifier.
      *
-     * @param event       lifecycle event
-     * @param operationId operation identifier
+     * @param event       lifecycle event whose marker, time, tags, and cause are preserved
+     * @param operationId runner-owned identifier replacing the generated operation tag
      * @return event carrying the shared identifier
+     * @throws ValidateException if {@code event} is {@code null}
      */
     private static FabricEvent withOperationId(final FabricEvent event, final String operationId) {
         final FabricEvent current = require(event, "SSE lifecycle event");
@@ -448,12 +467,12 @@ public final class SseSession implements Session {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -465,17 +484,17 @@ public final class SseSession implements Session {
     private enum Termination {
 
         /**
-         * Normal close.
+         * Normal close that leaves the cancellation scope uncancelled.
          */
         CLOSE,
 
         /**
-         * User cancellation.
+         * User cancellation that cancels the shared scope and publishes a cancelled lifecycle state.
          */
         CANCEL,
 
         /**
-         * Stream failure.
+         * Stream failure that cancels the shared scope and publishes a failed lifecycle state.
          */
         FAILURE
 

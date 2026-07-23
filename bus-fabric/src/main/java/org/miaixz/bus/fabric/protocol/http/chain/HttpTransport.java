@@ -47,26 +47,38 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class HttpTransport implements HttpStage {
 
     /**
-     * Stage name.
+     * Shared unregister action for synchronous scopes without an external cancellation handle.
+     */
+    private static final Runnable NOOP_UNREGISTER = () -> {
+    };
+
+    /**
+     * Shared stateless default codec factory.
+     */
+    private static final Function<HttpChain, HttpCodec> DEFAULT_CODECS = HttpTransport::networkCodec;
+
+    /**
+     * Normalized identifier exposed to the HTTP stage chain.
      */
     private final String name;
 
     /**
-     * Codec factory.
+     * Factory that selects or creates the protocol codec for the current chain connection.
      */
     private final Function<HttpChain, HttpCodec> codecs;
 
     /**
-     * Creates a transport stage.
+     * Creates a transport stage that owns any dispatcher needed by an HTTP/2 session.
      */
     public HttpTransport() {
-        this(HttpTransport::networkCodec);
+        this(DEFAULT_CODECS);
     }
 
     /**
      * Creates a transport stage with shared dispatcher.
      *
-     * @param dispatcher runtime dispatcher
+     * @param dispatcher shared dispatcher used when an HTTP/2 session must be created
+     * @throws ValidateException if {@code dispatcher} is {@code null}
      */
     public HttpTransport(final Dispatcher dispatcher) {
         this(chain -> networkCodec(chain, require(dispatcher, "Dispatcher")));
@@ -75,7 +87,8 @@ public final class HttpTransport implements HttpStage {
     /**
      * Creates a transport stage with a codec factory.
      *
-     * @param codecs codec factory
+     * @param codecs chain-aware codec factory used for each exchange
+     * @throws ValidateException if {@code codecs} is {@code null}
      */
     HttpTransport(final Function<HttpChain, HttpCodec> codecs) {
         this.name = normalizeName("http-transport");
@@ -85,9 +98,11 @@ public final class HttpTransport implements HttpStage {
     /**
      * Writes a request and reads the response through the chain connection.
      *
-     * @param request request
-     * @param chain   chain
-     * @return response
+     * @param request request to serialize on the selected connection
+     * @param chain   exchange chain containing cancellation state and a network connection
+     * @return response with request-sent and response-received timestamps
+     * @throws HttpChain.ExchangeFailure if request writing or response reading fails
+     * @throws ValidateException         if the request, chain, or produced codec is {@code null}
      */
     @Override
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
@@ -96,33 +111,38 @@ public final class HttpTransport implements HttpStage {
         final Cancellation cancellation = context.cancellation();
         cancellation.throwIfCancelled();
         final HttpCodec codec = require(codecs.apply(context), "HTTP codec");
-        cancellation.onCancel(codec::cancel);
+        final Runnable unregister = cancellation.cancellable() ? cancellation.onCancel(codec::cancel) : NOOP_UNREGISTER;
         try {
-            writeRequest(current, codec);
-        } catch (final HttpChain.ExchangeFailure e) {
-            throw e;
-        } catch (final RuntimeException e) {
-            throw failure(cancellation, HttpChain.FailureScope.REQUEST, e);
+            try {
+                writeRequest(current, codec);
+            } catch (final HttpChain.ExchangeFailure e) {
+                throw e;
+            } catch (final RuntimeException e) {
+                throw failure(cancellation, HttpChain.FailureScope.REQUEST, e);
+            }
+            final long sentRequestAtMillis = System.currentTimeMillis();
+            cancellation.throwIfCancelled();
+            final HttpResponse response;
+            try {
+                response = readResponse(current, codec);
+            } catch (final HttpChain.ExchangeFailure e) {
+                throw e;
+            } catch (final RuntimeException e) {
+                throw failure(cancellation, connectionScope(codec), e);
+            }
+            final long receivedResponseAtMillis = System.currentTimeMillis();
+            return response.withTiming(sentRequestAtMillis, receivedResponseAtMillis);
+        } finally {
+            unregister.run();
         }
-        final long sentRequestAtMillis = System.currentTimeMillis();
-        cancellation.throwIfCancelled();
-        final HttpResponse response;
-        try {
-            response = readResponse(current, codec);
-        } catch (final HttpChain.ExchangeFailure e) {
-            throw e;
-        } catch (final RuntimeException e) {
-            throw failure(cancellation, connectionScope(codec), e);
-        }
-        final long receivedResponseAtMillis = System.currentTimeMillis();
-        return response.toBuilder().timing(sentRequestAtMillis, receivedResponseAtMillis).build();
     }
 
     /**
      * Writes a request through a codec.
      *
-     * @param request request
-     * @param codec   codec
+     * @param request request to serialize
+     * @param codec   active protocol codec that writes the request
+     * @throws ValidateException if the request or codec is {@code null}
      */
     public void writeRequest(final HttpRequest request, final HttpCodec codec) {
         require(codec, "HTTP codec").writeRequest(require(request, "HTTP request"));
@@ -131,9 +151,10 @@ public final class HttpTransport implements HttpStage {
     /**
      * Reads a response through a codec.
      *
-     * @param request request
-     * @param codec   codec
-     * @return response
+     * @param request request whose response is expected
+     * @param codec   active protocol codec that reads the response
+     * @return response decoded by the codec
+     * @throws ValidateException if the request or codec is {@code null}
      */
     public HttpResponse readResponse(final HttpRequest request, final HttpCodec codec) {
         return require(codec, "HTTP codec").readResponse(require(request, "HTTP request"));
@@ -142,7 +163,7 @@ public final class HttpTransport implements HttpStage {
     /**
      * Returns stage name.
      *
-     * @return stage name
+     * @return normalized transport-stage identifier
      */
     @Override
     public String name() {
@@ -152,8 +173,9 @@ public final class HttpTransport implements HttpStage {
     /**
      * Creates a network codec from the current chain.
      *
-     * @param chain chain
-     * @return codec
+     * @param chain chain whose selected physical connection is adapted
+     * @return HTTP/1 codec or HTTP/2 stream codec matching the connection protocol
+     * @throws StatefulException if the chain has no selected network connection
      */
     private static HttpCodec networkCodec(final HttpChain chain) {
         final Connection connection = Assert.notNull(
@@ -162,15 +184,16 @@ public final class HttpTransport implements HttpStage {
         if (http2(connection)) {
             return new Http2Codec(http2Session(connection, null));
         }
-        return new Http1Codec(connection);
+        return http1Codec(connection);
     }
 
     /**
      * Creates a network codec from the current chain.
      *
-     * @param chain      chain
-     * @param dispatcher runtime dispatcher
-     * @return codec
+     * @param chain      chain whose selected physical connection is adapted
+     * @param dispatcher shared dispatcher used for a newly initialized HTTP/2 session
+     * @return HTTP/1 codec or HTTP/2 stream codec matching the connection protocol
+     * @throws StatefulException if the chain has no selected network connection
      */
     private static HttpCodec networkCodec(final HttpChain chain, final Dispatcher dispatcher) {
         final Connection connection = Assert.notNull(
@@ -179,14 +202,39 @@ public final class HttpTransport implements HttpStage {
         if (http2(connection)) {
             return new Http2Codec(http2Session(connection, dispatcher));
         }
-        return new Http1Codec(connection);
+        return http1Codec(connection);
+    }
+
+    /**
+     * Returns the reusable HTTP/1.1 codec owned by an exclusively leased physical connection.
+     *
+     * @param connection exclusively leased HTTP/1.1 connection
+     * @return connection-local codec, or a standalone codec when the connection does not support attachments
+     */
+    private static Http1Codec http1Codec(final Connection connection) {
+        final Object current = connection.protocolAttachment();
+        if (current instanceof Http1Codec codec) {
+            return codec;
+        }
+        if (current != null) {
+            throw new StatefulException("HTTP/1.1 connection contains an incompatible protocol attachment");
+        }
+        final Http1Codec created = new Http1Codec(connection);
+        if (connection.compareAndSetProtocolAttachment(null, created)) {
+            return created;
+        }
+        final Object installed = connection.protocolAttachment();
+        if (installed instanceof Http1Codec codec) {
+            return codec;
+        }
+        return created;
     }
 
     /**
      * Returns whether the selected connection is HTTP/2.
      *
-     * @param destination connection destination
-     * @return true when HTTP/2 should be used
+     * @param connection selected physical connection
+     * @return {@code true} for negotiated HTTP/2 or prior-knowledge HTTP/2
      */
     private static boolean http2(final Connection connection) {
         final Protocol protocol = require(connection, "Network connection").protocol();
@@ -195,11 +243,23 @@ public final class HttpTransport implements HttpStage {
 
     /**
      * Atomically initializes and reuses one HTTP/2 connection session per physical connection.
+     *
+     * @param connection physical HTTP/2 connection
+     * @param dispatcher shared runtime dispatcher, or {@code null} for an owned dispatcher
+     * @return connection-local HTTP/2 session
+     * @throws StatefulException if multiplex state is missing, incompatible, or changes non-atomically
      */
     private static Http2Connection http2Session(final Connection connection, final Dispatcher dispatcher) {
         final Connection.MultiplexAttachment attachment = Assert.notNull(
                 connection.multiplexAttachment(),
                 () -> new StatefulException("HTTP/2 connection does not expose a multiplex attachment"));
+        final Object current = attachment.session();
+        if (current != null) {
+            if (current instanceof Http2Connection session) {
+                return session;
+            }
+            throw new StatefulException("HTTP/2 multiplex attachment contains an incompatible session");
+        }
         synchronized (attachment) {
             final Object existing = attachment.session();
             if (existing != null) {
@@ -219,6 +279,11 @@ public final class HttpTransport implements HttpStage {
 
     /**
      * Wraps an unstructured transport failure with conservative authoritative facts.
+     *
+     * @param cancellation cancellation scope used to classify cancellation
+     * @param scope        transport resource scope affected by the failure
+     * @param cause        original runtime failure
+     * @return structured exchange failure
      */
     private static HttpChain.ExchangeFailure failure(
             final Cancellation cancellation,
@@ -233,6 +298,9 @@ public final class HttpTransport implements HttpStage {
 
     /**
      * HTTP/2 failures are stream-scoped unless the session owner reports a connection failure later.
+     *
+     * @param codec active HTTP codec
+     * @return conservative failure scope for the codec
      */
     private static HttpChain.FailureScope connectionScope(final HttpCodec codec) {
         return codec instanceof Http2Codec ? HttpChain.FailureScope.STREAM : HttpChain.FailureScope.CONNECTION;
@@ -241,8 +309,9 @@ public final class HttpTransport implements HttpStage {
     /**
      * Normalizes a stage name.
      *
-     * @param value value
-     * @return normalized name
+     * @param value stage identifier to validate and normalize
+     * @return trimmed lowercase stage identifier
+     * @throws ValidateException if the identifier is blank or contains a line break
      */
     private static String normalizeName(final String value) {
         Assert.isFalse(
@@ -254,13 +323,17 @@ public final class HttpTransport implements HttpStage {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
 }

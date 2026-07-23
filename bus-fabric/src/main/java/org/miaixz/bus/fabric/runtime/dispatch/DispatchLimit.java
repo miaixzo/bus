@@ -36,6 +36,9 @@ public record DispatchLimit(int max, int perKey) {
 
     /**
      * Creates a dispatch limit.
+     *
+     * @param max    maximum queued activities across all keys
+     * @param perKey maximum queued activities for one key
      */
     public DispatchLimit {
         if (max <= Normal._0) {

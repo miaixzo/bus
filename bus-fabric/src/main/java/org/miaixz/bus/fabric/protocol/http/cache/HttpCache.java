@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
@@ -128,9 +128,10 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Creates a cache.
      *
-     * @param store    store
-     * @param policy   policy
-     * @param observer observer
+     * @param store    persistent or in-memory cache store
+     * @param policy   policy deciding cacheability and freshness
+     * @param observer observer receiving cache events
+     * @param clock    event timestamp source, or {@code null} to disable event emission
      */
     private HttpCache(final CacheStore store, final CachePolicy policy, final EventObserver observer,
             final Clock clock) {
@@ -152,10 +153,10 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Creates a cache.
      *
-     * @param store    store
-     * @param policy   policy
-     * @param observer observer
-     * @return cache
+     * @param store    persistent or in-memory cache store
+     * @param policy   policy deciding cacheability and freshness
+     * @param observer observer receiving cache events
+     * @return cache without timestamped event emission
      */
     public static HttpCache create(final CacheStore store, final CachePolicy policy, final EventObserver observer) {
         return created(new HttpCache(store, policy, observer, null), store, policy);
@@ -164,11 +165,11 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Creates a cache with an explicit runtime clock for observations.
      *
-     * @param store    store
-     * @param policy   policy
-     * @param observer observer
-     * @param clock    runtime clock
-     * @return cache
+     * @param store    persistent or in-memory cache store
+     * @param policy   policy deciding cacheability and freshness
+     * @param observer observer receiving cache events
+     * @param clock    runtime clock used for event timestamps
+     * @return cache using the supplied runtime clock
      */
     public static HttpCache create(
             final CacheStore store,
@@ -181,10 +182,10 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Logs one completed cache construction.
      *
-     * @param cache  cache
-     * @param store  store
-     * @param policy policy
-     * @return cache
+     * @param cache  fully constructed cache to return
+     * @param store  configured store reported in the log
+     * @param policy configured policy reported in the log
+     * @return the supplied cache
      */
     private static HttpCache created(final HttpCache cache, final CacheStore store, final CachePolicy policy) {
         Logger.info(
@@ -351,8 +352,8 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Gets a cached response.
      *
-     * @param request request
-     * @return response or null
+     * @param request request used to calculate the base key and match Vary fields
+     * @return cache-backed response, or {@code null} on a miss
      */
     public HttpResponse get(final HttpRequest request) {
         require(request, "HTTP request");
@@ -427,8 +428,8 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Puts a response.
      *
-     * @param request  request
-     * @param response response
+     * @param request  originating request used to calculate the cache key
+     * @param response complete response to store when cacheable
      */
     public void put(final HttpRequest request, final HttpResponse response) {
         require(request, "HTTP request");
@@ -448,7 +449,7 @@ public final class HttpCache implements AutoCloseable {
                     response.code());
             return;
         }
-        final String key = HttpCacheKey.key(request, response.headers().get(HTTP.VARY));
+        final String key = HttpCacheKey.key(request, response.headers().get(Http.Header.VARY));
         try {
             store.put(key, HttpCacheCodec.toEntry(request, response));
             recordWriteSuccess();
@@ -464,7 +465,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Returns a response that writes cacheable one-shot bodies to the cache as callers consume them.
      *
-     * @param request  request
+     * @param request  originating request used to calculate the cache key
      * @param response network response
      * @return original or cache-writing response
      */
@@ -486,7 +487,7 @@ public final class HttpCache implements AutoCloseable {
                     response.code());
             return response;
         }
-        final String key = HttpCacheKey.key(request, response.headers().get(HTTP.VARY));
+        final String key = HttpCacheKey.key(request, response.headers().get(Http.Header.VARY));
         if (response.body().payload().repeatable()) {
             try {
                 store.put(key, HttpCacheCodec.toEntry(request, response));
@@ -564,8 +565,8 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Returns whether a response may be cached by this cache policy.
      *
-     * @param request  request
-     * @param response response
+     * @param request  request evaluated by the cache policy
+     * @param response response evaluated by the cache policy
      * @return true when cacheable
      */
     public boolean cacheable(final HttpRequest request, final HttpResponse response) {
@@ -575,8 +576,8 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Returns whether a cached response is still fresh.
      *
-     * @param response response
-     * @param clock    clock
+     * @param response cached response whose age is evaluated
+     * @param clock    time source used for freshness calculation
      * @return true when fresh
      */
     public boolean fresh(final HttpResponse response, final Clock clock) {
@@ -590,9 +591,9 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Returns whether a cached response is fresh enough for a request.
      *
-     * @param request  request
-     * @param response response
-     * @param clock    clock
+     * @param request  request whose cache directives affect freshness
+     * @param response cached response whose age is evaluated
+     * @param clock    time source used for freshness calculation
      * @return true when fresh
      */
     public boolean fresh(final HttpRequest request, final HttpResponse response, final Clock clock) {
@@ -609,7 +610,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Creates a conditional request for stale cached metadata.
      *
-     * @param request request
+     * @param request stale request to convert into a validator request
      * @param cached  cached response
      * @return conditional request
      */
@@ -620,7 +621,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Removes a cached response.
      *
-     * @param request request
+     * @param request request identifying entries to remove
      */
     public void remove(final HttpRequest request) {
         require(request, "HTTP request");
@@ -691,12 +692,12 @@ public final class HttpCache implements AutoCloseable {
      *
      * @param cached  cached response
      * @param network network response
-     * @return response
+     * @return merged cached response for HTTP 304, otherwise the network response
      */
     public HttpResponse update(final HttpResponse cached, final HttpResponse network) {
         require(cached, "Cached response");
         require(network, "Network response");
-        if (network.code() != HTTP.HTTP_NOT_MODIFIED) {
+        if (network.code() != Http.Status.NOT_MODIFIED) {
             cached.close();
             emit("update", Integer.toString(network.code()));
             Logger.info(false, "Fabric", "HTTP cache update bypassed: code={}", network.code());
@@ -707,7 +708,7 @@ public final class HttpCache implements AutoCloseable {
                 .body(HttpCacheCodec.copyBody(cached)).protocol(network.protocol()).handshake(network.handshake())
                 .networkResponse(network).cacheResponse(cached).sentRequestAtMillis(network.sentRequestAtMillis())
                 .receivedResponseAtMillis(network.receivedResponseAtMillis()).build();
-        emit("update", Integer.toString(HTTP.HTTP_NOT_MODIFIED));
+        emit("update", Integer.toString(Http.Status.NOT_MODIFIED));
         Logger.info(false, "Fabric", "HTTP cache conditional hit: code={}", network.code());
         return merged;
     }
@@ -749,8 +750,8 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Emits cache event.
      *
-     * @param action action
-     * @param key    key
+     * @param action stable cache action name
+     * @param key    cache key used for non-sensitive event correlation
      */
     private void emit(final String action, final String key) {
         if (clock == null) {
@@ -775,7 +776,7 @@ public final class HttpCache implements AutoCloseable {
      * Maps a cache action to a stable observation marker.
      *
      * @param action cache action
-     * @return marker
+     * @return observation marker corresponding to the cache action
      */
     private static ObservationMarker cacheMarker(final String action) {
         return switch (action) {
@@ -845,8 +846,8 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Opens and validates a cache candidate while preserving snapshot ownership in the returned body.
      *
-     * @param entry cache entry
-     * @return decoded response
+     * @param entry cache entry whose metadata and body are opened
+     * @return decoded response retaining ownership of the opened cache body
      */
     private static HttpResponse readCandidate(final CacheEntry entry) {
         final CacheEntry current = require(entry, "Cache entry");
@@ -879,7 +880,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Removes one corrupt key without letting cleanup hide the original candidate failure.
      *
-     * @param key corrupt key
+     * @param key corrupt cache key to remove
      */
     private void removeCorrupt(final String key) {
         try {
@@ -892,7 +893,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Closes a response without allowing cleanup failure to escape candidate isolation.
      *
-     * @param response response or null
+     * @param response response to close, or {@code null}
      */
     private static void closeQuietly(final HttpResponse response) {
         closeQuietly((AutoCloseable) response);
@@ -901,7 +902,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Closes a resource without allowing cleanup failure to escape candidate isolation.
      *
-     * @param closeable resource or null
+     * @param closeable resource to close, or {@code null}
      */
     private static void closeQuietly(final AutoCloseable closeable) {
         if (closeable == null) {
@@ -926,10 +927,10 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Validates required value.
      *
-     * @param value value
-     * @param name  name
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
      * @param <T>   type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -968,9 +969,9 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Creates an opened cache payload.
          *
-         * @param source open source
-         * @param length body length
-         * @param owner  source or snapshot owner
+         * @param source already-open cache body source
+         * @param length stored body length, or {@code -1} when unknown
+         * @param owner  resource owning the source and any backing snapshot
          */
         private OpenedPayload(final Source source, final long length, final AutoCloseable owner) {
             this.source = require(source, "Cache body source");
@@ -983,7 +984,7 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Returns stored body length.
          *
-         * @return body length
+         * @return stored body length, or {@code -1} when unknown
          */
         @Override
         public long length() {
@@ -993,7 +994,7 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Transfers the already-open source once.
          *
-         * @return source
+         * @return owned cache body source on its first request
          */
         @Override
         public Source source() {
@@ -1006,7 +1007,7 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Returns whether this payload can be reopened.
          *
-         * @return false
+         * @return {@code false} because the opened source is transferable only once
          */
         @Override
         public boolean repeatable() {
@@ -1057,8 +1058,8 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Creates an isolated writer.
          *
-         * @param delegate        store writer
-         * @param failureCallback failure callback
+         * @param delegate        store writer isolated from network-body failures
+         * @param failureCallback action invoked for the first cache write failure
          */
         private IsolatedCacheWriter(final CacheWriter delegate, final Runnable failureCallback) {
             this.delegate = require(delegate, "Cache writer");
@@ -1069,7 +1070,7 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Returns the delegate body or an in-memory discard sink after failure.
          *
-         * @return writable sink
+         * @return delegate sink before failure, otherwise an in-memory discard sink
          */
         @Override
         public Sink body() {
@@ -1087,8 +1088,8 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Writes cache bytes while isolating store failure.
          *
-         * @param source    source buffer
-         * @param byteCount byte count
+         * @param source    network bytes to copy or discard
+         * @param byteCount exact bytes consumed from the source buffer
          */
         @Override
         public void write(final org.miaixz.bus.core.io.buffer.Buffer source, final long byteCount) {
@@ -1150,7 +1151,7 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Returns whether the cache writer failed.
          *
-         * @return true when failed
+         * @return {@code true} after the first isolated writer failure
          */
         private boolean failed() {
             return failed.get();
@@ -1159,7 +1160,7 @@ public final class HttpCache implements AutoCloseable {
         /**
          * Records the first cache writer failure and aborts the delegate.
          *
-         * @param cause failure cause
+         * @param cause first cache writer failure
          */
         private void fail(final Throwable cause) {
             if (!failed.compareAndSet(false, true)) {

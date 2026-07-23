@@ -32,15 +32,15 @@ public interface GuardRule {
     /**
      * Checks a message.
      *
-     * @param message message
-     * @return guard result
+     * @param message protocol message to evaluate against this rule
+     * @return pass result or a rejection carrying the rule-specific reason
      */
     GuardResult check(Message message);
 
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return stable name used to identify this rule in guard processing and diagnostics
      */
     String name();
 

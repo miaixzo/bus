@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
@@ -62,14 +62,14 @@ import org.miaixz.bus.logger.Logger;
 public final class WebSocketRunner {
 
     /**
-     * Execution snapshot.
+     * Immutable exchange configuration used by every open attempt.
      */
     private final WebSocketSnapshot snapshot;
 
     /**
-     * Creates a runner.
+     * Creates a runner from a validated exchange snapshot.
      *
-     * @param snapshot execution snapshot
+     * @param snapshot immutable WebSocket exchange configuration
      */
     WebSocketRunner(final WebSocketSnapshot snapshot) {
         this.snapshot = require(snapshot, "WebSocket exchange snapshot");
@@ -78,12 +78,13 @@ public final class WebSocketRunner {
     /**
      * Creates a runner for an internal WebSocket transport operation.
      *
-     * @param context shared context
-     * @param uri     target URI
-     * @param headers request headers
-     * @param timeout timeout policy
-     * @param handler message handler
-     * @return runner
+     * @param context shared runtime context used for HTTP upgrade and filtering
+     * @param uri     target WebSocket URI
+     * @param headers headers included in the opening handshake
+     * @param timeout timeout policy applied to the upgrade and session
+     * @param handler handler for messages received by the opened session
+     * @return runner backed by a new immutable exchange snapshot
+     * @throws ValidateException if a required argument is {@code null}
      */
     public static WebSocketRunner create(
             final Context context,
@@ -98,19 +99,24 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Opens the WebSocket synchronously.
+     * Opens the WebSocket synchronously with a new cancellation scope.
      *
-     * @return opened session
+     * @return client session created from a validated HTTP upgrade
+     * @throws CancellationException if the newly created scope is cancelled during the open lifecycle
+     * @throws RuntimeException      if filtering, guarding, upgrading, validation, or session creation fails
      */
     public WebSocketSession open() {
         return open(Cancellation.create());
     }
 
     /**
-     * Opens the WebSocket within a cancellation scope.
+     * Filters and guards the opening message, performs the HTTP upgrade, and creates a client session.
      *
-     * @param cancellation cancellation scope
-     * @return opened session
+     * @param cancellation scope controlling the opening lifecycle and the resulting session
+     * @return opened client session that owns the upgraded connection lease
+     * @throws ValidateException     if {@code cancellation} is {@code null}
+     * @throws CancellationException if cancellation wins before the session is created
+     * @throws RuntimeException      if filtering, guarding, upgrading, validation, or session creation fails
      */
     public WebSocketSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
@@ -130,7 +136,7 @@ public final class WebSocketRunner {
             final Message opening = prepareOpen();
             currentCancellation.throwIfCancelled();
             final WebSocketUpgrade upgrade = new WebSocketUpgrade();
-            final HttpRequest request = HttpRequest.builder().method(HTTP.Method.GET)
+            final HttpRequest request = HttpRequest.builder().method(Http.Method.GET)
                     .url(UnoUrl.parse(upgrade.httpUri(snapshot.uri()).toString()))
                     .headers(upgrade.headers(opening.headers())).timeout(snapshot.timeout()).build();
             upgraded = Mediator.convert(
@@ -196,9 +202,9 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Builds a stable dispatch key for asynchronous opens.
+     * Builds the origin-style dispatch key used by the resulting session.
      *
-     * @return dispatch key
+     * @return scheme, host, and port joined as a stable dispatch key
      */
     String dispatchKey() {
         return snapshot.address().scheme() + Symbol.COLON + Symbol.FORWARDSLASH + snapshot.address().host()
@@ -206,7 +212,9 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Checks the optional guard.
+     * Creates the opening message, applies configured filters, and checks the optional WebSocket guard.
+     *
+     * @return filtered opening message accepted by the guard, or the filtered message when no guard is configured
      */
     private Message prepareOpen() {
         Message opening = Message
@@ -234,8 +242,8 @@ public final class WebSocketRunner {
     /**
      * Emits a WebSocket exchange event.
      *
-     * @param marker      marker
-     * @param cause       failure cause
+     * @param marker      lifecycle marker recorded by the event
+     * @param cause       failure associated with the event, or {@code null} for a successful stage
      * @param operationId stable identifier for this open lifecycle
      */
     private void emit(final ObservationMarker marker, final Throwable cause, final String operationId) {
@@ -250,9 +258,9 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Closes a failed upgrade lease.
+     * Closes a connection lease retained by a failed open attempt.
      *
-     * @param lease connection lease
+     * @param lease connection lease to close, or {@code null} when ownership was not acquired
      */
     private static void closeLease(final ConnectionLease lease) {
         if (lease != null) {
@@ -261,9 +269,9 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Closes a failed upgrade result.
+     * Closes an upgrade result retained by a failed open attempt.
      *
-     * @param upgrade upgrade result
+     * @param upgrade upgrade result to close, or {@code null} when no result was returned
      */
     private static void closeUpgrade(final HttpRunner.Upgrade upgrade) {
         if (upgrade != null) {
@@ -272,10 +280,10 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Converts failures to bus exceptions.
+     * Preserves runtime failures and wraps checked failures as socket exceptions.
      *
-     * @param cause cause
-     * @return runtime exception
+     * @param cause opening failure to normalize
+     * @return the original runtime exception, or a socket exception wrapping a checked failure
      */
     private static RuntimeException socketFailure(final Throwable cause) {
         if (cause instanceof RuntimeException runtime) {
@@ -285,12 +293,12 @@ public final class WebSocketRunner {
     }
 
     /**
-     * Validates a required value.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

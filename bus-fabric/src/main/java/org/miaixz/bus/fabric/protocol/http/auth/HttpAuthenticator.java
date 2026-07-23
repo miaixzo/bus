@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
@@ -38,9 +38,9 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 public interface HttpAuthenticator {
 
     /**
-     * Returns no follow-up authentication.
+     * Returns an authenticator that always declines to create a follow-up request.
      *
-     * @return authenticator
+     * @return no-op authenticator
      */
     static HttpAuthenticator none() {
         return (request, response) -> null;
@@ -49,8 +49,8 @@ public interface HttpAuthenticator {
     /**
      * Creates a basic authenticator.
      *
-     * @param auth auth header generator
-     * @return authenticator
+     * @param auth non-null strategy that applies credentials for a selected challenge
+     * @return authenticator that delegates the response's first challenge to the supplied strategy
      */
     static HttpAuthenticator basic(final HttpAuth auth) {
         final HttpAuth current = require(auth, "HTTP auth");
@@ -59,16 +59,17 @@ public interface HttpAuthenticator {
             if (challenges.isEmpty()) {
                 return null;
             }
-            return current
-                    .authenticate(request, challenge(challenges.getFirst(), response.code() == HTTP.HTTP_PROXY_AUTH));
+            return current.authenticate(
+                    request,
+                    challenge(challenges.getFirst(), response.code() == Http.Status.PROXY_AUTHENTICATION_REQUIRED));
         };
     }
 
     /**
      * Authenticates a failed request.
      *
-     * @param request  failed request
-     * @param response challenge response
+     * @param request  request that produced the authentication challenge
+     * @param response response containing origin or proxy authentication challenges
      * @return authenticated request, or null when no follow-up is available
      */
     HttpRequest authenticate(HttpRequest request, HttpResponse response);
@@ -76,9 +77,9 @@ public interface HttpAuthenticator {
     /**
      * Marks a challenge as proxy or origin targeted.
      *
-     * @param challenge challenge
-     * @param proxy     proxy flag
-     * @return challenge
+     * @param challenge non-null authentication challenge
+     * @param proxy     whether to mark the challenge as proxy-targeted
+     * @return original challenge for origin authentication, or a copy with its {@code proxy} parameter set to true
      */
     static Challenge challenge(final Challenge challenge, final boolean proxy) {
         final Challenge current = require(challenge, "Challenge");
@@ -93,10 +94,10 @@ public interface HttpAuthenticator {
     /**
      * Validates authenticator collaborators before they can create follow-up requests.
      *
-     * @param value value
+     * @param value collaborator reference to validate
      * @param name  field name used in validation messages
-     * @param <T>   value type
-     * @return validated value
+     * @param <T>   collaborator type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

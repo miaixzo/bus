@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -46,6 +46,11 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 21+
  */
 public final class UnoUrl {
+
+    /**
+     * Most recently parsed canonical target. High-throughput clients commonly repeat one endpoint across workers.
+     */
+    private static volatile ParsedUrl lastParsed;
 
     /**
      * Parsed protocol address.
@@ -86,6 +91,17 @@ public final class UnoUrl {
      * Cached encoded URL.
      */
     private volatile String encoded;
+
+    /**
+     * Lazily cached URI view of the immutable encoded URL.
+     */
+    private volatile URI uri;
+
+    /** Cached authority including the effective port. */
+    private volatile String authority;
+
+    /** Cached encoded origin-form request target. */
+    private volatile String requestTarget;
 
     /**
      * Creates an immutable URL.
@@ -147,8 +163,13 @@ public final class UnoUrl {
             throw new ValidateException("URL value must be non-blank");
         }
         final String source = StringKit.trim(value);
+        final ParsedUrl parsedCache = lastParsed;
+        if (parsedCache != null && parsedCache.source().equals(source)) {
+            return parsedCache.url();
+        }
         final UnoUrl fast = fastParse(source);
         if (fast != null) {
+            lastParsed = new ParsedUrl(source, fast);
             return fast;
         }
         try {
@@ -157,11 +178,13 @@ public final class UnoUrl {
             final String decodedPath = normalizePath(uri.getPath());
             final Address address = new Address(parsedAddress.scheme(), parsedAddress.host(), parsedAddress.port(),
                     decodedPath);
-            final String cached = reusableEncoded(uri, source) ? source : null;
+            final String encodedCache = reusableEncoded(uri, source) ? source : null;
             final String[] userInfo = parseUserInfo(uri.getRawUserInfo());
             final String decodedFragment = uri.getRawFragment() == null ? null : decode(uri.getRawFragment());
-            return new UnoUrl(address, decodedPath, parseQueryParameters(uri.getRawQuery()), userInfo[0], userInfo[1],
-                    decodedFragment, cached);
+            final UnoUrl parsed = new UnoUrl(address, decodedPath, parseQueryParameters(uri.getRawQuery()), userInfo[0],
+                    userInfo[1], decodedFragment, encodedCache);
+            lastParsed = new ParsedUrl(source, parsed);
+            return parsed;
         } catch (final URISyntaxException e) {
             throw new ProtocolException("Invalid URL", e);
         } catch (final IllegalArgumentException e) {
@@ -182,7 +205,7 @@ public final class UnoUrl {
     /**
      * Returns the default port for a supported scheme.
      *
-     * @param scheme scheme
+     * @param scheme URL scheme whose conventional client port is requested
      * @return default port, or -1 when unsupported
      */
     public static int defaultPort(final String scheme) {
@@ -191,10 +214,10 @@ public final class UnoUrl {
         }
         final String normalized = scheme.toLowerCase(Locale.ROOT);
         if (Protocol.HTTP.name.equals(normalized) || Protocol.WS.name.equals(normalized)) {
-            return PORT._80.getPort();
+            return Port._80.getPort();
         }
         if (Protocol.HTTPS.name.equals(normalized) || Protocol.WSS.name.equals(normalized)) {
-            return PORT._443.getPort();
+            return Port._443.getPort();
         }
         return Normal.__1;
     }
@@ -202,7 +225,7 @@ public final class UnoUrl {
     /**
      * Creates a URL builder.
      *
-     * @return builder
+     * @return new empty URL builder
      */
     public static Builder builder() {
         return new Builder();
@@ -211,7 +234,7 @@ public final class UnoUrl {
     /**
      * Returns the parsed address.
      *
-     * @return address
+     * @return parsed protocol address including normalized path
      */
     public Address address() {
         return address;
@@ -256,7 +279,7 @@ public final class UnoUrl {
     /**
      * Returns a query snapshot.
      *
-     * @return query snapshot
+     * @return immutable grouped snapshot of decoded query values
      */
     public Map<String, List<String>> query() {
         return immutableQuery(query);
@@ -288,7 +311,7 @@ public final class UnoUrl {
      *
      * @param key   query key
      * @param value query value
-     * @return updated URL
+     * @return new URL with the decoded query pair appended in wire order
      */
     public UnoUrl withQuery(final String key, final String value) {
         validateKey(key);
@@ -304,7 +327,7 @@ public final class UnoUrl {
      * Returns a URL without all values for a query key.
      *
      * @param key query key
-     * @return updated URL
+     * @return new URL with every matching decoded query pair removed
      */
     public UnoUrl withoutQuery(final String key) {
         final String checkedKey = validateKey(key);
@@ -476,7 +499,7 @@ public final class UnoUrl {
     /**
      * Resolves a relative or absolute link against this URL.
      *
-     * @param link link
+     * @param link relative or absolute URI reference
      * @return resolved URL, or null when invalid
      */
     public UnoUrl resolve(final String link) {
@@ -493,7 +516,7 @@ public final class UnoUrl {
     /**
      * Creates a builder initialized from this URL.
      *
-     * @return builder
+     * @return builder initialized from every decoded component of this URL
      */
     public Builder newBuilder() {
         final Builder builder = builder().scheme(scheme()).host(host()).port(port()).path(path).username(username)
@@ -508,7 +531,7 @@ public final class UnoUrl {
     /**
      * Resolves a link and returns an initialized builder.
      *
-     * @param link link
+     * @param link relative or absolute URI reference
      * @return builder, or null when invalid
      */
     public Builder newBuilder(final String link) {
@@ -519,11 +542,17 @@ public final class UnoUrl {
     /**
      * Converts this URL to a URI.
      *
-     * @return URI
+     * @return URI created from the canonical encoded URL
      */
     public URI toUri() {
+        final URI cached = uri;
+        if (cached != null) {
+            return cached;
+        }
         try {
-            return new URI(encoded());
+            final URI parsed = new URI(encoded());
+            uri = parsed;
+            return parsed;
         } catch (final URISyntaxException e) {
             throw new ProtocolException("Unable to create URL URI", e);
         }
@@ -532,10 +561,50 @@ public final class UnoUrl {
     /**
      * Converts this URL to a URI.
      *
-     * @return URI
+     * @return URI created from the canonical encoded URL
      */
     public URI uri() {
         return toUri();
+    }
+
+    /**
+     * Returns the stable authority including the effective port.
+     *
+     * @return host and port in authority form
+     */
+    public String authority() {
+        String current = authority;
+        if (current == null) {
+            current = host() + Symbol.C_COLON + port();
+            authority = current;
+        }
+        return current;
+    }
+
+    /**
+     * Returns the encoded origin-form path and query without a fragment.
+     *
+     * @return encoded HTTP request target
+     */
+    public String requestTarget() {
+        String current = requestTarget;
+        if (current == null) {
+            final String value = encoded();
+            final int authorityStart = value.indexOf("://") + Normal._3;
+            final int fragmentStart = value.indexOf(Symbol.C_HASH, authorityStart);
+            final int end = fragmentStart < Normal._0 ? value.length() : fragmentStart;
+            final int pathStart = value.indexOf(Symbol.C_SLASH, authorityStart);
+            final int queryStart = value.indexOf(Symbol.C_QUESTION_MARK, authorityStart);
+            if (pathStart >= Normal._0 && pathStart < end) {
+                current = value.substring(pathStart, end);
+            } else if (queryStart >= Normal._0 && queryStart < end) {
+                current = Symbol.SLASH + value.substring(queryStart, end);
+            } else {
+                current = Symbol.SLASH;
+            }
+            requestTarget = current;
+        }
+        return current;
     }
 
     /**
@@ -551,8 +620,8 @@ public final class UnoUrl {
     /**
      * Builds the encoded URL.
      *
-     * @param address  address
-     * @param path     path
+     * @param address  normalized scheme, host, and effective port
+     * @param path     decoded normalized path
      * @param query    query parameters
      * @param username decoded username
      * @param password decoded password
@@ -630,7 +699,7 @@ public final class UnoUrl {
     /**
      * Converts query parameters to grouped map view.
      *
-     * @param parameters parameters
+     * @param parameters decoded query pairs in URL order
      * @return grouped query
      */
     private static Map<String, List<String>> queryFromParameters(final List<QueryParameter> parameters) {
@@ -971,6 +1040,15 @@ public final class UnoUrl {
     }
 
     /**
+     * Most recent immutable parse result.
+     *
+     * @param source normalized source text
+     * @param url    parsed immutable URL
+     */
+    private record ParsedUrl(String source, UnoUrl url) {
+    }
+
+    /**
      * Decoded query parameter pair.
      *
      * @param name  query name
@@ -1042,7 +1120,7 @@ public final class UnoUrl {
         /**
          * Sets the scheme.
          *
-         * @param scheme scheme
+         * @param scheme URL scheme normalized to lowercase
          * @return this builder
          */
         public Builder scheme(final String scheme) {
@@ -1053,7 +1131,7 @@ public final class UnoUrl {
         /**
          * Sets the host.
          *
-         * @param host host
+         * @param host host name normalized to lowercase
          * @return this builder
          */
         public Builder host(final String host) {
@@ -1064,7 +1142,7 @@ public final class UnoUrl {
         /**
          * Sets the decoded username.
          *
-         * @param username username
+         * @param username decoded user-info username
          * @return this builder
          */
         public Builder username(final String username) {
@@ -1086,7 +1164,7 @@ public final class UnoUrl {
         /**
          * Sets the decoded password.
          *
-         * @param password password
+         * @param password decoded user-info password
          * @return this builder
          */
         public Builder password(final String password) {
@@ -1108,7 +1186,7 @@ public final class UnoUrl {
         /**
          * Sets the port.
          *
-         * @param port port
+         * @param port explicit port, or {@code -1} to use the scheme default
          * @return this builder
          */
         public Builder port(final int port) {
@@ -1122,7 +1200,7 @@ public final class UnoUrl {
         /**
          * Sets the path.
          *
-         * @param path path
+         * @param path decoded absolute or relative path normalized with a leading slash
          * @return this builder
          */
         public Builder path(final String path) {
@@ -1148,7 +1226,7 @@ public final class UnoUrl {
         /**
          * Sets the decoded fragment.
          *
-         * @param fragment fragment
+         * @param fragment decoded fragment, or {@code null} to clear it
          * @return this builder
          */
         public Builder fragment(final String fragment) {
@@ -1171,7 +1249,7 @@ public final class UnoUrl {
         /**
          * Builds an immutable URL.
          *
-         * @return URL
+         * @return immutable URL built from the validated decoded components
          */
         public UnoUrl build() {
             validateText(scheme, "Scheme");

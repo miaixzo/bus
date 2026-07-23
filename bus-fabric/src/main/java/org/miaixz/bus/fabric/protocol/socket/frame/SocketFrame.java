@@ -32,18 +32,20 @@ import org.miaixz.bus.fabric.Builder;
 /**
  * Immutable socket frame payload.
  *
- * @param payload immutable payload
- * @param length  payload length
+ * @param payload immutable snapshot of the socket-frame bytes
+ * @param length  byte count, always equal to {@code payload.size()} and at most 16 MiB
  * @author Kimi Liu
  * @since Java 21+
  */
 public record SocketFrame(ByteString payload, int length) {
 
     /**
-     * Creates a frame.
+     * Validates the declared length and copies the payload into an immutable snapshot.
      *
-     * @param payload payload
-     * @param length  length
+     * @param payload source bytes copied into the frame
+     * @param length  declared byte count matching the payload size
+     * @throws ValidateException if {@code payload} is {@code null}
+     * @throws ProtocolException if {@code length} is negative, exceeds 16 MiB, or differs from the payload size
      */
     public SocketFrame {
         final ByteString checkedPayload = Assert
@@ -60,8 +62,10 @@ public record SocketFrame(ByteString payload, int length) {
     /**
      * Creates a frame from immutable bytes.
      *
-     * @param payload payload bytes
-     * @return frame
+     * @param payload source bytes copied into the frame snapshot
+     * @return frame whose declared length is derived from the payload size
+     * @throws ValidateException if {@code payload} is {@code null}
+     * @throws ProtocolException if the payload exceeds 16 MiB
      */
     public static SocketFrame of(final ByteString payload) {
         final ByteString checkedPayload = Assert
@@ -72,9 +76,12 @@ public record SocketFrame(ByteString payload, int length) {
     /**
      * Creates a text frame.
      *
-     * @param value   text
-     * @param charset charset
-     * @return frame
+     * @param value   non-null text to encode
+     * @param charset charset used to encode the text
+     * @return frame containing the encoded text bytes
+     * @throws ValidateException if {@code value} or {@code charset} is {@code null}
+     * @throws ProtocolException if the encoded payload exceeds 16 MiB
+     * @throws ConvertException  if the text cannot be encoded
      */
     public static SocketFrame text(final String value, final Charset charset) {
         final String checkedValue = Assert
@@ -93,7 +100,7 @@ public record SocketFrame(ByteString payload, int length) {
     /**
      * Returns payload length.
      *
-     * @return length
+     * @return validated payload byte count
      */
     @Override
     public int length() {

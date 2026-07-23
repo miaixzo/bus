@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.Builder;
 public final class Browser {
 
     /**
-     * Known browsers ordered from most-specific to generic.
+     * Shared browser registry, initialized from most-specific classifiers to generic classifiers.
      */
     private static final List<Browser> BROWSERS = Instances.get(
             Browser.class.getName() + ".browsers",
@@ -88,21 +88,21 @@ public final class Browser {
     private final String name;
 
     /**
-     * Match rule.
+     * Case-insensitive pattern used to recognize this browser.
      */
     private final Pattern rule;
 
     /**
-     * Version rule.
+     * Case-insensitive pattern whose first capture group contains the browser version.
      */
     private final Pattern versionRule;
 
     /**
      * Creates a browser classifier.
      *
-     * @param name         name
-     * @param rule         match rule
-     * @param versionRegex version regex
+     * @param name         non-blank classifier name
+     * @param rule         regular expression used to recognize matching User-Agent text, or null to disable matching
+     * @param versionRegex regular expression with the version in capture group 1, or null to disable extraction
      */
     public Browser(final String name, final String rule, final String versionRegex) {
         this.name = AgentRules.name(name);
@@ -115,8 +115,8 @@ public final class Browser {
     /**
      * Parses a browser.
      *
-     * @param text User-Agent text
-     * @return browser
+     * @param text User-Agent text to classify, or null
+     * @return first registered matching classifier, or the shared unknown classifier when none matches
      */
     public static Browser parse(final String text) {
         for (final Browser browser : BROWSERS) {
@@ -130,9 +130,9 @@ public final class Browser {
     /**
      * Adds a custom browser classifier.
      *
-     * @param name         name
-     * @param rule         match rule
-     * @param versionRegex version regex
+     * @param name         non-blank classifier name
+     * @param rule         regular expression used to recognize matching User-Agent text, or null to disable matching
+     * @param versionRegex regular expression with the version in capture group 1, or null to disable extraction
      */
     public static void addCustomBrowser(final String name, final String rule, final String versionRegex) {
         BROWSERS.add(new Browser(name, rule, versionRegex));
@@ -141,7 +141,7 @@ public final class Browser {
     /**
      * Returns known browser classifiers.
      *
-     * @return browsers
+     * @return immutable snapshot of the current registry in matching order
      */
     public static List<Browser> browsers() {
         return List.copyOf(BROWSERS);
@@ -150,7 +150,7 @@ public final class Browser {
     /**
      * Returns the name.
      *
-     * @return name
+     * @return non-blank classifier name
      */
     public String name() {
         return name;
@@ -159,8 +159,8 @@ public final class Browser {
     /**
      * Returns whether this browser matches the text.
      *
-     * @param text User-Agent text
-     * @return true when matched
+     * @param text User-Agent text to search, or null
+     * @return true when the recognition pattern occurs in the supplied text
      */
     public boolean matches(final String text) {
         return AgentRules.contains(rule, text);
@@ -169,8 +169,8 @@ public final class Browser {
     /**
      * Returns the parsed browser version.
      *
-     * @param text User-Agent text
-     * @return version or null
+     * @param text User-Agent text from which to extract a version, or null
+     * @return first capture of the version pattern, or null for an unknown classifier or absent match
      */
     public String version(final String text) {
         return unknown() ? null : AgentRules.group1(versionRule, text);
@@ -179,7 +179,7 @@ public final class Browser {
     /**
      * Returns whether this browser is mobile-oriented.
      *
-     * @return true when mobile
+     * @return true when the classifier name belongs to the built-in mobile-oriented set
      */
     public boolean mobile() {
         return "PSP".equals(name) || "Yammer Mobile".equals(name) || "Android Browser".equals(name)
@@ -199,8 +199,8 @@ public final class Browser {
     /**
      * Compares browser classifiers by name.
      *
-     * @param object object to compare
-     * @return true when names match
+     * @param object object to compare with this classifier
+     * @return true when the other object is a browser classifier with the same name
      */
     @Override
     public boolean equals(final Object object) {

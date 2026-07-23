@@ -42,47 +42,47 @@ import org.miaixz.bus.fabric.cache.CacheWriter;
 final class HttpCacheWriter implements Payload, AutoCloseable {
 
     /**
-     * Original one-shot payload.
+     * Network payload whose source is opened once and copied into the cache.
      */
     private final Payload delegate;
 
     /**
-     * Cache writer.
+     * Destination receiving bytes as callers consume the network payload.
      */
     private final CacheWriter writer;
 
     /**
-     * Commit callback.
+     * Callback invoked after the cache destination commits a complete body.
      */
     private final Runnable commitCallback;
 
     /**
-     * Abort callback.
+     * Callback invoked after an incomplete cache destination is aborted.
      */
     private final Runnable abortCallback;
 
     /**
-     * Opened state.
+     * Guards the one-shot transition from unopened to opened.
      */
     private final AtomicBoolean opened = new AtomicBoolean();
 
     /**
-     * Finished state.
+     * Ensures that commit or abort completes the cache operation only once.
      */
     private final AtomicBoolean finished = new AtomicBoolean();
 
     /**
-     * Current source.
+     * Open delegate source, or null before {@link #source()} is called.
      */
     private Source current;
 
     /**
      * Creates a cache-writing payload.
      *
-     * @param delegate       original payload
-     * @param writer         cache writer
-     * @param commitCallback commit callback
-     * @param abortCallback  abort callback
+     * @param delegate       non-null one-shot network payload to consume
+     * @param writer         non-null cache destination receiving consumed bytes
+     * @param commitCallback non-null callback run after a complete body is committed
+     * @param abortCallback  non-null callback run after an incomplete body is aborted
      */
     HttpCacheWriter(final Payload delegate, final CacheWriter writer, final Runnable commitCallback,
             final Runnable abortCallback) {
@@ -95,9 +95,9 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Returns body length.
+     * Returns the length reported by the network payload.
      *
-     * @return body length
+     * @return delegated byte length, or the delegate's unknown-length sentinel
      */
     @Override
     public long length() {
@@ -105,9 +105,9 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Opens a tee source.
+     * Opens the payload once and returns a source that copies consumed bytes to the cache writer.
      *
-     * @return tee source
+     * @return source that commits the cache at end-of-stream and aborts it on failure or premature close
      */
     @Override
     public Source source() {
@@ -119,9 +119,9 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Reads all body bytes while writing cache.
+     * Materializes the body while populating the cache, using the default size limit.
      *
-     * @return bytes
+     * @return complete payload bytes
      */
     @Override
     public byte[] bytes() {
@@ -131,8 +131,8 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     /**
      * Reads all body bytes while writing cache with an explicit threshold.
      *
-     * @param maxBytes maximum bytes to materialize
-     * @return bytes
+     * @param maxBytes maximum number of payload bytes permitted in memory
+     * @return complete payload bytes
      */
     @Override
     public byte[] bytes(final long maxBytes) {
@@ -140,10 +140,10 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Reads body text.
+     * Materializes and decodes the body using the default size limit.
      *
-     * @param charset charset
-     * @return text
+     * @param charset non-null charset used to decode the body
+     * @return decoded payload text
      */
     @Override
     public String text(final Charset charset) {
@@ -153,9 +153,9 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     /**
      * Reads body text with an explicit threshold.
      *
-     * @param charset  charset
-     * @param maxBytes maximum bytes to materialize
-     * @return text
+     * @param charset  non-null charset used to decode the body
+     * @param maxBytes maximum number of payload bytes permitted in memory
+     * @return decoded payload text
      */
     @Override
     public String text(final Charset charset, final long maxBytes) {
@@ -166,7 +166,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     /**
      * Returns whether this payload is repeatable.
      *
-     * @return false
+     * @return always false because the delegate source can be opened only once
      */
     @Override
     public boolean repeatable() {
@@ -174,7 +174,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     }
 
     /**
-     * Aborts unfinished cache writes.
+     * Aborts an unfinished cache write and closes the opened network source on a best-effort basis.
      */
     @Override
     public void close() {
@@ -216,42 +216,42 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     private static final class CacheWritingSource implements Source {
 
         /**
-         * Source stream.
+         * Network source from which caller-requested bytes are read.
          */
         private final Source source;
 
         /**
-         * Cache writer.
+         * Cache destination receiving copies of successfully read bytes.
          */
         private final CacheWriter writer;
 
         /**
-         * Commit callback.
+         * Completion action invoked when the source reaches end-of-stream.
          */
         private final Runnable commit;
 
         /**
-         * Abort callback.
+         * Failure action invoked on read failure or close before end-of-stream.
          */
         private final Runnable abort;
 
         /**
-         * Bus-core transfer buffer.
+         * Scratch buffer used to copy newly read bytes from the caller's target into the cache writer.
          */
         private final Buffer buffer = new Buffer();
 
         /**
-         * Closed state.
+         * Tracks end-of-stream or explicit closure and prevents further reads.
          */
         private final AtomicBoolean closed = new AtomicBoolean();
 
         /**
          * Creates a tee source.
          *
-         * @param source source stream
-         * @param writer cache writer
-         * @param commit commit callback
-         * @param abort  abort callback
+         * @param source network source to read
+         * @param writer cache destination receiving copied bytes
+         * @param commit action to run when end-of-stream is reached
+         * @param abort  action to run after a read failure or premature close
          */
         private CacheWritingSource(final Source source, final CacheWriter writer, final Runnable commit,
                 final Runnable abort) {
@@ -264,9 +264,10 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         /**
          * Reads bytes and writes them to cache.
          *
-         * @param target target buffer
-         * @return byte count or -1
-         * @throws IOException when reading fails
+         * @param target    caller buffer receiving bytes from the network source
+         * @param byteCount maximum bytes requested from the source
+         * @return number of bytes read, zero when the delegate makes no progress, or -1 at or after end-of-stream
+         * @throws IOException when the delegate read or cache write fails with an I/O error
          */
         @Override
         public long read(final Buffer target, final long byteCount) throws IOException {
@@ -295,7 +296,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         /**
          * Returns the delegate source timeout.
          *
-         * @return source timeout
+         * @return timeout object owned by the delegate network source
          */
         @Override
         public Timeout timeout() {
@@ -303,7 +304,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         }
 
         /**
-         * Closes this source and aborts if EOF was not reached.
+         * Closes the delegate source and aborts the cache operation if end-of-stream was not reached.
          *
          * @throws IOException when source close fails
          */

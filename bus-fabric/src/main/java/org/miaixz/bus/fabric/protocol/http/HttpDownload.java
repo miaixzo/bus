@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Context;
@@ -62,12 +62,12 @@ public final class HttpDownload {
     private final Exchange exchange;
 
     /**
-     * Source request.
+     * Immutable GET request supplying URL, headers, and timeout policy.
      */
     private final HttpRequest request;
 
     /**
-     * Target file.
+     * Final file path installed after a successful transfer.
      */
     private final Path target;
 
@@ -77,7 +77,7 @@ public final class HttpDownload {
     private final Cancellation cancellation;
 
     /**
-     * Progress callback.
+     * Optional callback receiving written and expected byte counts.
      */
     private final BiConsumer<Long, Long> progress;
 
@@ -100,7 +100,7 @@ public final class HttpDownload {
      * Creates a download task.
      *
      * @param exchange     HTTP executor
-     * @param request      request
+     * @param request      GET request used to obtain download bytes
      * @param target       target file
      * @param cancellation cancellation scope
      * @param progress     progress callback
@@ -116,14 +116,14 @@ public final class HttpDownload {
         this.resume = resume;
         this.paused = new AtomicBoolean();
         this.cancelled = new AtomicBoolean();
-        Assert.isTrue(request.method() == HTTP.Method.GET, () -> new ValidateException("HTTP download requires GET"));
+        Assert.isTrue(request.method() == Http.Method.GET, () -> new ValidateException("HTTP download requires GET"));
     }
 
     /**
      * Creates a builder that executes with a Context.
      *
-     * @param context context
-     * @return builder
+     * @param context runtime context used to execute the HTTP call
+     * @return new download builder backed by the context HTTP runner
      */
     public static Builder builder(final Context context) {
         final Context current = require(context, "Context");
@@ -148,8 +148,8 @@ public final class HttpDownload {
     /**
      * Creates a builder with a custom exchange, useful for adapters and tests.
      *
-     * @param exchange exchange
-     * @return builder
+     * @param exchange custom HTTP exchange function
+     * @return new download builder backed by the supplied exchange
      */
     public static Builder builder(final Exchange exchange) {
         return new Builder(exchange);
@@ -158,7 +158,7 @@ public final class HttpDownload {
     /**
      * Executes the download.
      *
-     * @return completed target
+     * @return final target path after the part file is atomically installed
      */
     public Path execute() {
         cancellation.throwIfCancelled();
@@ -193,7 +193,7 @@ public final class HttpDownload {
                     resume);
             final HttpRequest current = rangedRequest(offset, readValidator(meta));
             try (HttpResponse response = exchange.execute(current, cancellation)) {
-                final boolean append = offset > 0L && response.code() == HTTP.HTTP_PARTIAL;
+                final boolean append = offset > 0L && response.code() == Http.Status.PARTIAL_CONTENT;
                 if (!append) {
                     offset = 0L;
                     deleteQuietly(part);
@@ -284,7 +284,7 @@ public final class HttpDownload {
     /**
      * Returns the target file.
      *
-     * @return target
+     * @return configured final target file path
      */
     public Path target() {
         return target;
@@ -311,17 +311,17 @@ public final class HttpDownload {
     /**
      * Creates a ranged request when a partial body exists.
      *
-     * @param offset    offset
-     * @param validator validator
-     * @return request
+     * @param offset    existing partial-file byte count
+     * @param validator ETag or Last-Modified value for If-Range, or {@code null}
+     * @return original request for zero offset, otherwise a copy with Range headers
      */
     private HttpRequest rangedRequest(final long offset, final String validator) {
         if (offset <= 0L) {
             return request;
         }
-        Headers headers = request.headers().with(HTTP.RANGE, "bytes=" + offset + "-");
+        Headers headers = request.headers().with(Http.Header.RANGE, "bytes=" + offset + "-");
         if (validator != null) {
-            headers = headers.with(HTTP.IF_RANGE, validator);
+            headers = headers.with(Http.Header.IF_RANGE, validator);
         }
         return request.toBuilder().headers(headers).build();
     }
@@ -329,7 +329,7 @@ public final class HttpDownload {
     /**
      * Copies response body to the part file.
      *
-     * @param response response
+     * @param response accepted HTTP response whose body is copied
      * @param part     part file
      * @param offset   existing offset
      * @param total    total expected length
@@ -368,15 +368,15 @@ public final class HttpDownload {
     /**
      * Validates the HTTP response.
      *
-     * @param response response
+     * @param response HTTP response whose status is validated
      * @param append   append mode
      */
     private static void validateResponse(final HttpResponse response, final boolean append) {
         final int code = response.code();
-        if (append && code != HTTP.HTTP_PARTIAL) {
+        if (append && code != Http.Status.PARTIAL_CONTENT) {
             throw new ProtocolException("HTTP resume requires 206 Partial Content");
         }
-        if (!append && code != HTTP.HTTP_OK && code != HTTP.HTTP_PARTIAL) {
+        if (!append && code != Http.Status.OK && code != Http.Status.PARTIAL_CONTENT) {
             throw new ProtocolException("HTTP download failed with status " + code);
         }
     }
@@ -384,13 +384,13 @@ public final class HttpDownload {
     /**
      * Returns expected total length.
      *
-     * @param response response
-     * @param offset   offset
+     * @param response accepted response containing length headers
+     * @param offset   existing partial-file byte count
      * @param append   append mode
      * @return total or -1
      */
     private static long totalLength(final HttpResponse response, final long offset, final boolean append) {
-        final long rangeTotal = contentRangeTotal(response.headers().get(HTTP.CONTENT_RANGE));
+        final long rangeTotal = contentRangeTotal(response.headers().get(Http.Header.CONTENT_RANGE));
         if (rangeTotal >= 0L) {
             return rangeTotal;
         }
@@ -436,12 +436,12 @@ public final class HttpDownload {
     /**
      * Returns a resumable validator.
      *
-     * @param response response
+     * @param response response containing ETag or Last-Modified headers
      * @return validator or null
      */
     private static String validator(final HttpResponse response) {
-        final String etag = response.headers().get(HTTP.ETAG);
-        return etag == null ? response.headers().get(HTTP.LAST_MODIFIED) : etag;
+        final String etag = response.headers().get(Http.Header.ETAG);
+        return etag == null ? response.headers().get(Http.Header.LAST_MODIFIED) : etag;
     }
 
     /**
@@ -463,7 +463,7 @@ public final class HttpDownload {
      * Writes a validator sidecar.
      *
      * @param meta      sidecar
-     * @param validator validator
+     * @param validator ETag or Last-Modified value, or {@code null} to remove the sidecar
      * @throws IOException when writing fails
      */
     private static void writeValidator(final Path meta, final String validator) throws IOException {
@@ -529,7 +529,7 @@ public final class HttpDownload {
     /**
      * Validates required builder and execution inputs.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name used in validation messages
      * @param <T>   value type
      * @return validated value
@@ -547,9 +547,9 @@ public final class HttpDownload {
         /**
          * Executes an HTTP request.
          *
-         * @param request      request
-         * @param cancellation cancellation
-         * @return response
+         * @param request      HTTP request to execute
+         * @param cancellation cancellation scope shared with the transfer
+         * @return open HTTP response whose body supplies download bytes
          */
         HttpResponse execute(HttpRequest request, Cancellation cancellation);
 
@@ -602,7 +602,7 @@ public final class HttpDownload {
         /**
          * Sets the HTTP request used to obtain download bytes.
          *
-         * @param request request
+         * @param request GET request used to obtain download bytes
          * @return this builder
          */
         public Builder request(final HttpRequest request) {
@@ -657,7 +657,7 @@ public final class HttpDownload {
         /**
          * Builds an immutable download task.
          *
-         * @return download task
+         * @return immutable download task built from the current candidates
          */
         public HttpDownload build() {
             return new HttpDownload(exchange, request, target, cancellation, progress, resume);
@@ -666,7 +666,7 @@ public final class HttpDownload {
         /**
          * Builds and executes the download task.
          *
-         * @return downloaded file
+         * @return final target path after successful download
          */
         public Path execute() {
             return build().execute();

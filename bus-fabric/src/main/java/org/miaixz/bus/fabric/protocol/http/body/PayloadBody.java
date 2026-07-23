@@ -61,7 +61,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Payload reference.
      */
-    private final Payload payload;
+    private Payload payload;
 
     /**
      * Optional progress tracker.
@@ -91,8 +91,8 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Creates a payload body.
      *
-     * @param payload payload
-     * @param media   media
+     * @param payload body content source
+     * @param media   HTTP media metadata
      */
     private PayloadBody(final Payload payload, final MediaType media) {
         this(payload, media, null, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
@@ -101,8 +101,8 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Creates a payload body.
      *
-     * @param payload  payload
-     * @param media    media
+     * @param payload  body content source
+     * @param media    HTTP media metadata
      * @param progress optional progress tracker
      */
     private PayloadBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress) {
@@ -112,8 +112,8 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Creates a payload body.
      *
-     * @param payload             payload
-     * @param media               media
+     * @param payload             body content source
+     * @param media               HTTP media metadata
      * @param progress            optional progress tracker
      * @param materializeMaxBytes materialize byte threshold
      */
@@ -139,30 +139,37 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Creates a payload body.
      *
-     * @param payload payload
-     * @param media   media
-     * @return payload body
+     * @param payload body content source
+     * @param media   HTTP media metadata
+     * @return immutable payload body using the default materialization threshold
      */
     public static PayloadBody of(final Payload payload, final MediaType media) {
+        if (payload == Payload.empty() && media == MediaType.APPLICATION_OCTET_STREAM_TYPE) {
+            return empty();
+        }
         return new PayloadBody(payload, media);
     }
 
     /**
      * Creates a payload body with an explicit materialize threshold.
      *
-     * @param payload             payload
-     * @param media               media
+     * @param payload             body content source
+     * @param media               HTTP media metadata
      * @param materializeMaxBytes materialize byte threshold
-     * @return payload body
+     * @return immutable payload body using the supplied materialization threshold
      */
     public static PayloadBody of(final Payload payload, final MediaType media, final long materializeMaxBytes) {
+        if (payload == Payload.empty() && media == MediaType.APPLICATION_OCTET_STREAM_TYPE
+                && materializeMaxBytes == Builder.DEFAULT_MATERIALIZE_MAX_BYTES) {
+            return empty();
+        }
         return new PayloadBody(payload, media, null, materializeMaxBytes);
     }
 
     /**
      * Returns a progress-aware copy of this payload body.
      *
-     * @param listener listener
+     * @param listener callback receiving transferred and total byte counts
      * @return progress-aware payload body
      */
     public PayloadBody progress(final BiConsumer<Long, Long> listener) {
@@ -176,16 +183,35 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @return copied payload body
      */
     public PayloadBody materializeMaxBytes(final long bytes) {
+        Payload.validateMaterializeMaxBytes(bytes);
+        if (bytes == materializeMaxBytes) {
+            return this;
+        }
         return new PayloadBody(payload, media, progress, bytes);
     }
 
     /**
      * Returns the payload.
      *
-     * @return payload
+     * @return original payload or its progress-tracking wrapper
      */
     public Payload payload() {
         return progress == null ? payload : progress.payload();
+    }
+
+    /**
+     * Replaces a transport payload before the response body is published, retaining media and limits.
+     *
+     * @param replacement payload with the same declared length
+     * @return this body
+     */
+    public PayloadBody withTransportPayload(final Payload replacement) {
+        final Payload current = Assert.notNull(replacement, () -> new ValidateException("Payload must not be null"));
+        if (progress != null || current.length() != length) {
+            throw new ValidateException("Transport payload replacement must preserve body length and progress state");
+        }
+        this.payload = current;
+        return this;
     }
 
     /**
@@ -209,7 +235,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Returns the media.
      *
-     * @return media
+     * @return immutable HTTP media metadata
      */
     public MediaType media() {
         return media;
@@ -246,28 +272,28 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Reads all body bytes.
      *
-     * @return bytes
+     * @return fully materialized body bytes within this body's threshold
      */
     public byte[] bytes() {
-        return Payload.materialize(payload(), materializeMaxBytes, "PayloadBody.bytes()");
+        return payload().bytes(materializeMaxBytes);
     }
 
     /**
      * Reads all body bytes with an explicit materialize threshold.
      *
      * @param maxBytes maximum bytes to materialize
-     * @return bytes
+     * @return fully materialized body bytes within the supplied threshold
      */
     @Override
     public byte[] bytes(final long maxBytes) {
-        return Payload.materialize(payload(), maxBytes, "PayloadBody.bytes(long)");
+        return payload().bytes(maxBytes);
     }
 
     /**
      * Reads body text.
      *
-     * @param charset charset
-     * @return text
+     * @param charset character encoding used to decode body bytes
+     * @return fully materialized body text within this body's threshold
      */
     public String text(final Charset charset) {
         return text(charset, materializeMaxBytes);
@@ -276,14 +302,14 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Reads body text with an explicit materialize threshold.
      *
-     * @param charset  charset
+     * @param charset  character encoding used to decode body bytes
      * @param maxBytes maximum bytes to materialize
-     * @return text
+     * @return fully materialized body text within the supplied threshold
      */
     @Override
     public String text(final Charset charset, final long maxBytes) {
         final Charset checkedCharset = Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
-        return new String(bytes(maxBytes), checkedCharset);
+        return payload().text(checkedCharset, maxBytes);
     }
 
     /**
@@ -357,8 +383,8 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
     /**
      * Validates a payload length.
      *
-     * @param length length
-     * @return length
+     * @param length candidate payload length, with {@code -1} representing unknown
+     * @return validated length of {@code -1} or greater
      */
     private static long validateLength(final long length) {
         Assert.isFalse(length < -1, () -> new ValidateException("Body length must be -1 or greater"));

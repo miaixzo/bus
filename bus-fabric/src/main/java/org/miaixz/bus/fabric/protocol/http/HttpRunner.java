@@ -20,15 +20,15 @@
 package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.net.ProxySelector;
 import java.util.List;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -38,6 +38,7 @@ import org.miaixz.bus.fabric.Filter;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.proxy.ProxySelectorAdapter;
@@ -70,6 +71,27 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class HttpRunner {
 
     /**
+     * Atomic single-execution guard updater.
+     */
+    private static final VarHandle EXECUTED;
+
+    static {
+        try {
+            EXECUTED = MethodHandles.lookup().findVarHandle(HttpRunner.class, "executed", boolean.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    /**
+     * Context-scoped immutable pipeline service prefix.
+     */
+    private static final String PIPELINE_SERVICE = HttpRunner.class.getName() + ".pipeline.";
+
+    /** Most recently resolved context pipeline, avoiding service-key construction on repeated calls. */
+    private static volatile PipelineCache pipelineCache;
+
+    /**
      * Execution snapshot.
      */
     private final HttpSnapshot snapshot;
@@ -77,7 +99,7 @@ public final class HttpRunner {
     /**
      * Single execution guard.
      */
-    private final AtomicBoolean executed;
+    private volatile boolean executed;
 
     /**
      * Stable operation identifier shared by every event in this exchange.
@@ -130,6 +152,16 @@ public final class HttpRunner {
     private final long materializeMaxBytes;
 
     /**
+     * Shared bridge stage used by regular and upgrade exchanges.
+     */
+    private final HttpBridge bridge;
+
+    /**
+     * Shared connection stage used by regular and upgrade exchanges.
+     */
+    private final HttpConnect connect;
+
+    /**
      * Ordered immutable HTTP stage snapshot executed for this exchange.
      */
     private final List<org.miaixz.bus.fabric.protocol.http.chain.HttpStage> stages;
@@ -142,7 +174,8 @@ public final class HttpRunner {
     /**
      * Creates an HTTP runner.
      *
-     * @param snapshot execution snapshot
+     * @param snapshot immutable request and exchange-hook snapshot
+     * @throws ValidateException if {@code snapshot} is {@code null}
      */
     HttpRunner(final HttpSnapshot snapshot) {
         this(snapshot, true);
@@ -152,40 +185,59 @@ public final class HttpRunner {
      * Creates an HTTP runner and records whether lifecycle events have a real consumer. The public factory supplies the
      * known no-op observer directly, while builder-created snapshots retain their configured observer.
      *
-     * @param snapshot execution snapshot
-     * @param observed whether events have a consumer
+     * @param snapshot immutable request and exchange-hook snapshot
+     * @param observed whether lifecycle events have a non-noop consumer
+     * @throws ValidateException if {@code snapshot} is {@code null}
      */
-    private HttpRunner(final HttpSnapshot snapshot, final boolean observed) {
+    HttpRunner(final HttpSnapshot snapshot, final boolean observed) {
         this.snapshot = require(snapshot, "HTTP exchange snapshot");
-        this.executed = new AtomicBoolean();
+        final Context context = snapshot.context();
+        final Pipeline pipeline = pipeline(context);
         this.observed = observed;
         this.operationId = observed ? ID.objectId() : null;
-        this.filter = FilterChain.compose(snapshot.context().filter(), snapshot.filter());
-        this.cache = cache();
-        this.cookies = cookieJar();
-        this.authenticator = authenticator();
-        this.userAgent = userAgent();
-        this.tlsContext = tlsContext();
-        this.tlsSettings = tlsSettings();
-        this.proxy = proxy();
-        this.materializeMaxBytes = snapshot.context().options().materializeMaxBytes();
-        this.stages = List.of(
-                new HttpRetry(this.authenticator),
-                new HttpBridge(this.cookies, this.userAgent),
-                this.cache == null ? HttpCoordinator.disabled(snapshot.context().reactor().clock())
-                        : HttpCoordinator.create(this.cache, snapshot.context().reactor().clock()),
-                new HttpConnect(snapshot.context().directory().connectionPool(), this.tlsContext, this.tlsSettings,
-                        snapshot.context().listener(), snapshot.context().resolver(),
-                        snapshot.context().reactor().dispatcher()),
-                new HttpTransport(snapshot.context().reactor().dispatcher()));
+        final Filter contextFilter = context.filter();
+        final Filter exchangeFilter = snapshot.filter();
+        this.filter = contextFilter == null && exchangeFilter == null ? null
+                : FilterChain.compose(contextFilter, exchangeFilter);
+        this.cache = pipeline.cache;
+        this.cookies = pipeline.cookies;
+        this.authenticator = pipeline.authenticator;
+        this.userAgent = pipeline.userAgent;
+        this.tlsContext = pipeline.tlsContext;
+        this.tlsSettings = pipeline.tlsSettings;
+        this.proxy = pipeline.proxy(snapshot.request());
+        this.materializeMaxBytes = pipeline.materializeMaxBytes;
+        this.bridge = pipeline.bridge;
+        this.connect = pipeline.connect;
+        this.stages = pipeline.stages;
+    }
+
+    /**
+     * Resolves the immutable pipeline with an identity fast path for repeated calls on one context.
+     *
+     * @param context execution context
+     * @return context-owned pipeline
+     */
+    private static Pipeline pipeline(final Context context) {
+        final PipelineCache cached = pipelineCache;
+        if (cached != null && cached.context == context) {
+            return cached.pipeline;
+        }
+        final Pipeline resolved = context.directory().service(
+                PIPELINE_SERVICE + Integer.toUnsignedString(System.identityHashCode(context)),
+                Pipeline.class,
+                () -> Pipeline.create(context));
+        pipelineCache = new PipelineCache(context, resolved);
+        return resolved;
     }
 
     /**
      * Creates an HTTP runner with default optional execution components.
      *
-     * @param context shared context
+     * @param context shared context supplying the context-scoped HTTP pipeline
      * @param request immutable HTTP request
      * @return HTTP runner
+     * @throws ValidateException if the context or request is {@code null}
      */
     public static HttpRunner create(final Context context, final HttpRequest request) {
         return new HttpRunner(new HttpSnapshot(require(context, "Context"), require(request, "HTTP request"),
@@ -193,11 +245,32 @@ public final class HttpRunner {
     }
 
     /**
+     * Executes a builder-owned synchronous exchange without allocating an intermediate {@link HttpX} facade.
+     *
+     * @param context  pipeline owner and runtime configuration
+     * @param request  immutable request to execute
+     * @param observer exchange lifecycle observer
+     * @param filter   optional response filter
+     * @param guard    optional attempt guard
+     * @return final response after pipeline processing
+     */
+    static HttpResponse executeSync(
+            final Context context,
+            final HttpRequest request,
+            final EventObserver observer,
+            final Filter filter,
+            final GuardRule guard) {
+        final HttpSnapshot snapshot = new HttpSnapshot(context, request, observer, filter, guard);
+        return new HttpRunner(snapshot, observer != EventObserver.noop()).run(Cancellation.none());
+    }
+
+    /**
      * Opens an HTTP response stream with a new cancellation scope.
      *
-     * @param context shared context
+     * @param context shared context supplying the HTTP pipeline
      * @param request immutable HTTP request
      * @return owned HTTP stream
+     * @throws ValidateException if the context or request is {@code null}
      */
     public static Stream stream(final Context context, final HttpRequest request) {
         return stream(context, request, Cancellation.create());
@@ -206,10 +279,11 @@ public final class HttpRunner {
     /**
      * Opens an HTTP response stream.
      *
-     * @param context      shared context
+     * @param context      shared context supplying the HTTP pipeline
      * @param request      immutable HTTP request
-     * @param cancellation cancellation scope
-     * @return owned HTTP stream
+     * @param cancellation scope governing the complete exchange
+     * @return response metadata and payload whose owner is released by the stream
+     * @throws ValidateException if any argument is {@code null}
      */
     public static Stream stream(final Context context, final HttpRequest request, final Cancellation cancellation) {
         final HttpResponse response = create(context, request).run(require(cancellation, "Cancellation"));
@@ -219,9 +293,10 @@ public final class HttpRunner {
     /**
      * Performs an HTTP/1.1 upgrade with a new cancellation scope.
      *
-     * @param context shared context
+     * @param context shared context supplying connection and bridge services
      * @param request immutable HTTP upgrade request
      * @return HTTP upgrade result
+     * @throws ValidateException if the context or request is {@code null}
      */
     public static Upgrade upgrade(final Context context, final HttpRequest request) {
         return upgrade(context, request, Cancellation.create());
@@ -230,10 +305,11 @@ public final class HttpRunner {
     /**
      * Performs an HTTP/1.1 upgrade.
      *
-     * @param context      shared context
+     * @param context      shared context supplying connection and bridge services
      * @param request      immutable HTTP upgrade request
-     * @param cancellation cancellation scope
-     * @return HTTP upgrade result
+     * @param cancellation scope governing connection acquisition and handshake I/O
+     * @return response metadata, upgraded physical connection, and its owning lease
+     * @throws ValidateException if any argument is {@code null}
      */
     public static Upgrade upgrade(final Context context, final HttpRequest request, final Cancellation cancellation) {
         return create(context, request).upgrade(require(cancellation, "Cancellation"));
@@ -242,17 +318,20 @@ public final class HttpRunner {
     /**
      * Executes this exchange once with a new cancellation scope.
      *
-     * @return response
+     * @return filtered HTTP response from the configured context-scoped stage chain
      */
     public HttpResponse run() {
-        return run(Cancellation.create());
+        return run(Cancellation.none());
     }
 
     /**
      * Executes this exchange once.
      *
-     * @param cancellation cancellation scope
-     * @return response
+     * @param cancellation scope governing the one permitted exchange execution
+     * @return filtered HTTP response from the configured context-scoped stage chain
+     * @throws CancellationException if the scope is cancelled before completion
+     * @throws StatefulException     if this runner has already executed
+     * @throws ValidateException     if {@code cancellation} is {@code null}
      */
     public HttpResponse run(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
@@ -285,10 +364,7 @@ public final class HttpRunner {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
         currentCancellation.throwIfCancelled();
-        final HttpRequest request = new HttpBridge(cookies, userAgent).prepare(snapshot.request());
-        final HttpConnect connect = new HttpConnect(snapshot.context().directory().connectionPool(), tlsContext,
-                tlsSettings, snapshot.context().listener(), snapshot.context().resolver(),
-                snapshot.context().reactor().dispatcher());
+        final HttpRequest request = bridge.prepare(snapshot.request());
         final ConnectionLease lease = connect.acquire(request, currentCancellation);
         try {
             currentCancellation.throwIfCancelled();
@@ -311,7 +387,7 @@ public final class HttpRunner {
      * Marks this exchange as started.
      */
     private void markExecuted() {
-        if (!executed.compareAndSet(false, true)) {
+        if (!(boolean) EXECUTED.compareAndSet(this, false, true)) {
             throw new StatefulException("HTTP exchange can only be executed once");
         }
     }
@@ -324,6 +400,9 @@ public final class HttpRunner {
     private HttpRequest prepareRequest() {
         final HttpRequest source = snapshot.request();
         final HttpRequest request = source.proxy() == proxy ? source : source.toBuilder().proxy(proxy).build();
+        if (filter == null && snapshot.guard() == null) {
+            return request;
+        }
         Message message = Message.of(
                 request.url().address().protocol(),
                 request.url().address(),
@@ -346,8 +425,9 @@ public final class HttpRunner {
     /**
      * Executes a prepared request through the native fabric HTTP chain.
      *
-     * @param current current request
-     * @return response
+     * @param current      request already prepared by proxy, filter, and guard hooks
+     * @param cancellation cancellation scope governing the exchange
+     * @return materialization-limited and response-filtered chain result
      */
     private HttpResponse exchange(final HttpRequest current, final Cancellation cancellation) {
         final HttpResponse response = HttpChain.create(stages, cancellation).proceed(current);
@@ -357,8 +437,8 @@ public final class HttpRunner {
     /**
      * Applies the context materialize threshold to the response body.
      *
-     * @param response response
-     * @return response with context-limited body
+     * @param response chain response whose body policy is inspected
+     * @return original response when already limited, otherwise a copy with the context materialization limit
      */
     private HttpResponse materializeLimited(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
@@ -372,8 +452,8 @@ public final class HttpRunner {
     /**
      * Applies configured response filters without materializing the response body.
      *
-     * @param response response
-     * @return filtered response
+     * @param response materialization-limited response to pass through configured filters
+     * @return original response when no filter exists, otherwise a copy using filtered headers and payload
      */
     private HttpResponse filterResponse(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
@@ -395,7 +475,7 @@ public final class HttpRunner {
     /**
      * Returns the response filter tag for a request.
      *
-     * @param request request
+     * @param request request whose lifecycle tag selects ordinary HTTP or SOAP response tagging
      * @return response filter tag
      */
     private static String responseTag(final HttpRequest request) {
@@ -406,91 +486,79 @@ public final class HttpRunner {
     /**
      * Returns configured HTTP cache, if present.
      *
+     * @param context runtime context containing HTTP options
      * @return cache or null
      */
-    private HttpCache cache() {
-        return snapshot.context().options().get(Builder.OPTION_HTTP_CACHE);
+    private static HttpCache cache(final Context context) {
+        return context.options().get(Builder.OPTION_HTTP_CACHE);
     }
 
     /**
      * Returns configured cookie jar, if present.
      *
+     * @param context runtime context containing HTTP options and services
      * @return cookie jar or null
      */
-    private CookieJar cookieJar() {
-        if (snapshot.context().options().contains(Builder.OPTION_HTTP_COOKIE_JAR)) {
-            return snapshot.context().options().get(Builder.OPTION_HTTP_COOKIE_JAR);
+    private static CookieJar cookieJar(final Context context) {
+        if (context.options().contains(Builder.OPTION_HTTP_COOKIE_JAR)) {
+            return context.options().get(Builder.OPTION_HTTP_COOKIE_JAR);
         }
-        return snapshot.context().directory().service(
+        return context.directory().service(
                 Builder.OPTION_HTTP_COOKIE_JAR.name(),
                 CookieJar.class,
-                () -> CookieJar.memory(snapshot.context().clock()));
+                () -> CookieJar.memory(context.clock()));
     }
 
     /**
      * Returns configured HTTP authenticator.
      *
+     * @param context runtime context containing HTTP options
      * @return authenticator
      */
-    private HttpAuthenticator authenticator() {
-        final HttpAuthenticator value = snapshot.context().options().get(Builder.OPTION_HTTP_AUTHENTICATOR);
+    private static HttpAuthenticator authenticator(final Context context) {
+        final HttpAuthenticator value = context.options().get(Builder.OPTION_HTTP_AUTHENTICATOR);
         return value == null ? HttpAuthenticator.none() : value;
     }
 
     /**
      * Returns configured HTTP User-Agent.
      *
+     * @param context runtime context containing HTTP options
      * @return User-Agent
      */
-    private String userAgent() {
-        final String value = snapshot.context().options().get(Builder.OPTION_HTTP_USER_AGENT);
+    private static String userAgent(final Context context) {
+        final String value = context.options().get(Builder.OPTION_HTTP_USER_AGENT);
         return value == null || value.isBlank() ? HttpBridge.defaultUserAgent() : value;
     }
 
     /**
      * Returns configured TLS context.
      *
+     * @param context runtime context containing TLS options
      * @return TLS context
      */
-    private TlsContext tlsContext() {
-        final TlsContext value = snapshot.context().options().get(Builder.OPTION_TLS_CONTEXT);
+    private static TlsContext tlsContext(final Context context) {
+        final TlsContext value = context.options().get(Builder.OPTION_TLS_CONTEXT);
         return value == null ? TlsContext.defaults() : value;
     }
 
     /**
      * Returns configured TLS settings.
      *
+     * @param context runtime context containing TLS options
      * @return TLS settings
      */
-    private TlsSettings tlsSettings() {
-        final TlsSettings value = snapshot.context().options().get(Builder.OPTION_TLS_SETTINGS);
+    private static TlsSettings tlsSettings(final Context context) {
+        final TlsSettings value = context.options().get(Builder.OPTION_TLS_SETTINGS);
         return value == null ? TlsSettings.defaults() : value;
-    }
-
-    /**
-     * Resolves the configured or system-selected HTTP proxy plan.
-     *
-     * @return proxy plan
-     */
-    private ProxyPlan proxy() {
-        if (snapshot.context().options().contains(Builder.OPTION_HTTP_PROXY)) {
-            final ProxyPlan configured = snapshot.context().options().get(Builder.OPTION_HTTP_PROXY);
-            return configured == null ? ProxyPlan.direct() : configured;
-        }
-        final ProxySelector selector = ProxySelector.getDefault();
-        if (selector == null) {
-            return ProxyPlan.direct();
-        }
-        final List<ProxyPlan> selected = ProxySelectorAdapter.of(selector).select(snapshot.request().url());
-        return selected.isEmpty() ? ProxyPlan.direct() : selected.get(0);
     }
 
     /**
      * Emits an observation event.
      *
-     * @param marker   marker
-     * @param response response
-     * @param cause    failure cause
+     * @param marker   HTTP lifecycle marker to publish
+     * @param response response supplying a status-code tag, or {@code null}
+     * @param cause    failure attached to the event, or {@code null}
      */
     private void emit(final ObservationMarker marker, final HttpResponse response, final Throwable cause) {
         if (!observed) {
@@ -511,27 +579,183 @@ public final class HttpRunner {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
+     * Most-recent context and pipeline identity pair.
+     *
+     * @param context  context identity used for the lookup
+     * @param pipeline immutable pipeline associated with the context
+     */
+    private record PipelineCache(Context context, Pipeline pipeline) {
+    }
+
+    /**
+     * Immutable context-scoped HTTP execution pipeline.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class Pipeline {
+
+        /**
+         * Context that owns the pipeline services and options.
+         */
+        private final Context context;
+
+        /** Most recent system proxy decision, keyed by selector identity and immutable URL text. */
+        private volatile ProxySelection proxySelection;
+
+        /**
+         * Optional cache shared by pipeline exchanges.
+         */
+        private final HttpCache cache;
+
+        /**
+         * Cookie jar shared by the bridge stage.
+         */
+        private final CookieJar cookies;
+
+        /**
+         * Authenticator used when retrying challenged requests.
+         */
+        private final HttpAuthenticator authenticator;
+
+        /**
+         * Default User-Agent value applied by the bridge stage.
+         */
+        private final String userAgent;
+
+        /**
+         * TLS context used by connection establishment.
+         */
+        private final TlsContext tlsContext;
+
+        /**
+         * TLS settings used by connection establishment.
+         */
+        private final TlsSettings tlsSettings;
+
+        /**
+         * Maximum payload size accepted during materialization.
+         */
+        private final long materializeMaxBytes;
+
+        /**
+         * Request and response normalization stage.
+         */
+        private final HttpBridge bridge;
+
+        /**
+         * Connection acquisition stage owned by this pipeline.
+         */
+        private final HttpConnect connect;
+
+        /**
+         * Immutable ordered stage chain.
+         */
+        private final List<org.miaixz.bus.fabric.protocol.http.chain.HttpStage> stages;
+
+        /**
+         * Creates one frozen pipeline.
+         *
+         * @param context shared context supplying pipeline collaborators
+         */
+        private Pipeline(final Context context) {
+            this.context = context;
+            this.cache = cache(context);
+            this.cookies = cookieJar(context);
+            this.authenticator = authenticator(context);
+            this.userAgent = userAgent(context);
+            this.tlsContext = tlsContext(context);
+            this.tlsSettings = tlsSettings(context);
+            this.materializeMaxBytes = context.options().materializeMaxBytes();
+            this.bridge = new HttpBridge(cookies, userAgent);
+            this.connect = new HttpConnect(context.directory().connectionPool(), tlsContext, tlsSettings,
+                    context.listener(), context.resolver(), context.reactor().dispatcher());
+            this.stages = List.of(
+                    new HttpRetry(authenticator),
+                    bridge,
+                    cache == null ? HttpCoordinator.disabled(context.reactor().clock())
+                            : HttpCoordinator.create(cache, context.reactor().clock()),
+                    connect,
+                    new HttpTransport(context.reactor().dispatcher()));
+        }
+
+        /** Resolves explicit proxy policy first and caches the common stable system-selector decision. */
+        private ProxyPlan proxy(final HttpRequest request) {
+            if (!request.proxy().isDirect()) {
+                return request.proxy();
+            }
+            if (context.options().contains(Builder.OPTION_HTTP_PROXY)) {
+                final ProxyPlan configured = context.options().get(Builder.OPTION_HTTP_PROXY);
+                return configured == null ? ProxyPlan.direct() : configured;
+            }
+            final ProxySelector selector = ProxySelector.getDefault();
+            if (selector == null) {
+                return ProxyPlan.direct();
+            }
+            final String url = request.url().toString();
+            final ProxySelection cached = proxySelection;
+            if (cached != null && cached.selector == selector && cached.url.equals(url)) {
+                return cached.plan;
+            }
+            final List<ProxyPlan> selected = ProxySelectorAdapter.of(selector).select(request.url());
+            final ProxyPlan plan = selected.isEmpty() ? ProxyPlan.direct() : selected.get(0);
+            proxySelection = new ProxySelection(selector, url, plan);
+            return plan;
+        }
+
+        /**
+         * Creates a context-scoped pipeline.
+         *
+         * @param context shared context
+         * @return pipeline
+         */
+        private static Pipeline create(final Context context) {
+            return new Pipeline(context);
+        }
+    }
+
+    /**
+     * Cached system proxy decision for one context pipeline.
+     *
+     * @param selector selector identity that produced the plan
+     * @param url      immutable request URL text
+     * @param plan     normalized proxy plan
+     */
+    private record ProxySelection(ProxySelector selector, String url, ProxyPlan plan) {
     }
 
     /**
      * Owned HTTP response stream.
      *
-     * @param status  response status
-     * @param headers response headers
-     * @param body    response body
-     * @param owner   response owner
+     * @param status  HTTP response status code
+     * @param headers immutable response headers
+     * @param body    streaming response payload
+     * @param owner   resource retaining the response connection or stream
      */
     public record Stream(int status, Headers headers, Payload body, AutoCloseable owner) implements AutoCloseable {
 
         /**
          * Creates a validated stream result.
+         *
+         * @param status  HTTP response status code
+         * @param headers response headers
+         * @param body    streaming response payload
+         * @param owner   resource released when the stream closes
+         * @throws ValidateException if headers, body, or owner is {@code null}
          */
         public Stream {
             headers = require(headers, "Headers");
@@ -542,7 +766,7 @@ public final class HttpRunner {
         /**
          * Opens the response body source and binds it to the response owner.
          *
-         * @return owned response source
+         * @return source wrapper that closes the response owner after its body source
          */
         public Source source() {
             return new OwnedSource(body.source(), this);
@@ -567,16 +791,22 @@ public final class HttpRunner {
     /**
      * HTTP/1.1 upgrade result with its leased connection.
      *
-     * @param status     response status
-     * @param headers    response headers
-     * @param connection upgraded connection
-     * @param lease      connection lease
+     * @param status     HTTP upgrade response status code
+     * @param headers    immutable upgrade response headers
+     * @param connection upgraded physical connection
+     * @param lease      lease retaining ownership of that connection
      */
     public record Upgrade(int status, Headers headers, Connection connection, ConnectionLease lease)
             implements AutoCloseable {
 
         /**
          * Creates a validated upgrade result.
+         *
+         * @param status     HTTP upgrade response status code
+         * @param headers    upgrade response headers
+         * @param connection upgraded physical connection
+         * @param lease      lease owning the upgraded connection
+         * @throws ValidateException if headers, connection, or lease is {@code null}
          */
         public Upgrade {
             headers = require(headers, "Headers");

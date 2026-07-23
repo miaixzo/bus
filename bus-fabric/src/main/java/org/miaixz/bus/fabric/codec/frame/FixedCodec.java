@@ -38,19 +38,19 @@ import org.miaixz.bus.fabric.Builder;
 public final class FixedCodec implements FrameCodec {
 
     /**
-     * Fixed frame length.
+     * Required payload size for every encoded and decoded frame.
      */
     private final int length;
 
     /**
-     * Decoder buffer.
+     * Accumulator retaining bytes that do not yet form a complete frame.
      */
     private final Buffer buffer = new Buffer();
 
     /**
      * Creates a fixed-length codec.
      *
-     * @param length frame length
+     * @param length validated frame size from 1 byte through 16 MiB
      */
     private FixedCodec(final int length) {
         this.length = validateLength(length);
@@ -59,8 +59,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Creates a fixed-length codec.
      *
-     * @param length frame length
-     * @return codec
+     * @param length frame size from 1 byte through 16 MiB
+     * @return new stateful fixed-length codec
      */
     public static FixedCodec of(final int length) {
         return new FixedCodec(length);
@@ -69,8 +69,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Decodes fixed-length frames.
      *
-     * @param input input bytes
-     * @return frames
+     * @param input non-null, non-empty buffer whose bytes are consumed into the decoder accumulator
+     * @return immutable list of all complete fixed-length frames currently available
      */
     @Override
     public List<Frame> decode(final Buffer input) {
@@ -90,8 +90,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Encodes a fixed-length frame.
      *
-     * @param frame  frame
-     * @param output encoded byte destination
+     * @param frame  non-null frame whose payload length must equal the configured fixed length
+     * @param output non-null destination receiving the frame payload without additional metadata
      */
     @Override
     public void encode(final Frame frame, final Buffer output) {
@@ -115,8 +115,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Validates frame length.
      *
-     * @param length frame length
-     * @return validated length
+     * @param length candidate fixed frame length
+     * @return unchanged length from 1 byte through 16 MiB
      */
     private static int validateLength(final int length) {
         Assert.isTrue(
@@ -128,7 +128,7 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Validates input buffer.
      *
-     * @param input input buffer
+     * @param input buffer required to be non-null and contain at least one byte
      */
     private static void validateInput(final Buffer input) {
         Assert.isTrue(

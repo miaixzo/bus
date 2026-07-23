@@ -34,7 +34,7 @@ public interface Session extends Lifecycle {
     /**
      * Returns the session address.
      *
-     * @return session address
+     * @return protocol address associated with the opened connection
      */
     Address address();
 
@@ -55,15 +55,15 @@ public interface Session extends Lifecycle {
     /**
      * Returns session attributes.
      *
-     * @return immutable attributes snapshot
+     * @return immutable snapshot of protocol-specific session attributes
      */
     Map<String, Object> attributes();
 
     /**
      * Sends a payload through this session when the protocol supports outbound messages.
      *
-     * @param payload payload
-     * @return send call
+     * @param payload non-null outbound payload transferred to a protocol-specific implementation
+     * @return single-use send call, or a failing unsupported-operation call from the default implementation
      */
     default Call<Void> send(final Payload payload) {
         if (payload == null) {

@@ -61,8 +61,8 @@ public final class WebSocketReader {
     /**
      * Creates a single-frame reader.
      *
-     * @param source       byte source
-     * @param expectMasked true for server-side readers, false for client-side readers
+     * @param source       non-null frame byte source borrowed from the owning session
+     * @param expectMasked required peer mask bit: true when reading client frames, false when reading server frames
      */
     public WebSocketReader(final Source source, final boolean expectMasked) {
         this.source = require(source, "WebSocket source");
@@ -73,7 +73,7 @@ public final class WebSocketReader {
     /**
      * Reads and validates one complete WebSocket frame.
      *
-     * @return immutable frame
+     * @return validated immutable frame with an unmasked payload snapshot
      */
     public WebSocketFrame next() {
         final int first = readByte();
@@ -108,8 +108,8 @@ public final class WebSocketReader {
     /**
      * Decodes a canonical payload length.
      *
-     * @param marker seven-bit length marker
-     * @return payload length
+     * @param marker seven-bit length marker from the second frame-header byte
+     * @return decoded non-negative payload length after canonical-encoding validation
      */
     private long payloadLength(final int marker) {
         if (marker < Builder.WEBSOCKET_LENGTH_16_MARKER) {
@@ -135,9 +135,9 @@ public final class WebSocketReader {
     /**
      * Validates control-frame fragmentation and length rules.
      *
-     * @param fin     final flag
-     * @param control control-frame flag
-     * @param length  payload length
+     * @param fin     whether the frame carries the FIN bit
+     * @param control whether the opcode identifies a control frame
+     * @param length  decoded payload length
      */
     private static void validateControl(final boolean fin, final boolean control, final long length) {
         if (control && !fin) {
@@ -151,9 +151,9 @@ public final class WebSocketReader {
     /**
      * Strictly validates a complete text frame.
      *
-     * @param opcode  frame opcode
-     * @param fin     final flag
-     * @param payload frame payload
+     * @param opcode  decoded frame opcode
+     * @param fin     whether this is the final fragment
+     * @param payload immutable frame payload
      */
     private static void validateText(final int opcode, final boolean fin, final ByteString payload) {
         if (opcode == Normal._1 && fin) {
@@ -164,8 +164,8 @@ public final class WebSocketReader {
     /**
      * Validates close code and strict UTF-8 close reason.
      *
-     * @param opcode  frame opcode
-     * @param payload frame payload
+     * @param opcode  decoded frame opcode
+     * @param payload immutable frame payload containing an optional close status and reason
      */
     private static void validateClose(final int opcode, final ByteString payload) {
         if (opcode != Normal._8 || payload.size() == Normal._0) {
@@ -187,9 +187,9 @@ public final class WebSocketReader {
     /**
      * Decodes UTF-8 with malformed and unmappable input reporting enabled.
      *
-     * @param value encoded bytes
-     * @param field diagnostic field name
-     * @return decoded value
+     * @param value encoded bytes to decode without replacement
+     * @param field field label included in protocol errors
+     * @return strictly decoded UTF-8 text
      */
     private static String decodeUtf8(final ByteString value, final String field) {
         try {
@@ -201,7 +201,9 @@ public final class WebSocketReader {
     }
 
     /**
-     * @return one unsigned byte
+     * Reads one byte from the buffered source.
+     *
+     * @return unsigned value from 0 through 255
      */
     private int readByte() {
         requireBytes(Byte.BYTES);
@@ -209,7 +211,9 @@ public final class WebSocketReader {
     }
 
     /**
-     * @return one unsigned network-order short
+     * Reads one network-order unsigned short from the buffered source.
+     *
+     * @return unsigned value from 0 through 65535
      */
     private int readUnsignedShort() {
         requireBytes(Short.BYTES);
@@ -217,7 +221,9 @@ public final class WebSocketReader {
     }
 
     /**
-     * @return one network-order long
+     * Reads one network-order signed long from the buffered source.
+     *
+     * @return decoded 64-bit value
      */
     private long readLong() {
         requireBytes(Long.BYTES);
@@ -227,8 +233,8 @@ public final class WebSocketReader {
     /**
      * Reads an exact byte array.
      *
-     * @param length byte count
-     * @return bytes
+     * @param length exact number of bytes to read
+     * @return newly allocated byte array of the requested length
      */
     private byte[] readBytes(final int length) {
         requireBytes(length);
@@ -242,8 +248,8 @@ public final class WebSocketReader {
     /**
      * Reads an exact payload buffer.
      *
-     * @param length byte count
-     * @return payload buffer
+     * @param length exact number of bytes to move from the reusable input buffer
+     * @return new buffer containing the requested payload bytes
      */
     private Buffer readBuffer(final int length) {
         requireBytes(length);
@@ -255,7 +261,7 @@ public final class WebSocketReader {
     /**
      * Ensures the reusable input contains an exact byte count.
      *
-     * @param byteCount required byte count
+     * @param byteCount number of bytes that must be buffered before returning
      */
     private void requireBytes(final long byteCount) {
         try {
@@ -273,9 +279,9 @@ public final class WebSocketReader {
     /**
      * Applies the four-byte WebSocket mask in place.
      *
-     * @param payload payload buffer
-     * @param mask    mask key
-     * @param length  payload length
+     * @param payload mutable payload buffer to transform in place
+     * @param mask    four-byte masking key
+     * @param length  number of payload bytes to transform
      */
     private static void unmask(final Buffer payload, final byte[] mask, final long length) {
         if (length == Normal.LONG_ZERO) {
@@ -303,10 +309,10 @@ public final class WebSocketReader {
     /**
      * Validates a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field label included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

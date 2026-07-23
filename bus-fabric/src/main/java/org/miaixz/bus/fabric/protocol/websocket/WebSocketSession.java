@@ -370,7 +370,7 @@ public final class WebSocketSession implements Session {
      * @param dispatchKey dispatch key
      * @param ping        ping interval
      * @param guard       optional guard
-     * @param observer    observer
+     * @param observer    observer receiving session lifecycle and traffic events
      * @param listener    lifecycle listener
      */
     WebSocketSession(final Address address, final WebSocketWriter writer, final WebSocketReader reader,
@@ -395,7 +395,7 @@ public final class WebSocketSession implements Session {
      * @param ping                ping interval
      * @param guard               optional guard
      * @param filter              optional filter
-     * @param observer            observer
+     * @param observer            observer receiving session lifecycle and traffic events
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
@@ -421,10 +421,10 @@ public final class WebSocketSession implements Session {
      * @param ping                ping interval
      * @param guard               optional guard
      * @param role                endpoint role
-     * @param attributes          attributes
+     * @param attributes          initial session attributes
      * @param owner               owner closed with native resources
      * @param filter              optional filter
-     * @param observer            observer
+     * @param observer            observer receiving session lifecycle and traffic events
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
@@ -451,10 +451,10 @@ public final class WebSocketSession implements Session {
      * @param dispatchKey  dispatch key
      * @param guard        optional guard
      * @param role         endpoint role
-     * @param attributes   attributes
+     * @param attributes   initial session attributes
      * @param owner        owner closed with native resources
      * @param filter       optional filter
-     * @param observer     observer
+     * @param observer     observer receiving session lifecycle and traffic events
      * @param listener     lifecycle listener
      * @param cancellation shared cancellation scope
      */
@@ -481,7 +481,7 @@ public final class WebSocketSession implements Session {
      * @param lease               native lease
      * @param owner               optional owner
      * @param handler             message handler
-     * @param dispatcher          dispatcher
+     * @param dispatcher          dispatcher running outbound and timeout activities
      * @param ownsDispatcher      dispatcher ownership flag
      * @param dispatchKey         dispatch key
      * @param clock               session clock
@@ -489,9 +489,9 @@ public final class WebSocketSession implements Session {
      * @param closeTimeout        close timeout
      * @param guard               optional guard
      * @param role                endpoint role
-     * @param attributes          attributes
+     * @param attributes          initial session attributes
      * @param filter              optional filter
-     * @param observer            observer
+     * @param observer            observer receiving session lifecycle and traffic events
      * @param listener            lifecycle listener
      * @param cancellation        shared cancellation scope
      * @param materializeMaxBytes materialize byte threshold
@@ -646,7 +646,7 @@ public final class WebSocketSession implements Session {
     /**
      * Creates a lazy binary send Call.
      *
-     * @param payload payload
+     * @param payload binary message payload to send
      * @return lazy send Call
      */
     @Override
@@ -658,7 +658,7 @@ public final class WebSocketSession implements Session {
     /**
      * Creates a lazy text or binary body send Call.
      *
-     * @param body body
+     * @param body WebSocket message body to send
      * @return lazy send Call
      */
     public Call<Void> send(final WebSocketBody body) {
@@ -669,7 +669,7 @@ public final class WebSocketSession implements Session {
     /**
      * Creates a lazy text send Call.
      *
-     * @param text text
+     * @param text text message content to validate and send
      * @return lazy send Call
      */
     public Call<Void> send(final String text) {
@@ -837,8 +837,8 @@ public final class WebSocketSession implements Session {
     /**
      * Materializes a payload without exceeding either the configured limit or the fixed message limit.
      *
-     * @param payload   payload
-     * @param operation operation name
+     * @param payload   payload to materialize
+     * @param operation diagnostic operation name used for size-limit failures
      * @return immutable bytes
      */
     private ByteString materialize(final Payload payload, final String operation) {
@@ -857,7 +857,7 @@ public final class WebSocketSession implements Session {
     /**
      * Enqueues an entry while reserving its complete wire bytes.
      *
-     * @param entry entry
+     * @param entry outbound entry whose wire bytes are reserved
      */
     private void enqueue(final OutboundEntry entry) {
         ensureWritable(entry.kind());
@@ -881,7 +881,7 @@ public final class WebSocketSession implements Session {
     /**
      * Inserts one entry according to WebSocket application and control ordering.
      *
-     * @param entry entry
+     * @param entry outbound entry to place in protocol order
      */
     private void insert(final OutboundEntry entry) {
         if (entry.kind() == EntryKind.APPLICATION) {
@@ -1076,7 +1076,7 @@ public final class WebSocketSession implements Session {
     /**
      * Releases complete reserved wire bytes exactly once.
      *
-     * @param entry entry
+     * @param entry terminal outbound entry releasing its reservation
      */
     private void releaseReservation(final OutboundEntry entry) {
         synchronized (outboundLock) {
@@ -1093,7 +1093,7 @@ public final class WebSocketSession implements Session {
     /**
      * Cancels one outbound entry according to whether it is queued or active.
      *
-     * @param entry entry
+     * @param entry outbound entry to cancel
      */
     private void cancelEntry(final OutboundEntry entry) {
         if (entry == null || entry.terminal()) {
@@ -1114,7 +1114,7 @@ public final class WebSocketSession implements Session {
     /**
      * Waits for an entry using the shared thread utility.
      *
-     * @param entry entry
+     * @param entry outbound entry whose completion is awaited
      */
     private void awaitEntry(final OutboundEntry entry) {
         while (!entry.terminal()) {
@@ -1485,7 +1485,7 @@ public final class WebSocketSession implements Session {
     /**
      * Completes one entry according to the selected terminal kind.
      *
-     * @param entry       entry
+     * @param entry       outbound entry reaching a terminal state
      * @param termination terminal kind
      * @param cause       completion cause
      */
@@ -1518,7 +1518,7 @@ public final class WebSocketSession implements Session {
     /**
      * Closes one resource while retaining the first failure.
      *
-     * @param resource resource
+     * @param resource closeable resource, or {@code null}
      * @param failure  current first failure
      * @param name     resource name
      * @return first failure
@@ -1610,7 +1610,7 @@ public final class WebSocketSession implements Session {
     /**
      * Applies the optional message filter.
      *
-     * @param payload payload
+     * @param payload WebSocket message payload represented by the filter message
      * @param tag     direction tag
      * @return filtered message
      */
@@ -1622,7 +1622,7 @@ public final class WebSocketSession implements Session {
     /**
      * Applies the optional guard.
      *
-     * @param message message
+     * @param message filtered WebSocket message to validate
      */
     private void checkGuard(final Message message) {
         if (guard != null) {
@@ -1633,7 +1633,7 @@ public final class WebSocketSession implements Session {
     /**
      * Emits a WebSocket event with the complete physical wire byte count.
      *
-     * @param marker marker
+     * @param marker observation marker identifying the event
      * @param bytes  complete wire bytes
      * @param cause  optional cause
      */
@@ -1691,7 +1691,7 @@ public final class WebSocketSession implements Session {
     /**
      * Calculates complete frame wire bytes including header and optional mask.
      *
-     * @param frame  frame
+     * @param frame  frame whose physical wire size is calculated
      * @param masked mask flag
      * @return complete wire bytes
      */
@@ -1777,7 +1777,7 @@ public final class WebSocketSession implements Session {
     /**
      * Validates text accepted by the String send overload.
      *
-     * @param text text
+     * @param text text accepted by the String send API
      * @return encoded text
      */
     private static ByteString validateSendText(final String text) {
@@ -1790,7 +1790,7 @@ public final class WebSocketSession implements Session {
     /**
      * Validates a non-negative duration.
      *
-     * @param duration duration
+     * @param duration duration to validate
      * @param name     field name
      * @return validated duration
      */
@@ -1833,7 +1833,7 @@ public final class WebSocketSession implements Session {
     /**
      * Creates default session attributes.
      *
-     * @param observer observer
+     * @param observer observer stored in the default attribute map
      * @return default attributes
      */
     private static Map<String, Object> defaultAttributes(final EventObserver observer) {
@@ -1844,7 +1844,7 @@ public final class WebSocketSession implements Session {
      * Copies session attributes and installs the session observer.
      *
      * @param source   source attributes
-     * @param observer observer
+     * @param observer observer installed into the copied attributes
      * @return immutable attributes
      */
     private static Map<String, Object> attributes(final Map<String, Object> source, final EventObserver observer) {
@@ -1887,10 +1887,10 @@ public final class WebSocketSession implements Session {
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -2006,7 +2006,7 @@ public final class WebSocketSession implements Session {
         /**
          * Creates an outbound entry.
          *
-         * @param frame     frame
+         * @param frame     WebSocket frame to write
          * @param kind      ordering kind
          * @param wireBytes complete wire bytes
          */
@@ -2106,7 +2106,7 @@ public final class WebSocketSession implements Session {
         /**
          * Completes this entry with failure.
          *
-         * @param failure failure
+         * @param failure terminal write failure
          * @return true when completed
          */
         private boolean fail(final Throwable failure) {

@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http;
 
 import java.io.File;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -29,7 +28,7 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -55,7 +54,7 @@ public final class HttpRequest {
     /**
      * HTTP method.
      */
-    private final HTTP.Method method;
+    private final Http.Method method;
 
     /**
      * Request URL.
@@ -115,23 +114,32 @@ public final class HttpRequest {
     /**
      * Creates an HTTP request.
      *
-     * @param method  method
-     * @param url     URL
-     * @param headers headers
-     * @param body    body
-     * @param tag     tag
+     * @param method  HTTP request method
+     * @param url     normalized request URL
+     * @param headers immutable request headers
+     * @param body    payload-backed request body
+     * @param tags    typed request tags
      * @param proxy   proxy plan
-     * @param timeout timeout
+     * @param timeout request timeout policy
      */
-    private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
+    private HttpRequest(final Http.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
             final Map<Class<?>, Object> tags, final ProxyPlan proxy, final Timeout timeout) {
         this(method, url, headers, body, tags, false, proxy, timeout);
     }
 
     /**
      * Creates a request, optionally accepting an immutable tag snapshot from another request.
+     *
+     * @param method      HTTP method
+     * @param url         normalized request URL
+     * @param headers     immutable request headers
+     * @param body        request body
+     * @param tags        typed request tags
+     * @param trustedTags whether {@code tags} is already an immutable snapshot
+     * @param proxy       proxy routing plan
+     * @param timeout     request timeout policy
      */
-    private HttpRequest(final HTTP.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
+    private HttpRequest(final Http.Method method, final UnoUrl url, final Headers headers, final PayloadBody body,
             final Map<Class<?>, Object> tags, final boolean trustedTags, final ProxyPlan proxy, final Timeout timeout) {
         this.method = require(method, "HTTP method");
         this.url = require(url, "URL");
@@ -148,7 +156,7 @@ public final class HttpRequest {
     /**
      * Creates an HTTP request builder.
      *
-     * @return builder
+     * @return new HTTP request builder with default snapshots
      */
     public static Builder builder() {
         return new Builder();
@@ -157,7 +165,7 @@ public final class HttpRequest {
     /**
      * Returns a builder initialized with this request snapshot.
      *
-     * @return builder
+     * @return builder initialized from this immutable request snapshot
      */
     public Builder toBuilder() {
         return newBuilder();
@@ -166,14 +174,10 @@ public final class HttpRequest {
     /**
      * Returns a builder initialized with this request snapshot.
      *
-     * @return builder
+     * @return builder initialized from this immutable request snapshot
      */
     public Builder newBuilder() {
-        final Builder builder = builder().method(method).url(url).headers(headers).body(body).proxy(proxy)
-                .timeout(timeout);
-        builder.tags = tags;
-        builder.tagsSnapshot = true;
-        return builder;
+        return new Builder(this);
     }
 
     /**
@@ -181,14 +185,14 @@ public final class HttpRequest {
      *
      * @return HTTP method
      */
-    public HTTP.Method method() {
+    public Http.Method method() {
         return method;
     }
 
     /**
      * Returns the request URL.
      *
-     * @return URL
+     * @return normalized immutable request URL
      */
     public UnoUrl url() {
         return url;
@@ -197,7 +201,7 @@ public final class HttpRequest {
     /**
      * Returns headers.
      *
-     * @return headers
+     * @return immutable request headers
      */
     public Headers headers() {
         return headers;
@@ -215,7 +219,7 @@ public final class HttpRequest {
     /**
      * Returns body.
      *
-     * @return body
+     * @return payload-backed request body
      */
     public PayloadBody body() {
         return body;
@@ -238,7 +242,7 @@ public final class HttpRequest {
     public String authority() {
         String current = authority;
         if (current == null) {
-            current = url.host() + Symbol.C_COLON + url.port();
+            current = url.authority();
             authority = current;
         }
         return current;
@@ -252,10 +256,7 @@ public final class HttpRequest {
     public String requestTarget() {
         String current = requestTarget;
         if (current == null) {
-            final URI uri = url.toUri();
-            final String path = uri.getRawPath() == null || uri.getRawPath().isEmpty() ? Symbol.SLASH
-                    : uri.getRawPath();
-            current = uri.getRawQuery() == null ? path : path + Symbol.C_QUESTION_MARK + uri.getRawQuery();
+            current = url.requestTarget();
             requestTarget = current;
         }
         return current;
@@ -282,7 +283,7 @@ public final class HttpRequest {
     /**
      * Returns the tag.
      *
-     * @return tag
+     * @return untyped tag stored under {@link Object}, or {@code null} when absent
      */
     public Object tag() {
         return tag(Object.class);
@@ -326,7 +327,7 @@ public final class HttpRequest {
     /**
      * Returns the proxy plan.
      *
-     * @return proxy plan
+     * @return proxy routing plan selected for this request
      */
     public ProxyPlan proxy() {
         return proxy;
@@ -335,7 +336,7 @@ public final class HttpRequest {
     /**
      * Returns request timeout.
      *
-     * @return timeout
+     * @return timeout policy captured by this request
      */
     public Timeout timeout() {
         return timeout;
@@ -344,12 +345,12 @@ public final class HttpRequest {
     /**
      * Validates method and body constraints.
      *
-     * @param method method
-     * @param body   body
+     * @param method HTTP method whose body capability is checked
+     * @param body   request body whose stable length is inspected
      */
-    private static void validateBodyPolicy(final HTTP.Method method, final PayloadBody body) {
+    private static void validateBodyPolicy(final Http.Method method, final PayloadBody body) {
         Assert.isFalse(
-                !method.supportsBody() && body.length() > 0,
+                !method.permitsBody() && body.length() > 0,
                 () -> new ValidateException("HTTP method does not support a body"));
     }
 
@@ -376,13 +377,16 @@ public final class HttpRequest {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -396,7 +400,7 @@ public final class HttpRequest {
         /**
          * Candidate method.
          */
-        private HTTP.Method method;
+        private Http.Method method;
 
         /**
          * Candidate URL.
@@ -441,12 +445,28 @@ public final class HttpRequest {
         }
 
         /**
+         * Creates a builder by directly sharing one immutable request snapshot.
+         *
+         * @param request source request
+         */
+        private Builder(final HttpRequest request) {
+            this.method = request.method;
+            this.url = request.url;
+            this.headers = request.headers;
+            this.body = request.body;
+            this.tags = request.tags;
+            this.tagsSnapshot = true;
+            this.proxy = request.proxy;
+            this.timeout = request.timeout;
+        }
+
+        /**
          * Sets the method.
          *
-         * @param method method
+         * @param method HTTP request method
          * @return this builder
          */
-        public Builder method(final HTTP.Method method) {
+        public Builder method(final Http.Method method) {
             this.method = require(method, "HTTP method");
             return this;
         }
@@ -454,7 +474,7 @@ public final class HttpRequest {
         /**
          * Sets the URL.
          *
-         * @param url URL
+         * @param url normalized request URL
          * @return this builder
          */
         public Builder url(final UnoUrl url) {
@@ -465,7 +485,7 @@ public final class HttpRequest {
         /**
          * Sets headers.
          *
-         * @param headers headers
+         * @param headers immutable request headers
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -480,14 +500,14 @@ public final class HttpRequest {
          * @return this builder
          */
         public Builder userAgent(final String value) {
-            headers = headers.with(HTTP.USER_AGENT, validateUserAgent(value));
+            headers = headers.with(Http.Header.USER_AGENT, validateUserAgent(value));
             return this;
         }
 
         /**
          * Sets body.
          *
-         * @param body body
+         * @param body payload-backed request body
          * @return this builder
          */
         public Builder body(final PayloadBody body) {
@@ -520,7 +540,7 @@ public final class HttpRequest {
          * Sets a text body with explicit media.
          *
          * @param value body text
-         * @param media media
+         * @param media media type assigned to the encoded text
          * @return this builder
          */
         public Builder text(final String value, final MediaType media) {
@@ -541,7 +561,7 @@ public final class HttpRequest {
          * Sets a file as the complete request body.
          *
          * @param path  file path
-         * @param media media
+         * @param media file content media type
          * @return this builder
          */
         public Builder body(final Path path, final MediaType media) {
@@ -551,7 +571,7 @@ public final class HttpRequest {
         /**
          * Sets a file as the complete request body.
          *
-         * @param file file
+         * @param file file supplying the request body bytes
          * @return this builder
          */
         public Builder body(final File file) {
@@ -561,8 +581,8 @@ public final class HttpRequest {
         /**
          * Sets a file as the complete request body.
          *
-         * @param file  file
-         * @param media media
+         * @param file  file supplying the request body bytes
+         * @param media file content media type
          * @return this builder
          */
         public Builder body(final File file, final MediaType media) {
@@ -572,7 +592,7 @@ public final class HttpRequest {
         /**
          * Sets tag.
          *
-         * @param tag tag
+         * @param tag untyped value stored under {@link Object}, or {@code null} to remove it
          * @return this builder
          */
         public Builder tag(final Object tag) {
@@ -613,7 +633,7 @@ public final class HttpRequest {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout complete request timeout policy
          * @return this builder
          */
         public Builder timeout(final Timeout timeout) {
@@ -624,7 +644,7 @@ public final class HttpRequest {
         /**
          * Builds an immutable request.
          *
-         * @return HTTP request
+         * @return immutable HTTP request built from the current candidates
          */
         public HttpRequest build() {
             return new HttpRequest(method, url, headers, body, tags, tagsSnapshot, proxy, timeout);

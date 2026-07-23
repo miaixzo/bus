@@ -25,9 +25,9 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable HTTP/2 header field.
  *
- * @param name   header name
- * @param value  header value
- * @param pseudo whether this is a pseudo header
+ * @param name   non-empty lowercase ASCII field name, optionally beginning with a colon
+ * @param value  non-null field value without NUL, carriage-return, or line-feed characters
+ * @param pseudo whether {@code name} begins with a colon; derived by the canonical constructor
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -36,9 +36,9 @@ public record Http2Header(String name, String value, boolean pseudo) {
     /**
      * Creates a validated header field.
      *
-     * @param name   header name
-     * @param value  header value
-     * @param pseudo caller supplied pseudo flag
+     * @param name   non-empty lowercase ASCII field name, optionally beginning with a colon
+     * @param value  non-null field value without prohibited control characters
+     * @param pseudo ignored input; replaced with whether {@code name} begins with a colon
      */
     public Http2Header {
         validateName(name);
@@ -49,20 +49,18 @@ public record Http2Header(String name, String value, boolean pseudo) {
     /**
      * Creates a header.
      *
-     * @param name  name
-     * @param value value
-     * @return header
+     * @param name  lowercase ASCII field name to validate
+     * @param value field value to validate
+     * @return validated immutable field with its pseudo-header flag derived from the name
      */
     public static Http2Header of(final String name, final String value) {
         return new Http2Header(name, value, false);
     }
 
     /**
-     * Validates single-line text.
+     * Returns whether HPACK must avoid indexing this security-sensitive field.
      *
-     * @param value value
-     * @param name  field name
-     * @return value
+     * @return {@code true} for authorization and cookie fields
      */
     public boolean sensitive() {
         return switch (name) {
@@ -74,7 +72,7 @@ public record Http2Header(String name, String value, boolean pseudo) {
     /**
      * Returns the RFC 7541 entry size without allocating encoded byte arrays.
      *
-     * @return HPACK entry size
+     * @return 32-byte overhead plus name and UTF-8 value lengths, saturated at {@link Integer#MAX_VALUE}
      */
     public int hpackSize() {
         final long size = 32L + name.length() + utf8Length(value);
@@ -83,6 +81,8 @@ public record Http2Header(String name, String value, boolean pseudo) {
 
     /**
      * Validates a lowercase ASCII HTTP/2 field name.
+     *
+     * @param value field name to validate
      */
     private static void validateName(final String value) {
         if (value == null || value.isEmpty()) {
@@ -102,6 +102,8 @@ public record Http2Header(String name, String value, boolean pseudo) {
 
     /**
      * Validates an HTTP/2 field value; the empty value is legal.
+     *
+     * @param value field value to validate
      */
     private static void validateValue(final String value) {
         if (value == null) {
@@ -117,6 +119,9 @@ public record Http2Header(String name, String value, boolean pseudo) {
 
     /**
      * Returns whether a character is an allowed lowercase RFC token.
+     *
+     * @param value character to classify
+     * @return {@code true} when the character is valid in a lower-case field name
      */
     private static boolean token(final char value) {
         if ((value >= 'a' && value <= 'z') || (value >= '0' && value <= '9')) {
@@ -130,6 +135,9 @@ public record Http2Header(String name, String value, boolean pseudo) {
 
     /**
      * Counts UTF-8 bytes without creating a temporary byte array.
+     *
+     * @param value text whose encoded length is required
+     * @return UTF-8 byte length, saturated at {@link Integer#MAX_VALUE}
      */
     private static int utf8Length(final String value) {
         long length = 0;

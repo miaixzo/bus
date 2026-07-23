@@ -66,7 +66,7 @@ public final class ConnectionRegistry implements AutoCloseable {
     private final FabricMeter meter;
 
     /**
-     * Closed state.
+     * Atomic state guarded during registration to prevent races with global shutdown.
      */
     private final AtomicBoolean closed;
 
@@ -80,7 +80,8 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Creates an empty registry borrowing an existing meter.
      *
-     * @param meter borrowed meter
+     * @param meter non-null borrowed meter updated for creation and active-count changes
+     * @throws ValidateException if {@code meter} is {@code null}
      */
     public ConnectionRegistry(final FabricMeter meter) {
         this.active = new ConcurrentHashMap<>();
@@ -93,8 +94,10 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Registers an active connection.
      *
-     * @param destination connection destination
-     * @param connection  connection
+     * @param destination destination bucket under which the physical connection is registered
+     * @param connection  non-terminal physical connection to register
+     * @throws StatefulException if the registry is closed or the connection is terminal
+     * @throws ValidateException if either argument is {@code null}
      */
     public void open(final Destination destination, final Connection connection) {
         require(destination, "Connection destination");
@@ -119,8 +122,10 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Removes and closes a matching connection.
      *
-     * @param destination connection destination
-     * @param connection  connection
+     * @param destination destination expected to own the registration
+     * @param connection  registered physical connection to remove and close
+     * @throws InternalException if the removed connection cannot be closed
+     * @throws ValidateException if either argument is {@code null}
      */
     public void close(final Destination destination, final Connection connection) {
         require(destination, "Connection destination");
@@ -138,9 +143,10 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Removes a physical connection without performing network I/O.
      *
-     * @param destination connection destination
-     * @param connection  connection
-     * @return true only for the final removal
+     * @param destination destination expected to own the registration
+     * @param connection  physical connection expected in that destination bucket
+     * @return {@code true} only when this call atomically removes the matching registration
+     * @throws ValidateException if either argument is {@code null}
      */
     public boolean remove(final Destination destination, final Connection connection) {
         require(destination, "Connection destination");
@@ -164,8 +170,9 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Returns the stable primitive identifier of a registered connection.
      *
-     * @param connection connection
+     * @param connection physical connection to look up
      * @return positive identifier, or zero when not registered
+     * @throws ValidateException if {@code connection} is {@code null}
      */
     public long id(final Connection connection) {
         final Registration registration = registrations.get(require(connection, "Connection"));
@@ -175,8 +182,9 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Returns active connections for a destination.
      *
-     * @param destination connection destination
-     * @return active connection snapshot
+     * @param destination destination bucket to snapshot
+     * @return immutable snapshot of that destination's currently observed connections
+     * @throws ValidateException if {@code destination} is {@code null}
      */
     public List<Connection> active(final Destination destination) {
         require(destination, "Connection destination");
@@ -187,7 +195,7 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Returns all active connections.
      *
-     * @return active snapshot
+     * @return immutable map and list copies of connections observed during concurrent traversal
      */
     public Map<Destination, List<Connection>> snapshot() {
         final LinkedHashMap<Destination, List<Connection>> snapshot = new LinkedHashMap<>();
@@ -200,8 +208,10 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Cancels active connections by tag.
      *
-     * @param tag tag
-     * @return true when at least one connection matched
+     * @param tag destination or connection identity to match by equality
+     * @return {@code true} when at least one matching registration was removed and closed
+     * @throws InternalException if a matching connection cannot be closed
+     * @throws ValidateException if {@code tag} is {@code null}
      */
     public boolean cancel(final Object tag) {
         require(tag, "Tag");
@@ -219,6 +229,8 @@ public final class ConnectionRegistry implements AutoCloseable {
 
     /**
      * Atomically prevents new registrations and closes every registered physical connection outside map operations.
+     *
+     * @throws InternalException if one or more physical connections cannot be closed; later failures are suppressed
      */
     @Override
     public void close() {
@@ -247,10 +259,11 @@ public final class ConnectionRegistry implements AutoCloseable {
     /**
      * Validates required values.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -258,6 +271,9 @@ public final class ConnectionRegistry implements AutoCloseable {
 
     /**
      * Stable physical connection registration.
+     *
+     * @param id          positive registration identifier
+     * @param destination destination bucket selected when the connection was opened
      */
     private record Registration(long id, Destination destination) {
     }

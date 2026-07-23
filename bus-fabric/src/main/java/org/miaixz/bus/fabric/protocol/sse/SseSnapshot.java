@@ -61,6 +61,21 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
 
     /**
      * Creates a validated snapshot.
+     *
+     * @param context         runtime services used by the exchange
+     * @param uri             original target URI
+     * @param address         normalized HTTP address
+     * @param headers         stream-opening request headers
+     * @param timeout         stream timeout policy
+     * @param retry           retry policy copied into session-local state
+     * @param lastEventId     optional event id supplied during reconnect
+     * @param autoReconnect   whether retryable disconnects reopen the stream
+     * @param responseHandler opening-response callback
+     * @param guard           optional SSE message guard
+     * @param filter          optional SSE message filter
+     * @param observer        SSE lifecycle observer
+     * @param handler         application event handler
+     * @param listener        session lifecycle listener
      */
     SseSnapshot {
         context = require(context, "Context");
@@ -89,10 +104,10 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

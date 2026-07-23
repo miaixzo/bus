@@ -53,17 +53,17 @@ public interface AioProvider {
     /**
      * Opens a client channel.
      *
-     * @param group group
-     * @return AIO channel
+     * @param group open asynchronous channel group owning the client channel
+     * @return newly opened asynchronous client channel wrapper
      */
     AioChannel openChannel(AioGroup group);
 
     /**
      * Opens a client channel with socket options.
      *
-     * @param group   group
+     * @param group   open asynchronous channel group owning the client channel
      * @param options socket options
-     * @return AIO channel
+     * @return newly opened asynchronous client channel wrapper
      */
     default AioChannel openChannel(final AioGroup group, final SocketOptions options) {
         return openChannel(group);
@@ -72,21 +72,21 @@ public interface AioProvider {
     /**
      * Opens a server.
      *
-     * @param address  address
-     * @param group    group
+     * @param address  local TCP listening address
+     * @param group    open asynchronous group supplying the dispatcher
      * @param listener lifecycle listener
-     * @return TCP server
+     * @return newly created TCP server bound to the group dispatcher
      */
     TcpServer openServer(Address address, AioGroup group, Listener<Object> listener);
 
     /**
      * Opens a server with socket options.
      *
-     * @param address  address
-     * @param group    group
+     * @param address  local TCP listening address
+     * @param group    open asynchronous group supplying the dispatcher
      * @param listener lifecycle listener
      * @param options  socket options
-     * @return TCP server
+     * @return newly created TCP server using the supplied socket options
      */
     default TcpServer openServer(
             final Address address,
@@ -99,9 +99,9 @@ public interface AioProvider {
     /**
      * Opens a server with the default lifecycle listener.
      *
-     * @param address address
-     * @param group   group
-     * @return TCP server
+     * @param address local TCP listening address
+     * @param group   open asynchronous group supplying the dispatcher
+     * @return newly created TCP server without a lifecycle listener
      */
     default TcpServer openServer(final Address address, final AioGroup group) {
         return openServer(address, group, null);
@@ -136,8 +136,8 @@ final class SystemAioProvider implements AioProvider {
     /**
      * Opens a client channel.
      *
-     * @param group group
-     * @return AIO channel
+     * @param group open asynchronous channel group owning the client channel
+     * @return newly opened channel using default socket options
      */
     @Override
     public AioChannel openChannel(final AioGroup group) {
@@ -147,9 +147,9 @@ final class SystemAioProvider implements AioProvider {
     /**
      * Opens a client channel.
      *
-     * @param group   group
+     * @param group   open asynchronous channel group owning the client channel
      * @param options socket options
-     * @return AIO channel
+     * @return newly opened channel using supplied or default socket options
      */
     @Override
     public AioChannel openChannel(final AioGroup group, final SocketOptions options) {
@@ -166,10 +166,10 @@ final class SystemAioProvider implements AioProvider {
     /**
      * Opens a server.
      *
-     * @param address  address
-     * @param group    group
+     * @param address  local TCP listening address
+     * @param group    open asynchronous group supplying the dispatcher
      * @param listener lifecycle listener
-     * @return TCP server
+     * @return newly created TCP server using default socket options
      */
     @Override
     public TcpServer openServer(final Address address, final AioGroup group, final Listener<Object> listener) {
@@ -179,11 +179,11 @@ final class SystemAioProvider implements AioProvider {
     /**
      * Opens a server.
      *
-     * @param address  address
-     * @param group    group
+     * @param address  local TCP listening address
+     * @param group    open asynchronous group supplying the dispatcher
      * @param listener lifecycle listener
      * @param options  socket options
-     * @return TCP server
+     * @return newly created TCP server using supplied or default socket options
      */
     @Override
     public TcpServer openServer(

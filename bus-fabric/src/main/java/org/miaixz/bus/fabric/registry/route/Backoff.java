@@ -39,6 +39,11 @@ public record Backoff(Route route, Instant failedAt, int failures, Instant backo
 
     /**
      * Creates route retry backoff memory.
+     *
+     * @param route        failed route
+     * @param failedAt     most recent failure time
+     * @param failures     consecutive failure count
+     * @param backoffUntil earliest retry time
      */
     public Backoff {
         route = Assert.notNull(route, () -> new ValidateException("Route must not be null"));

@@ -46,14 +46,14 @@ public final class Tags {
     private static final ConcurrentHashMap<String, String> TOKENS = new ConcurrentHashMap<>();
 
     /**
-     * Tag values.
+     * Immutable sanitized values indexed by validated tag key.
      */
     private final Map<String, String> values;
 
     /**
      * Creates tags.
      *
-     * @param values tag values
+     * @param values validated and sanitized values copied into an immutable map
      */
     private Tags(final Map<String, String> values) {
         this.values = Map.copyOf(values);
@@ -62,7 +62,7 @@ public final class Tags {
     /**
      * Returns empty tags.
      *
-     * @return empty tags
+     * @return process-wide empty tag set
      */
     public static Tags empty() {
         return Instances.get(Tags.class.getName() + ".empty", () -> new Tags(Map.of()));
@@ -71,9 +71,10 @@ public final class Tags {
     /**
      * Creates a single tag set.
      *
-     * @param key   key
-     * @param value value
-     * @return tags
+     * @param key   non-blank, single-line tag key
+     * @param value non-blank, single-line value to sanitize
+     * @return immutable tag set containing the sanitized mapping
+     * @throws ValidateException if either token is blank or contains a line break
      */
     public static Tags of(final String key, final String value) {
         return empty().with(key, value);
@@ -82,8 +83,9 @@ public final class Tags {
     /**
      * Creates a tag set from a map in one snapshot operation.
      *
-     * @param values values
-     * @return tags
+     * @param values source mappings to validate, sanitize, and copy
+     * @return immutable sanitized snapshot, or the shared empty set when no mappings are supplied
+     * @throws ValidateException if the map is {@code null} or contains an invalid key or value
      */
     public static Tags of(final Map<String, String> values) {
         final Map<String, String> checked = Assert
@@ -102,9 +104,10 @@ public final class Tags {
     /**
      * Returns tags with one value replaced.
      *
-     * @param key   key
-     * @param value value
-     * @return tags
+     * @param key   tag key to validate
+     * @param value tag value to validate and sanitize
+     * @return new immutable set in which the normalized key maps to the sanitized value
+     * @throws ValidateException if either token is blank or contains a line break
      */
     public Tags with(final String key, final String value) {
         final String checkedKey = normalize(key, "Tag key");
@@ -118,8 +121,9 @@ public final class Tags {
     /**
      * Returns tags with all values from another tag set.
      *
-     * @param other other tags
-     * @return merged tags
+     * @param other tag set whose mappings replace entries with the same key
+     * @return immutable union, reusing either operand when the other is empty
+     * @throws ValidateException if {@code other} is {@code null}
      */
     public Tags merge(final Tags other) {
         final Tags checked = Assert.notNull(other, () -> new ValidateException("Other tags must not be null"));
@@ -138,8 +142,9 @@ public final class Tags {
     /**
      * Returns a tag value.
      *
-     * @param key key
-     * @return value or null
+     * @param key tag key to validate before lookup
+     * @return sanitized tag content, or {@code null} when the key is absent
+     * @throws ValidateException if the key is blank or contains a line break
      */
     public String get(final String key) {
         return values.get(normalize(key, "Tag key"));
@@ -148,7 +153,7 @@ public final class Tags {
     /**
      * Returns a tag snapshot.
      *
-     * @return tag snapshot
+     * @return immutable map backing this tag set
      */
     public Map<String, String> asMap() {
         return values;
@@ -157,9 +162,10 @@ public final class Tags {
     /**
      * Validates and normalizes a tag token.
      *
-     * @param value value
-     * @param name  name
-     * @return normalized token
+     * @param value tag token to validate and optionally intern in the bounded cache
+     * @param name  logical token name included in the validation error
+     * @return validated token, reusing a cached short string when available
+     * @throws ValidateException if the token is blank or contains a line break
      */
     public static String normalize(final String value, final String name) {
         return cache(validate(value, name));
@@ -171,6 +177,7 @@ public final class Tags {
      * @param key   tag key
      * @param value tag value
      * @return sanitized tag value
+     * @throws ValidateException if the key or value is blank or contains a line break
      */
     public static String sanitize(final String key, final String value) {
         final String checkedKey = normalize(key, "Tag key");
@@ -181,8 +188,9 @@ public final class Tags {
     /**
      * Sanitizes a tag map.
      *
-     * @param values source values
-     * @return sanitized tags
+     * @param values source mappings to validate, sanitize, and snapshot
+     * @return immutable sanitized tag set
+     * @throws ValidateException if the map is {@code null} or contains an invalid key or value
      */
     public static Tags sanitize(final Map<String, String> values) {
         return of(values);
@@ -191,8 +199,9 @@ public final class Tags {
     /**
      * Returns a redacted token with a stable short fingerprint.
      *
-     * @param value secret value
-     * @return redacted token
+     * @param value secret text to fingerprint
+     * @return redaction marker containing a stable twelve-character fingerprint
+     * @throws ValidateException if the secret is blank or contains a line break
      */
     public static String redact(final String value) {
         final String checked = normalize(value, "Redacted value");
@@ -203,9 +212,10 @@ public final class Tags {
     /**
      * Validates a tag token.
      *
-     * @param value value
-     * @param name  name
-     * @return token
+     * @param value tag token to validate
+     * @param name  logical token name included in the validation error
+     * @return unchanged non-blank, single-line token
+     * @throws ValidateException if the token is blank or contains a line break
      */
     private static String validate(final String value, final String name) {
         final String checked = Assert
@@ -457,20 +467,6 @@ public final class Tags {
      */
     private static String fingerprint(final String value) {
         return org.miaixz.bus.crypto.Builder.sha256(value).substring(0, 12);
-    }
-
-    /**
-     * Empty string holder to keep normalization replacements allocation-free.
-     */
-    private static final class Normalized {
-
-        /**
-         * Hidden constructor for normalization constants.
-         */
-        private Normalized() {
-            // No initialization required.
-        }
-
     }
 
 }

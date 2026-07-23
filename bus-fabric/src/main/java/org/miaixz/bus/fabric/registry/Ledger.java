@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * Thread-safe registry ledger contract.
  *
- * @param <T> value type
+ * @param <T> type of value stored in each binding
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -41,8 +41,8 @@ public interface Ledger<T> {
     /**
      * Creates a concurrent registry ledger.
      *
-     * @param <T> value type
-     * @return registry ledger
+     * @param <T> type of value stored in each binding
+     * @return empty thread-safe in-memory ledger
      */
     static <T> Ledger<T> create() {
         return new DefaultLedger<>();
@@ -51,45 +51,49 @@ public interface Ledger<T> {
     /**
      * Stores a binding.
      *
-     * @param binding binding
+     * @param binding non-null binding to store or replace by key
+     * @throws ValidateException if {@code binding} is {@code null}
      */
     void put(Binding<T> binding);
 
     /**
      * Reads a value.
      *
-     * @param key key
-     * @return value or null
+     * @param key non-blank, single-line binding key
+     * @return bound value, or {@code null} when the key is absent
+     * @throws ValidateException if the key is blank or contains a line break
      */
     T get(String key);
 
     /**
      * Reads a binding.
      *
-     * @param key key
-     * @return binding or null
+     * @param key non-blank, single-line binding key
+     * @return complete binding, or {@code null} when the key is absent
+     * @throws ValidateException if the key is blank or contains a line break
      */
     Binding<T> binding(String key);
 
     /**
      * Removes a value.
      *
-     * @param key key
-     * @return removed value or null
+     * @param key non-blank, single-line binding key
+     * @return value from the atomically removed binding, or {@code null} when absent
+     * @throws ValidateException if the key is blank or contains a line break
      */
     T remove(String key);
 
     /**
      * Returns an immutable ledger snapshot.
      *
-     * @return snapshot
+     * @return immutable copy of mappings observed while the snapshot is created
      */
     Map<String, Binding<T>> snapshot();
 
     /**
      * Returns the current size.
      *
-     * @return size
+     * @return current number of stored bindings
      */
     int size();
 
@@ -98,21 +102,27 @@ public interface Ledger<T> {
 /**
  * Default concurrent registry ledger implementation.
  *
- * @param <T> value type
+ * @param <T> type of value stored in each binding
  * @author Kimi Liu
  * @since Java 21+
  */
 final class DefaultLedger<T> implements Ledger<T> {
 
     /**
-     * Stored bindings.
+     * Concurrent bindings indexed by validated key.
      */
     private final ConcurrentHashMap<String, Binding<T>> bindings = new ConcurrentHashMap<>();
 
     /**
+     * Creates an empty concurrent ledger.
+     */
+    DefaultLedger() {
+    }
+
+    /**
      * Stores or replaces a binding by key.
      *
-     * @param binding binding
+     * @param binding non-null validated binding that replaces any entry with the same key
      */
     @Override
     public void put(final Binding<T> binding) {
@@ -123,8 +133,8 @@ final class DefaultLedger<T> implements Ledger<T> {
     /**
      * Returns the bound value for a key.
      *
-     * @param key binding key
-     * @return value, or null when absent
+     * @param key non-blank, single-line binding key to trim before lookup
+     * @return bound value, or null when the trimmed key is absent
      */
     @Override
     public T get(final String key) {
@@ -135,8 +145,8 @@ final class DefaultLedger<T> implements Ledger<T> {
     /**
      * Returns the full binding for a key.
      *
-     * @param key binding key
-     * @return binding, or null when absent
+     * @param key non-blank, single-line binding key to trim before lookup
+     * @return complete binding, or null when the trimmed key is absent
      */
     @Override
     public Binding<T> binding(final String key) {
@@ -146,8 +156,8 @@ final class DefaultLedger<T> implements Ledger<T> {
     /**
      * Removes a binding by key and returns its value.
      *
-     * @param key binding key
-     * @return removed value, or null when absent
+     * @param key non-blank, single-line binding key to trim before removal
+     * @return value from the atomically removed binding, or null when absent
      */
     @Override
     public T remove(final String key) {
@@ -156,7 +166,7 @@ final class DefaultLedger<T> implements Ledger<T> {
     }
 
     /**
-     * Returns an immutable snapshot of all bindings.
+     * Returns an immutable copy of bindings observed during concurrent-map traversal.
      *
      * @return binding snapshot
      */
@@ -178,8 +188,9 @@ final class DefaultLedger<T> implements Ledger<T> {
     /**
      * Validates binding keys.
      *
-     * @param key key
-     * @return valid key
+     * @param key binding key to validate and normalize
+     * @return trimmed, non-blank, single-line key
+     * @throws ValidateException if the key is blank or contains a line break
      */
     private static String validateKey(final String key) {
         if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
@@ -191,10 +202,11 @@ final class DefaultLedger<T> implements Ledger<T> {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

@@ -44,7 +44,7 @@ import org.miaixz.bus.fabric.Builder;
 public final class ProxyHeaderReader {
 
     /**
-     * PROXY protocol v1 prefix.
+     * ASCII signature used to distinguish a PROXY protocol v1 line from application payload.
      */
     private static final byte[] PREFIX = "PROXY ".getBytes(Charset.US_ASCII);
 
@@ -58,8 +58,9 @@ public final class ProxyHeaderReader {
     /**
      * Reads an optional PROXY protocol v1 header.
      *
-     * @param channel socket channel
-     * @return read result
+     * @param channel non-null socket channel positioned before optional PROXY metadata
+     * @return parsed header with no payload when the signature matches, otherwise no header with consumed bytes
+     *         replayable as application payload
      */
     public static Result read(final SocketChannel channel) {
         final SocketChannel current = Assert
@@ -109,9 +110,9 @@ public final class ProxyHeaderReader {
     /**
      * Reads one byte.
      *
-     * @param channel channel
-     * @return byte value, or -1
-     * @throws IOException when read fails
+     * @param channel socket channel from which one byte is polled
+     * @return unsigned byte value from 0 through 255, or -1 at end-of-stream
+     * @throws IOException when the channel read fails
      */
     private static int readByte(final SocketChannel channel) throws IOException {
         final ByteBuffer one = ByteBuffer.allocate(Normal._1);
@@ -130,7 +131,7 @@ public final class ProxyHeaderReader {
     /**
      * Creates an empty payload buffer.
      *
-     * @return empty payload
+     * @return new empty mutable buffer
      */
     private static Buffer empty() {
         return new Buffer();
@@ -139,8 +140,8 @@ public final class ProxyHeaderReader {
     /**
      * Creates payload from consumed bytes.
      *
-     * @param consumed consumed bytes
-     * @return payload buffer
+     * @param consumed bytes tentatively read while testing the PROXY signature
+     * @return new buffer containing those bytes for replay as application payload
      */
     private static Buffer payload(final ByteArrayOutputStream consumed) {
         return new Buffer().write(consumed.toByteArray());
@@ -149,13 +150,16 @@ public final class ProxyHeaderReader {
     /**
      * PROXY header read result.
      *
-     * @param header  parsed PROXY header
-     * @param payload prefetched application payload
+     * @param header  parsed PROXY metadata, or null when no complete signature was found
+     * @param payload prefetched application bytes consumed during signature detection
      */
     public record Result(ProxyHeader header, Buffer payload) {
 
         /**
          * Creates a result.
+         *
+         * @param header  parsed PROXY metadata, or null
+         * @param payload prefetched application bytes, or null to allocate an empty buffer
          */
         public Result {
             payload = payload == null ? new Buffer() : payload;

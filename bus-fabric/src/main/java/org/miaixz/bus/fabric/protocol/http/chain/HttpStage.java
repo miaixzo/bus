@@ -44,7 +44,7 @@ public interface HttpStage {
     /**
      * Returns the stage name.
      *
-     * @return stage name
+     * @return trimmed lowercase simple class name, or {@code http-stage} for an unnamed implementation
      */
     default String name() {
         final String rawName = getClass().getSimpleName();
@@ -54,16 +54,16 @@ public interface HttpStage {
     /**
      * Executes this stage.
      *
-     * @param request request
-     * @param chain   next chain
-     * @return response
+     * @param request request presented to this stage
+     * @param chain   continuation used to invoke the remaining stages
+     * @return response produced by this stage or the remaining chain
      */
     HttpResponse execute(HttpRequest request, HttpChain chain);
 
     /**
      * Returns whether this stage touches the network.
      *
-     * @return true when network stage
+     * @return true when the stage performs network I/O; false by default
      */
     default boolean network() {
         return false;
@@ -72,8 +72,8 @@ public interface HttpStage {
     /**
      * Normalizes a stage name.
      *
-     * @param name name
-     * @return normalized name
+     * @param name non-blank, single-line stage name
+     * @return trimmed stage name converted to lowercase with the root locale
      */
     private static String normalizeName(final String name) {
         Assert.isFalse(

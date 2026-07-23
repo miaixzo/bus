@@ -66,6 +66,23 @@ record SocketSnapshot(Context context, URI uri, Address address, Headers headers
 
     /**
      * Creates a validated snapshot.
+     *
+     * @param context       runtime services used by the exchange
+     * @param uri           original target URI
+     * @param address       normalized transport address
+     * @param headers       handshake or first-message headers
+     * @param timeout       timeout policy copied into the snapshot
+     * @param tlsContext    TLS context, or {@code null} with {@code tlsSettings}
+     * @param tlsSettings   TLS settings, or {@code null} with {@code tlsContext}
+     * @param frameCodec    socket message framing codec
+     * @param handler       inbound message handler
+     * @param guard         optional socket-message guard
+     * @param filter        optional exchange message filter
+     * @param observer      socket lifecycle observer
+     * @param proxyHeader   optional PROXY protocol metadata
+     * @param socketOptions channel and session tuning options
+     * @param listener      session lifecycle listener
+     * @param pooled        whether pooled transport resources may be used
      */
     SocketSnapshot {
         context = require(context, "Context");
@@ -87,10 +104,10 @@ record SocketSnapshot(Context context, URI uri, Address address, Headers headers
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

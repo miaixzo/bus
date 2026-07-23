@@ -49,9 +49,9 @@ final class HttpCacheKey {
     /**
      * Builds a full cache key.
      *
-     * @param request request
-     * @param vary    vary header
-     * @return key
+     * @param request request whose method, URL, and selected header values identify the entry
+     * @param vary    response Vary header value, or null or blank when no request headers vary the entry
+     * @return base key followed by a hash separator and the encoded Vary-selected request headers
      */
     static String key(final HttpRequest request, final String vary) {
         return baseKey(request) + Symbol.HASH + varyDigest(request, vary);
@@ -60,8 +60,8 @@ final class HttpCacheKey {
     /**
      * Builds a base cache key without vary values.
      *
-     * @param request request
-     * @return key prefix
+     * @param request request containing a non-null method and URL
+     * @return method value and request URI joined with an at-sign separator
      */
     static String baseKey(final HttpRequest request) {
         Assert.isTrue(
@@ -73,9 +73,9 @@ final class HttpCacheKey {
     /**
      * Returns whether vary headers in the cached response match the current request.
      *
-     * @param cached  cached response
-     * @param request current request
-     * @return true when the cached response can satisfy the request
+     * @param cached  cached response carrying the original request and Vary response headers
+     * @param request current request whose headers are compared with the cached request
+     * @return true when all header fields selected by the cached response's Vary metadata match
      */
     static boolean varyMatches(final HttpResponse cached, final HttpRequest request) {
         return HttpHeaders.varyMatches(cached.request().headers(), request.headers(), cached.headers());
@@ -84,8 +84,8 @@ final class HttpCacheKey {
     /**
      * Returns whether a Vary header contains the wildcard marker.
      *
-     * @param vary Vary header value
-     * @return true when wildcard Vary is present
+     * @param vary Vary header value, or null
+     * @return true when a comma-delimited field is exactly the wildcard marker after trimming
      */
     static boolean varyStar(final String vary) {
         if (vary == null || vary.isBlank()) {
@@ -103,8 +103,8 @@ final class HttpCacheKey {
      * Encodes the request headers named by {@code Vary} into the cache key suffix.
      *
      * @param request request being cached or looked up
-     * @param vary    response Vary header
-     * @return deterministic vary suffix
+     * @param vary    response Vary header value, or null or blank for an empty suffix
+     * @return ordered, ampersand-delimited lowercase field names and corresponding request-header value lists
      */
     private static String varyDigest(final HttpRequest request, final String vary) {
         if (vary == null || vary.isBlank()) {

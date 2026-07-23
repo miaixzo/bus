@@ -46,7 +46,7 @@ public final class WebSocketWriter {
     private final Sink output;
 
     /**
-     * True when client frames require a mask key.
+     * Whether every encoded frame carries the client-to-server mask bit and key.
      */
     private final boolean mask;
 
@@ -56,10 +56,11 @@ public final class WebSocketWriter {
     private final SecureRandom random;
 
     /**
-     * Creates a frame writer.
+     * Creates a frame writer with a newly allocated secure mask-key source.
      *
-     * @param output output sink
-     * @param mask   true for a client writer, false for a server writer
+     * @param output borrowed sink that receives complete encoded frames
+     * @param mask   {@code true} for client-to-server masking; {@code false} for unmasked server frames
+     * @throws ValidateException if {@code output} is {@code null}
      */
     public WebSocketWriter(final Sink output, final boolean mask) {
         this(output, mask, new SecureRandom());
@@ -68,9 +69,10 @@ public final class WebSocketWriter {
     /**
      * Creates a frame writer with an explicit secure random source.
      *
-     * @param output output sink
-     * @param mask   mask direction
-     * @param random secure mask-key source
+     * @param output borrowed sink that receives complete encoded frames
+     * @param mask   {@code true} to generate and apply a four-byte mask key to every frame
+     * @param random secure source used to generate mask keys
+     * @throws ValidateException if {@code output} or {@code random} is {@code null}
      */
     WebSocketWriter(final Sink output, final boolean mask, final SecureRandom random) {
         this.output = require(output, "WebSocket output");
@@ -81,8 +83,11 @@ public final class WebSocketWriter {
     /**
      * Encodes one frame and writes its complete wire representation without flushing the sink.
      *
-     * @param frame frame
+     * @param frame immutable frame whose FIN bit, opcode, and payload are encoded
      * @return complete wire byte count including header, mask key and payload
+     * @throws ValidateException if {@code frame} is {@code null}
+     * @throws ProtocolException if the payload exceeds 16 MiB
+     * @throws SocketException   if the complete encoded buffer cannot be written to the sink
      */
     public synchronized long write(final WebSocketFrame frame) {
         final WebSocketFrame checked = require(frame, "WebSocket frame");
@@ -114,8 +119,8 @@ public final class WebSocketWriter {
     /**
      * Writes the canonical payload-length field.
      *
-     * @param target target buffer
-     * @param length payload length
+     * @param target encoded-frame buffer receiving the mask bit and canonical length representation
+     * @param length non-negative payload byte count
      */
     private void writeLength(final Buffer target, final long length) {
         final int maskBit = mask ? Normal._128 : Normal._0;
@@ -138,9 +143,9 @@ public final class WebSocketWriter {
     /**
      * Returns a masked payload snapshot.
      *
-     * @param payload payload
-     * @param key     four-byte mask key
-     * @return masked bytes
+     * @param payload immutable payload copied before masking
+     * @param key     four-byte mask key applied cyclically
+     * @return newly allocated masked payload bytes
      */
     private static byte[] mask(final ByteString payload, final byte[] key) {
         final byte[] bytes = payload.toByteArray();
@@ -153,10 +158,10 @@ public final class WebSocketWriter {
     /**
      * Validates a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

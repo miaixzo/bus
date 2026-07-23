@@ -55,12 +55,12 @@ public final class Selector {
     private final ArrayDeque<Route> failed;
 
     /**
-     * Backoff memories by route.
+     * Latest failure and retry schedule indexed by route.
      */
     private final Map<Route, Backoff> failures;
 
     /**
-     * Route observer.
+     * Observer receiving route readiness and backoff events.
      */
     private volatile EventObserver observer;
 
@@ -79,7 +79,7 @@ public final class Selector {
     /**
      * Creates an empty route selector.
      *
-     * @param observer observer
+     * @param observer observer receiving route state events
      */
     public Selector(final EventObserver observer) {
         this(observer, Clock.system());
@@ -88,7 +88,7 @@ public final class Selector {
     /**
      * Creates an empty route selector with explicit runtime dependencies.
      *
-     * @param observer observer
+     * @param observer observer receiving route state events
      * @param clock    runtime clock
      */
     public Selector(final EventObserver observer, final Clock clock) {
@@ -102,7 +102,7 @@ public final class Selector {
     /**
      * Sets route observer.
      *
-     * @param observer observer
+     * @param observer replacement observer receiving route state events
      */
     public void observer(final EventObserver observer) {
         this.observer = EventObserver.safe(require(observer, "Route observer"));
@@ -111,7 +111,7 @@ public final class Selector {
     /**
      * Adds a route candidate.
      *
-     * @param route route
+     * @param route candidate to append when not already tracked
      */
     public synchronized void add(final Route route) {
         require(route);
@@ -123,7 +123,7 @@ public final class Selector {
     /**
      * Returns the next route candidate.
      *
-     * @return next route or null
+     * @return first ready route, otherwise an eligible failed route, or {@code null} when empty
      */
     public synchronized Route next() {
         return next(clock);
@@ -132,8 +132,8 @@ public final class Selector {
     /**
      * Returns the next route candidate at a point in time.
      *
-     * @param clock clock
-     * @return next route or null
+     * @param clock clock supplying the retry eligibility instant
+     * @return first ready route, otherwise an eligible failed route, or {@code null} when empty
      */
     public synchronized Route next(final Clock clock) {
         require(clock);
@@ -153,7 +153,7 @@ public final class Selector {
     /**
      * Marks a route as failed.
      *
-     * @param route route
+     * @param route route whose failure count and retry deadline are updated
      */
     public synchronized void failed(final Route route) {
         failed(route, clock);
@@ -162,8 +162,8 @@ public final class Selector {
     /**
      * Marks a route as failed at a point in time.
      *
-     * @param route route
-     * @param clock clock
+     * @param route route whose failure count and retry deadline are updated
+     * @param clock clock supplying failure and event timestamps
      */
     public synchronized void failed(final Route route, final Clock clock) {
         require(route);
@@ -183,7 +183,7 @@ public final class Selector {
     /**
      * Marks a route as connected.
      *
-     * @param route route
+     * @param route successfully connected route to restore to the ready queue
      */
     public synchronized void connected(final Route route) {
         require(route);
@@ -209,7 +209,7 @@ public final class Selector {
     /**
      * Returns a backoff memory snapshot.
      *
-     * @return failures
+     * @return immutable snapshot of current route backoff records
      */
     public synchronized List<Backoff> failures() {
         return List.copyOf(failures.values());
@@ -218,8 +218,8 @@ public final class Selector {
     /**
      * Returns whether a route is currently under failure backoff.
      *
-     * @param route route
-     * @param clock clock
+     * @param route route whose retry deadline is inspected
+     * @param clock clock supplying the comparison instant
      * @return true when postponed
      */
     public synchronized boolean postponed(final Route route, final Clock clock) {
@@ -241,7 +241,7 @@ public final class Selector {
     /**
      * Validates route references.
      *
-     * @param route route
+     * @param route route reference to validate
      */
     private static void require(final Route route) {
         Assert.notNull(route, () -> new ValidateException("Route must not be null"));
@@ -250,7 +250,7 @@ public final class Selector {
     /**
      * Validates clock references.
      *
-     * @param clock clock
+     * @param clock clock reference to validate
      */
     private static void require(final Clock clock) {
         Assert.notNull(clock, () -> new ValidateException("Clock must not be null"));
@@ -259,10 +259,10 @@ public final class Selector {
     /**
      * Emits a route event.
      *
-     * @param marker   marker
-     * @param route    route
+     * @param marker   route event marker
+     * @param route    route associated with the event
      * @param attempts attempt count
-     * @param delay    delay
+     * @param delay    retry delay associated with the event
      * @param clock    event clock
      */
     private void emit(
@@ -280,10 +280,10 @@ public final class Selector {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -293,7 +293,7 @@ public final class Selector {
      * Returns exponential backoff for a failure count.
      *
      * @param failures failure count
-     * @return backoff
+     * @return exponentially increasing retry delay capped by the selector maximum
      */
     private static Duration backoff(final int failures) {
         final int shift = Math.min(Normal._8, Math.max(Normal._0, failures - Normal._1));

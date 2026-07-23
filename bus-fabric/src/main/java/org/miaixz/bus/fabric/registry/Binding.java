@@ -26,12 +26,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Options;
 
 /**
- * Immutable binding with optional options.
+ * Immutable registry binding with a non-null option snapshot.
  *
- * @param key     binding key
- * @param value   binding value
- * @param options binding options
- * @param <T>     value type
+ * @param key     trimmed, non-blank, single-line binding key
+ * @param value   non-null bound value
+ * @param options immutable binding options; {@code null} is normalized to {@link Options#empty()}
+ * @param <T>     bound value type
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -40,9 +40,10 @@ public record Binding<T>(String key, T value, Options options) {
     /**
      * Creates and validates a binding.
      *
-     * @param key     binding key
-     * @param value   binding value
-     * @param options binding options
+     * @param key     non-blank, single-line binding key
+     * @param value   non-null value associated with the key
+     * @param options option snapshot, or {@code null} to use an empty snapshot
+     * @throws ValidateException if {@code key} is blank or multi-line, or {@code value} is {@code null}
      */
     public Binding {
         key = validateKey(key);
@@ -55,21 +56,23 @@ public record Binding<T>(String key, T value, Options options) {
     /**
      * Creates a binding without options.
      *
-     * @param key   binding key
-     * @param value binding value
-     * @param <T>   value type
-     * @return binding
+     * @param key   non-blank, single-line binding key
+     * @param value non-null value associated with the key
+     * @param <T>   bound value type
+     * @return binding with an empty option snapshot
+     * @throws ValidateException if {@code key} is blank or multi-line, or {@code value} is {@code null}
      */
     public static <T> Binding<T> of(final String key, final T value) {
         return new Binding<>(key, value, Options.empty());
     }
 
     /**
-     * Returns a copy with a replaced option.
+     * Returns a copy whose option snapshot contains a replaced or added entry.
      *
-     * @param key   option key
-     * @param value option value
-     * @return copied binding
+     * @param key   non-blank, single-line option key
+     * @param value non-null option value
+     * @return new binding retaining this binding key and value with the updated options
+     * @throws ValidateException if {@code key} is blank or multi-line, or {@code value} is {@code null}
      */
     public Binding<T> with(final String key, final Object value) {
         return new Binding<>(this.key, this.value, options.with(validateKey(key), require(value, "Option value")));
@@ -78,7 +81,7 @@ public record Binding<T>(String key, T value, Options options) {
     /**
      * Returns the binding key.
      *
-     * @return binding key
+     * @return trimmed, non-blank, single-line registry key
      */
     @Override
     public String key() {
@@ -88,7 +91,7 @@ public record Binding<T>(String key, T value, Options options) {
     /**
      * Returns the binding value.
      *
-     * @return binding value
+     * @return non-null value associated with this binding
      */
     @Override
     public T value() {
@@ -98,7 +101,7 @@ public record Binding<T>(String key, T value, Options options) {
     /**
      * Returns the binding options.
      *
-     * @return binding options
+     * @return non-null immutable option snapshot
      */
     @Override
     public Options options() {
@@ -108,8 +111,9 @@ public record Binding<T>(String key, T value, Options options) {
     /**
      * Validates binding keys.
      *
-     * @param key key
-     * @return valid key
+     * @param key candidate binding or option key
+     * @return trimmed, non-blank, single-line key
+     * @throws ValidateException if {@code key} is blank or contains a carriage return or line feed
      */
     private static String validateKey(final String key) {
         if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
@@ -119,12 +123,12 @@ public record Binding<T>(String key, T value, Options options) {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

@@ -73,12 +73,12 @@ import org.miaixz.bus.logger.Logger;
 public final class TcpServer implements AutoCloseable {
 
     /**
-     * Listen address.
+     * Local logical address bound when the server starts.
      */
     private final Address address;
 
     /**
-     * Sessions accepted by this server.
+     * Concurrent registry of accepted sessions that have not terminated.
      */
     private final Queue<TcpSession> sessions;
 
@@ -93,17 +93,17 @@ public final class TcpServer implements AutoCloseable {
     private final AtomicBoolean started;
 
     /**
-     * Running flag.
+     * Accept-loop intent flag cleared before the server channel is closed.
      */
     private final AtomicBoolean running;
 
     /**
-     * Closed flag.
+     * Atomic guard that makes global shutdown idempotent.
      */
     private final AtomicBoolean closed;
 
     /**
-     * Lifecycle listener.
+     * Lifecycle listener, replaced by a no-op singleton when absent.
      */
     private final Listener<Object> listener;
 
@@ -128,7 +128,7 @@ public final class TcpServer implements AutoCloseable {
     private final boolean ownsDispatcher;
 
     /**
-     * Connection handler.
+     * Handler assigned to newly accepted sockets, or {@code null} before registration.
      */
     private volatile Handler handler;
 
@@ -145,7 +145,8 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Creates a TCP server.
      *
-     * @param address listen address
+     * @param address local address bound on first start
+     * @throws ValidateException if {@code address} is {@code null}
      */
     public TcpServer(final Address address) {
         this(address, null, Dispatcher.create(), true);
@@ -154,8 +155,9 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Creates a TCP server.
      *
-     * @param address  listen address
-     * @param listener lifecycle listener
+     * @param address  local address bound on first start
+     * @param listener optional lifecycle listener
+     * @throws ValidateException if {@code address} is {@code null}
      */
     public TcpServer(final Address address, final Listener<Object> listener) {
         this(address, listener, Dispatcher.create(), true);
@@ -164,9 +166,10 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Creates a TCP server with a shared dispatcher.
      *
-     * @param address    listen address
-     * @param listener   lifecycle listener
-     * @param dispatcher shared dispatcher
+     * @param address    local address bound on first start
+     * @param listener   optional lifecycle listener
+     * @param dispatcher borrowed dispatcher running accept and session activities
+     * @throws ValidateException if the address or dispatcher is {@code null}
      */
     public TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher) {
         this(address, listener, dispatcher, SocketOptions.defaults());
@@ -175,10 +178,11 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Creates a TCP server with a shared dispatcher and socket options.
      *
-     * @param address    listen address
-     * @param listener   lifecycle listener
-     * @param dispatcher shared dispatcher
-     * @param options    socket options
+     * @param address    local address bound on first start
+     * @param listener   optional lifecycle listener
+     * @param dispatcher borrowed dispatcher running accept and session activities
+     * @param options    socket tuning options, or {@code null} for defaults
+     * @throws ValidateException if the address or dispatcher is {@code null}
      */
     public TcpServer(final Address address, final Listener<Object> listener, final Dispatcher dispatcher,
             final SocketOptions options) {
@@ -226,7 +230,7 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Returns the listen address.
      *
-     * @return address
+     * @return local logical address configured for binding
      */
     public Address address() {
         return address;
@@ -235,14 +239,17 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Returns listen backlog.
      *
-     * @return backlog
+     * @return configured maximum pending-connection backlog
      */
     public int backlog() {
         return backlog;
     }
 
     /**
-     * Starts the server.
+     * Binds the server channel and submits the single accept loop.
+     *
+     * @throws SocketException   if the server channel cannot be opened or bound
+     * @throws StatefulException if the server is closed or a start was already attempted
      */
     public void start() {
         synchronized (lifecycleLock) {
@@ -282,7 +289,8 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Sets the connection handler.
      *
-     * @param handler handler
+     * @param handler non-null callback for accepted sessions and their messages
+     * @throws ValidateException if {@code handler} is {@code null}
      */
     public void accept(final Handler handler) {
         this.handler = Assert.notNull(handler, () -> new ValidateException("TCP handler must not be null"));
@@ -291,7 +299,7 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Returns whether this server is running.
      *
-     * @return true when running
+     * @return {@code true} when the accept intent is active and the server channel remains open
      */
     public boolean running() {
         final ServerSocketChannel current = server;
@@ -299,7 +307,9 @@ public final class TcpServer implements AutoCloseable {
     }
 
     /**
-     * Closes this server.
+     * Stops acceptance, closes all observed sessions, and closes the dispatcher only when this server owns it.
+     *
+     * @throws InternalException if any server, session, accept task, or owned-dispatcher cleanup fails
      */
     @Override
     public void close() {
@@ -372,7 +382,7 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Handles an accepted socket.
      *
-     * @param socket socket
+     * @param socket newly accepted channel whose ownership is transferred to a session or closed
      */
     private void handle(final SocketChannel socket) {
         final Handler current = handler;
@@ -450,7 +460,7 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Notifies listener open without allowing listener failures to escape.
      *
-     * @param source lifecycle source
+     * @param source server or session whose lifecycle opened
      */
     private void notifyOpen(final Object source) {
         try {
@@ -463,7 +473,7 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Notifies listener close without allowing listener failures to escape.
      *
-     * @param source lifecycle source
+     * @param source server or session whose lifecycle closed
      */
     private void notifyClose(final Object source) {
         try {
@@ -476,8 +486,8 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Notifies listener failure without allowing listener failures to escape.
      *
-     * @param source lifecycle source
-     * @param cause  failure cause
+     * @param source server or session whose lifecycle failed
+     * @param cause  failure reported by that source
      */
     private void notifyFailure(final Object source, final Throwable cause) {
         try {
@@ -500,8 +510,8 @@ public final class TcpServer implements AutoCloseable {
     /**
      * Awaits a conduit operation and preserves runtime failures.
      *
-     * @param future  conduit operation
-     * @param message failure message
+     * @param future  non-null asynchronous byte-count operation to join
+     * @param message context used when a checked or missing result must be wrapped
      * @return completed byte count
      */
     private static long await(final CompletableFuture<Long> future, final String message) {
@@ -527,7 +537,7 @@ public final class TcpServer implements AutoCloseable {
     private static final class TcpSession implements Session {
 
         /**
-         * Session address.
+         * Server address associated with the accepted session.
          */
         private final Address address;
 
@@ -537,7 +547,7 @@ public final class TcpServer implements AutoCloseable {
         private final Ingress ingress;
 
         /**
-         * Runtime dispatcher.
+         * Borrowed dispatcher running reader and deferred send activities.
          */
         private final Dispatcher dispatcher;
 
@@ -569,13 +579,13 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Creates a session.
          *
-         * @param address        address
-         * @param socket         socket
-         * @param listener       lifecycle listener
-         * @param dispatcher     runtime dispatcher
-         * @param handler        message handler
-         * @param registry       owning registry
-         * @param readBufferSize read chunk size
+         * @param address        server address associated with messages from this session
+         * @param socket         accepted channel transferred to the session-owned ingress
+         * @param listener       optional lifecycle listener
+         * @param dispatcher     borrowed runtime dispatcher
+         * @param handler        callback receiving session messages and terminal events
+         * @param registry       owning server's concurrent session registry
+         * @param readBufferSize positive maximum bytes requested per read
          */
         private TcpSession(final Address address, final SocketChannel socket, final Listener<Object> listener,
                 final Dispatcher dispatcher, final Handler handler, final Queue<TcpSession> registry,
@@ -667,7 +677,7 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Returns address.
          *
-         * @return address
+         * @return server address associated with this accepted session
          */
         @Override
         public Address address() {
@@ -677,7 +687,7 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Returns state.
          *
-         * @return state
+         * @return current lifecycle state
          */
         @Override
         public Status state() {
@@ -687,7 +697,7 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Returns opened state.
          *
-         * @return true when opened
+         * @return {@code true} when both lifecycle scope and ingress remain open
          */
         @Override
         public boolean opened() {
@@ -697,8 +707,9 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Sends a payload.
          *
-         * @param payload payload
-         * @return send call
+         * @param payload payload materialized when the returned call executes
+         * @return deferred call that fully writes the payload or fails
+         * @throws ValidateException if {@code payload} is {@code null}
          */
         @Override
         public Call<Void> send(final Payload payload) {
@@ -717,8 +728,10 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Materializes and fully writes one payload through the ingress contract.
          *
-         * @param payload payload
+         * @param payload payload to materialize and write completely
          * @return null after a complete write
+         * @throws SocketException   if the ingress does not consume the entire payload
+         * @throws StatefulException if the session is not open
          */
         private Void write(final Payload payload) {
             if (!opened()) {
@@ -736,7 +749,7 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Closes this session.
          *
-         * @return true when closed
+         * @return {@code true} when this invocation performs the close transition
          */
         @Override
         public boolean close() {
@@ -752,7 +765,7 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Cancels this session.
          *
-         * @return true when cancelled
+         * @return {@code true} when this invocation performs the cancellation transition
          */
         @Override
         public boolean cancel() {
@@ -768,8 +781,8 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Fails this session.
          *
-         * @param cause failure cause
-         * @return true when failed
+         * @param cause failure reported by the reader or handler path
+         * @return {@code true} when this invocation performs the failure transition
          */
         private boolean fail(final Throwable cause) {
             unregister();
@@ -825,7 +838,7 @@ public final class TcpServer implements AutoCloseable {
         /**
          * Returns attributes.
          *
-         * @return attributes
+         * @return shared immutable empty attribute map
          */
         @Override
         public Map<String, Object> attributes() {

@@ -78,11 +78,12 @@ public final class Reactor implements AutoCloseable {
     /**
      * Creates a reactor from fully resolved owned collaborators.
      *
-     * @param clock      clock
-     * @param observer   observer
-     * @param dispatcher dispatcher
-     * @param scope      scope
-     * @param directory  directory
+     * @param clock      runtime wall and monotonic clock
+     * @param observer   runtime event observer
+     * @param meter      runtime metrics registry
+     * @param dispatcher runtime activity dispatcher
+     * @param scope      root resource scope
+     * @param directory  runtime registry and connection directory
      */
     private Reactor(final Clock clock, final EventObserver observer, final FabricMeter meter,
             final Dispatcher dispatcher, final ResourceScope scope, final Directory directory) {
@@ -100,7 +101,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Creates a default reactor.
      *
-     * @return reactor
+     * @return reactor built with default runtime collaborators
      */
     public static Reactor create() {
         return builder().build();
@@ -109,7 +110,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Creates a reactor builder.
      *
-     * @return builder
+     * @return new reactor builder
      */
     public static Builder builder() {
         return new Builder();
@@ -118,7 +119,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the dispatcher.
      *
-     * @return dispatcher
+     * @return runtime activity dispatcher
      */
     public Dispatcher dispatcher() {
         return dispatcher;
@@ -127,7 +128,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the clock.
      *
-     * @return clock
+     * @return runtime wall and monotonic clock
      */
     public Clock clock() {
         return clock;
@@ -136,7 +137,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the directory.
      *
-     * @return directory
+     * @return runtime registry and connection directory
      */
     public Directory directory() {
         return directory;
@@ -145,7 +146,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the observer.
      *
-     * @return observer
+     * @return runtime event observer
      */
     public EventObserver observer() {
         return observer;
@@ -172,7 +173,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Cancels work associated with a tag.
      *
-     * @param tag tag
+     * @param tag activity ownership tag passed to the dispatcher
      * @return true when cancellation matched work
      */
     public boolean cancel(final Object tag) {
@@ -219,10 +220,10 @@ public final class Reactor implements AutoCloseable {
     /**
      * Validates non-null values.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -276,7 +277,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Sets the dispatcher.
          *
-         * @param dispatcher dispatcher
+         * @param dispatcher runtime dispatcher borrowed by the reactor
          * @return this builder
          */
         public Builder dispatcher(final Dispatcher dispatcher) {
@@ -287,7 +288,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Sets the clock.
          *
-         * @param clock clock
+         * @param clock runtime clock borrowed by the reactor
          * @return this builder
          */
         public Builder clock(final Clock clock) {
@@ -298,7 +299,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Sets the observer.
          *
-         * @param observer observer
+         * @param observer runtime event observer
          * @return this builder
          */
         public Builder observer(final EventObserver observer) {
@@ -342,7 +343,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Builds a reactor, creating defaults in dependency order and transferring ownership only after success.
          *
-         * @return reactor
+         * @return fully initialized reactor owning any collaborators created by this build
          */
         @Override
         public Reactor build() {

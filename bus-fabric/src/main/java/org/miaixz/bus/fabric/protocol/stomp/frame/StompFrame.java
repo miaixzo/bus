@@ -54,7 +54,7 @@ public final class StompFrame {
     private final Headers headers;
 
     /**
-     * Frame body.
+     * Payload carried after the frame's blank header separator.
      */
     private final Payload body;
 
@@ -76,10 +76,11 @@ public final class StompFrame {
     /**
      * Creates a validated frame.
      *
-     * @param command command
-     * @param headers headers
-     * @param body    body
-     * @param receipt receipt flag
+     * @param command non-blank STOMP command normalized to uppercase
+     * @param headers immutable frame headers
+     * @param body    frame payload
+     * @param receipt compatibility argument ignored in favor of deriving receipt state from the headers
+     * @throws ValidateException if the command, headers, or body is invalid
      */
     public StompFrame(final String command, final Headers headers, final Payload body, final boolean receipt) {
         this.command = validateCommand(command);
@@ -91,10 +92,11 @@ public final class StompFrame {
     /**
      * Creates a frame.
      *
-     * @param command command
-     * @param headers headers
-     * @param body    body
-     * @return frame
+     * @param command non-blank STOMP command normalized to uppercase
+     * @param headers immutable frame headers
+     * @param body    frame payload
+     * @return validated immutable frame with receipt state derived from its headers
+     * @throws ValidateException if the command, headers, or body is invalid
      */
     public static StompFrame of(final String command, final Headers headers, final Payload body) {
         return new StompFrame(command, headers, body,
@@ -113,7 +115,7 @@ public final class StompFrame {
     /**
      * Returns command.
      *
-     * @return command
+     * @return uppercase STOMP command, or an empty string for the heartbeat singleton
      */
     public String command() {
         return command;
@@ -122,7 +124,7 @@ public final class StompFrame {
     /**
      * Returns headers.
      *
-     * @return headers
+     * @return immutable frame headers
      */
     public Headers headers() {
         return headers;
@@ -131,7 +133,7 @@ public final class StompFrame {
     /**
      * Returns body.
      *
-     * @return body
+     * @return payload carried by the frame
      */
     public Payload body() {
         return body;
@@ -140,7 +142,7 @@ public final class StompFrame {
     /**
      * Returns whether a receipt is requested.
      *
-     * @return true when a receipt header is present
+     * @return {@code true} when the headers contain a STOMP {@code receipt} field
      */
     public boolean receipt() {
         return receipt;
@@ -150,7 +152,7 @@ public final class StompFrame {
      * Compares normal frames by value while preserving heartbeat singleton semantics.
      *
      * @param other compared value
-     * @return true when equal
+     * @return {@code true} when both are non-heartbeat frames with equal command, headers, body, and receipt state
      */
     @Override
     public boolean equals(final Object other) {
@@ -177,7 +179,7 @@ public final class StompFrame {
     /**
      * Returns a diagnostic frame representation.
      *
-     * @return representation
+     * @return heartbeat marker or diagnostic representation of the frame fields
      */
     @Override
     public String toString() {
@@ -191,8 +193,9 @@ public final class StompFrame {
     /**
      * Validates and normalizes command names.
      *
-     * @param value command
-     * @return command
+     * @param value command text to validate and normalize
+     * @return trimmed uppercase command
+     * @throws ValidateException if the command is blank or contains a line break
      */
     private static String validateCommand(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -204,10 +207,11 @@ public final class StompFrame {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

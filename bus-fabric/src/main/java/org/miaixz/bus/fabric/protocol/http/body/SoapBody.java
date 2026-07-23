@@ -42,12 +42,12 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
 public final class SoapBody implements RequestBody {
 
     /**
-     * Method namespace.
+     * Optional namespace URI for the SOAP operation element.
      */
     private final String namespace;
 
     /**
-     * Method name.
+     * Local name of the SOAP operation element.
      */
     private final String method;
 
@@ -62,7 +62,7 @@ public final class SoapBody implements RequestBody {
     private final Map<String, Object> params;
 
     /**
-     * Charset.
+     * Character encoding used for XML declaration and payload bytes.
      */
     private final Charset charset;
 
@@ -78,8 +78,8 @@ public final class SoapBody implements RequestBody {
      * @param method    method name
      * @param headers   SOAP headers
      * @param params    method params
-     * @param charset   charset
-     * @param action    action
+     * @param charset   XML character encoding, or {@code null} for UTF-8
+     * @param action    optional explicit SOAPAction value
      */
     private SoapBody(final String namespace, final String method, final Map<String, Object> headers,
             final Map<String, Object> params, final Charset charset, final String action) {
@@ -98,7 +98,7 @@ public final class SoapBody implements RequestBody {
     /**
      * Creates a SOAP envelope builder.
      *
-     * @return builder
+     * @return new SOAP envelope builder
      */
     public static Builder envelope() {
         return new Builder();
@@ -107,7 +107,7 @@ public final class SoapBody implements RequestBody {
     /**
      * Returns SOAPAction.
      *
-     * @return action
+     * @return explicit SOAPAction or one derived from the operation namespace and name
      */
     public String action() {
         return action.isBlank() ? defaultAction(namespace, method) : action;
@@ -155,7 +155,7 @@ public final class SoapBody implements RequestBody {
     /**
      * Returns SOAP media.
      *
-     * @return media
+     * @return XML media type carrying the configured charset
      */
     @Override
     public MediaType media() {
@@ -165,7 +165,7 @@ public final class SoapBody implements RequestBody {
     /**
      * Returns SOAP payload.
      *
-     * @return payload
+     * @return repeatable payload containing the serialized SOAP envelope
      */
     @Override
     public Payload payload() {
@@ -176,7 +176,7 @@ public final class SoapBody implements RequestBody {
      * Appends map entries as XML elements.
      *
      * @param builder target builder
-     * @param values  values
+     * @param values  insertion-ordered element names and scalar or nested values
      */
     private static void appendElements(final StringBuilder builder, final Map<?, ?> values) {
         for (final Map.Entry<?, ?> entry : values.entrySet()) {
@@ -229,7 +229,7 @@ public final class SoapBody implements RequestBody {
     /**
      * Escapes XML text.
      *
-     * @param value value
+     * @param value raw XML character data
      * @return escaped text
      */
     private static String escapeText(final String value) {
@@ -239,7 +239,7 @@ public final class SoapBody implements RequestBody {
     /**
      * Escapes XML attribute text.
      *
-     * @param value value
+     * @param value raw XML attribute value
      * @return escaped text
      */
     private static String escapeAttribute(final String value) {
@@ -247,11 +247,11 @@ public final class SoapBody implements RequestBody {
     }
 
     /**
-     * Validates an XML element name.
+     * Validates that a configured XML element name is non-blank and single-line.
      *
-     * @param value value
-     * @param field field name
-     * @return value
+     * @param value candidate element name
+     * @param field logical field name included in validation failures
+     * @return validated non-blank single-line element name
      */
     private static String name(final String value, final String field) {
         final String checked = Assert
@@ -265,9 +265,9 @@ public final class SoapBody implements RequestBody {
     /**
      * Validates an optional single-line value.
      *
-     * @param value value
-     * @param field field name
-     * @return value
+     * @param value candidate optional text
+     * @param field logical field name included in validation failures
+     * @return validated single-line text, or an empty string for {@code null}
      */
     private static String optionalLine(final String value, final String field) {
         if (value == null) {
@@ -282,9 +282,9 @@ public final class SoapBody implements RequestBody {
     /**
      * Builds a default action.
      *
-     * @param namespace namespace
-     * @param method    method
-     * @return action
+     * @param namespace optional operation namespace URI
+     * @param method    operation local name
+     * @return SOAPAction derived from the namespace separator and operation name
      */
     private static String defaultAction(final String namespace, final String method) {
         if (namespace == null || namespace.isBlank()) {
@@ -305,32 +305,32 @@ public final class SoapBody implements RequestBody {
     public static final class Builder {
 
         /**
-         * Namespace.
+         * Candidate operation namespace URI.
          */
         private String namespace;
 
         /**
-         * Method.
+         * Candidate operation local name.
          */
         private String method;
 
         /**
-         * Headers.
+         * Mutable insertion-ordered SOAP header elements.
          */
         private final Map<String, Object> headers = new LinkedHashMap<>();
 
         /**
-         * Params.
+         * Mutable insertion-ordered operation parameter elements.
          */
         private final Map<String, Object> params = new LinkedHashMap<>();
 
         /**
-         * Charset.
+         * XML character encoding candidate.
          */
         private Charset charset = org.miaixz.bus.core.lang.Charset.UTF_8;
 
         /**
-         * SOAPAction.
+         * Optional explicit SOAPAction candidate.
          */
         private String action;
 
@@ -344,7 +344,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Sets method namespace.
          *
-         * @param namespace namespace
+         * @param namespace optional operation namespace URI
          * @return this builder
          */
         public Builder namespace(final String namespace) {
@@ -355,7 +355,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Sets method name.
          *
-         * @param method method
+         * @param method operation local name
          * @return this builder
          */
         public Builder method(final String method) {
@@ -366,8 +366,8 @@ public final class SoapBody implements RequestBody {
         /**
          * Adds a SOAP header element.
          *
-         * @param name  name
-         * @param value value
+         * @param name  SOAP header element name
+         * @param value scalar value or nested map rendered inside the element
          * @return this builder
          */
         public Builder header(final String name, final Object value) {
@@ -378,8 +378,8 @@ public final class SoapBody implements RequestBody {
         /**
          * Adds a method parameter.
          *
-         * @param name  name
-         * @param value value
+         * @param name  operation parameter element name
+         * @param value scalar value or nested map rendered inside the element
          * @return this builder
          */
         public Builder param(final String name, final Object value) {
@@ -390,7 +390,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Adds method parameters.
          *
-         * @param params params
+         * @param params parameter names and values, or {@code null} to add nothing
          * @return this builder
          */
         public Builder params(final Map<String, ?> params) {
@@ -403,7 +403,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Sets charset.
          *
-         * @param charset charset
+         * @param charset XML character encoding, or {@code null} to restore UTF-8
          * @return this builder
          */
         public Builder charset(final Charset charset) {
@@ -414,7 +414,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Sets SOAPAction.
          *
-         * @param action action
+         * @param action optional explicit SOAPAction value
          * @return this builder
          */
         public Builder action(final String action) {
@@ -425,7 +425,7 @@ public final class SoapBody implements RequestBody {
         /**
          * Builds a SOAP body.
          *
-         * @return SOAP body
+         * @return immutable SOAP body snapshot from the current configuration
          */
         public SoapBody build() {
             return new SoapBody(namespace, method, headers, params, charset, action);

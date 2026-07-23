@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Builder;
@@ -65,6 +65,11 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 public final class Http2Connection implements AutoCloseable {
 
     /**
+     * Advertised receive window that avoids closed-stream updates for supported payloads.
+     */
+    private static final int LOCAL_RECEIVE_WINDOW = (int) Builder.HTTP2_CONNECTION_DEFAULT_MAX_QUEUED_DATA;
+
+    /**
      * Bound network connection.
      */
     private final Connection connection;
@@ -80,6 +85,21 @@ public final class Http2Connection implements AutoCloseable {
     private final Sink sink;
 
     /**
+     * Connection-owned direct frame batch writer.
+     */
+    private final Http2FrameWriter frameWriter;
+
+    /**
+     * Bounded command queue feeding the sole physical writer.
+     */
+    private final Http2WriteScheduler writeScheduler;
+
+    /**
+     * Handle of the connection-level writer activity.
+     */
+    private final AtomicReference<DispatchHandle> writerHandle;
+
+    /**
      * Header block writer codec.
      */
     private final HpackCodec hpackWriter;
@@ -89,25 +109,16 @@ public final class Http2Connection implements AutoCloseable {
      */
     private final HpackCodec hpackReader;
 
+    /** Reader-owned canonical response field list for repeated HPACK blocks. */
+    private List<Http2Header> cachedResponseFields;
+
+    /** Immutable root-header snapshot paired with {@link #cachedResponseFields}. */
+    private Headers cachedResponseHeaders;
+
     /**
      * Streams.
      */
     private final ConcurrentHashMap<Integer, Http2Stream> streams;
-
-    /**
-     * Stream flow-control windows.
-     */
-    private final ConcurrentHashMap<Integer, Long> streamWriteWindows;
-
-    /**
-     * Stream receive flow-control windows.
-     */
-    private final ConcurrentHashMap<Integer, Long> streamReceiveWindows;
-
-    /**
-     * Unacknowledged inbound bytes per stream.
-     */
-    private final ConcurrentHashMap<Integer, AtomicLong> streamUnacknowledgedBytes;
 
     /**
      * Latest priority metadata per stream.
@@ -145,6 +156,11 @@ public final class Http2Connection implements AutoCloseable {
     private final AtomicInteger nextRemote;
 
     /**
+     * Number of locally initiated streams currently registered on this connection.
+     */
+    private final AtomicInteger localStreamCount;
+
+    /**
      * State.
      */
     private final AtomicReference<Status> state;
@@ -180,9 +196,19 @@ public final class Http2Connection implements AutoCloseable {
     private final ReentrantLock frameWriteLock;
 
     /**
-     * Reusable nine-byte frame header scratch buffer guarded by {@link #frameWriteLock}.
+     * Monitor preserving the RFC 9113 creation order of locally initiated streams.
      */
-    private final Buffer frameHeaderScratch;
+    private final Object localHeaderOrder;
+
+    /**
+     * Next local stream id whose initial HEADERS may be emitted.
+     */
+    private int nextLocalHeaderStreamId;
+
+    /**
+     * Allocated local stream ids explicitly terminated before initial HEADERS.
+     */
+    private final Set<Integer> abandonedLocalHeaders;
 
     /**
      * Reusable control-frame payload scratch buffer guarded by {@link #frameWriteLock}.
@@ -323,25 +349,86 @@ public final class Http2Connection implements AutoCloseable {
 
     /**
      * Creates a connection with an explicit aggregate inbound DATA budget.
+     *
+     * @param connection            physical network connection
+     * @param pushObserver          callback for server-push streams
+     * @param dispatcher            dispatcher running reader and background work
+     * @param ownsDispatcher        whether closing this connection closes the dispatcher
+     * @param maxQueuedInboundBytes maximum aggregate queued inbound DATA bytes
      */
     private Http2Connection(final Connection connection, final PushObserver pushObserver, final Dispatcher dispatcher,
             final boolean ownsDispatcher, final long maxQueuedInboundBytes) {
         this.connection = require(connection, "Network connection");
         this.source = IoKit.buffer(this.connection.source());
         this.sink = this.connection.sink();
+        this.frameWriter = new Http2FrameWriter(this.sink);
+        this.writeScheduler = new Http2WriteScheduler(new Http2WriteScheduler.Handler() {
+
+            /**
+             * Converts an acquired scheduler command into one physical HTTP/2 frame.
+             *
+             * @param type     scheduler command type
+             * @param streamId target stream identifier
+             * @param flags    frame flags
+             * @param value    raw frame type for generic FRAME and DATA_FRAME commands
+             * @param payload  transferred payload buffer, or null for an empty payload
+             */
+            @Override
+            public void handle(
+                    final int type,
+                    final int streamId,
+                    final int flags,
+                    final long value,
+                    final Buffer payload) {
+                if (type == Http2WriteScheduler.FLUSH || type == Http2WriteScheduler.CLOSE) {
+                    return;
+                }
+                try {
+                    frameWriter.maxFrameSize(maxFrameSize.get());
+                    final Buffer body = payload == null ? new Buffer() : payload;
+                    final int frameType = type == Http2WriteScheduler.FRAME || type == Http2WriteScheduler.DATA_FRAME
+                            ? (int) value
+                            : type;
+                    frameWriter.writeFrame(frameType, streamId, flags, body, body.size());
+                } catch (final IOException e) {
+                    throw new SocketException("HTTP/2 physical frame write failed", e);
+                }
+            }
+
+            /**
+             * Flushes the connection-owned physical frame writer after a logical scheduler batch.
+             */
+            @Override
+            public void flush() {
+                try {
+                    frameWriter.flush();
+                } catch (final IOException e) {
+                    throw new SocketException("HTTP/2 physical frame flush failed", e);
+                }
+            }
+
+            /**
+             * Publishes the first scheduler failure as a connection-level stream failure.
+             *
+             * @param failure writer-thread runtime failure
+             */
+            @Override
+            public void failed(final RuntimeException failure) {
+                connectionFailure.compareAndSet(null, streamFailure(failure));
+            }
+        });
+        this.writerHandle = new AtomicReference<>();
         this.hpackWriter = new HpackCodec();
         this.hpackReader = new HpackCodec();
         this.streams = new ConcurrentHashMap<>();
-        this.streamWriteWindows = new ConcurrentHashMap<>();
-        this.streamReceiveWindows = new ConcurrentHashMap<>();
-        this.streamUnacknowledgedBytes = new ConcurrentHashMap<>();
         this.priorities = new ConcurrentHashMap<>();
         this.pushedStreams = ConcurrentHashMap.newKeySet();
-        this.connectionWriteWindow = HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
-        this.connectionReceiveWindow = HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
+        this.connectionWriteWindow = Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE;
+        this.connectionReceiveWindow = LOCAL_RECEIVE_WINDOW;
         this.unacknowledgedConnectionBytes = new AtomicLong();
         this.nextLocal = new AtomicInteger(Normal._1);
         this.nextRemote = new AtomicInteger(Normal._2);
+        this.localStreamCount = new AtomicInteger();
         this.state = new AtomicReference<>(Status.OPENED);
         this.reader = new Http2Reader(this);
         this.readerStarted = new AtomicBoolean();
@@ -349,13 +436,15 @@ public final class Http2Connection implements AutoCloseable {
         this.flowLock = new ReentrantLock();
         this.flowChanged = flowLock.newCondition();
         this.frameWriteLock = new ReentrantLock();
-        this.frameHeaderScratch = new Buffer();
+        this.localHeaderOrder = new Object();
+        this.nextLocalHeaderStreamId = Normal._1;
+        this.abandonedLocalHeaders = ConcurrentHashMap.newKeySet();
         this.controlPayloadScratch = new Buffer();
         this.dispatcherClosed = new AtomicBoolean();
         this.connectionFailure = new AtomicReference<>();
         this.peerSettings = new AtomicReference<>(Http2Settings.defaults());
-        this.maxFrameSize = new AtomicInteger(Normal._16384);
-        this.initialWindowSize = new AtomicInteger((int) HTTP.DEFAULT_INITIAL_WINDOW_SIZE);
+        this.maxFrameSize = new AtomicInteger(Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE);
+        this.initialWindowSize = new AtomicInteger((int) Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE);
         this.maxConcurrentStreams = new AtomicInteger(Integer.MAX_VALUE);
         this.maxHeaderListSize = new AtomicInteger(Builder.BYTES_64_KIB);
         this.shutdown = new AtomicBoolean();
@@ -365,15 +454,15 @@ public final class Http2Connection implements AutoCloseable {
         this.pushObserver = pushObserver == null ? PushObserver.canceling() : pushObserver;
         this.dispatcher = require(dispatcher, "Dispatcher");
         this.ownsDispatcher = ownsDispatcher;
-        this.localStreamLimit = connection.destination() == null ? Normal._100
-                : Math.max(Normal._1, connection.destination().maxMultiplexStreams());
+        this.localStreamLimit = connection.destination() == null ? Normal._64
+                : Math.min(Normal._64, Math.max(Normal._1, connection.destination().maxMultiplexStreams()));
         this.multiplexAttachment = connection.multiplexAttachment();
         this.pushEnabled = this.pushObserver != PushObserver.canceling();
         this.prefaceSent = new AtomicBoolean();
         this.queuedInboundBytes = new AtomicLong();
         if (maxQueuedInboundBytes <= Normal.LONG_ZERO
                 || maxQueuedInboundBytes > Builder.HTTP2_CONNECTION_DEFAULT_MAX_QUEUED_DATA) {
-            throw new ValidateException("HTTP/2 aggregate queued DATA limit must be between 1 and 16 MiB");
+            throw new ValidateException("HTTP/2 aggregate queued DATA limit must be between 1 and 64 MiB");
         }
         this.maxQueuedInboundBytes = maxQueuedInboundBytes;
         this.maxConcurrentStreams.set(localStreamLimit);
@@ -429,6 +518,11 @@ public final class Http2Connection implements AutoCloseable {
 
     /**
      * Creates a connection with shared dispatch and a tightened aggregate DATA budget.
+     *
+     * @param connection            physical network connection
+     * @param dispatcher            shared runtime dispatcher
+     * @param maxQueuedInboundBytes maximum aggregate queued inbound DATA bytes
+     * @return HTTP/2 connection using the supplied inbound budget
      */
     public static Http2Connection create(
             final Connection connection,
@@ -441,42 +535,102 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Creates a stream.
      *
-     * @param headers headers
+     * @param headers initial stream headers to encode
      * @param out     local direction
      * @return stream
      */
-    public synchronized Http2Stream newStream(final Headers headers, final boolean out) {
+    public Http2Stream newStream(final Headers headers, final boolean out) {
+        return newStream(headers, out, false);
+    }
+
+    /**
+     * Creates a stream, optionally consuming a local slot already reserved by the caller.
+     *
+     * @param headers       initial stream headers
+     * @param out           local direction
+     * @param localReserved whether the local stream count was incremented before entry
+     * @return registered stream
+     */
+    private Http2Stream newStream(final Headers headers, final boolean out, final boolean localReserved) {
         require(headers, "HTTP/2 stream headers");
-        if (state.get().terminal()) {
-            throw new StatefulException("HTTP/2 connection is closed");
+        if (out && !localReserved) {
+            reserveLocalStream();
+        } else {
+            if (!out) {
+                ensureNewStreamAllowed();
+            }
         }
-        if (shutdown.get()) {
-            throw new StatefulException("HTTP/2 connection is shutting down");
-        }
-        if (streams.size() >= maxConcurrentStreams.get()) {
-            throw new StatefulException("HTTP/2 max concurrent streams exceeded");
-        }
-        final int id = out ? nextLocal.getAndAdd(Normal._2) : nextRemote.getAndAdd(Normal._2);
-        if (id <= Normal._0 || id > Integer.MAX_VALUE) {
-            throw new ProtocolException("HTTP/2 stream id overflow");
-        }
-        final Http2Stream stream = new Http2Stream(id, headers, length -> releaseInbound(id, length),
-                () -> streamTerminated(id), () -> cancelStream(id));
-        final Http2Priority priority = priorities.get(id);
-        if (priority != null) {
-            stream.priority(priority);
-        }
-        streams.put(id, stream);
-        flowLock.lock();
+        final int id;
         try {
-            streamWriteWindows.put(id, (long) initialWindowSize.get());
-            streamReceiveWindows.put(id, (long) HTTP.DEFAULT_INITIAL_WINDOW_SIZE);
-            flowChanged.signalAll();
-        } finally {
-            flowLock.unlock();
+            id = allocateStreamId(out ? nextLocal : nextRemote);
+        } catch (final RuntimeException failure) {
+            if (out) {
+                localStreamCount.decrementAndGet();
+                publishCapacity(false);
+            }
+            throw failure;
         }
-        streamUnacknowledgedBytes.put(id, new AtomicLong());
-        return stream;
+        try {
+            ensureNewStreamAllowed();
+            final Http2Stream stream = new Http2Stream(id, headers, length -> releaseInbound(id, length),
+                    () -> streamTerminated(id), () -> cancelStream(id));
+            stream.initializeFlow(initialWindowSize.get(), LOCAL_RECEIVE_WINDOW);
+            final Http2Priority priority = priorities.get(id);
+            if (priority != null) {
+                stream.priority(priority);
+            }
+            if (streams.putIfAbsent(id, stream) != null) {
+                throw new ProtocolException("HTTP/2 stream id is already registered");
+            }
+            signalFlowWaiters();
+            if (out) {
+                publishCapacity(false);
+            }
+            return stream;
+        } catch (final RuntimeException failure) {
+            streams.remove(id);
+            if (out) {
+                localStreamCount.decrementAndGet();
+                abandonLocalHeaders(id);
+                publishCapacity(shutdown.get());
+            }
+            throw failure;
+        }
+    }
+
+    /**
+     * Atomically allocates a local stream and publishes its initial HEADERS in stream-id order. This closes the
+     * scheduling gap between separate new-stream and write-headers calls under high producer counts.
+     *
+     * @param initialHeaders local compatibility header snapshot
+     * @param requestHeaders HTTP/2 pseudo and regular request fields
+     * @param endStream      whether HEADERS also closes the local side
+     * @return newly registered stream
+     */
+    public Http2Stream openStream(
+            final Headers initialHeaders,
+            final List<Http2Header> requestHeaders,
+            final boolean endStream) {
+        final Headers checkedInitialHeaders = require(initialHeaders, "HTTP/2 stream headers");
+        final List<Http2Header> checkedRequestHeaders = validateHeaders(requestHeaders);
+        reserveLocalStream();
+        synchronized (localHeaderOrder) {
+            final Http2Stream stream = newStream(checkedInitialHeaders, true, true);
+            try {
+                startReader();
+                final Http2Frame frame = Http2Frame.headers(stream.id(), checkedRequestHeaders, endStream);
+                awaitLocalHeaderTurn(stream.id());
+                writeFrame(frame);
+                if (stream.id() == nextLocalHeaderStreamId) {
+                    nextLocalHeaderStreamId = nextStreamId(nextLocalHeaderStreamId);
+                    localHeaderOrder.notifyAll();
+                }
+                return stream;
+            } catch (final RuntimeException failure) {
+                stream.close();
+                throw failure;
+            }
+        }
     }
 
     /**
@@ -541,17 +695,25 @@ public final class Http2Connection implements AutoCloseable {
      * @param streamId terminal stream id
      */
     void streamTerminated(final int streamId) {
+        final Http2Stream removed = streams.remove(streamId);
+        if (removed != null && localStream(streamId)) {
+            localStreamCount.decrementAndGet();
+        }
         flowLock.lock();
         try {
-            streams.remove(streamId);
-            streamWriteWindows.remove(streamId);
-            streamReceiveWindows.remove(streamId);
-            streamUnacknowledgedBytes.remove(streamId);
             priorities.remove(streamId);
             pushedStreams.remove(streamId);
             flowChanged.signalAll();
         } finally {
             flowLock.unlock();
+        }
+        if (localStream(streamId)) {
+            synchronized (localHeaderOrder) {
+                if (streamId >= nextLocalHeaderStreamId) {
+                    abandonedLocalHeaders.add(streamId);
+                }
+                localHeaderOrder.notifyAll();
+            }
         }
         publishCapacity(shutdown.get());
     }
@@ -559,7 +721,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Writes a frame.
      *
-     * @param frame frame
+     * @param frame HTTP/2 frame to encode and write
      */
     public void writeFrame(final Http2Frame frame) {
         final Http2Frame checked = require(frame, "HTTP/2 frame");
@@ -583,7 +745,65 @@ public final class Http2Connection implements AutoCloseable {
      */
     public void writeHeaders(final int streamId, final List<Http2Header> headers, final boolean endStream) {
         positiveStream(streamId);
-        writeFrame(Http2Frame.headers(streamId, validateHeaders(headers), endStream));
+        final Http2Frame frame = Http2Frame.headers(streamId, validateHeaders(headers), endStream);
+        if (!localStream(streamId)) {
+            writeFrame(frame);
+            return;
+        }
+        synchronized (localHeaderOrder) {
+            awaitLocalHeaderTurn(streamId);
+            writeFrame(frame);
+            if (streamId == nextLocalHeaderStreamId) {
+                nextLocalHeaderStreamId = nextStreamId(nextLocalHeaderStreamId);
+                localHeaderOrder.notifyAll();
+            }
+        }
+    }
+
+    /**
+     * Waits until every lower allocated local stream has emitted initial HEADERS or has terminated. HTTP/2 peers
+     * permanently close skipped idle stream ids when they observe a higher id, so concurrent callers must not reorder
+     * this first frame.
+     *
+     * @param streamId local stream waiting to emit its initial HEADERS
+     */
+    private void awaitLocalHeaderTurn(final int streamId) {
+        while (streamId > nextLocalHeaderStreamId) {
+            if (abandonedLocalHeaders.remove(nextLocalHeaderStreamId)) {
+                nextLocalHeaderStreamId = nextStreamId(nextLocalHeaderStreamId);
+                continue;
+            }
+            try {
+                localHeaderOrder.wait();
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new SocketException("Interrupted while ordering HTTP/2 request headers", e);
+            }
+        }
+    }
+
+    /**
+     * Marks an allocated local id as safe to skip during ordered initial HEADERS emission.
+     *
+     * @param streamId allocated stream identifier that will not emit headers
+     */
+    private void abandonLocalHeaders(final int streamId) {
+        synchronized (localHeaderOrder) {
+            if (streamId >= nextLocalHeaderStreamId) {
+                abandonedLocalHeaders.add(streamId);
+            }
+            localHeaderOrder.notifyAll();
+        }
+    }
+
+    /**
+     * Advances an odd local stream id without overflowing into a valid id.
+     *
+     * @param streamId current odd local stream identifier
+     * @return next odd identifier or the terminal maximum sentinel
+     */
+    private static int nextStreamId(final int streamId) {
+        return streamId > Integer.MAX_VALUE - Normal._2 ? Integer.MAX_VALUE : streamId + Normal._2;
     }
 
     /**
@@ -632,22 +852,25 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Writes one encoded frame.
      *
-     * @param type     type
+     * @param type     HTTP/2 frame type code
      * @param streamId stream id
-     * @param flags    flags
-     * @param payload  payload
+     * @param flags    frame flags valid for the selected type
+     * @param payload  encoded frame payload bytes
      */
     private void writeSingleFrameLocked(final int type, final int streamId, final int flags, final Buffer payload) {
-        final int length = toIntSize(payload.size());
-        final Buffer header = frameHeaderScratch;
-        header.writeByte((length >>> Normal._16) & Builder.UNSIGNED_BYTE_MASK);
-        header.writeByte((length >>> Normal._8) & Builder.UNSIGNED_BYTE_MASK);
-        header.writeByte(length & Builder.UNSIGNED_BYTE_MASK);
-        header.writeByte(type);
-        header.writeByte(flags);
-        header.writeInt(streamId & Integer.MAX_VALUE);
-        write(header);
-        write(payload);
+        final int command = type == Normal._0 ? Http2WriteScheduler.DATA_FRAME : Http2WriteScheduler.FRAME;
+        if (!writeScheduler.offer(command, streamId, flags, type, payload)) {
+            throw new SocketException("HTTP/2 writer queue is full or closed");
+        }
+    }
+
+    /**
+     * Enqueues a flush command for the current logical frame group on the connection-owned writer.
+     */
+    private void flushFrames() {
+        if (!writeScheduler.offer(Http2WriteScheduler.FLUSH, Normal._0, Normal._0, Normal.LONG_ZERO, null)) {
+            throw new SocketException("HTTP/2 writer queue is full or closed");
+        }
     }
 
     /**
@@ -661,6 +884,12 @@ public final class Http2Connection implements AutoCloseable {
             return;
         }
         sendClientPreface();
+        final String writerKey = "http2:writer:" + System.identityHashCode(this);
+        final DispatchHandle writerTask = dispatcher
+                .background(writerKey, this, Activity.of(writerKey, writeScheduler::runWriter));
+        if (!writerHandle.compareAndSet(null, writerTask)) {
+            dispatcher.cancel(writerTask);
+        }
         final String key = "http2:reader:" + System.identityHashCode(this);
         final Activity activity = Activity.of(key, this::readLoop);
         final DispatchHandle handle = dispatcher.background(key, this, activity);
@@ -682,11 +911,17 @@ public final class Http2Connection implements AutoCloseable {
             write(new Buffer().writeUtf8(Builder.HTTP2_CONNECTION_PREFACE));
             final Http2Settings local = Http2Settings.defaults();
             if (!pushEnabled) {
-                local.set(HTTP.ENABLE_PUSH, Normal._0);
+                local.set(Http.Setting.ENABLE_PUSH_ID, Normal._0);
             }
+            local.set(Http.Setting.INITIAL_WINDOW_SIZE_ID, LOCAL_RECEIVE_WINDOW);
             final Http2Frame settings = Http2Frame.settings(local);
             final Buffer payload = payload(settings);
             writeSingleFrameLocked(settings.type(), settings.streamId(), settings.flags(), payload);
+            writeSingleFrameLocked(
+                    Normal._8,
+                    Normal._0,
+                    Normal._0,
+                    new Buffer().writeInt(LOCAL_RECEIVE_WINDOW - Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE));
         } finally {
             frameWriteLock.unlock();
         }
@@ -712,7 +947,8 @@ public final class Http2Connection implements AutoCloseable {
         shutdown.set(true);
         publishCapacity(true);
         goAwayLastStreamId.set(lastStreamId);
-        failStreamsAbove(lastStreamId, new SocketException("HTTP/2 connection sent GOAWAY"));
+        final String detail = debugData == null || debugData.size() == Normal._0 ? "" : ": " + debugData.utf8();
+        failStreamsAbove(lastStreamId, new SocketException("HTTP/2 connection sent GOAWAY" + detail));
         writeFrame(Http2Frame.goAway(lastStreamId, errorCode, debugData));
     }
 
@@ -733,20 +969,13 @@ public final class Http2Connection implements AutoCloseable {
         final Http2Stream stream = new Http2Stream(streamId, toHeaders(snapshot),
                 length -> releaseInbound(streamId, length), () -> streamTerminated(streamId),
                 () -> cancelStream(streamId));
+        stream.initializeFlow(initialWindowSize.get(), LOCAL_RECEIVE_WINDOW);
         final Http2Priority priority = priorities.get(streamId);
         if (priority != null) {
             stream.priority(priority);
         }
         streams.put(streamId, stream);
-        flowLock.lock();
-        try {
-            streamWriteWindows.put(streamId, (long) initialWindowSize.get());
-            streamReceiveWindows.put(streamId, (long) HTTP.DEFAULT_INITIAL_WINDOW_SIZE);
-            flowChanged.signalAll();
-        } finally {
-            flowLock.unlock();
-        }
-        streamUnacknowledgedBytes.put(streamId, new AtomicLong());
+        signalFlowWaiters();
         if (endStream) {
             remove(streamId);
         }
@@ -814,7 +1043,7 @@ public final class Http2Connection implements AutoCloseable {
      * Dispatches pushed data.
      *
      * @param streamId  pushed stream id
-     * @param data      data
+     * @param data      pushed DATA payload bytes
      * @param endStream true when ended
      * @return future whose value is true when canceled
      */
@@ -858,13 +1087,10 @@ public final class Http2Connection implements AutoCloseable {
             streams.remove(streamId);
             flowLock.lock();
             try {
-                streamWriteWindows.remove(streamId);
-                streamReceiveWindows.remove(streamId);
                 flowChanged.signalAll();
             } finally {
                 flowLock.unlock();
             }
-            streamUnacknowledgedBytes.remove(streamId);
             priorities.remove(streamId);
         });
     }
@@ -873,7 +1099,7 @@ public final class Http2Connection implements AutoCloseable {
      * Updates a flow window.
      *
      * @param streamId stream id
-     * @param delta    delta
+     * @param delta    positive flow-control increment
      */
     public void updateWindow(final int streamId, final long delta) {
         if (streamId < Normal._0 || delta <= Normal._0 || delta > Integer.MAX_VALUE) {
@@ -884,11 +1110,11 @@ public final class Http2Connection implements AutoCloseable {
             if (streamId == Normal._0) {
                 connectionWriteWindow = checkedWindowAdd(connectionWriteWindow, delta);
             } else {
-                final Long window = streamWriteWindows.get(streamId);
-                if (window == null) {
+                final Http2Stream stream = streams.get(streamId);
+                if (stream == null) {
                     throw new ProtocolException("HTTP/2 stream is missing");
                 }
-                streamWriteWindows.put(streamId, checkedWindowAdd(window, delta));
+                stream.writeWindow(checkedWindowAdd(stream.writeWindow(), delta));
             }
             flowChanged.signalAll();
         } finally {
@@ -983,8 +1209,16 @@ public final class Http2Connection implements AutoCloseable {
     @Override
     public void close() {
         final Status current = state.getAndUpdate(value -> value == Status.CLOSED ? Status.CLOSED : Status.CLOSING);
-        if (current == Status.CLOSED || current == Status.CLOSING) {
+        if (current == Status.CLOSED) {
             closeOwnedDispatcher();
+            return;
+        }
+        if (current == Status.CLOSING) {
+            try {
+                connection.abort();
+            } finally {
+                closeOwnedDispatcher();
+            }
             return;
         }
         final RuntimeException closed = new SocketException("HTTP/2 connection closed");
@@ -992,11 +1226,33 @@ public final class Http2Connection implements AutoCloseable {
         publishCapacity(true);
         connectionFailure.compareAndSet(null, closed);
         signalFlowWaiters();
+        writeScheduler.abort();
+        RuntimeException failure = null;
+        // Break physical reads and writes before interrupting their owners. TLS/AIO writes are not guaranteed to
+        // observe a virtual-thread interrupt until the underlying channel completes, so cancelling first can leave
+        // the dispatcher retaining an already-CANCELLED writer until its shutdown deadline expires.
+        try {
+            connection.abort();
+        } catch (final RuntimeException e) {
+            failure = e;
+        }
         final DispatchHandle handle = readerHandle.getAndSet(null);
         if (handle != null) {
-            dispatcher.cancel(handle);
+            handle.cancel();
         }
-        RuntimeException failure = null;
+        final DispatchHandle writer = writerHandle.getAndSet(null);
+        if (writer != null) {
+            writer.cancel();
+        }
+        try {
+            reader.close();
+        } catch (final RuntimeException e) {
+            if (failure == null) {
+                failure = e;
+            } else {
+                failure.addSuppressed(e);
+            }
+        }
         for (final Map.Entry<Integer, Http2Stream> entry : streams.entrySet()) {
             try {
                 entry.getValue().close();
@@ -1007,26 +1263,16 @@ public final class Http2Connection implements AutoCloseable {
             }
         }
         streams.clear();
+        localStreamCount.set(Normal._0);
         flowLock.lock();
         try {
-            streamWriteWindows.clear();
-            streamReceiveWindows.clear();
             flowChanged.signalAll();
         } finally {
             flowLock.unlock();
         }
-        streamUnacknowledgedBytes.clear();
         queuedInboundBytes.set(Normal.LONG_ZERO);
         priorities.clear();
         pushedStreams.clear();
-        try {
-            reader.close();
-            connection.close();
-        } catch (final RuntimeException e) {
-            if (failure == null) {
-                failure = e;
-            }
-        }
         try {
             closeOwnedDispatcher();
         } catch (final RuntimeException e) {
@@ -1070,7 +1316,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Dispatches a decoded frame to connection state, push callbacks, or a stream queue.
      *
-     * @param frame frame
+     * @param frame decoded frame to dispatch
      */
     private void dispatch(final Http2Frame frame) {
         switch (frame.type()) {
@@ -1106,7 +1352,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Applies SETTINGS and acknowledges non-ACK settings frames.
      *
-     * @param frame frame
+     * @param frame decoded SETTINGS frame to apply
      */
     private void dispatchSettings(final Http2Frame frame) {
         if (frame.ack()) {
@@ -1122,10 +1368,10 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Applies peer settings to connection state.
      *
-     * @param settings settings
+     * @param settings peer settings to merge into connection state
      */
     private void applySettings(final Http2Settings settings) {
-        if (settings.isSet(HTTP.ENABLE_PUSH)) {
+        if (settings.isSet(Http.Setting.ENABLE_PUSH_ID)) {
             throw new ProtocolException("Server SETTINGS_ENABLE_PUSH is invalid for a client connection");
         }
         final Http2Settings merged = peerSettings.get().copy();
@@ -1137,7 +1383,7 @@ public final class Http2Connection implements AutoCloseable {
                 .min(Integer.MAX_VALUE, Math.min(localStreamLimit, merged.maxConcurrentStreamsUnsigned()));
         maxConcurrentStreams.set(streamCapacity);
         initialWindowSize.set(merged.initialWindowSize());
-        if (settings.isSet(HTTP.MAX_HEADER_LIST_SIZE)) {
+        if (settings.isSet(Http.Setting.MAX_HEADER_LIST_SIZE_ID)) {
             final int headerListSize = (int) Math.min(Builder.BYTES_64_KIB, merged.maxHeaderListSizeUnsigned());
             maxHeaderListSize.set(headerListSize);
         }
@@ -1145,8 +1391,8 @@ public final class Http2Connection implements AutoCloseable {
         flowLock.lock();
         try {
             if (delta != Normal.LONG_ZERO) {
-                for (final Map.Entry<Integer, Long> entry : streamWriteWindows.entrySet()) {
-                    entry.setValue(checkedWindowAdjust(entry.getValue(), delta));
+                for (final Http2Stream stream : streams.values()) {
+                    stream.writeWindow(checkedWindowAdjust(stream.writeWindow(), delta));
                 }
             }
             flowChanged.signalAll();
@@ -1156,8 +1402,9 @@ public final class Http2Connection implements AutoCloseable {
         RuntimeException failure = null;
         frameWriteLock.lock();
         try {
-            hpackWriter.maxTableSize((int) Math.min(Builder.BYTES_64_KIB, merged.getLong(HTTP.HEADER_TABLE_SIZE)));
-            if (settings.isSet(HTTP.MAX_HEADER_LIST_SIZE)) {
+            hpackWriter.maxTableSize(
+                    (int) Math.min(Builder.BYTES_64_KIB, merged.getLong(Http.Setting.HEADER_TABLE_SIZE_ID)));
+            if (settings.isSet(Http.Setting.MAX_HEADER_LIST_SIZE_ID)) {
                 hpackWriter.maxHeaderListSize(maxHeaderListSize.get());
             }
         } catch (final RuntimeException e) {
@@ -1174,7 +1421,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Handles PING frames.
      *
-     * @param frame frame
+     * @param frame decoded PING frame to process
      */
     private void dispatchPing(final Http2Frame frame) {
         if (frame.ack()) {
@@ -1187,7 +1434,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Handles GOAWAY by preventing new streams and failing unprocessed high-id streams.
      *
-     * @param frame frame
+     * @param frame decoded GOAWAY frame to process
      */
     private void dispatchGoAway(final Http2Frame frame) {
         shutdown.set(true);
@@ -1221,7 +1468,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Dispatches a HEADERS frame.
      *
-     * @param frame frame
+     * @param frame decoded HEADERS frame to dispatch
      */
     private void dispatchHeaders(final Http2Frame frame) {
         if (frame.priority() != null) {
@@ -1239,13 +1486,13 @@ public final class Http2Connection implements AutoCloseable {
         String status = null;
         for (final Http2Header field : fields) {
             if (field.pseudo()) {
-                if (!HTTP.RESPONSE_STATUS_UTF8.equals(field.name()) || status != null) {
+                if (!Http.Header.PSEUDO_STATUS.equals(field.name()) || status != null) {
                     throw new ProtocolException("Invalid HTTP/2 response pseudo-header");
                 }
                 status = field.value();
             }
         }
-        stream.receiveHeaders(toHeaders(fields), status, frame.endStream());
+        stream.receiveHeaders(toResponseHeaders(fields), status, frame.endStream());
     }
 
     /**
@@ -1267,7 +1514,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Reports ALTSVC metadata and leaves connection routing unchanged.
      *
-     * @param frame frame
+     * @param frame decoded ALTSVC frame to report
      */
     private void dispatchAlternateService(final Http2Frame frame) {
         final Http2AlternateService alternateService = frame.alternateService();
@@ -1285,7 +1532,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Dispatches a DATA frame.
      *
-     * @param frame frame
+     * @param frame decoded DATA frame to dispatch
      */
     private void dispatchData(final Http2Frame frame) {
         final int streamId = frame.streamId();
@@ -1293,18 +1540,8 @@ public final class Http2Connection implements AutoCloseable {
         if (stream == null) {
             throw new ProtocolException("HTTP/2 frame references a missing stream");
         }
-        final int length = frame.payloadBytes().size();
-        consumeReceiveWindow(length);
-        flowLock.lock();
-        try {
-            final Long window = streamReceiveWindows.get(streamId);
-            if (window == null || window < length) {
-                throw new ProtocolException("HTTP/2 stream receive window is exhausted");
-            }
-            streamReceiveWindows.put(streamId, window - length);
-        } finally {
-            flowLock.unlock();
-        }
+        final int length = frame.payloadSize();
+        consumeReceiveWindows(streamId, length);
         if (!reserveInbound(length)) {
             acknowledgeConnectionInbound(length);
             resetStream(streamId, Normal._8);
@@ -1312,18 +1549,67 @@ public final class Http2Connection implements AutoCloseable {
         }
         acknowledgeConnectionInbound(length);
         if (pushedStreams.contains(streamId)) {
-            pushDataLater(streamId, frame.payloadBytes(), frame.endStream());
+            final Buffer direct = frame.takeDataPayload();
+            pushDataLater(streamId, direct == null ? frame.payloadBytes() : direct.readByteString(), frame.endStream());
             return;
         }
-        stream.receiveData(frame.payloadBytes(), frame.endStream());
+        final Buffer direct = frame.takeDataPayload();
+        if (direct == null) {
+            stream.receiveData(frame.payloadBytes(), frame.endStream());
+        } else {
+            stream.receiveData(direct, direct.size(), frame.endStream());
+        }
     }
 
     /**
-     * Consumes the connection-level inbound window.
+     * Consumes an unpadded DATA frame directly from the reader buffer without frame or payload objects.
      *
-     * @param length byte count
+     * @param streamId target stream identifier
+     * @param flags    DATA frame flags
+     * @param source   reader buffer containing the payload
+     * @param length   number of payload bytes to consume
+     * @return {@code true} while the connection remains open
      */
-    private void consumeReceiveWindow(final int length) {
+    boolean dispatchData(final int streamId, final int flags, final Buffer source, final int length) {
+        final Http2Stream stream = streams.get(streamId);
+        if (stream == null) {
+            throw new ProtocolException("HTTP/2 frame references a missing stream");
+        }
+        consumeReceiveWindows(streamId, length);
+        if (!reserveInbound(length)) {
+            discard(source, length);
+            acknowledgeConnectionInbound(length);
+            resetStream(streamId, Normal._8);
+            return opened();
+        }
+        acknowledgeConnectionInbound(length);
+        final boolean endStream = (flags & Normal._1) != Normal._0;
+        if (pushedStreams.contains(streamId)) {
+            final Buffer pushed = new Buffer();
+            pushed.write(source, length);
+            pushDataLater(streamId, pushed.readByteString(), endStream);
+            return opened();
+        }
+        stream.receiveData(source, length, endStream);
+        return opened();
+    }
+
+    /** Discards an exact direct-reader payload after a rejected aggregate reservation. */
+    private static void discard(final Buffer source, final long length) {
+        try {
+            source.skip(length);
+        } catch (final IOException e) {
+            throw new SocketException("HTTP/2 DATA payload is truncated", e);
+        }
+    }
+
+    /**
+     * Consumes connection and stream inbound windows under one lock acquisition.
+     *
+     * @param streamId stream receiving DATA
+     * @param length   byte count
+     */
+    private void consumeReceiveWindows(final int streamId, final int length) {
         if (length == Normal._0) {
             return;
         }
@@ -1332,7 +1618,12 @@ public final class Http2Connection implements AutoCloseable {
             if (connectionReceiveWindow < length) {
                 throw new ProtocolException("HTTP/2 connection flow-control window is exhausted");
             }
+            final Http2Stream stream = streams.get(streamId);
+            if (stream == null || stream.receiveWindow() < length) {
+                throw new ProtocolException("HTTP/2 stream receive window is exhausted");
+            }
             connectionReceiveWindow -= length;
+            stream.receiveWindow(stream.receiveWindow() - length);
         } finally {
             flowLock.unlock();
         }
@@ -1340,6 +1631,9 @@ public final class Http2Connection implements AutoCloseable {
 
     /**
      * Reserves the connection-wide queued DATA budget without blocking the reader.
+     *
+     * @param length inbound DATA bytes to reserve
+     * @return {@code true} when the aggregate budget accepted the bytes
      */
     private boolean reserveInbound(final long length) {
         if (length == Normal.LONG_ZERO) {
@@ -1360,16 +1654,17 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Sends WINDOW_UPDATE frames when inbound data crosses the update threshold.
      *
-     * @param streamId stream id
-     * @param length   consumed length
+     * @param length consumed length
      */
     private void acknowledgeConnectionInbound(final long length) {
         if (length == Normal._0) {
             return;
         }
-        final long connectionDelta = accumulate(unacknowledgedConnectionBytes, length);
+        final long connectionDelta = accumulate(
+                unacknowledgedConnectionBytes,
+                length,
+                Builder.HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD);
         if (connectionDelta >= Builder.HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD) {
-            writeFrame(Http2Frame.windowUpdate(Normal._0, connectionDelta));
             flowLock.lock();
             try {
                 connectionReceiveWindow = checkedWindowAdd(connectionReceiveWindow, connectionDelta);
@@ -1377,42 +1672,50 @@ public final class Http2Connection implements AutoCloseable {
             } finally {
                 flowLock.unlock();
             }
+            writeFrame(Http2Frame.windowUpdate(Normal._0, connectionDelta));
         }
     }
 
     /**
      * Releases aggregate queue bytes and batches the stream-level WINDOW_UPDATE.
+     *
+     * @param streamId stream whose queued bytes were consumed
+     * @param length   number of consumed DATA bytes
      */
     private void releaseInbound(final int streamId, final long length) {
         if (length == Normal.LONG_ZERO) {
             return;
         }
         queuedInboundBytes.updateAndGet(current -> Math.max(Normal.LONG_ZERO, current - length));
-        final AtomicLong streamBytes = streamUnacknowledgedBytes.computeIfAbsent(streamId, id -> new AtomicLong());
-        final long streamDelta = accumulate(streamBytes, length);
-        if (streamDelta >= Builder.HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD) {
-            writeFrame(Http2Frame.windowUpdate(streamId, streamDelta));
-            flowLock.lock();
-            try {
-                final Long current = streamReceiveWindows.get(streamId);
-                if (current != null) {
-                    streamReceiveWindows.put(streamId, checkedWindowAdd(current, streamDelta));
-                }
+        final Http2Stream stream = streams.get(streamId);
+        if (stream == null || stream.remoteEnded()) {
+            return;
+        }
+        final long streamDelta;
+        flowLock.lock();
+        try {
+            streamDelta = stream.consumeForWindowUpdate(length, LOCAL_RECEIVE_WINDOW / Normal._2);
+            if (streamDelta >= LOCAL_RECEIVE_WINDOW / Normal._2) {
+                stream.receiveWindow(checkedWindowAdd(stream.receiveWindow(), streamDelta));
                 flowChanged.signalAll();
-            } finally {
-                flowLock.unlock();
             }
+        } finally {
+            flowLock.unlock();
+        }
+        if (streamDelta >= LOCAL_RECEIVE_WINDOW / Normal._2) {
+            writeFrame(Http2Frame.windowUpdate(streamId, streamDelta));
         }
     }
 
     /**
      * Adds bytes to a counter and resets it when threshold is crossed.
      *
-     * @param counter counter
-     * @param length  length
+     * @param counter   byte counter updated atomically
+     * @param length    number of bytes to add
+     * @param threshold byte count that triggers a counter reset and update
      * @return accumulated length after the addition
      */
-    private static long accumulate(final AtomicLong counter, final long length) {
+    private static long accumulate(final AtomicLong counter, final long length, final long threshold) {
         long current;
         long next;
         do {
@@ -1421,8 +1724,7 @@ public final class Http2Connection implements AutoCloseable {
             if (next < current || next > Integer.MAX_VALUE) {
                 throw new ProtocolException("HTTP/2 flow-control update overflow");
             }
-        } while (!counter
-                .compareAndSet(current, next >= Builder.HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD ? Normal._0 : next));
+        } while (!counter.compareAndSet(current, next >= threshold ? Normal._0 : next));
         return next;
     }
 
@@ -1438,7 +1740,8 @@ public final class Http2Connection implements AutoCloseable {
             return;
         }
         final RuntimeException failure = new SocketException(
-                errorCode == Normal._7 ? "HTTP/2 stream was refused before processing" : "HTTP/2 stream was reset");
+                errorCode == Normal._7 ? "HTTP/2 stream was refused before processing"
+                        : "HTTP/2 stream was reset: errorCode=" + errorCode);
         final Http2Stream stream = streams.get(streamId);
         if (stream != null) {
             try {
@@ -1493,6 +1796,11 @@ public final class Http2Connection implements AutoCloseable {
         shutdown.set(true);
         publishCapacity(true);
         signalFlowWaiters();
+        writeScheduler.abort();
+        final DispatchHandle writer = writerHandle.getAndSet(null);
+        if (writer != null) {
+            writer.cancel();
+        }
         for (final Map.Entry<Integer, Http2Stream> entry : streams.entrySet()) {
             try {
                 entry.getValue().fail(failure);
@@ -1501,26 +1809,30 @@ public final class Http2Connection implements AutoCloseable {
             }
         }
         streams.clear();
+        localStreamCount.set(Normal._0);
         flowLock.lock();
         try {
-            streamWriteWindows.clear();
-            streamReceiveWindows.clear();
             flowChanged.signalAll();
         } finally {
             flowLock.unlock();
         }
-        streamUnacknowledgedBytes.clear();
         queuedInboundBytes.set(Normal.LONG_ZERO);
         priorities.clear();
         pushedStreams.clear();
         try {
             reader.close();
-            connection.close();
         } finally {
             state.set(Status.CLOSED);
-            if (ownsDispatcher) {
-                CompletableFuture.runAsync(this::closeOwnedDispatcher);
-            }
+            // The TLS failure callback must unwind before final abort joins the opposite engine direction. Directory
+            // shutdown may perform the same idempotent abort sooner; this fallback covers standalone connections.
+            CompletableFuture.runAsync(() -> {
+                try {
+                    connection.abort();
+                } finally {
+                    if (ownsDispatcher)
+                        closeOwnedDispatcher();
+                }
+            });
         }
     }
 
@@ -1538,11 +1850,80 @@ public final class Http2Connection implements AutoCloseable {
 
     /**
      * Publishes the saturated protocol stream capacity to the physical connection.
+     *
+     * @param draining whether shutdown prevents creation of new streams
      */
     private void publishCapacity(final boolean draining) {
         if (multiplexAttachment != null) {
-            multiplexAttachment.publish(draining ? Normal._0 : maxConcurrentStreams.get(), draining);
+            final int available = Math.max(Normal._0, maxConcurrentStreams.get() - localStreamCount.get());
+            multiplexAttachment.publish(draining ? Normal._0 : available, draining);
         }
+    }
+
+    /**
+     * Reserves one peer-authorized local stream slot without serializing unrelated stream creation.
+     */
+    private void reserveLocalStream() {
+        flowLock.lock();
+        try {
+            while (true) {
+                ensureNewStreamAllowed();
+                final int current = localStreamCount.get();
+                if (current < maxConcurrentStreams.get()) {
+                    localStreamCount.incrementAndGet();
+                    return;
+                }
+                try {
+                    flowChanged.await();
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new SocketException("Interrupted while waiting for HTTP/2 stream capacity", e);
+                }
+            }
+        } finally {
+            flowLock.unlock();
+        }
+    }
+
+    /**
+     * Ensures the connection can register another logical stream.
+     */
+    private void ensureNewStreamAllowed() {
+        if (state.get().terminal()) {
+            throw new StatefulException("HTTP/2 connection is closed");
+        }
+        if (shutdown.get()) {
+            throw new StatefulException("HTTP/2 connection is shutting down");
+        }
+    }
+
+    /**
+     * Atomically allocates one positive stream id and leaves a terminal sentinel after exhaustion.
+     *
+     * @param sequence local or remote stream-id sequence
+     * @return allocated stream id
+     */
+    private static int allocateStreamId(final AtomicInteger sequence) {
+        while (true) {
+            final int current = sequence.get();
+            if (current <= Normal._0) {
+                throw new ProtocolException("HTTP/2 stream id overflow");
+            }
+            final int next = current > Integer.MAX_VALUE - Normal._2 ? Normal._0 : current + Normal._2;
+            if (sequence.compareAndSet(current, next)) {
+                return current;
+            }
+        }
+    }
+
+    /**
+     * Returns whether an id belongs to a locally initiated client stream.
+     *
+     * @param streamId stream identifier to classify
+     * @return {@code true} for an odd locally initiated client stream id
+     */
+    private static boolean localStream(final int streamId) {
+        return (streamId & Normal._1) != Normal._0;
     }
 
     /**
@@ -1557,7 +1938,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Creates a payload for a frame.
      *
-     * @param frame frame
+     * @param frame frame whose DATA bytes form the payload
      * @return payload
      */
     private Buffer payload(final Http2Frame frame) {
@@ -1589,7 +1970,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Encodes and writes one non-DATA frame under the unique physical write lock.
      *
-     * @param frame frame
+     * @param frame non-DATA frame to encode and write
      */
     private void writeFrameSerialized(final Http2Frame frame) {
         RuntimeException failure = null;
@@ -1621,6 +2002,9 @@ public final class Http2Connection implements AutoCloseable {
 
     /**
      * Writes one HEADERS/PUSH_PROMISE plus contiguous CONTINUATION group atomically.
+     *
+     * @param frame   logical HEADERS or PUSH_PROMISE frame
+     * @param encoded HPACK block consumed into contiguous frame fragments
      */
     private void writeHeaderGroupLocked(final Http2Frame frame, final Buffer encoded) {
         final int maximum = maxFrameSize.get();
@@ -1680,15 +2064,16 @@ public final class Http2Connection implements AutoCloseable {
         try {
             while (true) {
                 ensureWritable();
-                final Long streamWindow = streamWriteWindows.get(streamId);
-                if (streamWindow == null) {
+                final Http2Stream stream = streams.get(streamId);
+                if (stream == null) {
                     throw streamFailure("HTTP/2 stream is terminal");
                 }
-                final long available = Math
-                        .min(Math.min(remaining, maxFrameSize.get()), Math.min(connectionWriteWindow, streamWindow));
+                final long available = Math.min(
+                        Math.min(remaining, maxFrameSize.get()),
+                        Math.min(connectionWriteWindow, stream.writeWindow()));
                 if (available > Normal.LONG_ZERO) {
                     connectionWriteWindow -= available;
-                    streamWriteWindows.put(streamId, streamWindow - available);
+                    stream.writeWindow(stream.writeWindow() - available);
                     return toIntSize(available);
                 }
                 awaitFlowChange(streamId, deadline);
@@ -1723,7 +2108,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Returns a safe monotonic deadline for one duration.
      *
-     * @param timeout timeout
+     * @param timeout duration measured from the current monotonic time
      * @return deadline
      */
     private static long deadline(final Duration timeout) {
@@ -1797,21 +2182,21 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Validates supported frame metadata.
      *
-     * @param type     type
+     * @param type     HTTP/2 frame type code
      * @param streamId stream id
-     * @param flags    flags
+     * @param flags    frame flags to validate
      * @param length   payload length
      */
     private static void validateFrame(final int type, final int streamId, final int flags, final int length) {
-        validateFrame(type, streamId, flags, length, Normal._16384);
+        validateFrame(type, streamId, flags, length, Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE);
     }
 
     /**
      * Validates supported frame metadata.
      *
-     * @param type         type
+     * @param type         HTTP/2 frame type code
      * @param streamId     stream id
-     * @param flags        flags
+     * @param flags        frame flags to validate
      * @param length       payload length
      * @param maxFrameSize max payload length
      */
@@ -1893,7 +2278,7 @@ public final class Http2Connection implements AutoCloseable {
      * Decodes optional HEADERS priority metadata.
      *
      * @param streamId stream id
-     * @param flags    flags
+     * @param flags    HEADERS frame flags controlling optional fields
      * @param payload  original HEADERS payload
      * @return priority or null
      */
@@ -1907,7 +2292,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Returns the HPACK fragment from a HEADERS payload.
      *
-     * @param flags   flags
+     * @param flags   HEADERS frame flags controlling optional fields
      * @param payload original HEADERS payload
      * @return header fragment
      */
@@ -1937,7 +2322,7 @@ public final class Http2Connection implements AutoCloseable {
         int total = appendHeaderFragment(fragments, first, Normal._0);
         int currentFlags = flags;
         while ((currentFlags & Normal._4) == Normal._0) {
-            final Buffer header = readFully(Normal._9);
+            final Buffer header = readFully(Builder.HTTP2_FRAME_HEADER_BYTES);
             final int length = readMedium(header);
             final int type = header.readByte() & Builder.UNSIGNED_BYTE_MASK;
             currentFlags = header.readByte() & Builder.UNSIGNED_BYTE_MASK;
@@ -1951,7 +2336,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Adds a header block fragment and checks the accumulated size.
      *
-     * @param fragments fragments
+     * @param fragments accumulated header block fragments
      * @param fragment  new fragment
      * @param total     current total
      * @return updated total
@@ -1981,7 +2366,7 @@ public final class Http2Connection implements AutoCloseable {
             final int flags,
             final int length) {
         if (type != Normal._9 || streamId != expectedStreamId || streamId <= Normal._0 || length < Normal._0
-                || length > Normal._16384) {
+                || length > Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE) {
             throw new ProtocolException("Invalid HTTP/2 CONTINUATION frame");
         }
         validateFlags(flags, Normal._4);
@@ -1990,7 +2375,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Validates frame flags.
      *
-     * @param flags   flags
+     * @param flags   actual frame flags
      * @param allowed allowed mask
      */
     private static void validateFlags(final int flags, final int allowed) {
@@ -2012,8 +2397,8 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Subtracts from a flow-control window.
      *
-     * @param window window
-     * @param length length
+     * @param window flow-control window to debit
+     * @param length number of bytes to subtract
      * @return true when the window was available
      */
     private static boolean subtractWindow(final AtomicLong window, final long length) {
@@ -2023,8 +2408,8 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Adds to a flow-control window.
      *
-     * @param window window
-     * @param delta  delta
+     * @param window flow-control window to credit
+     * @param delta  positive increment to add
      */
     private static void addWindow(final AtomicLong window, final long delta) {
         throw new InternalException("Legacy HTTP/2 flow update must not be used");
@@ -2033,7 +2418,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Adjusts a flow-control window by a signed delta.
      *
-     * @param window window
+     * @param window flow-control window to adjust
      * @param delta  signed delta
      */
     private static void adjustWindow(final AtomicLong window, final long delta) {
@@ -2068,9 +2453,28 @@ public final class Http2Connection implements AutoCloseable {
     }
 
     /**
+     * Reuses the immutable root-header snapshot when a peer repeats the same response field block. HPACK-heavy services
+     * commonly return an identical content type and length for every response; canonicalizing that immutable value also
+     * lets callers reuse its lazy map view.
+     *
+     * @param headers decoded response fields owned by the reader loop
+     * @return canonical immutable headers
+     */
+    private Headers toResponseHeaders(final List<Http2Header> headers) {
+        final List<Http2Header> cachedFields = cachedResponseFields;
+        if (cachedFields != null && cachedFields.equals(headers)) {
+            return cachedResponseHeaders;
+        }
+        final Headers converted = toHeaders(headers);
+        cachedResponseFields = headers;
+        cachedResponseHeaders = converted;
+        return converted;
+    }
+
+    /**
      * Validates and snapshots headers.
      *
-     * @param headers headers
+     * @param headers header collection to validate and copy
      * @return snapshot
      */
     private static List<Http2Header> validateHeaders(final List<Http2Header> headers) {
@@ -2085,7 +2489,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Returns the HPACK header block from a PUSH_PROMISE payload.
      *
-     * @param payload payload
+     * @param payload PUSH_PROMISE payload containing the header block
      * @return header block
      */
     private static ByteString pushHeaderBlock(final ByteString payload) {
@@ -2106,7 +2510,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Classifies close failure.
      *
-     * @param failure failure
+     * @param failure failure raised while closing the connection
      * @return runtime failure
      */
     private static RuntimeException closeFailure(final RuntimeException failure) {
@@ -2131,7 +2535,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Classifies a reader failure for stream delivery.
      *
-     * @param cause cause
+     * @param cause reader failure to expose to a stream
      * @return stream-visible failure
      */
     private static RuntimeException streamFailure(final RuntimeException cause) {
@@ -2145,7 +2549,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Writes bytes.
      *
-     * @param source source
+     * @param source buffer whose remaining bytes are written
      */
     private void write(final Buffer source) {
         final Buffer payload = require(source, "HTTP/2 write buffer");
@@ -2162,7 +2566,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Converts a buffer size to int.
      *
-     * @param size size
+     * @param size buffer size to range-check and convert
      * @return int size
      */
     private static int toIntSize(final long size) {
@@ -2175,7 +2579,7 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Reads an exact byte count into a core buffer.
      *
-     * @param length length
+     * @param length exact number of network bytes to read
      * @return buffer
      */
     private Buffer readFully(final int length) {
@@ -2198,8 +2602,8 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Reads a 24-bit unsigned integer.
      *
-     * @param buffer buffer
-     * @return value
+     * @param buffer buffer positioned at the three-byte integer
+     * @return decoded unsigned 24-bit value
      */
     private static int readMedium(final Buffer buffer) {
         return ((buffer.readByte() & Builder.UNSIGNED_BYTE_MASK) << Normal._16)
@@ -2210,10 +2614,10 @@ public final class Http2Connection implements AutoCloseable {
     /**
      * Validates required value.
      *
-     * @param value value
-     * @param name  name
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
      * @param <T>   type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

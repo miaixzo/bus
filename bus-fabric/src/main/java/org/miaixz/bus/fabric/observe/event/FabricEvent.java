@@ -34,10 +34,10 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
 /**
  * Immutable fabric observation event.
  *
- * @param marker event marker
- * @param time   event time
- * @param tags   event tags
- * @param cause  event failure cause
+ * @param marker stable observation marker
+ * @param time   wall-clock event timestamp
+ * @param tags   immutable sanitized event tags
+ * @param cause  optional failure cause
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -46,10 +46,11 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Creates a fabric event.
      *
-     * @param marker event marker
-     * @param time   event time
-     * @param tags   event tags
-     * @param cause  event failure cause
+     * @param marker non-null observation marker
+     * @param time   non-null wall-clock timestamp
+     * @param tags   non-null immutable sanitized tags
+     * @param cause  optional failure cause
+     * @throws ValidateException if marker, time, or tags is {@code null}
      */
     public FabricEvent {
         marker = Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null"));
@@ -60,8 +61,9 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Creates an event builder.
      *
-     * @param marker event marker
-     * @return event builder
+     * @param marker observation marker used to derive default classification tags
+     * @return builder using the system clock and a generated operation identifier
+     * @throws ValidateException if {@code marker} is {@code null}
      */
     public static Builder builder(final ObservationMarker marker) {
         return builder(marker, Clock.system());
@@ -70,9 +72,10 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Creates an event builder using an explicit runtime clock.
      *
-     * @param marker event marker
-     * @param clock  runtime clock
-     * @return event builder
+     * @param marker observation marker used to derive default classification tags
+     * @param clock  runtime time source sampled when the event is built
+     * @return builder initialized with marker-derived tags and a generated operation identifier
+     * @throws ValidateException if the marker or clock is {@code null}
      */
     public static Builder builder(final ObservationMarker marker, final Clock clock) {
         return new Builder(Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null")),
@@ -82,8 +85,8 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Returns the marker module from its stable code prefix.
      *
-     * @param marker marker
-     * @return module
+     * @param marker observation marker whose stable code is inspected
+     * @return code prefix before the first dot, or the complete code when no dot exists
      */
     private static String module(final ObservationMarker marker) {
         final String code = marker.code();
@@ -94,8 +97,8 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Returns the marker phase from its stable code suffix.
      *
-     * @param marker marker
-     * @return phase
+     * @param marker observation marker whose stable code is inspected
+     * @return code suffix after the first dot, or the complete code when no non-empty suffix exists
      */
     private static String phase(final ObservationMarker marker) {
         final String code = marker.code();
@@ -106,8 +109,8 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Returns the normalized marker result.
      *
-     * @param marker marker
-     * @return result
+     * @param marker observation marker whose failure and terminal flags are classified
+     * @return {@code failure}, {@code success}, or {@code active}
      */
     private static String result(final ObservationMarker marker) {
         if (marker.failure()) {
@@ -125,30 +128,30 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     public static final class Builder {
 
         /**
-         * Event marker.
+         * Marker from which default module, protocol, phase, and result tags are derived.
          */
         private final ObservationMarker marker;
 
         /**
-         * Runtime clock.
+         * Borrowed time source sampled only when {@link #build()} is called.
          */
         private final Clock clock;
 
         /**
-         * Tag values.
+         * Mutable sanitized tag values retained in insertion order until build time.
          */
         private final Map<String, String> tags;
 
         /**
-         * Failure cause.
+         * Optional failure attached to the event.
          */
         private Throwable cause;
 
         /**
          * Creates a builder.
          *
-         * @param marker event marker
-         * @param clock  runtime clock
+         * @param marker validated observation marker
+         * @param clock  validated runtime time source
          */
         private Builder(final ObservationMarker marker, final Clock clock) {
             this.marker = marker;
@@ -164,9 +167,10 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
         /**
          * Adds a tag.
          *
-         * @param key   key
-         * @param value value
+         * @param key   non-blank, single-line tag key
+         * @param value non-blank, single-line tag content to sanitize
          * @return this builder
+         * @throws ValidateException if the key or value is invalid
          */
         public Builder tag(final String key, final String value) {
             final String checkedKey = Tags.normalize(key, "Tag key");
@@ -177,7 +181,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
         /**
          * Sets the failure cause.
          *
-         * @param cause cause
+         * @param cause failure to attach, or {@code null} to clear a previously configured cause
          * @return this builder
          */
         public Builder cause(final Throwable cause) {
@@ -188,7 +192,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
         /**
          * Builds an event.
          *
-         * @return event
+         * @return immutable event timestamped at build time with a sanitized tag snapshot
          */
         public FabricEvent build() {
             if (cause != null) {

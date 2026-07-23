@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.observe;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
@@ -31,6 +30,9 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  * @since Java 21+
  */
 final class NoopEventObserver implements EventObserver {
+
+    /** Shared no-operation observer. */
+    private static final EventObserver INSTANCE = new NoopEventObserver();
 
     /**
      * Creates a no-operation event observer.
@@ -45,7 +47,7 @@ final class NoopEventObserver implements EventObserver {
      * @return no-operation observer
      */
     static EventObserver instance() {
-        return Instances.get(NoopEventObserver.class.getName(), NoopEventObserver::new);
+        return INSTANCE;
     }
 
     /**

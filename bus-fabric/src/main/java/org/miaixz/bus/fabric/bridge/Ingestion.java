@@ -40,38 +40,38 @@ import org.miaixz.bus.fabric.Payload;
 public final class Ingestion {
 
     /**
-     * Ingestion path.
+     * Normalized non-empty ingestion path beginning with {@code /}.
      */
     private final String path;
 
     /**
-     * External method.
+     * Trimmed external operation name, or an empty string when unspecified.
      */
     private final String method;
 
     /**
-     * Header snapshot.
+     * Immutable external header collection.
      */
     private final Headers headers;
 
     /**
-     * Payload reference.
+     * External payload, represented by the shared empty payload when absent.
      */
     private final Payload payload;
 
     /**
-     * Attribute snapshot using null sentinel values.
+     * Immutable attributes whose explicit {@code null} values are stored as a private sentinel.
      */
     private final Map<String, Object> attributes;
 
     /**
      * Creates a bridge ingestion.
      *
-     * @param path       path
-     * @param method     method
-     * @param headers    headers
-     * @param payload    payload
-     * @param attributes attributes
+     * @param path       external ingestion path to normalize
+     * @param method     optional external operation name
+     * @param headers    immutable headers, or {@code null} for an empty collection
+     * @param payload    external payload, or {@code null} for an empty payload
+     * @param attributes attributes copied into an immutable snapshot
      */
     private Ingestion(final String path, final String method, final Headers headers, final Payload payload,
             final Map<String, Object> attributes) {
@@ -85,7 +85,7 @@ public final class Ingestion {
     /**
      * Creates an ingestion builder.
      *
-     * @return builder
+     * @return a new ingestion builder initialized with empty metadata
      */
     public static Builder builder() {
         return new Builder();
@@ -94,7 +94,7 @@ public final class Ingestion {
     /**
      * Returns the ingestion path.
      *
-     * @return path
+     * @return normalized ingestion path beginning with {@code /}
      */
     public String path() {
         return path;
@@ -103,7 +103,7 @@ public final class Ingestion {
     /**
      * Returns the external method.
      *
-     * @return method
+     * @return trimmed external operation name, or an empty string when unspecified
      */
     public String method() {
         return method;
@@ -112,7 +112,7 @@ public final class Ingestion {
     /**
      * Returns the header snapshot.
      *
-     * @return headers
+     * @return immutable external headers
      */
     public Headers headers() {
         return headers;
@@ -121,7 +121,7 @@ public final class Ingestion {
     /**
      * Returns the payload reference.
      *
-     * @return payload
+     * @return external payload associated with the ingestion
      */
     public Payload payload() {
         return payload;
@@ -130,7 +130,7 @@ public final class Ingestion {
     /**
      * Returns decoded immutable attributes.
      *
-     * @return attributes
+     * @return immutable attribute map with sentinel values decoded back to {@code null}
      */
     public Map<String, Object> attributes() {
         final Map<String, Object> copy = MapKit.newHashMap(attributes.size(), true);
@@ -143,8 +143,8 @@ public final class Ingestion {
     /**
      * Creates immutable attributes with null sentinels.
      *
-     * @param source attributes
-     * @return immutable attributes
+     * @param source source attributes to validate and copy, or {@code null}
+     * @return immutable attribute snapshot with explicit {@code null} values encoded as a sentinel
      */
     private static Map<String, Object> immutableAttributes(final Map<String, Object> source) {
         final Map<String, Object> copy = MapKit.newHashMap(source == null ? 0 : source.size(), true);
@@ -159,7 +159,7 @@ public final class Ingestion {
     /**
      * Returns the shared sentinel used to preserve null attribute values.
      *
-     * @return null sentinel
+     * @return process-local singleton used to encode explicit {@code null} attribute values
      */
     private static Object nullValue() {
         return Instances.get(Ingestion.class.getName() + ".null", Object::new);
@@ -168,8 +168,9 @@ public final class Ingestion {
     /**
      * Normalizes a path.
      *
-     * @param value path
-     * @return normalized path
+     * @param value path to validate and normalize
+     * @return path with a leading slash
+     * @throws ValidateException if the path is blank or contains a line break
      */
     private static String normalizePath(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -181,8 +182,9 @@ public final class Ingestion {
     /**
      * Normalizes an optional method.
      *
-     * @param value method
-     * @return normalized method
+     * @param value optional operation name to normalize
+     * @return trimmed operation name, or an empty string for {@code null}
+     * @throws ValidateException if the operation name contains a line break
      */
     private static String normalizeOptionalMethod(final String value) {
         if (value == null) {
@@ -197,8 +199,9 @@ public final class Ingestion {
     /**
      * Validates a required method setter value.
      *
-     * @param value method
-     * @return method
+     * @param value required operation name to normalize
+     * @return trimmed, non-blank operation name
+     * @throws ValidateException if the operation name is blank or contains a line break
      */
     private static String validateMethod(final String value) {
         final String normalized = normalizeOptionalMethod(value);
@@ -211,8 +214,9 @@ public final class Ingestion {
     /**
      * Validates an attribute key.
      *
-     * @param key key
-     * @return key
+     * @param key attribute key to validate
+     * @return validated key without modifying its original text
+     * @throws ValidateException if the key is blank or contains a line break
      */
     private static String validateKey(final String key) {
         if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
@@ -230,27 +234,27 @@ public final class Ingestion {
     public static final class Builder {
 
         /**
-         * Candidate path.
+         * Validated ingestion path, initially the root path.
          */
         private String path = Symbol.SLASH;
 
         /**
-         * Candidate method.
+         * Validated external operation name, initially unspecified.
          */
         private String method = Normal.EMPTY;
 
         /**
-         * Candidate headers.
+         * External headers, initially empty.
          */
         private Headers headers = Headers.empty();
 
         /**
-         * Candidate payload.
+         * External payload, initially empty.
          */
         private Payload payload = Payload.empty();
 
         /**
-         * Candidate attributes.
+         * Mutable attributes retained in insertion order until build time.
          */
         private final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>();
 
@@ -264,8 +268,9 @@ public final class Ingestion {
         /**
          * Sets the path.
          *
-         * @param path path
+         * @param path ingestion path to normalize and store
          * @return this builder
+         * @throws ValidateException if the path is blank or contains a line break
          */
         public Builder path(final String path) {
             this.path = normalizePath(path);
@@ -275,8 +280,9 @@ public final class Ingestion {
         /**
          * Sets the method.
          *
-         * @param method method
+         * @param method required external operation name
          * @return this builder
+         * @throws ValidateException if the operation name is blank or contains a line break
          */
         public Builder method(final String method) {
             this.method = validateMethod(method);
@@ -286,7 +292,7 @@ public final class Ingestion {
         /**
          * Sets headers.
          *
-         * @param headers headers
+         * @param headers external headers, or {@code null} to select an empty collection
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -297,7 +303,7 @@ public final class Ingestion {
         /**
          * Sets payload.
          *
-         * @param payload payload
+         * @param payload external payload, or {@code null} to select an empty payload
          * @return this builder
          */
         public Builder payload(final Payload payload) {
@@ -308,9 +314,10 @@ public final class Ingestion {
         /**
          * Adds an attribute.
          *
-         * @param key   key
-         * @param value value
+         * @param key   non-blank, single-line attribute key
+         * @param value attribute value, which may be {@code null}
          * @return this builder
+         * @throws ValidateException if the key is blank or contains a line break
          */
         public Builder attribute(final String key, final Object value) {
             attributes.put(validateKey(key), value);
@@ -320,7 +327,7 @@ public final class Ingestion {
         /**
          * Builds a bridge ingestion.
          *
-         * @return bridge ingestion
+         * @return immutable ingestion containing snapshots of this builder's values
          */
         public Ingestion build() {
             return new Ingestion(path, method, headers, payload, attributes);

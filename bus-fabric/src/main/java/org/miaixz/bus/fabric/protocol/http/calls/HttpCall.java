@@ -42,41 +42,44 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class HttpCall extends MonoCall<HttpResponse> {
 
     /**
-     * HTTP protocol operation.
+     * One-shot protocol operation, cleared immediately before invocation.
      */
     private Function<Cancellation, HttpResponse> operation;
 
     /**
-     * Request snapshot used to build the dispatch key.
+     * Request authority retained until execution starts or the dispatch key is materialized.
      */
-    private final String dispatchKey;
+    private Address address;
+
+    /**
+     * Lazily cached scheme, host, and port key used for asynchronous dispatch grouping.
+     */
+    private volatile String dispatchKey;
 
     /**
      * Creates an HTTP call.
      *
-     * @param request    immutable HTTP request
-     * @param dispatcher dispatcher used by enqueue()
-     * @param callback   callback managed by the call lifecycle
-     * @param operation  HTTP protocol operation
+     * @param request    non-null HTTP request whose destination supplies the dispatch authority
+     * @param dispatcher non-null dispatcher used by parameterless asynchronous submission
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param operation  non-null one-shot HTTP operation receiving the lifecycle cancellation handle
      */
     private HttpCall(final HttpRequest request, final Dispatcher dispatcher,
             final Callback<? super HttpResponse> callback, final Function<Cancellation, HttpResponse> operation) {
         super("http-call", dispatcher, EventObserver.noop(), callback);
         final HttpRequest current = require(request, "HTTP request");
-        final Address address = current.url().address();
-        this.dispatchKey = address.scheme() + Symbol.COLON + Symbol.FORWARDSLASH + address.host() + Symbol.C_COLON
-                + address.port();
+        this.address = current.url().address();
         this.operation = require(operation, "HTTP operation");
     }
 
     /**
      * Creates an HTTP call.
      *
-     * @param request    immutable HTTP request
-     * @param dispatcher dispatcher used by enqueue()
-     * @param callback   callback managed by the call lifecycle
-     * @param operation  HTTP protocol operation
-     * @return HTTP call
+     * @param request    non-null HTTP request whose destination supplies the dispatch authority
+     * @param dispatcher non-null dispatcher used by parameterless asynchronous submission
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param operation  non-null one-shot HTTP operation receiving the lifecycle cancellation handle
+     * @return new single-use HTTP call
      */
     public static HttpCall create(
             final HttpRequest request,
@@ -89,19 +92,23 @@ public final class HttpCall extends MonoCall<HttpResponse> {
     /**
      * Executes the HTTP protocol operation.
      *
-     * @return HTTP response
+     * @return response produced by the configured protocol operation
      */
     @Override
     protected HttpResponse perform() {
         final Function<Cancellation, HttpResponse> current = operation;
         operation = null;
-        return current.apply(cancellation());
+        try {
+            return current.apply(cancellation());
+        } finally {
+            address = null;
+        }
     }
 
     /**
      * Closes a response produced after cancellation.
      *
-     * @param response produced response
+     * @param response response produced after cancellation, or null
      */
     @Override
     protected void closeAfterCancelled(final HttpResponse response) {
@@ -113,20 +120,27 @@ public final class HttpCall extends MonoCall<HttpResponse> {
     /**
      * Builds a stable asynchronous dispatch key for the request authority.
      *
-     * @return dispatch key
+     * @return cached authority key in {@code scheme://host:port} form
      */
     @Override
     protected String dispatchKey() {
-        return dispatchKey;
+        String current = dispatchKey;
+        if (current == null) {
+            final Address target = require(address, "HTTP dispatch address");
+            current = target.scheme() + Symbol.COLON + Symbol.FORWARDSLASH + target.host() + Symbol.C_COLON
+                    + target.port();
+            dispatchKey = current;
+        }
+        return current;
     }
 
     /**
      * Validates a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field label included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

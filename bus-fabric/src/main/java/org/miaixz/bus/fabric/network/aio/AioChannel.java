@@ -381,7 +381,6 @@ public final class AioChannel implements AutoCloseable {
     /**
      * Applies configured JDK socket options.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void applySocketOptions() {
         for (final java.util.Map.Entry<SocketOption<?>, Object> entry : options.socketOptions().entrySet()) {
             try {
@@ -527,6 +526,10 @@ public final class AioChannel implements AutoCloseable {
 
     /**
      * Completes one queued request and schedules the next drain.
+     *
+     * @param request completed queued write request
+     * @param value   completed byte count, or {@code null} on failure
+     * @param cause   terminal failure, or {@code null} on success
      */
     private void finishWrite(final WriteRequest request, final Long value, final Throwable cause) {
         synchronized (writes) {

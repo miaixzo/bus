@@ -28,11 +28,11 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 
 /**
- * Immutable resolved route candidate.
+ * Immutable route candidate combining a logical destination, proxy decision, and concrete socket endpoint.
  *
- * @param address target address
- * @param proxy   proxy plan
- * @param socket  socket address
+ * @param address logical destination address
+ * @param proxy   direct, HTTP, or SOCKS proxy plan
+ * @param socket  endpoint to connect, which may be resolved or unresolved
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -40,6 +40,11 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
 
     /**
      * Creates a route.
+     *
+     * @param address logical destination address
+     * @param proxy   proxy routing plan
+     * @param socket  concrete socket endpoint to connect
+     * @throws ValidateException if any component is {@code null}
      */
     public Route {
         address = Assert.notNull(address, () -> new ValidateException("Route address must not be null"));
@@ -50,10 +55,11 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Creates a route.
      *
-     * @param address address
-     * @param proxy   proxy
-     * @param socket  socket
-     * @return route
+     * @param address logical destination address
+     * @param proxy   proxy routing plan
+     * @param socket  concrete socket endpoint to connect
+     * @return immutable route containing the supplied components
+     * @throws ValidateException if any argument is {@code null}
      */
     public static Route of(final Address address, final ProxyPlan proxy, final InetSocketAddress socket) {
         return new Route(address, proxy, socket);
@@ -62,7 +68,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns the address.
      *
-     * @return address
+     * @return logical destination address
      */
     @Override
     public Address address() {
@@ -72,7 +78,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns the proxy plan.
      *
-     * @return proxy plan
+     * @return direct, HTTP, or SOCKS proxy routing plan
      */
     @Override
     public ProxyPlan proxy() {
@@ -82,7 +88,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns the socket address.
      *
-     * @return socket address
+     * @return socket endpoint used by the connection attempt
      */
     @Override
     public InetSocketAddress socket() {
@@ -92,7 +98,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns whether the route is secure.
      *
-     * @return true when secure
+     * @return {@code true} when the logical destination address is secure
      */
     public boolean secure() {
         return address.secure();
@@ -101,7 +107,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns whether this route requires a tunnel.
      *
-     * @return true when tunnel is needed
+     * @return {@code true} when the proxy plan requires a tunnel for the logical destination
      */
     public boolean requiresTunnel() {
         return proxy.requiresTunnel(address);
@@ -110,7 +116,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns a redacted route identifier for logs and metrics.
      *
-     * @return route identifier
+     * @return destination, redacted proxy id, and socket endpoint joined into diagnostic text
      */
     public String id() {
         return address.scheme() + Symbol.COLON + Symbol.FORWARDSLASH + address.host() + Symbol.COLON + address.port()
@@ -121,7 +127,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
     /**
      * Returns diagnostic route text.
      *
-     * @return route text
+     * @return diagnostic text containing the route id and derived secure and tunnel flags
      */
     @Override
     public String toString() {

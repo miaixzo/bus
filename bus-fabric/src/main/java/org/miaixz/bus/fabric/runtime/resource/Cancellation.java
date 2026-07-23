@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.fabric.runtime.resource;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -37,42 +37,99 @@ import org.miaixz.bus.logger.Logger;
 public final class Cancellation {
 
     /**
-     * Registered cleanup callbacks.
+     * VarHandle used for the single successful active-to-cancelled transition.
      */
-    private final ConcurrentLinkedDeque<Runnable> callbacks;
+    private static final VarHandle STATE;
 
     /**
-     * Cancelled flag.
+     * VarHandle used to install and detach the lazily allocated callback deque.
      */
-    private final AtomicBoolean cancelled;
+    private static final VarHandle CALLBACKS;
 
     /**
-     * First cancellation cause.
+     * Shared no-op unregister action.
      */
-    private final AtomicReference<Throwable> cause;
+    private static final Runnable NOOP = Cancellation::noop;
+
+    /** Shared scope for synchronous operations that expose no cancellation handle. */
+    private static final Cancellation NONE = new Cancellation(false);
+
+    static {
+        try {
+            final MethodHandles.Lookup lookup = MethodHandles.lookup();
+            STATE = lookup.findVarHandle(Cancellation.class, "state", int.class);
+            CALLBACKS = lookup.findVarHandle(Cancellation.class, "callbacks", ConcurrentLinkedDeque.class);
+        } catch (final ReflectiveOperationException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     /**
-     * Creates a cancellation scope.
+     * Lazily allocated concurrent deque of registered cancellation callbacks.
+     */
+    private volatile ConcurrentLinkedDeque<Runnable> callbacks;
+
+    /**
+     * Integer cancellation state: zero while active and one after the winning cancellation transition.
+     */
+    private volatile int state;
+
+    /**
+     * Cause supplied by the invocation that won cancellation, published after the state transition.
+     */
+    private volatile Throwable cause;
+
+    /** Whether callers can transition this scope to cancelled. */
+    private final boolean cancellable;
+
+    /**
+     * Creates an active cancellation scope without allocating callback storage.
      */
     private Cancellation() {
-        this.callbacks = new ConcurrentLinkedDeque<>();
-        this.cancelled = new AtomicBoolean();
-        this.cause = new AtomicReference<>();
+        this(true);
+    }
+
+    /**
+     * Creates a scope with the requested cancellation capability.
+     *
+     * @param cancellable true for caller-owned scopes
+     */
+    private Cancellation(final boolean cancellable) {
+        this.cancellable = cancellable;
+        // Callback storage is allocated only when cancellation cleanup is registered.
     }
 
     /**
      * Creates a cancellation scope.
      *
-     * @return cancellation scope
+     * @return new active cancellation scope
      */
     public static Cancellation create() {
         return new Cancellation();
     }
 
     /**
-     * Cancels this scope.
+     * Returns a shared scope for synchronous operations that cannot be cancelled externally.
      *
-     * @return true when this invocation changed the state
+     * @return immutable active no-cancellation scope
+     */
+    public static Cancellation none() {
+        return NONE;
+    }
+
+    /**
+     * Returns whether this scope accepts cancellation and cleanup registrations.
+     *
+     * @return true for caller-owned cancellation scopes
+     */
+    public boolean cancellable() {
+        return cancellable;
+    }
+
+    /**
+     * Cancels this scope with a new {@link CancellationException}.
+     *
+     * @return {@code true} if this invocation won cancellation and drained registered callbacks
      */
     public boolean cancel() {
         return cancel(new CancellationException("Operation cancelled"));
@@ -81,15 +138,19 @@ public final class Cancellation {
     /**
      * Cancels this scope with a cause.
      *
-     * @param reason cancellation cause
-     * @return true when this invocation changed the state
+     * @param reason non-null cause retained as the winning cancellation reason
+     * @return {@code true} if this invocation changed the state and drained registered callbacks
+     * @throws ValidateException if {@code reason} is {@code null}
      */
     public boolean cancel(final Throwable reason) {
         final Throwable current = require(reason, "Cancellation cause");
-        if (!cancelled.compareAndSet(false, true)) {
+        if (!cancellable) {
             return false;
         }
-        cause.set(current);
+        if (!(boolean) STATE.compareAndSet(this, 0, 1)) {
+            return false;
+        }
+        cause = current;
         drain();
         return true;
     }
@@ -97,47 +158,63 @@ public final class Cancellation {
     /**
      * Returns whether this scope is cancelled.
      *
-     * @return true when cancelled
+     * @return {@code true} after any invocation wins the cancellation transition
      */
     public boolean cancelled() {
-        return cancelled.get();
+        return state != 0;
     }
 
     /**
      * Returns the first cancellation cause.
      *
-     * @return cause or null
+     * @return winning cancellation cause, or {@code null} before cancellation or during the brief publication window
      */
     public Throwable cause() {
-        return cause.get();
+        return cause;
     }
 
     /**
-     * Registers cleanup to run when this scope is cancelled.
+     * Registers cleanup for reverse-order cancellation execution, or runs it immediately when already cancelled.
      *
-     * @param callback cleanup callback
-     * @return unregister callback
+     * @param callback non-null cleanup action
+     * @return action that removes this registration when still queued, or a shared no-op action when cleanup already
+     *         ran
+     * @throws ValidateException if {@code callback} is {@code null}
      */
     public Runnable onCancel(final Runnable callback) {
         final Runnable current = require(callback, "Cancellation callback");
-        if (cancelled.get()) {
-            run(current);
-            return Cancellation::noop;
+        if (!cancellable) {
+            return NOOP;
         }
-        callbacks.addLast(current);
-        if (cancelled.get() && callbacks.remove(current)) {
+        if (state != 0) {
             run(current);
-            return Cancellation::noop;
+            return NOOP;
         }
-        return () -> callbacks.remove(current);
+        ConcurrentLinkedDeque<Runnable> queue = callbacks;
+        if (queue == null) {
+            final ConcurrentLinkedDeque<Runnable> created = new ConcurrentLinkedDeque<>();
+            if ((boolean) CALLBACKS.compareAndSet(this, null, created)) {
+                queue = created;
+            } else {
+                queue = callbacks;
+            }
+        }
+        queue.addLast(current);
+        if (state != 0 && queue.remove(current)) {
+            run(current);
+            return NOOP;
+        }
+        final ConcurrentLinkedDeque<Runnable> registered = queue;
+        return () -> registered.remove(current);
     }
 
     /**
-     * Closes a resource when this scope is cancelled.
+     * Registers a resource to be closed when cancellation occurs, closing it immediately if already cancelled.
      *
-     * @param resource closeable resource
-     * @param <T>      resource type
-     * @return original resource
+     * @param resource non-null closeable resource
+     * @param <T>      closeable resource type
+     * @return the same resource reference
+     * @throws ValidateException if {@code resource} is {@code null}
      */
     public <T extends AutoCloseable> T closeOnCancel(final T resource) {
         final T current = require(resource, "Cancellation resource");
@@ -146,14 +223,16 @@ public final class Cancellation {
     }
 
     /**
-     * Throws when this scope has already been cancelled.
+     * Throws a new cancellation exception when this scope is cancelled, chaining the recorded reason when available.
+     *
+     * @throws CancellationException if this scope is cancelled
      */
     public void throwIfCancelled() {
-        if (!cancelled.get()) {
+        if (state == 0) {
             return;
         }
         final CancellationException exception = new CancellationException("Operation cancelled");
-        final Throwable current = cause.get();
+        final Throwable current = cause;
         if (current != null && current != exception) {
             exception.initCause(current);
         }
@@ -161,19 +240,24 @@ public final class Cancellation {
     }
 
     /**
-     * Runs all registered callbacks in reverse registration order.
+     * Removes and runs all currently registered callbacks in reverse registration order, then detaches the deque.
      */
     private void drain() {
+        final ConcurrentLinkedDeque<Runnable> queue = callbacks;
+        if (queue == null) {
+            return;
+        }
         Runnable callback;
-        while ((callback = callbacks.pollLast()) != null) {
+        while ((callback = queue.pollLast()) != null) {
             run(callback);
         }
+        CALLBACKS.compareAndSet(this, queue, null);
     }
 
     /**
      * Runs a callback without allowing cleanup failures to block cancellation.
      *
-     * @param callback callback
+     * @param callback cancellation cleanup action to invoke
      */
     private static void run(final Runnable callback) {
         try {
@@ -186,7 +270,7 @@ public final class Cancellation {
     /**
      * Closes a resource without allowing cleanup failures to block cancellation.
      *
-     * @param resource resource
+     * @param resource cancellation-owned resource to close
      */
     private static void close(final AutoCloseable resource) {
         try {
@@ -203,19 +287,19 @@ public final class Cancellation {
     }
 
     /**
-     * No-op unregister callback.
+     * Performs no work for registrations whose callback has already run.
      */
     private static void noop() {
         // no-op
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

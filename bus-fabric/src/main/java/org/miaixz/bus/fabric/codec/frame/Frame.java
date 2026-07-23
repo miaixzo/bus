@@ -30,8 +30,8 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 /**
  * Immutable binary frame payload.
  *
- * @param payload immutable payload
- * @param length  payload length
+ * @param payload immutable snapshot of the frame bytes
+ * @param length  byte count, always equal to {@code payload.size()}
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -40,8 +40,10 @@ public record Frame(ByteString payload, int length) {
     /**
      * Creates a frame from a payload snapshot.
      *
-     * @param payload payload
-     * @param length  expected payload length
+     * @param payload source bytes copied into an immutable snapshot
+     * @param length  declared byte count, which must match the source payload
+     * @throws ValidateException if {@code payload} is {@code null}
+     * @throws ProtocolException if {@code length} is negative or differs from the payload size
      */
     public Frame {
         final ByteString checkedPayload = Assert
@@ -56,8 +58,9 @@ public record Frame(ByteString payload, int length) {
     /**
      * Creates a frame from immutable bytes.
      *
-     * @param payload payload bytes
-     * @return frame
+     * @param payload source bytes copied into the frame snapshot
+     * @return frame whose declared length is derived from the payload size
+     * @throws ValidateException if {@code payload} is {@code null}
      */
     public static Frame of(final ByteString payload) {
         final ByteString checkedPayload = Assert
@@ -68,9 +71,11 @@ public record Frame(ByteString payload, int length) {
     /**
      * Creates a text frame.
      *
-     * @param value   text value
-     * @param charset charset
-     * @return frame
+     * @param value   non-null text to encode
+     * @param charset charset used to encode the text
+     * @return frame containing the encoded text bytes
+     * @throws ValidateException if {@code value} or {@code charset} is {@code null}
+     * @throws ConvertException  if the text cannot be encoded
      */
     public static Frame text(final String value, final Charset charset) {
         final String checkedValue = Assert.notNull(value, () -> new ValidateException("Frame text must not be null"));
@@ -85,10 +90,12 @@ public record Frame(ByteString payload, int length) {
     }
 
     /**
-     * Reads frame text.
+     * Decodes the frame payload as text using the supplied charset.
      *
-     * @param charset charset
-     * @return text
+     * @param charset charset used to decode the payload
+     * @return decoded text
+     * @throws ValidateException if {@code charset} is {@code null}
+     * @throws ConvertException  if the payload cannot be decoded
      */
     public String text(final Charset charset) {
         try {
@@ -104,8 +111,9 @@ public record Frame(ByteString payload, int length) {
     /**
      * Validates a charset.
      *
-     * @param charset charset
-     * @return charset
+     * @param charset charset reference to validate
+     * @return validated non-null charset
+     * @throws ValidateException if {@code charset} is {@code null}
      */
     private static Charset validateCharset(final Charset charset) {
         return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));

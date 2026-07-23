@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
@@ -45,17 +45,17 @@ import org.miaixz.bus.fabric.registry.policy.RetryPolicy;
 public final class HttpRetry implements HttpStage {
 
     /**
-     * Stage name.
+     * Stable identifier exposed to the HTTP stage chain.
      */
     private final String name;
 
     /**
-     * Retry policy.
+     * Policy controlling transport retry and redirect limits.
      */
     private final RetryPolicy policy;
 
     /**
-     * HTTP authenticator.
+     * Authenticator that optionally creates 401 and 407 follow-up requests.
      */
     private final HttpAuthenticator authenticator;
 
@@ -69,7 +69,8 @@ public final class HttpRetry implements HttpStage {
     /**
      * Creates a retry stage with an authenticator.
      *
-     * @param authenticator authenticator
+     * @param authenticator non-null authenticator producing authorization follow-ups
+     * @throws ValidateException if {@code authenticator} is {@code null}
      */
     public HttpRetry(final HttpAuthenticator authenticator) {
         this(RetryPolicy.defaults(), authenticator);
@@ -78,7 +79,9 @@ public final class HttpRetry implements HttpStage {
     /**
      * Creates a retry stage.
      *
-     * @param policy retry policy
+     * @param policy        retry and redirect policy
+     * @param authenticator authenticator producing authorization follow-ups
+     * @throws ValidateException if either collaborator is {@code null}
      */
     private HttpRetry(final RetryPolicy policy, final HttpAuthenticator authenticator) {
         this.name = "http-retry";
@@ -89,9 +92,11 @@ public final class HttpRetry implements HttpStage {
     /**
      * Executes retries and follow-ups.
      *
-     * @param request request
-     * @param chain   next chain
-     * @return response
+     * @param request initial request to execute and potentially replay
+     * @param chain   remaining exchange chain used for first and replayed attempts
+     * @return terminal response with prior follow-up responses linked using empty bodies
+     * @throws ProtocolException if the configured follow-up limit is exceeded
+     * @throws ValidateException if the request or chain is {@code null}
      */
     @Override
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
@@ -100,9 +105,13 @@ public final class HttpRetry implements HttpStage {
         int attempt = Normal._0;
         int followUps = Normal._0;
         HttpResponse prior = null;
+        boolean first = true;
+        final int replayIndex = next.index();
         while (true) {
             try {
-                final HttpResponse response = next.replayFromCurrent().proceed(current);
+                final HttpChain attemptChain = first ? next : next.replayFrom(replayIndex);
+                first = false;
+                final HttpResponse response = attemptChain.proceed(current);
                 final HttpRequest followUp = followUp(response);
                 if (followUp == null) {
                     return prior == null ? response : response.toBuilder().priorResponse(prior).build();
@@ -128,15 +137,17 @@ public final class HttpRetry implements HttpStage {
     /**
      * Creates a follow-up request for a response.
      *
-     * @param response response
-     * @return follow-up request or null
+     * @param response response whose status and headers determine a follow-up
+     * @return redirect or authentication request, or {@code null} when no follow-up is available
+     * @throws ValidateException if {@code response} is {@code null}
      */
     public HttpRequest followUp(final HttpResponse response) {
         final HttpResponse current = require(response, "HTTP response");
         return switch (current.code()) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> redirect(
+            case Http.Status.MULTIPLE_CHOICES, Http.Status.MOVED_PERMANENTLY, Http.Status.FOUND, Http.Status.SEE_OTHER, Http.Status.TEMPORARY_REDIRECT, Http.Status.PERMANENT_REDIRECT -> redirect(
                     current);
-            case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> authenticator.authenticate(current.request(), current);
+            case Http.Status.UNAUTHORIZED, Http.Status.PROXY_AUTHENTICATION_REQUIRED -> authenticator
+                    .authenticate(current.request(), current);
             default -> null;
         };
     }
@@ -144,9 +155,10 @@ public final class HttpRetry implements HttpStage {
     /**
      * Returns whether a failure can be retried.
      *
-     * @param cause   cause
-     * @param attempt attempt
-     * @return true when recoverable
+     * @param cause   structured exchange failure to classify
+     * @param attempt zero-based retry attempt supplied to the policy
+     * @return {@code true} when delivery state, failure reason, and retry policy permit another attempt
+     * @throws ValidateException if {@code cause} is {@code null}
      */
     public boolean recover(final Throwable cause, final int attempt) {
         final Throwable current = require(cause, "Failure cause");
@@ -159,6 +171,11 @@ public final class HttpRetry implements HttpStage {
 
     /**
      * Applies request replay and idempotency constraints in addition to the structured failure policy.
+     *
+     * @param request request considered for replay
+     * @param cause   structured exchange failure
+     * @param attempt zero-based retry attempt
+     * @return {@code true} when policy and request semantics permit replay
      */
     private boolean recover(final HttpRequest request, final Throwable cause, final int attempt) {
         return idempotent(request.method()) && request.body().repeatable() && recover(cause, attempt);
@@ -166,6 +183,9 @@ public final class HttpRetry implements HttpStage {
 
     /**
      * Only network-owner-confirmed safe delivery states can be replayed.
+     *
+     * @param failure structured exchange failure
+     * @return {@code true} when delivery is known safe to repeat
      */
     private static boolean retryableDelivery(final HttpChain.ExchangeFailure failure) {
         return failure.deliveryState() == HttpChain.DeliveryState.NOT_SENT
@@ -174,6 +194,9 @@ public final class HttpRetry implements HttpStage {
 
     /**
      * Certificate/protocol/cancellation failures are never automatically recovered.
+     *
+     * @param failure structured exchange failure
+     * @return {@code true} when the failure category allows retry
      */
     private static boolean retryableReason(final HttpChain.ExchangeFailure failure) {
         return failure.reason() != HttpChain.FailureReason.TLS && failure.reason() != HttpChain.FailureReason.PROTOCOL
@@ -182,8 +205,11 @@ public final class HttpRetry implements HttpStage {
 
     /**
      * RFC idempotent method set used by automatic transport retries.
+     *
+     * @param method HTTP method to classify
+     * @return {@code true} when the method is idempotent
      */
-    private static boolean idempotent(final HTTP.Method method) {
+    private static boolean idempotent(final Http.Method method) {
         return switch (method) {
             case GET, HEAD, PUT, DELETE, OPTIONS, TRACE -> true;
             default -> false;
@@ -193,7 +219,7 @@ public final class HttpRetry implements HttpStage {
     /**
      * Returns stage name.
      *
-     * @return stage name
+     * @return stable retry-stage identifier
      */
     @Override
     public String name() {
@@ -203,11 +229,11 @@ public final class HttpRetry implements HttpStage {
     /**
      * Creates a redirect request.
      *
-     * @param response response
-     * @return request or null
+     * @param response redirect response containing the original request and optional {@code Location}
+     * @return redirect request, or {@code null} when location is absent or a required body cannot be replayed
      */
     private HttpRequest redirect(final HttpResponse response) {
-        final String location = response.headers().get(HTTP.LOCATION);
+        final String location = response.headers().get(Http.Header.LOCATION);
         if (location == null) {
             return null;
         }
@@ -217,14 +243,14 @@ public final class HttpRetry implements HttpStage {
         final URI uri = response.request().url().toUri().resolve(location);
         final UnoUrl url = UnoUrl.parse(uri.toString());
         final HttpRequest request = response.request();
-        final HTTP.Method method = redirectMethod(response.code(), request.method());
+        final Http.Method method = redirectMethod(response.code(), request.method());
         final boolean preserveBody = preserveBody(response.code(), request.method());
         if (preserveBody && request.body().length() > Normal._0 && !request.body().repeatable()) {
             return null;
         }
         final HttpRequest.Builder builder = request.toBuilder().method(method).url(url)
                 .headers(redirectHeaders(request.headers(), request.url(), url));
-        if (preserveBody && method.supportsBody() && request.body().length() > Normal._0) {
+        if (preserveBody && method.permitsBody() && request.body().length() > Normal._0) {
             builder.body(request.body());
         } else {
             builder.body(PayloadBody.empty());
@@ -235,15 +261,15 @@ public final class HttpRetry implements HttpStage {
     /**
      * Returns whether another follow-up is allowed.
      *
-     * @param code      response code
-     * @param followUps follow-up count
-     * @return true when allowed
+     * @param code      response status that produced the follow-up
+     * @param followUps number of follow-ups already accepted
+     * @return {@code true} when the redirect policy or authentication hard limit allows another request
      */
     private boolean followUpAllowed(final int code, final int followUps) {
         return switch (code) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> policy
+            case Http.Status.MULTIPLE_CHOICES, Http.Status.MOVED_PERMANENTLY, Http.Status.FOUND, Http.Status.SEE_OTHER, Http.Status.TEMPORARY_REDIRECT, Http.Status.PERMANENT_REDIRECT -> policy
                     .redirect(code, followUps);
-            case HTTP.HTTP_UNAUTHORIZED, HTTP.HTTP_PROXY_AUTH -> followUps < Normal._20;
+            case Http.Status.UNAUTHORIZED, Http.Status.PROXY_AUTHENTICATION_REQUIRED -> followUps < Normal._20;
             default -> false;
         };
     }
@@ -251,41 +277,43 @@ public final class HttpRetry implements HttpStage {
     /**
      * Selects redirect method.
      *
-     * @param code   status code
-     * @param method original method
-     * @return redirect method
+     * @param code   redirect response status
+     * @param method original request method
+     * @return original method for 307, 308, GET, or HEAD; otherwise GET
      */
-    private static HTTP.Method redirectMethod(final int code, final HTTP.Method method) {
-        if (code == HTTP.HTTP_TEMP_REDIRECT || code == HTTP.HTTP_PERM_REDIRECT || method == HTTP.Method.GET
-                || method == HTTP.Method.HEAD) {
+    private static Http.Method redirectMethod(final int code, final Http.Method method) {
+        if (code == Http.Status.TEMPORARY_REDIRECT || code == Http.Status.PERMANENT_REDIRECT
+                || method == Http.Method.GET || method == Http.Method.HEAD) {
             return method;
         }
-        return HTTP.Method.GET;
+        return Http.Method.GET;
     }
 
     /**
      * Returns whether a redirect must preserve the original request body.
      *
-     * @param code   status code
-     * @param method original method
-     * @return true when body is preserved
+     * @param code   redirect response status
+     * @param method original request method
+     * @return {@code true} for body-capable methods redirected by status 307 or 308
      */
-    private static boolean preserveBody(final int code, final HTTP.Method method) {
-        return (code == HTTP.HTTP_TEMP_REDIRECT || code == HTTP.HTTP_PERM_REDIRECT) && method.supportsBody();
+    private static boolean preserveBody(final int code, final Http.Method method) {
+        return (code == Http.Status.TEMPORARY_REDIRECT || code == Http.Status.PERMANENT_REDIRECT)
+                && method.permitsBody();
     }
 
     /**
      * Removes request headers that must be recalculated for redirects.
      *
-     * @param headers headers
-     * @param from    original URL
-     * @param to      redirect URL
-     * @return headers
+     * @param headers original request headers
+     * @param from    original request URL
+     * @param to      resolved redirect URL
+     * @return headers without body framing fields and, for cross-origin redirects, credential fields
      */
     private static Headers redirectHeaders(final Headers headers, final UnoUrl from, final UnoUrl to) {
-        Headers current = headers.without(HTTP.CONTENT_LENGTH).without(HTTP.CONTENT_TYPE);
+        Headers current = headers.without(Http.Header.CONTENT_LENGTH).without(Http.Header.CONTENT_TYPE);
         if (!sameOrigin(from, to)) {
-            current = current.without(HTTP.AUTHORIZATION).without(HTTP.PROXY_AUTHORIZATION).without(HTTP.COOKIE);
+            current = current.without(Http.Header.AUTHORIZATION).without(Http.Header.PROXY_AUTHORIZATION)
+                    .without(Http.Header.COOKIE);
         }
         return current;
     }
@@ -295,7 +323,7 @@ public final class HttpRetry implements HttpStage {
      *
      * @param first  first URL
      * @param second second URL
-     * @return true when same origin
+     * @return {@code true} when scheme and port match and host names are equal ignoring case
      */
     private static boolean sameOrigin(final UnoUrl first, final UnoUrl second) {
         return first.address().scheme().equals(second.address().scheme())
@@ -306,13 +334,17 @@ public final class HttpRetry implements HttpStage {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
 }

@@ -24,7 +24,7 @@ import java.nio.charset.Charset;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
@@ -35,9 +35,9 @@ import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
 /**
  * Immutable STOMP message value.
  *
- * @param destination message destination
- * @param headers     message headers
- * @param payload     message payload
+ * @param destination non-blank, single-line STOMP destination
+ * @param headers     immutable STOMP header collection
+ * @param payload     payload carried by the frame
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -46,9 +46,10 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Creates a validated message.
      *
-     * @param destination message destination
-     * @param headers     message headers
-     * @param payload     message payload
+     * @param destination non-blank, single-line STOMP destination
+     * @param headers     non-null STOMP headers
+     * @param payload     non-null frame payload
+     * @throws ValidateException if any component is invalid
      */
     public StompMessage {
         destination = validateToken(destination, "STOMP destination");
@@ -59,10 +60,10 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Creates a message.
      *
-     * @param destination destination
-     * @param headers     headers
-     * @param payload     payload
-     * @return message
+     * @param destination non-blank, single-line STOMP destination
+     * @param headers     non-null STOMP headers
+     * @param payload     non-null frame payload
+     * @return validated immutable STOMP message
      */
     public static StompMessage of(final String destination, final Headers headers, final Payload payload) {
         return new StompMessage(destination, headers, payload);
@@ -71,10 +72,10 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Creates a message.
      *
-     * @param destination destination
-     * @param headers     headers
-     * @param body        body
-     * @return message
+     * @param destination non-blank, single-line STOMP destination
+     * @param headers     non-null STOMP headers
+     * @param body        body whose payload is carried by the frame
+     * @return validated immutable STOMP message
      */
     public static StompMessage of(final String destination, final Headers headers, final StompBody body) {
         return new StompMessage(destination, headers, require(body, "STOMP body").payload());
@@ -83,7 +84,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Returns destination.
      *
-     * @return destination
+     * @return validated STOMP destination
      */
     @Override
     public String destination() {
@@ -93,7 +94,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Returns headers.
      *
-     * @return headers
+     * @return immutable STOMP headers
      */
     @Override
     public Headers headers() {
@@ -103,7 +104,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Returns payload.
      *
-     * @return payload
+     * @return payload carried by the frame
      */
     @Override
     public Payload payload() {
@@ -113,10 +114,10 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Returns STOMP body.
      *
-     * @return body
+     * @return body view combining the payload with its declared media type, or binary media type by default
      */
     public StompBody body() {
-        final String contentType = headers.get(HTTP.CONTENT_TYPE);
+        final String contentType = headers.get(Http.Header.CONTENT_TYPE);
         final MediaType media = contentType == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
                 : MediaType.parse(contentType);
         return StompBody.of(payload, media);
@@ -125,8 +126,8 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Reads payload text.
      *
-     * @param charset charset
-     * @return text
+     * @param charset character set used to decode the payload
+     * @return payload materialized as text within the default byte limit
      */
     public String text(final Charset charset) {
         return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
@@ -135,9 +136,9 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Reads payload text with an explicit materialize threshold.
      *
-     * @param charset  charset
-     * @param maxBytes maximum bytes to materialize
-     * @return text
+     * @param charset  character set used to decode the payload
+     * @param maxBytes maximum number of payload bytes permitted during materialization
+     * @return payload materialized as decoded text
      */
     public String text(final Charset charset, final long maxBytes) {
         return payload.text(require(charset, "Charset"), maxBytes);
@@ -146,9 +147,10 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Validates single-line text.
      *
-     * @param value value
-     * @param name  field name
-     * @return validated value
+     * @param value token text to validate
+     * @param name  logical field name included in the validation error
+     * @return unchanged non-blank, single-line token
+     * @throws ValidateException if the token is blank or contains a line break
      */
     static String validateToken(final String value, final String name) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -160,10 +162,11 @@ public record StompMessage(String destination, Headers headers, Payload payload)
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

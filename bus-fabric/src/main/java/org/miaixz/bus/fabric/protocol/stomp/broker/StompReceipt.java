@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.stomp.broker;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -41,7 +42,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class StompReceipt {
 
     /**
-     * Pending receipt futures.
+     * Receipt identifiers mapped to the single future currently awaiting each receipt.
      */
     private final ConcurrentHashMap<String, CompletableFuture<Void>> pending;
 
@@ -53,10 +54,17 @@ public final class StompReceipt {
     }
 
     /**
-     * Registers and waits for a receipt.
+     * Registers one receipt identifier and blocks until it is completed, failed, cancelled, or interrupted.
+     * <p>
+     * The registration and cancellation callback are removed before this method returns or throws.
+     * </p>
      *
-     * @param receiptId    receipt id
-     * @param cancellation cancellation scope
+     * @param receiptId    non-blank, single-line receipt identifier
+     * @param cancellation scope that aborts this wait
+     * @throws ValidateException     if the identifier is blank or multi-line, or {@code cancellation} is {@code null}
+     * @throws StatefulException     if another wait is already registered for the identifier
+     * @throws CancellationException if the scope is cancelled or the waiting thread is interrupted
+     * @throws CompletionException   if the receipt is failed with a non-cancellation cause
      */
     public void await(final String receiptId, final Cancellation cancellation) {
         final String id = validate(receiptId);
@@ -89,9 +97,10 @@ public final class StompReceipt {
     }
 
     /**
-     * Completes a receipt.
+     * Removes and successfully completes the pending future for a receipt identifier, if present.
      *
-     * @param receiptId receipt id
+     * @param receiptId non-blank, single-line receipt identifier
+     * @throws ValidateException if the identifier is blank or multi-line
      */
     public void complete(final String receiptId) {
         final CompletableFuture<Void> future = pending.remove(validate(receiptId));
@@ -101,10 +110,11 @@ public final class StompReceipt {
     }
 
     /**
-     * Fails a receipt.
+     * Removes and exceptionally completes the pending future for a receipt identifier, if present.
      *
-     * @param receiptId receipt id
-     * @param cause     cause
+     * @param receiptId non-blank, single-line receipt identifier
+     * @param cause     failure stored in the pending future
+     * @throws ValidateException if the identifier is blank or multi-line, or {@code cause} is {@code null}
      */
     public void fail(final String receiptId, final Throwable cause) {
         Assert.notNull(cause, () -> new ValidateException("STOMP receipt failure cause must not be null"));
@@ -115,9 +125,10 @@ public final class StompReceipt {
     }
 
     /**
-     * Fails all pending receipts.
+     * Removes and exceptionally completes every receipt that remains pending during the concurrent traversal.
      *
-     * @param cause cause
+     * @param cause failure stored in each removed future
+     * @throws ValidateException if {@code cause} is {@code null}
      */
     public void failAll(final Throwable cause) {
         Assert.notNull(cause, () -> new ValidateException("STOMP receipt failure cause must not be null"));
@@ -131,8 +142,9 @@ public final class StompReceipt {
     /**
      * Returns whether a receipt is pending.
      *
-     * @param receiptId receipt id
-     * @return true when pending
+     * @param receiptId non-blank, single-line receipt identifier
+     * @return {@code true} when a wait is currently registered for the identifier
+     * @throws ValidateException if the identifier is blank or multi-line
      */
     public boolean pending(final String receiptId) {
         return pending.containsKey(validate(receiptId));
@@ -141,7 +153,7 @@ public final class StompReceipt {
     /**
      * Returns pending receipt count.
      *
-     * @return count
+     * @return current number of registered receipt waits
      */
     public int size() {
         return pending.size();
@@ -150,8 +162,9 @@ public final class StompReceipt {
     /**
      * Validates receipt ids.
      *
-     * @param value value
-     * @return value
+     * @param value receipt identifier to validate
+     * @return unchanged non-blank, single-line identifier
+     * @throws ValidateException if the identifier is blank or contains a carriage return or line feed
      */
     private static String validate(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {

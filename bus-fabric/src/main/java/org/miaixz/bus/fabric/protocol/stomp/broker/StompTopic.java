@@ -30,8 +30,8 @@ import org.miaixz.bus.fabric.protocol.stomp.StompMessage;
 /**
  * STOMP subscription topic descriptor.
  *
- * @param id          subscription id
- * @param destination destination
+ * @param id          non-blank subscription identifier, defaulted from the destination when omitted
+ * @param destination exact or wildcard STOMP destination pattern
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -40,8 +40,9 @@ public record StompTopic(String id, String destination) {
     /**
      * Creates a validated topic.
      *
-     * @param id          id
-     * @param destination destination
+     * @param id          optional subscription identifier; blank text selects the destination
+     * @param destination non-blank, single-line destination pattern
+     * @throws ValidateException if the destination or explicit identifier is invalid
      */
     public StompTopic {
         destination = validate(destination, "STOMP destination");
@@ -51,9 +52,10 @@ public record StompTopic(String id, String destination) {
     /**
      * Creates a topic.
      *
-     * @param id          id
-     * @param destination destination
-     * @return topic
+     * @param id          optional subscription identifier; blank text selects the destination
+     * @param destination exact or wildcard destination pattern
+     * @return validated immutable topic descriptor
+     * @throws ValidateException if the destination or explicit identifier is invalid
      */
     public static StompTopic of(final String id, final String destination) {
         return new StompTopic(id, destination);
@@ -62,7 +64,7 @@ public record StompTopic(String id, String destination) {
     /**
      * Returns the subscription id.
      *
-     * @return id
+     * @return explicit identifier or the destination selected as its default
      */
     @Override
     public String id() {
@@ -72,7 +74,7 @@ public record StompTopic(String id, String destination) {
     /**
      * Returns the destination.
      *
-     * @return destination
+     * @return exact destination or trailing single-/multi-level wildcard pattern
      */
     @Override
     public String destination() {
@@ -82,8 +84,9 @@ public record StompTopic(String id, String destination) {
     /**
      * Returns whether this topic matches a message destination.
      *
-     * @param message message
-     * @return true when matched
+     * @param message message whose destination is compared with this topic pattern
+     * @return {@code true} for an exact match or a match accepted by a trailing {@code /*} or {@code /**} wildcard
+     * @throws ValidateException if {@code message} is {@code null}
      */
     public boolean matches(final StompMessage message) {
         Assert.notNull(message, () -> new ValidateException("STOMP message must not be null"));
@@ -104,9 +107,10 @@ public record StompTopic(String id, String destination) {
     /**
      * Validates a single-line token.
      *
-     * @param value value
-     * @param name  field name
-     * @return value
+     * @param value identifier or destination text to validate
+     * @param name  logical field name included in the validation error
+     * @return unchanged non-blank, single-line text
+     * @throws ValidateException if the text is blank or contains a line break
      */
     private static String validate(final String value, final String name) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {

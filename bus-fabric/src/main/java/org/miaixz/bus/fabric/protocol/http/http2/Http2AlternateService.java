@@ -30,8 +30,8 @@ import org.miaixz.bus.fabric.Builder;
 /**
  * HTTP/2 ALTSVC payload value.
  *
- * @param origin alternate-service origin
- * @param value  Alt-Svc field value
+ * @param origin UTF-8 origin field, empty only for stream-scoped ALTSVC frames
+ * @param value  UTF-8 Alt-Svc field content
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -39,6 +39,10 @@ public record Http2AlternateService(String origin, String value) {
 
     /**
      * Creates an ALTSVC payload value.
+     *
+     * @param origin ALTSVC origin field
+     * @param value  Alt-Svc field value
+     * @throws ValidateException if either field is {@code null} or the encoded origin exceeds 65535 bytes
      */
     public Http2AlternateService {
         origin = Assert.notNull(origin, () -> new ValidateException("Invalid HTTP/2 alternate service metadata"));
@@ -51,9 +55,10 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Creates an ALTSVC value.
      *
-     * @param origin origin
+     * @param origin UTF-8 ALTSVC origin field
      * @param value  Alt-Svc field value
-     * @return alternate service
+     * @return immutable alternate-service value without stream-context validation
+     * @throws ValidateException if either field is {@code null} or the encoded origin exceeds 65535 bytes
      */
     public static Http2AlternateService of(final String origin, final String value) {
         return new Http2AlternateService(origin, value);
@@ -62,9 +67,10 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Decodes an ALTSVC frame payload.
      *
-     * @param payload  payload
-     * @param streamId frame stream id
-     * @return alternate service
+     * @param payload  immutable ALTSVC payload bytes including the origin-length prefix
+     * @param streamId non-negative frame stream identifier used to validate origin presence
+     * @return decoded and stream-context-validated alternate service
+     * @throws ProtocolException if the payload layout, stream identifier, or origin context is invalid
      */
     static Http2AlternateService decode(final ByteString payload, final int streamId) {
         final ByteString checkedPayload = Assert
@@ -85,10 +91,10 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Creates an ALTSVC value from decoded byte fields.
      *
-     * @param originBytes origin bytes
-     * @param valueBytes  value bytes
+     * @param originBytes UTF-8 bytes for the origin field
+     * @param valueBytes  remaining UTF-8 Alt-Svc field bytes
      * @param streamId    frame stream id
-     * @return alternate service
+     * @return decoded value after stream-context validation
      */
     private static Http2AlternateService fromBytes(
             final ByteString originBytes,
@@ -102,9 +108,10 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Decodes an ALTSVC frame payload from a core buffer.
      *
-     * @param payload  payload
-     * @param streamId frame stream id
-     * @return alternate service
+     * @param payload  source buffer inspected without consumption
+     * @param streamId non-negative frame stream identifier used to validate origin presence
+     * @return decoded and stream-context-validated alternate service
+     * @throws ProtocolException if the payload layout, stream identifier, or origin context is invalid
      */
     static Http2AlternateService decode(final Buffer payload, final int streamId) {
         final Buffer checkedPayload = Assert
@@ -127,7 +134,7 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Encodes this value as immutable ALTSVC payload bytes.
      *
-     * @return payload
+     * @return immutable bytes containing the two-byte origin length, origin, and Alt-Svc field content
      */
     public ByteString encodeBytes() {
         final ByteString originBytes = ByteString.encodeUtf8(origin);
@@ -142,8 +149,9 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Validates stream-specific ALTSVC origin rules.
      *
-     * @param streamId stream id
-     * @param service  service value
+     * @param streamId non-negative connection ({@code 0}) or application stream identifier
+     * @param service  decoded alternate-service fields to validate
+     * @throws ProtocolException if service is null, the identifier is negative, or origin presence violates scope
      */
     static void validateStreamContext(final int streamId, final Http2AlternateService service) {
         final Http2AlternateService checkedService = Assert
@@ -162,7 +170,7 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Reads the big-endian unsigned origin length from immutable bytes.
      *
-     * @param payload payload
+     * @param payload immutable ALTSVC bytes containing at least the two-byte prefix
      * @return unsigned length
      */
     private static int unsignedShort(final ByteString payload) {
@@ -173,7 +181,7 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Reads the big-endian unsigned origin length from a buffer without consuming it.
      *
-     * @param payload payload
+     * @param payload buffer containing at least the two-byte prefix
      * @return unsigned length
      */
     private static int unsignedShort(final Buffer payload) {
@@ -184,10 +192,10 @@ public record Http2AlternateService(String origin, String value) {
     /**
      * Reads an immutable byte slice without consuming the source buffer.
      *
-     * @param payload   payload
+     * @param payload   source buffer retained unchanged
      * @param offset    slice offset
      * @param byteCount slice byte count
-     * @return byte string
+     * @return immutable copy of the requested byte range
      */
     private static ByteString readByteString(final Buffer payload, final long offset, final long byteCount) {
         final Buffer view = new Buffer();

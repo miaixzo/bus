@@ -37,14 +37,14 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 public final class LimitGuard implements GuardRule {
 
     /**
-     * Maximum allowed bytes.
+     * Inclusive upper bound for declared and known payload lengths.
      */
     private final long maxBytes;
 
     /**
      * Creates a limit guard.
      *
-     * @param maxBytes maximum allowed bytes
+     * @param maxBytes validated inclusive body limit from 1 byte through 16 MiB
      */
     private LimitGuard(final long maxBytes) {
         this.maxBytes = validateMaxBytes(maxBytes);
@@ -53,8 +53,8 @@ public final class LimitGuard implements GuardRule {
     /**
      * Creates a limit guard.
      *
-     * @param maxBytes maximum allowed bytes
-     * @return limit guard
+     * @param maxBytes inclusive body limit from 1 byte through 16 MiB
+     * @return new body-length guard
      */
     public static LimitGuard of(final long maxBytes) {
         return new LimitGuard(maxBytes);
@@ -63,8 +63,8 @@ public final class LimitGuard implements GuardRule {
     /**
      * Checks message body length.
      *
-     * @param message message
-     * @return guard result
+     * @param message non-null message whose declared and payload lengths are compared
+     * @return rejection when either known length exceeds the limit or two known lengths differ; otherwise pass
      */
     @Override
     public GuardResult check(final Message message) {
@@ -87,7 +87,7 @@ public final class LimitGuard implements GuardRule {
     /**
      * Returns maximum bytes.
      *
-     * @return maximum bytes
+     * @return configured inclusive body-length limit
      */
     public long maxBytes() {
         return maxBytes;
@@ -96,7 +96,7 @@ public final class LimitGuard implements GuardRule {
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return shared limit-guard name from {@link Builder}
      */
     @Override
     public String name() {
@@ -106,8 +106,8 @@ public final class LimitGuard implements GuardRule {
     /**
      * Validates maximum bytes.
      *
-     * @param maxBytes maximum bytes
-     * @return maximum bytes
+     * @param maxBytes candidate inclusive body limit
+     * @return unchanged limit from 1 byte through 16 MiB
      */
     private static long validateMaxBytes(final long maxBytes) {
         Assert.isTrue(

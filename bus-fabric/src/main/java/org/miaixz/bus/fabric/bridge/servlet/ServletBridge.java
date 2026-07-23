@@ -21,7 +21,7 @@ package org.miaixz.bus.fabric.bridge.servlet;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Headers;
@@ -51,17 +51,19 @@ public final class ServletBridge implements Translator<HttpRequest> {
     /**
      * Creates a default servlet bridge.
      *
-     * @return servlet bridge
+     * @return stateless servlet-ingestion translator
      */
     public static ServletBridge create() {
         return new ServletBridge();
     }
 
     /**
-     * Returns whether an ingestion can be translated as servlet input.
+     * Returns whether an ingestion declares servlet metadata or provides any non-blank method.
      *
-     * @param ingestion ingestion
-     * @return true when supported
+     * @param ingestion immutable external ingestion to inspect
+     * @return {@code true} when attribute {@code servlet} is {@link Boolean#TRUE}, attribute {@code type} equals
+     *         {@code servlet}, or the ingestion method is non-blank
+     * @throws ValidateException if {@code ingestion} is {@code null}
      */
     public boolean supports(final Ingestion ingestion) {
         Assert.notNull(ingestion, () -> new ValidateException("Ingestion must not be null"));
@@ -71,30 +73,36 @@ public final class ServletBridge implements Translator<HttpRequest> {
     }
 
     /**
-     * Translates an ingestion into an HTTP request snapshot.
+     * Translates an ingestion into an HTTP request without executing an HTTP chain.
+     * <p>
+     * A blank method defaults to GET, a missing Host header defaults to localhost, and a missing Content-Type defaults
+     * to {@code application/octet-stream}.
+     * </p>
      *
-     * @param ingestion ingestion
-     * @return HTTP request
+     * @param ingestion external path, method, headers, payload, and tag source
+     * @return immutable HTTP request targeting the synthesized {@code http://host/path} URL
+     * @throws ValidateException if {@code ingestion} is {@code null} or its method is unsupported
      */
     @Override
     public HttpRequest translate(final Ingestion ingestion) {
         Assert.notNull(ingestion, () -> new ValidateException("Ingestion must not be null"));
         final Headers headers = ingestion.headers();
-        final String method = ingestion.method().isBlank() ? HTTP.GET : ingestion.method();
+        final String method = ingestion.method().isBlank() ? Http.Method.GET.value() : ingestion.method();
         final String path = ingestion.path();
-        final String host = headers.get(HTTP.HOST) == null ? Protocol.HOST_LOCAL : headers.get(HTTP.HOST);
-        final MediaType media = headers.get(HTTP.CONTENT_TYPE) == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
-                : MediaType.parse(headers.get(HTTP.CONTENT_TYPE));
+        final String host = headers.get(Http.Header.HOST) == null ? Protocol.HOST_LOCAL : headers.get(Http.Header.HOST);
+        final MediaType media = headers.get(Http.Header.CONTENT_TYPE) == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE
+                : MediaType.parse(headers.get(Http.Header.CONTENT_TYPE));
         final Payload payload = ingestion.payload();
         return HttpRequest.builder().method(method(method)).url(UnoUrl.parse(Protocol.HTTP_PREFIX + host + path))
                 .headers(headers).body(PayloadBody.of(payload, media)).tag(ingestion).build();
     }
 
     /**
-     * Converts an ingestion into an HTTP request snapshot.
+     * Translates an ingestion through the servlet-facing convenience alias.
      *
-     * @param ingestion ingestion
-     * @return HTTP request
+     * @param ingestion external ingestion passed unchanged to {@link #translate(Ingestion)}
+     * @return same request snapshot produced by {@link #translate(Ingestion)}
+     * @throws ValidateException if {@code ingestion} is {@code null} or its method is unsupported
      */
     public HttpRequest toRequest(final Ingestion ingestion) {
         return translate(ingestion);
@@ -103,12 +111,13 @@ public final class ServletBridge implements Translator<HttpRequest> {
     /**
      * Resolves a canonical HTTP method.
      *
-     * @param value raw method
-     * @return canonical method
+     * @param value external method text to resolve
+     * @return canonical HTTP method enum value
+     * @throws ValidateException if the method is not recognized
      */
-    private static HTTP.Method method(final String value) {
+    private static Http.Method method(final String value) {
         try {
-            return HTTP.Method.of(value);
+            return Http.Method.of(value);
         } catch (final IllegalArgumentException e) {
             throw new ValidateException("Unsupported HTTP method: " + value, e);
         }

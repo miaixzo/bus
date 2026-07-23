@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
@@ -62,8 +62,8 @@ public final class StompCodec {
     /**
      * Encodes a frame.
      *
-     * @param frame  frame
-     * @param output output buffer
+     * @param frame  STOMP frame or shared heartbeat frame to encode
+     * @param output destination buffer receiving the complete wire representation
      */
     public void encode(final StompFrame frame, final Buffer output) {
         final StompFrame currentFrame = require(frame, "STOMP frame");
@@ -95,7 +95,7 @@ public final class StompCodec {
     /**
      * Decodes zero or more complete frames.
      *
-     * @param input input bytes
+     * @param input newly received bytes consumed into the incremental parser buffer
      * @return decoded frames
      */
     public List<StompFrame> decode(final Buffer input) {
@@ -131,7 +131,7 @@ public final class StompCodec {
     /**
      * Appends inbound bytes.
      *
-     * @param input input
+     * @param input source buffer whose remaining bytes are transferred
      */
     private void append(final Buffer input) {
         buffer.write(input, input.size());
@@ -199,8 +199,8 @@ public final class StompCodec {
      * Reads a fixed-size body.
      *
      * @param cursor start
-     * @param length length
-     * @return body or null
+     * @param length declared content length in bytes
+     * @return parsed body and next frame offset, or {@code null} when incomplete
      */
     private BodyResult fixedBody(final int cursor, final int length) {
         final long required = (long) cursor + length + Normal._1;
@@ -217,7 +217,7 @@ public final class StompCodec {
      * Reads a NUL-terminated body.
      *
      * @param cursor start
-     * @return body or null
+     * @return parsed body and next frame offset, or {@code null} when no NUL is buffered
      */
     private BodyResult nulBody(final int cursor) {
         final int end = toIndex(buffer.indexOf((byte) Normal._0, cursor));
@@ -230,11 +230,11 @@ public final class StompCodec {
     /**
      * Parses content length.
      *
-     * @param headers headers
+     * @param headers frame headers containing an optional Content-Length field
      * @return content length or -1
      */
     private static long contentLength(final Headers headers) {
-        final List<String> values = headers.values(HTTP.CONTENT_LENGTH);
+        final List<String> values = headers.values(Http.Header.CONTENT_LENGTH);
         if (values.isEmpty()) {
             return Normal.__1;
         }
@@ -276,7 +276,7 @@ public final class StompCodec {
     /**
      * Validates an inbound command without normalizing malformed wire data.
      *
-     * @param command command
+     * @param command inbound command token exactly as received
      */
     private static void validateCommand(final String command) {
         if (StringKit.isBlank(command)) {
@@ -293,7 +293,7 @@ public final class StompCodec {
     /**
      * Escapes a header component.
      *
-     * @param value value
+     * @param value raw STOMP header name or value
      * @return escaped value
      */
     private static String escape(final String value) {
@@ -314,7 +314,7 @@ public final class StompCodec {
     /**
      * Unescapes a header component.
      *
-     * @param value value
+     * @param value escaped STOMP header name or value
      * @return unescaped value
      */
     private static String unescape(final String value) {
@@ -340,20 +340,20 @@ public final class StompCodec {
     }
 
     /**
-     * Writes ASCII text.
+     * Writes command or header text as UTF-8.
      *
-     * @param output output
-     * @param value  value
+     * @param output destination frame buffer
+     * @param value  command or escaped header text
      */
     private static void writeAscii(final Buffer output, final String value) {
         output.writeUtf8(value);
     }
 
     /**
-     * Reads ASCII text.
+     * Decodes a buffered command or header range as UTF-8.
      *
-     * @param start start
-     * @param end   end
+     * @param start inclusive buffered byte index
+     * @param end   exclusive buffered byte index
      * @return text
      */
     private String ascii(final int start, final int end) {
@@ -363,7 +363,7 @@ public final class StompCodec {
     /**
      * Returns one buffered byte.
      *
-     * @param index index
+     * @param index zero-based buffered byte index
      * @return byte
      */
     private byte byteAt(final int index) {
@@ -373,8 +373,8 @@ public final class StompCodec {
     /**
      * Copies a buffered byte range.
      *
-     * @param offset offset
-     * @param length length
+     * @param offset zero-based buffered byte offset
+     * @param length number of bytes to copy
      * @return copied bytes
      */
     private ByteString copy(final int offset, final int length) {
@@ -386,7 +386,7 @@ public final class StompCodec {
     /**
      * Writes a payload body.
      *
-     * @param output output buffer
+     * @param output destination frame buffer
      * @param body   body payload
      * @param length body length, or -1 when unknown
      */
@@ -459,10 +459,10 @@ public final class StompCodec {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -471,8 +471,8 @@ public final class StompCodec {
     /**
      * Parsed frame result.
      *
-     * @param frame      frame
-     * @param nextOffset next offset
+     * @param frame      decoded STOMP frame
+     * @param nextOffset first buffered byte after the frame terminator
      */
     private record ParseResult(StompFrame frame, int nextOffset) {
 
@@ -482,7 +482,7 @@ public final class StompCodec {
      * Parsed body result.
      *
      * @param bytes      body bytes
-     * @param nextOffset next offset
+     * @param nextOffset first buffered byte after the body terminator
      */
     private record BodyResult(ByteString bytes, int nextOffset) {
 

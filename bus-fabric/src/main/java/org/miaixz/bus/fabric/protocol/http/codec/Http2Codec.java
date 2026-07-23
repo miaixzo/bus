@@ -21,11 +21,8 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
@@ -36,7 +33,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Builder;
@@ -60,57 +57,70 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Stream;
 public final class Http2Codec implements HttpCodec {
 
     /**
+     * Reusable pseudo field for the dominant idempotent request method.
+     */
+    private static final Http2Header GET_METHOD = Http2Header.of(Http.Header.PSEUDO_METHOD, Http.Method.GET.value());
+
+    /**
+     * Most recently used immutable URL pseudo fields.
+     */
+    private static volatile TargetHeaders lastTargetHeaders;
+
+    /**
      * HTTP/2 connection.
      */
     private final Http2Connection connection;
 
     /**
-     * Request to stream map.
+     * Request identity associated with the current active stream.
      */
     private volatile HttpRequest activeRequest;
 
     /**
      * Stream owned by the current codec call.
      */
-    private final AtomicReference<Http2Stream> active;
+    private volatile Http2Stream active;
 
     /**
      * Lifecycle state.
      */
-    private final AtomicReference<Status> state;
+    private volatile Status state;
 
     /**
      * Creates an HTTP/2 codec.
      *
-     * @param connection connection
+     * @param connection HTTP/2 connection that owns created streams and frame writes
      */
     public Http2Codec(final Http2Connection connection) {
         this.connection = require(connection, "HTTP/2 connection");
-        this.active = new AtomicReference<>();
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.state = Status.OPENED;
     }
 
     /**
      * Creates a stream and writes request headers.
      *
-     * @param request request
-     * @return stream
+     * @param request immutable request whose pseudo and regular headers are written
+     * @return newly registered HTTP/2 stream for the request
      */
     public Http2Stream newStream(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
         final List<Http2Header> headers = requestHeaders(current);
-        final Http2Stream stream = connection.newStream(Headers.empty(), true);
-        if (!active.compareAndSet(null, stream)) {
-            stream.close();
-            throw new StatefulException("HTTP/2 codec already has an active stream");
+        final Http2Stream stream = connection
+                .openStream(Headers.empty(), headers, current.body().length() == Normal._0);
+        synchronized (this) {
+            if (active != null) {
+                stream.close();
+                throw new StatefulException("HTTP/2 codec already has an active stream");
+            }
+            active = stream;
         }
         activeRequest = current;
         try {
-            connection.startReader();
-            connection.writeHeaders(stream.id(), headers, current.body().length() == Normal._0);
             return stream;
         } catch (final RuntimeException e) {
-            active.compareAndSet(stream, null);
+            if (active == stream) {
+                active = null;
+            }
             activeRequest = null;
             stream.close();
             throw e;
@@ -120,20 +130,20 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Writes request headers and data frames.
      *
-     * @param request request
+     * @param request request whose headers and body are written to a new stream
      */
     @Override
     public void writeRequest(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        state.set(Status.RUNNING);
+        state = Status.RUNNING;
         try {
             final Http2Stream stream = newStream(current);
             if (current.body().length() != Normal._0) {
                 writeBody(stream, current);
             }
         } finally {
-            if (state.get() == Status.RUNNING) {
-                state.set(Status.OPENED);
+            if (state == Status.RUNNING) {
+                state = Status.OPENED;
             }
         }
     }
@@ -141,17 +151,17 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Reads response headers and data frames for a request stream.
      *
-     * @param request request
+     * @param request same request instance previously passed to {@link #writeRequest(HttpRequest)}
      * @return response
      */
     @Override
     public HttpResponse readResponse(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        final Http2Stream stream = active.get();
+        final Http2Stream stream = active;
         if (stream == null || activeRequest != current) {
             throw new StatefulException("HTTP/2 stream is missing for request");
         }
-        state.set(Status.RUNNING);
+        state = Status.RUNNING;
         try {
             final Headers headers = validateResponseHeaders(
                     stream.awaitResponseHeaders(current.timeout().read()),
@@ -163,7 +173,7 @@ public final class Http2Codec implements HttpCodec {
                     .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2)
                     .trailers(() -> validateTrailers(stream.trailers())).build();
         } finally {
-            state.set(Status.OPENED);
+            state = Status.OPENED;
         }
     }
 
@@ -172,11 +182,16 @@ public final class Http2Codec implements HttpCodec {
      */
     @Override
     public void cancel() {
-        final Status previous = state.getAndSet(Status.CANCELLED);
+        final Status previous;
+        synchronized (this) {
+            previous = state;
+            state = Status.CANCELLED;
+        }
         if (previous == Status.CANCELLED || previous == Status.CLOSED) {
             return;
         }
-        final Http2Stream stream = active.getAndSet(null);
+        final Http2Stream stream = active;
+        active = null;
         activeRequest = null;
         if (stream != null) {
             stream.close();
@@ -190,14 +205,14 @@ public final class Http2Codec implements HttpCodec {
      */
     @Override
     public boolean reusable() {
-        return state.get() == Status.OPENED;
+        return state == Status.OPENED;
     }
 
     /**
      * Writes request body DATA frames.
      *
-     * @param stream  stream
-     * @param request request
+     * @param stream  active HTTP/2 stream receiving DATA frames
+     * @param request request supplying body source, declared length, and write timeout
      */
     private void writeBody(final Http2Stream stream, final HttpRequest request) {
         final Buffer buffer = new Buffer();
@@ -243,25 +258,28 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Builds HTTP/2 pseudo headers.
      *
-     * @param request request
-     * @return headers
+     * @param request request whose URL, method, and headers are converted
+     * @return ordered HTTP/2 pseudo and regular header fields
      */
     private static List<Http2Header> requestHeaders(final HttpRequest request) {
         final UnoUrl url = request.url();
         final Headers requestHeaders = request.headers();
         final ArrayList<Http2Header> headers = new ArrayList<>(Normal._4 + requestHeaders.size());
-        headers.add(Http2Header.of(HTTP.TARGET_METHOD_UTF8, request.method().value()));
-        headers.add(Http2Header.of(HTTP.TARGET_SCHEME_UTF8, url.address().scheme()));
-        headers.add(Http2Header.of(HTTP.TARGET_AUTHORITY_UTF8, request.authority()));
-        headers.add(Http2Header.of(HTTP.TARGET_PATH_UTF8, request.requestTarget()));
-        final Set<String> nominated = connectionNominated(requestHeaders);
+        headers.add(
+                request.method() == Http.Method.GET ? GET_METHOD
+                        : Http2Header.of(Http.Header.PSEUDO_METHOD, request.method().value()));
+        final TargetHeaders target = targetHeaders(url);
+        headers.add(target.scheme());
+        headers.add(target.authority());
+        headers.add(target.path());
+        final String nominated = requestHeaders.get(Http.Header.CONNECTION);
         for (int index = Normal._0; index < requestHeaders.size(); index++) {
-            final String name = requestHeaders.name(index).toLowerCase(Locale.ROOT);
+            final String name = lowerCase(requestHeaders.name(index));
             final String value = requestHeaders.value(index);
             if (forbidden(name, nominated) || Builder.HOST.equals(name)) {
                 continue;
             }
-            if (HTTP.TE.equalsIgnoreCase(name) && !HTTP.TRAILERS.equalsIgnoreCase(value.trim())) {
+            if (Http.Header.TE.equalsIgnoreCase(name) && !Http.Header.TE_TRAILERS.equalsIgnoreCase(value.trim())) {
                 throw new ProtocolException("HTTP/2 TE header must be trailers");
             }
             headers.add(Http2Header.of(name, value));
@@ -270,44 +288,113 @@ public final class Http2Codec implements HttpCodec {
     }
 
     /**
-     * Returns lower-case fields nominated by the HTTP/1 Connection header.
+     * Returns reusable pseudo fields derived solely from one immutable URL.
+     *
+     * @param url request target
+     * @return cached scheme, authority and path fields
      */
-    private static Set<String> connectionNominated(final Headers headers) {
-        final String value = headers.get(HTTP.CONNECTION);
-        if (value == null || value.isBlank()) {
-            return Set.of();
+    private static TargetHeaders targetHeaders(final UnoUrl url) {
+        final TargetHeaders cached = lastTargetHeaders;
+        if (cached != null && cached.url() == url) {
+            return cached;
         }
-        final HashSet<String> names = new HashSet<>();
-        for (final String token : value.split(",")) {
-            final String name = token.trim().toLowerCase(Locale.ROOT);
-            if (!name.isEmpty()) {
-                names.add(name);
-            }
-        }
-        return names;
+        final TargetHeaders created = new TargetHeaders(url,
+                Http2Header.of(Http.Header.PSEUDO_SCHEME, url.address().scheme()),
+                Http2Header.of(Http.Header.PSEUDO_AUTHORITY, url.authority()),
+                Http2Header.of(Http.Header.PSEUDO_PATH, url.requestTarget()));
+        lastTargetHeaders = created;
+        return created;
     }
 
     /**
-     * Returns whether a field is prohibited on an HTTP/2 wire.
+     * Immutable pseudo fields owned by one cached URL identity.
+     *
+     * @param url       URL identity represented by the cached fields
+     * @param scheme    cached {@code :scheme} field
+     * @param authority cached {@code :authority} field
+     * @param path      cached {@code :path} field
      */
-    private static boolean forbidden(final String name, final Set<String> nominated) {
-        return nominated.contains(name) || switch (name) {
+    private record TargetHeaders(UnoUrl url, Http2Header scheme, Http2Header authority, Http2Header path) {
+    }
+
+    /**
+     * Returns lower-case fields nominated by the HTTP/1 Connection header.
+     *
+     * @param name      lower-case header name being considered
+     * @param nominated comma-separated Connection header value
+     * @return {@code true} when HTTP/2 forbids the field
+     */
+    private static boolean forbidden(final String name, final String nominated) {
+        return nominated(name, nominated) || switch (name) {
             case "connection", "keep-alive", "proxy-connection", "transfer-encoding", "upgrade" -> true;
             default -> false;
         };
     }
 
     /**
+     * Tests a comma-separated Connection field without regex, substrings or a temporary set.
+     *
+     * @param name   lower-case field name to locate
+     * @param values comma-separated Connection header value
+     * @return {@code true} when the field is explicitly nominated
+     */
+    private static boolean nominated(final String name, final String values) {
+        if (values == null || values.isEmpty()) {
+            return false;
+        }
+        int start = Normal._0;
+        while (start < values.length()) {
+            while (start < values.length()
+                    && (values.charAt(start) == ',' || Character.isWhitespace(values.charAt(start)))) {
+                start++;
+            }
+            int end = start;
+            while (end < values.length() && values.charAt(end) != ',') {
+                end++;
+            }
+            int trimmed = end;
+            while (trimmed > start && Character.isWhitespace(values.charAt(trimmed - Normal._1))) {
+                trimmed--;
+            }
+            if (trimmed - start == name.length() && values.regionMatches(true, start, name, Normal._0, name.length())) {
+                return true;
+            }
+            start = end + Normal._1;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the original already-lowercase field name, allocating only for mixed-case input.
+     *
+     * @param name HTTP field name to normalize
+     * @return lower-case field name
+     */
+    private static String lowerCase(final String name) {
+        for (int index = Normal._0; index < name.length(); index++) {
+            final char value = name.charAt(index);
+            if (value >= 'A' && value <= 'Z') {
+                return name.toLowerCase(Locale.ROOT);
+            }
+        }
+        return name;
+    }
+
+    /**
      * Validates one initial response block and preserves its immutable ordering.
+     *
+     * @param headers response fields to validate
+     * @param status  required {@code :status} pseudo-header value
+     * @return validated response headers
      */
     private static Headers validateResponseHeaders(final Headers headers, final String status) {
         parseStatus(status);
         for (int index = Normal._0; index < headers.size(); index++) {
-            final String name = headers.name(index).toLowerCase(Locale.ROOT);
+            final String name = lowerCase(headers.name(index));
             if (name.startsWith(":")) {
                 throw new ProtocolException("Invalid HTTP/2 response pseudo-header");
             } else {
-                if (forbidden(name, Set.of()) || HTTP.TE.equalsIgnoreCase(name)) {
+                if (forbidden(name, null) || Http.Header.TE.equalsIgnoreCase(name)) {
                     throw new ProtocolException("Connection-specific HTTP/2 response header");
                 }
             }
@@ -318,11 +405,14 @@ public final class Http2Codec implements HttpCodec {
 
     /**
      * Validates trailers, which may not contain pseudo or connection fields.
+     *
+     * @param trailers trailer fields to validate
+     * @return validated trailer fields
      */
     private static Headers validateTrailers(final Headers trailers) {
         for (int index = Normal._0; index < trailers.size(); index++) {
-            final String name = trailers.name(index).toLowerCase(Locale.ROOT);
-            if (name.startsWith(":") || forbidden(name, Set.of()) || HTTP.TE.equalsIgnoreCase(name)) {
+            final String name = lowerCase(trailers.name(index));
+            if (name.startsWith(":") || forbidden(name, null) || Http.Header.TE.equalsIgnoreCase(name)) {
                 throw new ProtocolException("Invalid HTTP/2 trailer field");
             }
         }
@@ -331,11 +421,14 @@ public final class Http2Codec implements HttpCodec {
 
     /**
      * Parses consistent non-negative Content-Length values, or -1 when absent.
+     *
+     * @param headers HTTP/2 headers containing zero or more Content-Length fields
+     * @return normalized content length, or {@code -1} when absent
      */
     private static long contentLength(final Headers headers) {
         long length = Normal.__1;
         for (int index = Normal._0; index < headers.size(); index++) {
-            if (!HTTP.CONTENT_LENGTH.equalsIgnoreCase(headers.name(index))) {
+            if (!Http.Header.CONTENT_LENGTH.equalsIgnoreCase(headers.name(index))) {
                 continue;
             }
             final long current;
@@ -355,8 +448,8 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Parses status code.
      *
-     * @param value value
-     * @return code
+     * @param value three-digit {@code :status} pseudo-header value
+     * @return validated HTTP status code
      */
     private static int parseStatus(final String value) {
         if (value == null || value.length() != Normal._3) {
@@ -364,7 +457,7 @@ public final class Http2Codec implements HttpCodec {
         }
         try {
             final int code = Integer.parseInt(value);
-            if (code < HTTP.HTTP_CONTINUE || code >= Normal._600) {
+            if (code < Http.Status.CONTINUE || code >= Normal._600) {
                 throw new ProtocolException("Invalid HTTP/2 status");
             }
             return code;
@@ -376,21 +469,23 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Parses response media.
      *
-     * @param headers headers
-     * @return media
+     * @param headers response headers containing an optional Content-Type field
+     * @return parsed response media type or application/octet-stream fallback
      */
     private static MediaType media(final Headers headers) {
-        final String contentType = headers.get(HTTP.CONTENT_TYPE);
-        return contentType == null ? MediaType.APPLICATION_OCTET_STREAM_TYPE : MediaType.parse(contentType);
+        final String contentType = headers.get(Http.Header.CONTENT_TYPE);
+        return contentType == null || MediaType.APPLICATION_OCTET_STREAM.equals(contentType)
+                ? MediaType.APPLICATION_OCTET_STREAM_TYPE
+                : MediaType.parse(contentType);
     }
 
     /**
      * Validates required value.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -498,10 +593,12 @@ public final class Http2Codec implements HttpCodec {
             if (read > Normal.LONG_ZERO) {
                 received = Math.addExact(received, read);
                 if (expected >= Normal.LONG_ZERO && received > expected) {
-                    throw new ProtocolException("HTTP/2 response body exceeds Content-Length");
+                    throw new ProtocolException("HTTP/2 response body exceeds Content-Length: received=" + received
+                            + ", expected=" + expected);
                 }
             } else if (read < Normal.LONG_ZERO && expected >= Normal.LONG_ZERO && received != expected) {
-                throw new ProtocolException("HTTP/2 response body does not match Content-Length");
+                throw new ProtocolException("HTTP/2 response body does not match Content-Length: received=" + received
+                        + ", expected=" + expected);
             }
             return read;
         }

@@ -37,14 +37,14 @@ import org.miaixz.bus.fabric.Message;
 public final class GuardChain implements GuardRule {
 
     /**
-     * Ordered guard rules.
+     * Immutable rules evaluated in insertion order.
      */
     private final List<GuardRule> rules;
 
     /**
-     * Creates a guard chain.
+     * Creates a guard chain after validating and copying all rules.
      *
-     * @param rules guard rules
+     * @param rules ordered non-null rule list containing no null elements
      */
     private GuardChain(final List<GuardRule> rules) {
         this.rules = List.copyOf(validateRules(rules));
@@ -53,7 +53,7 @@ public final class GuardChain implements GuardRule {
     /**
      * Creates an empty guard chain.
      *
-     * @return empty guard chain
+     * @return immutable chain that always passes non-null messages
      */
     public static GuardChain empty() {
         return new GuardChain(List.of());
@@ -62,8 +62,9 @@ public final class GuardChain implements GuardRule {
     /**
      * Creates a guard chain from rules.
      *
-     * @param rules guard rules
-     * @return guard chain
+     * @param rules ordered rules copied into the chain
+     * @return immutable chain preserving list iteration order
+     * @throws ValidateException if the list or one of its elements is {@code null}
      */
     public static GuardChain of(final List<GuardRule> rules) {
         return new GuardChain(rules);
@@ -72,8 +73,9 @@ public final class GuardChain implements GuardRule {
     /**
      * Creates a guard chain from rules.
      *
-     * @param rules guard rules
-     * @return guard chain
+     * @param rules ordered rules copied into the chain
+     * @return immutable chain preserving array order
+     * @throws ValidateException if the array or one of its elements is {@code null}
      */
     public static GuardChain of(final GuardRule... rules) {
         return new GuardChain(
@@ -81,9 +83,9 @@ public final class GuardChain implements GuardRule {
     }
 
     /**
-     * Returns rule name.
+     * Returns the stable composite-rule name.
      *
-     * @return rule name
+     * @return {@link Builder#GUARD_CHAIN_NAME}
      */
     @Override
     public String name() {
@@ -93,8 +95,9 @@ public final class GuardChain implements GuardRule {
     /**
      * Runs all rules in order until rejection.
      *
-     * @param message message
-     * @return guard result
+     * @param message message passed unchanged to every evaluated rule
+     * @return first non-passing result, or a passing result when all rules pass
+     * @throws ValidateException if {@code message} is {@code null} or a rule returns {@code null}
      */
     @Override
     public GuardResult check(final Message message) {
@@ -112,8 +115,9 @@ public final class GuardChain implements GuardRule {
     /**
      * Returns a new chain with an appended rule.
      *
-     * @param rule guard rule
-     * @return new guard chain
+     * @param rule non-null rule appended after all existing rules
+     * @return new immutable chain; this chain remains unchanged
+     * @throws ValidateException if {@code rule} is {@code null}
      */
     public GuardChain add(final GuardRule rule) {
         validateRule(rule);
@@ -125,7 +129,7 @@ public final class GuardChain implements GuardRule {
     /**
      * Returns rules snapshot.
      *
-     * @return rules
+     * @return immutable ordered rule list retained by this chain
      */
     public List<GuardRule> rules() {
         return List.copyOf(rules);
@@ -134,8 +138,9 @@ public final class GuardChain implements GuardRule {
     /**
      * Validates rule list.
      *
-     * @param rules rules
-     * @return rules
+     * @param rules candidate ordered rule list
+     * @return same list reference after validating the list and every element
+     * @throws ValidateException if the list or one of its elements is {@code null}
      */
     private static List<GuardRule> validateRules(final List<GuardRule> rules) {
         final List<GuardRule> checkedRules = Assert
@@ -149,7 +154,8 @@ public final class GuardChain implements GuardRule {
     /**
      * Validates one rule.
      *
-     * @param rule rule
+     * @param rule candidate guard rule
+     * @throws ValidateException if {@code rule} is {@code null}
      */
     private static void validateRule(final GuardRule rule) {
         Assert.notNull(rule, () -> new ValidateException("Guard rule must not be null"));

@@ -28,7 +28,7 @@ import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 
 /**
- * HTTP text request body with an explicit media type and charset snapshot.
+ * Immutable HTTP text request body with media metadata and an eagerly encoded payload.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -36,26 +36,26 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
 public final class TextBody implements RequestBody {
 
     /**
-     * Original text value.
+     * Normalized source text used to create the payload.
      */
     private final String text;
 
     /**
-     * Media type.
+     * Media type reported for this request body.
      */
     private final MediaType media;
 
     /**
-     * Encoded payload.
+     * Payload encoded once with the media charset or UTF-8 fallback.
      */
     private final Payload payload;
 
     /**
-     * Creates a text body.
+     * Creates a text body from normalized source values.
      *
-     * @param text    text
-     * @param media   media type
-     * @param payload encoded payload
+     * @param text    non-null normalized source text
+     * @param media   media type reported by the body
+     * @param payload eagerly encoded payload
      */
     private TextBody(final String text, final MediaType media, final Payload payload) {
         this.text = text;
@@ -66,8 +66,8 @@ public final class TextBody implements RequestBody {
     /**
      * Creates a UTF-8 {@code text/plain} body.
      *
-     * @param text text
-     * @return text body
+     * @param text source text; {@code null} is normalized to an empty string
+     * @return body encoded as UTF-8 plain text
      */
     public static TextBody of(final String text) {
         return of(text, org.miaixz.bus.core.lang.Charset.UTF_8);
@@ -76,9 +76,10 @@ public final class TextBody implements RequestBody {
     /**
      * Creates a {@code text/plain} body with an explicit charset.
      *
-     * @param text    text
-     * @param charset charset
-     * @return text body
+     * @param text    source text; {@code null} is normalized to an empty string
+     * @param charset charset used to encode the payload and annotate the media type
+     * @return plain-text body encoded with the supplied charset
+     * @throws ValidateException if {@code charset} is {@code null}
      */
     public static TextBody of(final String text, final Charset charset) {
         final Charset checkedCharset = Assert
@@ -87,11 +88,12 @@ public final class TextBody implements RequestBody {
     }
 
     /**
-     * Creates a text body with an explicit media type.
+     * Creates a text body with an explicit media type, using UTF-8 when that media type has no charset.
      *
-     * @param text  text
-     * @param media media type
-     * @return text body
+     * @param text  source text; {@code null} is normalized to an empty string
+     * @param media media type and optional payload charset
+     * @return body eagerly encoded using the effective media charset
+     * @throws ValidateException if {@code media} is {@code null}
      */
     public static TextBody of(final String text, final MediaType media) {
         final String value = text == null ? "" : text;
@@ -102,9 +104,9 @@ public final class TextBody implements RequestBody {
     }
 
     /**
-     * Returns the original text.
+     * Returns the normalized source text.
      *
-     * @return text
+     * @return non-null text used to create the payload
      */
     public String text() {
         return text;
@@ -113,7 +115,7 @@ public final class TextBody implements RequestBody {
     /**
      * Returns the media type.
      *
-     * @return media type
+     * @return media type supplied at construction, including any declared charset
      */
     @Override
     public MediaType media() {
@@ -123,7 +125,7 @@ public final class TextBody implements RequestBody {
     /**
      * Returns the encoded payload.
      *
-     * @return payload
+     * @return immutable payload encoded when this body was created
      */
     @Override
     public Payload payload() {

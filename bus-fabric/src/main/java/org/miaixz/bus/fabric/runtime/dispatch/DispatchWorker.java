@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.runtime.dispatch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -52,7 +53,7 @@ public final class DispatchWorker implements AutoCloseable {
     private static final int MAX_BATCH = 64;
 
     /**
-     * Executor service.
+     * Executor used for asynchronous activity execution.
      */
     private final ExecutorService executor;
 
@@ -62,19 +63,20 @@ public final class DispatchWorker implements AutoCloseable {
     private final boolean ownsExecutor;
 
     /**
-     * Closed flag.
+     * One-way flag that prevents further submissions after closure begins.
      */
     private final AtomicBoolean closed;
 
     /**
-     * Entries submitted to the executor and not yet terminated.
+     * Queue entries and compatibility activities submitted to the executor but not yet terminated.
      */
     private final Set<Object> active;
 
     /**
-     * Creates a worker.
+     * Creates a worker backed by the supplied executor.
      *
-     * @param executor owned executor
+     * @param executor     executor used for activity submissions
+     * @param ownsExecutor whether closing the worker also closes the executor
      */
     private DispatchWorker(final ExecutorService executor, final boolean ownsExecutor) {
         this.executor = require(executor, "Executor");
@@ -84,9 +86,10 @@ public final class DispatchWorker implements AutoCloseable {
     }
 
     /**
-     * Creates a default worker.
+     * Creates a worker that owns a virtual-thread-per-task executor.
      *
-     * @return dispatch worker
+     * @return worker backed by a newly created virtual-thread executor
+     * @throws InternalException if the executor cannot be created
      */
     public static DispatchWorker create() {
         try {
@@ -99,10 +102,11 @@ public final class DispatchWorker implements AutoCloseable {
     }
 
     /**
-     * Takes ownership of an external platform executor.
+     * Creates a worker that uses, but does not own, an external executor.
      *
-     * @param executor executor
-     * @return dispatch worker
+     * @param executor executor used for activity submissions
+     * @return worker backed by the supplied executor
+     * @throws ValidateException if {@code executor} is {@code null}
      */
     public static DispatchWorker of(final ExecutorService executor) {
         return new DispatchWorker(executor, false);
@@ -111,8 +115,10 @@ public final class DispatchWorker implements AutoCloseable {
     /**
      * Executes one short-task entry asynchronously through its authoritative handle.
      *
-     * @param entry queue entry
-     * @return the handle future
+     * @param entry reserved queue entry to submit
+     * @return authoritative handle future, including when the handle could not transition to running
+     * @throws StatefulException          if the worker is closed
+     * @throws RejectedExecutionException if the executor rejects the submission
      */
     CompletableFuture<Void> execute(final DispatchQueue.Entry entry) {
         final DispatchQueue.Entry current = require(entry, "Dispatch entry");
@@ -145,10 +151,12 @@ public final class DispatchWorker implements AutoCloseable {
     }
 
     /**
-     * Executes one compatibility activity without acquiring queue permits.
+     * Executes one compatibility activity without acquiring queue permits or creating a dispatch handle.
      *
-     * @param activity activity
-     * @return completion future
+     * @param activity object that must be an {@link Activity}
+     * @return future completed from the activity's terminal outcome
+     * @throws ValidateException if {@code activity} is not an {@link Activity}
+     * @throws StatefulException if the worker is closed or the executor rejects the activity
      */
     public CompletableFuture<Void> execute(final Object activity) {
         if (!(activity instanceof Activity current)) {
@@ -187,24 +195,59 @@ public final class DispatchWorker implements AutoCloseable {
     /**
      * Submits one bounded promotion batch while preserving independent executor submissions and failure isolation.
      *
-     * @param entries promoted entries
+     * @param entries reserved entries to validate, transition to running, and submit
+     * @throws ValidateException if the list is {@code null}, contains a {@code null} entry, or exceeds the batch limit
+     * @throws StatefulException if the worker is closed
      */
     void executeBatch(final List<DispatchQueue.Entry> entries) {
         final List<DispatchQueue.Entry> current = require(entries, "Dispatch entries");
         if (current.size() > MAX_BATCH) {
             throw new ValidateException("Dispatch batch must not exceed " + MAX_BATCH);
         }
-        for (final DispatchQueue.Entry entry : current) {
-            try {
-                execute(entry);
-            } catch (final RuntimeException ignored) {
-                // The entry handle already owns the isolated terminal failure; continue the batch.
+        if (closed.get()) {
+            for (final DispatchQueue.Entry entry : current) {
+                entry.handle().cancel();
             }
+            throw new StatefulException("Dispatch worker is closed");
+        }
+        final ArrayList<DispatchQueue.Entry> accepted = new ArrayList<>(current.size());
+        for (final DispatchQueue.Entry entry : current) {
+            final DispatchQueue.Entry checked = require(entry, "Dispatch entry");
+            if (checked.handle().markRunning()) {
+                active.add(checked);
+                accepted.add(checked);
+            }
+        }
+        if (accepted.isEmpty()) {
+            return;
+        }
+        try {
+            executor.execute(() -> runBatch(accepted));
+        } catch (final RuntimeException | Error e) {
+            for (final DispatchQueue.Entry entry : accepted) {
+                active.remove(entry);
+                fail(entry.handle(), e);
+            }
+            throw e;
         }
     }
 
     /**
-     * Closes owned worker resources.
+     * Executes one bounded batch while retaining per-entry terminal isolation.
+     *
+     * @param entries entries whose handles have transitioned to running
+     */
+    private void runBatch(final List<DispatchQueue.Entry> entries) {
+        for (final DispatchQueue.Entry entry : entries) {
+            run(entry);
+        }
+    }
+
+    /**
+     * Prevents new submissions, cancels active work, and shuts down the executor when this worker owns it.
+     *
+     * @throws StatefulException if the owned executor does not terminate before the shutdown deadline
+     * @throws InternalException if shutdown waiting is interrupted
      */
     @Override
     public void close() {
@@ -238,11 +281,14 @@ public final class DispatchWorker implements AutoCloseable {
     /**
      * Runs one promoted entry and records exactly one handle terminal state.
      *
-     * @param entry promoted entry
+     * @param entry submitted entry whose handle is expected to be running
      */
     private void run(final DispatchQueue.Entry entry) {
         final DispatchHandle handle = entry.handle();
         try {
+            if (handle.state() != Status.RUNNING) {
+                return;
+            }
             entry.activity().run();
             if (entry.cancellation().cancelled()) {
                 handle.cancel();
@@ -266,8 +312,8 @@ public final class DispatchWorker implements AutoCloseable {
     /**
      * Fails a running handle while tolerating a concurrent terminal winner.
      *
-     * @param handle handle
-     * @param cause  original failure
+     * @param handle running handle to fail
+     * @param cause  failure reported by the activity or executor
      */
     private static void fail(final DispatchHandle handle, final Throwable cause) {
         if (handle.state() != Status.RUNNING) {
@@ -281,12 +327,12 @@ public final class DispatchWorker implements AutoCloseable {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

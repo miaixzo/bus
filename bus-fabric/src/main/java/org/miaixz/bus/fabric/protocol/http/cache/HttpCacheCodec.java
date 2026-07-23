@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Builder;
@@ -54,9 +54,9 @@ final class HttpCacheCodec {
     /**
      * Encodes an HTTP response into a protocol-neutral cache entry.
      *
-     * @param request  request
-     * @param response response
-     * @return cache entry
+     * @param request  request metadata associated with the response
+     * @param response response whose metadata and payload are encoded
+     * @return protocol-neutral entry containing ordered headers and the response payload
      */
     static CacheEntry toEntry(final HttpRequest request, final HttpResponse response) {
         return toEntry(request, response, response.body().payload());
@@ -65,10 +65,10 @@ final class HttpCacheCodec {
     /**
      * Encodes an HTTP response with a supplied payload.
      *
-     * @param request  request
-     * @param response response
-     * @param payload  payload
-     * @return cache entry
+     * @param request  request metadata associated with the response
+     * @param response response whose status, headers, timing, protocol, and media type are encoded
+     * @param payload  payload stored in place of the response body's current payload
+     * @return protocol-neutral entry containing encoded HTTP metadata and the supplied payload
      */
     static CacheEntry toEntry(final HttpRequest request, final HttpResponse response, final Payload payload) {
         final Headers.Builder metadata = Headers.builder()
@@ -97,8 +97,9 @@ final class HttpCacheCodec {
     /**
      * Decodes a protocol-neutral cache entry into an HTTP response.
      *
-     * @param entry cache entry
-     * @return response
+     * @param entry protocol-neutral entry containing HTTP cache metadata
+     * @return reconstructed response and its associated request
+     * @throws ProtocolException if required HTTP metadata is absent or malformed
      */
     static HttpResponse fromEntry(final CacheEntry entry) {
         final Headers metadata = entry.metadata();
@@ -106,7 +107,7 @@ final class HttpCacheCodec {
             throw new ProtocolException("Cache entry is not an HTTP entry");
         }
         final HttpRequest request = HttpRequest.builder()
-                .method(HTTP.Method.of(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_METHOD)))
+                .method(Http.Method.of(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_METHOD)))
                 .url(UnoUrl.parse(requiredMetadata(metadata, Builder.HTTP_CACHE_CODEC_META_URL)))
                 .headers(
                         readHeaders(
@@ -133,9 +134,9 @@ final class HttpCacheCodec {
     /**
      * Copies a response for another request.
      *
-     * @param request  request
-     * @param response response
-     * @return copy
+     * @param request  request to associate with the copied response
+     * @param response response whose remaining fields and body reference are retained
+     * @return response copy associated with the supplied request
      */
     static HttpResponse copyResponse(final HttpRequest request, final HttpResponse response) {
         return copyResponse(request, response, copyBody(response));
@@ -144,20 +145,20 @@ final class HttpCacheCodec {
     /**
      * Copies a response for another request with a supplied body.
      *
-     * @param request  request
-     * @param response response
-     * @param body     body
-     * @return copy
+     * @param request  request to associate with the copied response
+     * @param response response whose remaining fields are retained
+     * @param body     body to install in the copy
+     * @return response copy containing the supplied request and body
      */
     static HttpResponse copyResponse(final HttpRequest request, final HttpResponse response, final PayloadBody body) {
         return response.toBuilder().request(request).body(body).build();
     }
 
     /**
-     * Copies response body reference.
+     * Returns the response body without materializing or cloning its payload.
      *
-     * @param response response
-     * @return body
+     * @param response response whose body reference is requested
+     * @return same body instance held by the response
      */
     static PayloadBody copyBody(final HttpResponse response) {
         return response.body();
@@ -166,9 +167,9 @@ final class HttpCacheCodec {
     /**
      * Merges cached and network headers for a 304 response.
      *
-     * @param cached  cached headers
-     * @param network network headers
-     * @return merged headers
+     * @param cached  cached headers used as the merge base
+     * @param network network headers that replace cached fields of the same name
+     * @return immutable header collection containing cached fields plus network replacements
      */
     static Headers mergeHeaders(final Headers cached, final Headers network) {
         final Headers.Builder merged = cached.newBuilder();
@@ -227,7 +228,8 @@ final class HttpCacheCodec {
      *
      * @param metadata cache entry metadata
      * @param name     metadata field name
-     * @return metadata value
+     * @return required metadata field content
+     * @throws ProtocolException if the field is absent
      */
     private static String requiredMetadata(final Headers metadata, final String name) {
         final String value = metadata.get(name);
@@ -238,7 +240,8 @@ final class HttpCacheCodec {
      * Reads the stored HTTP status code from cache metadata.
      *
      * @param metadata cache entry metadata
-     * @return HTTP status code
+     * @return parsed HTTP status code
+     * @throws ProtocolException if the field is absent or is not a decimal integer
      */
     private static int readCode(final Headers metadata) {
         try {
@@ -253,6 +256,7 @@ final class HttpCacheCodec {
      *
      * @param metadata cache entry metadata
      * @return protocol, or {@code null} when older metadata did not store one
+     * @throws ProtocolException if the stored enum name is invalid
      */
     private static Protocol readProtocol(final Headers metadata) {
         final String value = metadata.get(Builder.HTTP_CACHE_CODEC_META_RESPONSE_PROTOCOL);
@@ -272,6 +276,7 @@ final class HttpCacheCodec {
      * @param metadata cache entry metadata
      * @param name     metadata field name
      * @return timestamp value, or {@code 0} when absent
+     * @throws ProtocolException if the stored timestamp is negative or not a decimal integer
      */
     private static long readLong(final Headers metadata, final String name) {
         final String value = metadata.get(name);

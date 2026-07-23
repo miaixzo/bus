@@ -47,27 +47,27 @@ import org.miaixz.bus.fabric.Builder;
 public final class PublicSuffix {
 
     /**
-     * Wildcard label marker.
+     * UTF-8 wildcard label substituted while searching wildcard rules.
      */
     private static final byte[] WILDCARD_LABEL = new byte[] { Symbol.C_STAR };
 
     /**
-     * Empty rule value.
+     * Shared empty label array used when one rule category has no match.
      */
     private static final String[] EMPTY_RULE = Normal.EMPTY_STRING_ARRAY;
 
     /**
-     * Fallback wildcard rule.
+     * Prevailing {@code *} rule used when the list has no exact or wildcard match.
      */
     private static final String[] PREVAILING_RULE = new String[] { Symbol.STAR };
 
     /**
-     * True after the first load attempt.
+     * One-way flag granting a single thread responsibility for the first resource load.
      */
     private final AtomicBoolean listRead = new AtomicBoolean(false);
 
     /**
-     * Coordinates concurrent first readers.
+     * Latch released when the initial resource-loading attempt finishes.
      */
     private final CountDownLatch readCompleteLatch = new CountDownLatch(Normal._1);
 
@@ -89,10 +89,10 @@ public final class PublicSuffix {
     }
 
     /**
-     * Returns whether a domain is itself a public suffix.
+     * Returns whether a host lacks a registrable owner-domain boundary.
      *
-     * @param domain domain
-     * @return true when the domain is not registrable as an owner domain
+     * @param domain host name or address literal to normalize and inspect
+     * @return {@code true} when the host is itself a public suffix or is an address literal
      */
     public static boolean isPublic(final String domain) {
         return effectiveTldPlusOne(domain) == null;
@@ -101,8 +101,9 @@ public final class PublicSuffix {
     /**
      * Returns the effective top-level domain plus one.
      *
-     * @param domain domain
-     * @return effective TLD plus one, or null when the input is itself a public suffix or an address literal
+     * @param domain host name or address literal to normalize and inspect
+     * @return normalized punycode registrable domain, or {@code null} when the host is a public suffix or address
+     *         literal
      */
     public static String effectiveTldPlusOne(final String domain) {
         final String normalized = normalize(domain);
@@ -115,8 +116,9 @@ public final class PublicSuffix {
     /**
      * Returns the matching public suffix rule for a domain.
      *
-     * @param domain domain
-     * @return matching rule, or null for address literals
+     * @param domain host name or address literal to normalize and inspect
+     * @return dot-joined matching rule, including a leading {@code !} for exceptions, or {@code null} for an address
+     *         literal
      */
     public static String match(final String domain) {
         final String normalized = normalize(domain);
@@ -129,7 +131,7 @@ public final class PublicSuffix {
     /**
      * Returns the shared public suffix list.
      *
-     * @return public suffix list
+     * @return process-wide lazily created public-suffix matcher
      */
     private static PublicSuffix instance() {
         return Instances.get(PublicSuffix.class.getName(), PublicSuffix::new);
@@ -138,8 +140,8 @@ public final class PublicSuffix {
     /**
      * Returns the effective top-level domain plus one by referencing the public suffix list.
      *
-     * @param domain normalized punycode domain
-     * @return effective TLD plus one, or null
+     * @param domain normalized punycode domain to evaluate
+     * @return registrable punycode domain, or {@code null} when the input consists only of a public suffix
      */
     private String getEffectiveTldPlusOne(final String domain) {
         final String unicodeDomain = IDN.toUnicode(domain);
@@ -168,8 +170,9 @@ public final class PublicSuffix {
     /**
      * Finds the matching public suffix rule.
      *
-     * @param domainLabels domain labels
-     * @return matching rule
+     * @param domainLabels Unicode domain labels ordered from leftmost to rightmost
+     * @return labels of the matching exact, wildcard, exception, or prevailing rule
+     * @throws IllegalStateException if the public-suffix resource could not be loaded
      */
     private String[] findMatchingRule(final String[] domainLabels) {
         if (!listRead.get() && listRead.compareAndSet(false, true)) {
@@ -243,7 +246,10 @@ public final class PublicSuffix {
     }
 
     /**
-     * Reads the list while preserving interrupted status.
+     * Loads the list, retrying interrupted reads and restoring the thread's interrupted status before returning.
+     * <p>
+     * Non-interruption I/O failures terminate the attempt; callers subsequently detect the missing byte arrays.
+     * </p>
      */
     private void readTheListUninterruptibly() {
         boolean interrupted = false;
@@ -270,7 +276,7 @@ public final class PublicSuffix {
     /**
      * Reads the compressed public suffix resource.
      *
-     * @throws IOException when the resource cannot be read
+     * @throws IOException if the present compressed resource cannot be read or decoded
      */
     private void readTheList() throws IOException {
         final InputStream resource = PublicSuffix.class
@@ -300,8 +306,8 @@ public final class PublicSuffix {
     /**
      * Normalizes a domain for suffix checks.
      *
-     * @param domain domain
-     * @return normalized punycode domain
+     * @param domain host value from which leading dots are removed
+     * @return normalized ASCII host representation suitable for suffix matching
      */
     private static String normalize(final String domain) {
         String normalized = domain;
@@ -314,8 +320,8 @@ public final class PublicSuffix {
     /**
      * Returns whether a domain is an address literal.
      *
-     * @param domain normalized domain
-     * @return true when address literal
+     * @param domain normalized host to classify
+     * @return {@code true} for an IPv4 match or any colon-containing IPv6-style literal
      */
     private static boolean isAddressLiteral(final String domain) {
         return domain.indexOf(Symbol.C_COLON) >= Normal._0 || Pattern.IPV4_PATTERN.matcher(domain).matches();
@@ -324,10 +330,10 @@ public final class PublicSuffix {
     /**
      * Searches sorted suffix bytes for a matching rule.
      *
-     * @param bytesToSearch suffix bytes
-     * @param labels        domain labels
-     * @param labelIndex    starting label index
-     * @return matching rule, or null
+     * @param bytesToSearch newline-delimited, lexicographically sorted UTF-8 rule bytes
+     * @param labels        UTF-8 domain labels searched as a dot-joined suffix
+     * @param labelIndex    index of the first label included in the candidate suffix
+     * @return matching UTF-8 rule, or {@code null} when the candidate is absent
      */
     private static String binarySearchBytes(final byte[] bytesToSearch, final byte[][] labels, final int labelIndex) {
         int low = Normal._0;

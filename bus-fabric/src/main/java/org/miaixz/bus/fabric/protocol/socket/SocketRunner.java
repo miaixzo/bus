@@ -72,7 +72,7 @@ import org.miaixz.bus.logger.Logger;
 final class SocketRunner {
 
     /**
-     * Execution snapshot.
+     * Immutable exchange configuration and borrowed runtime services.
      */
     private final SocketSnapshot snapshot;
 
@@ -84,7 +84,8 @@ final class SocketRunner {
     /**
      * Creates a runner.
      *
-     * @param snapshot execution snapshot
+     * @param snapshot immutable socket exchange snapshot
+     * @throws ValidateException if {@code snapshot} is {@code null}
      */
     SocketRunner(final SocketSnapshot snapshot) {
         this.snapshot = require(snapshot, "Socket exchange snapshot");
@@ -94,7 +95,7 @@ final class SocketRunner {
     /**
      * Opens a socket session.
      *
-     * @return session
+     * @return opened session using the transport selected from the target scheme
      */
     SocketSession open() {
         return open(Cancellation.create());
@@ -103,8 +104,11 @@ final class SocketRunner {
     /**
      * Opens a socket session within a cancellation scope.
      *
-     * @param cancellation cancellation scope
-     * @return session
+     * @param cancellation scope shared by transport creation, connection setup, and the returned session
+     * @return opened TCP, TLS, UDP, or KCP session
+     * @throws CancellationException if opening is cancelled
+     * @throws ProtocolException     if the address scheme does not select a supported socket transport
+     * @throws ValidateException     if {@code cancellation} is {@code null}
      */
     SocketSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
@@ -175,7 +179,8 @@ final class SocketRunner {
     /**
      * Opens a TCP session.
      *
-     * @param opening filtered opening message
+     * @param opening      filtered opening message
+     * @param cancellation cancellation scope governing connection setup
      * @return session
      */
     private SocketSession openTcp(final Message opening, final Cancellation cancellation) {
@@ -215,7 +220,8 @@ final class SocketRunner {
     /**
      * Opens a TLS-over-TCP session.
      *
-     * @param opening filtered opening message
+     * @param opening      filtered opening message
+     * @param cancellation cancellation scope governing TLS setup
      * @return session
      */
     private SocketSession openTls(final Message opening, final Cancellation cancellation) {
@@ -267,7 +273,8 @@ final class SocketRunner {
     /**
      * Opens a pooled TCP session.
      *
-     * @param opening filtered opening message
+     * @param opening      filtered opening message
+     * @param cancellation cancellation scope governing pooled acquisition
      * @return session
      */
     private SocketSession openPooledTcp(final Message opening, final Cancellation cancellation) {
@@ -305,7 +312,8 @@ final class SocketRunner {
     /**
      * Opens a UDP session.
      *
-     * @param opening filtered opening message
+     * @param opening      filtered opening message
+     * @param cancellation cancellation scope governing UDP setup
      * @return session
      */
     private SocketSession openUdp(final Message opening, final Cancellation cancellation) {
@@ -335,7 +343,8 @@ final class SocketRunner {
     /**
      * Opens a KCP-over-UDP session.
      *
-     * @param opening filtered opening message
+     * @param opening      filtered opening message
+     * @param cancellation cancellation scope governing KCP setup
      * @return session
      */
     private SocketSession openKcp(final Message opening, final Cancellation cancellation) {
@@ -367,8 +376,11 @@ final class SocketRunner {
     /**
      * Waits for connect completion.
      *
-     * @param future future
-     * @return connection
+     * @param future       non-null asynchronous transport operation
+     * @param cancellation cancellation scope allowed to abort the wait
+     * @return non-null operation result
+     * @throws TimeoutException      if the configured connect timeout expires
+     * @throws CancellationException if the cancellation scope is cancelled
      */
     private <T> T await(final CompletableFuture<T> future, final Cancellation cancellation) {
         final CompletableFuture<T> operation = require(future, "Socket operation");
@@ -405,12 +417,12 @@ final class SocketRunner {
     /**
      * Creates a session that borrows the Context runtime and shared cancellation.
      *
-     * @param connection   connection transport or null
-     * @param datagram     datagram transport or null
-     * @param kcp          KCP transport or null
+     * @param connection   stream connection, or {@code null} for datagram transports
+     * @param datagram     UDP session, or {@code null} for stream transports
+     * @param kcp          KCP endpoint, or {@code null} except for KCP sessions
      * @param opening      filtered opening message
-     * @param owner        transport owner
-     * @param cancellation shared cancellation
+     * @param owner        resource owner closed with the session
+     * @param cancellation cancellation scope shared with the session
      * @return opened session
      */
     private SocketSession session(
@@ -428,7 +440,7 @@ final class SocketRunner {
     }
 
     /**
-     * Closes a failed or cancelled TLS migration without masking the authoritative failure.
+     * Closes the TLS channel and always attempts to close the raw connection afterward.
      *
      * @param raw raw connection
      * @param tls TLS channel
@@ -488,7 +500,7 @@ final class SocketRunner {
      * Creates session attributes.
      *
      * @param opening filtered opening message
-     * @return attributes
+     * @return mutable insertion-ordered attributes consumed by the new session
      */
     private Map<String, Object> attributes(final Message opening) {
         final LinkedHashMap<String, Object> attributes = new LinkedHashMap<>();
@@ -542,8 +554,8 @@ final class SocketRunner {
     /**
      * Emits an observation event.
      *
-     * @param marker marker
-     * @param cause  failure cause
+     * @param marker socket lifecycle marker to publish
+     * @param cause  failure attached to the event, or {@code null}
      */
     private void emit(final ObservationMarker marker, final Throwable cause) {
         final FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
@@ -559,10 +571,11 @@ final class SocketRunner {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -591,8 +604,8 @@ final class SocketRunner {
         /**
          * Creates a TLS socket connection.
          *
-         * @param raw raw connection
-         * @param tls TLS channel
+         * @param raw underlying TCP connection owned by the wrapper
+         * @param tls handshaken TLS channel layered over the raw conduit
          */
         private TlsSocketConnection(final Connection raw, final TlsChannel tls) {
             this.raw = require(raw, "Raw connection");
@@ -602,7 +615,7 @@ final class SocketRunner {
         /**
          * Returns the raw connection destination.
          *
-         * @return destination
+         * @return destination metadata of the underlying TCP connection
          */
         @Override
         public Destination destination() {
@@ -612,7 +625,7 @@ final class SocketRunner {
         /**
          * Returns the TLS plaintext conduit.
          *
-         * @return conduit
+         * @return plaintext conduit backed by the TLS channel
          */
         @Override
         public org.miaixz.bus.fabric.network.Conduit conduit() {
@@ -620,9 +633,9 @@ final class SocketRunner {
         }
 
         /**
-         * Returns the raw connection lifecycle state.
+         * Returns the TLS channel lifecycle state.
          *
-         * @return state
+         * @return current TLS channel state
          */
         @Override
         public org.miaixz.bus.fabric.Status state() {
@@ -632,7 +645,7 @@ final class SocketRunner {
         /**
          * Returns the TLS source view.
          *
-         * @return source view
+         * @return plaintext source view of the TLS channel
          */
         @Override
         public Source source() {
@@ -642,7 +655,7 @@ final class SocketRunner {
         /**
          * Returns the TLS sink view.
          *
-         * @return sink view
+         * @return plaintext sink view of the TLS channel
          */
         @Override
         public Sink sink() {
@@ -652,7 +665,7 @@ final class SocketRunner {
         /**
          * Returns whether TLS and the raw connection are healthy.
          *
-         * @return true when healthy
+         * @return {@code true} when TLS remains open and the raw TCP connection reports healthy
          */
         @Override
         public boolean healthy() {
@@ -662,7 +675,7 @@ final class SocketRunner {
         /**
          * Returns whether the raw connection is idle.
          *
-         * @return true when idle
+         * @return idleness reported by the underlying TCP connection
          */
         @Override
         public boolean idle() {
@@ -708,9 +721,9 @@ final class SocketRunner {
         /**
          * Opens a UDP owner.
          *
-         * @param listener   listener
-         * @param dispatcher dispatcher
-         * @return owner
+         * @param listener   optional lifecycle listener for the UDP network
+         * @param dispatcher borrowed dispatcher used by the single-thread AIO group
+         * @return owner containing a new AIO group and UDP network
          */
         private static DatagramOwner open(
                 final org.miaixz.bus.fabric.Listener<Object> listener,

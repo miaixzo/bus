@@ -47,7 +47,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
@@ -218,7 +218,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Creates a WebSocket server from one validated builder snapshot.
      *
-     * @param builder builder
+     * @param builder validated configuration source for the immutable server snapshot
      */
     private WebSocketServer(final Builder builder) {
         this.context = require(builder.context, "Context");
@@ -251,7 +251,7 @@ public final class WebSocketServer implements Lifecycle {
      * Creates a builder.
      *
      * @param context shared context
-     * @return builder
+     * @return new WebSocket server builder bound to the context
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
@@ -332,7 +332,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Returns lifecycle state.
      *
-     * @return state
+     * @return current server lifecycle state
      */
     @Override
     public Status state() {
@@ -353,7 +353,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Returns bind address.
      *
-     * @return address
+     * @return configured listening address
      */
     public Address address() {
         return address;
@@ -362,7 +362,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Returns immutable server attributes.
      *
-     * @return attributes
+     * @return immutable observer and socket-option attributes exposed by the server
      */
     public Map<String, Object> attributes() {
         return Map.of(
@@ -515,14 +515,16 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Creates a common WS/WSS registry listener that removes ownership before user callbacks.
      *
-     * @param transport accepted transport
-     * @return listener
+     * @param transport accepted transport owned with the eventual session
+     * @return listener that maintains registries before forwarding callbacks
      */
     private Listener<WebSocketSession> registryListener(final AcceptedTransport transport) {
         return new Listener<>() {
 
             /**
              * Registers the opened session before forwarding the lifecycle callback.
+             *
+             * @param source newly opened WebSocket session
              */
             @Override
             public void open(final WebSocketSession source) {
@@ -532,6 +534,8 @@ public final class WebSocketServer implements Lifecycle {
 
             /**
              * Removes terminal ownership before forwarding the normal-close callback.
+             *
+             * @param source normally closed WebSocket session
              */
             @Override
             public void close(final WebSocketSession source) {
@@ -541,6 +545,9 @@ public final class WebSocketServer implements Lifecycle {
 
             /**
              * Removes terminal ownership before forwarding the failure callback.
+             *
+             * @param source failed WebSocket session
+             * @param cause  terminal session failure
              */
             @Override
             public void failure(final WebSocketSession source, final Throwable cause) {
@@ -563,8 +570,8 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Tracks a dispatch handle until completion.
      *
-     * @param handle handle
-     * @return tracked handle
+     * @param handle dispatch handle to retain until its future completes
+     * @return the same handle after registration
      */
     private DispatchHandle track(final DispatchHandle handle) {
         handles.add(handle);
@@ -810,7 +817,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Notifies the user listener after a session enters the registry.
      *
-     * @param session session
+     * @param session newly registered WebSocket session
      */
     private void notifySessionOpen(final WebSocketSession session) {
         try {
@@ -823,7 +830,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Notifies the user listener after a session leaves the registry normally.
      *
-     * @param session session
+     * @param session normally closed WebSocket session removed from the registry
      */
     private void notifySessionClose(final WebSocketSession session) {
         try {
@@ -836,7 +843,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Notifies the user listener after a failed session leaves the registry.
      *
-     * @param session session
+     * @param session failed WebSocket session removed from the registry
      * @param cause   failure cause
      */
     private void notifySessionFailure(final WebSocketSession session, final Throwable cause) {
@@ -911,8 +918,8 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Converts a duration to a saturated nanosecond interval.
      *
-     * @param duration duration
-     * @return nanoseconds
+     * @param duration interval to convert
+     * @return interval in nanoseconds, or {@link Long#MAX_VALUE} on overflow
      */
     private static long durationNanos(final Duration duration) {
         try {
@@ -977,10 +984,10 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Validates a required value.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -1182,8 +1189,8 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets bind host and port.
          *
-         * @param host host
-         * @param port port
+         * @param host local interface host name or IP address
+         * @param port local listening port
          * @return this builder
          */
         public Builder bind(final String host, final int port) {
@@ -1245,7 +1252,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets socket options.
          *
-         * @param options options
+         * @param options complete listening and accepted-channel socket options
          * @return this builder
          */
         public Builder socketOptions(final SocketOptions options) {
@@ -1280,8 +1287,8 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Adds a response header.
          *
-         * @param name  name
-         * @param value value
+         * @param name  successful upgrade response header name
+         * @param value successful upgrade response header value
          * @return this builder
          */
         public Builder header(final String name, final String value) {
@@ -1293,7 +1300,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Merges response headers.
          *
-         * @param headers headers
+         * @param headers successful upgrade response headers to merge
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -1317,7 +1324,7 @@ public final class WebSocketServer implements Lifecycle {
             if (StringKit.isBlank(protocol) || StringKit.containsAny(protocol, Symbol.C_CR, Symbol.C_LF)) {
                 throw new ValidateException("WebSocket subprotocol must be non-blank and single-line");
             }
-            responseHeaders = responseHeaders.with(HTTP.SEC_WEBSOCKET_PROTOCOL, protocol);
+            responseHeaders = responseHeaders.with(Http.WebSocket.PROTOCOL, protocol);
             return this;
         }
 
@@ -1339,7 +1346,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets message handler.
          *
-         * @param handler handler
+         * @param handler message handler, or {@code null} to install a no-op handler
          * @return this builder
          */
         public Builder onMessage(final Handler handler) {
@@ -1351,8 +1358,8 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Adds channel handler.
          *
-         * @param channel channel
-         * @param handler handler
+         * @param channel channel identifier selected by the demultiplexer
+         * @param handler handler invoked for messages on the channel
          * @return this builder
          */
         public Builder channel(final String channel, final Handler handler) {
@@ -1363,7 +1370,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets fallback handler.
          *
-         * @param handler handler
+         * @param handler fallback for unmatched channels
          * @return this builder
          */
         public Builder fallback(final Handler handler) {
@@ -1385,7 +1392,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets channel resolver.
          *
-         * @param resolver resolver
+         * @param resolver function that resolves a channel identifier from each message
          * @return this builder
          */
         public Builder resolver(final Function<Message, String> resolver) {
@@ -1434,7 +1441,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets guard.
          *
-         * @param guard guard
+         * @param guard rule applied during opening and message processing
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -1445,7 +1452,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets filter.
          *
-         * @param filter filter
+         * @param filter applied during opening and message processing
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -1456,7 +1463,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer server and session event observer, or {@code null} for no observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -1467,7 +1474,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets server listener.
          *
-         * @param listener listener
+         * @param listener server lifecycle listener
          * @return this builder
          */
         public Builder listener(final Listener<? super WebSocketServer> listener) {
@@ -1478,7 +1485,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Sets session listener.
          *
-         * @param listener listener
+         * @param listener accepted-session lifecycle listener
          * @return this builder
          */
         public Builder sessionListener(final Listener<? super WebSocketSession> listener) {
@@ -1489,7 +1496,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Builds a server.
          *
-         * @return server
+         * @return configured WebSocket server in its initial lifecycle state
          */
         public WebSocketServer build() {
             if (address == null) {
@@ -1502,7 +1509,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Builds and starts a server.
          *
-         * @return server
+         * @return configured and started WebSocket server
          */
         public WebSocketServer start() {
             return build().start();
@@ -1511,7 +1518,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Returns effective handler.
          *
-         * @return handler
+         * @return configured direct handler or assembled channel demultiplexer
          */
         private Handler handler() {
             return demuxer == null ? handler : demuxer.build();
@@ -1520,7 +1527,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Returns effective session listener.
          *
-         * @return listener
+         * @return configured session listener or a no-op listener
          */
         private Listener<? super WebSocketSession> sessionListener() {
             return sessionListener == null ? new Listener<>() {
@@ -1537,6 +1544,8 @@ public final class WebSocketServer implements Lifecycle {
 
                 /**
                  * Forwards an opened session to the configured consumer.
+                 *
+                 * @param source newly opened WebSocket session
                  */
                 @Override
                 public void open(final WebSocketSession source) {
@@ -1545,6 +1554,9 @@ public final class WebSocketServer implements Lifecycle {
 
                 /**
                  * Forwards a session failure to the configured error consumer.
+                 *
+                 * @param source failed WebSocket session
+                 * @param cause  terminal session failure
                  */
                 @Override
                 public void failure(final WebSocketSession source, final Throwable cause) {
@@ -1557,7 +1569,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Returns demuxer builder.
          *
-         * @return demuxer builder
+         * @return lazily initialized channel demultiplexer builder
          */
         private Demuxer.Builder demuxer() {
             if (demuxer == null) {
@@ -1569,7 +1581,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Copies socket options without losing idle timeout or KCP wire version.
          *
-         * @return builder
+         * @return mutable builder initialized from the current socket options
          */
         private SocketOptions.Builder copySocketOptions() {
             return SocketOptions.builder().readBufferSize(socketOptions.readBufferSize())
@@ -1585,8 +1597,8 @@ public final class WebSocketServer implements Lifecycle {
          * @param name header name
          */
         private static void rejectReservedHeader(final String name) {
-            if (HTTP.UPGRADE.equalsIgnoreCase(name) || HTTP.CONNECTION.equalsIgnoreCase(name)
-                    || HTTP.SEC_WEBSOCKET_ACCEPT.equalsIgnoreCase(name)) {
+            if (Http.Header.UPGRADE.equalsIgnoreCase(name) || Http.Header.CONNECTION.equalsIgnoreCase(name)
+                    || Http.WebSocket.ACCEPT.equalsIgnoreCase(name)) {
                 throw new ValidateException("WebSocket server response header is reserved: " + name);
             }
         }
@@ -1594,7 +1606,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Validates host.
          *
-         * @param host host
+         * @param host candidate local bind host
          */
         private static void validateHost(final String host) {
             if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
@@ -1605,7 +1617,7 @@ public final class WebSocketServer implements Lifecycle {
         /**
          * Validates port.
          *
-         * @param port port
+         * @param port candidate local listening port
          */
         private static void validatePort(final int port) {
             if (port < Normal._1 || port > Normal._65535) {

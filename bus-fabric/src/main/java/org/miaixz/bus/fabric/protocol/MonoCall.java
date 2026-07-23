@@ -59,6 +59,11 @@ public abstract class MonoCall<T> implements Call<T> {
     private static final VarHandle SUBMITTED;
 
     /**
+     * Callback atomic exchange without entering the call monitor.
+     */
+    private static final VarHandle CALLBACK;
+
+    /**
      * Pending terminal outcome marker.
      */
     private static final Object PENDING = new Object();
@@ -71,6 +76,7 @@ public abstract class MonoCall<T> implements Call<T> {
     static {
         try {
             SUBMITTED = MethodHandles.lookup().findVarHandle(MonoCall.class, "submitted", int.class);
+            CALLBACK = MethodHandles.lookup().findVarHandle(MonoCall.class, "callback", Callback.class);
         } catch (final ReflectiveOperationException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -133,7 +139,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @param name       call name
      * @param dispatcher dispatcher used by enqueue()
      * @param observer   event observer
-     * @param callback   callback
+     * @param callback   optional terminal callback invoked at most once
      */
     protected MonoCall(final String name, final Dispatcher dispatcher, final EventObserver observer,
             final Callback<? super T> callback) {
@@ -213,7 +219,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Performs the protocol operation.
      *
-     * @return result
+     * @return protocol-specific result produced by the operation
      */
     protected abstract T perform();
 
@@ -267,7 +273,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Executes this call synchronously.
      *
-     * @return result
+     * @return synchronously produced protocol result
      */
     @Override
     public T execute() {
@@ -288,7 +294,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Enqueues this call to a dispatcher.
      *
-     * @param dispatcher dispatcher
+     * @param dispatcher target dispatcher used for this asynchronous submission
      * @return this call
      */
     public Call<T> enqueue(final Dispatcher dispatcher) {
@@ -305,6 +311,9 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     @Override
     public boolean cancel() {
+        if (scope.state().terminal()) {
+            return false;
+        }
         return finishCancellation(new CancellationException(name + " cancelled"));
     }
 
@@ -345,7 +354,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Waits for this call to complete.
      *
-     * @return result
+     * @return completed result after starting the call when necessary
      */
     @Override
     public T await() {
@@ -356,8 +365,8 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Waits for this call to complete within a timeout.
      *
-     * @param timeout timeout
-     * @return result
+     * @param timeout non-negative maximum wait duration
+     * @return completed result obtained within the timeout
      */
     @Override
     public T await(final Duration timeout) {
@@ -429,7 +438,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Runs the claimed operation and completes its lifecycle exactly once.
      *
-     * @return result
+     * @return protocol result after the successful terminal transition
      */
     private T runOnce() {
         try {
@@ -498,6 +507,9 @@ public abstract class MonoCall<T> implements Call<T> {
 
     /**
      * Publishes a successful terminal outcome and completes a previously requested future.
+     *
+     * @param value successful result, including {@code null}
+     * @return {@code true} when this call won the terminal transition
      */
     private boolean finishSuccess(final T value) {
         synchronized (this) {
@@ -518,8 +530,9 @@ public abstract class MonoCall<T> implements Call<T> {
 
     /**
      * Creates the completion holder only when an asynchronous observer actually needs it.
+     *
+     * @return shared completion future
      */
-    @SuppressWarnings("unchecked")
     private synchronized CompletableFuture<T> completionFuture() {
         CompletableFuture<T> completion = future;
         if (completion != null) {
@@ -614,7 +627,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Waits for the future.
      *
-     * @return result
+     * @return completed future result
      */
     private T awaitFuture() {
         final CompletableFuture<T> completion = completionFuture();
@@ -631,9 +644,9 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Waits for the future within a timeout.
      *
-     * @param timeout timeout
+     * @param timeout validated maximum wait duration
      * @param nanos   timeout nanoseconds
-     * @return result
+     * @return completed future result obtained within the timeout
      */
     private T awaitFuture(final Duration timeout, final long nanos) {
         final CompletableFuture<T> completion = completionFuture();
@@ -692,7 +705,7 @@ public abstract class MonoCall<T> implements Call<T> {
     /**
      * Validates timeout.
      *
-     * @param timeout timeout
+     * @param timeout candidate maximum wait duration
      * @return validated timeout
      */
     private static Duration validateTimeout(final Duration timeout) {
@@ -718,6 +731,8 @@ public abstract class MonoCall<T> implements Call<T> {
 
     /**
      * Invokes and clears the optional callback after a successful terminal transition.
+     *
+     * @param value successful result delivered to the callback
      */
     private void notifySuccess(final T value) {
         final Callback<? super T> current = takeCallback();
@@ -733,6 +748,8 @@ public abstract class MonoCall<T> implements Call<T> {
 
     /**
      * Invokes and clears the optional callback after a failed or cancelled terminal transition.
+     *
+     * @param cause terminal failure delivered to the callback
      */
     private void notifyFailure(final Throwable cause) {
         final Callback<? super T> current = takeCallback();
@@ -748,11 +765,11 @@ public abstract class MonoCall<T> implements Call<T> {
 
     /**
      * Removes the callback strong reference exactly once.
+     *
+     * @return detached callback, or {@code null} when absent
      */
-    private synchronized Callback<? super T> takeCallback() {
-        final Callback<? super T> current = callback;
-        callback = null;
-        return current;
+    private Callback<? super T> takeCallback() {
+        return (Callback<? super T>) CALLBACK.getAndSet(this, null);
     }
 
 }

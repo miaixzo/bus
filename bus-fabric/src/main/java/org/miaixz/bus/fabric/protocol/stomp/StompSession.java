@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Address;
@@ -209,7 +209,7 @@ public final class StompSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param sender     sender
+     * @param sender     transport action used to write encoded STOMP frames
      * @param closeHook  close hook
      * @param cancelHook cancel hook
      * @param handler    default message handler
@@ -223,13 +223,13 @@ public final class StompSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param sender     sender
+     * @param sender     transport action used to write encoded STOMP frames
      * @param closeHook  close hook
      * @param cancelHook cancel hook
      * @param handler    default message handler
      * @param address    session address
      * @param guard      optional guard
-     * @param observer   observer
+     * @param observer   observer receiving STOMP lifecycle events
      * @param listener   lifecycle listener
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
@@ -242,13 +242,13 @@ public final class StompSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param sender              sender
+     * @param sender              transport action used to write encoded STOMP frames
      * @param closeHook           close hook
      * @param cancelHook          cancel hook
      * @param handler             default message handler
      * @param address             session address
      * @param guard               optional guard
-     * @param observer            observer
+     * @param observer            observer receiving STOMP lifecycle events
      * @param filter              optional filter
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
@@ -264,13 +264,13 @@ public final class StompSession implements Session {
     /**
      * Creates an opened session with negotiated heartbeat settings and shared runtime services.
      *
-     * @param sender              sender
+     * @param sender              transport action used to write encoded STOMP frames
      * @param closeHook           close hook
      * @param cancelHook          cancel hook
      * @param handler             default message handler
      * @param address             session address
      * @param guard               optional guard
-     * @param observer            observer
+     * @param observer            observer receiving STOMP lifecycle events
      * @param filter              optional filter
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
@@ -292,13 +292,13 @@ public final class StompSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param sender              sender
+     * @param sender              transport action used to write encoded STOMP frames
      * @param closeHook           close hook
      * @param cancelHook          cancel hook
      * @param handler             default message handler
      * @param address             session address
      * @param guard               optional guard
-     * @param observer            observer
+     * @param observer            observer receiving STOMP lifecycle events
      * @param filter              optional filter
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
@@ -371,7 +371,7 @@ public final class StompSession implements Session {
     /**
      * Sends a payload to the default destination.
      *
-     * @param payload payload
+     * @param payload message payload sent to the session default destination
      * @return send call
      */
     @Override
@@ -392,8 +392,8 @@ public final class StompSession implements Session {
     /**
      * Sends a STOMP message.
      *
-     * @param destination destination
-     * @param payload     payload
+     * @param destination STOMP destination header value
+     * @param payload     message payload to send
      * @return send call
      */
     public Call<Void> send(final String destination, final Payload payload) {
@@ -402,7 +402,7 @@ public final class StompSession implements Session {
         return write(() -> {
             final Payload outgoing = snapshot(source);
             final Headers headers = Headers.builder().add(Builder.STOMP_HEADER_DESTINATION, target)
-                    .add(HTTP.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
+                    .add(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
             Logger.info(
                     false,
                     "Fabric",
@@ -419,7 +419,7 @@ public final class StompSession implements Session {
     /**
      * Sends text to a destination.
      *
-     * @param destination destination
+     * @param destination STOMP destination header value
      * @param data        text data
      * @return send call
      */
@@ -432,8 +432,8 @@ public final class StompSession implements Session {
     /**
      * Sends payload to a destination.
      *
-     * @param destination destination
-     * @param payload     payload
+     * @param destination STOMP destination header value
+     * @param payload     message payload to send
      * @return send call
      */
     public Call<Void> sendTo(final String destination, final Payload payload) {
@@ -443,8 +443,8 @@ public final class StompSession implements Session {
     /**
      * Sends a STOMP message body.
      *
-     * @param destination destination
-     * @param body        body
+     * @param destination STOMP destination header value
+     * @param body        body used to construct the SEND frame
      * @return send call
      */
     public Call<Void> send(final String destination, final StompBody body) {
@@ -453,8 +453,8 @@ public final class StompSession implements Session {
         return write(() -> {
             final Payload outgoing = snapshot(source.payload());
             final Headers headers = Headers.builder().add(Builder.STOMP_HEADER_DESTINATION, target)
-                    .add(HTTP.CONTENT_TYPE.toLowerCase(Locale.ROOT), source.media().toString())
-                    .add(HTTP.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
+                    .add(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT), source.media().toString())
+                    .add(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
             Logger.info(
                     false,
                     "Fabric",
@@ -472,7 +472,7 @@ public final class StompSession implements Session {
     /**
      * Subscribes to a destination.
      *
-     * @param destination destination
+     * @param destination STOMP destination to subscribe to
      * @param handler     message handler
      * @return topic
      */
@@ -483,7 +483,7 @@ public final class StompSession implements Session {
     /**
      * Subscribes to a destination with extra SUBSCRIBE headers.
      *
-     * @param destination destination
+     * @param destination STOMP destination to subscribe to
      * @param headers     extra headers
      * @param handler     message handler
      * @return topic
@@ -602,7 +602,7 @@ public final class StompSession implements Session {
     /**
      * Acknowledges a received message.
      *
-     * @param message message
+     * @param message received message whose acknowledgement id is used
      * @return send call
      */
     public Call<Void> ack(final StompMessage message) {
@@ -622,7 +622,7 @@ public final class StompSession implements Session {
     /**
      * Rejects a received message.
      *
-     * @param message message
+     * @param message received message whose acknowledgement id is rejected
      * @return send call
      */
     public Call<Void> nack(final StompMessage message) {
@@ -632,7 +632,7 @@ public final class StompSession implements Session {
     /**
      * Unsubscribes a topic.
      *
-     * @param topic topic
+     * @param topic subscription handle to remove
      * @return true when removed
      */
     public boolean unsubscribe(final StompTopic topic) {
@@ -669,7 +669,7 @@ public final class StompSession implements Session {
     /**
      * Unsubscribes by destination.
      *
-     * @param destination destination
+     * @param destination subscribed destination to remove
      * @return true when removed
      */
     public boolean unsubscribe(final String destination) {
@@ -753,7 +753,7 @@ public final class StompSession implements Session {
     /**
      * Dispatches an inbound frame.
      *
-     * @param frame frame
+     * @param frame decoded inbound STOMP frame to dispatch
      */
     void dispatch(final StompFrame frame) {
         final StompFrame current = require(frame, "STOMP frame");
@@ -854,8 +854,8 @@ public final class StompSession implements Session {
     /**
      * Invokes a message handler without allowing one callback to break delivery to other subscriptions.
      *
-     * @param consumer consumer
-     * @param message  message
+     * @param consumer subscription callback to invoke safely
+     * @param message  decoded message delivered to the callback
      */
     private void accept(final Consumer<StompMessage> consumer, final StompMessage message) {
         try {
@@ -878,7 +878,7 @@ public final class StompSession implements Session {
     /**
      * Sends an ACK or NACK frame.
      *
-     * @param command   command
+     * @param command   ACK or NACK command to send
      * @param messageId message id
      * @return send call
      */
@@ -899,8 +899,8 @@ public final class StompSession implements Session {
     /**
      * Sends an ACK or NACK frame for a received message.
      *
-     * @param command command
-     * @param message message
+     * @param command ACK or NACK command to send
+     * @param message received message supplying acknowledgement metadata
      * @return send call
      */
     private Call<Void> acknowledge(final String command, final StompMessage message) {
@@ -932,9 +932,9 @@ public final class StompSession implements Session {
     /**
      * Subscribes once by destination for topic and queue helpers.
      *
-     * @param destination destination
+     * @param destination destination to normalize and subscribe to
      * @param headers     extra headers
-     * @param handler     handler
+     * @param handler     callback receiving messages for the subscription
      * @return topic
      */
     private StompTopic subscribeOnce(
@@ -955,8 +955,8 @@ public final class StompSession implements Session {
     /**
      * Applies a destination prefix when absent.
      *
-     * @param prefix      prefix
-     * @param destination destination
+     * @param prefix      STOMP destination namespace prefix
+     * @param destination destination to normalize
      * @return normalized destination
      */
     private static String prefixed(final String prefix, final String destination) {
@@ -970,7 +970,7 @@ public final class StompSession implements Session {
     /**
      * Writes a frame.
      *
-     * @param frame frame
+     * @param frame STOMP frame to encode and write
      * @return send call
      */
     private Call<Void> write(final StompFrame frame) {
@@ -999,7 +999,7 @@ public final class StompSession implements Session {
     /**
      * Filters, encodes, and sends one complete normal STOMP frame.
      *
-     * @param frame         frame
+     * @param frame         complete STOMP frame to filter, encode, and write
      * @param terminalWrite true for best-effort DISCONNECT during close
      * @return null after successful transport completion
      */
@@ -1042,7 +1042,7 @@ public final class StompSession implements Session {
     /**
      * Applies the optional message filter to a STOMP frame.
      *
-     * @param frame frame
+     * @param frame STOMP frame represented as a protocol-neutral message
      * @param tag   direction tag
      * @return filtered frame
      */
@@ -1058,7 +1058,7 @@ public final class StompSession implements Session {
     /**
      * Checks optional guard for a STOMP frame.
      *
-     * @param frame frame
+     * @param frame STOMP frame to validate
      * @param tag   direction tag
      */
     private void checkGuard(final StompFrame frame, final String tag) {
@@ -1088,7 +1088,7 @@ public final class StompSession implements Session {
     /**
      * Emits STOMP observation events.
      *
-     * @param marker marker
+     * @param marker observation marker identifying the STOMP event
      * @param bytes  complete encoded STOMP frame bytes
      * @param cause  failure cause
      */
@@ -1122,7 +1122,7 @@ public final class StompSession implements Session {
     /**
      * Returns the complete encoded size of one normal inbound frame.
      *
-     * @param frame frame
+     * @param frame decoded inbound frame whose wire size is computed
      * @return encoded frame bytes
      */
     private long encodedBytes(final StompFrame frame) {
@@ -1136,7 +1136,7 @@ public final class StompSession implements Session {
     /**
      * Creates a repeatable payload snapshot for one-shot stream sends.
      *
-     * @param payload payload
+     * @param payload potentially one-shot payload to snapshot
      * @return payload snapshot
      */
     private Payload snapshot(final Payload payload) {
@@ -1153,8 +1153,8 @@ public final class StompSession implements Session {
     /**
      * Materializes a payload through the configured session limit.
      *
-     * @param payload   payload
-     * @param operation operation name
+     * @param payload   payload to materialize
+     * @param operation diagnostic operation name used for limit failures
      * @return payload bytes
      */
     private byte[] materialize(final Payload payload, final String operation) {
@@ -1362,7 +1362,7 @@ public final class StompSession implements Session {
     /**
      * Runs one transport hook without interrupting lifecycle cleanup.
      *
-     * @param hook  hook
+     * @param hook  transport cleanup action to invoke safely
      * @param phase terminal phase
      */
     private void runHook(final Runnable hook, final String phase) {
@@ -1421,7 +1421,7 @@ public final class StompSession implements Session {
     /**
      * Converts a positive duration to nanoseconds, saturating on overflow.
      *
-     * @param duration duration
+     * @param duration positive duration to convert
      * @return nanoseconds
      */
     private static long durationNanos(final Duration duration) {
@@ -1435,7 +1435,7 @@ public final class StompSession implements Session {
     /**
      * Validates a non-negative heartbeat duration.
      *
-     * @param duration duration
+     * @param duration heartbeat duration to validate
      * @param name     field name
      * @return validated duration
      */
@@ -1501,10 +1501,10 @@ public final class StompSession implements Session {
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -1513,8 +1513,8 @@ public final class StompSession implements Session {
     /**
      * Subscription holder.
      *
-     * @param topic   topic
-     * @param handler handler
+     * @param topic   subscription metadata and identifier
+     * @param handler callback receiving matching messages
      */
     private record Subscription(StompTopic topic, Consumer<StompMessage> handler) {
 

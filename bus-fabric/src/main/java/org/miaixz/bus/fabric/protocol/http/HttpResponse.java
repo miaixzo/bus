@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -102,7 +102,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Response body.
      */
-    private final PayloadBody body;
+    private PayloadBody body;
 
     /**
      * Effective HTTP protocol.
@@ -112,7 +112,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * TLS handshake metadata.
      */
-    private final TlsHandshake handshake;
+    private TlsHandshake handshake;
 
     /**
      * Response trailers supplier.
@@ -137,12 +137,12 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Request write timestamp.
      */
-    private final long sentRequestAtMillis;
+    private long sentRequestAtMillis;
 
     /**
      * Response read timestamp.
      */
-    private final long receivedResponseAtMillis;
+    private long receivedResponseAtMillis;
 
     /**
      * Successful flag.
@@ -162,11 +162,19 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Creates a response.
      *
-     * @param request request
-     * @param code    status code
-     * @param message reason phrase
-     * @param headers headers
-     * @param body    body
+     * @param request                  immutable request that produced this response
+     * @param code                     status code
+     * @param message                  reason phrase
+     * @param headers                  immutable response header snapshot
+     * @param body                     closeable response body
+     * @param protocol                 negotiated response protocol, or {@code null} to use the request protocol
+     * @param handshake                TLS handshake metadata, or {@code null} for cleartext responses
+     * @param trailers                 lazy response-trailer supplier
+     * @param networkResponse          metadata-only network response, or {@code null}
+     * @param cacheResponse            metadata-only cache response, or {@code null}
+     * @param priorResponse            metadata-only prior response, or {@code null}
+     * @param sentRequestAtMillis      request send wall-clock timestamp
+     * @param receivedResponseAtMillis response receive wall-clock timestamp
      */
     private HttpResponse(final HttpRequest request, final int code, final String message, final Headers headers,
             final PayloadBody body, final Protocol protocol, final TlsHandshake handshake,
@@ -185,46 +193,92 @@ public final class HttpResponse implements AutoCloseable {
         this.priorResponse = metadataResponse(priorResponse);
         this.sentRequestAtMillis = validateTimestamp(sentRequestAtMillis, "Sent request timestamp");
         this.receivedResponseAtMillis = validateTimestamp(receivedResponseAtMillis, "Received response timestamp");
-        this.successful = code >= HTTP.HTTP_OK && code < HTTP.HTTP_MULT_CHOICE;
+        this.successful = code >= Http.Status.OK && code < Http.Status.MULTIPLE_CHOICES;
     }
 
     /**
      * Creates a response builder.
      *
-     * @return builder
+     * @return new empty response builder
      */
     public static Builder builder() {
         return new Builder();
     }
 
     /**
+     * Creates a freshly decoded transport response without an intermediate builder.
+     *
+     * @param request  originating request
+     * @param code     status code
+     * @param message  reason phrase
+     * @param headers  response headers
+     * @param body     streaming response body
+     * @param protocol established protocol
+     * @param trailers lazy trailer supplier
+     * @return decoded response ready for transport metadata attachment
+     */
+    public static HttpResponse transport(
+            final HttpRequest request,
+            final int code,
+            final String message,
+            final Headers headers,
+            final PayloadBody body,
+            final Protocol protocol,
+            final Supplier<Headers> trailers) {
+        return new HttpResponse(request, code, message, headers, body, protocol, null, trailers, null, null, null,
+                Normal.LONG_ZERO, Normal.LONG_ZERO);
+    }
+
+    /**
      * Returns a builder initialized with this response snapshot.
      *
-     * @return builder
+     * @return builder initialized from this immutable response snapshot
      */
     public Builder toBuilder() {
         return newBuilder();
     }
 
     /**
+     * Attaches transport timing before the response is published to the caller.
+     *
+     * @param sentAtMillis     request-send epoch milliseconds
+     * @param receivedAtMillis response-receive epoch milliseconds
+     * @return this response
+     */
+    public HttpResponse withTiming(final long sentAtMillis, final long receivedAtMillis) {
+        this.sentRequestAtMillis = validateTimestamp(sentAtMillis, "Sent request timestamp");
+        this.receivedResponseAtMillis = validateTimestamp(receivedAtMillis, "Received response timestamp");
+        return this;
+    }
+
+    /**
+     * Attaches the lease-aware body and transport handshake before the response is published to the caller.
+     *
+     * @param replacementBody    replacement response body
+     * @param transportHandshake handshake supplied by the transport, or {@code null} to retain the current handshake
+     * @return this response
+     */
+    public HttpResponse withBody(final PayloadBody replacementBody, final TlsHandshake transportHandshake) {
+        this.body = require(replacementBody, "Body");
+        if (handshake == null) {
+            this.handshake = transportHandshake;
+        }
+        return this;
+    }
+
+    /**
      * Returns a builder initialized with this response snapshot.
      *
-     * @return builder
+     * @return builder initialized from this immutable response snapshot
      */
     public Builder newBuilder() {
-        final Builder builder = builder().request(request).code(code).message(message).headers(headers).body(body)
-                .protocol(protocol).handshake(handshake).trailers(trailers).sentRequestAtMillis(sentRequestAtMillis)
-                .receivedResponseAtMillis(receivedResponseAtMillis);
-        builder.networkResponse = networkResponse;
-        builder.cacheResponse = cacheResponse;
-        builder.priorResponse = priorResponse;
-        return builder;
+        return new Builder(this);
     }
 
     /**
      * Returns request.
      *
-     * @return request
+     * @return request that produced this response
      */
     public HttpRequest request() {
         return request;
@@ -251,7 +305,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns headers.
      *
-     * @return headers
+     * @return immutable response headers
      */
     public Headers headers() {
         return headers;
@@ -260,7 +314,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns body.
      *
-     * @return body
+     * @return closeable response body
      */
     public PayloadBody body() {
         return body;
@@ -269,7 +323,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns the effective HTTP protocol.
      *
-     * @return protocol
+     * @return negotiated or request-derived HTTP protocol
      */
     public Protocol protocol() {
         return protocol;
@@ -278,7 +332,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns TLS handshake metadata.
      *
-     * @return handshake or null when unavailable
+     * @return TLS handshake metadata, or {@code null} for cleartext responses
      */
     public TlsHandshake handshake() {
         return handshake;
@@ -287,7 +341,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns response trailers.
      *
-     * @return trailers
+     * @return immutable response trailers supplied after body completion
      */
     public Headers trailers() {
         return require(trailers.get(), "Response trailers");
@@ -296,7 +350,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns the network response metadata.
      *
-     * @return network response or null
+     * @return metadata-only network response, or {@code null} when unavailable
      */
     public HttpResponse networkResponse() {
         return networkResponse;
@@ -305,7 +359,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns the cache response metadata.
      *
-     * @return cache response or null
+     * @return metadata-only cache response, or {@code null} when unavailable
      */
     public HttpResponse cacheResponse() {
         return cacheResponse;
@@ -314,7 +368,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns the prior response metadata.
      *
-     * @return prior response or null
+     * @return metadata-only prior response, or {@code null} when unavailable
      */
     public HttpResponse priorResponse() {
         return priorResponse;
@@ -358,8 +412,8 @@ public final class HttpResponse implements AutoCloseable {
      * @return parsed challenges
      */
     public List<Challenge> challenges() {
-        final String header = code == HTTP.HTTP_PROXY_AUTH ? HTTP.PROXY_AUTHENTICATE
-                : code == HTTP.HTTP_UNAUTHORIZED ? HTTP.WWW_AUTHENTICATE : null;
+        final String header = code == Http.Status.PROXY_AUTHENTICATION_REQUIRED ? Http.Header.PROXY_AUTHENTICATE
+                : code == Http.Status.UNAUTHORIZED ? Http.Header.WWW_AUTHENTICATE : null;
         if (header == null) {
             return List.of();
         }
@@ -383,7 +437,7 @@ public final class HttpResponse implements AutoCloseable {
      * Returns a repeatable snapshot of at most maxBytes from the response body.
      *
      * @param maxBytes maximum bytes to read
-     * @return peek body
+     * @return repeatable body containing at most the requested prefix bytes
      */
     public PayloadBody peekBody(final long maxBytes) {
         Assert.isTrue(maxBytes >= Normal._0, () -> new ValidateException("Peek body max bytes must be non-negative"));
@@ -412,7 +466,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Reads response body text and closes this response.
      *
-     * @return text
+     * @return response body decoded with its declared charset or UTF-8 fallback
      */
     public String text() {
         try {
@@ -426,29 +480,29 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Reads response body bytes.
      *
-     * @return bytes
+     * @return fully materialized response body bytes
      */
     public byte[] bytes() {
-        return Payload.materialize(body.payload(), body.materializeMaxBytes(), "HttpResponse.bytes()");
+        return body.bytes();
     }
 
     /**
      * Reads response body bytes with an explicit materialize threshold.
      *
      * @param maxBytes maximum bytes to materialize
-     * @return bytes
+     * @return fully materialized response body bytes within the threshold
      */
     public byte[] bytes(final long maxBytes) {
-        return Payload.materialize(body.payload(), maxBytes, "HttpResponse.bytes(long)");
+        return body.bytes(maxBytes);
     }
 
     /**
      * Decodes the response body as a typed object and closes this response.
      *
-     * @param codec codec
-     * @param type  expected type
-     * @param <T>   value type
-     * @return decoded value
+     * @param codec codec used to decode the materialized response payload
+     * @param type  required runtime type of the decoded value
+     * @param <T>   decoded value type
+     * @return decoded value cast to the required type
      */
     public <T> T decode(final DataCodec<?> codec, final Class<T> type) {
         return castDecoded(
@@ -460,7 +514,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Decodes the response body as a typed list and closes this response.
      *
-     * @param codec       codec
+     * @param codec       codec used to decode the materialized response payload
      * @param elementType expected element type
      * @param <T>         element type
      * @return decoded list
@@ -481,7 +535,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Decodes the response body as a typed array and closes this response.
      *
-     * @param codec       codec
+     * @param codec       codec used to decode the materialized response payload
      * @param elementType expected element type
      * @param <T>         element type
      * @return decoded array
@@ -495,7 +549,6 @@ public final class HttpResponse implements AutoCloseable {
             throw new ConvertException("Decoded response is not an array: {}", typeName(decoded));
         }
         final int length = Array.getLength(decoded);
-        @SuppressWarnings("unchecked")
         final T[] values = (T[]) Array.newInstance(require(elementType, "Decoded element type"), length);
         for (int i = 0; i < length; i++) {
             values[i] = castDecoded(Array.get(decoded, i), elementType, "HttpResponse.decodeArray element " + i);
@@ -507,7 +560,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body to a file.
      *
      * @param target target path
-     * @return target path
+     * @return supplied target path after the download is atomically installed
      */
     public Path download(final Path target) {
         return download(target, null);
@@ -518,7 +571,7 @@ public final class HttpResponse implements AutoCloseable {
      *
      * @param target   target path
      * @param progress progress listener, receiving written bytes and total bytes
-     * @return target path
+     * @return supplied target path after the download is atomically installed
      */
     public Path download(final Path target, final BiConsumer<Long, Long> progress) {
         final Path checkedTarget = Assert
@@ -554,7 +607,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body to a file.
      *
      * @param target target path
-     * @return target path
+     * @return supplied target path after the download is atomically installed
      */
     public Path toFile(final Path target) {
         return download(target);
@@ -564,7 +617,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body to a file.
      *
      * @param target target file
-     * @return target path
+     * @return target file path after the download is atomically installed
      */
     public Path toFile(final File target) {
         return download(require(target, "Download target").toPath());
@@ -574,7 +627,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body to a file.
      *
      * @param target target path
-     * @return target path
+     * @return parsed target path after the download is atomically installed
      */
     public Path toFile(final String target) {
         return download(Path.of(validatePathText(target, "Download target")));
@@ -584,7 +637,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body into a folder using response headers or URL filename.
      *
      * @param directory target directory
-     * @return target path
+     * @return resolved file path inside the supplied directory
      */
     public Path toFolder(final Path directory) {
         final Path checkedDirectory = Assert
@@ -596,7 +649,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body into a folder using response headers or URL filename.
      *
      * @param directory target directory
-     * @return target path
+     * @return resolved file path inside the supplied directory
      */
     public Path toFolder(final File directory) {
         return toFolder(require(directory, "Download directory").toPath());
@@ -606,7 +659,7 @@ public final class HttpResponse implements AutoCloseable {
      * Downloads response body into a folder using response headers or URL filename.
      *
      * @param directory target directory
-     * @return target path
+     * @return resolved file path inside the supplied directory
      */
     public Path toFolder(final String directory) {
         return toFolder(Path.of(validatePathText(directory, "Download directory")));
@@ -667,10 +720,10 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Resolves a download filename.
      *
-     * @return filename
+     * @return safe filename from Content-Disposition or URL path, with a binary fallback
      */
     private String downloadFilename() {
-        final String disposition = headers.get(HTTP.CONTENT_DISPOSITION);
+        final String disposition = headers.get(Http.Header.CONTENT_DISPOSITION);
         final String headerName = filenameFromDisposition(disposition);
         if (headerName != null) {
             return headerName;
@@ -685,7 +738,7 @@ public final class HttpResponse implements AutoCloseable {
      * Extracts a filename from Content-Disposition.
      *
      * @param value header value
-     * @return filename or null
+     * @return safe filename parameter, or {@code null} when absent or unsafe
      */
     private static String filenameFromDisposition(final String value) {
         if (value == null) {
@@ -727,9 +780,9 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Validates a path string.
      *
-     * @param value path value
-     * @param name  value name
-     * @return value
+     * @param value candidate path text
+     * @param name  logical field name included in validation failures
+     * @return validated non-blank single-line path text
      */
     private static String validatePathText(final String value, final String name) {
         Assert.isFalse(
@@ -741,12 +794,12 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Validates status code.
      *
-     * @param code code
-     * @return code
+     * @param code candidate HTTP status code
+     * @return validated status code in the range 100 through 599
      */
     private static int validateCode(final int code) {
         Assert.isTrue(
-                code >= HTTP.HTTP_CONTINUE && code <= 599,
+                code >= Http.Status.CONTINUE && code <= 599,
                 () -> new ValidateException("HTTP status code must be between 100 and 599"));
         return code;
     }
@@ -754,27 +807,27 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Validates reason phrase.
      *
-     * @param message message
-     * @return message
+     * @param message candidate HTTP reason phrase
+     * @return validated non-null single-line reason phrase
      */
     private static String validateMessage(final String message) {
-        final String current = Assert
-                .notNull(message, () -> new ValidateException("HTTP reason phrase must be non-null and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(current, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("HTTP reason phrase must be non-null and single-line"));
-        return current;
+        if (message == null || message.indexOf(Symbol.C_CR) >= Normal._0 || message.indexOf(Symbol.C_LF) >= Normal._0) {
+            throw new ValidateException("HTTP reason phrase must be non-null and single-line");
+        }
+        return message;
     }
 
     /**
      * Validates an epoch millisecond timestamp.
      *
-     * @param timestamp timestamp
+     * @param timestamp candidate epoch-millisecond timestamp
      * @param name      field name
      * @return timestamp
      */
     private static long validateTimestamp(final long timestamp, final String name) {
-        Assert.isTrue(timestamp >= Normal._0, () -> new ValidateException(name + " must be non-negative"));
+        if (timestamp < Normal._0) {
+            throw new ValidateException(name + " must be non-negative");
+        }
         return timestamp;
     }
 
@@ -800,8 +853,8 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Materializes and decodes this response body.
      *
-     * @param codec codec
-     * @param entry entry name
+     * @param codec codec used to decode the materialized response payload
+     * @param entry operation name included in conversion diagnostics
      * @return decoded value
      */
     private Object decodeValue(final DataCodec<?> codec, final String entry) {
@@ -837,14 +890,13 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Converts a decoded collection to a typed array.
      *
-     * @param collection  collection
+     * @param collection  decoded collection whose elements are copied
      * @param elementType element type
      * @param <T>         element type
      * @return array
      */
     private static <T> T[] arrayFromCollection(final Collection<?> collection, final Class<T> elementType) {
         final Class<T> expected = require(elementType, "Decoded element type");
-        @SuppressWarnings("unchecked")
         final T[] values = (T[]) Array.newInstance(expected, collection.size());
         int index = 0;
         for (final Object value : collection) {
@@ -857,7 +909,7 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Returns a readable decoded value type name.
      *
-     * @param value value
+     * @param value decoded value whose runtime type is described
      * @return type name
      */
     private static String typeName(final Object value) {
@@ -867,13 +919,16 @@ public final class HttpResponse implements AutoCloseable {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -957,9 +1012,30 @@ public final class HttpResponse implements AutoCloseable {
         }
 
         /**
+         * Creates a builder by directly sharing one immutable response snapshot.
+         *
+         * @param response source response
+         */
+        private Builder(final HttpResponse response) {
+            this.request = response.request;
+            this.code = response.code;
+            this.message = response.message;
+            this.headers = response.headers;
+            this.body = response.body;
+            this.protocol = response.protocol;
+            this.handshake = response.handshake;
+            this.trailers = response.trailers;
+            this.networkResponse = response.networkResponse;
+            this.cacheResponse = response.cacheResponse;
+            this.priorResponse = response.priorResponse;
+            this.sentRequestAtMillis = response.sentRequestAtMillis;
+            this.receivedResponseAtMillis = response.receivedResponseAtMillis;
+        }
+
+        /**
          * Sets request.
          *
-         * @param request request
+         * @param request request snapshot associated with the response
          * @return this builder
          */
         public Builder request(final HttpRequest request) {
@@ -992,7 +1068,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Sets headers.
          *
-         * @param headers headers
+         * @param headers immutable response headers
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -1003,7 +1079,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Sets body.
          *
-         * @param body body
+         * @param body closeable payload-backed response body
          * @return this builder
          */
         public Builder body(final PayloadBody body) {
@@ -1025,7 +1101,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Sets the effective protocol.
          *
-         * @param protocol protocol
+         * @param protocol negotiated response protocol, or {@code null} to derive it from the request
          * @return this builder
          */
         public Builder protocol(final Protocol protocol) {
@@ -1036,7 +1112,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Sets TLS handshake metadata.
          *
-         * @param handshake handshake
+         * @param handshake TLS handshake metadata, or {@code null} for cleartext
          * @return this builder
          */
         public Builder handshake(final TlsHandshake handshake) {
@@ -1047,7 +1123,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Sets response trailers.
          *
-         * @param trailers trailers
+         * @param trailers immutable response trailers
          * @return this builder
          */
         public Builder trailers(final Headers trailers) {
@@ -1136,7 +1212,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Builds response.
          *
-         * @return response
+         * @return immutable HTTP response built from the current candidates
          */
         public HttpResponse build() {
             return new HttpResponse(request, code, message, headers, body, protocol, handshake, trailers,

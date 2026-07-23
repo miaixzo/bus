@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric;
 
 import java.time.Duration;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -51,6 +50,14 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  * @since Java 21+
  */
 public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping, Duration close) {
+
+    /**
+     * Shared immutable default time policy.
+     */
+    private static final Timeout DEFAULTS = new Timeout(org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
+            org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
+            org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK, Duration.ZERO, Duration.ZERO,
+            org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE);
 
     /**
      * Creates a validated immutable time policy.
@@ -91,12 +98,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
      * @return default time policy
      */
     public static Timeout defaults() {
-        return Instances.get(
-                Timeout.class.getName() + ".defaults",
-                () -> new Timeout(org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
-                        org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
-                        org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK, Duration.ZERO, Duration.ZERO,
-                        org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE));
+        return DEFAULTS;
     }
 
     /**

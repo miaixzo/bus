@@ -44,7 +44,7 @@ public final class RawCodec implements FrameCodec {
     /**
      * Creates a raw codec.
      *
-     * @return raw codec
+     * @return new stateless raw codec
      */
     public static RawCodec create() {
         return new RawCodec();
@@ -53,8 +53,8 @@ public final class RawCodec implements FrameCodec {
     /**
      * Decodes all input bytes as one frame.
      *
-     * @param input input bytes
-     * @return decoded frame list
+     * @param input non-null buffer consumed in full when it contains bytes
+     * @return empty immutable list for empty input, otherwise one frame containing all input bytes
      */
     @Override
     public List<Frame> decode(final Buffer input) {
@@ -73,8 +73,8 @@ public final class RawCodec implements FrameCodec {
     /**
      * Encodes frame bytes without framing.
      *
-     * @param frame  frame
-     * @param output encoded byte destination
+     * @param frame  non-null frame whose payload is written without framing metadata
+     * @param output non-null destination receiving the frame payload
      */
     @Override
     public void encode(final Frame frame, final Buffer output) {
@@ -85,7 +85,7 @@ public final class RawCodec implements FrameCodec {
     }
 
     /**
-     * Resets codec state.
+     * Performs no action because this codec retains no decoder state.
      */
     @Override
     public void reset() {

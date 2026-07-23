@@ -20,8 +20,13 @@
 package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -53,7 +58,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.NetKit;
@@ -79,9 +84,8 @@ import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.tls.TlsChannel;
 import org.miaixz.bus.fabric.network.tls.TlsEngine;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.TlsSocketChannel;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
-import org.miaixz.bus.fabric.observe.EventObserver;
-import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -91,7 +95,6 @@ import org.miaixz.bus.fabric.registry.route.Route;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -102,6 +105,13 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class HttpConnect implements HttpStage, AutoCloseable {
+
+    /** Debug state captured once; Logger level discovery performs caller inspection and is not a hot-path probe. */
+    private static final boolean DEBUG_ENABLED = Logger.isDebugEnabled();
+
+    /** Shared unregister action for synchronous exchanges using {@link Cancellation#none()}. */
+    private static final Runnable NOOP_UNREGISTER = () -> {
+    };
 
     /**
      * Stage name.
@@ -143,6 +153,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      */
     private final Dispatcher dispatcher;
 
+    /** Canonical direct-route destinations, avoiding repeated immutable option-key construction on pooled requests. */
+    private final ConcurrentHashMap<Address, Destination> directDestinations;
+
+    /** Canonical TCP addresses beneath direct HTTPS routes. */
+    private final ConcurrentHashMap<Address, Address> directConnectAddresses;
+
     /**
      * Whether this stage owns and must close the pool.
      */
@@ -162,6 +178,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
     /**
      * Creates the fully owned compatibility stage.
+     *
+     * @param pool  connection pool used by the stage
+     * @param owned whether closing this stage also closes the pool
      */
     private HttpConnect(final ConnectionPool pool, final boolean owned) {
         this(pool, TlsContext.defaults(), TlsSettings.defaults(), null, DnsResolver.system(), pool.runtimeDispatcher());
@@ -303,13 +322,15 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         this.listener = safe(listener);
         this.resolver = require(resolver, "DNS resolver");
         this.dispatcher = require(dispatcher, "Dispatcher");
+        this.directDestinations = new ConcurrentHashMap<>();
+        this.directConnectAddresses = new ConcurrentHashMap<>();
     }
 
     /**
      * Acquires a connection, proceeds, and attaches release behavior to the response body.
      *
-     * @param request request
-     * @param chain   chain
+     * @param request request whose route requires a pooled connection
+     * @param chain   remaining HTTP stages to invoke after acquisition
      * @return response
      */
     @Override
@@ -318,34 +339,41 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         final HttpChain next = require(chain, "HTTP chain");
         final Cancellation cancellation = next.cancellation();
         cancellation.throwIfCancelled();
-        Logger.debug(
-                true,
-                "Fabric",
-                "HTTP connect stage started: method={}, host={}, port={}, secure={}",
-                current.method().value(),
-                current.url().host(),
-                current.url().port(),
-                current.url().address().secure());
+        final boolean debug = DEBUG_ENABLED;
+        if (debug) {
+            Logger.debug(
+                    true,
+                    "Fabric",
+                    "HTTP connect stage started: method={}, host={}, port={}, secure={}",
+                    current.method().value(),
+                    current.url().host(),
+                    current.url().port(),
+                    current.url().address().secure());
+        }
         final ConnectionLease lease = acquire(current, cancellation);
         try {
             cancellation.throwIfCancelled();
             final HttpResponse response = next.withConnection(lease, lease.connection()).proceed(current);
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP connect stage response received: host={}, port={}, code={}",
-                    current.url().host(),
-                    current.url().port(),
-                    response.code());
+            if (debug) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "HTTP connect stage response received: host={}, port={}, code={}",
+                        current.url().host(),
+                        current.url().port(),
+                        response.code());
+            }
             return track(lease, response);
         } catch (final RuntimeException e) {
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP connect stage failed: host={}, port={}, exception={}",
-                    current.url().host(),
-                    current.url().port(),
-                    e.getClass().getSimpleName());
+            if (debug) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "HTTP connect stage failed: host={}, port={}, exception={}",
+                        current.url().host(),
+                        current.url().port(),
+                        e.getClass().getSimpleName());
+            }
             closeLease(lease, "Unable to close connection after HTTP chain failure");
             throw e;
         }
@@ -354,7 +382,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Acquires a route lease from the connection pool.
      *
-     * @param request request
+     * @param request request supplying the route and timeout policy
      * @return connection lease
      */
     public ConnectionLease acquire(final HttpRequest request) {
@@ -364,7 +392,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Acquires a route lease from the connection pool with a cancellation scope.
      *
-     * @param request      request
+     * @param request      request supplying the route and timeout policy
      * @param cancellation cancellation scope
      * @return connection lease
      */
@@ -376,35 +404,52 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         final ProxyPlan proxy = proxy(current);
         validateProxy(proxy);
         final Destination destination = destination(target, proxy);
-        Logger.debug(
-                true,
-                "Fabric",
-                "HTTP connection lease acquisition started: host={}, port={}, secure={}, proxyMode={}, tunnel={}",
-                target.host(),
-                target.port(),
-                target.secure(),
-                proxyMode(proxy),
-                proxy.requiresTunnel(target));
-        final ConnectionLease lease = pool
-                .acquire(destination, () -> open(destination, target, proxy, current.timeout(), scope), scope);
-        scope.onCancel(lease::close);
-        scope.throwIfCancelled();
-        Logger.debug(
-                false,
-                "Fabric",
-                "HTTP connection lease acquired: host={}, port={}, healthy={}, proxyMode={}",
-                target.host(),
-                target.port(),
-                lease.connection().healthy(),
-                proxyMode(proxy));
+        final boolean debug = DEBUG_ENABLED;
+        if (debug) {
+            Logger.debug(
+                    true,
+                    "Fabric",
+                    "HTTP connection lease acquisition started: host={}, port={}, secure={}, proxyMode={}, tunnel={}",
+                    target.host(),
+                    target.port(),
+                    target.secure(),
+                    proxyMode(proxy),
+                    proxy.requiresTunnel(target));
+        }
+        final boolean transientConnection = "close".equalsIgnoreCase(current.headers().get(Http.Header.CONNECTION));
+        final Supplier<Connection> factory = () -> open(
+                destination,
+                target,
+                proxy,
+                current.timeout(),
+                scope,
+                transientConnection);
+        final ConnectionLease lease = transientConnection ? pool.acquireTransient(destination, factory, scope)
+                : pool.acquire(destination, factory, scope);
+        try {
+            scope.throwIfCancelled();
+        } catch (final RuntimeException e) {
+            closeLease(lease, "Unable to close cancelled connection lease");
+            throw e;
+        }
+        if (debug) {
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "HTTP connection lease acquired: host={}, port={}, healthy={}, proxyMode={}",
+                    target.host(),
+                    target.port(),
+                    lease.connection().healthy(),
+                    proxyMode(proxy));
+        }
         return lease;
     }
 
     /**
      * Releases or closes a lease based on response consumption state.
      *
-     * @param lease    lease
-     * @param response response
+     * @param lease    connection lease associated with the response
+     * @param response response whose body state determines reuse eligibility
      */
     public void release(final ConnectionLease lease, final HttpResponse response) {
         final ConnectionLease current = require(lease, "Connection lease");
@@ -436,6 +481,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      */
     @Override
     public void close() {
+        directDestinations.clear();
         RuntimeException failure = null;
         if (ownsConnector) {
             try {
@@ -473,10 +519,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Opens a network route for a connection destination.
      *
-     * @param destination connection destination
-     * @param target      target address
-     * @param proxy       proxy plan
-     * @param timeout     timeout
+     * @param destination  connection destination
+     * @param target       target address
+     * @param proxy        proxy plan
+     * @param timeout      maximum duration allowed for connection establishment
+     * @param cancellation cancellation scope governing route establishment
      * @return network connection
      */
     private Connection open(
@@ -484,25 +531,31 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             final Address target,
             final ProxyPlan proxy,
             final Timeout timeout,
-            final Cancellation cancellation) {
+            final Cancellation cancellation,
+            final boolean transientConnection) {
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
         final boolean tunnel = proxy.requiresTunnel(target);
         final Address connectAddress = connectAddress(target, proxy, connector.supports(Transport.TLS));
-        Logger.debug(
-                true,
-                "Fabric",
-                "HTTP route open started: targetHost={}, targetPort={}, connectHost={}, connectPort={}, "
-                        + "proxyMode={}, tunnel={}, nativeTls={}",
-                target.host(),
-                target.port(),
-                connectAddress.host(),
-                connectAddress.port(),
-                proxyMode(proxy),
-                tunnel,
-                connector.supports(Transport.TLS));
-        final Connection raw = awaitConnection(connector.connect(connectAddress, timeout), timeout, scope);
-        final Runnable unregisterRaw = scope.onCancel(raw::close);
+        final boolean debug = DEBUG_ENABLED;
+        if (debug) {
+            Logger.debug(
+                    true,
+                    "Fabric",
+                    "HTTP route open started: targetHost={}, targetPort={}, connectHost={}, connectPort={}, "
+                            + "proxyMode={}, tunnel={}, nativeTls={}",
+                    target.host(),
+                    target.port(),
+                    connectAddress.host(),
+                    connectAddress.port(),
+                    proxyMode(proxy),
+                    tunnel,
+                    connector.supports(Transport.TLS));
+        }
+        final Connection raw = connector instanceof SocketConnector socket ? socket
+                .open(connectAddress, timeout, transientConnection && target.secure() && !tunnel && !proxy.isSocks())
+                : awaitConnection(connector.connect(connectAddress, timeout), timeout, scope);
+        final Runnable unregisterRaw = scope.cancellable() ? scope.onCancel(raw::close) : NOOP_UNREGISTER;
         try {
             scope.throwIfCancelled();
             if (proxy.isSocks()) {
@@ -513,31 +566,37 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             }
             scope.throwIfCancelled();
             if (target.secure() && (tunnel || !connector.supports(Transport.TLS))) {
-                final Connection secured = tlsConnection(destination, raw, target, timeout, scope);
+                final Connection secured = tlsConnection(destination, raw, target, timeout, scope, transientConnection);
+                if (debug) {
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "HTTP route open completed with TLS wrapper: host={}, port={}",
+                            target.host(),
+                            target.port());
+                }
+                return secured;
+            }
+            if (debug) {
                 Logger.debug(
                         false,
                         "Fabric",
-                        "HTTP route open completed with TLS wrapper: host={}, port={}",
+                        "HTTP route open completed: host={}, port={}, secure={}",
                         target.host(),
-                        target.port());
-                return secured;
+                        target.port(),
+                        target.secure());
             }
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP route open completed: host={}, port={}, secure={}",
-                    target.host(),
-                    target.port(),
-                    target.secure());
             return new RoutedConnection(destination, raw);
         } catch (final RuntimeException e) {
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP route open failed: host={}, port={}, exception={}",
-                    target.host(),
-                    target.port(),
-                    e.getClass().getSimpleName());
+            if (debug) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "HTTP route open failed: host={}, port={}, exception={}",
+                        target.host(),
+                        target.port(),
+                        e.getClass().getSimpleName());
+            }
             closeConnection(raw, "Unable to close failed HTTP route");
             throw e;
         } finally {
@@ -560,27 +619,41 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             final Connection raw,
             final Address target,
             final Timeout timeout,
-            final Cancellation cancellation) {
+            final Cancellation cancellation,
+            final boolean socketFastPath) {
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
+        if (socketFastPath && raw instanceof SocketConnection socket) {
+            return tlsSocketConnection(destination, socket, target, timeout, scope);
+        }
         final TlsEngine engine = TlsEngine
                 .create(require(tlsContext, "TLS context"), target, require(tlsSettings, "TLS settings"));
         final Timeout currentTimeout = require(timeout, "Timeout");
         final TlsChannel tlsChannel = TlsChannel.wrap(raw.conduit(), engine, listener, dispatcher, currentTimeout);
-        final Runnable unregisterTls = scope.onCancel(tlsChannel::close);
+        final Runnable unregisterTls = scope.cancellable() ? scope.onCancel(tlsChannel::close) : NOOP_UNREGISTER;
         try {
-            Logger.debug(true, "Fabric", "HTTP TLS handshake started: host={}, port={}", target.host(), target.port());
+            final boolean debug = DEBUG_ENABLED;
+            if (debug) {
+                Logger.debug(
+                        true,
+                        "Fabric",
+                        "HTTP TLS handshake started: host={}, port={}",
+                        target.host(),
+                        target.port());
+            }
             final TlsHandshake handshake = await(
                     tlsChannel.handshake(),
                     currentTimeout.connect(),
                     "TLS handshake timed out",
                     scope);
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "HTTP TLS handshake completed: host={}, port={}",
-                    target.host(),
-                    target.port());
+            if (debug) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "HTTP TLS handshake completed: host={}, port={}",
+                        target.host(),
+                        target.port());
+            }
             return new TlsRoutedConnection(destination, raw, tlsChannel, handshake,
                     negotiatedProtocol(engine.applicationProtocol()));
         } finally {
@@ -588,8 +661,38 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         }
     }
 
+    /** Uses the JDK's optimized blocking TLS socket for the built-in blocking HTTP transport. */
+    private Connection tlsSocketConnection(
+            final Destination destination,
+            final SocketConnection raw,
+            final Address target,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        final Timeout currentTimeout = require(timeout, "Timeout");
+        final TlsSocketChannel tls = TlsSocketChannel.wrap(
+                require(tlsContext, "TLS context"),
+                raw.socket(),
+                target,
+                require(tlsSettings, "TLS settings"),
+                currentTimeout);
+        final Runnable unregisterTls = cancellation.cancellable() ? cancellation.onCancel(tls::close) : NOOP_UNREGISTER;
+        try {
+            cancellation.throwIfCancelled();
+            // Complete only the physical handshake here. Certificate-bearing public metadata is materialized
+            // when the response exposes it, keeping route establishment on the shortest JSSE path.
+            tls.handshakeSessionSynchronously();
+            cancellation.throwIfCancelled();
+            return new TlsSocketRoutedConnection(destination, raw, tls, negotiatedProtocol(tls.applicationProtocol()));
+        } finally {
+            unregisterTls.run();
+        }
+    }
+
     /**
      * Maps the wire-negotiated ALPN value and rejects every unknown non-empty protocol.
+     *
+     * @param applicationProtocol ALPN protocol selected by the TLS engine
+     * @return established HTTP wire protocol
      */
     private static Protocol negotiatedProtocol(final String applicationProtocol) {
         if (applicationProtocol == null || applicationProtocol.isBlank()
@@ -608,7 +711,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      * @param connection   proxy connection
      * @param target       target address
      * @param proxy        proxy plan
-     * @param timeout      timeout
+     * @param timeout      maximum duration allowed for the proxy handshake
      * @param cancellation cancellation scope
      */
     private void tunnel(
@@ -650,7 +753,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      *
      * @param connection   proxy connection
      * @param target       target address
-     * @param timeout      timeout
+     * @param timeout      maximum duration allowed for the SOCKS5 handshake
      * @param cancellation cancellation scope
      */
     private void socks(
@@ -717,55 +820,101 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Tracks a response so body completion releases the lease.
      *
-     * @param lease    lease
-     * @param response response
+     * @param lease    connection lease to release after body consumption
+     * @param response response whose payload is wrapped with release tracking
      * @return tracked response
      */
     private HttpResponse track(final ConnectionLease lease, final HttpResponse response) {
         final HttpResponse source = require(response, "HTTP response");
-        final ReleaseState state = new ReleaseState(lease);
-        final PayloadBody body = PayloadBody
-                .of(new LeasePayload(source.body().payload(), state), source.body().media());
-        final HttpResponse.Builder builder = source.toBuilder().body(body);
-        if (source.handshake() == null && lease.connection() instanceof TlsRoutedConnection tls) {
-            builder.handshake(tls.handshake());
+        final boolean reusable = reusable(source);
+        final TlsHandshake handshake = source.handshake() == null ? connectionHandshake(lease.connection()) : null;
+        if (source.body().length() == Normal._0) {
+            if (reusable && lease.connection().healthy()) {
+                lease.release();
+            } else {
+                lease.close();
+            }
+            return source.withBody(source.body(), handshake);
         }
-        final HttpResponse tracked = builder.build();
-        Logger.debug(
-                false,
-                "Fabric",
-                "HTTP response lease tracking installed: code={}, repeatable={}, healthy={}",
-                source.code(),
-                source.body().payload().repeatable(),
-                lease.connection().healthy());
+        final ReleaseState state = new ReleaseState(lease, reusable);
+        final PayloadBody body = source.body().withTransportPayload(new LeasePayload(source.body().payload(), state));
+        final HttpResponse tracked = source.withBody(body, handshake);
+        if (DEBUG_ENABLED) {
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "HTTP response lease tracking installed: code={}, repeatable={}, healthy={}",
+                    source.code(),
+                    source.body().payload().repeatable(),
+                    lease.connection().healthy());
+        }
         return tracked;
+    }
+
+    /** Returns transport handshake metadata without exposing the concrete TLS conduit. */
+    private static TlsHandshake connectionHandshake(final Connection connection) {
+        if (connection instanceof TlsRoutedConnection tls)
+            return tls.handshake();
+        if (connection instanceof TlsSocketRoutedConnection tls)
+            return tls.handshake();
+        return null;
+    }
+
+    /**
+     * Returns whether request and response connection semantics permit returning the physical connection to the pool.
+     *
+     * @param response completed response
+     * @return true when neither side requested connection closure
+     */
+    private static boolean reusable(final HttpResponse response) {
+        return !closeRequested(response.request().headers()) && !closeRequested(response.headers());
+    }
+
+    /**
+     * Detects a Connection: close token in a header collection.
+     *
+     * @param headers headers to inspect
+     * @return true when connection closure was requested
+     */
+    private static boolean closeRequested(final Headers headers) {
+        for (int index = 0; index < headers.size(); index++) {
+            if (Http.Header.CONNECTION.equalsIgnoreCase(headers.name(index))
+                    && Http.Header.CONNECTION_CLOSE.equalsIgnoreCase(headers.value(index))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Releases an untracked response using conservative body state.
      *
-     * @param lease    lease
-     * @param response response
+     * @param lease    connection lease associated with the response
+     * @param response untracked response used to determine safe reuse
      */
     private void releaseUntracked(final ConnectionLease lease, final HttpResponse response) {
         try {
             if (response.body().payload().repeatable() && lease.connection().healthy()) {
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP untracked lease released: code={}, repeatable={}, healthy={}",
-                        response.code(),
-                        true,
-                        true);
+                if (DEBUG_ENABLED) {
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "HTTP untracked lease released: code={}, repeatable={}, healthy={}",
+                            response.code(),
+                            true,
+                            true);
+                }
                 lease.release();
             } else {
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP untracked lease closed: code={}, repeatable={}, healthy={}",
-                        response.code(),
-                        response.body().payload().repeatable(),
-                        lease.connection().healthy());
+                if (DEBUG_ENABLED) {
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "HTTP untracked lease closed: code={}, repeatable={}, healthy={}",
+                            response.code(),
+                            response.body().payload().repeatable(),
+                            lease.connection().healthy());
+                }
                 lease.close();
             }
         } catch (final RuntimeException e) {
@@ -781,6 +930,19 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      * @return connection destination
      */
     private Destination destination(final Address target, final ProxyPlan proxy) {
+        if (proxy.proxy().isEmpty() && !proxy.requiresTunnel(target)) {
+            return directDestinations.computeIfAbsent(target, this::directDestination);
+        }
+        return buildDestination(target, proxy);
+    }
+
+    /** Builds and caches the overwhelmingly common direct-route identity. */
+    private Destination directDestination(final Address target) {
+        return buildDestination(target, ProxyPlan.direct());
+    }
+
+    /** Builds the immutable connection-pool key for one resolved route. */
+    private Destination buildDestination(final Address target, final ProxyPlan proxy) {
         final Protocol requestProtocol = protocol(target);
         Options options = Options.of(Builder.OPTION_TLS, target.secure()).with(Builder.OPTION_SECURE, target.secure())
                 .with(Builder.OPTION_MULTIPLEX, requestProtocol == Protocol.HTTP_2)
@@ -806,8 +968,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      * @param nativeTls whether connector supports TLS directly
      * @return connect address
      */
-    private static Address connectAddress(final Address target, final ProxyPlan proxy, final boolean nativeTls) {
-        return proxy.proxy().orElseGet(() -> target.secure() && !nativeTls ? tcpAddress(target) : target);
+    private Address connectAddress(final Address target, final ProxyPlan proxy, final boolean nativeTls) {
+        return proxy.proxy().orElseGet(
+                () -> target.secure() && !nativeTls
+                        ? directConnectAddresses.computeIfAbsent(target, HttpConnect::tcpAddress)
+                        : target);
     }
 
     /**
@@ -823,7 +988,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Selects the pooling protocol.
      *
-     * @param address address
+     * @param address destination address whose scheme selects the pool protocol
      * @return protocol
      */
     private static Protocol protocol(final Address address) {
@@ -833,7 +998,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Reads proxy plan from the request, keeping tag-based routes as a secondary fallback.
      *
-     * @param request request
+     * @param request request containing explicit or tag-based proxy configuration
      * @return proxy plan
      */
     private static ProxyPlan proxy(final HttpRequest request) {
@@ -896,11 +1061,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     private static String connectRequest(final Address target, final Headers authorization) {
         final String authority = authority(target);
         final StringBuilder builder = new StringBuilder();
-        builder.append(HTTP.CONNECT).append(Symbol.C_SPACE).append(authority).append(Symbol.C_SPACE)
+        builder.append(Http.Method.CONNECT.value()).append(Symbol.C_SPACE).append(authority).append(Symbol.C_SPACE)
                 .append(Protocol.HTTP_1_1).append(Symbol.CRLF);
-        builder.append(HTTP.HOST).append(Symbol.COLON).append(Symbol.SPACE).append(authority).append(Symbol.CRLF);
-        builder.append(HTTP.PROXY_CONNECTION).append(Symbol.COLON).append(Symbol.SPACE)
-                .append(HTTP.CONNECTION_KEEP_ALIVE).append(Symbol.CRLF);
+        builder.append(Http.Header.HOST).append(Symbol.COLON).append(Symbol.SPACE).append(authority)
+                .append(Symbol.CRLF);
+        builder.append(Http.Header.PROXY_CONNECTION).append(Symbol.COLON).append(Symbol.SPACE)
+                .append(Http.Header.CONNECTION_KEEP_ALIVE).append(Symbol.CRLF);
         for (final Map.Entry<String, List<String>> entry : authorization.asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 builder.append(entry.getKey()).append(Symbol.COLON).append(Symbol.SPACE).append(value)
@@ -954,7 +1120,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Formats host and port for HTTP authority use.
      *
-     * @param address address
+     * @param address address whose host and port form the authority
      * @return authority
      */
     private static String authority(final Address address) {
@@ -967,9 +1133,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Writes a whole buffer.
      *
-     * @param sink         sink
-     * @param source       source
-     * @param timeout      timeout
+     * @param sink         destination connection sink
+     * @param source       buffer whose remaining bytes are written
+     * @param timeout      maximum duration allowed for the write
      * @param cancellation cancellation scope
      */
     private static void writeAll(
@@ -992,8 +1158,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Reads a proxy response header.
      *
-     * @param source       source
-     * @param timeout      timeout
+     * @param source       proxy connection source
+     * @param timeout      maximum duration allowed while reading headers
      * @param cancellation cancellation scope
      * @return response header
      */
@@ -1033,9 +1199,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Reads exactly the requested number of bytes.
      *
-     * @param source       source
-     * @param length       length
-     * @param timeout      timeout
+     * @param source       proxy connection source
+     * @param length       exact number of bytes required
+     * @param timeout      maximum duration allowed for each read
      * @param message      timeout message
      * @param cancellation cancellation scope
      * @return bytes
@@ -1092,8 +1258,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Waits for a connection future.
      *
-     * @param future  future
-     * @param timeout timeout
+     * @param future  asynchronous connection result to await
+     * @param timeout maximum duration allowed for connection establishment
      * @return connection
      */
     private static Connection awaitConnection(final CompletableFuture<Connection> future, final Timeout timeout) {
@@ -1103,8 +1269,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Waits for a connection future with cancellation support.
      *
-     * @param future       future
-     * @param timeout      timeout
+     * @param future       asynchronous connection result to await
+     * @param timeout      maximum duration allowed for connection establishment
      * @param cancellation cancellation scope
      * @return connection
      */
@@ -1118,7 +1284,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Waits for TLS handshake completion.
      *
-     * @param future future
+     * @param future asynchronous TLS handshake result to await
      */
     private static void awaitTls(final CompletableFuture<?> future) {
         awaitTls(future, Cancellation.create());
@@ -1127,7 +1293,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Waits for TLS handshake completion with cancellation support.
      *
-     * @param future       future
+     * @param future       asynchronous TLS handshake result to await
      * @param cancellation cancellation scope
      */
     private static void awaitTls(final CompletableFuture<?> future, final Cancellation cancellation) {
@@ -1137,11 +1303,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Waits for a future with bus exceptions.
      *
-     * @param future  future
-     * @param timeout timeout
+     * @param future  asynchronous result to await
+     * @param timeout maximum duration allowed before failing
      * @param message timeout message
      * @param <T>     result type
-     * @return result
+     * @return the completed asynchronous result
      */
     private static <T> T await(final CompletableFuture<T> future, final Duration timeout, final String message) {
         return await(future, timeout, message, Cancellation.create());
@@ -1150,12 +1316,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Waits for a future with bus exceptions and cancellation support.
      *
-     * @param future       future
-     * @param timeout      timeout
+     * @param future       asynchronous result to await
+     * @param timeout      maximum duration allowed before failing
      * @param message      timeout message
      * @param cancellation cancellation scope
      * @param <T>          result type
-     * @return result
+     * @return the completed asynchronous result
      */
     private static <T> T await(
             final CompletableFuture<T> future,
@@ -1164,7 +1330,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
-        final Runnable unregister = scope.onCancel(() -> future.cancel(true));
+        final Runnable unregister = scope.cancellable() ? scope.onCancel(() -> future.cancel(true)) : NOOP_UNREGISTER;
         try {
             final T result = timeout.isZero() ? future.get()
                     : future.get(Math.max(1L, timeout.toMillis()), TimeUnit.MILLISECONDS);
@@ -1193,8 +1359,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Closes a lease after failure.
      *
-     * @param lease   lease
-     * @param message message
+     * @param lease   failed lease to close
+     * @param message diagnostic message used if closing fails
      */
     private static void closeLease(final ConnectionLease lease, final String message) {
         try {
@@ -1207,8 +1373,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Closes a connection after failure.
      *
-     * @param connection connection
-     * @param message    message
+     * @param connection failed connection to close
+     * @param message    diagnostic message used if closing fails
      */
     private static void closeConnection(final Connection connection, final String message) {
         try {
@@ -1221,7 +1387,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Normalizes a stage name.
      *
-     * @param value value
+     * @param value raw stage name, or {@code null}
      * @return normalized name
      */
     private static String normalizeName(final String value) {
@@ -1234,8 +1400,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Wraps a runtime failure as an internal failure when needed.
      *
-     * @param message message
-     * @param failure failure
+     * @param message failure message for a newly created internal exception
+     * @param failure runtime failure to preserve or wrap
      * @return internal exception
      */
     private static InternalException internal(final String message, final RuntimeException failure) {
@@ -1245,7 +1411,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Protects listener callbacks from escaping.
      *
-     * @param listener listener
+     * @param listener listener to protect, or {@code null} for a no-op listener
      * @return safe listener
      */
     private static Listener<Object> safe(final Listener<Object> listener) {
@@ -1255,13 +1421,16 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -1269,58 +1438,63 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      */
     private static final class ReleaseState {
 
+        /** Completion state updater. */
+        private static final VarHandle STATE;
+
+        /** Body fully consumed bit. */
+        private static final int COMPLETE = 1;
+
+        /** Body failed bit. */
+        private static final int BROKEN = 1 << 1;
+
+        /** Lease already released bit. */
+        private static final int RELEASED = 1 << 2;
+
+        static {
+            try {
+                STATE = MethodHandles.lookup().findVarHandle(ReleaseState.class, "state", int.class);
+            } catch (final ReflectiveOperationException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
         /**
          * Lease to release.
          */
         private final ConnectionLease lease;
 
         /**
+         * Whether protocol framing permits connection reuse after complete body consumption.
+         */
+        private final boolean reusable;
+
+        /**
          * Body completion flag.
          */
-        private final AtomicBoolean complete;
+        private volatile int state;
 
-        /**
-         * Body failure flag.
-         */
-        private final AtomicBoolean broken;
-
-        /**
-         * Release completion flag.
-         */
-        private final AtomicBoolean released;
-
-        /**
-         * Tracked response.
-         */
         /**
          * Creates a release state.
          *
-         * @param lease lease
+         * @param lease connection lease owned by this release state
          */
-        private ReleaseState(final ConnectionLease lease) {
+        private ReleaseState(final ConnectionLease lease, final boolean reusable) {
             this.lease = require(lease, "Connection lease");
-            this.complete = new AtomicBoolean();
-            this.broken = new AtomicBoolean();
-            this.released = new AtomicBoolean();
+            this.reusable = reusable;
         }
 
-        /**
-         * Stores the tracked response.
-         *
-         * @param response response
-         */
         /**
          * Marks the body fully consumed.
          */
         private void complete() {
-            complete.set(true);
+            STATE.getAndBitwiseOr(this, COMPLETE);
         }
 
         /**
          * Marks the body as broken.
          */
         private void broken() {
-            broken.set(true);
+            STATE.getAndBitwiseOr(this, BROKEN);
         }
 
         /**
@@ -1337,27 +1511,37 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * Releases or closes the lease once.
          */
         private void release() {
-            if (!released.compareAndSet(false, true)) {
-                return;
-            }
+            int observed;
+            do {
+                observed = state;
+                if ((observed & RELEASED) != 0) {
+                    return;
+                }
+            } while (!STATE.compareAndSet(this, observed, observed | RELEASED));
+            final boolean complete = (observed & COMPLETE) != 0;
+            final boolean broken = (observed & BROKEN) != 0;
             try {
-                if (complete.get() && !broken.get() && lease.connection().healthy()) {
-                    Logger.debug(
-                            false,
-                            "Fabric",
-                            "HTTP tracked lease released: complete={}, broken={}, healthy={}",
-                            complete.get(),
-                            broken.get(),
-                            lease.connection().healthy());
+                if (complete && !broken && reusable && lease.connection().healthy()) {
+                    if (DEBUG_ENABLED) {
+                        Logger.debug(
+                                false,
+                                "Fabric",
+                                "HTTP tracked lease released: complete={}, broken={}, healthy={}",
+                                complete,
+                                broken,
+                                lease.connection().healthy());
+                    }
                     lease.release();
                 } else {
-                    Logger.debug(
-                            false,
-                            "Fabric",
-                            "HTTP tracked lease closed: complete={}, broken={}, healthy={}",
-                            complete.get(),
-                            broken.get(),
-                            lease.connection().healthy());
+                    if (DEBUG_ENABLED) {
+                        Logger.debug(
+                                false,
+                                "Fabric",
+                                "HTTP tracked lease closed: complete={}, broken={}, healthy={}",
+                                complete,
+                                broken,
+                                lease.connection().healthy());
+                    }
                     lease.close();
                 }
             } catch (final RuntimeException e) {
@@ -1385,7 +1569,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Creates a lease payload.
          *
-         * @param delegate delegate
+         * @param delegate payload whose lifecycle is tracked
          * @param state    release state
          */
         private LeasePayload(final Payload delegate, final ReleaseState state) {
@@ -1395,6 +1579,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Returns the response-local release owner for explicit release validation.
+         *
+         * @return release state shared by all response body views
          */
         private ReleaseState state() {
             return state;
@@ -1439,7 +1625,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         @Override
         public byte[] bytes(final long maxBytes) {
             try {
-                final byte[] data = Payload.materialize(this, maxBytes, "HttpConnect.LeasePayload.bytes(long)");
+                final byte[] data = delegate.bytes(maxBytes);
                 state.complete();
                 state.release();
                 return data;
@@ -1453,7 +1639,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Reads payload text.
          *
-         * @param charset charset
+         * @param charset charset used to decode the payload bytes
          * @return text
          */
         @Override
@@ -1464,7 +1650,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Reads payload text with an explicit materialize threshold and releases the lease.
          *
-         * @param charset  charset
+         * @param charset  charset used to decode the payload bytes
          * @param maxBytes maximum bytes to materialize
          * @return text
          */
@@ -1528,7 +1714,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Creates a lease source.
          *
-         * @param delegate delegate
+         * @param delegate stream source whose lifecycle is tracked
          * @param state    release state
          */
         private LeaseSource(final Source delegate, final ReleaseState state) {
@@ -1599,6 +1785,20 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     private static class RoutedConnection implements Connection {
 
         /**
+         * Atomic updater for the lazily published protocol attachment.
+         */
+        private static final VarHandle PROTOCOL_ATTACHMENT;
+
+        static {
+            try {
+                PROTOCOL_ATTACHMENT = MethodHandles.lookup()
+                        .findVarHandle(RoutedConnection.class, "protocolAttachment", Object.class);
+            } catch (final ReflectiveOperationException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
+        /**
          * Route destination.
          */
         private final Destination destination;
@@ -1618,11 +1818,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         private final Connection.MultiplexAttachment attachment;
 
+        /** Sequential protocol session retained for exclusive HTTP/1.1 leases. */
+        private volatile Object protocolAttachment;
+
         /**
          * Creates a routed connection.
          *
          * @param destination route destination
-         * @param delegate    delegate
+         * @param delegate    physical connection reached through the route
          */
         RoutedConnection(final Destination destination, final Connection delegate) {
             this(destination, delegate,
@@ -1631,6 +1834,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Creates a routed connection with an authoritative wire protocol.
+         *
+         * @param destination route destination represented by the connection
+         * @param delegate    physical connection reached through the route
+         * @param protocol    negotiated HTTP wire protocol
          */
         RoutedConnection(final Destination destination, final Connection delegate, final Protocol protocol) {
             this.destination = require(destination, "Connection destination");
@@ -1760,6 +1967,28 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
+         * Returns the connection-local sequential protocol session.
+         *
+         * @return attached session, or null before first use
+         */
+        @Override
+        public Object protocolAttachment() {
+            return protocolAttachment;
+        }
+
+        /**
+         * Installs the connection-local sequential protocol session atomically.
+         *
+         * @param expected expected session
+         * @param update   replacement session
+         * @return true when installed
+         */
+        @Override
+        public boolean compareAndSetProtocolAttachment(final Object expected, final Object update) {
+            return PROTOCOL_ATTACHMENT.compareAndSet(this, expected, require(update, "Protocol attachment"));
+        }
+
+        /**
          * Closes the delegate.
          */
         @Override
@@ -1801,6 +2030,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * @param raw         raw connection
          * @param tls         TLS channel
          * @param handshake   TLS handshake metadata
+         * @param protocol    protocol negotiated by ALPN
          */
         private TlsRoutedConnection(final Destination destination, final Connection raw, final TlsChannel tls,
                 final TlsHandshake handshake, final Protocol protocol) {
@@ -1887,10 +2117,102 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (!closed.compareAndSet(false, true)) {
                 return;
             }
-            tls.close();
-            raw.close();
+            try {
+                tls.abort();
+            } finally {
+                raw.abort();
+            }
         }
 
+        /**
+         * Aborts a TLS exchange that the HTTP layer has already classified as non-reusable.
+         */
+        @Override
+        public void abort() {
+            // A graceful close may already own the lifecycle flag while blocked in close_notify or a physical
+            // write. Abort must still reach both transport layers so that blocked HTTP/2 reader/writer activities
+            // are released; TlsChannel and the raw connection provide their own idempotent close boundaries.
+            closed.set(true);
+            try {
+                tls.abort();
+            } finally {
+                raw.abort();
+            }
+        }
+
+    }
+
+    /** Routed connection using the JDK SSLSocket data path. */
+    private static final class TlsSocketRoutedConnection extends RoutedConnection {
+
+        /**
+         * Raw transport connection that owns the underlying socket.
+         */
+        private final Connection raw;
+
+        /**
+         * TLS conduit layered over the raw connection.
+         */
+        private final TlsSocketChannel tls;
+
+        private TlsSocketRoutedConnection(final Destination destination, final Connection raw,
+                final TlsSocketChannel tls, final Protocol protocol) {
+            super(destination, raw, protocol);
+            this.raw = require(raw, "Raw connection");
+            this.tls = require(tls, "TLS socket channel");
+        }
+
+        private TlsHandshake handshake() {
+            return tls.handshakeMetadata();
+        }
+
+        @Override
+        public Conduit conduit() {
+            return tls;
+        }
+
+        @Override
+        public Source source() {
+            return tls.source();
+        }
+
+        @Override
+        public Sink sink() {
+            return tls.sink();
+        }
+
+        @Override
+        public boolean healthy() {
+            return tls.opened() && raw.healthy();
+        }
+
+        @Override
+        public boolean idle() {
+            return raw.idle();
+        }
+
+        @Override
+        public Status state() {
+            return raw.state();
+        }
+
+        @Override
+        public void close() {
+            try {
+                tls.abort();
+            } finally {
+                raw.abort();
+            }
+        }
+
+        @Override
+        public void abort() {
+            try {
+                tls.abort();
+            } finally {
+                raw.abort();
+            }
+        }
     }
 
     /**
@@ -2019,6 +2341,15 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         private final Dispatcher dispatcher;
 
+        /** Last successful address per logical origin; failed direct attempts fall back to the full race. */
+        private final ConcurrentHashMap<Address, InetAddress> preferredAddresses = new ConcurrentHashMap<>();
+
+        /** Lock-free most-recent origin fast path ahead of the multi-origin map. */
+        private volatile Address preferredAddress;
+
+        /** Last successful candidate paired with {@link #preferredAddress}. */
+        private volatile InetAddress preferredCandidate;
+
         /**
          * Creates a socket connector.
          *
@@ -2069,7 +2400,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Returns supported transports.
          *
-         * @param transport transport
+         * @param transport transport scheme to test
          * @return true when supported
          */
         @Override
@@ -2089,11 +2420,16 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Opens a blocking socket channel.
          *
-         * @param address address
-         * @param timeout timeout
+         * @param address remote address to connect
+         * @param timeout maximum duration allowed for the blocking connect
          * @return connection
          */
         private Connection open(final Address address, final Timeout timeout) {
+            return open(address, timeout, false);
+        }
+
+        /** Opens either the channel transport or the plain-socket shape used by one-shot JSSE routes. */
+        private Connection open(final Address address, final Timeout timeout, final boolean socketStream) {
             if (closed.get()) {
                 throw new StatefulException("HTTP socket connector is closed");
             }
@@ -2105,10 +2441,31 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             }
             final long deadline = timeout.connect().isZero() ? Long.MAX_VALUE
                     : System.nanoTime() + timeout.connect().toNanos();
+            final Address lastAddress = preferredAddress;
+            final InetAddress preferred = lastAddress == address || address.equals(lastAddress) ? preferredCandidate
+                    : preferredAddresses.get(address);
+            if (preferred != null && result.addresses().contains(preferred)) {
+                try {
+                    return connectCandidate(address, timeout, preferred, deadline, socketStream);
+                } catch (final RuntimeException ignored) {
+                    preferredAddresses.remove(address, preferred);
+                    if (preferred == preferredCandidate) {
+                        preferredAddress = null;
+                        preferredCandidate = null;
+                    }
+                }
+            }
             RuntimeException failure = null;
             for (int index = Normal._0; index < result.addresses().size(); index += Normal._2) {
                 try {
-                    return race(address, timeout, result.addresses(), index, deadline);
+                    final Connection connection = race(
+                            address,
+                            timeout,
+                            result.addresses(),
+                            index,
+                            deadline,
+                            socketStream);
+                    return connection;
                 } catch (final RuntimeException e) {
                     failure = e;
                 }
@@ -2119,36 +2476,53 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Races at most two stable-order address candidates with a 250 ms stagger.
+         *
+         * @param address    unresolved destination retaining the logical host and port
+         * @param timeout    connection timeout policy
+         * @param candidates stable-order resolved address candidates
+         * @param offset     index of the first candidate in this race
+         * @param deadline   shared monotonic connection deadline
+         * @return first successfully established connection
          */
         private Connection race(
                 final Address address,
                 final Timeout timeout,
                 final List<InetAddress> candidates,
                 final int offset,
-                final long deadline) {
+                final long deadline,
+                final boolean socketStream) {
             final int count = Math.min(Normal._2, candidates.size() - offset);
+            if (count == Normal._1) {
+                return connectCandidate(address, timeout, candidates.get(offset), deadline, socketStream);
+            }
             final CompletableFuture<Connection> winner = new CompletableFuture<>();
             final AtomicInteger failures = new AtomicInteger();
             final AtomicReference<RuntimeException> lastFailure = new AtomicReference<>();
-            launch(address, timeout, candidates.get(offset), deadline, winner, failures, lastFailure, count);
+            launch(
+                    address,
+                    timeout,
+                    candidates.get(offset),
+                    deadline,
+                    winner,
+                    failures,
+                    lastFailure,
+                    count,
+                    socketStream);
             if (count == Normal._2 && !winner.isDone()) {
-                try {
-                    Thread.sleep(Builder.HAPPY_EYEBALLS_DELAY.toMillis());
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    throw new SocketException("Socket connect race was interrupted", e);
-                }
-                if (!winner.isDone()) {
-                    launch(
-                            address,
-                            timeout,
-                            candidates.get(offset + Normal._1),
-                            deadline,
-                            winner,
-                            failures,
-                            lastFailure,
-                            count);
-                }
+                // Start the alternate immediately. The previous unconditional sleep
+                // charged every successful localhost/cold-TLS connection 250 ms and
+                // also delayed fallback after an immediate refusal. The first winner
+                // remains authoritative and the late socket is closed by launch().
+                launch(
+                        address,
+                        timeout,
+                        candidates.get(offset + Normal._1),
+                        deadline,
+                        winner,
+                        failures,
+                        lastFailure,
+                        count,
+                        socketStream);
             }
             final long remaining = deadline == Long.MAX_VALUE ? Long.MAX_VALUE : deadline - System.nanoTime();
             if (remaining <= Normal._0) {
@@ -2170,6 +2544,15 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Launches one blocking candidate on a virtual thread and closes every late winner.
+         *
+         * @param address        unresolved destination retaining the logical port
+         * @param timeout        connection timeout policy
+         * @param candidate      resolved network address to try
+         * @param deadline       shared monotonic connection deadline
+         * @param winner         future completed by the first successful candidate
+         * @param failures       number of failed candidates
+         * @param lastFailure    most recent candidate failure
+         * @param candidateCount total candidates participating in this race
          */
         private void launch(
                 final Address address,
@@ -2179,49 +2562,99 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 final CompletableFuture<Connection> winner,
                 final AtomicInteger failures,
                 final AtomicReference<RuntimeException> lastFailure,
-                final int candidateCount) {
+                final int candidateCount,
+                final boolean socketStream) {
             Thread.ofVirtual().name("fabric-http-connect").start(() -> {
-                SocketChannel channel = null;
                 try {
-                    channel = SocketChannel.open();
-                    final long remaining = deadline == Long.MAX_VALUE ? Long.MAX_VALUE : deadline - System.nanoTime();
-                    if (remaining <= Normal._0) {
-                        throw new TimeoutException("Socket connect timed out");
-                    }
-                    final Duration candidateTimeout = remaining == Long.MAX_VALUE ? timeout.connect()
-                            : Duration.ofNanos(remaining);
-                    channel.socket()
-                            .connect(new InetSocketAddress(candidate, address.port()), timeoutMillis(candidateTimeout));
-                    final Connection connection = new SocketConnection(address, channel, listener, dispatcher, timeout);
-                    channel = null;
+                    final Connection connection = connectCandidate(address, timeout, candidate, deadline, socketStream);
                     if (!winner.complete(connection)) {
                         connection.close();
-                    }
-                } catch (final SocketTimeoutException e) {
-                    lastFailure.set(new TimeoutException("Socket connect timed out", e));
-                    if (failures.incrementAndGet() == candidateCount) {
-                        winner.completeExceptionally(lastFailure.get());
-                    }
-                } catch (final IOException e) {
-                    lastFailure.set(new SocketException("Socket connect failed", e));
-                    if (failures.incrementAndGet() == candidateCount) {
-                        winner.completeExceptionally(lastFailure.get());
+                    } else {
+                        preferredAddresses.put(address, candidate);
+                        preferredCandidate = candidate;
+                        preferredAddress = address;
                     }
                 } catch (final RuntimeException e) {
                     lastFailure.set(e);
                     if (failures.incrementAndGet() == candidateCount) {
                         winner.completeExceptionally(e);
                     }
-                } finally {
-                    IoKit.closeQuietly(channel);
                 }
             });
         }
 
         /**
+         * Connects one resolved address within the shared connect deadline.
+         *
+         * @param address   logical destination
+         * @param timeout   timeout policy
+         * @param candidate resolved address
+         * @param deadline  shared connect deadline
+         * @return connected socket connection
+         */
+        private Connection connectCandidate(
+                final Address address,
+                final Timeout timeout,
+                final InetAddress candidate,
+                final long deadline,
+                final boolean socketStream) {
+            if (socketStream) {
+                return connectSecureCandidate(address, timeout, candidate, deadline);
+            }
+            SocketChannel channel = null;
+            try {
+                channel = SocketChannel.open();
+                final long remaining = deadline == Long.MAX_VALUE ? Long.MAX_VALUE : deadline - System.nanoTime();
+                if (remaining <= Normal._0) {
+                    throw new TimeoutException("Socket connect timed out");
+                }
+                final Duration candidateTimeout = remaining == Long.MAX_VALUE ? timeout.connect()
+                        : Duration.ofNanos(remaining);
+                channel.socket()
+                        .connect(new InetSocketAddress(candidate, address.port()), timeoutMillis(candidateTimeout));
+                final Connection connection = new SocketConnection(address, channel, listener, dispatcher, timeout);
+                channel = null;
+                return connection;
+            } catch (final SocketTimeoutException e) {
+                throw new TimeoutException("Socket connect timed out", e);
+            } catch (final IOException e) {
+                throw new SocketException("Socket connect failed", e);
+            } finally {
+                IoKit.closeQuietly(channel);
+            }
+        }
+
+        /** Connects direct HTTPS using the plain Socket shape expected by JSSE. */
+        private Connection connectSecureCandidate(
+                final Address address,
+                final Timeout timeout,
+                final InetAddress candidate,
+                final long deadline) {
+            Socket socket = null;
+            try {
+                socket = new Socket();
+                final long remaining = deadline == Long.MAX_VALUE ? Long.MAX_VALUE : deadline - System.nanoTime();
+                if (remaining <= Normal._0)
+                    throw new TimeoutException("Socket connect timed out");
+                final Duration candidateTimeout = remaining == Long.MAX_VALUE ? timeout.connect()
+                        : Duration.ofNanos(remaining);
+                socket.connect(new InetSocketAddress(candidate, address.port()), timeoutMillis(candidateTimeout));
+                final Connection connection = new SocketConnection(address, socket, listener, dispatcher, timeout);
+                socket = null;
+                return connection;
+            } catch (final SocketTimeoutException e) {
+                throw new TimeoutException("Socket connect timed out", e);
+            } catch (final IOException e) {
+                throw new SocketException("Socket connect failed", e);
+            } finally {
+                IoKit.closeQuietly(socket);
+            }
+        }
+
+        /**
          * Converts a timeout to socket milliseconds.
          *
-         * @param timeout timeout
+         * @param timeout duration converted for socket APIs
          * @return milliseconds
          */
         private static int timeoutMillis(final Duration timeout) {
@@ -2241,46 +2674,63 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Connection destination.
          */
-        private final Destination destination;
+        private final Address address;
+
+        /** Lazily materialized only when a caller observes the raw, unrouted connection. */
+        private volatile Destination destination;
 
         /**
          * Socket channel.
          */
-        private final SocketChannel socket;
+        private final SocketChannel channel;
+
+        /** Connected socket, either standalone or owned by {@link #channel}. */
+        private final Socket socket;
 
         /**
          * Network conduit.
          */
         private final Conduit conduit;
 
-        /**
-         * Lifecycle scope.
-         */
-        private final LifecycleScope scope;
+        /** Lifecycle listener retained without allocating a full protocol resource scope. */
+        private final Listener<Object> listener;
+
+        /** One-way close guard for the transport socket. */
+        private final AtomicBoolean closed = new AtomicBoolean();
 
         /**
          * Creates a socket connection.
          *
-         * @param address    address
-         * @param socket     socket channel
+         * @param address    remote address represented by the connection
+         * @param socket     connected channel backing the connection
          * @param listener   lifecycle listener
          * @param dispatcher runtime dispatcher
          * @param timeout    operation timeout policy
          */
         private SocketConnection(final Address address, final SocketChannel socket, final Listener<Object> listener,
                 final Dispatcher dispatcher, final Timeout timeout) {
-            this.destination = Destination.of(address.protocol(), address, Options.empty());
-            this.socket = require(socket, "Socket channel");
+            this.address = require(address, "Address");
+            this.channel = require(socket, "Socket channel");
+            this.socket = socket.socket();
             this.conduit = new SocketConduit(socket, dispatcher, timeout);
-            this.scope = LifecycleScope.session(
-                    this,
-                    "http-socket-connection",
-                    listener,
-                    EventObserver.noop(),
-                    ObservationMarker.CONNECT_SUCCESS,
-                    null,
-                    ObservationMarker.CONNECT_FAILED);
-            this.scope.open(this);
+            this.listener = safe(listener);
+            this.listener.open(this);
+        }
+
+        /** Creates a direct plain-socket connection for JSSE layering. */
+        private SocketConnection(final Address address, final Socket socket, final Listener<Object> listener,
+                final Dispatcher dispatcher, final Timeout timeout) {
+            this.address = require(address, "Address");
+            this.channel = null;
+            this.socket = require(socket, "Socket");
+            this.conduit = new SocketStreamConduit(socket);
+            this.listener = safe(listener);
+            this.listener.open(this);
+        }
+
+        /** Returns the connected blocking socket used for TLS layering. */
+        private java.net.Socket socket() {
+            return socket;
         }
 
         /**
@@ -2290,7 +2740,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public Destination destination() {
-            return destination;
+            Destination current = destination;
+            if (current == null) {
+                current = Destination.of(address.protocol(), address, Options.empty());
+                destination = current;
+            }
+            return current;
         }
 
         /**
@@ -2310,7 +2765,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public Status state() {
-            return scope.state();
+            return closed.get() ? Status.CLOSED : Status.OPENED;
         }
 
         /**
@@ -2340,7 +2795,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public boolean healthy() {
-            return scope.state() == Status.OPENED && socket.isConnected() && socket.isOpen();
+            return !closed.get() && socket.isConnected() && !socket.isClosed() && (channel == null || channel.isOpen());
         }
 
         /**
@@ -2358,16 +2813,127 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public void close() {
-            if (scope.state().terminal()) {
+            if (!closed.compareAndSet(false, true))
                 return;
-            }
             try {
                 conduit.close();
             } finally {
-                scope.close(this);
+                listener.close(this);
             }
         }
 
+    }
+
+    /** Stream conduit used only until a direct HTTPS socket is layered with JSSE. */
+    private static final class SocketStreamConduit implements Conduit {
+
+        /**
+         * Per-thread staging array reused by blocking stream reads and writes.
+         */
+        private static final ThreadLocal<byte[]> SCRATCH = ThreadLocal.withInitial(() -> new byte[Normal._8192]);
+
+        /**
+         * Connected socket borrowed from the owning raw connection.
+         */
+        private final Socket socket;
+
+        /**
+         * Input stream borrowed from the connected socket.
+         */
+        private final InputStream input;
+
+        /**
+         * Output stream borrowed from the connected socket.
+         */
+        private final OutputStream output;
+
+        /**
+         * Source view backed by this conduit.
+         */
+        private final Source source;
+
+        /**
+         * Sink view backed by this conduit.
+         */
+        private final Sink sink;
+
+        private SocketStreamConduit(final Socket socket) {
+            this.socket = require(socket, "Socket");
+            try {
+                this.input = socket.getInputStream();
+                this.output = socket.getOutputStream();
+            } catch (final IOException e) {
+                throw new SocketException("Unable to open socket streams", e);
+            }
+            this.source = Conduit.super.source();
+            this.sink = Conduit.super.sink();
+        }
+
+        @Override
+        public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
+            try {
+                return CompletableFuture.completedFuture(readSynchronously(target, byteCount));
+            } catch (final Throwable failure) {
+                return CompletableFuture.failedFuture(failure);
+            }
+        }
+
+        @Override
+        public long readSynchronously(final Buffer target, final long byteCount) throws IOException {
+            if (byteCount == Normal._0)
+                return Normal._0;
+            final byte[] scratch = SCRATCH.get();
+            final int count = input.read(scratch, Normal._0, (int) Math.min(byteCount, scratch.length));
+            if (count > Normal._0)
+                target.write(scratch, Normal._0, count);
+            return count;
+        }
+
+        @Override
+        public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
+            try {
+                return CompletableFuture.completedFuture(writeSynchronously(source, byteCount));
+            } catch (final Throwable failure) {
+                return CompletableFuture.failedFuture(failure);
+            }
+        }
+
+        @Override
+        public long writeSynchronously(final Buffer source, final long byteCount) throws IOException {
+            final byte[] scratch = SCRATCH.get();
+            long remaining = byteCount;
+            while (remaining > Normal._0) {
+                final int count = (int) Math.min(remaining, scratch.length);
+                source.read(scratch, Normal._0, count);
+                output.write(scratch, Normal._0, count);
+                remaining -= count;
+            }
+            return byteCount;
+        }
+
+        @Override
+        public Source source() {
+            return source;
+        }
+
+        @Override
+        public Sink sink() {
+            return sink;
+        }
+
+        @Override
+        public boolean opened() {
+            return !socket.isClosed();
+        }
+
+        @Override
+        public void close() {
+            try {
+                socket.close();
+            } catch (final IOException e) {
+                throw new SocketException("Unable to close socket", e);
+            }
+        }
     }
 
     /**
@@ -2401,9 +2967,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         private final Sink sink;
 
         /**
+         * Reusable direct socket-read staging buffer owned by the single protocol reader.
+         */
+        private final ByteBuffer readBuffer;
+
+        /**
          * Creates an adapter.
          *
-         * @param socket     socket
+         * @param socket     socket channel adapted to the network contract
          * @param dispatcher runtime dispatcher
          * @param timeout    operation timeout policy
          */
@@ -2411,12 +2982,16 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             this.socket = require(socket, "Socket channel");
             this.dispatcher = require(dispatcher, "Dispatcher");
             this.timeout = require(timeout, "Timeout");
+            this.readBuffer = ByteBuffer.allocateDirect(Builder.BYTES_64_KIB);
             this.source = new SocketSource();
             this.sink = new SocketSink();
         }
 
         /**
          * Reads directly into the caller-owned NIO buffer.
+         *
+         * @param target writable caller buffer receiving socket bytes
+         * @return future completed with bytes read or {@code -1} at EOF
          */
         @Override
         public CompletableFuture<Integer> read(final ByteBuffer target) {
@@ -2424,7 +2999,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (!checkedTarget.hasRemaining()) {
                 return CompletableFuture.completedFuture(Normal._0);
             }
-            return background("http:socket:read", timeout.read(), () -> {
+            return direct(() -> {
                 try {
                     return socket.read(checkedTarget);
                 } catch (final IOException e) {
@@ -2435,6 +3010,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Writes the caller-owned NIO buffer completely, preserving its position after every partial write.
+         *
+         * @param source caller buffer supplying socket bytes
+         * @return future completed with the total number of bytes written
          */
         @Override
         public CompletableFuture<Integer> write(final ByteBuffer source) {
@@ -2443,7 +3021,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (requested == Normal._0) {
                 return CompletableFuture.completedFuture(Normal._0);
             }
-            return background("http:socket:write", timeout.write(), () -> {
+            return direct(() -> {
                 int written = Normal._0;
                 int zeroProgress = Normal._0;
                 try {
@@ -2467,6 +3045,53 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
+         * Reads directly from the blocking socket into the caller-owned NIO buffer.
+         *
+         * @param target writable destination
+         * @return bytes read or EOF
+         */
+        @Override
+        public int readSynchronously(final ByteBuffer target) {
+            final ByteBuffer checkedTarget = require(target, "Read target");
+            try {
+                return socket.read(checkedTarget);
+            } catch (final IOException e) {
+                throw new SocketException("Socket read failed", e);
+            }
+        }
+
+        /**
+         * Writes the complete caller-owned NIO buffer directly to the blocking socket.
+         *
+         * @param source source buffer
+         * @return number of bytes written
+         */
+        @Override
+        public int writeSynchronously(final ByteBuffer source) {
+            final ByteBuffer checkedSource = require(source, "Write source");
+            final int requested = checkedSource.remaining();
+            int written = Normal._0;
+            int zeroProgress = Normal._0;
+            try {
+                while (checkedSource.hasRemaining()) {
+                    final int count = socket.write(checkedSource);
+                    if (count == Normal._0) {
+                        if (++zeroProgress >= Normal._16) {
+                            throw new SocketException("Socket write made no progress after 16 attempts");
+                        }
+                        Thread.onSpinWait();
+                        continue;
+                    }
+                    zeroProgress = Normal._0;
+                    written += count;
+                }
+                return written == requested ? written : requested;
+            } catch (final IOException e) {
+                throw new SocketException("Socket write failed", e);
+            }
+        }
+
+        /**
          * Reads bytes into a core.io buffer.
          *
          * @param target    target buffer
@@ -2480,19 +3105,35 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (byteCount == Normal._0) {
                 return CompletableFuture.completedFuture(0L);
             }
-            return background("http:socket:read", timeout.read(), () -> {
-                try {
-                    final ByteBuffer buffer = ByteBuffer.allocate(readCapacity(byteCount));
-                    final int read = socket.read(buffer);
-                    if (read > Normal._0) {
-                        buffer.flip();
-                        checkedTarget.write(buffer);
-                    }
-                    return (long) read;
-                } catch (final IOException e) {
-                    throw new SocketException("Socket read failed", e);
+            return direct(() -> readSynchronously(checkedTarget, byteCount));
+        }
+
+        /**
+         * Performs one direct blocking socket read without creating a future or heap staging buffer.
+         *
+         * @param target    non-null core buffer receiving any bytes read
+         * @param byteCount non-negative requested maximum; each channel read is additionally capped at 8192 bytes
+         * @return number of bytes read, zero when the channel makes no progress, or -1 at end-of-stream
+         */
+        @Override
+        public long readSynchronously(final Buffer target, final long byteCount) {
+            final Buffer checkedTarget = require(target, "Read target");
+            Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Read byte count must not be negative"));
+            if (byteCount == Normal._0) {
+                return Normal._0;
+            }
+            readBuffer.clear();
+            readBuffer.limit(readCapacity(Math.min(byteCount, readBuffer.capacity())));
+            try {
+                final int read = socket.read(readBuffer);
+                if (read > Normal._0) {
+                    readBuffer.flip();
+                    checkedTarget.write(readBuffer);
                 }
-            });
+                return read;
+            } catch (final IOException e) {
+                throw new SocketException("Socket read failed", e);
+            }
         }
 
         /**
@@ -2512,34 +3153,61 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (byteCount == Normal._0) {
                 return CompletableFuture.completedFuture(0L);
             }
-            return background("http:socket:write", timeout.write(), () -> {
-                long written = Normal._0;
-                long remaining = byteCount;
-                int zeroProgress = Normal._0;
-                try {
-                    while (remaining > Normal._0) {
-                        final ByteBuffer view = checkedSource.nioBuffer(toIntSize(remaining));
-                        final int count = socket.write(view);
-                        if (count == Normal._0) {
-                            zeroProgress++;
-                            if (zeroProgress >= Normal._16) {
-                                throw new SocketException("Socket write made no progress after 16 attempts");
-                            }
-                            if (!ThreadKit.sleep(Normal._1)) {
-                                throw new SocketException("Socket write was interrupted");
-                            }
-                            continue;
+            return direct(() -> writeSynchronously(checkedSource, byteCount));
+        }
+
+        /**
+         * Performs direct gathering-compatible socket writes until the requested source prefix is consumed.
+         *
+         * @param source    non-null core buffer consumed as bytes are accepted by the channel
+         * @param byteCount number of bytes to write, from zero through the current source size
+         * @return requested byte count after all bytes have been written
+         */
+        @Override
+        public long writeSynchronously(final Buffer source, final long byteCount) {
+            final Buffer checkedSource = require(source, "Write source");
+            Assert.isTrue(
+                    byteCount >= Normal._0 && byteCount <= checkedSource.size(),
+                    () -> new ValidateException("Write byte count must be between zero and source size"));
+            long written = Normal._0;
+            int zeroProgress = Normal._0;
+            try {
+                while (written < byteCount) {
+                    final long remaining = byteCount - written;
+                    final ByteBuffer view = checkedSource.nioBuffer(toIntSize(remaining));
+                    final int count = socket.write(view);
+                    if (count == Normal._0) {
+                        if (++zeroProgress >= Normal._16) {
+                            throw new SocketException("Socket write made no progress after 16 attempts");
                         }
-                        zeroProgress = Normal._0;
-                        checkedSource.skip(count);
-                        written += count;
-                        remaining -= count;
+                        Thread.onSpinWait();
+                        continue;
                     }
-                    return written;
-                } catch (final IOException e) {
-                    throw new SocketException("Socket write failed", e);
+                    zeroProgress = Normal._0;
+                    checkedSource.skip(count);
+                    written += count;
                 }
-            });
+                return written;
+            } catch (final IOException e) {
+                throw new SocketException("Socket write failed", e);
+            }
+        }
+
+        /**
+         * Executes one blocking-channel operation on its calling request thread. SocketChannel blocking operations are
+         * interruptible, so cancellation still closes the request promptly without an extra dispatcher task, future
+         * completion, and timer for every network read or write.
+         *
+         * @param supplier blocking socket operation executed by the calling request thread
+         * @param <T>      operation result type
+         * @return already completed or failed future containing the operation outcome
+         */
+        private static <T> CompletableFuture<T> direct(final Supplier<T> supplier) {
+            try {
+                return CompletableFuture.completedFuture(supplier.get());
+            } catch (final Throwable failure) {
+                return CompletableFuture.failedFuture(failure);
+            }
         }
 
         /**

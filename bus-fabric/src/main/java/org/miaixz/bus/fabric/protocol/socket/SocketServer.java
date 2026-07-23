@@ -215,7 +215,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Creates a socket server from a builder.
      *
-     * @param builder builder
+     * @param builder validated configuration source for the server
      */
     private SocketServer(final Builder builder) {
         this.context = require(builder.context, "Context");
@@ -247,7 +247,7 @@ public final class SocketServer implements Lifecycle {
      * Creates a builder.
      *
      * @param context shared context
-     * @return builder
+     * @return new socket-server builder bound to the context
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
@@ -326,7 +326,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Returns lifecycle state.
      *
-     * @return state
+     * @return current server lifecycle state
      */
     @Override
     public Status state() {
@@ -347,7 +347,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Returns bind address.
      *
-     * @return address
+     * @return configured TCP bind address
      */
     public Address address() {
         return address;
@@ -491,7 +491,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Starts one long-lived background reader for an accepted session.
      *
-     * @param session session
+     * @param session accepted session whose receive loop is scheduled
      */
     private void startReader(final SocketSession session) {
         track(
@@ -504,7 +504,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Reads and dispatches messages until the session reaches a terminal state.
      *
-     * @param session session
+     * @param session accepted session supplying inbound messages
      */
     private void readLoop(final SocketSession session) {
         try {
@@ -526,13 +526,15 @@ public final class SocketServer implements Lifecycle {
      * Creates a registry-owning listener that removes resources before forwarding callbacks.
      *
      * @param connection accepted connection
-     * @return listener
+     * @return lifecycle listener owning the accepted connection registry entry
      */
     private Listener<SocketSession> registryListener(final AcceptedConnection connection) {
         return new Listener<>() {
 
             /**
              * Registers the opened session before forwarding the lifecycle callback.
+             *
+             * @param source newly opened session
              */
             @Override
             public void open(final SocketSession source) {
@@ -542,6 +544,8 @@ public final class SocketServer implements Lifecycle {
 
             /**
              * Removes terminal ownership before forwarding the normal-close callback.
+             *
+             * @param source normally closed session
              */
             @Override
             public void close(final SocketSession source) {
@@ -551,6 +555,9 @@ public final class SocketServer implements Lifecycle {
 
             /**
              * Removes terminal ownership before forwarding the failure callback.
+             *
+             * @param source failed session
+             * @param cause  terminal session failure
              */
             @Override
             public void failure(final SocketSession source, final Throwable cause) {
@@ -812,8 +819,8 @@ public final class SocketServer implements Lifecycle {
     /**
      * Converts a duration to a saturated nanosecond interval.
      *
-     * @param duration duration
-     * @return nanoseconds
+     * @param duration duration to convert
+     * @return converted nanoseconds, or {@link Long#MAX_VALUE} on overflow
      */
     private static long durationNanos(final Duration duration) {
         try {
@@ -857,7 +864,7 @@ public final class SocketServer implements Lifecycle {
      *
      * @param proxyHeader   parsed PROXY header
      * @param sessionFilter session filter
-     * @return attributes
+     * @return immutable attributes installed on the accepted session
      */
     private Map<String, Object> attributes(final ProxyHeader proxyHeader, final Filter sessionFilter) {
         final java.util.LinkedHashMap<String, Object> values = new java.util.LinkedHashMap<>();
@@ -878,7 +885,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Resolves peer address.
      *
-     * @param channel     channel
+     * @param channel     accepted channel supplying the transport peer address
      * @param proxyHeader parsed PROXY header
      * @return peer address
      */
@@ -900,7 +907,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Notifies the user listener after a session enters the registry.
      *
-     * @param session session
+     * @param session newly registered session reported to the listener
      */
     private void notifySessionOpen(final SocketSession session) {
         try {
@@ -913,7 +920,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Notifies the user listener after a session leaves the registry normally.
      *
-     * @param session session
+     * @param session normally closed session reported to the listener
      */
     private void notifySessionClose(final SocketSession session) {
         try {
@@ -926,7 +933,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Notifies the user listener after a failed session leaves the registry.
      *
-     * @param session session
+     * @param session failed session reported to the listener
      * @param cause   failure cause
      */
     private void notifySessionFailure(final SocketSession session, final Throwable cause) {
@@ -954,7 +961,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Reports a reader or user-handler failure without changing server state.
      *
-     * @param session session
+     * @param session session whose reader or handler failed
      * @param cause   failure cause
      */
     private void notifyHandlerFailure(final SocketSession session, final Throwable cause) {
@@ -980,10 +987,10 @@ public final class SocketServer implements Lifecycle {
     /**
      * Validates a required value.
      *
-     * @param value value
-     * @param name  name
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -1047,7 +1054,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns the ingress destination.
          *
-         * @return destination
+         * @return destination associated with the accepted ingress
          */
         @Override
         public Destination destination() {
@@ -1057,7 +1064,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns the TLS plain-text boundary when configured, otherwise the raw ingress.
          *
-         * @return conduit
+         * @return active plaintext conduit for the accepted connection
          */
         @Override
         public Conduit conduit() {
@@ -1068,7 +1075,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns the active protocol-layer source.
          *
-         * @return source
+         * @return source exposed by the active plaintext conduit
          */
         @Override
         public Source source() {
@@ -1078,7 +1085,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns the active protocol-layer sink.
          *
-         * @return sink
+         * @return sink exposed by the active plaintext conduit
          */
         @Override
         public Sink sink() {
@@ -1088,7 +1095,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns the accepted connection state.
          *
-         * @return state
+         * @return current lifecycle state of the accepted connection
          */
         @Override
         public Status state() {
@@ -1266,8 +1273,8 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets a bind host and port.
          *
-         * @param host host
-         * @param port port
+         * @param host local interface name or address to bind
+         * @param port local TCP port to bind
          * @return this builder
          */
         public Builder bind(final String host, final int port) {
@@ -1349,7 +1356,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets read buffer size.
          *
-         * @param size size
+         * @param size positive read-buffer size in bytes
          * @return this builder
          */
         public Builder readBufferSize(final int size) {
@@ -1359,7 +1366,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets write chunk size.
          *
-         * @param size size
+         * @param size positive maximum bytes per low-level write
          * @return this builder
          */
         public Builder writeChunkSize(final int size) {
@@ -1369,7 +1376,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets write chunk count.
          *
-         * @param count count
+         * @param count positive retained write-chunk count hint
          * @return this builder
          */
         public Builder writeChunkCount(final int count) {
@@ -1399,7 +1406,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets frame codec.
          *
-         * @param codec codec
+         * @param codec codec used to delimit accepted-session messages
          * @return this builder
          */
         public Builder frame(final FrameCodec codec) {
@@ -1419,7 +1426,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Uses delimiter frame codec.
          *
-         * @param delimiter delimiter
+         * @param delimiter byte sequence terminating each frame
          * @return this builder
          */
         public Builder delimiterFrame(final byte[] delimiter) {
@@ -1429,7 +1436,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Uses fixed frame codec.
          *
-         * @param length length
+         * @param length positive fixed frame length in bytes
          * @return this builder
          */
         public Builder fixedFrame(final int length) {
@@ -1457,7 +1464,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets message handler.
          *
-         * @param handler handler
+         * @param handler handler receiving every accepted-session message, or {@code null} for no-op
          * @return this builder
          */
         public Builder onMessage(final Handler handler) {
@@ -1469,8 +1476,8 @@ public final class SocketServer implements Lifecycle {
         /**
          * Adds a channel handler.
          *
-         * @param channel channel
-         * @param handler handler
+         * @param channel channel value routed to the handler
+         * @param handler handler receiving messages for that channel
          * @return this builder
          */
         public Builder channel(final String channel, final Handler handler) {
@@ -1481,7 +1488,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets fallback handler.
          *
-         * @param handler handler
+         * @param handler handler receiving messages without a channel match
          * @return this builder
          */
         public Builder fallback(final Handler handler) {
@@ -1503,7 +1510,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets channel resolver.
          *
-         * @param resolver resolver
+         * @param resolver function deriving a channel value from each message
          * @return this builder
          */
         public Builder resolver(final Function<Message, String> resolver) {
@@ -1551,7 +1558,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets guard rule.
          *
-         * @param guard guard
+         * @param guard optional rule validating opening and session messages
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -1562,7 +1569,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets filter.
          *
-         * @param filter filter
+         * @param filter optional server-level message filter
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -1573,7 +1580,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer observer receiving server and accepted-session events
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -1584,7 +1591,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets server lifecycle listener.
          *
-         * @param listener listener
+         * @param listener server lifecycle listener, or {@code null}
          * @return this builder
          */
         public Builder listener(final Listener<? super SocketServer> listener) {
@@ -1595,7 +1602,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Sets accepted session lifecycle listener.
          *
-         * @param listener listener
+         * @param listener accepted-session lifecycle listener, or {@code null}
          * @return this builder
          */
         public Builder sessionListener(final Listener<? super SocketSession> listener) {
@@ -1606,7 +1613,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Builds a socket server.
          *
-         * @return socket server
+         * @return configured socket server in the initial state
          */
         public SocketServer build() {
             if (address == null) {
@@ -1619,7 +1626,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Builds and starts a socket server.
          *
-         * @return socket server
+         * @return configured and running socket server
          */
         public SocketServer start() {
             return build().start();
@@ -1628,7 +1635,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns effective handler.
          *
-         * @return handler
+         * @return configured direct handler or built channel demultiplexer
          */
         private Handler handler() {
             return demuxer == null ? handler : demuxer.build();
@@ -1637,7 +1644,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Returns effective session listener.
          *
-         * @return listener
+         * @return configured session listener or a no-op listener
          */
         private Listener<? super SocketSession> sessionListener() {
             return sessionListener == null ? new Listener<>() {
@@ -1654,6 +1661,8 @@ public final class SocketServer implements Lifecycle {
 
                 /**
                  * Forwards an opened session to the configured consumer.
+                 *
+                 * @param source newly opened session
                  */
                 @Override
                 public void open(final SocketSession source) {
@@ -1662,6 +1671,9 @@ public final class SocketServer implements Lifecycle {
 
                 /**
                  * Forwards a session failure to the configured error consumer.
+                 *
+                 * @param source failed session
+                 * @param cause  terminal session failure
                  */
                 @Override
                 public void failure(final SocketSession source, final Throwable cause) {
@@ -1686,7 +1698,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Copies socket options.
          *
-         * @return builder
+         * @return mutable builder initialized from the current socket options
          */
         private SocketOptions.Builder copySocketOptions() {
             return SocketOptions.builder().readBufferSize(socketOptions.readBufferSize())
@@ -1699,7 +1711,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Validates host.
          *
-         * @param host host
+         * @param host bind host to validate
          */
         private static void validateHost(final String host) {
             if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
@@ -1710,7 +1722,7 @@ public final class SocketServer implements Lifecycle {
         /**
          * Validates port.
          *
-         * @param port port
+         * @param port bind port to validate
          */
         private static void validatePort(final int port) {
             if (port < Normal._1 || port > Normal._65535) {

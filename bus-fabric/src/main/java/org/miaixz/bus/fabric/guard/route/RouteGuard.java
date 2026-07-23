@@ -44,14 +44,14 @@ import org.miaixz.bus.fabric.registry.route.Route;
 public final class RouteGuard {
 
     /**
-     * Allowed normalized schemes.
+     * Immutable lower-case schemes accepted for logical route addresses.
      */
     private final Set<String> schemes;
 
     /**
      * Creates a route guard.
      *
-     * @param schemes allowed schemes
+     * @param schemes immutable normalized scheme set
      */
     private RouteGuard(final Set<String> schemes) {
         this.schemes = schemes;
@@ -60,8 +60,9 @@ public final class RouteGuard {
     /**
      * Creates a scheme-based route guard.
      *
-     * @param schemes allowed schemes
-     * @return route guard
+     * @param schemes non-empty candidate schemes to validate and normalize
+     * @return guard containing an immutable lower-case scheme set
+     * @throws ValidateException if the set is null or empty or an element is not a valid scheme
      */
     public static RouteGuard schemes(final Set<String> schemes) {
         final Set<String> checkedSchemes = Assert
@@ -76,8 +77,10 @@ public final class RouteGuard {
     /**
      * Checks an address scheme.
      *
-     * @param address address
-     * @return guard result
+     * @param address logical route address whose scheme is checked
+     * @return passing result for an allowed normalized scheme, or rejection naming the disallowed scheme
+     * @throws ValidateException if {@code address} is {@code null}
+     * @throws ProtocolException if the address scheme is invalid
      */
     public GuardResult check(final Address address) {
         final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
@@ -88,8 +91,10 @@ public final class RouteGuard {
     /**
      * Checks a route and its proxy plan.
      *
-     * @param route route
-     * @return guard result
+     * @param route route whose logical scheme and proxy compatibility are checked
+     * @return first scheme rejection, proxy incompatibility rejection, or passing result
+     * @throws ValidateException if {@code route} is {@code null}
+     * @throws ProtocolException if a route or proxy scheme is invalid or the proxy plan is null
      */
     public GuardResult check(final Route route) {
         final Route checkedRoute = Assert.notNull(route, () -> new ValidateException("Route must not be null"));
@@ -105,7 +110,7 @@ public final class RouteGuard {
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return {@link Builder#ROUTE}
      */
     public String name() {
         return Builder.ROUTE;
@@ -114,9 +119,11 @@ public final class RouteGuard {
     /**
      * Returns whether a proxy plan is compatible with a target.
      *
-     * @param address target address
-     * @param proxy   proxy plan
-     * @return true when compatible
+     * @param address validated logical target address
+     * @param proxy   direct or addressed proxy plan to classify
+     * @return {@code true} for direct routing, HTTP proxy routing with a tunnel for secure targets, or
+     *         TCP/socket/AIO/TLS proxy schemes
+     * @throws ProtocolException if the proxy is null or its address scheme is invalid
      */
     private static boolean compatible(final Address address, final ProxyPlan proxy) {
         final ProxyPlan checkedProxy = Assert
@@ -140,9 +147,12 @@ public final class RouteGuard {
     /**
      * Validates and normalizes a scheme.
      *
-     * @param value        scheme
-     * @param validateFail true to throw validation errors
-     * @return normalized scheme
+     * @param value        candidate scheme text
+     * @param validateFail {@code true} to classify invalid input as configuration validation; {@code false} to classify
+     *                     it as a route protocol error
+     * @return lower-case valid scheme
+     * @throws ValidateException if the scheme is invalid and {@code validateFail} is true
+     * @throws ProtocolException if the scheme is invalid and {@code validateFail} is false
      */
     private static String validateScheme(final String value, final boolean validateFail) {
         if (!UrlKit.isScheme(value)) {

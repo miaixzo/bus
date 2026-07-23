@@ -34,20 +34,20 @@ public interface EventObserver {
     /**
      * Returns a no-operation observer.
      *
-     * @return no-operation observer
+     * @return shared observer that ignores every event
      */
     static EventObserver noop() {
         return NoopEventObserver.instance();
     }
 
     /**
-     * Returns an observer that isolates delegate failures.
+     * Returns an observer that suppresses runtime failures thrown by a delegate during valid event delivery.
      *
-     * @param observer observer
-     * @return safe observer
+     * @param observer delegate observer, or {@code null} to use the no-operation observer
+     * @return no-op observer for null/no-op input, the same instance when already safe, or a new safe wrapper
      */
     static EventObserver safe(final EventObserver observer) {
-        if (observer == null) {
+        if (observer == null || observer == noop()) {
             return noop();
         }
         if (observer instanceof SafeEventObserver) {
@@ -59,15 +59,16 @@ public interface EventObserver {
     /**
      * Emits an event object.
      *
-     * @param event event
+     * @param event lifecycle event delivered to this observer
      */
     void emit(FabricEvent event);
 
     /**
-     * Combines this observer with the next observer.
+     * Combines this observer with a second observer using ordered, best-effort runtime-exception isolation.
      *
-     * @param next next observer
-     * @return combined observer
+     * @param next non-null observer invoked after this observer
+     * @return ordered composite that attempts both observers for each valid event
+     * @throws ValidateException if {@code next} is {@code null}
      */
     default EventObserver and(final EventObserver next) {
         return new ChainedEventObserver(this,

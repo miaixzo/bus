@@ -86,7 +86,7 @@ public final class EventListenerBridge implements EventObserver {
     /**
      * Creates a bridge.
      *
-     * @param listener listener
+     * @param listener non-null callback receiver
      */
     private EventListenerBridge(final Listener listener) {
         this.listener = Assert.notNull(listener, () -> new ValidateException("Event listener must not be null"));
@@ -95,8 +95,9 @@ public final class EventListenerBridge implements EventObserver {
     /**
      * Creates a bridge.
      *
-     * @param listener listener
-     * @return event observer bridge
+     * @param listener non-null callback receiver
+     * @return observer that invokes generic and marker-specific listener callbacks
+     * @throws ValidateException if {@code listener} is {@code null}
      */
     public static EventListenerBridge of(final Listener listener) {
         return new EventListenerBridge(listener);
@@ -105,8 +106,9 @@ public final class EventListenerBridge implements EventObserver {
     /**
      * Returns current markers mapped to a listener callback name.
      *
-     * @param callbackName callback name
-     * @return current markers
+     * @param callbackName case-insensitive callback name to trim and resolve
+     * @return immutable marker list currently routed to the named callback
+     * @throws ValidateException if the name is blank or unknown
      */
     public static List<ObservationMarker> markers(final String callbackName) {
         if (StringKit.isBlank(callbackName)) {
@@ -121,9 +123,13 @@ public final class EventListenerBridge implements EventObserver {
     }
 
     /**
-     * Dispatches an observation event to the matching listener callbacks.
+     * Dispatches an observation event first to the generic callback and then to marker-specific callbacks.
+     * <p>
+     * A null event is ignored. Runtime failures from each callback are isolated independently so later callbacks still
+     * run; {@link Error} instances are not suppressed.
+     * </p>
      *
-     * @param event fabric event
+     * @param event fabric event to dispatch, or {@code null} for no operation
      */
     @Override
     public void emit(final FabricEvent event) {
@@ -174,9 +180,9 @@ public final class EventListenerBridge implements EventObserver {
     }
 
     /**
-     * Invokes a listener callback without allowing observer failures to escape.
+     * Invokes one listener callback while suppressing runtime callback failures.
      *
-     * @param task callback task
+     * @param task callback invocation to run
      */
     private static void invoke(final Runnable task) {
         try {

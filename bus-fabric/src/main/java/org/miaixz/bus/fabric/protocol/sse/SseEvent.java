@@ -31,9 +31,9 @@ import org.miaixz.bus.fabric.Builder;
  * Immutable server-sent event value.
  *
  * @param id    event identifier or null when absent
- * @param event event type
- * @param data  event data
- * @param retry retry directive or null when absent
+ * @param event single-line event type, defaulted when null, empty, or spaces only
+ * @param data  event data allowing line feeds, defaulted to empty text when null
+ * @param retry non-negative reconnection delay, or null when absent
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -42,10 +42,10 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Creates a validated event.
      *
-     * @param id    event identifier
-     * @param event event type
-     * @param data  event data
-     * @param retry retry directive
+     * @param id    single-line event identifier, or null
+     * @param event single-line event type, or null, empty, or spaces only for the default type
+     * @param data  event data allowing line feeds, or null for empty data
+     * @param retry non-negative reconnection delay, or null
      */
     public SseEvent {
         id = validateSingleLine(id, "SSE event id", true);
@@ -57,11 +57,11 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Creates an event.
      *
-     * @param id    event identifier
-     * @param event event type
-     * @param data  event data
-     * @param retry retry directive
-     * @return immutable event
+     * @param id    single-line event identifier, or null
+     * @param event single-line event type, or null, empty, or spaces only for the default type
+     * @param data  event data allowing line feeds, or null for empty data
+     * @param retry non-negative reconnection delay, or null
+     * @return validated immutable event
      */
     public static SseEvent of(final String id, final String event, final String data, final Duration retry) {
         return new SseEvent(id, event, data, retry);
@@ -70,7 +70,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Returns the event identifier.
      *
-     * @return event identifier or null
+     * @return validated event identifier, or null when absent
      */
     @Override
     public String id() {
@@ -80,7 +80,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Returns the event type.
      *
-     * @return event type
+     * @return explicit event type or {@link Builder#SSE_DEFAULT_EVENT}
      */
     @Override
     public String event() {
@@ -90,7 +90,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Returns event data.
      *
-     * @return event data
+     * @return normalized non-null event data
      */
     @Override
     public String data() {
@@ -100,7 +100,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Returns retry directive.
      *
-     * @return retry directive or null
+     * @return non-negative reconnection delay, or null when absent
      */
     @Override
     public Duration retry() {
@@ -110,8 +110,8 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Normalizes an event type.
      *
-     * @param value event type
-     * @return normalized event type
+     * @param value event type candidate, or null
+     * @return validated value, or {@link Builder#SSE_DEFAULT_EVENT} when no non-space character is present
      */
     private static String normalizeEvent(final String value) {
         if (value == null) {
@@ -133,8 +133,8 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Normalizes event data.
      *
-     * @param value data
-     * @return normalized data
+     * @param value event data candidate, or null
+     * @return validated data preserving line feeds, or empty text for null
      */
     private static String normalizeData(final String value) {
         if (value == null) {
@@ -153,10 +153,10 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Validates a single-line text component.
      *
-     * @param value    value
-     * @param name     field name
-     * @param nullable whether null is allowed
-     * @return validated value
+     * @param value    text candidate to validate
+     * @param name     field label included in validation errors
+     * @param nullable whether null should be returned unchanged
+     * @return unchanged null or single-line text according to the nullable policy
      */
     private static String validateSingleLine(final String value, final String name, final boolean nullable) {
         if (value == null) {
@@ -178,8 +178,8 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Validates retry directives.
      *
-     * @param value retry
-     * @return retry
+     * @param value reconnection-delay candidate, or null
+     * @return unchanged null or non-negative duration
      */
     private static Duration validateRetry(final Duration value) {
         Assert.isFalse(

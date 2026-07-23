@@ -62,6 +62,22 @@ record StompSnapshot(Context context, URI uri, Address address, Headers headers,
 
     /**
      * Creates a validated snapshot.
+     *
+     * @param context                runtime services used by the exchange
+     * @param uri                    original target URI
+     * @param address                normalized broker address
+     * @param headers                CONNECT frame headers
+     * @param timeout                timeout policy copied into the snapshot
+     * @param clientSendHeartbeat    requested client send interval
+     * @param clientReceiveHeartbeat requested client receive interval
+     * @param destination            default send destination
+     * @param login                  optional CONNECT login
+     * @param passcode               optional CONNECT passcode
+     * @param guard                  optional STOMP message guard
+     * @param filter                 optional STOMP message filter
+     * @param observer               STOMP lifecycle observer
+     * @param handler                inbound STOMP message handler
+     * @param listener               session lifecycle listener
      */
     StompSnapshot {
         context = require(context, "Context");
@@ -80,10 +96,10 @@ record StompSnapshot(Context context, URI uri, Address address, Headers headers,
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

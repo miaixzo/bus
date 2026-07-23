@@ -210,12 +210,12 @@ public final class SocketSession implements Session {
     /**
      * Creates a current connection-backed socket session for framework integrations.
      *
-     * @param address             address
-     * @param connection          connection
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param address             peer address represented by the session
+     * @param connection          connected stream transport backing the session
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      * @param socketOptions       socket options
@@ -238,12 +238,12 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address    address
-     * @param connection connection
-     * @param codec      codec
-     * @param handler    handler
-     * @param attributes attributes
-     * @param owner      owner
+     * @param address    peer address represented by the session
+     * @param connection connected stream transport backing the session
+     * @param codec      codec used to encode and decode socket frames
+     * @param handler    handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes initial session attributes, or {@code null} for none
+     * @param owner      resource closed when the session terminates, or {@code null}
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
             final Map<String, Object> attributes, final AutoCloseable owner) {
@@ -253,12 +253,12 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address    address
-     * @param connection connection
-     * @param codec      codec
-     * @param handler    handler
-     * @param attributes attributes
-     * @param owner      owner
+     * @param address    peer address represented by the session
+     * @param connection connected stream transport backing the session
+     * @param codec      codec used to encode and decode socket frames
+     * @param handler    handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes initial session attributes, or {@code null} for none
+     * @param owner      resource closed when the session terminates, or {@code null}
      * @param listener   lifecycle listener
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
@@ -270,12 +270,12 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address             address
-     * @param connection          connection
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param address             peer address represented by the session
+     * @param connection          connected stream transport backing the session
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
@@ -289,12 +289,12 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address             address
-     * @param connection          connection
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param address             peer address represented by the session
+     * @param connection          connected stream transport backing the session
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      * @param socketOptions       socket options
@@ -310,13 +310,13 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened datagram session.
      *
-     * @param address    address
-     * @param datagram   datagram session
+     * @param address    peer address represented by the session
+     * @param datagram   UDP transport backing the session
      * @param kcp        KCP packet endpoint or null for plain UDP
-     * @param codec      codec
-     * @param handler    handler
-     * @param attributes attributes
-     * @param owner      owner
+     * @param codec      codec used to encode and decode socket frames
+     * @param handler    handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes initial session attributes, or {@code null} for none
+     * @param owner      resource closed when the session terminates, or {@code null}
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
             final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
@@ -326,13 +326,13 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened datagram session.
      *
-     * @param address    address
-     * @param datagram   datagram session
+     * @param address    peer address represented by the session
+     * @param datagram   UDP transport backing the session
      * @param kcp        KCP packet endpoint or null for plain UDP
-     * @param codec      codec
-     * @param handler    handler
-     * @param attributes attributes
-     * @param owner      owner
+     * @param codec      codec used to encode and decode socket frames
+     * @param handler    handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes initial session attributes, or {@code null} for none
+     * @param owner      resource closed when the session terminates, or {@code null}
      * @param listener   lifecycle listener
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
@@ -345,13 +345,13 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened datagram session.
      *
-     * @param address             address
-     * @param datagram            datagram session
+     * @param address             peer address represented by the session
+     * @param datagram            UDP transport backing the session
      * @param kcp                 KCP packet endpoint or null for plain UDP
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
@@ -365,13 +365,13 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened datagram session.
      *
-     * @param address             address
-     * @param datagram            datagram session
+     * @param address             peer address represented by the session
+     * @param datagram            UDP transport backing the session
      * @param kcp                 KCP packet endpoint or null for plain UDP
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      * @param socketOptions       socket options
@@ -387,14 +387,14 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address    address
+     * @param address    peer address represented by the session
      * @param connection connection or null for datagram
      * @param datagram   datagram session or null for connection
      * @param kcp        KCP packet endpoint or null
-     * @param codec      codec
-     * @param handler    handler
-     * @param attributes attributes
-     * @param owner      owner
+     * @param codec      codec used to encode and decode socket frames
+     * @param handler    handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes initial session attributes, or {@code null} for none
+     * @param owner      resource closed when the session terminates, or {@code null}
      * @param listener   lifecycle listener
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
@@ -407,14 +407,14 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address             address
+     * @param address             peer address represented by the session
      * @param connection          connection or null for datagram
      * @param datagram            datagram session or null for connection
      * @param kcp                 KCP packet endpoint or null
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
@@ -428,14 +428,14 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address             address
+     * @param address             peer address represented by the session
      * @param connection          connection or null for datagram
      * @param datagram            datagram session or null for connection
      * @param kcp                 KCP packet endpoint or null
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      * @param socketOptions       socket options
@@ -451,20 +451,20 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session with a shared runtime.
      *
-     * @param address             address
+     * @param address             peer address represented by the session
      * @param connection          connection or null for datagram
      * @param datagram            datagram session or null for connection
      * @param kcp                 KCP packet endpoint or null
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      * @param socketOptions       socket options
      * @param dispatcher          shared dispatcher
      * @param clock               shared clock
-     * @param timeout             timeout policy
+     * @param timeout             timeout policy governing session operations
      * @param cancellation        shared cancellation
      */
     SocketSession(final Address address, final Connection connection, final UdpSession datagram, final KcpNetwork kcp,
@@ -479,20 +479,20 @@ public final class SocketSession implements Session {
     /**
      * Creates an opened session.
      *
-     * @param address             address
+     * @param address             peer address represented by the session
      * @param connection          connection or null for datagram
      * @param datagram            datagram session or null for connection
      * @param kcp                 KCP packet endpoint or null
-     * @param codec               codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
+     * @param codec               codec used to encode and decode socket frames
+     * @param handler             handler receiving decoded inbound messages, or {@code null} for a no-op handler
+     * @param attributes          initial session attributes, or {@code null} for none
+     * @param owner               resource closed when the session terminates, or {@code null}
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      * @param socketOptions       socket options
      * @param dispatcher          runtime dispatcher
      * @param clock               session clock
-     * @param timeout             timeout policy
+     * @param timeout             timeout policy governing session operations
      * @param cancellation        shared cancellation
      * @param ownsDispatcher      true when cleanup closes the dispatcher
      */
@@ -566,7 +566,7 @@ public final class SocketSession implements Session {
     /**
      * Sends payload.
      *
-     * @param payload payload
+     * @param payload payload to encode and send
      * @return send call
      */
     public Call<Void> send(final Payload payload) {
@@ -584,7 +584,7 @@ public final class SocketSession implements Session {
     /**
      * Sends a socket body.
      *
-     * @param body body
+     * @param body socket body to send
      * @return send call
      */
     public Call<Void> send(final SocketBody body) {
@@ -594,7 +594,7 @@ public final class SocketSession implements Session {
     /**
      * Sends a shared frame.
      *
-     * @param frame frame
+     * @param frame pre-encoded frame to send
      * @return send call
      */
     public Call<Void> send(final Frame frame) {
@@ -712,7 +712,7 @@ public final class SocketSession implements Session {
     /**
      * Writes one encoded frame through the complete Conduit contract.
      *
-     * @param encoded   encoded frame
+     * @param encoded   encoded frame bytes to write
      * @param byteCount encoded byte count
      */
     private void writeStream(final Buffer encoded, final long byteCount) {
@@ -855,7 +855,7 @@ public final class SocketSession implements Session {
     /**
      * Delivers one decoded frame through the inbound Filter and Handler once.
      *
-     * @param pending pending frame
+     * @param pending decoded frame awaiting delivery
      * @return delivered message
      */
     private Message deliver(final PendingFrame pending) {
@@ -966,8 +966,8 @@ public final class SocketSession implements Session {
     /**
      * Builds a received message.
      *
-     * @param payload payload
-     * @param tag     tag
+     * @param payload received payload bytes
+     * @param tag     direction or protocol tag attached to the message
      * @return message
      */
     private Message message(final Payload payload, final Object tag) {
@@ -978,7 +978,7 @@ public final class SocketSession implements Session {
     /**
      * Checks the optional session guard against a socket message.
      *
-     * @param message message
+     * @param message socket message to validate
      */
     private void checkGuard(final Message message) {
         final Object value = attributes.get(Builder.ATTRIBUTE_GUARD);
@@ -990,7 +990,7 @@ public final class SocketSession implements Session {
     /**
      * Applies the optional session filter to a socket payload.
      *
-     * @param payload payload
+     * @param payload socket payload to filter
      * @param tag     direction tag
      * @return filtered message
      */
@@ -1003,7 +1003,7 @@ public final class SocketSession implements Session {
     /**
      * Emits a session observation event with a measured byte count.
      *
-     * @param marker marker
+     * @param marker observation marker identifying the emitted event
      * @param bytes  measured bytes, or negative when absent
      * @param cause  failure cause
      */
@@ -1068,7 +1068,7 @@ public final class SocketSession implements Session {
     /**
      * Installs one idle deadline for an activity timestamp.
      *
-     * @param delay         delay before checking
+     * @param delay         idle delay before checking the captured activity time
      * @param activityNanos activity timestamp guarded by the deadline
      */
     private void scheduleIdle(final Duration delay, final long activityNanos) {
@@ -1391,8 +1391,8 @@ public final class SocketSession implements Session {
     /**
      * Materializes a payload through the configured session limit.
      *
-     * @param payload   payload
-     * @param operation operation name
+     * @param payload   payload to materialize
+     * @param operation diagnostic operation name used when reporting limit failures
      * @return payload bytes
      */
     private byte[] materialize(final Payload payload, final String operation) {
@@ -1406,7 +1406,7 @@ public final class SocketSession implements Session {
     /**
      * Converts a duration to nanoseconds while treating an overflowing positive duration as effectively unbounded.
      *
-     * @param duration duration
+     * @param duration duration to convert
      * @return duration nanoseconds
      */
     private static long durationNanos(final Duration duration) {
@@ -1420,8 +1420,8 @@ public final class SocketSession implements Session {
     /**
      * Appends a cleanup failure without discarding the first failure.
      *
-     * @param current current failure or null
-     * @param next    next failure
+     * @param current first recorded failure, or {@code null}
+     * @param next    additional cleanup failure to append
      * @return aggregate failure
      */
     private static RuntimeException append(final RuntimeException current, final RuntimeException next) {
@@ -1437,10 +1437,10 @@ public final class SocketSession implements Session {
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

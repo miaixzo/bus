@@ -47,35 +47,35 @@ import org.miaixz.bus.fabric.network.aio.AioGroup;
 public final class UdpNetwork implements AutoCloseable {
 
     /**
-     * Supported transports.
+     * Transport set accepted by this network implementation.
      */
     private static final EnumSet<Transport> SUPPORTED = EnumSet.of(Transport.UDP);
 
     /**
-     * Worker group.
+     * AIO group that supplies the dispatcher used by created channels and sessions.
      */
     private final AioGroup group;
 
     /**
-     * Managed channels.
+     * Channels created by this network and retained until closed or pruned.
      */
     private final ConcurrentLinkedDeque<UdpChannel> channels;
 
     /**
-     * Close flag.
+     * One-way network-closure flag.
      */
     private final AtomicBoolean closed;
 
     /**
-     * Lifecycle listener.
+     * Optional listener notified by connected UDP sessions and connection setup failures.
      */
     private final Listener<Object> listener;
 
     /**
-     * Creates a UDP network.
+     * Creates a UDP network with an optional lifecycle listener.
      *
-     * @param group    group
-     * @param listener lifecycle listener
+     * @param group    AIO group that supplies channel dispatchers
+     * @param listener lifecycle listener, or {@code null} when notifications are not required
      */
     private UdpNetwork(final AioGroup group, final Listener<Object> listener) {
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
@@ -87,8 +87,9 @@ public final class UdpNetwork implements AutoCloseable {
     /**
      * Creates a UDP network.
      *
-     * @param group group
-     * @return UDP network
+     * @param group AIO group that supplies channel dispatchers
+     * @return UDP network without a lifecycle listener
+     * @throws ValidateException if {@code group} is {@code null}
      */
     public static UdpNetwork create(final AioGroup group) {
         return new UdpNetwork(group, null);
@@ -97,19 +98,24 @@ public final class UdpNetwork implements AutoCloseable {
     /**
      * Creates a UDP network with a lifecycle listener.
      *
-     * @param group    group
-     * @param listener lifecycle listener
-     * @return UDP network
+     * @param group    AIO group that supplies channel dispatchers
+     * @param listener lifecycle listener, or {@code null} to disable notifications
+     * @return UDP network configured with the supplied listener
+     * @throws ValidateException if {@code group} is {@code null}
      */
     public static UdpNetwork create(final AioGroup group, final Listener<Object> listener) {
         return new UdpNetwork(group, listener);
     }
 
     /**
-     * Binds a UDP channel.
+     * Opens and binds a managed datagram channel to a local UDP address.
      *
-     * @param address local address
-     * @return UDP channel
+     * @param address local UDP address to bind
+     * @return managed channel bound to the local address
+     * @throws ValidateException if {@code address} is {@code null}
+     * @throws ProtocolException if the address does not use the UDP transport
+     * @throws StatefulException if this network is closed
+     * @throws SocketException   if the datagram channel cannot be opened or bound
      */
     public synchronized UdpChannel bind(final Address address) {
         final Address checkedAddress = Assert
@@ -128,10 +134,14 @@ public final class UdpNetwork implements AutoCloseable {
     }
 
     /**
-     * Connects to a remote UDP address.
+     * Opens an ephemeral managed datagram channel and creates a session targeting a remote UDP address.
      *
-     * @param remote remote address
-     * @return UDP session
+     * @param remote remote UDP address targeted by the session
+     * @return session backed by the newly opened datagram channel
+     * @throws ValidateException if {@code remote} is {@code null}
+     * @throws ProtocolException if the address does not use the UDP transport
+     * @throws StatefulException if this network is closed
+     * @throws SocketException   if the datagram channel or local address cannot be created
      */
     public synchronized UdpSession connect(final Address remote) {
         final Address checkedRemote = Assert
@@ -157,17 +167,18 @@ public final class UdpNetwork implements AutoCloseable {
     /**
      * Returns whether this network supports a transport.
      *
-     * @param transport transport
-     * @return true when supported
+     * @param transport transport to test
+     * @return {@code true} only for {@link Transport#UDP}
+     * @throws ValidateException if {@code transport} is {@code null}
      */
     public boolean supports(final Transport transport) {
         return SUPPORTED.contains(Assert.notNull(transport, () -> new ValidateException("Transport must not be null")));
     }
 
     /**
-     * Returns managed channel count.
+     * Prunes closed channels and returns the number of managed channels that remain open.
      *
-     * @return managed channels
+     * @return number of currently open managed channels
      */
     public int channelCount() {
         channels.removeIf(channel -> !channel.opened());
@@ -175,7 +186,9 @@ public final class UdpNetwork implements AutoCloseable {
     }
 
     /**
-     * Closes all channels.
+     * Permanently closes this network and all currently managed channels.
+     *
+     * @throws RuntimeException if one or more channels fail to close; later failures are suppressed
      */
     @Override
     public synchronized void close() {
@@ -201,9 +214,10 @@ public final class UdpNetwork implements AutoCloseable {
     }
 
     /**
-     * Requires UDP transport.
+     * Validates that an address resolves to the UDP transport.
      *
-     * @param address address
+     * @param address address whose scheme is validated
+     * @throws ProtocolException if the address does not use the UDP transport
      */
     private static void requireUdp(final Address address) {
         final Transport transport = Transport.fromScheme(address.scheme());
@@ -215,8 +229,8 @@ public final class UdpNetwork implements AutoCloseable {
     /**
      * Creates a bind socket address.
      *
-     * @param address bind address
-     * @return socket address
+     * @param address fabric address containing the bind host and port
+     * @return internet socket address created from the fabric address
      */
     private static InetSocketAddress socket(final Address address) {
         return NetKit.createAddress(address.host(), address.port());
@@ -224,6 +238,8 @@ public final class UdpNetwork implements AutoCloseable {
 
     /**
      * Rejects channel creation after network closure.
+     *
+     * @throws StatefulException if this network is closed
      */
     private void ensureOpen() {
         if (closed.get()) {

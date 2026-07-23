@@ -84,7 +84,7 @@ public final class SocketX {
     /**
      * Creates an exchange.
      *
-     * @param builder builder
+     * @param builder configuration source used to create the immutable exchange snapshot
      */
     private SocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
@@ -103,7 +103,7 @@ public final class SocketX {
      * Creates a socket builder.
      *
      * @param context shared context
-     * @return builder
+     * @return new socket exchange builder bound to the context
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
@@ -112,7 +112,7 @@ public final class SocketX {
     /**
      * Returns the socket protocol.
      *
-     * @return protocol
+     * @return transport protocol derived from the target address
      */
     public Protocol protocol() {
         return snapshot.address().protocol();
@@ -121,7 +121,7 @@ public final class SocketX {
     /**
      * Returns the target address.
      *
-     * @return address
+     * @return immutable target address
      */
     public Address address() {
         return snapshot.address();
@@ -130,7 +130,7 @@ public final class SocketX {
     /**
      * Returns socket execution path.
      *
-     * @return itinerary
+     * @return execution itinerary containing the socket protocol and target address
      */
     public Itinerary itinerary() {
         return Itinerary.of(protocol(), address());
@@ -139,7 +139,7 @@ public final class SocketX {
     /**
      * Returns request headers.
      *
-     * @return headers
+     * @return immutable headers sent when the socket is opened
      */
     public Headers headers() {
         return snapshot.headers();
@@ -148,7 +148,7 @@ public final class SocketX {
     /**
      * Returns timeout policy.
      *
-     * @return timeout
+     * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
         return snapshot.timeout();
@@ -157,7 +157,7 @@ public final class SocketX {
     /**
      * Returns socket tuning options.
      *
-     * @return socket options
+     * @return socket tuning options captured by this exchange
      */
     public SocketOptions options() {
         return snapshot.socketOptions();
@@ -166,8 +166,8 @@ public final class SocketX {
     /**
      * Creates a protocol-neutral message from this socket exchange and payload.
      *
-     * @param payload payload
-     * @return message
+     * @param payload payload to attach to the protocol-neutral message
+     * @return message representing this exchange and the supplied payload
      */
     public Message message(final Payload payload) {
         return Message.of(protocol(), address(), headers(), payload, null);
@@ -176,7 +176,7 @@ public final class SocketX {
     /**
      * Opens a socket session.
      *
-     * @return session
+     * @return opened socket session
      */
     public SocketSession open() {
         return call().execute();
@@ -185,7 +185,7 @@ public final class SocketX {
     /**
      * Executes this exchange synchronously.
      *
-     * @return session
+     * @return socket session produced by synchronous execution
      */
     public SocketSession execute() {
         return open();
@@ -194,7 +194,7 @@ public final class SocketX {
     /**
      * Connects this exchange synchronously.
      *
-     * @return session
+     * @return connected socket session
      */
     public SocketSession connect() {
         return execute();
@@ -203,7 +203,7 @@ public final class SocketX {
     /**
      * Creates a single-use call for this exchange.
      *
-     * @return socket call
+     * @return new single-use call that opens this exchange
      */
     public Call<SocketSession> call() {
         return SocketCall.create(
@@ -217,7 +217,7 @@ public final class SocketX {
     /**
      * Enqueues this exchange asynchronously.
      *
-     * @return call
+     * @return enqueued call for this exchange
      */
     public Call<SocketSession> enqueue() {
         return call().enqueue();
@@ -236,10 +236,10 @@ public final class SocketX {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -278,8 +278,8 @@ public final class SocketX {
     /**
      * Parses a target URI.
      *
-     * @param value target
-     * @return URI
+     * @param value raw socket target URL
+     * @return validated socket target URI
      */
     private static URI parseTarget(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -305,10 +305,10 @@ public final class SocketX {
     /**
      * Builds a socket URI from transport parts.
      *
-     * @param scheme scheme
-     * @param host   host
-     * @param port   port
-     * @return URI string
+     * @param scheme supported socket transport scheme
+     * @param host   remote target host name or IP address
+     * @param port   remote target port
+     * @return socket target URL assembled from the transport parts
      */
     private static String target(final String scheme, final String host, final int port) {
         if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
@@ -327,8 +327,8 @@ public final class SocketX {
     /**
      * Validates a duration.
      *
-     * @param value duration
-     * @return duration
+     * @param value timeout duration to validate
+     * @return the supplied duration after null and range validation
      */
     private static Duration validateDuration(final Duration value) {
         final Duration checked = Assert
@@ -340,7 +340,7 @@ public final class SocketX {
     /**
      * Returns whether a context options map contains socket-specific keys.
      *
-     * @param options options
+     * @param options context option snapshot to inspect
      * @return true when socket-specific keys exist
      */
     private static boolean hasSocketOptions(final org.miaixz.bus.fabric.Options options) {
@@ -472,7 +472,7 @@ public final class SocketX {
         /**
          * Sets target.
          *
-         * @param url URL
+         * @param url raw socket target URL
          * @return this builder
          */
         public Builder to(final String url) {
@@ -483,7 +483,7 @@ public final class SocketX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw socket target URL forwarded to {@link #to(String)}
          * @return this builder
          */
         public Builder url(final String url) {
@@ -493,8 +493,8 @@ public final class SocketX {
         /**
          * Sets a TCP target.
          *
-         * @param host host
-         * @param port port
+         * @param host remote TCP host name or IP address
+         * @param port remote TCP port
          * @return this builder
          */
         public Builder tcp(final String host, final int port) {
@@ -504,8 +504,8 @@ public final class SocketX {
         /**
          * Sets a TLS-over-TCP target.
          *
-         * @param host host
-         * @param port port
+         * @param host remote TLS host name or IP address
+         * @param port remote TLS port
          * @return this builder
          */
         public Builder tls(final String host, final int port) {
@@ -515,8 +515,8 @@ public final class SocketX {
         /**
          * Sets a UDP target.
          *
-         * @param host host
-         * @param port port
+         * @param host remote UDP host name or IP address
+         * @param port remote UDP port
          * @return this builder
          */
         public Builder udp(final String host, final int port) {
@@ -526,8 +526,8 @@ public final class SocketX {
         /**
          * Sets a KCP target.
          *
-         * @param host host
-         * @param port port
+         * @param host remote KCP host name or IP address
+         * @param port remote KCP port
          * @return this builder
          */
         public Builder kcp(final String host, final int port) {
@@ -537,8 +537,8 @@ public final class SocketX {
         /**
          * Appends a header.
          *
-         * @param name  name
-         * @param value value
+         * @param name  socket opening header name
+         * @param value socket opening header value
          * @return this builder
          */
         public Builder header(final String name, final String value) {
@@ -549,7 +549,7 @@ public final class SocketX {
         /**
          * Merges headers.
          *
-         * @param headers headers
+         * @param headers header collection whose values are appended to this builder
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -565,7 +565,7 @@ public final class SocketX {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout non-negative duration assigned to every timeout phase
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
@@ -576,7 +576,7 @@ public final class SocketX {
         /**
          * Sets timeout policy.
          *
-         * @param timeout timeout policy
+         * @param timeout complete timeout policy for socket operations
          * @return this builder
          */
         public Builder timeout(final Timeout timeout) {
@@ -680,7 +680,7 @@ public final class SocketX {
         /**
          * Sets frame codec.
          *
-         * @param codec codec
+         * @param codec codec used to delimit inbound and outbound messages
          * @return this builder
          */
         public Builder frame(final FrameCodec codec) {
@@ -738,7 +738,7 @@ public final class SocketX {
         /**
          * Sets message handler.
          *
-         * @param handler handler
+         * @param handler message handler, or {@code null} to install a no-op handler
          * @return this builder
          */
         public Builder onMessage(final Handler handler) {
@@ -750,8 +750,8 @@ public final class SocketX {
         /**
          * Registers a channel message handler.
          *
-         * @param channel channel id
-         * @param handler handler
+         * @param channel channel identifier selected by the demultiplexer
+         * @param handler handler invoked for messages on the channel
          * @return this builder
          */
         public Builder channel(final String channel, final Handler handler) {
@@ -784,7 +784,7 @@ public final class SocketX {
         /**
          * Sets a custom message channel resolver.
          *
-         * @param resolver resolver
+         * @param resolver function that resolves a channel identifier from each message
          * @return this builder
          */
         public Builder resolver(final Function<Message, String> resolver) {
@@ -795,7 +795,7 @@ public final class SocketX {
         /**
          * Sets a UTF-8 text message handler.
          *
-         * @param handler text handler
+         * @param handler UTF-8 text consumer, or {@code null} to install a no-op handler
          * @return this builder
          */
         public Builder onText(final Consumer<String> handler) {
@@ -811,7 +811,7 @@ public final class SocketX {
         /**
          * Sets open handler.
          *
-         * @param handler open handler
+         * @param handler consumer invoked after a session opens, or {@code null} for no action
          * @return this builder
          */
         public Builder onOpen(final Consumer<SocketSession> handler) {
@@ -823,7 +823,7 @@ public final class SocketX {
         /**
          * Sets error handler.
          *
-         * @param handler error handler
+         * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
         public Builder onError(final Consumer<Throwable> handler) {
@@ -835,7 +835,7 @@ public final class SocketX {
         /**
          * Sets guard.
          *
-         * @param guard guard
+         * @param guard rule evaluated for socket messages
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -846,7 +846,7 @@ public final class SocketX {
         /**
          * Sets message filter.
          *
-         * @param filter filter
+         * @param filter filter applied to socket messages
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -857,7 +857,7 @@ public final class SocketX {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer event observer, or {@code null} to disable observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -889,7 +889,7 @@ public final class SocketX {
         /**
          * Sets callback.
          *
-         * @param callback callback
+         * @param callback callback notified when asynchronous opening succeeds or fails
          * @return this builder
          */
         public Builder callback(final Callback<SocketSession> callback) {
@@ -900,7 +900,7 @@ public final class SocketX {
         /**
          * Sets lifecycle listener.
          *
-         * @param listener lifecycle listener
+         * @param listener listener notified of socket session lifecycle events
          * @return this builder
          */
         public Builder listener(final Listener<? super SocketSession> listener) {
@@ -921,7 +921,7 @@ public final class SocketX {
         /**
          * Builds an exchange.
          *
-         * @return exchange
+         * @return immutable socket exchange built from the current configuration
          */
         public SocketX build() {
             if (uri == null) {
@@ -933,7 +933,7 @@ public final class SocketX {
         /**
          * Opens a built exchange.
          *
-         * @return session
+         * @return opened socket session
          */
         public SocketSession open() {
             return build().open();
@@ -942,7 +942,7 @@ public final class SocketX {
         /**
          * Connects a built exchange.
          *
-         * @return session
+         * @return connected socket session
          */
         public SocketSession connect() {
             return open();
@@ -951,7 +951,7 @@ public final class SocketX {
         /**
          * Executes a built exchange.
          *
-         * @return session
+         * @return socket session produced by synchronous execution
          */
         public SocketSession execute() {
             return build().execute();
@@ -960,7 +960,7 @@ public final class SocketX {
         /**
          * Creates a call for a built exchange.
          *
-         * @return socket call
+         * @return new single-use call for the built exchange
          */
         public Call<SocketSession> call() {
             return build().call();
@@ -969,7 +969,7 @@ public final class SocketX {
         /**
          * Enqueues a built exchange asynchronously.
          *
-         * @return call
+         * @return enqueued call for the built exchange
          */
         public Call<SocketSession> enqueue() {
             return build().enqueue();
@@ -1009,7 +1009,7 @@ public final class SocketX {
         /**
          * Returns the configured handler.
          *
-         * @return handler
+         * @return configured direct handler or the assembled channel demultiplexer
          */
         private Handler handler() {
             if (demuxer != null) {
@@ -1021,7 +1021,7 @@ public final class SocketX {
         /**
          * Returns the demuxer builder.
          *
-         * @return demuxer builder
+         * @return lazily initialized channel demultiplexer builder
          */
         private Demuxer.Builder demuxer() {
             if (demuxer == null) {
@@ -1033,7 +1033,7 @@ public final class SocketX {
         /**
          * Copies current socket options into a builder.
          *
-         * @return copied builder
+         * @return mutable builder initialized from the current socket option snapshot
          */
         private SocketOptions.Builder copySocketOptions() {
             return SocketOptions.builder().readBufferSize(socketOptions.readBufferSize())

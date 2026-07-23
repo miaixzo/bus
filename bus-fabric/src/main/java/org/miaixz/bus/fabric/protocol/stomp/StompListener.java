@@ -44,7 +44,7 @@ public abstract class StompListener implements Listener<StompSession> {
     /**
      * Handles a successfully established STOMP session.
      *
-     * @param session session
+     * @param session STOMP session that completed its connection handshake
      */
     public void connected(final StompSession session) {
         // Default listener intentionally performs no action.
@@ -53,7 +53,7 @@ public abstract class StompListener implements Listener<StompSession> {
     /**
      * Handles a closed STOMP session.
      *
-     * @param session session
+     * @param session STOMP session whose lifecycle has closed
      */
     public void disconnected(final StompSession session) {
         // Default listener intentionally performs no action.
@@ -62,8 +62,8 @@ public abstract class StompListener implements Listener<StompSession> {
     /**
      * Handles a STOMP session failure.
      *
-     * @param session session, when available
-     * @param cause   failure cause
+     * @param session affected STOMP session, or null when failure occurs before a session is available
+     * @param cause   error that terminated or prevented the session
      */
     public void error(final StompSession session, final Throwable cause) {
         // Default listener intentionally performs no action.
@@ -72,7 +72,7 @@ public abstract class StompListener implements Listener<StompSession> {
     /**
      * Bridges the shared open callback to the STOMP connected callback.
      *
-     * @param source STOMP session
+     * @param source STOMP session forwarded unchanged to {@link #connected(StompSession)}
      */
     @Override
     public final void open(final StompSession source) {
@@ -82,7 +82,7 @@ public abstract class StompListener implements Listener<StompSession> {
     /**
      * Bridges the shared close callback to the STOMP disconnected callback.
      *
-     * @param source STOMP session
+     * @param source STOMP session forwarded unchanged to {@link #disconnected(StompSession)}
      */
     @Override
     public final void close(final StompSession source) {
@@ -92,8 +92,8 @@ public abstract class StompListener implements Listener<StompSession> {
     /**
      * Bridges the shared failure callback to the STOMP error callback.
      *
-     * @param source STOMP session
-     * @param cause  failure cause
+     * @param source STOMP session forwarded unchanged to {@link #error(StompSession, Throwable)}
+     * @param cause  failure forwarded unchanged to {@link #error(StompSession, Throwable)}
      */
     @Override
     public final void failure(final StompSession source, final Throwable cause) {

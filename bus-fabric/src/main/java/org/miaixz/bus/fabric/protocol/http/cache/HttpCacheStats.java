@@ -41,6 +41,15 @@ public record HttpCacheStats(long requestCount, long networkCount, long hitCount
 
     /**
      * Creates a validated stats snapshot.
+     *
+     * @param requestCount      cache strategy requests
+     * @param networkCount      network responses
+     * @param hitCount          cache hits
+     * @param missCount         cache misses
+     * @param corruptionCount   corrupt candidates
+     * @param writeSuccessCount completed cache writes
+     * @param writeAbortCount   intentionally aborted cache writes
+     * @param writeFailureCount failed cache writes
      */
     public HttpCacheStats {
         requestCount = nonNegative(requestCount, "Request count");

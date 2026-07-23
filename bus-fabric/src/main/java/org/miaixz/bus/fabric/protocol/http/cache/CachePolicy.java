@@ -29,7 +29,7 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
@@ -54,7 +54,7 @@ public final class CachePolicy {
     /**
      * Returns the default policy.
      *
-     * @return policy
+     * @return shared stateless cache policy instance
      */
     public static CachePolicy defaults() {
         return Instances.get(CachePolicy.class.getName() + ".defaults", CachePolicy::new);
@@ -63,8 +63,8 @@ public final class CachePolicy {
     /**
      * Returns whether a response may be cached.
      *
-     * @param request  request
-     * @param response response
+     * @param request  request associated with the candidate response
+     * @param response response whose method, status, Vary, and directives are evaluated
      * @return true when cacheable
      */
     public boolean cacheable(final HttpRequest request, final HttpResponse response) {
@@ -72,14 +72,14 @@ public final class CachePolicy {
         require(response, "HTTP response");
         final HttpCacheControl requestControl = request.cacheControl();
         final HttpCacheControl responseControl = response.cacheControl();
-        if (request.method() != HTTP.Method.GET && request.method() != HTTP.Method.HEAD) {
+        if (request.method() != Http.Method.GET && request.method() != Http.Method.HEAD) {
             return false;
         }
         if (!Builder.CACHE_POLICY_CACHEABLE.contains(response.code())
                 && !explicitlyCacheable(response, responseControl)) {
             return false;
         }
-        if (HttpCacheKey.varyStar(response.headers().get(HTTP.VARY))) {
+        if (HttpCacheKey.varyStar(response.headers().get(Http.Header.VARY))) {
             return false;
         }
         return !requestControl.noStore() && !responseControl.noStore();
@@ -88,8 +88,8 @@ public final class CachePolicy {
     /**
      * Returns whether a response is fresh.
      *
-     * @param response response
-     * @param clock    clock
+     * @param response cached response evaluated against its originating request
+     * @param clock    runtime clock supplying the current instant
      * @return true when fresh
      */
     public boolean fresh(final HttpResponse response, final Clock clock) {
@@ -100,9 +100,9 @@ public final class CachePolicy {
     /**
      * Returns whether a cached response is fresh enough for a request.
      *
-     * @param request  request
-     * @param response response
-     * @param clock    clock
+     * @param request  current request whose cache directives constrain reuse
+     * @param response cached response whose age and freshness lifetime are evaluated
+     * @param clock    runtime clock supplying the current instant
      * @return true when fresh
      */
     public boolean fresh(final HttpRequest request, final HttpResponse response, final Clock clock) {
@@ -116,9 +116,9 @@ public final class CachePolicy {
                 return false;
             }
             final Instant now = clock.now();
-            final Instant date = headerInstant(response.headers(), HTTP.DATE);
-            final Instant expires = headerInstant(response.headers(), HTTP.EXPIRES);
-            final Instant lastModified = headerInstant(response.headers(), HTTP.LAST_MODIFIED);
+            final Instant date = headerInstant(response.headers(), Http.Header.DATE);
+            final Instant expires = headerInstant(response.headers(), Http.Header.EXPIRES);
+            final Instant lastModified = headerInstant(response.headers(), Http.Header.LAST_MODIFIED);
             final long age = currentAgeSeconds(response.headers(), date, now);
             long lifetime = freshnessLifetime(responseControl, date, expires, lastModified);
             if (responseControl.immutable()) {
@@ -139,13 +139,14 @@ public final class CachePolicy {
     /**
      * Returns whether response headers explicitly allow caching.
      *
-     * @param response response
-     * @param control  cache control
+     * @param response candidate response containing optional Expires metadata
+     * @param control  parsed response Cache-Control directives
      * @return true when explicit
      */
     private static boolean explicitlyCacheable(final HttpResponse response, final HttpCacheControl control) {
         return control.isPublic() || control.isPrivate() || control.maxAgeSeconds() >= 0
-                || control.sMaxAgeSeconds() >= 0 || control.immutable() || response.headers().get(HTTP.EXPIRES) != null;
+                || control.sMaxAgeSeconds() >= 0 || control.immutable()
+                || response.headers().get(Http.Header.EXPIRES) != null;
     }
 
     /**
@@ -184,20 +185,20 @@ public final class CachePolicy {
     /**
      * Creates a conditional request.
      *
-     * @param request request
+     * @param request request to conditionally revalidate
      * @param cached  cached response
-     * @return request
+     * @return request carrying the strongest available validator, or the original request
      */
     public HttpRequest conditional(final HttpRequest request, final HttpResponse cached) {
         require(request, "HTTP request");
         require(cached, "Cached response");
-        final String etag = cached.headers().get(HTTP.ETAG);
+        final String etag = cached.headers().get(Http.Header.ETAG);
         if (etag != null) {
-            return copy(request, request.headers().with(HTTP.IF_NONE_MATCH, etag));
+            return copy(request, request.headers().with(Http.Header.IF_NONE_MATCH, etag));
         }
-        final String modified = cached.headers().get(HTTP.LAST_MODIFIED);
+        final String modified = cached.headers().get(Http.Header.LAST_MODIFIED);
         if (modified != null) {
-            return copy(request, request.headers().with(HTTP.IF_MODIFIED_SINCE, modified));
+            return copy(request, request.headers().with(Http.Header.IF_MODIFIED_SINCE, modified));
         }
         return request;
     }
@@ -205,9 +206,9 @@ public final class CachePolicy {
     /**
      * Copies a request with headers.
      *
-     * @param request request
-     * @param headers headers
-     * @return copy
+     * @param request source request whose non-header fields are retained
+     * @param headers replacement immutable header snapshot
+     * @return rebuilt request with the replacement headers
      */
     private static HttpRequest copy(final HttpRequest request, final Headers headers) {
         return request.toBuilder().headers(headers).build();
@@ -216,8 +217,8 @@ public final class CachePolicy {
     /**
      * Returns header instant.
      *
-     * @param headers headers
-     * @param name    name
+     * @param headers response headers containing the date field
+     * @param name    date header name to parse
      * @return instant or null
      */
     private static Instant headerInstant(final Headers headers, final String name) {
@@ -238,11 +239,11 @@ public final class CachePolicy {
     /**
      * Returns age seconds.
      *
-     * @param headers headers
+     * @param headers response headers containing the optional Age field
      * @return age seconds
      */
     private static long ageSeconds(final Headers headers) {
-        final var values = headers.values(HTTP.AGE);
+        final var values = headers.values(Http.Header.AGE);
         if (values.isEmpty()) {
             return 0L;
         }
@@ -270,9 +271,9 @@ public final class CachePolicy {
     /**
      * Returns current response age.
      *
-     * @param headers headers
+     * @param headers response headers containing the optional Age field
      * @param date    Date header instant or null
-     * @param now     current time
+     * @param now     current evaluation instant
      * @return age seconds
      */
     private static long currentAgeSeconds(final Headers headers, final Instant date, final Instant now) {
@@ -294,10 +295,10 @@ public final class CachePolicy {
     /**
      * Validates required value.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

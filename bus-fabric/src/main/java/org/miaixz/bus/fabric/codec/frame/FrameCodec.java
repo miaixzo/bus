@@ -37,7 +37,7 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
     /**
      * Creates the default line codec.
      *
-     * @return line codec
+     * @return new stateful line-delimited frame codec with default delimiter and limits
      */
     static FrameCodec line() {
         try {
@@ -53,8 +53,8 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
     /**
      * Creates a fixed-length codec.
      *
-     * @param length frame length
-     * @return fixed-length codec
+     * @param length required payload size for every frame
+     * @return new stateful fixed-length codec
      */
     static FrameCodec length(final int length) {
         return FixedCodec.of(length);
@@ -63,7 +63,7 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
     /**
      * Creates the default length-field codec.
      *
-     * @return length-field codec
+     * @return new stateful codec using the default length-field configuration
      */
     static FrameCodec lengthField() {
         return LengthCodec.create();
@@ -72,7 +72,7 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
     /**
      * Creates a raw byte codec.
      *
-     * @return raw codec
+     * @return new raw codec that treats each non-empty input buffer as one frame
      */
     static FrameCodec raw() {
         return RawCodec.create();
@@ -81,21 +81,21 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
     /**
      * Decodes frames from input.
      *
-     * @param input input bytes
-     * @return decoded frames
+     * @param input buffer containing newly available encoded bytes
+     * @return frames completed by this input, in wire order
      */
     List<Frame> decode(Buffer input);
 
     /**
      * Encodes a frame.
      *
-     * @param frame  frame
-     * @param output output buffer
+     * @param frame  frame to encode according to this codec's format
+     * @param output destination buffer receiving encoded bytes
      */
     void encode(Frame frame, Buffer output);
 
     /**
-     * Resets codec state.
+     * Discards decoder state retained from previous input.
      */
     void reset();
 

@@ -48,12 +48,12 @@ public final class FabricMeter {
     private static final Counter[] FIXED_COUNTERS = Counter.values();
 
     /**
-     * Runtime clock.
+     * Monotonic runtime clock used by active operation timers.
      */
     private final Clock clock;
 
     /**
-     * Counter values.
+     * Dynamically named counter accumulators.
      */
     private final ConcurrentHashMap<String, LongAdder> counters;
 
@@ -63,7 +63,7 @@ public final class FabricMeter {
     private final LongAdder[] fixedCounters;
 
     /**
-     * Timing values.
+     * Dynamically named duration aggregates.
      */
     private final ConcurrentHashMap<String, Timing> timings;
 
@@ -73,7 +73,7 @@ public final class FabricMeter {
     private final ConcurrentHashMap<TimerKey, Timer> activeTimers;
 
     /**
-     * Creates an empty meter.
+     * Creates an empty meter using the system clock.
      */
     public FabricMeter() {
         this(Clock.system());
@@ -82,7 +82,8 @@ public final class FabricMeter {
     /**
      * Creates an empty meter using an explicit runtime clock.
      *
-     * @param clock runtime clock
+     * @param clock clock used by operation timers
+     * @throws IllegalArgumentException if {@code clock} is {@code null}
      */
     public FabricMeter(final Clock clock) {
         this.clock = Assert.notNull(clock, "Clock must not be null");
@@ -98,7 +99,7 @@ public final class FabricMeter {
     /**
      * Creates a meter using the system clock.
      *
-     * @return meter
+     * @return empty meter using the system clock
      */
     public static FabricMeter create() {
         return new FabricMeter(Clock.system());
@@ -107,8 +108,9 @@ public final class FabricMeter {
     /**
      * Creates a meter using an explicit runtime clock.
      *
-     * @param clock runtime clock
-     * @return meter
+     * @param clock clock used by operation timers
+     * @return empty meter using the supplied clock
+     * @throws IllegalArgumentException if {@code clock} is {@code null}
      */
     public static FabricMeter create(final Clock clock) {
         return new FabricMeter(clock);
@@ -117,7 +119,8 @@ public final class FabricMeter {
     /**
      * Increments a counter by one.
      *
-     * @param name metric name
+     * @param name non-blank, single-line dynamic counter name
+     * @throws ValidateException if {@code name} is blank or multi-line
      */
     public void increment(final String name) {
         add(name, 1);
@@ -126,8 +129,9 @@ public final class FabricMeter {
     /**
      * Adds a delta to a counter.
      *
-     * @param name  metric name
-     * @param delta delta
+     * @param name  non-blank, single-line dynamic counter name
+     * @param delta signed amount added to the counter
+     * @throws ValidateException if {@code name} is blank or multi-line
      */
     public void add(final String name, final long delta) {
         counters.computeIfAbsent(validateName(name), key -> new LongAdder()).add(delta);
@@ -136,7 +140,8 @@ public final class FabricMeter {
     /**
      * Increments a preallocated fixed counter by one without a map lookup or update-path allocation.
      *
-     * @param counter fixed counter
+     * @param counter preallocated counter descriptor to increment
+     * @throws ValidateException if {@code counter} is {@code null}
      */
     public void incrementCounter(final Counter counter) {
         addCounter(counter, 1L);
@@ -145,18 +150,23 @@ public final class FabricMeter {
     /**
      * Adds a delta to a preallocated fixed counter without a map lookup or update-path allocation.
      *
-     * @param counter fixed counter
-     * @param delta   delta
+     * @param counter preallocated counter descriptor to update
+     * @param delta   signed amount added to the fixed counter
+     * @throws ValidateException if {@code counter} is {@code null}
      */
     public void addCounter(final Counter counter, final long delta) {
-        fixedCounters[Assert.notNull(counter, "Counter must not be null").ordinal()].add(delta);
+        if (counter == null) {
+            throw new ValidateException("Counter must not be null");
+        }
+        fixedCounters[counter.ordinal()].add(delta);
     }
 
     /**
      * Returns a counter value.
      *
-     * @param name metric name
-     * @return counter value
+     * @param name non-blank, single-line metric name
+     * @return dynamic counter sum when that name exists; otherwise timing sample count or zero
+     * @throws ValidateException if {@code name} is blank or multi-line
      */
     public long count(final String name) {
         final String checked = validateName(name);
@@ -171,8 +181,9 @@ public final class FabricMeter {
     /**
      * Returns a fixed counter value.
      *
-     * @param counter fixed counter
-     * @return counter value
+     * @param counter preallocated counter descriptor to read
+     * @return current sum of the fixed counter
+     * @throws IllegalArgumentException if {@code counter} is {@code null}
      */
     public long counterValue(final Counter counter) {
         return fixedCounters[Assert.notNull(counter, "Counter must not be null").ordinal()].sum();
@@ -181,8 +192,10 @@ public final class FabricMeter {
     /**
      * Records a duration.
      *
-     * @param name     metric name
-     * @param duration duration
+     * @param name     non-blank, single-line timing name
+     * @param duration non-negative duration recorded as nanoseconds
+     * @throws ValidateException   if {@code name} is invalid or {@code duration} is null or negative
+     * @throws ArithmeticException if the duration cannot be represented in nanoseconds
      */
     public void timing(final String name, final Duration duration) {
         final Duration checked = Assert
@@ -193,10 +206,16 @@ public final class FabricMeter {
 
     /**
      * Applies an observation timing role for one operation and marker family.
+     * <p>
+     * A duplicate start, unmatched terminal event, or negative elapsed time increments the invalid-event counter. A
+     * valid terminal event removes its active timer and records duration under the family duration metric.
+     * </p>
      *
-     * @param role        timing role
-     * @param operationId operation identifier
-     * @param family      marker family
+     * @param role        {@code NONE}, {@code START}, or terminal timing role
+     * @param operationId non-blank operation identifier required for non-{@code NONE} roles
+     * @param family      non-blank metric family required for non-{@code NONE} roles
+     * @throws IllegalArgumentException if {@code role} is {@code null}
+     * @throws ValidateException        if a non-{@code NONE} role receives an invalid operation identifier or family
      */
     public void observe(final ObservationMarker.Timing role, final String operationId, final String family) {
         final ObservationMarker.Timing checkedRole = Assert.notNull(role, "Timing role must not be null");
@@ -224,9 +243,10 @@ public final class FabricMeter {
     }
 
     /**
-     * Returns an immutable metric snapshot.
+     * Returns a weakly consistent immutable snapshot of dynamic counters, non-zero fixed counters, and timing count,
+     * total, and maximum values.
      *
-     * @return metric snapshot
+     * @return immutable metric-name to value snapshot assembled from the current concurrent accumulators
      */
     public Map<String, Long> snapshot() {
         final Map<String, Long> snapshot = MapKit
@@ -247,7 +267,10 @@ public final class FabricMeter {
     }
 
     /**
-     * Resets all metrics.
+     * Clears dynamic counters, timing aggregates, and active timers, and resets every fixed counter.
+     * <p>
+     * Concurrent updates may race with this operation; the reset is not an atomic global snapshot transition.
+     * </p>
      */
     public void reset() {
         counters.clear();
@@ -261,7 +284,7 @@ public final class FabricMeter {
     /**
      * Returns the number of active timers for package-level verification.
      *
-     * @return active timer count
+     * @return current number of operation-family timer keys awaiting a terminal timing event
      */
     int activeTimers() {
         return activeTimers.size();
@@ -270,8 +293,9 @@ public final class FabricMeter {
     /**
      * Validates a metric name.
      *
-     * @param name metric name
-     * @return metric name
+     * @param name metric name to validate without trimming or other normalization
+     * @return unchanged non-blank, single-line metric name
+     * @throws ValidateException if {@code name} is blank or contains a carriage return or line feed
      */
     private static String validateName(final String name) {
         final String checked = Assert
@@ -398,29 +422,32 @@ public final class FabricMeter {
     private static final class Timing {
 
         /**
-         * Timing count.
+         * Number of durations recorded for this timing name.
          */
         private final LongAdder count = new LongAdder();
 
         /**
-         * Total nanoseconds.
+         * Sum of all recorded durations in nanoseconds.
          */
         private final LongAdder totalNanos = new LongAdder();
 
         /**
-         * Maximum nanoseconds.
+         * Largest recorded duration in nanoseconds.
          */
         private final AtomicLong maxNanos = new AtomicLong();
 
         /**
          * Records nanoseconds.
          *
-         * @param nanos nanoseconds
+         * @param nanos non-negative duration in nanoseconds
          */
         private void record(final long nanos) {
             count.increment();
             totalNanos.add(nanos);
-            maxNanos.accumulateAndGet(nanos, Math::max);
+            long current = maxNanos.get();
+            while (nanos > current && !maxNanos.compareAndSet(current, nanos)) {
+                current = maxNanos.get();
+            }
 
         }
 

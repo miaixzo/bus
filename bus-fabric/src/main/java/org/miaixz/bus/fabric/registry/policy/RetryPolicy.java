@@ -27,7 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 
 /**
  * Immutable retry and redirect policy.
@@ -38,7 +38,7 @@ import org.miaixz.bus.core.net.HTTP;
 public final class RetryPolicy {
 
     /**
-     * Maximum follow-up count.
+     * Exclusive upper bound applied to retry attempt indices and redirect follow-up counts.
      */
     private final int maxFollowUps;
 
@@ -48,16 +48,16 @@ public final class RetryPolicy {
     private final boolean retryOnConnectionFailure;
 
     /**
-     * Base retry delay.
+     * Non-negative base delay used by exponential retry backoff.
      */
     private final Duration baseDelay;
 
     /**
      * Creates a retry policy.
      *
-     * @param maxFollowUps             max follow-up count
-     * @param retryOnConnectionFailure retry on connection failure
-     * @param baseDelay                base delay
+     * @param maxFollowUps             non-negative retry and redirect follow-up limit
+     * @param retryOnConnectionFailure whether recognized connection failures may be retried
+     * @param baseDelay                non-negative base delay for retry backoff
      */
     private RetryPolicy(final int maxFollowUps, final boolean retryOnConnectionFailure, final Duration baseDelay) {
         this.maxFollowUps = maxFollowUps;
@@ -68,7 +68,7 @@ public final class RetryPolicy {
     /**
      * Returns the default retry policy.
      *
-     * @return default policy
+     * @return shared default policy
      */
     public static RetryPolicy defaults() {
         return Instances.get(RetryPolicy.class.getName() + ".defaults", () -> builder().build());
@@ -77,7 +77,7 @@ public final class RetryPolicy {
     /**
      * Creates a retry policy builder.
      *
-     * @return builder
+     * @return new builder seeded with default retry settings
      */
     public static Builder builder() {
         return new Builder();
@@ -86,9 +86,9 @@ public final class RetryPolicy {
     /**
      * Returns whether an exception is retryable.
      *
-     * @param cause   failure cause
-     * @param attempt attempt index
-     * @return true when retry is allowed
+     * @param cause   non-null failure to classify directly
+     * @param attempt non-negative zero-based retry attempt index
+     * @return true when connection-failure retries are enabled, the attempt is below the limit, and the cause matches
      */
     public boolean retry(final Throwable cause, final int attempt) {
         final Throwable current = Assert.notNull(
@@ -103,16 +103,16 @@ public final class RetryPolicy {
     /**
      * Returns whether a status may redirect.
      *
-     * @param status    HTTP status
-     * @param followUps current follow-up count
-     * @return true when redirect is allowed
+     * @param status    HTTP response status code of at least 100
+     * @param followUps non-negative number of follow-ups already considered
+     * @return true when below the limit and the status is one of the six supported redirect codes
      */
     public boolean redirect(final int status, final int followUps) {
         Assert.isFalse(
                 status < Normal._100 || followUps < Normal._0,
                 () -> new ValidateException("Status and follow-up count are invalid"));
         return followUps < maxFollowUps && switch (status) {
-            case HTTP.HTTP_MULT_CHOICE, HTTP.HTTP_MOVED_PERM, HTTP.HTTP_MOVED_TEMP, HTTP.HTTP_SEE_OTHER, HTTP.HTTP_TEMP_REDIRECT, HTTP.HTTP_PERM_REDIRECT -> true;
+            case Http.Status.MULTIPLE_CHOICES, Http.Status.MOVED_PERMANENTLY, Http.Status.FOUND, Http.Status.SEE_OTHER, Http.Status.TEMPORARY_REDIRECT, Http.Status.PERMANENT_REDIRECT -> true;
             default -> false;
         };
     }
@@ -120,8 +120,8 @@ public final class RetryPolicy {
     /**
      * Returns retry delay for an attempt.
      *
-     * @param attempt attempt index
-     * @return retry delay
+     * @param attempt non-negative retry attempt index
+     * @return zero for attempt zero or a zero base delay; otherwise base delay multiplied by a capped power of two
      */
     public Duration delay(final int attempt) {
         Assert.isFalse(attempt < Normal._0, () -> new ValidateException("Retry attempt must not be negative"));
@@ -134,8 +134,8 @@ public final class RetryPolicy {
     /**
      * Returns whether a cause is a connection failure.
      *
-     * @param cause cause
-     * @return true when connection related
+     * @param cause non-null failure instance to classify without traversing its cause chain
+     * @return true for fabric, JDK socket, connect, or other I/O exceptions
      */
     private static boolean connectionFailure(final Throwable cause) {
         return cause instanceof SocketException || cause instanceof java.net.SocketException
@@ -175,7 +175,7 @@ public final class RetryPolicy {
         /**
          * Sets maximum follow-ups.
          *
-         * @param max maximum follow-ups
+         * @param max non-negative retry and redirect follow-up limit
          * @return this builder
          */
         public Builder maxFollowUps(final int max) {
@@ -187,7 +187,7 @@ public final class RetryPolicy {
         /**
          * Sets connection failure retry behavior.
          *
-         * @param enabled enabled flag
+         * @param enabled whether recognized connection failures may be retried
          * @return this builder
          */
         public Builder retryOnConnectionFailure(final boolean enabled) {
@@ -198,7 +198,7 @@ public final class RetryPolicy {
         /**
          * Builds an immutable retry policy.
          *
-         * @return retry policy
+         * @return immutable retry policy containing the validated builder state
          */
         public RetryPolicy build() {
             final Duration currentDelay = Assert

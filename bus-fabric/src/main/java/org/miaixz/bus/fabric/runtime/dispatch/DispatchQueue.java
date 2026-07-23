@@ -44,17 +44,17 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class DispatchQueue implements AutoCloseable {
 
     /**
-     * Hard safety bound for retained short tasks.
+     * Maximum number of short tasks retained in the ready partition.
      */
     private static final int MAX_QUEUED = 65_536;
 
     /**
-     * Dispatch limit.
+     * Global and per-key concurrency limits applied during reservation.
      */
     private final DispatchLimit limit;
 
     /**
-     * Ready handles.
+     * Ready-task buckets indexed by dispatch key.
      */
     private final Map<String, ReadyBucket> buckets;
 
@@ -69,12 +69,12 @@ public final class DispatchQueue implements AutoCloseable {
     private final Map<DispatchHandle, Entry> queuedEntries;
 
     /**
-     * Stable enqueue sequence used only by diagnostic snapshots.
+     * Queue-local enqueue sequence used to order diagnostic snapshots.
      */
     private long sequence;
 
     /**
-     * Running handles.
+     * Reserved or running tasks indexed by handle identity in promotion order.
      */
     private final LinkedHashMap<DispatchHandle, Entry> running;
 
@@ -89,9 +89,9 @@ public final class DispatchQueue implements AutoCloseable {
     private boolean closed;
 
     /**
-     * Creates a queue.
+     * Creates an empty queue governed by the supplied dispatch limits.
      *
-     * @param limit dispatch limit
+     * @param limit global and per-key dispatch limits
      */
     DispatchQueue(final DispatchLimit limit) {
         this.limit = require(limit, "Dispatch limit");
@@ -103,10 +103,10 @@ public final class DispatchQueue implements AutoCloseable {
     }
 
     /**
-     * Adds a handle to the ready queue.
+     * Adds an eligible handle to the ready queue using ownership data from the handle and its activity.
      *
-     * @param handle dispatch handle
-     * @return true when enqueued
+     * @param handle queued handle to retain
+     * @return {@code true} if the handle was accepted into the ready queue
      */
     public synchronized boolean enqueue(final DispatchHandle handle) {
         final DispatchHandle current = require(handle, "Dispatch handle");
@@ -116,12 +116,12 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Adds one fully owned short-task snapshot to this queue.
      *
-     * @param tag          cancellation tag
-     * @param owner        task owner
-     * @param activity     short activity
-     * @param cancellation activity cancellation scope
-     * @param handle       unique dispatch handle
-     * @return true when enqueued
+     * @param tag          cancellation tag, which may be {@code null}
+     * @param owner        object that owns the task
+     * @param activity     short activity to execute
+     * @param cancellation cancellation scope belonging to the activity
+     * @param handle       unique queued handle belonging to the activity
+     * @return {@code true} if the snapshot was accepted into the ready queue
      */
     synchronized boolean enqueue(
             final Object tag,
@@ -129,22 +129,23 @@ public final class DispatchQueue implements AutoCloseable {
             final Activity activity,
             final Cancellation cancellation,
             final DispatchHandle handle) {
-        final Entry entry = new Entry(tag, owner, activity, cancellation, handle, ++sequence);
-        if (closed || entry.handle().state() != Status.QUEUED || entry.handle().future().isDone()
-                || contains(entry.handle()) || queuedEntries.size() >= MAX_QUEUED) {
+        final DispatchHandle current = require(handle, "Dispatch handle");
+        if (closed || current.state() != Status.QUEUED || current.future().isDone() || contains(current)
+                || queuedEntries.size() >= MAX_QUEUED) {
             return false;
         }
-        final ReadyBucket bucket = buckets.computeIfAbsent(handle.key(), ReadyBucket::new);
+        final Entry entry = new Entry(tag, owner, activity, cancellation, current, ++sequence);
+        final ReadyBucket bucket = buckets.computeIfAbsent(current.key(), ReadyBucket::new);
         bucket.entries.addLast(entry);
-        queuedEntries.put(handle, entry);
+        queuedEntries.put(current, entry);
         publish(bucket);
         return true;
     }
 
     /**
-     * Promotes ready handles that fit the dispatch limits.
+     * Reserves ready handles that fit the dispatch limits and moves them to the running partition.
      *
-     * @return promoted handles
+     * @return immutable list of handles reserved during this pass, in reservation order
      */
     public synchronized List<DispatchHandle> promote() {
         final List<Entry> entries = reserveEntries();
@@ -161,14 +162,16 @@ public final class DispatchQueue implements AutoCloseable {
      * The consuming worker must successfully call {@link DispatchHandle#markRunning()} before invoking each returned
      * activity. A failed promotion must be finished without executing the activity.
      *
-     * @return promoted task entries
+     * @return immutable list of task entries reserved during this pass, in reservation order
      */
     synchronized List<Entry> promoteEntries() {
-        return List.copyOf(reserveEntries());
+        return reserveEntries();
     }
 
     /**
      * Performs one bounded ready-bucket reservation pass while the queue monitor is held.
+     *
+     * @return task entries reserved for immediate worker execution
      */
     private List<Entry> reserveEntries() {
         final List<Entry> promoted = new ArrayList<>();
@@ -203,9 +206,9 @@ public final class DispatchQueue implements AutoCloseable {
     }
 
     /**
-     * Removes a completed running handle.
+     * Removes a completed handle from the running partition and releases its per-key capacity.
      *
-     * @param handle dispatch handle
+     * @param handle completed handle whose reservation is released
      */
     public synchronized void finish(final DispatchHandle handle) {
         require(handle, "Dispatch handle");
@@ -221,10 +224,10 @@ public final class DispatchQueue implements AutoCloseable {
     }
 
     /**
-     * Cancels a ready or running handle.
+     * Removes a retained handle and asks it to transition to the cancelled state.
      *
-     * @param handle dispatch handle
-     * @return true when cancelled
+     * @param handle retained handle to cancel
+     * @return {@code true} if the handle was retained and its cancellation transition succeeded
      */
     public boolean cancel(final DispatchHandle handle) {
         require(handle, "Dispatch handle");
@@ -241,9 +244,9 @@ public final class DispatchQueue implements AutoCloseable {
     }
 
     /**
-     * Returns a ready snapshot.
+     * Returns a ready-handle snapshot in original enqueue order.
      *
-     * @return ready snapshot
+     * @return immutable snapshot of handles currently awaiting reservation
      */
     public synchronized List<DispatchHandle> queued() {
         final ArrayList<Entry> entries = new ArrayList<>(queuedEntries.values());
@@ -256,9 +259,9 @@ public final class DispatchQueue implements AutoCloseable {
     }
 
     /**
-     * Returns a running snapshot.
+     * Returns a snapshot of handles in reservation order from the running partition.
      *
-     * @return running snapshot
+     * @return immutable snapshot of reserved or running handles
      */
     public synchronized List<DispatchHandle> running() {
         return List.copyOf(running.keySet());
@@ -267,7 +270,7 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Returns whether this queue is idle.
      *
-     * @return true when no ready or running handles remain
+     * @return {@code true} when neither queue partition retains a handle
      */
     public synchronized boolean idle() {
         return queuedEntries.isEmpty() && running.isEmpty();
@@ -301,8 +304,8 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Returns whether either queue partition already contains a handle.
      *
-     * @param handle handle
-     * @return true when retained
+     * @param handle handle identity to locate
+     * @return {@code true} if either partition retains the handle
      */
     private boolean contains(final DispatchHandle handle) {
         return running.containsKey(handle) || queuedEntries.containsKey(handle);
@@ -311,8 +314,8 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Removes one queued entry by handle identity.
      *
-     * @param handle handle
-     * @return true when removed
+     * @param handle handle identity to remove
+     * @return {@code true} if a ready entry was removed
      */
     private boolean removeQueued(final DispatchHandle handle) {
         final Entry entry = queuedEntries.remove(handle);
@@ -335,6 +338,8 @@ public final class DispatchQueue implements AutoCloseable {
 
     /**
      * Publishes a non-empty bucket once.
+     *
+     * @param bucket per-key bucket to append to the ready queue
      */
     private void publish(final ReadyBucket bucket) {
         if (!bucket.ready && !bucket.entries.isEmpty()) {
@@ -345,6 +350,8 @@ public final class DispatchQueue implements AutoCloseable {
 
     /**
      * Republishes non-empty work or removes an empty bucket.
+     *
+     * @param bucket per-key bucket whose remaining work is reconciled
      */
     private void publishOrRemove(final ReadyBucket bucket) {
         if (bucket.entries.isEmpty()) {
@@ -357,7 +364,7 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Decrements running count for a key.
      *
-     * @param key dispatch key
+     * @param key dispatch key whose running count is released
      */
     private void decrement(final String key) {
         final int count = runningByKey.getOrDefault(key, Normal._0);
@@ -369,12 +376,12 @@ public final class DispatchQueue implements AutoCloseable {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -411,18 +418,19 @@ public final class DispatchQueue implements AutoCloseable {
         private final DispatchHandle handle;
 
         /**
-         * Stable diagnostic ordering.
+         * Queue-local enqueue sequence used for stable diagnostic ordering.
          */
         private final long sequence;
 
         /**
          * Creates a validated short-task snapshot.
          *
-         * @param tag          cancellation tag
-         * @param owner        task owner
-         * @param activity     activity
-         * @param cancellation cancellation scope
-         * @param handle       unique handle
+         * @param tag          cancellation tag, which may be {@code null}
+         * @param owner        object that owns the task
+         * @param activity     short activity to execute
+         * @param cancellation cancellation scope belonging to the activity
+         * @param handle       unique handle belonging to the activity
+         * @param sequence     queue-local enqueue sequence used for stable ordering
          */
         private Entry(final Object tag, final Object owner, final Activity activity, final Cancellation cancellation,
                 final DispatchHandle handle, final long sequence) {
@@ -446,7 +454,7 @@ public final class DispatchQueue implements AutoCloseable {
         /**
          * Returns the cancellation tag.
          *
-         * @return tag
+         * @return cancellation tag, or {@code null} when no tag was assigned
          */
         Object tag() {
             return tag;
@@ -455,7 +463,7 @@ public final class DispatchQueue implements AutoCloseable {
         /**
          * Returns the task owner.
          *
-         * @return owner
+         * @return object that owns this task
          */
         Object owner() {
             return owner;
@@ -464,7 +472,7 @@ public final class DispatchQueue implements AutoCloseable {
         /**
          * Returns the short activity.
          *
-         * @return activity
+         * @return short activity to execute
          */
         Activity activity() {
             return activity;
@@ -482,7 +490,7 @@ public final class DispatchQueue implements AutoCloseable {
         /**
          * Returns the unique dispatch handle.
          *
-         * @return handle
+         * @return authoritative handle for this task
          */
         DispatchHandle handle() {
             return handle;
@@ -517,7 +525,7 @@ public final class DispatchQueue implements AutoCloseable {
         /**
          * Creates an empty bucket for a dispatch key.
          *
-         * @param key dispatch key
+         * @param key dispatch key shared by entries added to the bucket
          */
         private ReadyBucket(final String key) {
             this.key = key;

@@ -40,21 +40,21 @@ public interface Body extends AutoCloseable {
     /**
      * Returns the body payload.
      *
-     * @return payload
+     * @return non-null payload backing this body
      */
     Payload payload();
 
     /**
      * Returns the body media type.
      *
-     * @return media type
+     * @return media metadata associated with the payload
      */
     MediaType media();
 
     /**
      * Returns the body length.
      *
-     * @return body length, or -1 when unknown
+     * @return payload length in bytes, or {@code -1} when unknown
      */
     default long length() {
         return payload().length();
@@ -63,7 +63,7 @@ public interface Body extends AutoCloseable {
     /**
      * Returns whether this body can be read more than once.
      *
-     * @return true when repeatable
+     * @return {@code true} when the backing payload can open more than one source
      */
     default boolean repeatable() {
         return payload().repeatable();
@@ -72,16 +72,18 @@ public interface Body extends AutoCloseable {
     /**
      * Opens the body source.
      *
-     * @return source
+     * @return source opened by the backing payload
      */
     default Source source() {
         return payload().source();
     }
 
     /**
-     * Reads all body bytes.
+     * Materializes all body bytes using {@link Builder#DEFAULT_MATERIALIZE_MAX_BYTES} as the safety threshold.
      *
-     * @return body bytes
+     * @return newly materialized body bytes
+     * @throws InternalException if the payload exceeds the threshold or JVM array limit, violates its declared length,
+     *                           or cannot be read
      */
     default byte[] bytes() {
         return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "Body.bytes()");
@@ -90,8 +92,11 @@ public interface Body extends AutoCloseable {
     /**
      * Reads all body bytes with an explicit materialize threshold.
      *
-     * @param maxBytes maximum bytes to materialize
-     * @return body bytes
+     * @param maxBytes positive maximum number of bytes to retain in memory
+     * @return newly materialized body bytes
+     * @throws ValidateException if {@code maxBytes} is not positive
+     * @throws InternalException if the payload exceeds the threshold or JVM array limit, violates its declared length,
+     *                           or cannot be read
      */
     default byte[] bytes(final long maxBytes) {
         return Payload.materialize(payload(), maxBytes, "Body.bytes(long)");
@@ -100,8 +105,10 @@ public interface Body extends AutoCloseable {
     /**
      * Reads the body as text.
      *
-     * @param charset charset
-     * @return body text
+     * @param charset non-null charset used to decode materialized bytes
+     * @return text decoded after materializing with the default threshold
+     * @throws ValidateException if {@code charset} is {@code null}
+     * @throws InternalException if byte materialization fails
      */
     default String text(final Charset charset) {
         return new String(bytes(), Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
@@ -110,9 +117,11 @@ public interface Body extends AutoCloseable {
     /**
      * Reads the body as text with an explicit materialize threshold.
      *
-     * @param charset  charset
-     * @param maxBytes maximum bytes to materialize
-     * @return body text
+     * @param charset  non-null charset used to decode materialized bytes
+     * @param maxBytes positive maximum number of bytes to retain in memory
+     * @return text decoded after threshold-limited materialization
+     * @throws ValidateException if {@code charset} is {@code null} or {@code maxBytes} is not positive
+     * @throws InternalException if byte materialization fails
      */
     default String text(final Charset charset, final long maxBytes) {
         return new String(bytes(maxBytes),
@@ -120,7 +129,9 @@ public interface Body extends AutoCloseable {
     }
 
     /**
-     * Closes the body when the underlying payload is closeable.
+     * Closes the backing payload when it implements {@link AutoCloseable}; otherwise performs no work.
+     *
+     * @throws InternalException if the closeable payload reports an exception
      */
     @Override
     default void close() {

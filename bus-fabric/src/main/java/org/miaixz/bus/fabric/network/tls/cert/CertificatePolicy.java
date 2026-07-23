@@ -91,6 +91,7 @@ public final class CertificatePolicy {
      * @param pins           certificate pins
      * @param trustAll       trust all flag
      * @param chainCleaner   chain cleaner
+     * @param reuseIdentity  explicit TLS session reuse identity, or {@code null}
      */
     private CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
             final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner,
@@ -106,7 +107,7 @@ public final class CertificatePolicy {
     /**
      * Returns the system trust policy.
      *
-     * @return trust policy
+     * @return policy using the platform trust manager and hostname verification
      */
     public static CertificatePolicy trustSystem() {
         return builder().build();
@@ -115,7 +116,7 @@ public final class CertificatePolicy {
     /**
      * Creates a builder.
      *
-     * @return builder
+     * @return new certificate policy builder with system-trust defaults
      */
     public static Builder builder() {
         return new Builder();
@@ -133,7 +134,7 @@ public final class CertificatePolicy {
     /**
      * Cleans and verifies a certificate chain.
      *
-     * @param host  host
+     * @param host  peer host used by chain cleaning and diagnostics
      * @param chain certificate chain
      * @return cleaned certificate chain
      */
@@ -159,7 +160,7 @@ public final class CertificatePolicy {
     /**
      * Checks a certificate chain against this policy.
      *
-     * @param host  host
+     * @param host  peer host used for trust, hostname, and pin validation
      * @param chain certificate chain
      */
     public void check(final String host, final CertificateChain chain) {
@@ -172,7 +173,7 @@ public final class CertificatePolicy {
     /**
      * Checks a peer chain after the SSL context has accepted it.
      *
-     * @param host  host
+     * @param host  peer host used for hostname and pin validation
      * @param chain peer certificate chain
      */
     public void checkPeer(final String host, final CertificateChain chain) {
@@ -191,7 +192,7 @@ public final class CertificatePolicy {
     /**
      * Returns configured trust manager.
      *
-     * @return trust manager
+     * @return X.509 trust manager used for chain validation
      */
     public X509TrustManager trustManager() {
         return trustManager;
@@ -218,7 +219,7 @@ public final class CertificatePolicy {
     /**
      * Returns configured chain cleaner.
      *
-     * @return chain cleaner or null
+     * @return configured chain cleaner, or {@code null} when cleaning is disabled
      */
     public CertificateChainCleaner chainCleaner() {
         return chainCleaner;
@@ -236,7 +237,7 @@ public final class CertificatePolicy {
     /**
      * Returns this policy's stable, non-sensitive TLS context reuse identity.
      *
-     * @return reuse identity
+     * @return explicit shared token, or this policy instance when no token is configured
      */
     public Object reuseIdentity() {
         return explicitReuseIdentity == null ? this : explicitReuseIdentity;
@@ -269,8 +270,8 @@ public final class CertificatePolicy {
     /**
      * Cleans the chain with an adapter when one is configured.
      *
-     * @param host         host
-     * @param certificates certificates
+     * @param host         normalized peer host supplied to the cleaner
+     * @param certificates certificate chain to wrap or clean
      * @return cleaned chain
      */
     private CertificateChain cleanChain(final String host, final List<Certificate> certificates) {
@@ -301,7 +302,7 @@ public final class CertificatePolicy {
     /**
      * Checks configured pins.
      *
-     * @param host  host
+     * @param host  normalized peer host whose exact and wildcard pins are selected
      * @param chain certificate chain
      */
     private void checkPins(final String host, final CertificateChain chain) {
@@ -336,8 +337,8 @@ public final class CertificatePolicy {
     /**
      * Computes a certificate pin.
      *
-     * @param certificate certificate
-     * @return pin
+     * @param certificate certificate whose subject public key is hashed
+     * @return SHA-256 certificate pin string
      */
     public static String pin(final Certificate certificate) {
         return CertificatePin.sha256(certificate);
@@ -346,8 +347,8 @@ public final class CertificatePolicy {
     /**
      * Computes a SHA-1 certificate pin string.
      *
-     * @param certificate certificate
-     * @return pin
+     * @param certificate certificate whose subject public key is hashed
+     * @return SHA-1 certificate pin string
      */
     public static String sha1Pin(final Certificate certificate) {
         return CertificatePin.sha1(certificate);
@@ -369,7 +370,7 @@ public final class CertificatePolicy {
     /**
      * Validates a host.
      *
-     * @param host host
+     * @param host concrete peer host without wildcards
      * @return normalized host
      */
     private static String validateHost(final String host) {
@@ -407,7 +408,7 @@ public final class CertificatePolicy {
     /**
      * Returns pins that apply to a concrete host.
      *
-     * @param host host
+     * @param host normalized concrete peer host
      * @return matching pins
      */
     private Set<String> matchingPins(final String host) {
@@ -429,8 +430,8 @@ public final class CertificatePolicy {
     /**
      * Validates a pin.
      *
-     * @param pin pin
-     * @return pin
+     * @param pin candidate SHA-256 or SHA-1 pin string
+     * @return validated canonical pin string
      */
     private static String validatePin(final String pin) {
         return CertificatePin.validate(pin);
@@ -440,7 +441,7 @@ public final class CertificatePolicy {
      * Verifies a hostname against certificate subject names.
      *
      * @param host        normalized host
-     * @param certificate certificate
+     * @param certificate leaf X.509 certificate whose subject names are inspected
      * @return true when matched
      */
     private static boolean verifyHostname(final String host, final X509Certificate certificate) {
@@ -497,7 +498,7 @@ public final class CertificatePolicy {
     /**
      * Extracts a simple CN from the subject DN.
      *
-     * @param certificate certificate
+     * @param certificate X.509 certificate whose subject DN is inspected
      * @return common name or null
      */
     private static String commonName(final X509Certificate certificate) {
@@ -564,8 +565,8 @@ public final class CertificatePolicy {
         /**
          * Adds a certificate pin.
          *
-         * @param host host
-         * @param pin  pin
+         * @param host exact host or single-label wildcard pattern
+         * @param pin  SHA-256 or SHA-1 public-key pin
          * @return this builder
          */
         public Builder pin(final String host, final String pin) {
@@ -652,7 +653,7 @@ public final class CertificatePolicy {
         /**
          * Builds a certificate policy.
          *
-         * @return certificate policy
+         * @return immutable certificate policy snapshot
          */
         public CertificatePolicy build() {
             if (trustAll && (!pins.isEmpty() || hostnameVerify)) {
@@ -696,7 +697,7 @@ public final class CertificatePolicy {
         /**
          * Checks client trust.
          *
-         * @param chain    chain
+         * @param chain    presented client certificate chain
          * @param authType auth type
          */
         @Override
@@ -708,7 +709,7 @@ public final class CertificatePolicy {
         /**
          * Checks server trust.
          *
-         * @param chain    chain
+         * @param chain    presented server certificate chain
          * @param authType auth type
          */
         @Override
@@ -730,7 +731,7 @@ public final class CertificatePolicy {
         /**
          * Checks a chain against the configured cleaner.
          *
-         * @param chain chain
+         * @param chain presented X.509 chain to validate against configured roots
          * @throws CertificateException when not trusted
          */
         private void checkTrusted(final X509Certificate[] chain) throws CertificateException {

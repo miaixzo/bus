@@ -56,7 +56,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Opens STOMP sessions from an immutable snapshot snapshot.
+ * Opens STOMP sessions from an immutable STOMP exchange snapshot.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -64,7 +64,7 @@ import org.miaixz.bus.logger.Logger;
 final class StompRunner {
 
     /**
-     * Execution snapshot.
+     * Immutable exchange configuration and borrowed runtime services.
      */
     private final StompSnapshot snapshot;
 
@@ -72,6 +72,7 @@ final class StompRunner {
      * Creates a runner.
      *
      * @param snapshot execution snapshot
+     * @throws ValidateException if {@code snapshot} is {@code null}
      */
     StompRunner(final StompSnapshot snapshot) {
         this.snapshot = require(snapshot, "STOMP exchange snapshot");
@@ -80,7 +81,7 @@ final class StompRunner {
     /**
      * Opens a STOMP session over WebSocket.
      *
-     * @return session
+     * @return connected STOMP session running over a newly opened WebSocket
      */
     StompSession open() {
         return open(Cancellation.create());
@@ -89,8 +90,11 @@ final class StompRunner {
     /**
      * Opens a STOMP session within a cancellation scope.
      *
-     * @param cancellation cancellation scope
-     * @return session
+     * @param cancellation scope shared by WebSocket opening, CONNECT send, and CONNECTED wait
+     * @return connected STOMP session bound to the supplied cancellation scope
+     * @throws CancellationException if opening is cancelled
+     * @throws ProtocolException     if the target, WebSocket carrier, or STOMP handshake is invalid
+     * @throws ValidateException     if {@code cancellation} is {@code null}
      */
     StompSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
@@ -223,7 +227,7 @@ final class StompRunner {
     /**
      * Builds the CONNECT frame.
      *
-     * @return connect frame
+     * @return CONNECT frame containing version, host, optional credentials, and configured headers
      */
     StompFrame connectFrame() {
         final Headers.Builder builder = Headers.builder()
@@ -246,9 +250,12 @@ final class StompRunner {
     /**
      * Waits for CONNECTED.
      *
-     * @param connected    connected future
+     * @param connected    future completed by the first CONNECTED frame or an opening failure
      * @param cancellation shared cancellation scope
-     * @return CONNECTED frame
+     * @return CONNECTED frame received before cancellation or handshake timeout
+     * @throws CancellationException if the shared scope is cancelled
+     * @throws TimeoutException      if CONNECTED does not arrive within the selected handshake timeout
+     * @throws ProtocolException     if the asynchronous handshake fails with a checked cause
      */
     private StompFrame awaitConnected(final CompletableFuture<StompFrame> connected, final Cancellation cancellation) {
         final Duration connectTimeout = connectTimeout();
@@ -277,8 +284,10 @@ final class StompRunner {
     /**
      * Strictly parses server heartbeat capabilities and calculates negotiated intervals.
      *
-     * @param connected CONNECTED frame
+     * @param connected validated CONNECTED frame whose heartbeat header is parsed
      * @return negotiated heartbeat values
+     * @throws ProtocolException if the heartbeat field is duplicated, malformed, or too large
+     * @throws ValidateException if {@code connected} is {@code null}
      */
     private Heartbeats negotiate(final StompFrame connected) {
         final Headers headers = require(connected, "STOMP CONNECTED frame").headers();
@@ -312,6 +321,7 @@ final class StompRunner {
      *
      * @param value header value, or null when the server disables heartbeats
      * @return server send and receive values
+     * @throws ProtocolException if the header is not exactly two non-negative decimal components
      */
     private static long[] heartbeatPair(final String value) {
         if (value == null) {
@@ -328,10 +338,11 @@ final class StompRunner {
     /**
      * Parses one non-negative decimal millisecond component.
      *
-     * @param value value
-     * @param start start index
-     * @param end   end index
-     * @return milliseconds
+     * @param value complete heartbeat header text
+     * @param start inclusive component start index
+     * @param end   exclusive component end index
+     * @return non-negative millisecond component
+     * @throws ProtocolException if the component is non-decimal or overflows {@code long}
      */
     private static long unsignedMillis(final String value, final int start, final int end) {
         long result = Normal.LONG_ZERO;
@@ -348,9 +359,10 @@ final class StompRunner {
     /**
      * Converts one client heartbeat Duration to milliseconds.
      *
-     * @param value duration
+     * @param value non-null client heartbeat duration
      * @param name  component name
-     * @return milliseconds
+     * @return duration converted to milliseconds
+     * @throws ProtocolException if the millisecond conversion overflows
      */
     private static long heartbeatMillis(final Duration value, final String name) {
         try {
@@ -363,9 +375,10 @@ final class StompRunner {
     /**
      * Creates a millisecond Duration while preserving protocol error semantics.
      *
-     * @param millis milliseconds
+     * @param millis negotiated millisecond interval
      * @param name   component name
-     * @return duration
+     * @return duration representing the interval
+     * @throws ProtocolException if the duration cannot represent the interval
      */
     private static Duration duration(final long millis, final String name) {
         try {
@@ -378,8 +391,8 @@ final class StompRunner {
     /**
      * Returns half a positive value rounded up.
      *
-     * @param value positive value
-     * @return rounded half
+     * @param value positive integer interval
+     * @return half of the interval rounded toward positive infinity
      */
     private static long halfCeiling(final long value) {
         return value / Normal._2 + value % Normal._2;
@@ -388,8 +401,8 @@ final class StompRunner {
     /**
      * Converts a Duration to nanoseconds with saturation.
      *
-     * @param duration duration
-     * @return nanoseconds
+     * @param duration timeout duration to convert
+     * @return exact nanoseconds or {@link Long#MAX_VALUE} when conversion overflows
      */
     private static long durationNanos(final Duration duration) {
         try {
@@ -402,9 +415,9 @@ final class StompRunner {
     /**
      * Calculates monotonic elapsed nanoseconds.
      *
-     * @param started start value
-     * @param current current value
-     * @return elapsed value
+     * @param started monotonic start reading
+     * @param current monotonic current reading
+     * @return non-negative elapsed nanoseconds
      */
     private static long elapsed(final long started, final long current) {
         return Math.max(Normal.LONG_ZERO, current - started);
@@ -413,7 +426,7 @@ final class StompRunner {
     /**
      * Waits for the CONNECT frame to be written.
      *
-     * @param call send call
+     * @param call deferred CONNECT-frame send operation to await
      */
     private void awaitSend(final Call<Void> call) {
         final Duration writeTimeout = snapshot.timeout().write();
@@ -435,6 +448,8 @@ final class StompRunner {
 
     /**
      * Checks the optional guard.
+     *
+     * @return filtered and guard-approved opening message
      */
     private Message prepareOpen() {
         final Message opening = FilterChain.apply(
@@ -462,7 +477,7 @@ final class StompRunner {
     /**
      * Checks the optional guard.
      *
-     * @param message message
+     * @param message filtered opening or frame message to authorize
      */
     private void checkGuard(final Message message) {
         if (snapshot.guard() == null) {
@@ -488,9 +503,9 @@ final class StompRunner {
     /**
      * Applies configured STOMP filters to a frame.
      *
-     * @param frame frame
-     * @param tag   tag
-     * @return filtered frame
+     * @param frame STOMP frame whose headers and body pass through the filter chain
+     * @param tag   lifecycle tag associated with the filtered message
+     * @return frame preserving the command and using filtered headers and payload
      */
     private StompFrame filter(final StompFrame frame, final Object tag) {
         final Message filtered = FilterChain.apply(
@@ -504,9 +519,9 @@ final class StompRunner {
     /**
      * Emits a STOMP event.
      *
-     * @param marker      marker
-     * @param cause       cause
-     * @param operationId operation identifier
+     * @param marker      STOMP lifecycle marker to publish
+     * @param cause       failure attached to the event, or {@code null}
+     * @param operationId identifier correlating events for this opening operation
      */
     private void emit(final ObservationMarker marker, final Throwable cause, final String operationId) {
         FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
@@ -522,10 +537,11 @@ final class StompRunner {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

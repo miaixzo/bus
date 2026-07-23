@@ -54,7 +54,7 @@ public final class BodyCodec {
     /**
      * Returns the shared body codec.
      *
-     * @return body codec
+     * @return process-wide stateless body codec
      */
     public static BodyCodec create() {
         return Instances.get(BodyCodec.class.getName(), BodyCodec::new);
@@ -63,8 +63,9 @@ public final class BodyCodec {
     /**
      * Adapts a payload into a stream source.
      *
-     * @param payload payload
-     * @return source
+     * @param payload payload whose source is opened
+     * @return source opened from the validated payload
+     * @throws ValidateException if {@code payload} is {@code null}
      */
     public Source source(final Payload payload) {
         return validatePayload(payload).source();
@@ -73,9 +74,11 @@ public final class BodyCodec {
     /**
      * Creates a repeatable text payload.
      *
-     * @param value   text value
-     * @param charset charset
-     * @return payload
+     * @param value   non-null text value
+     * @param charset charset used to encode the text
+     * @return repeatable encoded payload
+     * @throws ValidateException if {@code value} is {@code null}
+     * @throws ConvertException  if charset validation or text encoding fails
      */
     public Payload text(final String value, final Charset charset) {
         final String checkedValue = Assert.notNull(value, () -> new ValidateException("Text value must not be null"));
@@ -89,19 +92,26 @@ public final class BodyCodec {
     /**
      * Creates a repeatable byte payload.
      *
-     * @param value byte value
-     * @return payload
+     * @param value non-null byte array copied into an immutable payload
+     * @return repeatable byte payload
+     * @throws ValidateException if {@code value} is {@code null}
      */
     public Payload bytes(final byte[] value) {
         return Payload.of(Assert.notNull(value, () -> new ValidateException("Byte value must not be null")));
     }
 
     /**
-     * Creates a repeatable file payload that opens streams lazily.
+     * Creates a repeatable file payload that captures the current file length and opens sources lazily.
+     * <p>
+     * The media type is validated for API consistency but is not retained by the returned protocol-neutral payload.
+     * </p>
      *
-     * @param path  file path
-     * @param media media type
-     * @return payload
+     * @param path  path that must currently identify a regular file
+     * @param media non-null media metadata validated but not stored by the payload
+     * @return repeatable payload backed by the path and captured length
+     * @throws ValidateException    if {@code path} or {@code media} is {@code null}
+     * @throws IllegalPathException if the path does not identify a regular file
+     * @throws InternalException    if the file length cannot be read
      */
     public Payload file(final Path path, final MediaType media) {
         final Path checkedPath = Assert.notNull(path, () -> new ValidateException("File path must not be null"));
@@ -119,7 +129,8 @@ public final class BodyCodec {
     /**
      * Validates a payload.
      *
-     * @param payload payload
+     * @param payload payload reference to validate
+     * @return validated payload
      */
     private static Payload validatePayload(final Payload payload) {
         return Assert.notNull(payload, () -> new ValidateException("Payload must not be null"));
@@ -128,32 +139,33 @@ public final class BodyCodec {
     /**
      * Validates a charset.
      *
-     * @param charset charset
+     * @param charset charset reference to validate
+     * @return validated charset
      */
     private static Charset validateCharset(final Charset charset) {
         return Assert.notNull(charset, () -> new ValidateException("Charset must not be null"));
     }
 
     /**
-     * Repeatable payload backed by a file path.
+     * Repeatable payload backed by a file path and a length captured at construction time.
      */
     private static final class FilePayload implements Payload {
 
         /**
-         * File path.
+         * Path opened anew for each source request.
          */
         private final Path path;
 
         /**
-         * Saved file length.
+         * File length captured when the payload was created.
          */
         private final long length;
 
         /**
          * Creates a file payload.
          *
-         * @param path   file path
-         * @param length file length
+         * @param path   path opened for each read
+         * @param length captured file length reported by this payload
          */
         private FilePayload(final Path path, final long length) {
             this.path = path;
@@ -163,7 +175,7 @@ public final class BodyCodec {
         /**
          * Returns the saved file length.
          *
-         * @return file length
+         * @return file length captured at payload creation
          */
         @Override
         public long length() {
@@ -173,7 +185,8 @@ public final class BodyCodec {
         /**
          * Opens a new file source.
          *
-         * @return file source
+         * @return newly opened unbuffered source for the current path contents
+         * @throws InternalException if the file cannot be opened
          */
         @Override
         public Source source() {
@@ -187,7 +200,8 @@ public final class BodyCodec {
         /**
          * Reads all file bytes.
          *
-         * @return file bytes
+         * @return file bytes materialized with the default threshold
+         * @throws InternalException if materialization exceeds limits or reading fails
          */
         @Override
         public byte[] bytes() {
@@ -197,8 +211,11 @@ public final class BodyCodec {
         /**
          * Reads all file bytes with an explicit materialize threshold.
          *
-         * @param maxBytes maximum bytes to materialize
-         * @return file bytes
+         * @param maxBytes positive maximum number of bytes to retain in memory
+         * @return newly materialized file bytes
+         * @throws ValidateException if {@code maxBytes} is not positive
+         * @throws InternalException if materialization exceeds limits, current bytes exceed the captured length, or
+         *                           reading fails
          */
         @Override
         public byte[] bytes(final long maxBytes) {
@@ -208,8 +225,10 @@ public final class BodyCodec {
         /**
          * Reads file text.
          *
-         * @param charset charset
-         * @return file text
+         * @param charset non-null charset used to decode file bytes
+         * @return file text materialized with the default threshold
+         * @throws ValidateException if {@code charset} is {@code null}
+         * @throws InternalException if byte materialization fails
          */
         @Override
         public String text(final Charset charset) {
@@ -219,9 +238,11 @@ public final class BodyCodec {
         /**
          * Reads file text with an explicit materialize threshold.
          *
-         * @param charset  charset
-         * @param maxBytes maximum bytes to materialize
-         * @return file text
+         * @param charset  non-null charset used to decode file bytes
+         * @param maxBytes positive maximum number of bytes to retain in memory
+         * @return text decoded from threshold-limited file bytes
+         * @throws ValidateException if {@code charset} is {@code null} or {@code maxBytes} is not positive
+         * @throws InternalException if byte materialization fails
          */
         @Override
         public String text(final Charset charset, final long maxBytes) {
@@ -231,7 +252,7 @@ public final class BodyCodec {
         /**
          * Returns whether this payload is repeatable.
          *
-         * @return true
+         * @return {@code true} because each source request reopens the path
          */
         @Override
         public boolean repeatable() {

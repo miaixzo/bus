@@ -35,6 +35,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
@@ -54,37 +55,37 @@ import org.miaixz.bus.fabric.network.udp.UdpSession;
 public final class KcpNetwork implements AutoCloseable {
 
     /**
-     * Wrapped UDP network.
+     * UDP transport owned and closed by this endpoint.
      */
     private final UdpNetwork udp;
 
     /**
-     * Packet sequence.
+     * Next unsigned 32-bit outbound packet sequence.
      */
     private final AtomicLong sequence;
 
     /**
-     * Logical message identifier.
+     * Next unsigned 32-bit V2 logical message identifier.
      */
     private final AtomicLong messageId;
 
     /**
-     * Clock.
+     * Time source used for send timestamps, RTT samples, retransmission, and reassembly expiry.
      */
     private final Clock clock;
 
     /**
-     * Send window size.
+     * Configured maximum number of unacknowledged outbound packets.
      */
     private final int sendWindowSize;
 
     /**
-     * Receive window size.
+     * Configured maximum forward distance accepted by the inbound reorder window.
      */
     private final int receiveWindowSize;
 
     /**
-     * Retransmission delay.
+     * Minimum packet age before an unacknowledged packet becomes due for retransmission.
      */
     private final Duration retransmitDelay;
 
@@ -94,12 +95,12 @@ public final class KcpNetwork implements AutoCloseable {
     private final int wireVersion;
 
     /**
-     * Unacknowledged outbound packets.
+     * Unacknowledged outbound packets retained in sequence insertion order.
      */
     private final LinkedHashMap<Long, SentPacket> sendWindow;
 
     /**
-     * Buffered inbound packets.
+     * Out-of-order inbound packets indexed by unsigned sequence value.
      */
     private final TreeMap<Long, KcpPacket> receiveWindow;
 
@@ -114,7 +115,7 @@ public final class KcpNetwork implements AutoCloseable {
     private final HashMap<ReassemblyKey, ReassemblyState> reassemblies;
 
     /**
-     * Close flag.
+     * Atomic guard that makes endpoint shutdown idempotent.
      */
     private final AtomicBoolean closed;
 
@@ -181,7 +182,7 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Creates a KCP network.
      *
-     * @param udp UDP network
+     * @param udp UDP network owned by the endpoint
      */
     private KcpNetwork(final UdpNetwork udp) {
         this(udp, Clock.system(), Normal._1, Normal._32, Normal._32, Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY);
@@ -190,12 +191,12 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Creates a KCP network.
      *
-     * @param udp               UDP network
-     * @param clock             clock
+     * @param udp               UDP network owned by the endpoint
+     * @param clock             time source for protocol accounting and expiry
      * @param wireVersion       wire version
-     * @param sendWindowSize    send window size
-     * @param receiveWindowSize receive window size
-     * @param retransmitDelay   retransmission delay
+     * @param sendWindowSize    maximum unacknowledged outbound packet count
+     * @param receiveWindowSize maximum forward sequence distance accepted inbound
+     * @param retransmitDelay   minimum age before retransmitting a packet
      */
     private KcpNetwork(final UdpNetwork udp, final Clock clock, final int wireVersion, final int sendWindowSize,
             final int receiveWindowSize, final Duration retransmitDelay) {
@@ -235,8 +236,9 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Creates a KCP network.
      *
-     * @param udp UDP network
-     * @return KCP network
+     * @param udp UDP network transferred to the endpoint
+     * @return KCP V1 endpoint using default windows, system time, and retransmission delay
+     * @throws ValidateException if {@code udp} is {@code null}
      */
     public static KcpNetwork create(final UdpNetwork udp) {
         return new KcpNetwork(udp);
@@ -245,12 +247,13 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Creates a KCP network with explicit tuning for tests and advanced users.
      *
-     * @param udp               UDP network
-     * @param clock             clock
-     * @param sendWindowSize    send window size
-     * @param receiveWindowSize receive window size
-     * @param retransmitDelay   retransmission delay
-     * @return KCP network
+     * @param udp               UDP network transferred to the endpoint
+     * @param clock             time source for protocol accounting and expiry
+     * @param sendWindowSize    maximum unacknowledged outbound packet count
+     * @param receiveWindowSize maximum forward sequence distance accepted inbound
+     * @param retransmitDelay   minimum age before retransmitting a packet
+     * @return tuned KCP V1 endpoint
+     * @throws ValidateException if a dependency, window size, or retransmission delay is invalid
      */
     public static KcpNetwork create(
             final UdpNetwork udp,
@@ -264,10 +267,11 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Creates a KCP network with an explicit wire version.
      *
-     * @param udp         UDP network
-     * @param clock       clock
+     * @param udp         UDP network transferred to the endpoint
+     * @param clock       time source for protocol accounting and expiry
      * @param wireVersion wire version, either 1 or 2
-     * @return KCP network
+     * @return endpoint using the selected wire format and default window tuning
+     * @throws ValidateException if a dependency or wire version is invalid
      */
     public static KcpNetwork create(final UdpNetwork udp, final Clock clock, final int wireVersion) {
         return new KcpNetwork(udp, clock, wireVersion, Normal._32, Normal._32,
@@ -277,8 +281,11 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Enqueues a complete logical payload and emits packets currently allowed by the send window.
      *
-     * @param payload payload
-     * @return packets ready for UDP send
+     * @param payload complete logical message to materialize and queue
+     * @return newly admitted data packets ready for UDP transmission
+     * @throws ValidateException if the payload is {@code null} or exceeds the wire-format limit
+     * @throws StatefulException if the endpoint is closed, retained reassembly expired, or the outbound byte limit is
+     *                           exceeded
      */
     public synchronized List<KcpPacket> encode(final Payload payload) {
         Assert.notNull(payload, () -> new ValidateException("KCP payload must not be null"));
@@ -302,8 +309,10 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Decodes a packet payload.
      *
-     * @param packet packet
-     * @return payload
+     * @param packet inbound data or acknowledgement packet
+     * @return packet payload, or an empty payload after processing an acknowledgement
+     * @throws ValidateException if the packet is {@code null} or an invalid acknowledgement
+     * @throws StatefulException if the endpoint is closed
      */
     public synchronized Payload decode(final KcpPacket packet) {
         Assert.notNull(packet, () -> new ValidateException("KCP packet must not be null"));
@@ -319,8 +328,10 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Processes one inbound packet and returns ACK plus ordered payloads ready for the application.
      *
-     * @param packet packet
-     * @return inbound processing result
+     * @param packet inbound data or acknowledgement packet
+     * @return acknowledgements, newly released outbound data, and complete in-order logical payloads
+     * @throws ValidateException if the packet is {@code null} or an invalid acknowledgement
+     * @throws StatefulException if the endpoint is closed or a reassembly limit or invariant is violated
      */
     public synchronized Inbound receive(final KcpPacket packet) {
         Assert.notNull(packet, () -> new ValidateException("KCP packet must not be null"));
@@ -362,6 +373,8 @@ public final class KcpNetwork implements AutoCloseable {
      * Removes acknowledged packets from the send window.
      *
      * @param packet ACK packet
+     * @throws ValidateException if the packet is {@code null} or is not an acknowledgement
+     * @throws StatefulException if the endpoint is closed
      */
     public synchronized void acknowledge(final KcpPacket packet) {
         Assert.notNull(packet, () -> new ValidateException("KCP ACK packet must not be null"));
@@ -390,6 +403,7 @@ public final class KcpNetwork implements AutoCloseable {
      * Returns due retransmission packets and advances their retry timestamp.
      *
      * @return packets due for retransmission
+     * @throws StatefulException if the endpoint is closed, a reassembly expired, or a retry limit is exhausted
      */
     public synchronized List<KcpPacket> retransmitDue() {
         ensureOpen();
@@ -448,8 +462,9 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Encodes a packet to datagram bytes.
      *
-     * @param packet packet
-     * @return datagram bytes
+     * @param packet packet to serialize
+     * @return newly allocated KCP datagram bytes
+     * @throws ValidateException if {@code packet} is {@code null}
      */
     public byte[] pack(final KcpPacket packet) {
         Assert.notNull(packet, () -> new ValidateException("KCP packet must not be null"));
@@ -459,8 +474,10 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Decodes a packet from datagram payload.
      *
-     * @param payload payload
-     * @return packet
+     * @param payload datagram payload to materialize within the default limit
+     * @return validated KCP packet decoded from the datagram
+     * @throws ValidateException if the payload or materialization limit is invalid
+     * @throws ProtocolException if the datagram encoding is malformed
      */
     public KcpPacket unpack(final Payload payload) {
         return unpack(payload, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
@@ -469,9 +486,11 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Decodes a packet from datagram payload.
      *
-     * @param payload             payload
-     * @param materializeMaxBytes materialization limit
-     * @return packet
+     * @param payload             datagram payload to materialize
+     * @param materializeMaxBytes caller-supplied upper bound on materialized bytes
+     * @return validated KCP packet decoded from the bounded datagram bytes
+     * @throws ValidateException if the payload or byte limit is invalid
+     * @throws ProtocolException if the datagram encoding is malformed
      */
     public KcpPacket unpack(final Payload payload, final long materializeMaxBytes) {
         Assert.notNull(payload, () -> new ValidateException("KCP payload must not be null"));
@@ -482,8 +501,10 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Opens the underlying UDP session.
      *
-     * @param address remote address
-     * @return UDP session
+     * @param address remote KCP or UDP address
+     * @return connected UDP session opened by the owned network
+     * @throws ValidateException if {@code address} is {@code null}
+     * @throws StatefulException if the endpoint is closed
      */
     public UdpSession open(final Address address) {
         Assert.notNull(address, () -> new ValidateException("KCP address must not be null"));
@@ -510,7 +531,7 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Returns whether this endpoint is closed.
      *
-     * @return true when closed
+     * @return {@code true} after endpoint resources have been released
      */
     public boolean closed() {
         return closed.get();
@@ -519,8 +540,8 @@ public final class KcpNetwork implements AutoCloseable {
     /**
      * Converts a KCP address to a UDP address for transport.
      *
-     * @param address address
-     * @return UDP address
+     * @param address KCP or UDP address to adapt
+     * @return original UDP address or an equivalent address using the UDP scheme
      */
     private static Address toUdp(final Address address) {
         if (Transport.UDP.scheme().equals(address.scheme())) {
@@ -781,6 +802,9 @@ public final class KcpNetwork implements AutoCloseable {
 
         /**
          * Creates an inbound result.
+         *
+         * @param delivered complete logical payloads ready for delivery
+         * @param outbound  ACK and released data packets ready to send
          */
         public Inbound {
             delivered = List.copyOf(delivered);

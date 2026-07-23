@@ -48,6 +48,17 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
 
     /**
      * Creates a validated packet.
+     *
+     * @param version         KCP wire format version
+     * @param type            packet command type
+     * @param sequence        packet sequence number
+     * @param acknowledgement acknowledged sequence, or zero for DATA
+     * @param window          advertised receive window
+     * @param timestamp       sender timestamp in milliseconds
+     * @param messageId       V2 logical message identifier
+     * @param fragmentIndex   V2 zero-based fragment index
+     * @param fragmentCount   V2 total fragment count
+     * @param payloadBytes    immutable packet payload bytes
      */
     public KcpPacket {
         if (version < Normal._0 || version > Normal._2) {
@@ -94,8 +105,8 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a data packet.
      *
-     * @param sequence sequence
-     * @param payload  payload
+     * @param sequence unsigned 32-bit packet sequence number
+     * @param payload  packet payload bytes
      */
     public KcpPacket(final long sequence, final byte[] payload) {
         this(sequence, payload == null ? null : ByteString.of(payload));
@@ -104,7 +115,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a data packet.
      *
-     * @param sequence     sequence
+     * @param sequence     unsigned 32-bit packet sequence number
      * @param payloadBytes payload bytes
      */
     public KcpPacket(final long sequence, final ByteString payloadBytes) {
@@ -115,9 +126,9 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a data packet.
      *
-     * @param sequence sequence
-     * @param payload  payload
-     * @return packet
+     * @param sequence unsigned 32-bit packet sequence number
+     * @param payload  packet payload bytes
+     * @return V1 data packet with default window and current timestamp
      */
     public static KcpPacket of(final long sequence, final byte[] payload) {
         return of(sequence, payload == null ? null : ByteString.of(payload));
@@ -126,9 +137,9 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a data packet.
      *
-     * @param sequence     sequence
+     * @param sequence     unsigned 32-bit packet sequence number
      * @param payloadBytes payload bytes
-     * @return packet
+     * @return V1 data packet with default window and current timestamp
      */
     public static KcpPacket of(final long sequence, final ByteString payloadBytes) {
         return data(sequence, payloadBytes, Normal._32, System.currentTimeMillis());
@@ -137,11 +148,11 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a data packet.
      *
-     * @param sequence  sequence
-     * @param payload   payload
+     * @param sequence  unsigned 32-bit packet sequence number
+     * @param payload   packet payload bytes
      * @param window    advertised window
-     * @param timestamp timestamp
-     * @return packet
+     * @param timestamp non-negative sender timestamp in milliseconds
+     * @return V1 data packet carrying the supplied transport metadata
      */
     public static KcpPacket data(final long sequence, final byte[] payload, final int window, final long timestamp) {
         return data(sequence, payload == null ? null : ByteString.of(payload), window, timestamp);
@@ -150,11 +161,11 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a data packet.
      *
-     * @param sequence     sequence
+     * @param sequence     unsigned 32-bit packet sequence number
      * @param payloadBytes payload bytes
      * @param window       advertised window
-     * @param timestamp    timestamp
-     * @return packet
+     * @param timestamp    non-negative sender timestamp in milliseconds
+     * @return V1 data packet carrying the supplied transport metadata
      */
     public static KcpPacket data(
             final long sequence,
@@ -168,14 +179,14 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a V2 data fragment.
      *
-     * @param sequence      sequence
+     * @param sequence      unsigned 32-bit packet sequence number
      * @param payload       fragment payload bytes
      * @param window        advertised window
-     * @param timestamp     timestamp
+     * @param timestamp     non-negative sender timestamp in milliseconds
      * @param messageId     logical message identifier
      * @param fragmentIndex zero-based fragment index
      * @param fragmentCount fragment count
-     * @return packet
+     * @return V2 data packet for the supplied logical-message fragment
      */
     public static KcpPacket dataV2(
             final long sequence,
@@ -198,14 +209,14 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
     /**
      * Creates a V2 data fragment.
      *
-     * @param sequence      sequence
+     * @param sequence      unsigned 32-bit packet sequence number
      * @param payloadBytes  fragment payload bytes
      * @param window        advertised window
-     * @param timestamp     timestamp
+     * @param timestamp     non-negative sender timestamp in milliseconds
      * @param messageId     logical message identifier
      * @param fragmentIndex zero-based fragment index
      * @param fragmentCount fragment count
-     * @return packet
+     * @return V2 data packet for the supplied logical-message fragment
      */
     public static KcpPacket dataV2(
             final long sequence,
@@ -223,7 +234,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      * Creates an ACK packet.
      *
      * @param acknowledgement acknowledged sequence
-     * @return packet
+     * @return V1 acknowledgement packet with default window and current timestamp
      */
     public static KcpPacket ack(final long acknowledgement) {
         return ack(acknowledgement, Normal._32, System.currentTimeMillis());
@@ -234,8 +245,8 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      *
      * @param acknowledgement acknowledged sequence
      * @param window          advertised window
-     * @param timestamp       timestamp
-     * @return packet
+     * @param timestamp       non-negative sender timestamp in milliseconds
+     * @return V1 acknowledgement packet carrying the supplied transport metadata
      */
     public static KcpPacket ack(final long acknowledgement, final int window, final long timestamp) {
         return new KcpPacket(Normal._1, Type.ACK, Normal._0, acknowledgement, window, timestamp, Normal._0, Normal._0,
@@ -246,7 +257,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      * Decodes a datagram payload into a packet.
      *
      * @param datagram datagram bytes
-     * @return packet
+     * @return validated legacy, V1, or V2 packet decoded from the datagram
      */
     public static KcpPacket fromDatagram(final byte[] datagram) {
         Assert.notNull(datagram, () -> new ValidateException("KCP datagram must not be null"));
@@ -359,10 +370,10 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      *
      * @param version         wire version
      * @param type            packet type
-     * @param sequence        sequence
-     * @param acknowledgement acknowledgement
+     * @param sequence        unsigned 32-bit packet sequence number
+     * @param acknowledgement unsigned 32-bit acknowledged sequence number
      * @param window          advertised window
-     * @param timestamp       timestamp
+     * @param timestamp       non-negative sender timestamp in milliseconds
      * @param messageId       message identifier
      * @param fragmentIndex   fragment index
      * @param fragmentCount   fragment count

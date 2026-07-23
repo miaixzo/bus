@@ -40,6 +40,10 @@ public record Http2Priority(int dependencyStreamId, int weight, boolean exclusiv
 
     /**
      * Creates priority metadata.
+     *
+     * @param dependencyStreamId dependency stream identifier
+     * @param weight             priority weight from 1 through 256
+     * @param exclusive          whether the dependency is exclusive
      */
     public Http2Priority {
         if (dependencyStreamId < Normal._0 || dependencyStreamId > Integer.MAX_VALUE || weight < Normal._1

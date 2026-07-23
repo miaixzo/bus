@@ -33,27 +33,27 @@ public interface HttpCodec {
     /**
      * Writes a request to the bound transport.
      *
-     * @param request request
+     * @param request HTTP request whose start line, headers, and optional body are written
      */
     void writeRequest(HttpRequest request);
 
     /**
      * Reads a response from the bound transport.
      *
-     * @param request request
-     * @return response
+     * @param request originating request to associate with the decoded response
+     * @return response decoded from the bound transport
      */
     HttpResponse readResponse(HttpRequest request);
 
     /**
-     * Cancels this codec and its bound transport.
+     * Cancels in-progress codec work and the transport resources bound to it.
      */
     void cancel();
 
     /**
      * Returns whether the bound connection can be reused.
      *
-     * @return true when reusable
+     * @return true when the bound connection remains eligible for another exchange
      */
     boolean reusable();
 

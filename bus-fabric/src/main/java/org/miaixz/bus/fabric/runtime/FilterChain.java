@@ -37,20 +37,21 @@ import org.miaixz.bus.fabric.Message;
 public final class FilterChain implements Filter.Chain {
 
     /**
-     * Ordered filters.
+     * Immutable ordered snapshot of active non-null filters.
      */
     private final List<Filter> filters;
 
     /**
-     * Terminal downstream chain.
+     * Non-null downstream chain invoked after the last filter.
      */
     private final Filter.Chain terminal;
 
     /**
      * Creates a chain cursor.
      *
-     * @param filters  filters
-     * @param terminal terminal chain
+     * @param filters  active filters in invocation order
+     * @param terminal downstream chain invoked after the final filter
+     * @throws ValidateException if {@code terminal} is {@code null}
      */
     private FilterChain(final List<Filter> filters, final Filter.Chain terminal) {
         this.filters = List.copyOf(filters);
@@ -60,9 +61,10 @@ public final class FilterChain implements Filter.Chain {
     /**
      * Applies filters to a message.
      *
-     * @param message message
-     * @param filters filters
-     * @return filtered message
+     * @param message input message passed through active filters
+     * @param filters optional filter slots; {@code null} elements are ignored
+     * @return original message when no filter is active, otherwise the final validated output
+     * @throws ValidateException if a message is {@code null} or a filter changes protocol/address routing fields
      */
     public static Message apply(final Message message, final Filter... filters) {
         final Message current = require(message);
@@ -76,7 +78,7 @@ public final class FilterChain implements Filter.Chain {
     /**
      * Composes filters into one filter.
      *
-     * @param filters filters
+     * @param filters optional filter slots; {@code null} elements are ignored
      * @return composed filter, or {@code null} when no filter is supplied
      */
     public static Filter compose(final Filter... filters) {
@@ -90,8 +92,9 @@ public final class FilterChain implements Filter.Chain {
     /**
      * Proceeds to the next filter.
      *
-     * @param message message
-     * @return filtered message
+     * @param message input message passed from the beginning of this chain
+     * @return final message after every filter and the terminal chain
+     * @throws ValidateException if a message is {@code null} or a boundary changes protocol/address routing fields
      */
     @Override
     public Message proceed(final Message message) {
@@ -102,7 +105,7 @@ public final class FilterChain implements Filter.Chain {
     /**
      * Collects effective filter slots.
      *
-     * @param filters filters
+     * @param filters optional filter slots to compact
      * @return effective filter list, or null when no filter is supplied
      */
     private static List<Filter> active(final Filter... filters) {
@@ -124,8 +127,9 @@ public final class FilterChain implements Filter.Chain {
     /**
      * Validates filtered messages.
      *
-     * @param message message
-     * @return message
+     * @param message filter input or output to validate
+     * @return validated non-null message
+     * @throws ValidateException if {@code message} is {@code null}
      */
     private static Message require(final Message message) {
         return Assert.notNull(message, () -> new ValidateException("Filtered message must not be null"));
@@ -185,8 +189,9 @@ public final class FilterChain implements Filter.Chain {
         /**
          * Proceeds through one filter boundary.
          *
-         * @param message message
-         * @return filtered message
+         * @param message input at the current filter boundary
+         * @return validated output from the current filter or terminal chain
+         * @throws ValidateException if a boundary returns {@code null} or changes protocol/address routing fields
          */
         @Override
         public Message proceed(final Message message) {

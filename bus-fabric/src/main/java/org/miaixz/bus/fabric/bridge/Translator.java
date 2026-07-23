@@ -31,16 +31,16 @@ public interface Translator<T> {
     /**
      * Translates an external ingestion into a concrete target.
      *
-     * @param ingestion ingestion
-     * @return translated target
+     * @param ingestion immutable external metadata and payload to adapt
+     * @return protocol-specific target produced by this translator
      */
     T translate(Ingestion ingestion);
 
     /**
      * Returns whether this translator supports an ingestion.
      *
-     * @param ingestion ingestion
-     * @return true when supported
+     * @param ingestion immutable external input to inspect without translation
+     * @return {@code true} when this translator recognizes the ingestion
      */
     boolean supports(Ingestion ingestion);
 

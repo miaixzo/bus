@@ -43,7 +43,7 @@ import org.miaixz.bus.logger.Logger;
 public final class ResourceScope implements AutoCloseable {
 
     /**
-     * Registered resources.
+     * Resources retained in registration order for reverse-order closure.
      */
     private final ArrayDeque<AutoCloseable> resources;
 
@@ -58,19 +58,19 @@ public final class ResourceScope implements AutoCloseable {
     private final Cancellation cancellation;
 
     /**
-     * Callback removing this scope from shared cancellation.
+     * Idempotent callback that removes this scope's close listener from the shared cancellation.
      */
     private final Runnable unregisterCancellation;
 
     /**
-     * Closed state.
+     * Atomic guard ensuring resources are drained and closed only once.
      */
     private final AtomicBoolean closed;
 
     /**
      * Creates an empty resource scope.
      *
-     * @param cancellation shared cancellation
+     * @param cancellation non-null cancellation whose cancellation closes this scope
      */
     private ResourceScope(final Cancellation cancellation) {
         this.resources = new ArrayDeque<>();
@@ -83,7 +83,7 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Creates a resource scope.
      *
-     * @return resource scope
+     * @return new scope with its own cancellation controller
      */
     public static ResourceScope create() {
         return create(Cancellation.create());
@@ -92,8 +92,8 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Creates a resource scope sharing an existing cancellation.
      *
-     * @param cancellation shared cancellation
-     * @return resource scope
+     * @param cancellation non-null cancellation controller shared with the owning lifecycle
+     * @return new scope registered to close when the supplied controller is cancelled
      */
     public static ResourceScope create(final Cancellation cancellation) {
         return new ResourceScope(cancellation);
@@ -102,9 +102,9 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Adds a closeable resource.
      *
-     * @param resource resource
-     * @param <T>      resource type
-     * @return original resource
+     * @param resource non-null resource to own by identity
+     * @param <T>      closeable resource type
+     * @return the same resource instance, whether newly registered or already present
      */
     public synchronized <T extends AutoCloseable> T add(final T resource) {
         final T current = Assert.notNull(resource, () -> new ValidateException("Resource must not be null"));
@@ -126,8 +126,8 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Removes a resource without closing it.
      *
-     * @param resource resource
-     * @return true when removed
+     * @param resource non-null resource instance to release from ownership without closing
+     * @return true when that exact instance was registered and removed
      */
     public synchronized boolean remove(final AutoCloseable resource) {
         final AutoCloseable current = Assert
@@ -148,7 +148,7 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Returns registered resource count.
      *
-     * @return resource count
+     * @return number of distinct resource identities currently owned
      */
     public synchronized int size() {
         return identities.size();
@@ -157,7 +157,7 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Records cancellation and releases all resources.
      *
-     * @param cause cancellation cause
+     * @param cause non-null cause recorded by the shared cancellation controller
      * @return true when this invocation first cancelled the shared scope
      */
     public boolean cancel(final Throwable cause) {
@@ -172,7 +172,7 @@ public final class ResourceScope implements AutoCloseable {
     }
 
     /**
-     * Closes all registered resources.
+     * Closes all registered resources once in reverse registration order and aggregates closure failures.
      */
     @Override
     public void close() {
@@ -210,7 +210,7 @@ public final class ResourceScope implements AutoCloseable {
     /**
      * Records a leak and closes the scope.
      *
-     * @param owner owner object
+     * @param owner non-null owner included in the diagnostic log entry
      */
     public void leak(final Object owner) {
         final Object current = Assert.notNull(owner, () -> new ValidateException("Leak owner must not be null"));

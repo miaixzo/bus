@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
@@ -38,53 +39,22 @@ import org.miaixz.bus.fabric.Builder;
 public final class Device {
 
     /**
-     * Mobile classifiers.
-     */
-    private static final class Registry {
-
-        /** Mobile classifiers initialized only after Builder device constants are complete. */
-        private static final List<Device> MOBILE = Instances.get(
-                Device.class.getName() + ".mobileDevices",
-                () -> new CopyOnWriteArrayList<>(List.of(
-                        Builder.HTTP_AGENT_DEVICE_WINDOWS_PHONE,
-                        Builder.HTTP_AGENT_DEVICE_IPAD,
-                        Builder.HTTP_AGENT_DEVICE_IPOD,
-                        Builder.HTTP_AGENT_DEVICE_IPHONE,
-                        new Device("Android", "XiaoMi|MI\\s+"),
-                        Builder.HTTP_AGENT_DEVICE_ANDROID,
-                        Builder.HTTP_AGENT_DEVICE_HARMONY,
-                        Builder.HTTP_AGENT_DEVICE_GOOGLE_TV,
-                        new Device("htcFlyer", "htc_flyer"),
-                        new Device("Symbian", "symbian(os)?"),
-                        new Device("Blackberry", "blackberry"))));
-
-        /** Desktop classifiers. */
-        private static final List<Device> DESKTOP = Instances.get(
-                Device.class.getName() + ".desktopDevices",
-                () -> new CopyOnWriteArrayList<>(List.of(
-                        new Device("Windows", "windows"),
-                        new Device("Mac", "(macintosh|darwin)"),
-                        new Device("Linux", "linux"),
-                        new Device("Wii", "wii"),
-                        new Device("Playstation", "playstation"),
-                        new Device("Java", "java"))));
-    }
-
-    /**
-     * Device name.
+     * Validated display name and equality identity of this classifier.
      */
     private final String name;
 
     /**
-     * Match rule.
+     * Optional case-insensitive pattern used to identify this device.
      */
     private final Pattern rule;
 
     /**
      * Creates a device classifier.
      *
-     * @param name name
-     * @param rule match rule
+     * @param name non-blank classifier name
+     * @param rule case-insensitive match regular expression, or {@code null} to disable matching
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
      */
     public Device(final String name, final String rule) {
         this.name = AgentRules.name(name);
@@ -92,10 +62,10 @@ public final class Device {
     }
 
     /**
-     * Parses a device.
+     * Returns the first matching mobile classifier, then the first matching desktop classifier.
      *
-     * @param text User-Agent text
-     * @return device
+     * @param text User-Agent text to classify, or {@code null}
+     * @return first matching classifier, or {@link Builder#HTTP_AGENT_DEVICE_UNKNOWN} when no rule matches
      */
     public static Device parse(final String text) {
         for (final Device device : Registry.MOBILE) {
@@ -112,20 +82,24 @@ public final class Device {
     }
 
     /**
-     * Adds a mobile device classifier.
+     * Appends a mobile device classifier after existing mobile rules.
      *
-     * @param name name
-     * @param rule match rule
+     * @param name non-blank classifier name
+     * @param rule case-insensitive match regular expression, or {@code null} to disable matching
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
      */
     public static void addMobileDevice(final String name, final String rule) {
         Registry.MOBILE.add(new Device(name, rule));
     }
 
     /**
-     * Adds a desktop device classifier.
+     * Appends a desktop device classifier after existing desktop rules.
      *
-     * @param name name
-     * @param rule match rule
+     * @param name non-blank classifier name
+     * @param rule case-insensitive match regular expression, or {@code null} to disable matching
+     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
+     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
      */
     public static void addDesktopDevice(final String name, final String rule) {
         Registry.DESKTOP.add(new Device(name, rule));
@@ -134,7 +108,7 @@ public final class Device {
     /**
      * Returns known device classifiers.
      *
-     * @return devices
+     * @return immutable snapshot of all mobile classifiers followed by all desktop classifiers
      */
     public static List<Device> devices() {
         final ArrayList<Device> devices = new ArrayList<>(Registry.MOBILE);
@@ -145,7 +119,7 @@ public final class Device {
     /**
      * Returns the name.
      *
-     * @return name
+     * @return validated classifier name
      */
     public String name() {
         return name;
@@ -154,8 +128,8 @@ public final class Device {
     /**
      * Returns whether this device matches the text.
      *
-     * @param text User-Agent text
-     * @return true when matched
+     * @param text User-Agent text to search, or {@code null}
+     * @return {@code true} when the configured rule finds a substring match
      */
     public boolean matches(final String text) {
         return AgentRules.contains(rule, text);
@@ -164,7 +138,7 @@ public final class Device {
     /**
      * Returns whether this is a mobile device.
      *
-     * @return true when mobile
+     * @return {@code true} when the mobile registry contains an equal-by-name classifier
      */
     public boolean mobile() {
         return Registry.MOBILE.contains(this);
@@ -173,7 +147,7 @@ public final class Device {
     /**
      * Returns whether this is iPhone or iPod.
      *
-     * @return true when iPhone or iPod
+     * @return {@code true} when the classifier name equals the registered iPhone or iPod name
      */
     public boolean iPhoneOrIPod() {
         return equals(Builder.HTTP_AGENT_DEVICE_IPHONE) || equals(Builder.HTTP_AGENT_DEVICE_IPOD);
@@ -182,7 +156,7 @@ public final class Device {
     /**
      * Returns whether this is iPad.
      *
-     * @return true when iPad
+     * @return {@code true} when the classifier name equals the registered iPad name
      */
     public boolean iPad() {
         return equals(Builder.HTTP_AGENT_DEVICE_IPAD);
@@ -191,7 +165,7 @@ public final class Device {
     /**
      * Returns whether this is an iOS device.
      *
-     * @return true when iOS
+     * @return {@code true} for an iPhone, iPod, or iPad classifier name
      */
     public boolean ios() {
         return iPhoneOrIPod() || iPad();
@@ -200,7 +174,7 @@ public final class Device {
     /**
      * Returns whether this is an Android device.
      *
-     * @return true when Android
+     * @return {@code true} when the classifier name equals the registered Android or Google TV name
      */
     public boolean android() {
         return equals(Builder.HTTP_AGENT_DEVICE_ANDROID) || equals(Builder.HTTP_AGENT_DEVICE_GOOGLE_TV);
@@ -209,7 +183,7 @@ public final class Device {
     /**
      * Returns whether this is HarmonyOS.
      *
-     * @return true when HarmonyOS
+     * @return {@code true} when the classifier name equals the registered HarmonyOS name
      */
     public boolean harmony() {
         return equals(Builder.HTTP_AGENT_DEVICE_HARMONY);
@@ -218,7 +192,7 @@ public final class Device {
     /**
      * Returns whether this classifier is unknown.
      *
-     * @return true when unknown
+     * @return {@code true} when the classifier name equals the shared unknown marker
      */
     public boolean unknown() {
         return Normal.UNKNOWN.equals(name);
@@ -227,8 +201,8 @@ public final class Device {
     /**
      * Compares device classifiers by name.
      *
-     * @param object object to compare
-     * @return true when names match
+     * @param object object compared with this classifier
+     * @return {@code true} when the object is a {@code Device} with the same name
      */
     @Override
     public boolean equals(final Object object) {
@@ -253,6 +227,43 @@ public final class Device {
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Lazily initialized mobile and desktop device classifier registries.
+     */
+    private static final class Registry {
+
+        /**
+         * Mobile classifiers initialized only after Builder device constants are complete.
+         */
+        private static final List<Device> MOBILE = Instances.get(
+                Device.class.getName() + ".mobileDevices",
+                () -> new CopyOnWriteArrayList<>(List.of(
+                        Builder.HTTP_AGENT_DEVICE_WINDOWS_PHONE,
+                        Builder.HTTP_AGENT_DEVICE_IPAD,
+                        Builder.HTTP_AGENT_DEVICE_IPOD,
+                        Builder.HTTP_AGENT_DEVICE_IPHONE,
+                        new Device("Android", "XiaoMi|MI\\s+"),
+                        Builder.HTTP_AGENT_DEVICE_ANDROID,
+                        Builder.HTTP_AGENT_DEVICE_HARMONY,
+                        Builder.HTTP_AGENT_DEVICE_GOOGLE_TV,
+                        new Device("htcFlyer", "htc_flyer"),
+                        new Device("Symbian", "symbian(os)?"),
+                        new Device("Blackberry", "blackberry"))));
+
+        /**
+         * Desktop classifiers evaluated after every mobile classifier.
+         */
+        private static final List<Device> DESKTOP = Instances.get(
+                Device.class.getName() + ".desktopDevices",
+                () -> new CopyOnWriteArrayList<>(List.of(
+                        new Device("Windows", "windows"),
+                        new Device("Mac", "(macintosh|darwin)"),
+                        new Device("Linux", "linux"),
+                        new Device("Wii", "wii"),
+                        new Device("Playstation", "playstation"),
+                        new Device("Java", "java"))));
     }
 
 }

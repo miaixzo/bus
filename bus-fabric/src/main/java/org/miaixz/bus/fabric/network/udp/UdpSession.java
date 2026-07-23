@@ -55,7 +55,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 public final class UdpSession implements Session {
 
     /**
-     * Remote address.
+     * Logical remote endpoint to which the owned UDP channel is bound.
      */
     private final Address remote;
 
@@ -70,12 +70,12 @@ public final class UdpSession implements Session {
     private final Dispatcher dispatcher;
 
     /**
-     * Lifecycle scope.
+     * Lifecycle state and listener notification scope.
      */
     private final LifecycleScope scope;
 
     /**
-     * Close cleanup hook.
+     * Owner cleanup hook invoked once after channel close is attempted.
      */
     private final Runnable onClose;
 
@@ -87,8 +87,8 @@ public final class UdpSession implements Session {
     /**
      * Creates a UDP session.
      *
-     * @param remote  remote address
-     * @param channel channel
+     * @param remote  logical remote endpoint
+     * @param channel exclusively owned connected UDP channel
      */
     UdpSession(final Address remote, final UdpChannel channel) {
         this(remote, channel, null, null, () -> {
@@ -98,9 +98,9 @@ public final class UdpSession implements Session {
     /**
      * Creates a UDP session.
      *
-     * @param remote   remote address
-     * @param channel  channel
-     * @param listener lifecycle listener
+     * @param remote   logical remote endpoint
+     * @param channel  exclusively owned connected UDP channel
+     * @param listener optional lifecycle listener
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener) {
         this(remote, channel, listener, null, () -> {
@@ -110,11 +110,12 @@ public final class UdpSession implements Session {
     /**
      * Creates a UDP session.
      *
-     * @param remote     remote address
-     * @param channel    channel
-     * @param listener   lifecycle listener
+     * @param remote     logical remote endpoint
+     * @param channel    exclusively owned connected UDP channel
+     * @param listener   optional lifecycle listener
      * @param dispatcher optional dispatcher for Call submission
-     * @param onClose    close cleanup hook
+     * @param onClose    non-null owner cleanup hook invoked during termination
+     * @throws ValidateException if the remote address, channel, or cleanup hook is {@code null}
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
             final Dispatcher dispatcher, final Runnable onClose) {
@@ -137,7 +138,7 @@ public final class UdpSession implements Session {
     /**
      * Returns the session address.
      *
-     * @return session address
+     * @return logical remote endpoint represented by this session
      */
     @Override
     public Address address() {
@@ -147,7 +148,7 @@ public final class UdpSession implements Session {
     /**
      * Returns the remote address.
      *
-     * @return remote address
+     * @return logical remote endpoint represented by this session
      */
     public Address remote() {
         return remote;
@@ -156,8 +157,9 @@ public final class UdpSession implements Session {
     /**
      * Sends a payload.
      *
-     * @param payload payload
-     * @return send call
+     * @param payload datagram payload materialized when the returned call executes
+     * @return deferred send call that discards the transmitted byte count
+     * @throws ValidateException if {@code payload} is {@code null}
      */
     @Override
     public Call<Void> send(final Payload payload) {
@@ -173,8 +175,9 @@ public final class UdpSession implements Session {
     /**
      * Sends a datagram payload.
      *
-     * @param payload payload
-     * @return datagram send call
+     * @param payload datagram payload materialized when the returned call executes
+     * @return deferred call completed with the transmitted byte count
+     * @throws ValidateException if {@code payload} is {@code null}
      */
     public Call<Integer> sendDatagram(final Payload payload) {
         final Payload checkedPayload = Assert
@@ -192,7 +195,7 @@ public final class UdpSession implements Session {
     /**
      * Receives a message.
      *
-     * @return receive call
+     * @return deferred call that receives one datagram from the bound remote endpoint
      */
     public Call<Message> receive() {
         return MonoCall.create(
@@ -208,7 +211,7 @@ public final class UdpSession implements Session {
     /**
      * Closes this session.
      *
-     * @return true when closed by this call
+     * @return {@code true} when this invocation performs the terminal close transition
      */
     @Override
     public boolean close() {
@@ -218,7 +221,7 @@ public final class UdpSession implements Session {
     /**
      * Cancels this session.
      *
-     * @return true when cancelled by this call
+     * @return {@code true} when this invocation performs the terminal cancellation transition
      */
     @Override
     public boolean cancel() {
@@ -228,7 +231,7 @@ public final class UdpSession implements Session {
     /**
      * Returns the lifecycle state.
      *
-     * @return state
+     * @return current lifecycle state
      */
     @Override
     public Status state() {
@@ -238,7 +241,7 @@ public final class UdpSession implements Session {
     /**
      * Returns whether this session is opened.
      *
-     * @return true when opened
+     * @return {@code true} when both lifecycle scope and owned channel remain open
      */
     @Override
     public boolean opened() {
@@ -248,7 +251,7 @@ public final class UdpSession implements Session {
     /**
      * Returns session attributes.
      *
-     * @return attributes
+     * @return immutable attributes containing the channel's local endpoint and logical remote address
      */
     @Override
     public Map<String, Object> attributes() {
@@ -267,8 +270,8 @@ public final class UdpSession implements Session {
     /**
      * Creates a socket address.
      *
-     * @param address address
-     * @return socket address
+     * @param address logical address whose host and port are converted
+     * @return unresolved or resolved socket endpoint created by the network utility
      */
     static InetSocketAddress socket(final Address address) {
         return NetKit.createAddress(address.host(), address.port());
@@ -286,8 +289,10 @@ public final class UdpSession implements Session {
     /**
      * Materializes and sends one datagram through the channel exactly once.
      *
-     * @param payload payload
+     * @param payload payload to materialize within the maximum safe UDP body size
      * @return sent byte count
+     * @throws ProtocolException if the payload is oversized or the channel does not consume it completely
+     * @throws StatefulException if the session is not open
      */
     private int sendPayload(final Payload payload) {
         ensureOpened();
@@ -310,7 +315,9 @@ public final class UdpSession implements Session {
     /**
      * Receives one message through the channel exactly once.
      *
-     * @return received message
+     * @return one datagram message verified to originate from the bound remote endpoint
+     * @throws ProtocolException if the received remote endpoint does not match this session
+     * @throws StatefulException if the session is not open
      */
     private Message receiveMessage() {
         ensureOpened();
@@ -324,8 +331,8 @@ public final class UdpSession implements Session {
     /**
      * Terminates the session after releasing its exclusively owned channel.
      *
-     * @param cancelled true to cancel instead of close
-     * @return true when this invocation terminated the session
+     * @param cancelled {@code true} to report cancellation, or {@code false} for an ordinary close
+     * @return {@code true} when this invocation performs the terminal lifecycle transition
      */
     private boolean terminate(final boolean cancelled) {
         if (!terminating.compareAndSet(false, true)) {
@@ -344,7 +351,7 @@ public final class UdpSession implements Session {
     /**
      * Releases the underlying channel and session owner hook.
      *
-     * @return release failure, or null
+     * @return first channel or cleanup-hook failure with any second failure suppressed, or {@code null}
      */
     private RuntimeException release() {
         RuntimeException failure = null;
@@ -368,10 +375,10 @@ public final class UdpSession implements Session {
     /**
      * Awaits a private channel operation and preserves runtime failures.
      *
-     * @param future  channel operation
-     * @param message failure message
-     * @param <T>     result type
-     * @return operation result
+     * @param future  non-null private channel operation to join
+     * @param message context used when a missing or checked result must be wrapped
+     * @param <T>     non-null completion type
+     * @return non-null channel operation result
      */
     private static <T> T await(final CompletableFuture<T> future, final String message) {
         try {

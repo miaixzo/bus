@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
 import org.miaixz.bus.fabric.Context;
@@ -49,7 +49,7 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 public final class EventSourceFactory implements EventSource.Factory, AutoCloseable {
 
     /**
-     * Runtime context.
+     * Runtime context used to open all managed SSE exchanges.
      */
     private final Context context;
 
@@ -71,7 +71,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Creates a factory.
      *
-     * @param context     context
+     * @param context     runtime context used for managed SSE exchanges
      * @param ownsContext whether close releases the context
      */
     private EventSourceFactory(final Context context, final boolean ownsContext) {
@@ -84,7 +84,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Creates a factory with a default context.
      *
-     * @return factory
+     * @return new factory that owns a newly created runtime context
      */
     public static EventSourceFactory create() {
         return new EventSourceFactory(Context.create(), true);
@@ -93,8 +93,8 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Creates a factory.
      *
-     * @param context context
-     * @return factory
+     * @param context externally owned runtime context
+     * @return new factory that leaves the supplied context open on close
      */
     public static EventSourceFactory create(final Context context) {
         return new EventSourceFactory(context, false);
@@ -103,8 +103,8 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Creates a factory.
      *
-     * @param context context
-     * @return factory
+     * @param context externally owned runtime context
+     * @return new factory that leaves the supplied context open on close
      */
     public static EventSourceFactory of(final Context context) {
         return create(context);
@@ -114,20 +114,20 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
      * Opens an event source from a URL.
      *
      * @param url      URL
-     * @param listener listener
-     * @return event source
+     * @param listener event and lifecycle listener, or {@code null} for no callbacks
+     * @return connected event source created from a GET request for the URL
      */
     public EventSource newEventSource(final String url, final EventSourceListener listener) {
         ensureOpen();
-        return newEventSource(HttpRequest.builder().method(HTTP.Method.GET).url(UnoUrl.parse(url)).build(), listener);
+        return newEventSource(HttpRequest.builder().method(Http.Method.GET).url(UnoUrl.parse(url)).build(), listener);
     }
 
     /**
      * Opens an event source from an HTTP request.
      *
-     * @param request  request
-     * @param listener listener
-     * @return event source
+     * @param request  GET request supplying URL, headers, and timeout policy
+     * @param listener event and lifecycle listener, or {@code null} for no callbacks
+     * @return event source whose asynchronous connection has been started
      */
     @Override
     public EventSource newEventSource(final HttpRequest request, final EventSourceListener listener) {
@@ -193,7 +193,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Removes a terminal source from the active identity set.
      *
-     * @param source source
+     * @param source terminal event source to remove by identity
      */
     private void remove(final EventSource source) {
         synchronized (sources) {
@@ -213,10 +213,10 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, name + " must not be null");
@@ -225,16 +225,16 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
     /**
      * Captured response metadata.
      *
-     * @param status  status
-     * @param headers headers
+     * @param status  HTTP response status code captured during SSE opening
+     * @param headers immutable HTTP response headers captured during SSE opening
      */
     private record ResponseMeta(int status, Headers headers) {
 
         /**
          * Converts metadata to an empty HTTP response.
          *
-         * @param request request
-         * @return response
+         * @param request original event source request associated with the metadata
+         * @return metadata-only HTTP response with an empty body
          */
         HttpResponse toResponse(final HttpRequest request) {
             return HttpResponse.builder().request(request).code(status).headers(headers).body(PayloadBody.empty())
@@ -259,7 +259,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
         private final HttpRequest request;
 
         /**
-         * Listener.
+         * User listener receiving EventSource callbacks.
          */
         private final EventSourceListener listener;
 
@@ -296,9 +296,9 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
         /**
          * Creates a default event source.
          *
-         * @param context  context
-         * @param request  request
-         * @param listener listener
+         * @param context  runtime context used to open the SSE exchange
+         * @param request  original GET request
+         * @param listener user callback listener
          * @param onClose  factory removal hook
          */
         private DefaultEventSource(final Context context, final HttpRequest request, final EventSourceListener listener,
@@ -322,7 +322,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
                 finish();
                 return;
             }
-            if (request.method() != HTTP.Method.GET) {
+            if (request.method() != Http.Method.GET) {
                 throw new ProtocolException("EventSource request must use GET");
             }
             final SseX exchange = SseX.builder(context).to(request.url().encoded()).headers(request.headers())
@@ -413,7 +413,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
         /**
          * Returns the original event source request.
          *
-         * @return request
+         * @return original request used to create this event source
          */
         @Override
         public HttpRequest request() {
@@ -447,7 +447,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
         /**
          * Returns response metadata as an HTTP response.
          *
-         * @return response or null
+         * @return metadata-only HTTP response, or {@code null} before headers arrive
          */
         private HttpResponse response() {
             final ResponseMeta meta = response.get();

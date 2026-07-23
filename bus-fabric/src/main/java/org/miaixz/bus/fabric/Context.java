@@ -39,22 +39,22 @@ import org.miaixz.bus.fabric.runtime.Reactor;
 public final class Context implements AutoCloseable {
 
     /**
-     * Shared reactor.
+     * Reactor borrowed from the shared runtime lease.
      */
     private final Reactor reactor;
 
     /**
-     * Shared runtime reference count for Context views.
+     * Shared reactor lease and reference count for Context views.
      */
     private final RuntimeLease runtime;
 
     /**
-     * Shared option snapshot.
+     * Immutable option snapshot inherited by protocol builders.
      */
     private final Options options;
 
     /**
-     * Shared DNS resolver.
+     * Context-local resolver view bound to the reactor clock, dispatcher, and observer.
      */
     private final DnsResolver resolver;
 
@@ -69,18 +69,18 @@ public final class Context implements AutoCloseable {
     private final Filter filter;
 
     /**
-     * Closed state guarding reactor ownership.
+     * Per-view flag ensuring this context releases its runtime lease once.
      */
     private final AtomicBoolean closed;
 
     /**
      * Creates a validated context after all builder resources have been resolved.
      *
-     * @param reactor  owned reactor
-     * @param options  option snapshot
-     * @param resolver context-local DNS resolver
-     * @param listener lifecycle listener
-     * @param filter   shared message filter
+     * @param runtime  shared reactor lease owned by this context
+     * @param options  immutable option snapshot
+     * @param resolver context-local DNS resolver bound to runtime collaborators
+     * @param listener lifecycle listener, or {@code null} when disabled
+     * @param filter   protocol-neutral message filter, or {@code null} when disabled
      */
     private Context(final RuntimeLease runtime, final Options options, final DnsResolver resolver,
             final Listener<Object> listener, final Filter filter) {
@@ -96,7 +96,7 @@ public final class Context implements AutoCloseable {
     /**
      * Creates a default context with shared runtime collaborators.
      *
-     * @return default context
+     * @return context with default options, a newly owned reactor, and the system DNS resolver
      */
     public static Context create() {
         return builder().build();
@@ -105,7 +105,7 @@ public final class Context implements AutoCloseable {
     /**
      * Creates an inert context builder without allocating runtime resources.
      *
-     * @return context builder
+     * @return builder containing defaults that do not yet own runtime resources
      */
     public static Builder builder() {
         return new Builder();
@@ -114,7 +114,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the shared reactor.
      *
-     * @return reactor
+     * @return reactor shared by this context and its derived views
      */
     public Reactor reactor() {
         return reactor;
@@ -123,7 +123,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the shared options.
      *
-     * @return options
+     * @return immutable option snapshot used by this context
      */
     public Options options() {
         return options;
@@ -132,7 +132,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the reactor clock shared by all context operations.
      *
-     * @return runtime clock
+     * @return clock supplied by the shared reactor
      */
     public Clock clock() {
         return reactor.clock();
@@ -141,7 +141,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the shared directory.
      *
-     * @return directory
+     * @return connection directory supplied by the shared reactor
      */
     public Directory directory() {
         return reactor.directory();
@@ -150,7 +150,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the shared DNS resolver.
      *
-     * @return DNS resolver
+     * @return resolver view configured for this context's runtime
      */
     public DnsResolver resolver() {
         return resolver;
@@ -159,7 +159,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the shared lifecycle listener.
      *
-     * @return lifecycle listener
+     * @return shared lifecycle listener, or {@code null} when disabled
      */
     public Listener<Object> listener() {
         return listener;
@@ -168,7 +168,7 @@ public final class Context implements AutoCloseable {
     /**
      * Returns the shared protocol-neutral filter.
      *
-     * @return shared filter, or null when disabled
+     * @return shared filter, or {@code null} when disabled
      */
     public Filter filter() {
         return filter;
@@ -177,15 +177,16 @@ public final class Context implements AutoCloseable {
     /**
      * Returns a context view sharing runtime services with a replacement filter.
      *
-     * @param filter replacement filter, or null
-     * @return context view
+     * @param filter replacement filter, or {@code null} to disable filtering in the new view
+     * @return new context view sharing the runtime, options, resolver, and listener
+     * @throws ValidateException if this context's runtime has already been fully released
      */
     public Context withFilter(final Filter filter) {
         return new Context(runtime.retain(), options, resolver, listener, filter);
     }
 
     /**
-     * Closes the owned reactor exactly once.
+     * Releases this context view's runtime lease once, closing the reactor only when the final view is released.
      */
     @Override
     public void close() {
@@ -197,10 +198,11 @@ public final class Context implements AutoCloseable {
     /**
      * Validates non-null values.
      *
-     * @param value validated value
-     * @param name  value name
-     * @param <T>   value type
-     * @return validated value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         if (value == null) {
@@ -218,7 +220,7 @@ public final class Context implements AutoCloseable {
     public static final class Builder {
 
         /**
-         * Reactor candidate.
+         * Reactor transferred to the context, or {@code null} to create one during {@link #build()}.
          */
         private Reactor reactor;
 
@@ -233,17 +235,17 @@ public final class Context implements AutoCloseable {
         private Options options = Options.empty();
 
         /**
-         * DNS resolver candidate.
+         * Resolver used as the source for a runtime-bound context-local view.
          */
         private DnsResolver resolver;
 
         /**
-         * Lifecycle listener candidate.
+         * Optional lifecycle listener inherited by the context.
          */
         private Listener<Object> listener;
 
         /**
-         * Shared filter candidate.
+         * Optional protocol-neutral filter inherited by the context.
          */
         private Filter filter;
 
@@ -255,10 +257,11 @@ public final class Context implements AutoCloseable {
         }
 
         /**
-         * Sets the reactor.
+         * Sets the reactor whose ownership is transferred to the built context.
          *
-         * @param reactor reactor
+         * @param reactor reactor to share across the context and its derived views
          * @return this builder
+         * @throws ValidateException if {@code reactor} is {@code null}
          */
         public Builder reactor(final Reactor reactor) {
             this.reactor = require(reactor, "Reactor");
@@ -267,9 +270,13 @@ public final class Context implements AutoCloseable {
 
         /**
          * Sets the connection pool policy used by a context-owned reactor.
+         * <p>
+         * The policy is ignored when an explicit reactor is supplied.
+         * </p>
          *
          * @param poolPolicy connection pool policy
          * @return this builder
+         * @throws ValidateException if {@code poolPolicy} is {@code null}
          */
         public Builder poolPolicy(final PoolPolicy poolPolicy) {
             this.poolPolicy = require(poolPolicy, "Pool policy");
@@ -277,10 +284,11 @@ public final class Context implements AutoCloseable {
         }
 
         /**
-         * Sets the options.
+         * Replaces the immutable option snapshot inherited by the built context.
          *
-         * @param options options
+         * @param options immutable option snapshot
          * @return this builder
+         * @throws ValidateException if {@code options} is {@code null}
          */
         public Builder options(final Options options) {
             this.options = require(options, "Options");
@@ -292,6 +300,7 @@ public final class Context implements AutoCloseable {
          *
          * @param tlsContext TLS context
          * @return this builder
+         * @throws ValidateException if {@code tlsContext} is {@code null}
          */
         public Builder tlsContext(final TlsContext tlsContext) {
             this.options = options
@@ -304,6 +313,7 @@ public final class Context implements AutoCloseable {
          *
          * @param tlsSettings TLS settings
          * @return this builder
+         * @throws ValidateException if {@code tlsSettings} is {@code null}
          */
         public Builder tlsSettings(final TlsSettings tlsSettings) {
             this.options = options
@@ -312,10 +322,11 @@ public final class Context implements AutoCloseable {
         }
 
         /**
-         * Sets the DNS resolver.
+         * Sets the resolver used to create the context-local runtime-bound resolver view.
          *
          * @param resolver DNS resolver
          * @return this builder
+         * @throws ValidateException if {@code resolver} is {@code null}
          */
         public Builder resolver(final DnsResolver resolver) {
             this.resolver = require(resolver, "DNS resolver");
@@ -325,7 +336,7 @@ public final class Context implements AutoCloseable {
         /**
          * Sets the shared lifecycle listener.
          *
-         * @param listener listener
+         * @param listener lifecycle listener, or {@code null} to disable lifecycle notifications
          * @return this builder
          */
         public Builder listener(final Listener<Object> listener) {
@@ -336,7 +347,7 @@ public final class Context implements AutoCloseable {
         /**
          * Sets the shared protocol-neutral filter.
          *
-         * @param filter filter
+         * @param filter protocol-neutral filter, or {@code null} to disable filtering
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -347,7 +358,7 @@ public final class Context implements AutoCloseable {
         /**
          * Builds an immutable context and transfers ownership of its final reactor only after success.
          *
-         * @return context
+         * @return immutable context owning either the supplied reactor or a newly created reactor
          */
         public Context build() {
             Reactor resolvedReactor = reactor;
@@ -400,7 +411,7 @@ public final class Context implements AutoCloseable {
         /**
          * Creates the initial lease for a reactor.
          *
-         * @param reactor owned reactor
+         * @param reactor reactor owned collectively by all views retaining this lease
          */
         private RuntimeLease(final Reactor reactor) {
             this.reactor = require(reactor, "Reactor");

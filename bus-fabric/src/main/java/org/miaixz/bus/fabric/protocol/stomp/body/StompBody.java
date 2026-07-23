@@ -41,7 +41,7 @@ import org.miaixz.bus.fabric.codec.body.ProgressBody;
 public final class StompBody implements MessageBody, ProgressBody {
 
     /**
-     * Payload.
+     * Original STOMP body payload.
      */
     private final Payload payload;
 
@@ -58,7 +58,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a body.
      *
-     * @param payload payload
+     * @param payload STOMP body content source
      * @param media   media type
      */
     private StompBody(final Payload payload, final MediaType media) {
@@ -68,7 +68,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a body.
      *
-     * @param payload  payload
+     * @param payload  STOMP body content source
      * @param media    media type
      * @param progress optional progress tracker
      */
@@ -92,8 +92,8 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param payload payload
-     * @return STOMP body
+     * @param payload binary STOMP body content source
+     * @return STOMP body using application/octet-stream metadata
      */
     public static StompBody of(final Payload payload) {
         return of(payload, MediaType.APPLICATION_OCTET_STREAM_TYPE);
@@ -102,7 +102,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a body.
      *
-     * @param payload payload
+     * @param payload STOMP body content source
      * @param media   media type
      * @return STOMP body
      */
@@ -113,7 +113,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param bytes bytes
+     * @param bytes binary body bytes copied into a repeatable payload
      * @return STOMP body
      */
     public static StompBody bytes(final byte[] bytes) {
@@ -123,7 +123,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a UTF-8 text body.
      *
-     * @param text text
+     * @param text text encoded as UTF-8
      * @return STOMP body
      */
     public static StompBody text(final String text) {
@@ -133,8 +133,8 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates a text body.
      *
-     * @param text    text
-     * @param charset charset
+     * @param text    text encoded into the body payload
+     * @param charset character encoding recorded in the media type
      * @return STOMP body
      */
     public static StompBody text(final String text, final Charset charset) {
@@ -145,7 +145,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Returns a progress-aware copy of this STOMP body.
      *
-     * @param listener listener
+     * @param listener callback receiving transferred and total byte counts
      * @return progress-aware STOMP body
      */
     public StompBody progress(final BiConsumer<Long, Long> listener) {
@@ -227,10 +227,10 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Validates a required value.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -239,7 +239,7 @@ public final class StompBody implements MessageBody, ProgressBody {
     /**
      * Creates text media with charset metadata.
      *
-     * @param charset charset
+     * @param charset character encoding attached to text/plain metadata
      * @return media type
      */
     private static MediaType textMedia(final Charset charset) {

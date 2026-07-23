@@ -23,10 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Immutable option snapshot with copy-on-write update methods.
@@ -35,6 +33,16 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 21+
  */
 public final class Options {
+
+    /**
+     * Shared immutable empty snapshot.
+     */
+    private static final Options EMPTY = new Options(Map.of());
+
+    /**
+     * Identity sentinel preserving an explicitly configured null value.
+     */
+    private static final Object NULL_VALUE = new Object();
 
     /**
      * Immutable backing values.
@@ -56,7 +64,7 @@ public final class Options {
      * @return empty options
      */
     public static Options empty() {
-        return Instances.get(Options.class.getName() + ".empty", () -> new Options(Map.of()));
+        return EMPTY;
     }
 
     /**
@@ -325,7 +333,7 @@ public final class Options {
      * @return null sentinel
      */
     private static Object nullValue() {
-        return Instances.get(Options.class.getName() + ".null", Object::new);
+        return NULL_VALUE;
     }
 
     /**
@@ -335,7 +343,18 @@ public final class Options {
      * @return validated key
      */
     private static String validateKey(final String key) {
-        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
+        if (key == null || key.isEmpty()) {
+            throw new ValidateException("Option key must be non-blank and single-line");
+        }
+        boolean nonWhitespace = false;
+        for (int index = 0; index < key.length(); index++) {
+            final char current = key.charAt(index);
+            if (current == Symbol.C_CR || current == Symbol.C_LF) {
+                throw new ValidateException("Option key must be non-blank and single-line");
+            }
+            nonWhitespace |= !Character.isWhitespace(current);
+        }
+        if (!nonWhitespace) {
             throw new ValidateException("Option key must be non-blank and single-line");
         }
         return key;

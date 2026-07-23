@@ -25,6 +25,9 @@ import java.time.Duration;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -64,6 +67,11 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * @since Java 21+
  */
 public final class TlsChannel implements Conduit, Lifecycle {
+
+    /** Bounded reusable carrier threads for blocking JSSE handshakes. */
+    private static final ExecutorService HANDSHAKE_WORKERS = Executors.newFixedThreadPool(
+            Math.max(Normal._2, Math.min(8, Runtime.getRuntime().availableProcessors())),
+            Thread.ofPlatform().daemon().name("fabric-tls-handshake-", Normal._0).factory());
 
     /**
      * Empty plaintext used for handshake and close records.
@@ -115,6 +123,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private final ReentrantLock writeLock;
 
+    /** H2-only provider boundary; HTTP/1.1 retains the lower-tail native duplex path. */
+    private final ReentrantLock http2EngineLock;
+
     /**
      * Protects state, failure, and staging-buffer references.
      */
@@ -163,12 +174,17 @@ public final class TlsChannel implements Conduit, Lifecycle {
     /**
      * Current TLS state.
      */
-    private TlsState tlsState;
+    private volatile TlsState tlsState;
+
+    /**
+     * Immutable handshake metadata materialized once when the handshake completes.
+     */
+    private volatile TlsHandshake completedHandshake;
 
     /**
      * First terminal failure.
      */
-    private Throwable failure;
+    private volatile Throwable failure;
 
     /**
      * Ensures persistent leases and allocators close once.
@@ -208,6 +224,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @param listener   lifecycle listener
      * @param dispatcher borrowed dispatcher
      * @param timeout    operation timeouts
+     * @param meter      borrowed TLS metrics registry, or {@code null}
      */
     private TlsChannel(final Conduit conduit, final TlsEngine engine, final Listener<Object> listener,
             final Dispatcher dispatcher, final Timeout timeout, final FabricMeter meter) {
@@ -232,6 +249,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         this.handshakeLock = new ReentrantLock();
         this.readLock = new ReentrantLock();
         this.writeLock = new ReentrantLock();
+        this.http2EngineLock = new ReentrantLock(true);
         this.stateLock = new ReentrantLock();
         final int packetSize = checkedInitialSize(engine.packetBufferSize());
         final int applicationSize = checkedInitialSize(engine.applicationBufferSize());
@@ -318,7 +336,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         if (!availableForHandshake()) {
             return CompletableFuture.failedFuture(closedFailure("TLS channel cannot handshake"));
         }
-        return background("tls:handshake", () -> {
+        return submitHandshake(() -> {
             try {
                 return ensureHandshake();
             } catch (final TimeoutException e) {
@@ -331,6 +349,17 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 throw mapped;
             }
         });
+    }
+
+    /**
+     * Runs one blocking JSSE handshake on the shared bounded carrier pool.
+     *
+     * @param <T>       handshake result type
+     * @param operation blocking handshake operation
+     * @return future completed with the handshake result
+     */
+    static <T> CompletableFuture<T> submitHandshake(final Supplier<T> operation) {
+        return CompletableFuture.supplyAsync(operation, HANDSHAKE_WORKERS);
     }
 
     /**
@@ -354,30 +383,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         if (!availableForIo()) {
             return CompletableFuture.failedFuture(closedFailure("TLS channel cannot read"));
         }
-        return background("tls:read", () -> {
-            try {
-                ensureHandshake();
-                readLock.lock();
-                try {
-                    requireOpenIo("TLS channel cannot read");
-                    return readPlaintext(target, byteCount);
-                } finally {
-                    readLock.unlock();
-                }
-            } catch (final TimeoutException e) {
-                fail(e);
-                throw e;
-            } catch (final RuntimeException e) {
-                if (e instanceof ProtocolException protocol) {
-                    fail(protocol);
-                    throw protocol;
-                }
-                final SocketException mapped = e instanceof SocketException socket ? socket
-                        : new SocketException("TLS read failed", e);
-                fail(mapped);
-                throw mapped;
-            }
-        });
+        return directFuture(() -> readDirect(target, byteCount));
     }
 
     /**
@@ -402,31 +408,154 @@ public final class TlsChannel implements Conduit, Lifecycle {
         if (!availableForIo()) {
             return CompletableFuture.failedFuture(closedFailure("TLS channel cannot write"));
         }
-        return background("tls:write", () -> {
+        return directFuture(() -> writeDirect(source, byteCount));
+    }
+
+    /**
+     * Reads plaintext on the current synchronous owner without dispatcher round-trips.
+     *
+     * @param target    plaintext target
+     * @param byteCount maximum byte count
+     * @return read byte count or EOF
+     */
+    private long readDirect(final Buffer target, final long byteCount) {
+        if (target == null) {
+            throw new ValidateException("TLS read target must not be null");
+        }
+        if (byteCount < Normal._0) {
+            throw new ValidateException("TLS read byte count must not be negative");
+        }
+        if (byteCount == Normal._0) {
+            return Normal._0;
+        }
+        if (!availableForIo()) {
+            throw closedFailure("TLS channel cannot read");
+        }
+        try {
+            ensureHandshake();
+            readLock.lock();
             try {
-                ensureHandshake();
-                writeLock.lock();
-                try {
-                    requireOpenIo("TLS channel cannot write");
-                    writePlaintext(source, byteCount);
-                    return byteCount;
-                } finally {
-                    writeLock.unlock();
-                }
-            } catch (final TimeoutException e) {
-                fail(e);
-                throw e;
-            } catch (final RuntimeException e) {
-                if (e instanceof ProtocolException protocol) {
-                    fail(protocol);
-                    throw protocol;
-                }
-                final SocketException mapped = e instanceof SocketException socket ? socket
-                        : new SocketException("TLS write failed", e);
-                fail(mapped);
-                throw mapped;
+                requireOpenIo("TLS channel cannot read");
+                return readPlaintext(target, byteCount);
+            } finally {
+                readLock.unlock();
             }
-        });
+        } catch (final TimeoutException e) {
+            fail(e);
+            throw e;
+        } catch (final RuntimeException e) {
+            if (e instanceof ProtocolException protocol) {
+                fail(protocol);
+                throw protocol;
+            }
+            final SocketException mapped = e instanceof SocketException socket ? socket
+                    : new SocketException("TLS read failed", e);
+            fail(mapped);
+            throw mapped;
+        }
+    }
+
+    /**
+     * Exposes the synchronous TLS read path to core Source adapters without allocating a future.
+     *
+     * @param target    plaintext destination
+     * @param byteCount maximum plaintext bytes
+     * @return bytes read, or EOF
+     */
+    @Override
+    public long readSynchronously(final Buffer target, final long byteCount) {
+        return readDirect(target, byteCount);
+    }
+
+    /**
+     * Reads plaintext directly into a caller-owned NIO buffer on the synchronous TLS owner.
+     *
+     * @param target writable plaintext destination
+     * @return bytes read, or EOF
+     */
+    @Override
+    public int readSynchronously(final ByteBuffer target) {
+        if (target == null || target.isReadOnly()) {
+            throw new ValidateException("TLS NIO read target must be writable");
+        }
+        if (!target.hasRemaining()) {
+            return Normal._0;
+        }
+        if (!availableForIo()) {
+            throw closedFailure("TLS channel cannot read");
+        }
+        try {
+            ensureHandshake();
+            readLock.lock();
+            try {
+                requireOpenIo("TLS channel cannot read");
+                return readPlaintext(target);
+            } finally {
+                readLock.unlock();
+            }
+        } catch (final RuntimeException e) {
+            final SocketException mapped = e instanceof SocketException socket ? socket
+                    : new SocketException("TLS NIO read failed", e);
+            fail(mapped);
+            throw mapped;
+        }
+    }
+
+    /**
+     * Writes plaintext on the current synchronous owner without dispatcher round-trips.
+     *
+     * @param source    plaintext source
+     * @param byteCount exact byte count
+     * @return written byte count
+     */
+    private long writeDirect(final Buffer source, final long byteCount) {
+        if (source == null) {
+            throw new ValidateException("TLS write source must not be null");
+        }
+        if (byteCount < Normal._0 || byteCount > source.size()) {
+            throw new ValidateException("TLS write byte count must be between zero and source size");
+        }
+        if (byteCount == Normal._0) {
+            return Normal._0;
+        }
+        if (!availableForIo()) {
+            throw closedFailure("TLS channel cannot write");
+        }
+        try {
+            ensureHandshake();
+            writeLock.lock();
+            try {
+                requireOpenIo("TLS channel cannot write");
+                writePlaintext(source, byteCount);
+                return byteCount;
+            } finally {
+                writeLock.unlock();
+            }
+        } catch (final TimeoutException e) {
+            fail(e);
+            throw e;
+        } catch (final RuntimeException e) {
+            if (e instanceof ProtocolException protocol) {
+                fail(protocol);
+                throw protocol;
+            }
+            final SocketException mapped = e instanceof SocketException socket ? socket
+                    : new SocketException("TLS write failed", e);
+            fail(mapped);
+            throw mapped;
+        }
+    }
+
+    /**
+     * Exposes the synchronous TLS write path to core Sink adapters without allocating a future.
+     *
+     * @param source    plaintext source
+     * @param byteCount exact plaintext bytes
+     * @return consumed plaintext bytes
+     */
+    @Override
+    public long writeSynchronously(final Buffer source, final long byteCount) {
+        return writeDirect(source, byteCount);
     }
 
     /**
@@ -456,13 +585,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     @Override
     public boolean opened() {
-        stateLock.lock();
-        try {
-            return (tlsState == TlsState.NEW || tlsState == TlsState.HANDSHAKING || tlsState == TlsState.OPEN)
-                    && conduit.opened();
-        } finally {
-            stateLock.unlock();
-        }
+        final TlsState current = tlsState;
+        return (current == TlsState.NEW || current == TlsState.HANDSHAKING || current == TlsState.OPEN)
+                && conduit.opened();
     }
 
     /**
@@ -472,19 +597,14 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     @Override
     public Status state() {
-        stateLock.lock();
-        try {
-            return switch (tlsState) {
-                case NEW -> Status.QUEUED;
-                case HANDSHAKING -> Status.RUNNING;
-                case OPEN -> Status.OPENED;
-                case CLOSING -> Status.CLOSING;
-                case CLOSED -> Status.CLOSED;
-                case FAILED -> Status.FAILED;
-            };
-        } finally {
-            stateLock.unlock();
-        }
+        return switch (tlsState) {
+            case NEW -> Status.QUEUED;
+            case HANDSHAKING -> Status.RUNNING;
+            case OPEN -> Status.OPENED;
+            case CLOSING -> Status.CLOSING;
+            case CLOSED -> Status.CLOSED;
+            case FAILED -> Status.FAILED;
+        };
     }
 
     /**
@@ -536,16 +656,88 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Terminates an already non-reusable TLS transport without emitting {@code close_notify}.
+     *
+     * <p>
+     * This path is reserved for protocol-directed connection closure, cancellation, and broken exchanges. It still
+     * closes the engine and conduit and releases every owned buffer exactly once.
+     * </p>
+     */
+    public void abort() {
+        if (!beginClosing()) {
+            // A concurrent graceful close may already be waiting for the physical writer's lock. It must not prevent
+            // protocol-directed abort from closing the socket that unblocks that writer. The original close owner
+            // remains responsible for engine and buffer finalization.
+            final TlsState current = currentState();
+            if (current == TlsState.CLOSING) {
+                conduit.close();
+            } else if (current == TlsState.FAILED) {
+                finishFailedAbort();
+            }
+            return;
+        }
+        RuntimeException closeFailure = null;
+        try {
+            conduit.close();
+        } catch (final RuntimeException e) {
+            closeFailure = new TimeoutException("TLS conduit abort failed", e);
+        }
+        readLock.lock();
+        try {
+            writeLock.lock();
+            try {
+                engine.abort();
+            } finally {
+                writeLock.unlock();
+            }
+        } catch (final RuntimeException e) {
+            if (closeFailure == null)
+                closeFailure = new TimeoutException("TLS engine abort failed", e);
+            else
+                closeFailure.addSuppressed(e);
+        } finally {
+            readLock.unlock();
+            releaseBuffers();
+            finishClosed();
+        }
+        if (closeFailure != null) {
+            throw closeFailure;
+        }
+    }
+
+    /** Finalizes a previously published failure after its reader callback has been allowed to unwind. */
+    private void finishFailedAbort() {
+        conduit.close();
+        readLock.lock();
+        try {
+            writeLock.lock();
+            try {
+                engine.abort();
+            } finally {
+                writeLock.unlock();
+            }
+        } finally {
+            readLock.unlock();
+            releaseBuffers();
+            finishClosed();
+        }
+    }
+
+    /**
      * Performs or joins the serialized handshake.
      *
      * @return handshake metadata
      */
     private TlsHandshake ensureHandshake() {
+        final TlsHandshake completed = completedHandshake;
+        if (completed != null) {
+            return completed;
+        }
         handshakeLock.lock();
         try {
             final TlsState current = currentState();
             if (current == TlsState.OPEN) {
-                return engine.handshake();
+                return completedHandshake;
             }
             if (current != TlsState.NEW) {
                 throw closedFailure("TLS handshake is unavailable");
@@ -561,10 +753,12 @@ public final class TlsChannel implements Conduit, Lifecycle {
                     default -> throw new TlsException("Unexpected TLS handshake status: " + status);
                 };
             }
+            final TlsHandshake handshake = engine.handshake();
+            completedHandshake = handshake;
             transition(TlsState.OPEN);
             recordHandshake(engine.sessionReuse());
             notifyOpen();
-            return engine.handshake();
+            return handshake;
         } catch (final IOException e) {
             throw new TlsException("TLS handshake failed", e);
         } finally {
@@ -582,7 +776,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         try {
             while (true) {
                 prepareEncryptedOutput();
-                final SSLEngineResult result = engine.wrap(EMPTY.duplicate(), encryptedOutput);
+                final SSLEngineResult result = wrapProvider(EMPTY.duplicate(), encryptedOutput);
                 if (result.getStatus() == SSLEngineResult.Status.BUFFER_OVERFLOW) {
                     growEncryptedOutput();
                     continue;
@@ -615,7 +809,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
             }
             while (true) {
                 preparePendingPlaintextForAppend();
-                final SSLEngineResult result = engine.unwrap(encryptedInput, pendingPlaintext);
+                final SSLEngineResult result = unwrapProvider(encryptedInput, pendingPlaintext);
                 pendingPlaintext.flip();
                 if (result.getStatus() == SSLEngineResult.Status.BUFFER_OVERFLOW) {
                     growPendingPlaintext();
@@ -661,7 +855,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 }
             }
             preparePendingPlaintextForAppend();
-            final SSLEngineResult result = engine.unwrap(encryptedInput, pendingPlaintext);
+            final SSLEngineResult result = unwrapProvider(encryptedInput, pendingPlaintext);
             pendingPlaintext.flip();
             if (result.getStatus() == SSLEngineResult.Status.BUFFER_OVERFLOW) {
                 growPendingPlaintext();
@@ -692,6 +886,72 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Reads decrypted bytes into a caller NIO buffer while retaining overflow in the connection-owned plaintext buffer.
+     *
+     * @param target writable plaintext destination
+     * @return bytes read, or EOF
+     */
+    private int readPlaintext(final ByteBuffer target) {
+        final int pending = drainPlaintext(target);
+        if (pending > Normal._0) {
+            return pending;
+        }
+        while (true) {
+            if (!encryptedInput.hasRemaining()) {
+                final long read = readEncryptedInput(timeout.read(), "TLS read timed out");
+                if (read <= Normal._0) {
+                    return (int) read;
+                }
+            }
+            preparePendingPlaintextForAppend();
+            final SSLEngineResult result = unwrapProvider(encryptedInput, pendingPlaintext);
+            pendingPlaintext.flip();
+            if (result.getStatus() == SSLEngineResult.Status.BUFFER_OVERFLOW) {
+                growPendingPlaintext();
+                continue;
+            }
+            if (result.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
+                ensureEncryptedInputCapacity();
+                if (readEncryptedInput(timeout.read(), "TLS read timed out") == Normal.__1) {
+                    return Normal.__1;
+                }
+                continue;
+            }
+            if (result.getHandshakeStatus() == HandshakeStatus.NEED_TASK) {
+                runTasks();
+            }
+            final int produced = drainPlaintext(target);
+            if (produced > Normal._0) {
+                return produced;
+            }
+            if (result.getStatus() == SSLEngineResult.Status.CLOSED) {
+                return Normal.__1;
+            }
+            if (result.bytesConsumed() == Normal._0 && result.bytesProduced() == Normal._0) {
+                throw new SocketException("TLS read made no engine progress");
+            }
+        }
+    }
+
+    /**
+     * Drains pending plaintext directly into a caller-owned NIO buffer.
+     *
+     * @param target writable destination
+     * @return transferred byte count
+     */
+    private int drainPlaintext(final ByteBuffer target) {
+        if (!pendingPlaintext.hasRemaining()) {
+            return Normal._0;
+        }
+        final int count = Math.min(target.remaining(), pendingPlaintext.remaining());
+        final ByteBuffer view = pendingPlaintext.duplicate();
+        view.limit(view.position() + count);
+        target.put(view);
+        pendingPlaintext.position(pendingPlaintext.position() + count);
+        return count;
+    }
+
+    /**
      * Completely wraps and writes plaintext under the write lock.
      *
      * @param source    plaintext source
@@ -702,7 +962,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         while (remaining > Normal._0) {
             final ByteBuffer plaintext = source.nioBuffer(toIntSize(remaining));
             prepareEncryptedOutput();
-            final SSLEngineResult result = engine.wrap(plaintext, encryptedOutput);
+            final SSLEngineResult result = wrapProvider(plaintext, encryptedOutput);
             if (result.getStatus() == SSLEngineResult.Status.BUFFER_OVERFLOW) {
                 growEncryptedOutput();
                 continue;
@@ -733,7 +993,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         engine.engine().closeOutbound();
         while (!engine.engine().isOutboundDone()) {
             prepareEncryptedOutput();
-            final SSLEngineResult result = engine.wrap(EMPTY.duplicate(), encryptedOutput);
+            final SSLEngineResult result = wrapProvider(EMPTY.duplicate(), encryptedOutput);
             if (result.getStatus() == SSLEngineResult.Status.BUFFER_OVERFLOW) {
                 growEncryptedOutput();
                 continue;
@@ -746,6 +1006,39 @@ public final class TlsChannel implements Conduit, Lifecycle {
             if (result.bytesProduced() == Normal._0 && result.getHandshakeStatus() != HandshakeStatus.NEED_WRAP) {
                 break;
             }
+        }
+    }
+
+    private SSLEngineResult wrapProvider(final ByteBuffer source, final ByteBuffer target) {
+        if (!"h2".equals(engine.applicationProtocol()))
+            return engine.wrap(source, target);
+        lockHttp2Engine();
+        try {
+            return engine.wrap(source, target);
+        } finally {
+            http2EngineLock.unlock();
+        }
+    }
+
+    private SSLEngineResult unwrapProvider(final ByteBuffer source, final ByteBuffer target) {
+        if (!"h2".equals(engine.applicationProtocol()))
+            return engine.unwrap(source, target);
+        lockHttp2Engine();
+        try {
+            return engine.unwrap(source, target);
+        } finally {
+            http2EngineLock.unlock();
+        }
+    }
+
+    private void lockHttp2Engine() {
+        try {
+            if (!http2EngineLock.tryLock(1L, TimeUnit.SECONDS)) {
+                throw new SocketException("HTTP/2 TLS provider remained busy for one second");
+            }
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new SocketException("HTTP/2 TLS provider operation interrupted", e);
         }
     }
 
@@ -774,7 +1067,12 @@ public final class TlsChannel implements Conduit, Lifecycle {
             encryptedInput.compact();
         }
         final int writable = encryptedInput.remaining();
-        final long read = await(conduit.read(encryptedInput), duration, message);
+        final int read;
+        try {
+            read = conduit.readSynchronously(encryptedInput);
+        } catch (final IOException e) {
+            throw new SocketException(message, e);
+        }
         if (read > Normal._0) {
             if (read > writable) {
                 throw new InternalException("Encrypted conduit returned an invalid read count");
@@ -795,11 +1093,14 @@ public final class TlsChannel implements Conduit, Lifecycle {
         if (!encryptedOutput.hasRemaining()) {
             return;
         }
-        final Buffer payload = new Buffer();
         final int bytes = encryptedOutput.remaining();
-        transfer(encryptedOutput, payload);
-        final long written = await(conduit.write(payload, bytes), duration, message);
-        if (written != bytes || payload.size() != Normal._0) {
+        final int written;
+        try {
+            written = conduit.writeSynchronously(encryptedOutput);
+        } catch (final IOException e) {
+            throw new SocketException(message, e);
+        }
+        if (written != bytes) {
             throw new InternalException("Encrypted conduit did not completely consume TLS output");
         }
         addBytes(Counter.BYTES_WRITTEN, written);
@@ -844,7 +1145,10 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * Ensures encrypted input can accept at least one more packet fragment.
      */
     private void ensureEncryptedInputCapacity() {
-        if (encryptedInput.limit() == encryptedInput.capacity()
+        // In read mode a full limit does not mean that the buffer has no append
+        // capacity: bytes before position have already been consumed and compact()
+        // will reclaim them. Grow only when every byte is still unconsumed.
+        if (encryptedInput.remaining() == encryptedInput.capacity()
                 || encryptedInput.capacity() < engine.packetBufferSize()) {
             growEncryptedInput();
         }
@@ -1032,6 +1336,21 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Completes an interruptible blocking TLS operation on its request owner.
+     *
+     * @param operation blocking TLS operation executed by the calling request owner
+     * @param <T>       operation result type
+     * @return already completed or failed future containing the operation outcome
+     */
+    private static <T> CompletableFuture<T> directFuture(final Supplier<T> operation) {
+        try {
+            return CompletableFuture.completedFuture(operation.get());
+        } catch (final Throwable failure) {
+            return CompletableFuture.failedFuture(failure);
+        }
+    }
+
+    /**
      * Marks a nonterminal state machine failed and releases transport resources.
      *
      * @param cause failure cause
@@ -1057,24 +1376,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
             meter.incrementCounter(Counter.TLS_HANDSHAKE_FAILURES);
         }
         closeConduit(cause);
-        readLock.lock();
-        try {
-            // Wait for any read that was already inside the engine or conduit.
-        } finally {
-            readLock.unlock();
-        }
-        writeLock.lock();
-        try {
-            // Wait for any write that was already inside the engine or conduit.
-        } finally {
-            writeLock.unlock();
-        }
-        try {
-            engine.close();
-        } catch (final RuntimeException e) {
-            cause.addSuppressed(e);
-        }
-        releaseBuffers();
+        // Do not join the opposite TLS direction here. A reader failure may be the owner of the provider lock that
+        // an HTTP/2 writer is awaiting while holding writeLock. Directory shutdown calls abort after this callback
+        // unwinds and performs the final engine/buffer cleanup without creating that lock cycle.
         notifyFailure(cause);
     }
 
@@ -1168,17 +1472,12 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
-     * Returns the TLS state under the state lock.
+     * Returns the safely published TLS state without joining transport or provider locks.
      *
      * @return current TLS state
      */
     private TlsState currentState() {
-        stateLock.lock();
-        try {
-            return tlsState;
-        } finally {
-            stateLock.unlock();
-        }
+        return tlsState;
     }
 
     /**
@@ -1221,16 +1520,14 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @return state failure
      */
     private StatefulException closedFailure(final String message) {
-        stateLock.lock();
-        try {
-            return failure == null ? new StatefulException(message) : new StatefulException(message, failure);
-        } finally {
-            stateLock.unlock();
-        }
+        final Throwable cause = failure;
+        return cause == null ? new StatefulException(message) : new StatefulException(message, cause);
     }
 
     /**
      * Records the single successful handshake classification.
+     *
+     * @param reuse TLS session reuse classification
      */
     private void recordHandshake(final TlsEngine.SessionReuse reuse) {
         if (meter == null) {
@@ -1245,6 +1542,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
 
     /**
      * Adds encrypted transport bytes to the borrowed meter.
+     *
+     * @param counter encrypted read or write counter
+     * @param bytes   positive byte count to add
      */
     private void addBytes(final Counter counter, final long bytes) {
         if (meter != null && bytes > 0L) {
@@ -1367,39 +1667,6 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
-     * Waits for an adapter-view future and preserves checked IO semantics.
-     *
-     * @param future  operation future
-     * @param message failure message
-     * @return byte count
-     * @throws IOException when the operation fails
-     */
-    private static long awaitView(final CompletableFuture<Long> future, final String message) throws IOException {
-        try {
-            final Long result = future.get();
-            if (result == null) {
-                throw new IOException(message + ": null result");
-            }
-            return result;
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException(message, e);
-        } catch (final ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof IOException io) {
-                throw io;
-            }
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
-            }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new IOException(message, cause);
-        }
-    }
-
-    /**
      * Plaintext source backed by the enclosing TLS state machine.
      */
     private final class TlsSource implements Source {
@@ -1414,7 +1681,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
          */
         @Override
         public long read(final Buffer sink, final long byteCount) throws IOException {
-            return awaitView(TlsChannel.this.read(sink, byteCount), "TLS source read failed");
+            return readDirect(sink, byteCount);
         }
 
         /**
@@ -1452,7 +1719,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
             final long before = source == null ? Normal._0 : source.size();
-            final long written = awaitView(TlsChannel.this.write(source, byteCount), "TLS sink write failed");
+            final long written = writeDirect(source, byteCount);
             if (written != byteCount || before - source.size() != byteCount) {
                 throw new IOException("TLS sink did not completely consume requested plaintext");
             }

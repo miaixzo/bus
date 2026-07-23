@@ -66,17 +66,17 @@ public final class Activity implements Runnable, Lifecycle {
     private static final int CANCELLED = 4;
 
     /**
-     * Activity name.
+     * Trimmed non-blank, single-line diagnostic name.
      */
     private final String name;
 
     /**
-     * Runnable work.
+     * Work reference cleared after execution or successful cancellation to release captured state.
      */
     private volatile Runnable action;
 
     /**
-     * Lifecycle state.
+     * Cancellation scope observed before and during action execution.
      */
     private final Cancellation cancellation;
 
@@ -96,8 +96,8 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Creates an activity.
      *
-     * @param name     activity name
-     * @param runnable runnable
+     * @param name     diagnostic activity name
+     * @param runnable work executed at most once
      */
     private Activity(final String name, final Runnable runnable) {
         this(name, runnable, Cancellation.create());
@@ -106,9 +106,9 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Creates an activity.
      *
-     * @param name         activity name
-     * @param runnable     runnable
-     * @param cancellation cancellation scope
+     * @param name         diagnostic activity name
+     * @param runnable     work executed at most once
+     * @param cancellation scope observed before and after the action and cancelled by {@link #cancel()}
      */
     private Activity(final String name, final Runnable runnable, final Cancellation cancellation) {
         this.name = validateName(name);
@@ -120,9 +120,10 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Creates an activity.
      *
-     * @param name     activity name
-     * @param runnable runnable
-     * @return activity
+     * @param name     diagnostic activity name
+     * @param runnable work executed at most once
+     * @return queued activity with a new cancellation scope
+     * @throws ValidateException if the name or runnable is invalid
      */
     public static Activity of(final String name, final Runnable runnable) {
         return new Activity(name, runnable);
@@ -131,10 +132,11 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Creates an activity bound to an existing cancellation scope.
      *
-     * @param name         activity name
-     * @param runnable     runnable
-     * @param cancellation cancellation scope
-     * @return activity
+     * @param name         diagnostic activity name
+     * @param runnable     work executed at most once
+     * @param cancellation existing scope shared with the activity
+     * @return queued activity bound to the supplied scope
+     * @throws ValidateException if the name, runnable, or scope is invalid
      */
     public static Activity of(final String name, final Runnable runnable, final Cancellation cancellation) {
         return new Activity(name, runnable, cancellation);
@@ -177,7 +179,7 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Cancels this activity.
      *
-     * @return true when this invocation changed the state
+     * @return {@code true} when this invocation changes queued/running state to cancelled
      */
     public boolean cancel() {
         while (true) {
@@ -196,14 +198,18 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Returns whether this activity is cancelled.
      *
-     * @return true when cancelled
+     * @return {@code true} when the atomic activity state is cancelled
      */
     public boolean cancelled() {
         return state.get() == CANCELLED;
     }
 
     /**
-     * Runs the activity once.
+     * Runs the action once and records done, failed, or cancelled terminal state.
+     *
+     * @throws StatefulException     if the activity is not queued
+     * @throws CancellationException if its scope is cancelled before or during cooperative execution
+     * @throws InternalException     if the action throws another runtime exception
      */
     @Override
     public void run() {
@@ -235,7 +241,7 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Returns the failure cause.
      *
-     * @return failure cause or null
+     * @return first runtime failure thrown by the action, including cancellation, or {@code null}
      */
     public Throwable failure() {
         return failure;
@@ -259,10 +265,11 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

@@ -35,16 +35,16 @@ public interface DataEncoder<T> extends Encoder<T, Payload> {
     /**
      * Encodes a value into a payload.
      *
-     * @param value value
-     * @return payload
+     * @param value value to serialize according to the implementation's format
+     * @return payload containing the encoded representation
      */
     Payload encode(T value);
 
     /**
      * Returns whether the media type is supported.
      *
-     * @param media media type
-     * @return true when supported
+     * @param media media type proposed for encoding
+     * @return true when this encoder can produce that media type
      */
     boolean supports(MediaType media);
 

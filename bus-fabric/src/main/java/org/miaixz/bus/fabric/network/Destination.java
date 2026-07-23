@@ -34,31 +34,49 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 /**
  * Immutable destination for grouping reusable network connections.
  *
- * @param protocol bus protocol
- * @param address  target address
- * @param options  immutable options
  * @author Kimi Liu
  * @since Java 21+
  */
-public record Destination(Protocol protocol, Address address, Options options) {
+public final class Destination {
+
+    /** Application protocol used for pooling. */
+    private final Protocol protocol;
+
+    /** Remote network address. */
+    private final Address address;
+
+    /** Normalized connection-reuse option identity. */
+    private final Options options;
+
+    /** Precomputed hash because pool lookups reuse this immutable key several times per acquisition. */
+    private final int hashCode;
 
     /**
      * Creates a connection destination.
+     *
+     * @param protocol application protocol used for pooling
+     * @param address  remote network address
+     * @param options  source options reduced to connection-reuse identity
+     * @throws ValidateException if a required component is {@code null} or a retained boolean or proxy option has the
+     *                           wrong type
      */
-    public Destination {
-        protocol = Assert.notNull(protocol, () -> new ValidateException("Connection protocol must not be null"));
-        address = Assert.notNull(address, () -> new ValidateException("Connection address must not be null"));
-        options = stableOptions(
+    public Destination(final Protocol protocol, final Address address, final Options options) {
+        this.protocol = Assert.notNull(protocol, () -> new ValidateException("Connection protocol must not be null"));
+        this.address = Assert.notNull(address, () -> new ValidateException("Connection address must not be null"));
+        this.options = stableOptions(
                 Assert.notNull(options, () -> new ValidateException("Connection options must not be null")));
+        this.hashCode = computeHashCode();
     }
 
     /**
      * Creates a connection destination.
      *
-     * @param protocol protocol
-     * @param address  address
-     * @param options  options
-     * @return connection destination
+     * @param protocol application protocol used for pooling
+     * @param address  remote network address
+     * @param options  source options reduced to connection-reuse identity
+     * @return immutable normalized connection destination
+     * @throws ValidateException if a required argument is {@code null} or a retained boolean or proxy option has the
+     *                           wrong type
      */
     public static Destination of(final Protocol protocol, final Address address, final Options options) {
         return new Destination(protocol, address, options);
@@ -67,9 +85,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns the protocol.
      *
-     * @return protocol
+     * @return application protocol used for pooling
      */
-    @Override
     public Protocol protocol() {
         return protocol;
     }
@@ -77,9 +94,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns the address.
      *
-     * @return address
+     * @return remote network address
      */
-    @Override
     public Address address() {
         return address;
     }
@@ -87,9 +103,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns the options.
      *
-     * @return options
+     * @return normalized immutable connection-reuse option subset
      */
-    @Override
     public Options options() {
         return options;
     }
@@ -97,7 +112,7 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns whether this destination describes a secure connection.
      *
-     * @return true when secure
+     * @return {@code true} when the address is secure or either retained TLS or secure option is explicitly true
      */
     public boolean secure() {
         return address.secure() || Boolean.TRUE.equals(options.get(Builder.OPTION_TLS))
@@ -107,7 +122,7 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns whether this destination can share a single physical connection across concurrent logical streams.
      *
-     * @return true when multiplex capable
+     * @return explicit multiplex option when present; otherwise {@code true} for HTTP/2 protocol identities
      */
     public boolean multiplex() {
         final Boolean explicit = options.get(Builder.OPTION_MULTIPLEX);
@@ -125,7 +140,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns maximum concurrent logical streams for a multiplex destination.
      *
-     * @return stream capacity
+     * @return configured positive stream limit, or 100 when no limit is retained
+     * @throws ValidateException if the retained stream limit is not positive
      */
     public int maxMultiplexStreams() {
         final Integer value = options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS);
@@ -139,8 +155,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Builds the stable option subset used as part of a connection reuse key.
      *
-     * @param source source options
-     * @return stable options
+     * @param source complete source option snapshot
+     * @return immutable subset containing only normalized connection-reuse identity options
      */
     private static Options stableOptions(final Options source) {
         Options stable = Options.empty();
@@ -156,13 +172,13 @@ public record Destination(Protocol protocol, Address address, Options options) {
     }
 
     /**
-     * Copies one present typed option while preserving explicit null.
+     * Copies one present typed option when its value is non-null.
      *
-     * @param source source options
-     * @param target target options
-     * @param key    typed key
-     * @param <T>    option type
-     * @return updated target
+     * @param source source options inspected for the typed key
+     * @param target accumulated stable option subset
+     * @param key    typed option key to copy
+     * @param <T>    option value type
+     * @return target unchanged when absent or null; otherwise a new snapshot containing the value
      */
     private static <T> Options copy(final Options source, final Options target, final Options.Key<T> key) {
         if (!source.contains(key)) {
@@ -175,11 +191,12 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Copies a canonical true boolean from a typed key or legacy string key.
      *
-     * @param source    source options
-     * @param target    target options
-     * @param key       typed key
-     * @param legacyKey legacy key or null
-     * @return updated target
+     * @param source    source options inspected for typed and legacy forms
+     * @param target    accumulated stable option subset
+     * @param key       canonical typed boolean key
+     * @param legacyKey legacy string key, or {@code null} when no fallback is supported
+     * @return target containing canonical {@code true}, or unchanged when absent, null, or false
+     * @throws ValidateException if a selected non-null value is not boolean
      */
     private static Options copyBoolean(
             final Options source,
@@ -200,9 +217,9 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Copies TLS context presence while preserving explicit disablement.
      *
-     * @param source source options
-     * @param target target options
-     * @return updated target
+     * @param source source options inspected for explicit TLS-context presence
+     * @param target accumulated stable option subset
+     * @return target preserving both context-key presence and its possibly null value
      */
     private static Options copyContext(final Options source, final Options target) {
         if (!source.contains(Builder.OPTION_TLS_CONTEXT)) {
@@ -214,9 +231,9 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Copies a non-null immutable TLS settings identity.
      *
-     * @param source source options
-     * @param target target options
-     * @return updated target
+     * @param source source options containing an optional immutable settings snapshot
+     * @param target accumulated stable option subset
+     * @return target containing non-null TLS settings, or unchanged when absent or null
      */
     private static Options copySettings(final Options source, final Options target) {
         final TlsSettings settings = source.get(Builder.OPTION_TLS_SETTINGS);
@@ -226,9 +243,10 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Copies and normalizes typed or legacy proxy identity.
      *
-     * @param source source options
-     * @param target target options
-     * @return updated target
+     * @param source source options inspected for canonical or legacy proxy identity
+     * @param target accumulated stable option subset
+     * @return target containing a trimmed non-direct proxy identifier, or unchanged for absent or direct routing
+     * @throws ValidateException if a selected non-null proxy value is not a string
      */
     private static Options copyProxy(final Options source, final Options target) {
         final Object value = source.contains(Builder.OPTION_ROUTE_PROXY) ? source.get(Builder.OPTION_ROUTE_PROXY)
@@ -249,8 +267,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Compares destinations by value, including option snapshots.
      *
-     * @param other other object
-     * @return true when equal
+     * @param other object compared with this normalized destination
+     * @return {@code true} when protocol, address, retained option values, and TLS-context identity are equivalent
      */
     @Override
     public boolean equals(final Object other) {
@@ -284,6 +302,11 @@ public record Destination(Protocol protocol, Address address, Options options) {
      */
     @Override
     public int hashCode() {
+        return hashCode;
+    }
+
+    /** Computes the immutable connection-key hash once during construction. */
+    private int computeHashCode() {
         int result = 31 * protocol.hashCode() + address.hashCode();
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_TLS));
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_SECURE));
@@ -300,8 +323,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Compares TLS context presence and stable wrapped-context identity.
      *
-     * @param other other destination
-     * @return true when context identity is equivalent
+     * @param other normalized destination whose TLS-context option is compared
+     * @return {@code true} when key presence matches and wrapped context identities are the same reference
      */
     private boolean sameContext(final Destination other) {
         return options.contains(Builder.OPTION_TLS_CONTEXT) == other.options.contains(Builder.OPTION_TLS_CONTEXT)
@@ -311,8 +334,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns stable wrapped SSL context identity without materializing an option map.
      *
-     * @param source options
-     * @return context identity or null
+     * @param source normalized options containing an optional TLS context
+     * @return wrapped SSL-context identity reference, or {@code null} when no non-null context is retained
      */
     private static Object contextIdentity(final Options source) {
         final TlsContext context = source.get(Builder.OPTION_TLS_CONTEXT);

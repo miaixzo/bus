@@ -65,22 +65,22 @@ public final class DispatchHandle implements Lifecycle {
     private static final int CANCELLED = 4;
 
     /**
-     * Dispatch key.
+     * Trimmed, single-line key used for per-key dispatch accounting.
      */
     private final String key;
 
     /**
-     * Cancellation tag.
+     * Optional identity used to group cancellation requests.
      */
     private final Object tag;
 
     /**
-     * Activity.
+     * Activity controlled by this handle.
      */
     private final Activity activity;
 
     /**
-     * Execution result.
+     * Completion channel reflecting this handle's terminal transition.
      */
     private final CompletableFuture<Void> future;
 
@@ -90,11 +90,11 @@ public final class DispatchHandle implements Lifecycle {
     private final AtomicInteger state;
 
     /**
-     * Creates a dispatch handle.
+     * Creates a queued dispatch handle and a new incomplete future.
      *
-     * @param key      dispatch key
-     * @param tag      cancellation tag
-     * @param activity activity
+     * @param key      non-blank, single-line dispatch key
+     * @param tag      optional cancellation tag
+     * @param activity activity controlled by the handle
      */
     private DispatchHandle(final String key, final Object tag, final Activity activity) {
         this.key = validateKey(key);
@@ -107,10 +107,11 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Creates a dispatch handle.
      *
-     * @param key      dispatch key
-     * @param tag      cancellation tag
-     * @param activity activity
-     * @return dispatch handle
+     * @param key      non-blank, single-line dispatch key
+     * @param tag      optional cancellation tag, which may be {@code null}
+     * @param activity activity controlled by the handle
+     * @return newly queued handle with an incomplete execution future
+     * @throws ValidateException if the key is blank or multi-line, or if {@code activity} is {@code null}
      */
     public static DispatchHandle of(final String key, final Object tag, final Activity activity) {
         return new DispatchHandle(key, tag, activity);
@@ -119,7 +120,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the dispatch key.
      *
-     * @return dispatch key
+     * @return trimmed, single-line key used for dispatch accounting
      */
     public String key() {
         return key;
@@ -128,7 +129,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the cancellation tag.
      *
-     * @return cancellation tag
+     * @return cancellation tag, or {@code null} when none was assigned
      */
     public Object tag() {
         return tag;
@@ -137,7 +138,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the activity.
      *
-     * @return activity
+     * @return activity controlled by this handle
      */
     public Activity activity() {
         return activity;
@@ -146,7 +147,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the execution future.
      *
-     * @return execution future
+     * @return future completed, failed, or cancelled with this handle
      */
     public CompletableFuture<Void> future() {
         return future;
@@ -155,7 +156,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the handle lifecycle state.
      *
-     * @return lifecycle state
+     * @return current queued, running, or terminal dispatch status
      */
     @Override
     public Status state() {
@@ -172,16 +173,16 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Atomically promotes this handle before a worker invokes its activity.
      *
-     * @return true only for the worker that changed queued to running
+     * @return {@code true} only for the invocation that changed the state from queued to running
      */
     boolean markRunning() {
         return state.compareAndSet(QUEUED, RUNNING);
     }
 
     /**
-     * Cancels this handle and its activity.
+     * Atomically changes a queued or running handle to cancelled, then cancels its activity and future.
      *
-     * @return true when this invocation changed the state
+     * @return {@code true} if this invocation won the terminal state transition
      */
     public boolean cancel() {
         while (true) {
@@ -203,14 +204,16 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns whether this handle is cancelled.
      *
-     * @return true when cancelled
+     * @return {@code true} if the authoritative handle state is cancelled
      */
     public boolean cancelled() {
         return state.get() == CANCELLED;
     }
 
     /**
-     * Completes this handle successfully.
+     * Atomically completes a queued or running handle and its future successfully.
+     *
+     * @throws StatefulException if the handle has already failed or been cancelled
      */
     public void complete() {
         while (true) {
@@ -229,9 +232,11 @@ public final class DispatchHandle implements Lifecycle {
     }
 
     /**
-     * Fails this handle.
+     * Atomically fails a queued or running handle and completes its future exceptionally.
      *
-     * @param cause failure cause
+     * @param cause failure stored in the execution future
+     * @throws ValidateException if {@code cause} is {@code null}
+     * @throws StatefulException if the handle has already completed successfully or been cancelled
      */
     public void fail(final Throwable cause) {
         final Throwable failure = require(cause, "Failure cause");
@@ -253,8 +258,9 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Validates dispatch keys.
      *
-     * @param value key
-     * @return normalized key
+     * @param value candidate dispatch key
+     * @return trimmed, non-blank, single-line dispatch key
+     * @throws ValidateException if the candidate is blank or contains a carriage return or line feed
      */
     private static String validateKey(final String value) {
         final String current = Assert
@@ -266,12 +272,12 @@ public final class DispatchHandle implements Lifecycle {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

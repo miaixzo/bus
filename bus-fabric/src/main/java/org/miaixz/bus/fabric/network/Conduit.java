@@ -67,6 +67,55 @@ public interface Conduit extends AutoCloseable {
     CompletableFuture<Long> write(Buffer source, long byteCount);
 
     /**
+     * Performs a synchronous read for blocking transports. Native synchronous conduits should override this method;
+     * asynchronous implementations retain the compatibility fallback.
+     *
+     * @param target    destination buffer
+     * @param byteCount maximum bytes to read
+     * @return bytes read, or {@code -1} for EOF
+     * @throws IOException on transport failure
+     */
+    default long readSynchronously(final Buffer target, final long byteCount) throws IOException {
+        return await(read(target, byteCount), "Conduit read failed");
+    }
+
+    /**
+     * Performs one synchronous write for blocking transports. Native synchronous conduits should override this method;
+     * asynchronous implementations retain the compatibility fallback.
+     *
+     * @param source    source buffer
+     * @param byteCount maximum bytes to consume
+     * @return consumed bytes
+     * @throws IOException on transport failure
+     */
+    default long writeSynchronously(final Buffer source, final long byteCount) throws IOException {
+        return await(write(source, byteCount), "Conduit write failed");
+    }
+
+    /**
+     * Performs one synchronous read directly into a caller-owned NIO buffer. Native blocking conduits should override
+     * this method; asynchronous implementations retain the compatibility fallback.
+     *
+     * @param target writable destination buffer
+     * @return bytes read, or {@code -1} for EOF
+     * @throws IOException on transport failure
+     */
+    default int readSynchronously(final ByteBuffer target) throws IOException {
+        return awaitInteger(read(target), "Conduit NIO read failed");
+    }
+
+    /**
+     * Performs a synchronous complete write directly from a caller-owned NIO buffer.
+     *
+     * @param source source buffer consumed by the write
+     * @return bytes written
+     * @throws IOException on transport failure
+     */
+    default int writeSynchronously(final ByteBuffer source) throws IOException {
+        return awaitInteger(write(source), "Conduit NIO write failed");
+    }
+
+    /**
      * Reads once into a caller-owned NIO buffer. The position advances only after successful completion and by exactly
      * the reported byte count. Implementations may override this copying fallback with a native zero-copy operation.
      *
@@ -224,11 +273,14 @@ public interface Conduit extends AutoCloseable {
                 if (byteCount < Normal._0) {
                     throw new ValidateException("Read byte count must not be negative");
                 }
+                if (byteCount == Normal._0) {
+                    return Normal._0;
+                }
                 if (!conduit.opened()) {
                     throw new SocketException("Conduit is closed");
                 }
                 final long before = target.size();
-                final long read = await(conduit.read(target, byteCount), "Conduit read failed");
+                final long read = conduit.readSynchronously(target, byteCount);
                 final long appended = target.size() - before;
                 if (read == Normal.__1) {
                     if (appended != Normal._0) {
@@ -296,7 +348,7 @@ public interface Conduit extends AutoCloseable {
                 int zeroProgress = Normal._0;
                 while (remaining > Normal._0) {
                     final long before = current.size();
-                    final long written = await(conduit.write(current, remaining), "Conduit write failed");
+                    final long written = conduit.writeSynchronously(current, remaining);
                     final long consumed = before - current.size();
                     if (written < Normal._0 || written > remaining || consumed != written) {
                         throw new SocketException("Conduit write violated the Sink consumption contract");
@@ -395,11 +447,44 @@ public interface Conduit extends AutoCloseable {
     }
 
     /**
+     * Awaits one integer-count conduit operation while preserving its original failure.
+     *
+     * @param future  operation future
+     * @param message checked failure message
+     * @return byte count
+     * @throws IOException when a checked operation fails
+     */
+    private static int awaitInteger(final CompletableFuture<Integer> future, final String message) throws IOException {
+        try {
+            final Integer value = future == null ? null : future.get();
+            if (value == null) {
+                throw new SocketException("Conduit future returned a null byte count");
+            }
+            return value;
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(message, e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof IOException io) {
+                throw io;
+            }
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new IOException(message, cause);
+        }
+    }
+
+    /**
      * Validates a required core buffer.
      *
-     * @param buffer buffer
-     * @param name   name
-     * @return buffer
+     * @param buffer core buffer reference to validate
+     * @param name   diagnostic parameter name
+     * @return the validated buffer
      */
     private static Buffer requireBuffer(final Buffer buffer, final String name) {
         return Assert.notNull(buffer, () -> new ValidateException(name + " must not be null"));
@@ -407,6 +492,9 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Validates a future returned by a legacy implementation.
+     *
+     * @param future asynchronous byte-count result to validate
+     * @return the validated future
      */
     private static CompletableFuture<Long> requireFuture(final CompletableFuture<Long> future) {
         return Assert.notNull(future, () -> new ValidateException("Conduit future must not be null"));
@@ -414,6 +502,13 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Copies a completed read into one unchanged caller buffer.
+     *
+     * @param staging  internal buffer containing bytes appended by the read
+     * @param target   caller buffer receiving completed bytes
+     * @param position target position captured at submission time
+     * @param limit    target limit captured at submission time
+     * @param count    asynchronous read result, including {@code -1} for EOF
+     * @return transferred byte count, or {@code -1} for EOF
      */
     private static int transferRead(
             final Buffer staging,
@@ -440,6 +535,13 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Advances one unchanged caller source after a completed write.
+     *
+     * @param source   caller buffer whose consumed region is advanced
+     * @param position source position captured at submission time
+     * @param limit    source limit captured at submission time
+     * @param staging  internal buffer retaining unwritten bytes
+     * @param count    asynchronous write result
+     * @return number of source bytes consumed
      */
     private static int advanceWrite(
             final ByteBuffer source,
@@ -460,6 +562,12 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Validates an array range and captures positions before an asynchronous operation.
+     *
+     * @param buffers  caller buffer array
+     * @param offset   first included array index
+     * @param length   number of included buffers
+     * @param writable whether every included buffer must accept writes
+     * @return immutable snapshot of the validated range
      */
     private static BufferRange bufferRange(
             final ByteBuffer[] buffers,
@@ -492,6 +600,12 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Scatters a completed read only after every caller buffer passes its ownership check.
+     *
+     * @param staging internal buffer containing bytes appended by the read
+     * @param targets caller buffers receiving completed bytes
+     * @param range   positions and limits captured at submission time
+     * @param count   asynchronous read result, including {@code -1} for EOF
+     * @return transferred byte count, or {@code -1} for EOF
      */
     private static long scatterRead(
             final Buffer staging,
@@ -521,6 +635,12 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Advances gathering sources only after every ownership and consumption check succeeds.
+     *
+     * @param sources caller buffers whose consumed regions are advanced
+     * @param range   positions and limits captured at submission time
+     * @param staging internal buffer retaining unwritten bytes
+     * @param count   asynchronous gathering-write result
+     * @return number of source bytes consumed
      */
     private static long advanceGather(
             final ByteBuffer[] sources,
@@ -544,6 +664,10 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Ensures callers honored ownership until asynchronous completion.
+     *
+     * @param buffers caller buffers to compare with the captured range
+     * @param range   positions and limits captured at submission time
+     * @param name    diagnostic buffer role used in failure messages
      */
     private static void verifyUnchanged(final ByteBuffer[] buffers, final BufferRange range, final String name) {
         for (int index = 0; index < range.length; index++) {
@@ -556,6 +680,12 @@ public interface Conduit extends AutoCloseable {
 
     /**
      * Validates one nullable boxed byte count.
+     *
+     * @param count     asynchronous byte count to validate
+     * @param minimum   smallest permitted result
+     * @param maximum   largest permitted result
+     * @param operation operation name used in protocol diagnostics
+     * @return validated primitive byte count
      */
     private static long requireCount(final Long count, final long minimum, final long maximum, final String operation) {
         if (count == null || count < minimum || count > maximum) {

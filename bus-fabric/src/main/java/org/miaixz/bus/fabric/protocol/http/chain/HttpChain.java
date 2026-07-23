@@ -22,7 +22,6 @@ package org.miaixz.bus.fabric.protocol.http.chain;
 import java.util.Arrays;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -46,6 +45,11 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class HttpChain {
 
     /**
+     * Most recently compiled immutable stage list identity.
+     */
+    private static volatile CompiledStages compiledStages;
+
+    /**
      * Ordered stages.
      */
     private final HttpStage[] stages;
@@ -53,17 +57,17 @@ public final class HttpChain {
     /**
      * Current stage index.
      */
-    private final int index;
+    private int index;
 
     /**
      * Current leased connection.
      */
-    private final ConnectionLease lease;
+    private ConnectionLease lease;
 
     /**
      * Current network connection.
      */
-    private final Connection connection;
+    private Connection connection;
 
     /**
      * Shared cancellation scope.
@@ -71,17 +75,13 @@ public final class HttpChain {
     private final Cancellation cancellation;
 
     /**
-     * One-shot cursor state; cursors are exchange-local and synchronously consumed.
-     */
-    private boolean proceeded;
-
-    /**
      * Creates a chain.
      *
-     * @param stages     stages
-     * @param index      current index
-     * @param lease      leased connection
-     * @param connection network connection
+     * @param stages       immutable ordered stage array shared by chain cursors
+     * @param index        current index
+     * @param lease        leased connection
+     * @param connection   network connection
+     * @param cancellation cancellation scope shared by all stages
      */
     private HttpChain(final HttpStage[] stages, final int index, final ConnectionLease lease,
             final Connection connection, final Cancellation cancellation) {
@@ -95,8 +95,8 @@ public final class HttpChain {
     /**
      * Creates a chain at index zero.
      *
-     * @param stages stages
-     * @return chain
+     * @param stages ordered built-in stages to snapshot
+     * @return new one-shot chain cursor positioned before the first stage
      */
     public static HttpChain create(final List<HttpStage> stages) {
         return create(stages, Cancellation.create());
@@ -105,9 +105,9 @@ public final class HttpChain {
     /**
      * Creates a chain at index zero with a shared cancellation scope.
      *
-     * @param stages       stages
+     * @param stages       ordered built-in stages to snapshot
      * @param cancellation cancellation scope
-     * @return chain
+     * @return new one-shot chain cursor sharing the cancellation scope
      */
     public static HttpChain create(final List<HttpStage> stages, final Cancellation cancellation) {
         return new HttpChain(snapshot(stages), Normal._0, null, null, cancellation);
@@ -116,29 +116,24 @@ public final class HttpChain {
     /**
      * Proceeds to the next stage.
      *
-     * @param request request
+     * @param request immutable request passed to the current stage
      * @return response
      */
     public HttpResponse proceed(final HttpRequest request) {
-        final HttpRequest current = Assert
-                .notNull(request, () -> new ValidateException("HTTP request must not be null"));
-        if (proceeded) {
-            throw new StatefulException("HTTP chain cursor has already proceeded");
-        }
-        proceeded = true;
+        final HttpRequest current = require(request, "HTTP request");
         if (index >= stages.length) {
             throw new StatefulException("HTTP chain is exhausted");
         }
         cancellation.throwIfCancelled();
-        final HttpStage stage = stages[index];
-        return stage.execute(current, new HttpChain(stages, index + 1, lease, connection, cancellation));
+        final HttpStage stage = stages[index++];
+        return stage.execute(current, this);
     }
 
     /**
      * Returns a new chain with an appended stage.
      *
-     * @param stage stage
-     * @return new chain
+     * @param stage built-in stage appended after the current snapshot
+     * @return new chain sharing cursor context with the extended stage array
      */
     public HttpChain add(final HttpStage stage) {
         validateStage(stage);
@@ -150,7 +145,7 @@ public final class HttpChain {
     /**
      * Returns the current stage index.
      *
-     * @return index
+     * @return zero-based index of the next stage to execute
      */
     public int index() {
         return index;
@@ -159,7 +154,7 @@ public final class HttpChain {
     /**
      * Returns stage snapshot.
      *
-     * @return stages
+     * @return immutable ordered stage snapshot
      */
     public List<HttpStage> stages() {
         return List.of(stages);
@@ -168,25 +163,26 @@ public final class HttpChain {
     /**
      * Creates a fresh one-shot cursor at the same downstream position for an explicit retry or follow-up attempt.
      *
+     * @param replayIndex zero-based downstream stage index for the new cursor
      * @return fresh replay cursor
      */
-    HttpChain replayFromCurrent() {
-        return new HttpChain(stages, index, lease, connection, cancellation);
+    HttpChain replayFrom(final int replayIndex) {
+        return new HttpChain(stages, replayIndex, lease, connection, cancellation);
     }
 
     /**
      * Returns a chain that carries a leased connection for downstream stages.
      *
-     * @param lease      lease
-     * @param connection connection
+     * @param lease      connection lease carried to downstream stages
+     * @param connection leased physical connection carried to downstream stages
      * @return contextual chain
      */
     HttpChain withConnection(final ConnectionLease lease, final Connection connection) {
-        final ConnectionLease currentLease = Assert
-                .notNull(lease, () -> new ValidateException("Connection lease must not be null"));
-        final Connection currentConnection = Assert
-                .notNull(connection, () -> new ValidateException("Network connection must not be null"));
-        return new HttpChain(stages, index, currentLease, currentConnection, cancellation);
+        final ConnectionLease currentLease = require(lease, "Connection lease");
+        final Connection currentConnection = require(connection, "Network connection");
+        this.lease = currentLease;
+        this.connection = currentConnection;
+        return this;
     }
 
     /**
@@ -219,51 +215,68 @@ public final class HttpChain {
     /**
      * Validates stage list.
      *
-     * @param stages stages
-     * @return stages
+     * @param stages source stage list whose identity may reuse a compiled array
+     * @return validated immutable stage array snapshot
      */
     private static HttpStage[] snapshot(final List<HttpStage> stages) {
-        final List<HttpStage> source = Assert
-                .notNull(stages, () -> new ValidateException("HTTP stages must not be null"));
+        final List<HttpStage> source = require(stages, "HTTP stages");
+        final CompiledStages cached = compiledStages;
+        if (cached != null && source == cached.source) {
+            return cached.stages;
+        }
         for (final HttpStage stage : source) {
             validateStage(stage);
         }
-        return source.toArray(HttpStage[]::new);
+        final HttpStage[] compiled = source.toArray(HttpStage[]::new);
+        compiledStages = new CompiledStages(source, compiled);
+        return compiled;
     }
 
     /**
      * Validates a stage.
      *
-     * @param stage stage
+     * @param stage stage reference to validate
      */
     private static void validateStage(final HttpStage stage) {
-        Assert.notNull(stage, () -> new ValidateException("HTTP stage must not be null"));
+        require(stage, "HTTP stage");
     }
 
     /**
      * Validates a stage index.
      *
-     * @param index index
+     * @param index candidate next-stage index
      * @param size  stage size
-     * @return index
+     * @return validated index between zero and stage count inclusive
      */
     private static int validateIndex(final int index, final int size) {
-        Assert.isTrue(
-                index >= Normal._0 && index <= size,
-                () -> new ValidateException("HTTP chain index is out of range"));
+        if (index < Normal._0 || index > size) {
+            throw new ValidateException("HTTP chain index is out of range");
+        }
         return index;
     }
 
     /**
      * Validates required references.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name
      * @param <T>   value type
-     * @return value
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
+    }
+
+    /**
+     * Atomically published compiled stage snapshot.
+     *
+     * @param source source list identity
+     * @param stages compiled stage array
+     */
+    private record CompiledStages(List<HttpStage> source, HttpStage[] stages) {
     }
 
     /**

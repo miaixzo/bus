@@ -44,32 +44,32 @@ import org.miaixz.bus.fabric.Session;
 public final class Demuxer implements Handler {
 
     /**
-     * Channel handlers.
+     * Immutable handlers indexed by channel identifier.
      */
     private final Map<String, Handler> handlers;
 
     /**
-     * Optional fallback handler.
+     * Handler used when no channel-specific registration matches, or {@code null}.
      */
     private final Handler fallback;
 
     /**
-     * Header used for channel lookup.
+     * Message header name used as the secondary channel source.
      */
     private final String channelHeader;
 
     /**
-     * Optional custom resolver.
+     * Primary channel resolver, or {@code null} when header and tag lookup are used directly.
      */
     private final Function<Message, String> resolver;
 
     /**
      * Creates a demuxer.
      *
-     * @param handlers      channel handlers
-     * @param fallback      fallback handler
-     * @param channelHeader channel header
-     * @param resolver      custom resolver
+     * @param handlers      handlers indexed by their validated channel identifiers
+     * @param fallback      handler used when no channel-specific handler matches, or {@code null}
+     * @param channelHeader header name inspected when the resolver does not provide a channel
+     * @param resolver      optional function that resolves a channel directly from a message
      */
     private Demuxer(final Map<String, Handler> handlers, final Handler fallback, final String channelHeader,
             final Function<Message, String> resolver) {
@@ -82,7 +82,7 @@ public final class Demuxer implements Handler {
     /**
      * Creates a demuxer builder.
      *
-     * @return builder
+     * @return a new demuxer builder
      */
     public static Builder builder() {
         return new Builder();
@@ -91,8 +91,9 @@ public final class Demuxer implements Handler {
     /**
      * Routes a received message to the matching channel handler.
      *
-     * @param session session
-     * @param message message
+     * @param session session on which the message was received
+     * @param message protocol message to route
+     * @throws ProtocolException if the message has no channel or no handler accepts its channel
      */
     @Override
     public void message(final Session session, final Message message) {
@@ -112,8 +113,8 @@ public final class Demuxer implements Handler {
     /**
      * Forwards a session failure to all configured targets.
      *
-     * @param session session
-     * @param cause   failure cause
+     * @param session failed session
+     * @param cause   failure reported by the session
      */
     @Override
     public void failure(final Session session, final Throwable cause) {
@@ -125,7 +126,7 @@ public final class Demuxer implements Handler {
     /**
      * Forwards a session close event to all configured targets.
      *
-     * @param session session
+     * @param session session that was closed
      */
     @Override
     public void closed(final Session session) {
@@ -137,7 +138,7 @@ public final class Demuxer implements Handler {
     /**
      * Returns immutable channel handlers.
      *
-     * @return channel handlers
+     * @return immutable map of channel identifiers to handlers
      */
     public Map<String, Handler> handlers() {
         return handlers;
@@ -146,7 +147,7 @@ public final class Demuxer implements Handler {
     /**
      * Returns the configured channel header.
      *
-     * @return channel header
+     * @return header name used for channel lookup
      */
     public String channelHeader() {
         return channelHeader;
@@ -155,8 +156,10 @@ public final class Demuxer implements Handler {
     /**
      * Resolves the channel for a message.
      *
-     * @param message message
-     * @return channel
+     * @param message message whose channel is required
+     * @return validated channel resolved from the custom resolver, configured header, or message tag
+     * @throws ProtocolException if none of the supported message sources contains a channel
+     * @throws ValidateException if the resolved channel is blank or contains a line break
      */
     public String channel(final Message message) {
         final Message current = require(message, "Message");
@@ -178,7 +181,7 @@ public final class Demuxer implements Handler {
     /**
      * Returns all unique notification targets.
      *
-     * @return targets
+     * @return unique handlers in notification order, including the fallback when configured
      */
     private Iterable<Handler> targets() {
         final LinkedHashSet<Handler> result = new LinkedHashSet<>(handlers.values());
@@ -191,10 +194,11 @@ public final class Demuxer implements Handler {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return the validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -203,9 +207,10 @@ public final class Demuxer implements Handler {
     /**
      * Validates a channel token.
      *
-     * @param value value
-     * @param name  field name
-     * @return token
+     * @param value token text to trim and validate
+     * @param name  logical field name included in the validation error
+     * @return trimmed, non-blank, single-line token
+     * @throws ValidateException if the token is blank or contains a line break
      */
     private static String validateToken(final String value, final String name) {
         final String current = value == null ? null : StringKit.trim(value);
@@ -218,7 +223,7 @@ public final class Demuxer implements Handler {
     /**
      * Returns the shared no-op message handler.
      *
-     * @return no-op handler
+     * @return shared handler that ignores received messages
      */
     public static Handler noop() {
         return Instances.get(Demuxer.class.getName() + ".noop", NoopHandler::new);
@@ -233,22 +238,22 @@ public final class Demuxer implements Handler {
     public static final class Builder {
 
         /**
-         * Channel handlers.
+         * Mutable channel registrations in insertion order.
          */
         private final LinkedHashMap<String, Handler> handlers = new LinkedHashMap<>();
 
         /**
-         * Fallback handler.
+         * Handler used for unregistered channels, or {@code null}.
          */
         private Handler fallback;
 
         /**
-         * Channel header name.
+         * Header name inspected when the custom resolver yields no channel.
          */
         private String channelHeader = org.miaixz.bus.fabric.Builder.DEMUXER_DEFAULT_CHANNEL_HEADER;
 
         /**
-         * Custom channel resolver.
+         * Optional function that derives a channel from a message.
          */
         private Function<Message, String> resolver;
 
@@ -262,8 +267,8 @@ public final class Demuxer implements Handler {
         /**
          * Registers a channel handler.
          *
-         * @param channel channel id
-         * @param handler handler
+         * @param channel channel identifier to register
+         * @param handler handler that receives messages for the channel
          * @return this builder
          */
         public Builder channel(final String channel, final Handler handler) {
@@ -274,7 +279,7 @@ public final class Demuxer implements Handler {
         /**
          * Sets fallback handler.
          *
-         * @param handler fallback handler
+         * @param handler handler used when no channel-specific registration matches
          * @return this builder
          */
         public Builder fallback(final Handler handler) {
@@ -285,7 +290,7 @@ public final class Demuxer implements Handler {
         /**
          * Sets channel header name.
          *
-         * @param name header name
+         * @param name message header name used for channel lookup
          * @return this builder
          */
         public Builder header(final String name) {
@@ -296,7 +301,7 @@ public final class Demuxer implements Handler {
         /**
          * Sets a custom channel resolver.
          *
-         * @param resolver resolver
+         * @param resolver function that optionally derives a channel from each message
          * @return this builder
          */
         public Builder resolver(final Function<Message, String> resolver) {
@@ -307,7 +312,8 @@ public final class Demuxer implements Handler {
         /**
          * Builds a demuxer.
          *
-         * @return demuxer
+         * @return immutable demuxer configured from this builder
+         * @throws ValidateException if neither a channel handler nor a fallback is configured
          */
         public Demuxer build() {
             Assert.isTrue(
@@ -329,8 +335,8 @@ public final class Demuxer implements Handler {
         /**
          * Ignores fallback protocol messages.
          *
-         * @param session session
-         * @param message message
+         * @param session session on which the ignored message was received
+         * @param message protocol message to ignore
          */
         @Override
         public void message(final Session session, final Message message) {

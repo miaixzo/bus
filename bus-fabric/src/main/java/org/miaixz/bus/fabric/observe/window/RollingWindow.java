@@ -49,7 +49,7 @@ public final class RollingWindow {
     private final long bucketNanos;
 
     /**
-     * Ring buckets.
+     * Atomic ring of bucket states sized to the configured window.
      */
     private final AtomicReferenceArray<BucketState> buckets;
 
@@ -59,10 +59,10 @@ public final class RollingWindow {
     private final StampedLock lock;
 
     /**
-     * Creates a rolling window.
+     * Creates a rolling window from validated nanosecond durations.
      *
-     * @param windowNanos window nanoseconds
-     * @param bucketNanos bucket nanoseconds
+     * @param windowNanos total window duration in nanoseconds
+     * @param bucketNanos duration of each ring bucket in nanoseconds
      */
     private RollingWindow(final long windowNanos, final long bucketNanos) {
         this.windowNanos = windowNanos;
@@ -72,11 +72,13 @@ public final class RollingWindow {
     }
 
     /**
-     * Creates a rolling window.
+     * Creates a rolling window whose bucket duration divides the total window exactly.
      *
-     * @param window window duration
-     * @param bucket bucket duration
-     * @return rolling window
+     * @param window positive total window duration
+     * @param bucket positive duration of each bucket
+     * @return empty rolling window with the requested durations
+     * @throws ValidateException if either duration is null, non-positive, outside nanosecond range, larger than the
+     *                           window, or does not divide the window exactly
      */
     public static RollingWindow of(final Duration window, final Duration bucket) {
         final long windowNanos = validateDuration(window, "Window");
@@ -88,10 +90,14 @@ public final class RollingWindow {
     }
 
     /**
-     * Adds a sample value.
+     * Adds a non-negative sample to the bucket containing its timestamp.
+     * <p>
+     * A sample older than a newer state already occupying the same ring slot is ignored.
+     * </p>
      *
-     * @param value value
-     * @param time  sample time
+     * @param value non-negative amount added to the bucket sum
+     * @param time  timestamp used to select the bucket
+     * @throws ValidateException if {@code value} is negative or {@code time} is null or outside the supported range
      */
     public void add(final long value, final Instant time) {
         Assert.isTrue(value >= 0, () -> new ValidateException("Window value must be non-negative"));
@@ -128,10 +134,11 @@ public final class RollingWindow {
     }
 
     /**
-     * Returns window sum.
+     * Returns the sum of samples in buckets active at the supplied time.
      *
-     * @param now current time
-     * @return sum
+     * @param now timestamp defining the newest active bucket
+     * @return sum across the configured rolling window
+     * @throws ValidateException if {@code now} is null or outside the supported range
      */
     public long sum(final Instant now) {
         final long current = bucketKey(now);
@@ -148,10 +155,11 @@ public final class RollingWindow {
     }
 
     /**
-     * Returns window count.
+     * Returns the number of samples in buckets active at the supplied time.
      *
-     * @param now current time
-     * @return count
+     * @param now timestamp defining the newest active bucket
+     * @return sample count across the configured rolling window
+     * @throws ValidateException if {@code now} is null or outside the supported range
      */
     public long count(final Instant now) {
         final long current = bucketKey(now);
@@ -168,10 +176,11 @@ public final class RollingWindow {
     }
 
     /**
-     * Returns sum rate per second.
+     * Returns the active sum normalized by the configured window duration in seconds.
      *
-     * @param now current time
-     * @return rate
+     * @param now timestamp defining the newest active bucket
+     * @return window sum per configured window-second, or {@code 0.0} when the sum is zero
+     * @throws ValidateException if {@code now} is null or outside the supported range
      */
     public double rate(final Instant now) {
         final long current = bucketKey(now);
@@ -204,9 +213,9 @@ public final class RollingWindow {
     /**
      * Returns whether a bucket is active for a current key.
      *
-     * @param bucket  bucket
-     * @param current current key
-     * @return true when active
+     * @param bucket  bucket state to test, or {@code null} for an empty ring slot
+     * @param current key of the newest bucket included in the window
+     * @return {@code true} if the bucket key lies within the current rolling window
      */
     private boolean active(final BucketState bucket, final long current) {
         if (bucket == null) {
@@ -222,10 +231,10 @@ public final class RollingWindow {
     /**
      * Reads one stable bucket slot, retrying once if its reference changes.
      *
-     * @param index   bucket index
-     * @param current current bucket key
-     * @param sum     true for sum, false for count
-     * @return selected bucket value
+     * @param index   ring slot index to read
+     * @param current key of the newest bucket included in the window
+     * @param sum     {@code true} to read the sum; {@code false} to read the sample count
+     * @return selected aggregate for an active bucket, or zero for an inactive slot
      */
     private long value(final int index, final long current, final boolean sum) {
         BucketState state = buckets.get(index);
@@ -241,8 +250,8 @@ public final class RollingWindow {
     /**
      * Returns a bucket array index.
      *
-     * @param key bucket key
-     * @return index
+     * @param key time-derived bucket key
+     * @return non-negative ring slot index for the key
      */
     private int index(final long key) {
         return Math.floorMod(key, buckets.length());
@@ -251,8 +260,9 @@ public final class RollingWindow {
     /**
      * Returns a bucket key.
      *
-     * @param time time
-     * @return bucket key
+     * @param time timestamp to convert to a bucket key
+     * @return floor-divided epoch-nanosecond bucket key
+     * @throws ValidateException if {@code time} is null or its epoch nanoseconds overflow
      */
     private long bucketKey(final Instant time) {
         final Instant checked = Assert.notNull(time, () -> new ValidateException("Window time must not be null"));
@@ -268,9 +278,10 @@ public final class RollingWindow {
     /**
      * Validates a positive duration.
      *
-     * @param duration duration
-     * @param name     name
-     * @return nanoseconds
+     * @param duration duration to validate and convert
+     * @param name     logical duration name used in validation messages
+     * @return positive duration in nanoseconds
+     * @throws ValidateException if the duration is null, non-positive, or outside nanosecond range
      */
     private static long validateDuration(final Duration duration, final String name) {
         final Duration checked = Assert
@@ -291,24 +302,24 @@ public final class RollingWindow {
     private static final class BucketState {
 
         /**
-         * Bucket key.
+         * Epoch-relative key identifying the time interval represented by this state.
          */
         private final long key;
 
         /**
-         * Sum value.
+         * Concurrent sum of sample values added to this bucket.
          */
         private final LongAdder sum;
 
         /**
-         * Sample count.
+         * Concurrent number of samples added to this bucket.
          */
         private final LongAdder count;
 
         /**
          * Creates bucket state for a fixed key.
          *
-         * @param key bucket key
+         * @param key epoch-relative bucket key represented by this state
          */
         private BucketState(final long key) {
             this.key = key;
@@ -319,7 +330,7 @@ public final class RollingWindow {
         /**
          * Adds one sample.
          *
-         * @param value sample value
+         * @param value non-negative sample amount added to the sum
          */
         private void add(final long value) {
             sum.add(value);
@@ -329,8 +340,8 @@ public final class RollingWindow {
         /**
          * Returns the selected aggregate.
          *
-         * @param selectSum true for sum, false for count
-         * @return aggregate value
+         * @param selectSum {@code true} to read the sum; {@code false} to read the sample count
+         * @return current value of the selected concurrent aggregate
          */
         private long value(final boolean selectSum) {
             return selectSum ? sum.sum() : count.sum();

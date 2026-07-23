@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
-import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Filter;
@@ -41,6 +40,12 @@ record HttpSnapshot(Context context, HttpRequest request, EventObserver observer
 
     /**
      * Creates a validated snapshot.
+     *
+     * @param context  runtime services used by the exchange
+     * @param request  non-null immutable HTTP request
+     * @param observer non-null lifecycle observer to wrap with exception isolation
+     * @param filter   optional message filter, preserved without validation
+     * @param guard    optional request guard, preserved without validation
      */
     HttpSnapshot {
         context = require(context, "Context");
@@ -51,13 +56,16 @@ record HttpSnapshot(Context context, HttpRequest request, EventObserver observer
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field label included in the validation error
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
 }

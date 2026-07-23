@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 final class AgentRules {
 
     /**
-     * Hidden constructor.
+     * Prevents instantiation of this static classifier helper.
      */
     private AgentRules() {
         // No initialization required.
@@ -44,8 +44,8 @@ final class AgentRules {
     /**
      * Compiles a case-insensitive rule.
      *
-     * @param rule rule
-     * @return pattern or null
+     * @param rule regular expression text, or {@code null} to disable the rule
+     * @return cached case-insensitive pattern, or {@code null} for a disabled rule
      */
     static Pattern compile(final String rule) {
         return rule == null ? null : org.miaixz.bus.core.center.regex.Pattern.get(rule, Pattern.CASE_INSENSITIVE);
@@ -54,9 +54,9 @@ final class AgentRules {
     /**
      * Returns whether a pattern is found in text.
      *
-     * @param pattern pattern
-     * @param text    text
-     * @return true when matched
+     * @param pattern compiled search pattern, or {@code null}
+     * @param text    User-Agent text to search, or {@code null}
+     * @return {@code true} when both inputs exist and any substring matches
      */
     static boolean contains(final Pattern pattern, final String text) {
         return pattern != null && text != null && pattern.matcher(text).find();
@@ -65,9 +65,10 @@ final class AgentRules {
     /**
      * Returns group 1 from the first match.
      *
-     * @param pattern pattern
-     * @param text    text
-     * @return group 1 or null
+     * @param pattern compiled search pattern containing a first capture group, or {@code null}
+     * @param text    User-Agent text to search, or {@code null}
+     * @return first capture from the first match, or {@code null} when inputs are absent or no match exists
+     * @throws IndexOutOfBoundsException if a matching pattern defines no first capture group
      */
     static String group1(final Pattern pattern, final String text) {
         if (pattern == null || text == null) {
@@ -80,8 +81,9 @@ final class AgentRules {
     /**
      * Validates a component name.
      *
-     * @param name name
-     * @return name
+     * @param name classifier component name to validate
+     * @return unchanged non-blank component name
+     * @throws ValidateException if {@code name} is blank
      */
     static String name(final String name) {
         Assert.isFalse(StringKit.isBlank(name), () -> new ValidateException("Agent component name must be non-blank"));

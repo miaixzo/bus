@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Builder;
@@ -58,7 +58,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Opens and reads SSE streams from an immutable snapshot snapshot.
+ * Opens and reads SSE streams from an immutable SSE exchange snapshot.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -66,7 +66,7 @@ import org.miaixz.bus.logger.Logger;
 final class SseRunner {
 
     /**
-     * Execution snapshot.
+     * Immutable exchange configuration and borrowed runtime services.
      */
     private final SseSnapshot snapshot;
 
@@ -91,8 +91,8 @@ final class SseRunner {
     /**
      * Opens the SSE stream within a cancellation scope.
      *
-     * @param cancellation cancellation scope
-     * @return opened session
+     * @param cancellation scope shared by HTTP opening, stream reading, and reconnect attempts
+     * @return opened session whose events are delivered by background dispatcher activities
      */
     SseSession open(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
@@ -174,7 +174,7 @@ final class SseRunner {
     /**
      * Builds a stable reader dispatch key.
      *
-     * @return dispatch key
+     * @return stable host-and-port key used to serialize reader and reconnect activities
      */
     String dispatchKey() {
         return Builder.SSE_RUNNER_DISPATCH_PREFIX + snapshot.address().host() + Symbol.C_COLON
@@ -184,9 +184,9 @@ final class SseRunner {
     /**
      * Creates one HTTP stream Call without starting network I/O.
      *
-     * @param eventId      current event id
+     * @param eventId      last event identifier sent during reconnect, or {@code null}
      * @param cancellation shared cancellation scope
-     * @return HTTP stream Call
+     * @return deferred call that opens one HTTP response stream
      */
     private Call<HttpRunner.Stream> responseCall(final String eventId, final Cancellation cancellation) {
         return MonoCall.create(
@@ -202,9 +202,9 @@ final class SseRunner {
     /**
      * Opens one HTTP response through the fabric HTTP carrier.
      *
-     * @param eventId      current event id
+     * @param eventId      last event identifier included in the request, or {@code null}
      * @param cancellation shared cancellation scope
-     * @return response
+     * @return accepted streaming HTTP response after request/response filtering and guard checks
      */
     private HttpRunner.Stream response(final String eventId, final Cancellation cancellation) {
         Logger.debug(
@@ -215,8 +215,8 @@ final class SseRunner {
                 snapshot.address().host(),
                 snapshot.address().port(),
                 eventId != null);
-        final Headers.Builder builder = Headers.builder().add(HTTP.ACCEPT, MediaType.SERVER_SENT_EVENTS)
-                .add(HTTP.CACHE_CONTROL, HTTP.CACHE_DIRECTIVE_NO_CACHE);
+        final Headers.Builder builder = Headers.builder().add(Http.Header.ACCEPT, MediaType.SERVER_SENT_EVENTS)
+                .add(Http.Header.CACHE_CONTROL, Http.Cache.NO_CACHE);
         if (eventId != null) {
             builder.add(Builder.SSE_RUNNER_LAST_EVENT_ID, eventId);
         }
@@ -228,7 +228,7 @@ final class SseRunner {
         final Message opening = filter(
                 Message.of(Protocol.HTTP, snapshot.address(), builder.build(), Payload.empty(), Builder.SSE_TAG_OPEN));
         checkGuard(opening);
-        final HttpRequest request = HttpRequest.builder().method(HTTP.Method.GET)
+        final HttpRequest request = HttpRequest.builder().method(Http.Method.GET)
                 .url(UnoUrl.parse(snapshot.uri().toString())).headers(opening.headers()).timeout(snapshot.timeout())
                 .build();
         final HttpRunner.Stream response = Mediator.convert(
@@ -258,14 +258,15 @@ final class SseRunner {
     /**
      * Validates response status and media type.
      *
-     * @param response response
+     * @param response streaming HTTP response to validate
+     * @throws ProtocolException if the status is not successful or the content type is not {@code text/event-stream}
      */
     private static void validateResponse(final HttpRunner.Stream response) {
         final int status = response.status();
-        if (status < HTTP.HTTP_OK || status >= HTTP.HTTP_MULT_CHOICE) {
+        if (status < Http.Status.OK || status >= Http.Status.MULTIPLE_CHOICES) {
             throw new ProtocolException("SSE response status must be 2xx");
         }
-        final String value = response.headers().get(HTTP.CONTENT_TYPE);
+        final String value = response.headers().get(Http.Header.CONTENT_TYPE);
         final MediaType mediaType;
         try {
             mediaType = MediaType.parse(value);
@@ -280,14 +281,14 @@ final class SseRunner {
     /**
      * Reads and dispatches events in the background.
      *
-     * @param reader      reader
-     * @param retry       retry policy
-     * @param stream      stream future
-     * @param holder      session holder
-     * @param eventId     current event id
-     * @param handle      current dispatch handle
-     * @param operationId operation identifier
-     * @param attempt     reconnect attempt
+     * @param reader      active reader that consumes the current HTTP stream
+     * @param retry       mutable retry policy updated by stream fields
+     * @param stream      terminal future for the logical SSE stream
+     * @param holder      reference containing the active session
+     * @param eventId     reference containing the most recently dispatched event identifier
+     * @param handle      reference containing the active read or reconnect task
+     * @param operationId identifier correlating observation events for this session
+     * @param attempt     zero-based consecutive reconnect-failure count
      */
     private void read(
             final SseReader reader,
@@ -309,9 +310,9 @@ final class SseRunner {
                 /**
                  * Dispatches one parsed SSE event.
                  *
-                 * @param id    event id
-                 * @param event event type
-                 * @param data  event data
+                 * @param id    parsed event identifier, or {@code null}
+                 * @param event parsed event type
+                 * @param data  assembled event data text
                  */
                 @Override
                 public void event(final String id, final String event, final String data) {
@@ -322,7 +323,7 @@ final class SseRunner {
                 /**
                  * Updates the reconnect retry delay announced by the stream.
                  *
-                 * @param retryDelay retry delay
+                 * @param retryDelay server-provided base delay for later reconnects
                  */
                 @Override
                 public void retry(final java.time.Duration retryDelay) {
@@ -373,8 +374,9 @@ final class SseRunner {
     /**
      * Dispatches one parsed event with synchronous backpressure and isolated handler failures.
      *
-     * @param event   event
-     * @param eventId current event id
+     * @param event       parsed event to filter, observe, and deliver
+     * @param eventId     reference updated when the event defines an identifier
+     * @param operationId stream operation identifier used for observation correlation
      */
     private void dispatch(final SseEvent event, final AtomicReference<String> eventId, final String operationId) {
         if (event.id() != null) {
@@ -417,13 +419,13 @@ final class SseRunner {
     /**
      * Schedules a reconnect attempt without occupying a dispatcher worker.
      *
-     * @param retry       retry policy
-     * @param stream      stream future
-     * @param holder      session holder
-     * @param eventId     current event id
-     * @param handle      current dispatch handle
-     * @param operationId operation identifier
-     * @param attempt     attempt index
+     * @param retry       mutable retry policy that computes the delay
+     * @param stream      terminal future for the logical SSE stream
+     * @param holder      reference containing the active session
+     * @param eventId     reference containing the most recently dispatched event identifier
+     * @param handle      reference updated with the scheduled reconnect task
+     * @param operationId identifier correlating observation events for this session
+     * @param attempt     zero-based reconnect attempt used for backoff
      */
     private void scheduleReconnect(
             final SseRetry retry,
@@ -464,13 +466,13 @@ final class SseRunner {
     /**
      * Opens the replacement stream and enqueues the next reader task.
      *
-     * @param retry       retry policy
-     * @param stream      stream future
-     * @param holder      session holder
-     * @param eventId     current event id
-     * @param handle      current dispatch handle
-     * @param operationId operation identifier
-     * @param attempt     attempt index
+     * @param retry       mutable retry policy reused by the replacement stream
+     * @param stream      terminal future for the logical SSE stream
+     * @param holder      reference containing the active session
+     * @param eventId     reference containing the identifier sent as {@code Last-Event-ID}
+     * @param handle      reference updated with the replacement reader task
+     * @param operationId identifier correlating observation events for this session
+     * @param attempt     zero-based reconnect attempt being executed
      */
     private void reconnect(
             final SseRetry retry,
@@ -523,15 +525,15 @@ final class SseRunner {
     /**
      * Enqueues a reader task to the shared dispatcher.
      *
-     * @param reader      reader
-     * @param retry       retry policy
-     * @param stream      stream future
-     * @param holder      session holder
-     * @param eventId     current event id
-     * @param handle      current dispatch handle
-     * @param operationId operation identifier
-     * @param attempt     reconnect attempt
-     * @return dispatch handle
+     * @param reader      active reader to run on a dispatcher worker
+     * @param retry       mutable retry policy updated by the reader
+     * @param stream      terminal future for the logical SSE stream
+     * @param holder      reference containing the active session and serving as dispatcher owner
+     * @param eventId     reference containing the most recently dispatched event identifier
+     * @param handle      reference containing the active read or reconnect task
+     * @param operationId identifier correlating observation events for this session
+     * @param attempt     zero-based consecutive reconnect-failure count
+     * @return handle for cancelling the submitted background reader activity
      */
     private DispatchHandle submitRead(
             final SseReader reader,
@@ -553,9 +555,9 @@ final class SseRunner {
     /**
      * Opens and installs a replacement reader.
      *
-     * @param holder  session holder
-     * @param eventId current event id
-     * @return reader or null when session is closed
+     * @param holder  reference containing the active session
+     * @param eventId reference containing the identifier sent as {@code Last-Event-ID}
+     * @return installed replacement reader, or {@code null} when the session closed before ownership transfer
      */
     private SseReader replaceReader(final AtomicReference<SseSession> holder, final AtomicReference<String> eventId) {
         final SseSession session = holder.get();
@@ -592,7 +594,7 @@ final class SseRunner {
     /**
      * Closes a reader before reconnecting.
      *
-     * @param reader reader
+     * @param reader reader to close, or {@code null} when creation failed before a reader was assigned
      */
     private static void closeReader(final SseReader reader) {
         try {
@@ -604,6 +606,8 @@ final class SseRunner {
 
     /**
      * Checks the optional guard.
+     *
+     * @param message filtered SSE message to validate
      */
     private void checkGuard(final Message message) {
         if (snapshot.guard() == null) {
@@ -629,8 +633,8 @@ final class SseRunner {
     /**
      * Applies configured stream filters.
      *
-     * @param message message
-     * @return filtered message
+     * @param message SSE lifecycle message to pass through context and exchange filters
+     * @return message produced by the complete filter chain
      */
     private Message filter(final Message message) {
         return FilterChain.apply(message, snapshot.context().filter(), snapshot.filter());
@@ -639,9 +643,9 @@ final class SseRunner {
     /**
      * Emits an observation event.
      *
-     * @param marker      marker
-     * @param cause       failure cause
-     * @param payload     event payload
+     * @param marker      observation marker to publish
+     * @param cause       failure attached to the event, or {@code null}
+     * @param payload     payload used to derive a byte-count tag, or {@code null}
      * @param operationId operation identifier shared by this SSE session
      */
     private void emit(
@@ -665,7 +669,7 @@ final class SseRunner {
     /**
      * Closes an unclaimed response.
      *
-     * @param response response
+     * @param response unclaimed streaming response to close, or {@code null}
      */
     private static void closeResponse(final HttpRunner.Stream response) {
         if (response != null) {
@@ -676,10 +680,11 @@ final class SseRunner {
     /**
      * Validates required values.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -52,8 +52,10 @@ public final class HttpLine {
     /**
      * Formats a request line without the trailing CRLF.
      *
-     * @param request request
-     * @return request line
+     * @param request request supplying the method and precomputed request target
+     * @return HTTP/1.1 request line without its CRLF terminator
+     * @throws ValidateException if the request or method is invalid
+     * @throws ProtocolException if the method contains a non-token character
      */
     public static String request(final HttpRequest request) {
         final HttpRequest current = Assert
@@ -65,8 +67,10 @@ public final class HttpLine {
     /**
      * Parses a status line into a status code.
      *
-     * @param line status line
-     * @return status code
+     * @param line complete HTTP status line without CRLF
+     * @return three-digit status code in the inclusive range {@code 100..999}
+     * @throws ValidateException if the line is blank, multiline, or lacks a valid HTTP version prefix
+     * @throws ProtocolException if the status-code field is malformed or out of range
      */
     public static int status(final String line) {
         final String value = singleLine(line, "HTTP status line");
@@ -86,7 +90,7 @@ public final class HttpLine {
             throw new ProtocolException("Invalid HTTP status code");
         }
         final int code = (hundreds - '0') * 100 + (tens - '0') * Normal._10 + units - '0';
-        if (code < HTTP.HTTP_CONTINUE || code >= Normal.KILO) {
+        if (code < Http.Status.CONTINUE || code >= Normal.KILO) {
             throw new ProtocolException("HTTP status code out of range");
         }
         return code;
@@ -97,7 +101,9 @@ public final class HttpLine {
      *
      * @param name  header name
      * @param value header value
-     * @return header line
+     * @return validated {@code name: value} line without its CRLF terminator
+     * @throws ValidateException if the name or value is invalid
+     * @throws ProtocolException if the name contains a non-token character
      */
     public static String header(final String name, final String value) {
         return token(name, "HTTP header name") + Symbol.COLON + Symbol.SPACE + headerValue(value);
@@ -106,9 +112,12 @@ public final class HttpLine {
     /**
      * Writes a request line directly to a target buffer without an intermediate encoded byte array.
      *
-     * @param request request
-     * @param target  target buffer
-     * @return bytes written
+     * @param request request supplying the method and precomputed request target
+     * @param target  destination buffer positioned for writing
+     * @return number of ASCII bytes appended, excluding CRLF
+     * @throws BufferOverflowException if the complete line does not fit
+     * @throws ProtocolException       if line content is not valid ASCII HTTP syntax
+     * @throws ValidateException       if the request, method, or target buffer is invalid
      */
     public static int writeRequest(final HttpRequest request, final ByteBuffer target) {
         final HttpRequest current = Assert
@@ -131,8 +140,11 @@ public final class HttpLine {
      *
      * @param name   header name
      * @param value  header value
-     * @param target target buffer
-     * @return bytes written
+     * @param target destination buffer positioned for writing
+     * @return number of ASCII bytes appended, excluding CRLF
+     * @throws BufferOverflowException if the complete line does not fit
+     * @throws ProtocolException       if the name contains a non-token or non-ASCII character
+     * @throws ValidateException       if the name, value, or target buffer is invalid
      */
     public static int writeHeader(final String name, final String value, final ByteBuffer target) {
         final String checkedName = token(name, "HTTP header name");
@@ -149,8 +161,10 @@ public final class HttpLine {
     /**
      * Creates an origin-form request target.
      *
-     * @param uri URI
-     * @return target
+     * @param uri request URI whose raw path and query are used
+     * @return origin-form target containing a path and optional query
+     * @throws ValidateException if {@code uri} is {@code null}
+     * @throws ProtocolException if the raw path or query contains a line break
      */
     private static String target(final URI uri) {
         final URI current = Assert.notNull(uri, () -> new ValidateException("HTTP request URI must not be null"));
@@ -166,9 +180,11 @@ public final class HttpLine {
     /**
      * Validates a token value.
      *
-     * @param value value
-     * @param name  name
-     * @return token
+     * @param value candidate HTTP token
+     * @param name  logical token name included in validation errors
+     * @return validated non-blank, single-line RFC token
+     * @throws ValidateException if the token is blank or contains a line break
+     * @throws ProtocolException if any character is not permitted in an HTTP token
      */
     private static String token(final String value, final String name) {
         final String token = singleLine(value, name);
@@ -184,8 +200,9 @@ public final class HttpLine {
     /**
      * Validates a header value.
      *
-     * @param value value
-     * @return value
+     * @param value header field content to validate
+     * @return unchanged non-null, single-line header content
+     * @throws ValidateException if the content is {@code null} or contains a line break
      */
     private static String headerValue(final String value) {
         Assert.isFalse(
@@ -197,9 +214,10 @@ public final class HttpLine {
     /**
      * Validates a non-blank single-line value.
      *
-     * @param value value
-     * @param name  name
-     * @return value
+     * @param value text to validate
+     * @param name  logical value name included in the validation error
+     * @return unchanged non-blank, single-line text
+     * @throws ValidateException if the text is blank or contains a line break
      */
     private static String singleLine(final String value, final String name) {
         Assert.isFalse(
@@ -212,7 +230,7 @@ public final class HttpLine {
      * Returns whether a character is an RFC token character.
      *
      * @param c character
-     * @return true when valid
+     * @return {@code true} when the character belongs to the RFC HTTP token alphabet
      */
     private static boolean tchar(final char c) {
         return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c == Symbol.C_NOT
@@ -224,6 +242,9 @@ public final class HttpLine {
 
     /**
      * Writes validated ASCII characters directly to the destination.
+     *
+     * @param value  validated line text to encode
+     * @param target destination byte buffer
      */
     private static void writeAscii(final String value, final ByteBuffer target) {
         for (int i = Normal._0; i < value.length(); i++) {
@@ -236,7 +257,12 @@ public final class HttpLine {
     }
 
     /**
-     * Ensures an atomic direct write can fit.
+     * Ensures the complete planned direct write fits before any bytes are appended.
+     *
+     * @param target   destination byte buffer
+     * @param required bytes required by the atomic write
+     * @throws ValidateException       if {@code target} is {@code null}
+     * @throws BufferOverflowException if fewer than {@code required} bytes remain
      */
     private static void requireRemaining(final ByteBuffer target, final int required) {
         Assert.notNull(target, () -> new ValidateException("HTTP line target must not be null"));
@@ -269,6 +295,7 @@ public final class HttpLine {
          * Creates a parser with a strict maximum line size.
          *
          * @param maxLineBytes maximum bytes excluding CRLF
+         * @throws ValidateException if {@code maxLineBytes} is not positive
          */
         public Parser(final int maxLineBytes) {
             if (maxLineBytes <= Normal._0) {
@@ -280,8 +307,10 @@ public final class HttpLine {
         /**
          * Consumes available bytes and returns one completed line, or {@code null} when more bytes are required.
          *
-         * @param source source buffer
-         * @return completed ASCII line or null
+         * @param source source buffer consumed from its current position
+         * @return completed ASCII line without CRLF, or {@code null} when the terminator is incomplete
+         * @throws ValidateException if {@code source} is {@code null}
+         * @throws ProtocolException if framing, ASCII content, or the configured line limit is invalid
          */
         public String accept(final ByteBuffer source) {
             Assert.notNull(source, () -> new ValidateException("HTTP line source must not be null"));

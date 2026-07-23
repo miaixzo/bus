@@ -37,11 +37,11 @@ import org.miaixz.bus.fabric.Builder;
 /**
  * Parsed PROXY protocol v1 header with cached source address metadata.
  *
- * @param source        source address text
- * @param target        target address text
- * @param sourcePort    source port
- * @param targetPort    target port
- * @param sourceAddress source address mapping
+ * @param source        normalized source IP text, or empty for {@code UNKNOWN}
+ * @param target        normalized target IP text, or empty for {@code UNKNOWN}
+ * @param sourcePort    source TCP port, or {@code 0} for {@code UNKNOWN}
+ * @param targetPort    target TCP port, or {@code 0} for {@code UNKNOWN}
+ * @param sourceAddress cached TCP source endpoint, or {@code null} for {@code UNKNOWN}
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -49,6 +49,14 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
 
     /**
      * Creates a validated proxy header.
+     *
+     * @param source        declared source address text
+     * @param target        declared target address text
+     * @param sourcePort    declared source port
+     * @param targetPort    declared target port
+     * @param sourceAddress parsed source endpoint, or {@code null} for UNKNOWN
+     * @throws ValidateException if the UNKNOWN sentinel or parsed endpoint fields are inconsistent
+     * @throws ProtocolException if a declared IP address is malformed
      */
     public ProxyHeader {
         if (unknown(source, target, sourcePort, targetPort)) {
@@ -75,7 +83,9 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
      * Parses a PROXY protocol v1 line.
      *
      * @param line header line without CRLF
-     * @return proxy header
+     * @return validated header containing normalized IP text and a cached source endpoint
+     * @throws ValidateException if the line or TCP field count and ports are invalid
+     * @throws ProtocolException if the command, family, or IP address is invalid
      */
     public static ProxyHeader parse(final String line) {
         final String value = validateLine(line);
@@ -109,7 +119,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Returns the source address.
      *
-     * @return source address
+     * @return normalized source IP text, or an empty string for {@code UNKNOWN}
      */
     @Override
     public String source() {
@@ -119,7 +129,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Returns the target address.
      *
-     * @return target address
+     * @return normalized target IP text, or an empty string for {@code UNKNOWN}
      */
     @Override
     public String target() {
@@ -129,7 +139,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Returns the source port.
      *
-     * @return source port
+     * @return source TCP port, or {@code 0} for {@code UNKNOWN}
      */
     @Override
     public int sourcePort() {
@@ -139,7 +149,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Returns the target port.
      *
-     * @return target port
+     * @return target TCP port, or {@code 0} for {@code UNKNOWN}
      */
     @Override
     public int targetPort() {
@@ -149,7 +159,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Returns the cached source address.
      *
-     * @return source address, or null for UNKNOWN headers
+     * @return cached TCP source endpoint, or {@code null} for {@code UNKNOWN}
      */
     @Override
     public Address sourceAddress() {
@@ -159,8 +169,9 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Validates a header line.
      *
-     * @param line header line
-     * @return trimmed line
+     * @param line complete header line without a terminator
+     * @return trimmed, non-blank, single-line header text
+     * @throws ValidateException if the line is blank or contains CR or LF
      */
     private static String validateLine(final String line) {
         final String checked = Assert
@@ -174,11 +185,11 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Returns whether the values represent UNKNOWN.
      *
-     * @param source     source
-     * @param target     target
-     * @param sourcePort source port
-     * @param targetPort target port
-     * @return true when UNKNOWN
+     * @param source     declared source text
+     * @param target     declared target text
+     * @param sourcePort declared source port
+     * @param targetPort declared target port
+     * @return {@code true} only for the canonical empty-address, zero-port sentinel
      */
     private static boolean unknown(
             final String source,
@@ -192,9 +203,10 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Normalizes an IP address with any supported family.
      *
-     * @param value value
-     * @param name  field name
-     * @return normalized IP
+     * @param value IPv4 or IPv6 text to normalize
+     * @param name  logical address name included in IPv6 validation errors
+     * @return canonical IPv4 or IPv6 text
+     * @throws ProtocolException if neither supported address family accepts the text
      */
     private static String normalizeAnyIp(final String value, final String name) {
         try {
@@ -207,10 +219,10 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Normalizes an IP address for a PROXY protocol family.
      *
-     * @param value    value
-     * @param protocol protocol token
-     * @param name     field name
-     * @return normalized IP
+     * @param value    IP text to normalize
+     * @param protocol validated {@code TCP4} or {@code TCP6} family token
+     * @param name     logical address name included in validation errors
+     * @return canonical IP text in the declared family
      */
     private static String normalizeIp(final String value, final String protocol, final String name) {
         return Builder.PROXY_HEADER_PROTOCOL_TCP4.equals(protocol) ? normalizeIpv4(value) : normalizeIpv6(value, name);
@@ -219,8 +231,9 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Normalizes an IPv4 address.
      *
-     * @param value value
-     * @return normalized IPv4
+     * @param value dotted-decimal IPv4 text to normalize
+     * @return canonical dotted-decimal IPv4 text
+     * @throws ProtocolException if the address is malformed
      */
     private static String normalizeIpv4(final String value) {
         final String checked = validateToken(value, "IPv4 address");
@@ -234,9 +247,10 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Normalizes an IPv6 address.
      *
-     * @param value value
-     * @param name  field name
-     * @return normalized IPv6
+     * @param value IPv6 text to normalize
+     * @param name  logical address name included in validation errors
+     * @return canonical IPv6 text without a zone identifier
+     * @throws ProtocolException if the address is malformed or contains a zone identifier
      */
     private static String normalizeIpv6(final String value, final String name) {
         final String checked = validateToken(value, name);
@@ -257,9 +271,10 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Parses and validates a port.
      *
-     * @param value value
-     * @param name  field name
-     * @return port
+     * @param value decimal port text to parse
+     * @param name  source or target label included in validation errors
+     * @return TCP port in the inclusive range {@code 1..65535}
+     * @throws ValidateException if the text is not numeric or falls outside the valid range
      */
     private static int parsePort(final String value, final String name) {
         final String checked = validateToken(value, name + " port");
@@ -273,8 +288,9 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Validates a port range.
      *
-     * @param port port
-     * @return port
+     * @param port numeric port to validate
+     * @return unchanged port in the inclusive range {@code 1..65535}
+     * @throws ValidateException if the port falls outside the valid range
      */
     private static int validatePort(final int port) {
         return Assert.checkBetween(
@@ -287,9 +303,10 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
     /**
      * Validates a single-line token.
      *
-     * @param value value
-     * @param name  field name
-     * @return token
+     * @param value protocol token to validate
+     * @param name  logical token name included in the validation error
+     * @return unchanged non-blank, single-line token
+     * @throws ValidateException if the token is blank or contains a line break
      */
     private static String validateToken(final String value, final String name) {
         final String checked = Assert

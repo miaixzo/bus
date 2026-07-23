@@ -78,7 +78,7 @@ public final class SseX {
     /**
      * Creates an exchange.
      *
-     * @param builder builder
+     * @param builder configuration source used to create the immutable exchange snapshot
      */
     private SseX(final Builder builder) {
         final Context current = require(builder.context, "Context");
@@ -95,7 +95,7 @@ public final class SseX {
      * Creates an SSE builder.
      *
      * @param context shared context
-     * @return builder
+     * @return new SSE exchange builder bound to the context
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
@@ -104,7 +104,7 @@ public final class SseX {
     /**
      * Returns the stream protocol.
      *
-     * @return protocol
+     * @return HTTP or HTTPS protocol derived from the stream address
      */
     public Protocol protocol() {
         return snapshot.address().protocol();
@@ -113,7 +113,7 @@ public final class SseX {
     /**
      * Returns the stream address.
      *
-     * @return address
+     * @return immutable SSE endpoint address
      */
     public Address address() {
         return snapshot.address();
@@ -122,7 +122,7 @@ public final class SseX {
     /**
      * Returns SSE execution path.
      *
-     * @return itinerary
+     * @return execution itinerary containing the HTTP protocol and stream address
      */
     public Itinerary itinerary() {
         return Itinerary.of(protocol(), address());
@@ -131,7 +131,7 @@ public final class SseX {
     /**
      * Returns request headers.
      *
-     * @return headers
+     * @return immutable SSE request headers
      */
     public Headers headers() {
         return snapshot.headers();
@@ -140,7 +140,7 @@ public final class SseX {
     /**
      * Returns timeout policy.
      *
-     * @return timeout
+     * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
         return snapshot.timeout();
@@ -149,8 +149,8 @@ public final class SseX {
     /**
      * Creates a protocol-neutral message from this SSE exchange and payload.
      *
-     * @param payload payload
-     * @return message
+     * @param payload payload to attach to the protocol-neutral message
+     * @return message representing this exchange and the supplied payload
      */
     public Message message(final Payload payload) {
         return Message.of(protocol(), address(), headers(), payload, null);
@@ -219,7 +219,7 @@ public final class SseX {
     /**
      * Enqueues the SSE stream asynchronously.
      *
-     * @return call
+     * @return enqueued call for this SSE exchange
      */
     public Call<SseSession> enqueue() {
         return call().enqueue();
@@ -228,10 +228,10 @@ public final class SseX {
     /**
      * Validates required values.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -240,8 +240,8 @@ public final class SseX {
     /**
      * Parses a target URI.
      *
-     * @param value target value
-     * @return URI
+     * @param value raw SSE endpoint URL
+     * @return validated HTTP or HTTPS target URI
      */
     private static URI parseTarget(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -263,9 +263,9 @@ public final class SseX {
     /**
      * Validates a duration.
      *
-     * @param duration duration
+     * @param duration candidate timeout or retry duration
      * @param name     field name
-     * @return duration
+     * @return validated non-negative duration
      */
     private static Duration validateDuration(final Duration duration, final String name) {
         final Duration checked = Assert
@@ -277,8 +277,8 @@ public final class SseX {
     /**
      * Validates a Last-Event-ID value.
      *
-     * @param value value
-     * @return value
+     * @param value candidate Last-Event-ID header value
+     * @return validated single-line Last-Event-ID value
      */
     private static String validateLastEventId(final String value) {
         if (StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -402,7 +402,7 @@ public final class SseX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw SSE endpoint URL
          * @return this builder
          */
         public Builder to(final String url) {
@@ -413,7 +413,7 @@ public final class SseX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw SSE endpoint URL forwarded to {@link #to(String)}
          * @return this builder
          */
         public Builder url(final String url) {
@@ -435,7 +435,7 @@ public final class SseX {
         /**
          * Merges headers.
          *
-         * @param headers headers
+         * @param headers SSE request headers whose values are appended
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -451,7 +451,7 @@ public final class SseX {
         /**
          * Merges single-value headers.
          *
-         * @param headers headers
+         * @param headers single-value SSE request headers to append
          * @return this builder
          */
         public Builder headers(final Map<String, String> headers) {
@@ -462,7 +462,7 @@ public final class SseX {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout non-negative duration assigned to every timeout phase
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
@@ -537,7 +537,7 @@ public final class SseX {
         /**
          * Handles HTTP response metadata before the SSE body is consumed.
          *
-         * @param handler response handler
+         * @param handler status-and-header consumer, or {@code null} for no action
          * @return this builder
          */
         public Builder onResponse(final BiConsumer<Integer, Headers> handler) {
@@ -549,7 +549,7 @@ public final class SseX {
         /**
          * Sets event handler.
          *
-         * @param handler event handler
+         * @param handler SSE event consumer, or {@code null} for no action
          * @return this builder
          */
         public Builder onEvent(final Consumer<SseEvent> handler) {
@@ -560,7 +560,7 @@ public final class SseX {
         /**
          * Sets open handler.
          *
-         * @param handler open handler
+         * @param handler consumer invoked after a session opens, or {@code null} for no action
          * @return this builder
          */
         public Builder onOpen(final Consumer<SseSession> handler) {
@@ -572,7 +572,7 @@ public final class SseX {
         /**
          * Sets error handler.
          *
-         * @param handler error handler
+         * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
         public Builder onError(final Consumer<Throwable> handler) {
@@ -584,7 +584,7 @@ public final class SseX {
         /**
          * Sets guard.
          *
-         * @param guard guard
+         * @param guard rule applied to SSE messages
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -595,7 +595,7 @@ public final class SseX {
         /**
          * Sets message filter.
          *
-         * @param filter filter
+         * @param filter applied to SSE messages
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -606,7 +606,7 @@ public final class SseX {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer event observer, or {@code null} to disable observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -617,7 +617,7 @@ public final class SseX {
         /**
          * Sets callback.
          *
-         * @param callback callback
+         * @param callback call-lifecycle callback for asynchronous opening
          * @return this builder
          */
         public Builder callback(final Callback<SseSession> callback) {
@@ -639,7 +639,7 @@ public final class SseX {
         /**
          * Builds an exchange snapshot.
          *
-         * @return exchange
+         * @return immutable SSE exchange built from the current configuration
          */
         public SseX build() {
             Assert.notNull(uri, () -> new ValidateException("SSE target must be set"));
@@ -649,7 +649,7 @@ public final class SseX {
         /**
          * Opens a built exchange.
          *
-         * @return session
+         * @return opened SSE session with background event delivery
          */
         public SseSession open() {
             return build().open();
@@ -658,7 +658,7 @@ public final class SseX {
         /**
          * Connects a built exchange.
          *
-         * @return session
+         * @return connected SSE session
          */
         public SseSession connect() {
             return open();
@@ -667,7 +667,7 @@ public final class SseX {
         /**
          * Executes a built exchange.
          *
-         * @return session
+         * @return SSE session produced by synchronous execution
          */
         public SseSession execute() {
             return build().execute();
@@ -676,7 +676,7 @@ public final class SseX {
         /**
          * Creates a call for a built exchange.
          *
-         * @return SSE call
+         * @return new single-use call for the built exchange
          */
         public Call<SseSession> call() {
             return build().call();
@@ -685,7 +685,7 @@ public final class SseX {
         /**
          * Enqueues a built exchange asynchronously.
          *
-         * @return call
+         * @return enqueued call for the built exchange
          */
         public Call<SseSession> enqueue() {
             return build().enqueue();

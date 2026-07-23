@@ -70,47 +70,47 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 public final class AioNetwork implements AutoCloseable {
 
     /**
-     * Worker group.
+     * Worker group owned and shut down by this network.
      */
     private final AioGroup group;
 
     /**
-     * Provider.
+     * Provider used to open native client and server channels.
      */
     private final AioProvider provider;
 
     /**
-     * Managed resources.
+     * Open servers and channels awaiting reverse-order cleanup.
      */
     private final ConcurrentLinkedDeque<AutoCloseable> managed;
 
     /**
-     * DNS resolver.
+     * Resolver used to obtain candidate addresses for client connections.
      */
     private final DnsResolver resolver;
 
     /**
-     * Close flag.
+     * Atomic guard that makes network shutdown idempotent.
      */
     private final AtomicBoolean closed;
 
     /**
-     * Lifecycle listener.
+     * Failure-safe listener applied to every network operation.
      */
     private final Listener<Object> listener;
 
     /**
-     * Socket tuning options.
+     * Socket options applied to newly opened channels and servers.
      */
     private final SocketOptions socketOptions;
 
     /**
      * Creates a network.
      *
-     * @param group    group
-     * @param provider provider
-     * @param resolver DNS resolver
-     * @param listener lifecycle listener
+     * @param group    worker group owned by the network
+     * @param provider provider used to open AIO resources
+     * @param resolver resolver used for client host names
+     * @param listener optional network-wide lifecycle listener
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
             final Listener<Object> listener) {
@@ -120,11 +120,11 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a network.
      *
-     * @param group         group
-     * @param provider      provider
-     * @param resolver      DNS resolver
-     * @param listener      lifecycle listener
-     * @param socketOptions socket options
+     * @param group         worker group owned by the network
+     * @param provider      provider used to open AIO resources
+     * @param resolver      resolver used for client host names
+     * @param listener      optional network-wide lifecycle listener
+     * @param socketOptions options applied to newly opened sockets, or {@code null} for defaults
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
             final Listener<Object> listener, final SocketOptions socketOptions) {
@@ -140,7 +140,8 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network.
      *
-     * @return AIO network
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create() {
         return create(SocketOptions.defaults());
@@ -149,8 +150,9 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network.
      *
-     * @param socketOptions socket options
-     * @return AIO network
+     * @param socketOptions options controlling worker count and socket behavior, or {@code null} for defaults
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(final SocketOptions socketOptions) {
         AioGroup group = null;
@@ -169,8 +171,9 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network with a lifecycle listener.
      *
-     * @param listener lifecycle listener
-     * @return AIO network
+     * @param listener optional listener applied to all connections and servers
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(final Listener<Object> listener) {
         return create(listener, SocketOptions.defaults());
@@ -179,9 +182,10 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network with a lifecycle listener.
      *
-     * @param listener      lifecycle listener
-     * @param socketOptions socket options
-     * @return AIO network
+     * @param listener      optional listener applied to all connections and servers
+     * @param socketOptions options controlling worker count and socket behavior, or {@code null} for defaults
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(final Listener<Object> listener, final SocketOptions socketOptions) {
         AioGroup group = null;
@@ -200,9 +204,10 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network with lifecycle listener and DNS resolver.
      *
-     * @param listener lifecycle listener
-     * @param resolver DNS resolver
-     * @return AIO network
+     * @param listener optional listener applied to all connections and servers
+     * @param resolver non-null resolver used for client host names
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(final Listener<Object> listener, final DnsResolver resolver) {
         return create(listener, resolver, SocketOptions.defaults());
@@ -211,10 +216,11 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network with lifecycle listener and DNS resolver.
      *
-     * @param listener      lifecycle listener
-     * @param resolver      DNS resolver
-     * @param socketOptions socket options
-     * @return AIO network
+     * @param listener      optional listener applied to all connections and servers
+     * @param resolver      non-null resolver used for client host names
+     * @param socketOptions options controlling worker count and socket behavior, or {@code null} for defaults
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(
             final Listener<Object> listener,
@@ -238,10 +244,11 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network with lifecycle listener, DNS resolver, and shared dispatcher.
      *
-     * @param listener   lifecycle listener
-     * @param resolver   DNS resolver
-     * @param dispatcher shared dispatcher
-     * @return AIO network
+     * @param listener   optional listener applied to all connections and servers
+     * @param resolver   non-null resolver used for client host names
+     * @param dispatcher non-null dispatcher shared by the new worker group
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(
             final Listener<Object> listener,
@@ -253,11 +260,12 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a default AIO network with lifecycle listener, DNS resolver, shared dispatcher, and socket options.
      *
-     * @param listener      lifecycle listener
-     * @param resolver      DNS resolver
-     * @param dispatcher    shared dispatcher
-     * @param socketOptions socket options
-     * @return AIO network
+     * @param listener      optional listener applied to all connections and servers
+     * @param resolver      non-null resolver used for client host names
+     * @param dispatcher    non-null dispatcher shared by the new worker group
+     * @param socketOptions options controlling worker count and socket behavior, or {@code null} for defaults
+     * @return a network backed by a newly created worker group and system provider
+     * @throws InternalException if the worker group or network cannot be created
      */
     public static AioNetwork create(
             final Listener<Object> listener,
@@ -284,7 +292,7 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Returns the worker group.
      *
-     * @return group
+     * @return worker group owned by this network
      */
     public AioGroup group() {
         return group;
@@ -293,7 +301,7 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Returns socket options.
      *
-     * @return socket options
+     * @return socket options used for newly opened resources
      */
     public SocketOptions socketOptions() {
         return socketOptions;
@@ -302,9 +310,10 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Opens a client connection.
      *
-     * @param address address
-     * @param timeout timeout policy
-     * @return connection future
+     * @param address logical remote address to resolve and connect
+     * @param timeout timeout policy applied to each native connection attempt
+     * @return future completed with the first successful connection or the aggregate connection failure
+     * @throws ValidateException if the address or timeout policy is {@code null}
      */
     public CompletableFuture<Connection> connect(final Address address, final Timeout timeout) {
         return connect(address, timeout, null);
@@ -313,10 +322,11 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Opens a client connection with an additional lifecycle listener.
      *
-     * @param address  address
-     * @param timeout  timeout policy
-     * @param listener lifecycle listener
-     * @return connection future
+     * @param address  logical remote address to resolve and connect
+     * @param timeout  timeout policy applied to each native connection attempt
+     * @param listener optional listener composed with the network-wide listener
+     * @return future completed with the first successful connection or the aggregate connection failure
+     * @throws ValidateException if the address or timeout policy is {@code null}
      */
     public CompletableFuture<Connection> connect(
             final Address address,
@@ -341,9 +351,10 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a TCP server.
      *
-     * @param address address
-     * @param handler handler
-     * @return server
+     * @param address local address on which the server listens
+     * @param handler handler that receives accepted sessions and messages
+     * @return opened and managed TCP server
+     * @throws ValidateException if the address or handler is {@code null}
      */
     public TcpServer server(final Address address, final Handler handler) {
         return server(address, handler, null);
@@ -352,10 +363,11 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Creates a TCP server with an additional lifecycle listener.
      *
-     * @param address  address
-     * @param handler  handler
-     * @param listener lifecycle listener
-     * @return server
+     * @param address  local address on which the server listens
+     * @param handler  handler that receives accepted sessions and messages
+     * @param listener optional listener composed with the network-wide listener
+     * @return opened and managed TCP server
+     * @throws ValidateException if the address or handler is {@code null}
      */
     public TcpServer server(final Address address, final Handler handler, final Listener<Object> listener) {
         final Address checkedAddress = Assert
@@ -370,7 +382,9 @@ public final class AioNetwork implements AutoCloseable {
     }
 
     /**
-     * Closes this network.
+     * Closes managed resources in reverse registration order and then shuts down the worker group.
+     *
+     * @throws InternalException if any managed resource or the worker group cannot be closed
      */
     @Override
     public void close() {
@@ -399,9 +413,9 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Composes the network listener with a per-operation listener.
      *
-     * @param first  first listener
-     * @param second second listener
-     * @return safe composed listener
+     * @param first  network-wide listener, or {@code null}
+     * @param second per-operation listener, or {@code null}
+     * @return failure-safe listener that invokes the configured delegates in order
      */
     private static Listener<Object> compose(final Listener<Object> first, final Listener<Object> second) {
         final Listener<Object> left = first == null ? NoopListener.INSTANCE : first;
@@ -414,8 +428,8 @@ public final class AioNetwork implements AutoCloseable {
     /**
      * Protects listener callbacks from escaping.
      *
-     * @param listener listener
-     * @return safe listener
+     * @param listener listener to wrap, or {@code null}
+     * @return no-op listener for {@code null}, otherwise a wrapper that suppresses callback failures
      */
     private static Listener<Object> safe(final Listener<Object> listener) {
         return listener == null ? NoopListener.INSTANCE : new SafeListener(listener);
@@ -663,31 +677,31 @@ public final class AioNetwork implements AutoCloseable {
     private static final class AioConnection implements Connection {
 
         /**
-         * Connection destination.
+         * Immutable logical and transport destination of the connection.
          */
         private final Destination destination;
 
         /**
-         * AIO channel.
+         * Native AIO channel owned by the connection.
          */
         private final AioChannel aio;
 
         /**
-         * Network conduit adapter.
+         * Protocol-facing conduit backed by the native channel.
          */
         private final Conduit conduit;
 
         /**
-         * Lifecycle scope.
+         * Lifecycle state and listener notification scope.
          */
         private final LifecycleScope scope;
 
         /**
          * Creates a connection.
          *
-         * @param destination destination
-         * @param aio         channel
-         * @param listener    lifecycle listener
+         * @param destination logical and transport destination metadata
+         * @param aio         connected native channel owned by the connection
+         * @param listener    failure-safe lifecycle listener
          */
         private AioConnection(final Destination destination, final AioChannel aio, final Listener<Object> listener) {
             this.destination = Assert
@@ -708,7 +722,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns the destination.
          *
-         * @return destination
+         * @return immutable destination metadata for this connection
          */
         @Override
         public Destination destination() {
@@ -718,7 +732,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns the conduit.
          *
-         * @return conduit
+         * @return conduit that reads from and writes to the native channel
          */
         @Override
         public Conduit conduit() {
@@ -728,7 +742,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns state.
          *
-         * @return state
+         * @return current lifecycle state
          */
         @Override
         public Status state() {
@@ -738,7 +752,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns the protocol-layer source.
          *
-         * @return source view
+         * @return protocol-facing source backed by the connection conduit
          */
         @Override
         public Source source() {
@@ -748,7 +762,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns the protocol-layer sink.
          *
-         * @return sink view
+         * @return protocol-facing sink backed by the connection conduit
          */
         @Override
         public Sink sink() {
@@ -758,7 +772,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns health.
          *
-         * @return true when healthy
+         * @return {@code true} when the lifecycle is open and the native channel remains open
          */
         @Override
         public boolean healthy() {
@@ -768,7 +782,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns idle state.
          *
-         * @return true when idle
+         * @return {@code false}, because this adapter does not track connection idleness
          */
         @Override
         public boolean idle() {
@@ -798,7 +812,7 @@ public final class AioNetwork implements AutoCloseable {
     private static final class AioConduit implements Conduit {
 
         /**
-         * AIO channel.
+         * Native channel adapted by this conduit.
          */
         private final AioChannel aio;
 
@@ -815,7 +829,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Creates an adapter.
          *
-         * @param aio channel
+         * @param aio non-null native channel to adapt
          */
         private AioConduit(final AioChannel aio) {
             this.aio = Assert.notNull(aio, () -> new ValidateException("AIO channel must not be null"));
@@ -826,9 +840,9 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Reads bytes into a core.io buffer.
          *
-         * @param target    target buffer
-         * @param byteCount maximum byte count
-         * @return read future
+         * @param target    buffer that receives bytes from the channel
+         * @param byteCount maximum number of bytes to append
+         * @return future containing the validated read count, including {@code -1} at end of stream
          */
         @Override
         public CompletableFuture<Long> read(final Buffer target, final long byteCount) {
@@ -854,9 +868,9 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Writes bytes from a core.io buffer.
          *
-         * @param source    source buffer
-         * @param byteCount byte count to write
-         * @return write future
+         * @param source    buffer whose leading bytes are consumed by the write
+         * @param byteCount exact number of bytes to write
+         * @return future containing the validated number of consumed bytes
          */
         @Override
         public CompletableFuture<Long> write(final Buffer source, final long byteCount) {
@@ -883,11 +897,11 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Validates one completed channel read.
          *
-         * @param count     reported byte count
-         * @param requested requested byte count
-         * @param before    target size before the operation
-         * @param after     target size after the operation
-         * @return validated byte count
+         * @param count     byte count reported by the channel, or {@code null} for an invalid completion
+         * @param requested maximum byte count requested from the channel
+         * @param before    target buffer size before the read
+         * @param after     target buffer size after the read
+         * @return validated count, including {@code -1} for end of stream
          */
         private static long validateReadResult(
                 final Long count,
@@ -913,11 +927,11 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Validates one completed channel write.
          *
-         * @param count     reported byte count
-         * @param requested requested byte count
-         * @param before    source size before the operation
-         * @param after     source size after the operation
-         * @return validated byte count
+         * @param count     byte count reported by the channel, or {@code null} for an invalid completion
+         * @param requested exact byte count requested from the channel
+         * @param before    source buffer size before the write
+         * @param after     source buffer size after the write
+         * @return validated count equal to the requested byte count
          */
         private static long validateWriteResult(
                 final Long count,
@@ -939,7 +953,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns the core.io source view.
          *
-         * @return source view
+         * @return reusable protocol-facing source view
          */
         @Override
         public Source source() {
@@ -949,7 +963,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns the core.io sink view.
          *
-         * @return sink view
+         * @return reusable protocol-facing sink view
          */
         @Override
         public Sink sink() {
@@ -959,7 +973,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Returns open state.
          *
-         * @return true when open
+         * @return {@code true} while the underlying native channel is open
          */
         @Override
         public boolean opened() {
@@ -977,10 +991,10 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Awaits an asynchronous byte-count operation.
          *
-         * @param future  operation future
-         * @param message failure message
-         * @return byte count
-         * @throws IOException when the operation fails
+         * @param future  non-null asynchronous byte-count operation
+         * @param message message used when an interruption or checked failure is converted to an I/O exception
+         * @return non-null byte count produced by the operation
+         * @throws IOException if waiting is interrupted or the operation fails with a checked cause
          */
         private static long await(final CompletableFuture<Long> future, final String message) throws IOException {
             try {
@@ -1016,10 +1030,10 @@ public final class AioNetwork implements AutoCloseable {
             /**
              * Reads bytes through the enclosing conduit.
              *
-             * @param sink      target buffer
-             * @param byteCount maximum byte count
-             * @return read byte count
-             * @throws IOException when reading fails
+             * @param sink      buffer that receives bytes from the native channel
+             * @param byteCount maximum number of bytes to append
+             * @return positive number of bytes read, {@code 0} for a zero-byte request, or {@code -1} at end of stream
+             * @throws IOException if the asynchronous read cannot be completed
              */
             @Override
             public long read(final Buffer sink, final long byteCount) throws IOException {
@@ -1033,7 +1047,7 @@ public final class AioNetwork implements AutoCloseable {
             /**
              * Returns the no-op timeout.
              *
-             * @return timeout
+             * @return shared timeout instance that imposes no source deadline
              */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
@@ -1058,9 +1072,9 @@ public final class AioNetwork implements AutoCloseable {
             /**
              * Writes bytes through the enclosing conduit.
              *
-             * @param source    source buffer
-             * @param byteCount byte count
-             * @throws IOException when writing fails
+             * @param source    buffer whose leading bytes are written and consumed
+             * @param byteCount exact number of bytes to write
+             * @throws IOException if the asynchronous write cannot be completed
              */
             @Override
             public void write(final Buffer source, final long byteCount) throws IOException {
@@ -1082,7 +1096,7 @@ public final class AioNetwork implements AutoCloseable {
             /**
              * Returns the no-op timeout.
              *
-             * @return timeout
+             * @return shared timeout instance that imposes no sink deadline
              */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
@@ -1102,17 +1116,17 @@ public final class AioNetwork implements AutoCloseable {
     }
 
     /**
-     * Composed listener.
+     * Ordered pair of lifecycle listeners invoked for each event.
      *
-     * @param first  first listener
-     * @param second second listener
+     * @param first  listener invoked first
+     * @param second listener invoked after the first, even if the first fails
      */
     private record CompositeListener(Listener<Object> first, Listener<Object> second) implements Listener<Object> {
 
         /**
          * Handles open events.
          *
-         * @param source lifecycle source
+         * @param source object whose lifecycle opened
          */
         @Override
         public void open(final Object source) {
@@ -1135,7 +1149,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Handles close events.
          *
-         * @param source lifecycle source
+         * @param source object whose lifecycle closed
          */
         @Override
         public void close(final Object source) {
@@ -1158,8 +1172,8 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Handles failure events.
          *
-         * @param source lifecycle source
-         * @param cause  failure cause
+         * @param source object whose lifecycle failed
+         * @param cause  failure reported by the source
          */
         @Override
         public void failure(final Object source, final Throwable cause) {
@@ -1182,16 +1196,16 @@ public final class AioNetwork implements AutoCloseable {
     }
 
     /**
-     * Safe listener wrapper.
+     * Listener wrapper that prevents delegate failures from escaping network lifecycle transitions.
      *
-     * @param delegate listener delegate
+     * @param delegate listener whose runtime failures are suppressed
      */
     private record SafeListener(Listener<Object> delegate) implements Listener<Object> {
 
         /**
          * Handles open events.
          *
-         * @param source lifecycle source
+         * @param source object whose lifecycle opened
          */
         @Override
         public void open(final Object source) {
@@ -1205,7 +1219,7 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Handles close events.
          *
-         * @param source lifecycle source
+         * @param source object whose lifecycle closed
          */
         @Override
         public void close(final Object source) {
@@ -1219,8 +1233,8 @@ public final class AioNetwork implements AutoCloseable {
         /**
          * Handles failure events.
          *
-         * @param source lifecycle source
-         * @param cause  failure cause
+         * @param source object whose lifecycle failed
+         * @param cause  failure reported by the source
          */
         @Override
         public void failure(final Object source, final Throwable cause) {

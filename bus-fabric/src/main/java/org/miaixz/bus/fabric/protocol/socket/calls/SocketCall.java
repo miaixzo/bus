@@ -41,28 +41,28 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class SocketCall extends MonoCall<SocketSession> {
 
     /**
-     * Socket protocol operation.
+     * Single socket-open operation receiving the call lifecycle's cancellation scope.
      */
     private final Function<Cancellation, SocketSession> operation;
 
     /**
-     * Stable asynchronous dispatch key.
+     * Dispatch key returned when this call is submitted asynchronously.
      */
     private final String key;
 
     /**
-     * Opened session.
+     * Session produced by the operation and available to running-call cancellation.
      */
     private final AtomicReference<SocketSession> session;
 
     /**
-     * Creates a call.
+     * Creates an unsubmitted socket-open call.
      *
-     * @param dispatcher dispatcher used by enqueue()
-     * @param callback   callback managed by the call lifecycle
-     * @param observer   lifecycle observer
-     * @param operation  socket protocol operation
-     * @param key        asynchronous dispatch key
+     * @param dispatcher dispatcher used by no-argument {@code enqueue()}
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param observer   observer receiving call lifecycle events
+     * @param operation  function that opens a session within the lifecycle cancellation scope
+     * @param key        dispatch key used for asynchronous submission
      */
     private SocketCall(final Dispatcher dispatcher, final Callback<? super SocketSession> callback,
             final EventObserver observer, final Function<Cancellation, SocketSession> operation, final String key) {
@@ -75,12 +75,14 @@ public final class SocketCall extends MonoCall<SocketSession> {
     /**
      * Creates a call.
      *
-     * @param dispatcher dispatcher used by enqueue()
-     * @param callback   callback managed by the call lifecycle
-     * @param observer   lifecycle observer
-     * @param operation  socket protocol operation
-     * @param key        asynchronous dispatch key
-     * @return call
+     * @param dispatcher dispatcher used by no-argument {@code enqueue()}
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param observer   observer receiving call lifecycle events
+     * @param operation  function that opens a session within the lifecycle cancellation scope
+     * @param key        dispatch key used for asynchronous submission
+     * @return new single-use, unsubmitted socket-open call
+     * @throws ValidateException if {@code dispatcher}, {@code observer}, {@code operation}, or {@code key} is
+     *                           {@code null}
      */
     public static SocketCall create(
             final Dispatcher dispatcher,
@@ -93,9 +95,9 @@ public final class SocketCall extends MonoCall<SocketSession> {
     }
 
     /**
-     * Opens synchronously.
+     * Claims the call's single submission path and opens the socket session synchronously.
      *
-     * @return session
+     * @return session returned by the configured operation, which may be {@code null}
      */
     public SocketSession open() {
         return execute();
@@ -104,7 +106,7 @@ public final class SocketCall extends MonoCall<SocketSession> {
     /**
      * Performs the socket open operation.
      *
-     * @return socket session
+     * @return result returned by the socket-open function
      */
     @Override
     protected SocketSession perform() {
@@ -127,7 +129,7 @@ public final class SocketCall extends MonoCall<SocketSession> {
     /**
      * Cancels a session produced after cancellation.
      *
-     * @param value produced session
+     * @param value session produced after cancellation, or {@code null}
      */
     @Override
     protected void closeAfterCancelled(final SocketSession value) {
@@ -139,7 +141,7 @@ public final class SocketCall extends MonoCall<SocketSession> {
     /**
      * Returns the dispatch key.
      *
-     * @return dispatch key
+     * @return configured asynchronous dispatch key
      */
     @Override
     protected String dispatchKey() {
@@ -147,12 +149,12 @@ public final class SocketCall extends MonoCall<SocketSession> {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
