@@ -44,8 +44,10 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.SslContextFactoryAdapter;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
@@ -63,7 +65,7 @@ public abstract class FabricX {
     /**
      * Shared Fabric context for non-certificate payment HTTP calls.
      */
-    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
+    private static final Context CONTEXT = Context.create();
 
     /**
      * Form media used by payment requests.
@@ -279,7 +281,7 @@ public abstract class FabricX {
             final String certPass,
             final String filePath,
             final String protocol) {
-        try (org.miaixz.bus.fabric.Context context = certificateContext(certPath, null, certPass, protocol)) {
+        try (Context context = certificateContext(certPath, null, certPass, protocol)) {
             final var builder = Fabric.http(context).post(url).multipart();
             if (StringKit.isNotEmpty(data)) {
                 builder.part(MultipartBody.Part.of("params", Payload.of(data, Charset.UTF_8)));
@@ -307,7 +309,7 @@ public abstract class FabricX {
             final InputStream certFile,
             final String certPass,
             final String protocol) {
-        try (org.miaixz.bus.fabric.Context context = certificateContext(certPath, certFile, certPass, protocol)) {
+        try (Context context = certificateContext(certPath, certFile, certPass, protocol)) {
             final var builder = Fabric.http(context).post(url).body(data == null ? "" : data, FORM);
             return execute(builder::execute).body();
         }
@@ -394,7 +396,7 @@ public abstract class FabricX {
      * @param protocol TLS protocol
      * @return context
      */
-    private static org.miaixz.bus.fabric.Context certificateContext(
+    private static Context certificateContext(
             final String certPath,
             final InputStream certFile,
             final String certPass,
@@ -404,7 +406,9 @@ public abstract class FabricX {
                 .of(() -> sslContext(certPath, certFile, certPass, selected));
         final TlsContext tlsContext = factory.tlsContext();
         final TlsSettings tlsSettings = TlsSettings.builder().versions(List.of(selected)).build();
-        return org.miaixz.bus.fabric.Context.builder().tlsContext(tlsContext).tlsSettings(tlsSettings).build();
+        return Context.builder()
+                .policy(TlsPolicy.of(tlsContext, tlsSettings))
+                .build();
     }
 
     /**
