@@ -35,7 +35,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -91,7 +91,7 @@ public class FeishuProvider extends AbstractProvider {
         object.put("app_secret", context.getClientSecret());
 
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = post(url, JsonKit.toJsonString(object), header, MediaType.APPLICATION_JSON);
         object = JsonKit.toPojo(response, Map.class);
@@ -117,13 +117,13 @@ public class FeishuProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_access_token", this.getToken());
         requestObject.put("grant_type", "authorization_code");
         requestObject.put("code", callback.getCode());
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(this.getToken(requestObject, this.complex.token())).build();
     }
 
@@ -135,11 +135,11 @@ public class FeishuProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token);
         String response = get(this.complex.userinfo(), null, header);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -157,7 +157,7 @@ public class FeishuProvider extends AbstractProvider {
             String avatarUrl = (String) data.get("avatar_url");
             String email = (String) data.get("email");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name)
                                     .nickname(name).avatar(avatarUrl).email(email).gender(Gender.UNKNOWN)
@@ -184,12 +184,12 @@ public class FeishuProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_access_token", this.getToken());
         requestObject.put("grant_type", "refresh_token");
         requestObject.put("refresh_token", authorization.getRefresh());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(this.getToken(requestObject, this.complex.refresh())).build();
     }
 
@@ -203,7 +203,7 @@ public class FeishuProvider extends AbstractProvider {
      */
     private Authorization getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         String response = post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -250,8 +250,8 @@ public class FeishuProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getClientId())
                                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))

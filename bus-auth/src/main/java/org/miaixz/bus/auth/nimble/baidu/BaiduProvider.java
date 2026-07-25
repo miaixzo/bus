@@ -73,9 +73,10 @@ public class BaiduProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response))
+                .build();
     }
 
     /**
@@ -93,7 +94,7 @@ public class BaiduProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userInfo = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
@@ -111,7 +112,7 @@ public class BaiduProvider extends AbstractProvider {
             String userDetail = (String) object.get("userdetail");
             String sex = (String) object.get("sex");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(username)
                                     .nickname(username).avatar(getAvatar(object)).remark(userDetail)
@@ -151,7 +152,7 @@ public class BaiduProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
      */
     @Override
-    public Message revoke(Authorization authorization) {
+    public Message<Void> revoke(Authorization authorization) {
         String response = doGetRevoke(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -164,7 +165,7 @@ public class BaiduProvider extends AbstractProvider {
             Object resultObj = object.get("result");
             int result = resultObj instanceof Number ? ((Number) resultObj).intValue() : 0;
             Errors status = result == 1 ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
-            return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
+            return Message.<Void>builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
             Logger.warn(
                     false,
@@ -186,13 +187,14 @@ public class BaiduProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         String refreshUrl = Builder.fromUrl(this.complex.refresh()).queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", authorization.getRefresh())
                 .queryParam("client_id", this.context.getClientId())
                 .queryParam("client_secret", this.context.getClientSecret()).build();
         String response = get(refreshUrl);
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response))
+                .build();
     }
 
     /**
@@ -203,8 +205,8 @@ public class BaiduProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData()).queryParam("display", "popup")
                         .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(BaiduScope.values())))
                         .build())

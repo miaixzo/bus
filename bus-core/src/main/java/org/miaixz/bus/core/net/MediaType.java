@@ -66,6 +66,26 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public class MediaType {
 
     /**
+     * Form data format identifier.
+     */
+    public static final String FORM = "form";
+
+    /**
+     * JSON data format identifier.
+     */
+    public static final String JSON = "json";
+
+    /**
+     * XML data format identifier.
+     */
+    public static final String XML = "xml";
+
+    /**
+     * Protocol Buffers data format identifier.
+     */
+    public static final String PROTOBUF = "protobuf";
+
+    /**
      * The media type {@code charset} parameter name.
      */
     public static final String CHARSET_PARAMETER = "charset";

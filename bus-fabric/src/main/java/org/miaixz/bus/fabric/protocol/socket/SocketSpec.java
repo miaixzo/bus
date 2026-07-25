@@ -1,0 +1,110 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.fabric.protocol.socket;
+
+import java.net.URI;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.*;
+import org.miaixz.bus.fabric.codec.frame.FrameCodec;
+import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
+import org.miaixz.bus.fabric.network.tls.TlsSettings;
+import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.observe.EventObserver;
+
+/**
+ * Immutable execution specification for a socket exchange.
+ *
+ * @param context       runtime services used by the socket exchange
+ * @param uri           original target URI requested by the caller
+ * @param address       normalized transport address derived from the target URI
+ * @param headers       handshake or first-message headers associated with the exchange
+ * @param timeout       connect and session timeout policy
+ * @param tlsContext    TLS context, or {@code null} together with {@code tlsSettings}
+ * @param tlsSettings   TLS settings, or {@code null} together with {@code tlsContext}
+ * @param frameCodec    codec used to delimit socket messages
+ * @param handler       inbound message handler for the created session
+ * @param guard         optional policy guard for socket messages
+ * @param filter        optional message filter for socket open, inbound, and outbound messages
+ * @param observer      observer receiving socket lifecycle and traffic events
+ * @param proxyHeader   PROXY protocol metadata to send or inject, or {@code null}
+ * @param socketOptions channel and session tuning options
+ * @param listener      session lifecycle listener
+ * @param pooled        whether the exchange may use pooled transport resources
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+record SocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, TlsContext tlsContext,
+        TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter,
+        EventObserver observer, ProxyHeader proxyHeader, SocketOptions socketOptions,
+        Listener<? super SocketSession> listener, boolean pooled) {
+
+    /**
+     * Creates a validated specification.
+     *
+     * @param context       runtime services used by the exchange
+     * @param uri           original target URI
+     * @param address       normalized transport address
+     * @param headers       handshake or first-message headers
+     * @param timeout       timeout policy copied into the specification
+     * @param tlsContext    TLS context, or {@code null} with {@code tlsSettings}
+     * @param tlsSettings   TLS settings, or {@code null} with {@code tlsContext}
+     * @param frameCodec    socket message framing codec
+     * @param handler       inbound message handler
+     * @param guard         optional socket-message guard
+     * @param filter        optional exchange message filter
+     * @param observer      socket lifecycle observer
+     * @param proxyHeader   optional PROXY protocol metadata
+     * @param socketOptions channel and session tuning options
+     * @param listener      session lifecycle listener
+     * @param pooled        whether pooled transport resources may be used
+     */
+    SocketSpec {
+        context = require(context, "Context");
+        uri = require(uri, "Target URI");
+        address = require(address, "Address");
+        headers = require(headers, "Headers");
+        final Timeout sourceTimeout = require(timeout, "Timeout");
+        timeout = new Timeout(sourceTimeout.connect(), sourceTimeout.read(), sourceTimeout.write(),
+                sourceTimeout.call(), sourceTimeout.ping(), sourceTimeout.close());
+        if ((tlsContext == null) != (tlsSettings == null)) {
+            throw new ValidateException("TLS context and TLS settings must both be present or both be absent");
+        }
+        frameCodec = require(frameCodec, "Frame codec");
+        handler = require(handler, "Handler");
+        observer = EventObserver.safe(require(observer, "Observer"));
+        socketOptions = require(socketOptions, "Socket options");
+    }
+
+    /**
+     * Validates required references.
+     *
+     * @param value reference to validate
+     * @param name  field name
+     * @param <T>   value type
+     * @return the validated reference
+     */
+    private static <T> T require(final T value, final String name) {
+        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+}

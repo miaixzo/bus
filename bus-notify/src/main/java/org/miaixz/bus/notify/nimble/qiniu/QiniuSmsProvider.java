@@ -59,7 +59,7 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(QiniuNotice entity) {
+    public Message<Void> send(QiniuNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -77,7 +77,7 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
         String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
                 : ErrorCode._FAILURE.getValue();
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

@@ -19,21 +19,18 @@
 */
 package org.miaixz.bus.notify;
 
-import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
 
 /**
  * Fabric-backed HTTP support for notification providers.
@@ -46,8 +43,7 @@ public abstract class FabricX {
     /**
      * Shared Fabric context for notification HTTP calls.
      */
-    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create()
-            .withOptions(Options.of("timeout", Timeout.of(Duration.ofSeconds(30))));
+    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
 
     /**
      * Form media used by notification requests.
@@ -164,7 +160,7 @@ public abstract class FabricX {
      * @return true when JSON
      */
     private static boolean json(final Map<String, ?> headers) {
-        final Object contentType = header(headers, HTTP.CONTENT_TYPE);
+        final Object contentType = header(headers, Http.Header.CONTENT_TYPE);
         return contentType != null
                 && contentType.toString().toLowerCase(Locale.ROOT).startsWith(MediaType.APPLICATION_JSON);
     }
@@ -177,7 +173,7 @@ public abstract class FabricX {
      * @return media type
      */
     private static MediaType media(final Map<String, ?> headers, final MediaType fallback) {
-        final Object contentType = header(headers, HTTP.CONTENT_TYPE);
+        final Object contentType = header(headers, Http.Header.CONTENT_TYPE);
         return contentType == null ? fallback : media(contentType.toString());
     }
 

@@ -29,7 +29,7 @@ import java.util.Objects;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -62,7 +62,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(JpushNotice entity) {
+    public Message<Void> send(JpushNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -93,15 +93,15 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
         bodys.put("temp_para", entity.getParams());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.AUTHORIZATION, "Basic " + getSign());
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.AUTHORIZATION, "Basic " + getSign());
 
         String response = post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "error.message");
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

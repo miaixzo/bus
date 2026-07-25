@@ -42,16 +42,16 @@ public interface SslContextFactoryAdapter {
     /**
      * Creates an SSL context.
      *
-     * @return SSL context
-     * @throws Exception when the context cannot be created
+     * @return SSL context produced for the caller
+     * @throws Exception when context creation fails
      */
     SSLContext create() throws Exception;
 
     /**
      * Wraps a callable SSL context factory.
      *
-     * @param factory factory
-     * @return adapter
+     * @param factory non-null callable invoked for each {@link #create()} request
+     * @return adapter that delegates context creation to the callable
      */
     static SslContextFactoryAdapter of(final Callable<SSLContext> factory) {
         return Assert.notNull(factory, () -> new ValidateException("SSL context factory must not be null"))::call;
@@ -60,8 +60,8 @@ public interface SslContextFactoryAdapter {
     /**
      * Wraps an existing SSL context.
      *
-     * @param context SSL context
-     * @return adapter
+     * @param context non-null SSL context to reuse
+     * @return adapter that returns the same context instance for every request
      */
     static SslContextFactoryAdapter of(final SSLContext context) {
         final SSLContext checkedContext = Assert
@@ -72,7 +72,7 @@ public interface SslContextFactoryAdapter {
     /**
      * Creates a current TLS context.
      *
-     * @return TLS context
+     * @return validated fabric TLS context created from this adapter's SSL context
      */
     default TlsContext tlsContext() {
         return tlsContext(this);
@@ -81,8 +81,8 @@ public interface SslContextFactoryAdapter {
     /**
      * Creates a current TLS context.
      *
-     * @param factory factory adapter
-     * @return TLS context
+     * @param factory non-null adapter used to create the underlying SSL context
+     * @return validated fabric TLS context
      */
     static TlsContext tlsContext(final SslContextFactoryAdapter factory) {
         try {
@@ -95,11 +95,11 @@ public interface SslContextFactoryAdapter {
     }
 
     /**
-     * Creates TLS settings for a factory-backed context.
+     * Creates TLS settings with explicit certificate and client-authentication policies.
      *
-     * @param policy     certificate policy
-     * @param clientAuth client auth mode
-     * @return TLS settings
+     * @param policy     non-null certificate validation policy
+     * @param clientAuth non-null client-authentication mode
+     * @return immutable TLS settings containing the supplied policies
      */
     static TlsSettings tlsSettings(final CertificatePolicy policy, final TlsClientAuth clientAuth) {
         return TlsSettings.builder()

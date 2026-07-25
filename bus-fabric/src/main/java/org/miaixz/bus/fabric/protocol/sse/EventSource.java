@@ -32,12 +32,12 @@ public interface EventSource {
     /**
      * Returns the original HTTP request.
      *
-     * @return request
+     * @return original HTTP request used to open this event stream
      */
     HttpRequest request();
 
     /**
-     * Cancels the event source and releases the current SSE session when present.
+     * Requests cancellation and releases the current SSE call or session when present.
      */
     void cancel();
 
@@ -52,9 +52,9 @@ public interface EventSource {
         /**
          * Creates and asynchronously opens an event source.
          *
-         * @param request  request
-         * @param listener listener
-         * @return event source
+         * @param request  GET request supplying the event-stream URL, headers, and timeout policy
+         * @param listener listener receiving stream and lifecycle callbacks, or null for no callbacks
+         * @return event source whose asynchronous connection attempt has been started
          */
         EventSource newEventSource(HttpRequest request, EventSourceListener listener);
 

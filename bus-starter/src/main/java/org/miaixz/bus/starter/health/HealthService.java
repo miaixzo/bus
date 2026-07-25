@@ -30,11 +30,10 @@ import org.springframework.boot.availability.LivenessState;
 import org.springframework.boot.availability.ReadinessState;
 import org.springframework.context.ApplicationEventPublisher;
 
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Provider;
@@ -95,9 +94,9 @@ public class HealthService {
      * @param tid A comma-separated string of type identifiers (e.g., "liveness,readiness,cpu"). If empty or null, it
      *            defaults to the value from properties, or "liveness,readiness". The special value "all" retrieves all
      *            available metrics.
-     * @return A map containing the requested health information on success, or a {@link Message} object on failure.
+     * @return A map containing the requested health information
      */
-    public Object healthz(String tid) {
+    public Map<String, Object> healthz(String tid) {
         try {
             // Determine the TIDs to use: prioritize input, then properties, then default.
             String defaultTids = TID.LIVENESS + Symbol.COMMA + TID.READINESS;
@@ -142,8 +141,7 @@ public class HealthService {
                     tid,
                     e.getClass().getSimpleName(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg("Failed to retrieve health information: " + e.getMessage()).build();
+            throw new InternalException("Failed to retrieve health information: " + e.getMessage(), e);
         }
     }
 
@@ -153,7 +151,7 @@ public class HealthService {
      *
      * @return A map indicating the new state and the current timestamp.
      */
-    public Object broken() {
+    public Map<String, Object> broken() {
         AvailabilityChangeEvent.publish(publisher, this, LivenessState.BROKEN);
         return builder(EnumValue.Probe.BROKEN);
     }
@@ -163,7 +161,7 @@ public class HealthService {
      *
      * @return A map indicating the new state and the current timestamp.
      */
-    public Object correct() {
+    public Map<String, Object> correct() {
         AvailabilityChangeEvent.publish(publisher, this, LivenessState.CORRECT);
         return builder(EnumValue.Probe.CORRECT);
     }
@@ -174,7 +172,7 @@ public class HealthService {
      *
      * @return A map indicating the new state and the current timestamp.
      */
-    public Object accept() {
+    public Map<String, Object> accept() {
         AvailabilityChangeEvent.publish(publisher, this, ReadinessState.ACCEPTING_TRAFFIC);
         return builder(EnumValue.Probe.ACCEPT);
     }
@@ -185,7 +183,7 @@ public class HealthService {
      *
      * @return A map indicating the new state and the current timestamp.
      */
-    public Object refuse() {
+    public Map<String, Object> refuse() {
         AvailabilityChangeEvent.publish(publisher, this, ReadinessState.REFUSING_TRAFFIC);
         return builder(EnumValue.Probe.REFUSE);
     }
@@ -196,7 +194,7 @@ public class HealthService {
      * @param probe The type of probe action.
      * @return A map containing the state and timestamp.
      */
-    public Object builder(EnumValue.Probe probe) {
+    public Map<String, Object> builder(EnumValue.Probe probe) {
         return Map.of("state", probe.getValue(), "timestamp:", DateKit.current());
     }
 

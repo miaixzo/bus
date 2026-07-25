@@ -71,9 +71,10 @@ public class QqProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(response))
+                .build();
     }
 
     /**
@@ -83,9 +84,10 @@ public class QqProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         String response = get(refreshUrl(authorization.getRefresh()));
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response))
+                .build();
     }
 
     /**
@@ -96,7 +98,7 @@ public class QqProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String openId = this.getOpenId(authorization);
         String response = doGetUserInfo(authorization);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -110,7 +112,7 @@ public class QqProvider extends AbstractProvider {
 
         String location = String.format("%s-%s", object.get("province"), object.get("city"));
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(object)).username((String) object.get("nickname"))
                                 .nickname((String) object.get("nickname")).avatar(avatar).location(location)
@@ -185,8 +187,8 @@ public class QqProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(QqScope.values())))
                         .build())

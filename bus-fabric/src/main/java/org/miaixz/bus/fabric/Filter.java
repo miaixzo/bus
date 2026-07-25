@@ -30,9 +30,9 @@ public interface Filter {
     /**
      * Applies this filter to a message and downstream chain.
      *
-     * @param message message
-     * @param chain   downstream chain
-     * @return filtered message
+     * @param message current immutable protocol message
+     * @param chain   continuation used to invoke the next configured filter
+     * @return message exposed to the caller after this filter and any downstream filters complete
      */
     Message apply(Message message, Chain chain);
 
@@ -47,8 +47,8 @@ public interface Filter {
         /**
          * Proceeds to the next filter.
          *
-         * @param message message
-         * @return filtered message
+         * @param message message passed to the next filter or terminal chain
+         * @return downstream filtered message
          */
         Message proceed(Message message);
 

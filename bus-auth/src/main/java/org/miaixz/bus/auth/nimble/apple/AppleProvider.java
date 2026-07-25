@@ -88,8 +88,8 @@ public class AppleProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData()).queryParam("response_mode", "form_post")
                         .queryParam("scope", this.getScopes(Symbol.SPACE, false, getScopes(AppleScope.values())))
                         .build())
@@ -104,7 +104,7 @@ public class AppleProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error is returned by Apple
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         if (!StringKit.isEmpty(callback.getError())) {
             throw new AuthorizedException(callback.getError());
         }
@@ -148,7 +148,7 @@ public class AppleProvider extends AbstractProvider {
                 }
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
 
         } catch (Exception e) {
             Logger.warn(
@@ -172,7 +172,7 @@ public class AppleProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the ID token payload fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Base64.Decoder urlDecoder = Base64.getUrlDecoder();
         String[] idToken = authorization.getIdToken().split("\\.");
         String payload = new String(urlDecoder.decode(idToken[1]));
@@ -188,7 +188,7 @@ public class AppleProvider extends AbstractProvider {
             }
             String email = (String) object.get("email");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).email(email)
                                     .username(authorization.getUsername()).token(authorization)

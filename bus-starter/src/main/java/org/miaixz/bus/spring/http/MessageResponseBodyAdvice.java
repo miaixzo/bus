@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 
 /**
@@ -81,12 +82,12 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             Class<? extends HttpMessageConverter<?>> selectedConverterType,
             ServerHttpRequest request,
             ServerHttpResponse response) {
-        if (!(body instanceof Message message) || isSuccess(message)) {
+        if (!(body instanceof Message<?> message) || isSuccess(message)) {
             return body;
         }
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("errcode", message.getErrcode());
-        result.put("errmsg", message.getErrmsg());
+        result.put(Consts.ERRCODE, message.getErrcode());
+        result.put(Consts.ERRMSG, message.getErrmsg());
         return result;
     }
 
@@ -96,7 +97,7 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
      * @param message the response message
      * @return {@code true} for successful messages
      */
-    private boolean isSuccess(Message message) {
+    private boolean isSuccess(Message<?> message) {
         return message != null && ErrorCode._SUCCESS.getKey().equals(message.getErrcode());
     }
 

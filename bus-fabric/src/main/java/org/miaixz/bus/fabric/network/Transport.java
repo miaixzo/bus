@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Transport families used by fabric network implementations.
@@ -53,15 +54,15 @@ public enum Transport {
     /**
      * KCP transport over UDP.
      */
-    KCP("kcp", false, false, Protocol.UDP);
+    KCP(Builder.SOCKET_X_KCP_SCHEME, false, false, Protocol.UDP);
 
     /**
-     * Scheme lookup table.
+     * Immutable normalized lookup including transport-native and higher-level protocol aliases.
      */
     private static final Map<String, Transport> BY_SCHEME = Map.ofEntries(
             Map.entry(TCP.scheme, TCP),
             Map.entry(Protocol.SOCKET.name, TCP),
-            Map.entry("aio", TCP),
+            Map.entry(Builder.AIO_SCHEME, TCP),
             Map.entry(Protocol.HTTP.name, TCP),
             Map.entry(Protocol.WS.name, TCP),
             Map.entry(UDP.scheme, UDP),
@@ -71,7 +72,7 @@ public enum Transport {
             Map.entry(Protocol.WSS.name, TLS));
 
     /**
-     * Default scheme.
+     * Canonical lower-case scheme returned for this transport family.
      */
     private final String scheme;
 
@@ -86,7 +87,7 @@ public enum Transport {
     private final boolean secure;
 
     /**
-     * Bus-core protocol.
+     * Lower-level bus-core protocol used by the transport implementation.
      */
     private final Protocol protocol;
 
@@ -108,8 +109,9 @@ public enum Transport {
     /**
      * Maps a scheme to a transport.
      *
-     * @param scheme scheme
-     * @return transport
+     * @param scheme transport-native or supported protocol-alias scheme
+     * @return transport family mapped from the normalized scheme
+     * @throws ValidateException if the scheme is invalid or unsupported
      */
     public static Transport fromScheme(final String scheme) {
         final String normalized = normalize(scheme);
@@ -123,7 +125,7 @@ public enum Transport {
     /**
      * Returns the default scheme.
      *
-     * @return scheme
+     * @return canonical lower-case scheme for this transport
      */
     public String scheme() {
         return scheme;
@@ -132,7 +134,7 @@ public enum Transport {
     /**
      * Returns whether this transport is connection-oriented.
      *
-     * @return true when connection-oriented
+     * @return {@code true} for TCP and TLS; {@code false} for UDP and KCP
      */
     public boolean connectionOriented() {
         return connectionOriented;
@@ -141,7 +143,7 @@ public enum Transport {
     /**
      * Returns whether this transport is secure.
      *
-     * @return true when secure
+     * @return {@code true} only for the TLS transport family
      */
     public boolean secure() {
         return secure;
@@ -150,7 +152,7 @@ public enum Transport {
     /**
      * Returns the bus-core protocol.
      *
-     * @return protocol
+     * @return lower-level protocol used by this transport, including UDP for KCP
      */
     public Protocol protocol() {
         return protocol;
@@ -159,8 +161,9 @@ public enum Transport {
     /**
      * Normalizes a scheme.
      *
-     * @param scheme scheme
-     * @return normalized scheme
+     * @param scheme candidate scheme to trim and validate
+     * @return trimmed lower-case valid scheme
+     * @throws ValidateException if {@code scheme} is null, blank, multi-line, or syntactically invalid
      */
     private static String normalize(final String scheme) {
         final String normalized = scheme == null ? null : scheme.trim();

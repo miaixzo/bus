@@ -27,7 +27,7 @@ import org.miaixz.bus.fabric.Payload;
 /**
  * Bidirectional data codec contract for one media type.
  *
- * @param <T> value type
+ * @param <T> application value encoded and decoded by this codec
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -36,11 +36,12 @@ public interface DataCodec<T> {
     /**
      * Composes an encoder and decoder into one codec.
      *
-     * @param encoder encoder
-     * @param decoder decoder
-     * @param media   media type
-     * @param <T>     value type
-     * @return data codec
+     * @param encoder contravariant encoder used for every value
+     * @param decoder covariant decoder used for every payload
+     * @param media   media type advertised by the composed codec
+     * @param <T>     application value type exposed by the composition
+     * @return codec delegating directly to the supplied collaborators
+     * @throws ValidateException if the encoder, decoder, or media type is {@code null}
      */
     static <T> DataCodec<T> of(
             final DataEncoder<? super T> encoder,
@@ -54,8 +55,8 @@ public interface DataCodec<T> {
             /**
              * Encodes a value with the supplied encoder.
              *
-             * @param value value
-             * @return payload
+             * @param value application value passed unchanged to the supplied encoder
+             * @return payload produced by the supplied encoder
              */
             @Override
             public Payload encode(final T value) {
@@ -65,8 +66,8 @@ public interface DataCodec<T> {
             /**
              * Decodes a payload with the supplied decoder.
              *
-             * @param payload payload
-             * @return decoded value
+             * @param payload encoded payload passed unchanged to the supplied decoder
+             * @return application value produced by the supplied decoder
              */
             @Override
             public T decode(final Payload payload) {
@@ -76,7 +77,7 @@ public interface DataCodec<T> {
             /**
              * Returns the codec media type.
              *
-             * @return media type
+             * @return media type captured when this codec was composed
              */
             @Override
             public MediaType media() {
@@ -89,23 +90,23 @@ public interface DataCodec<T> {
     /**
      * Encodes a value into a payload.
      *
-     * @param value value
-     * @return payload
+     * @param value application value to encode
+     * @return encoded payload
      */
     Payload encode(T value);
 
     /**
      * Decodes a payload into a value.
      *
-     * @param payload payload
-     * @return decoded value
+     * @param payload encoded payload to decode
+     * @return decoded application value
      */
     T decode(Payload payload);
 
     /**
      * Returns this codec media type.
      *
-     * @return media type
+     * @return media type represented by this codec
      */
     MediaType media();
 

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric;
 
+import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.protocol.http.HttpX;
@@ -39,54 +40,21 @@ import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
 public final class Fabric {
 
     /**
-     * Shared context used by all protocol builders.
+     * Lock serializing default Context creation and shutdown.
      */
-    private final Context context;
+    private static final Object DEFAULT_RUNTIME_LOCK = new Object();
 
     /**
      * Creates an entry point around an already validated context.
-     *
-     * @param context shared context
      */
-    private Fabric(final Context context) {
-        this.context = context;
-    }
-
-    /**
-     * Creates an entry point using a default context.
-     *
-     * @return fabric entry point
-     */
-    public static Fabric create() {
-        return create(defaultContext());
-    }
-
-    /**
-     * Creates an entry point using the supplied context.
-     *
-     * @param context shared context
-     * @return fabric entry point
-     */
-    public static Fabric create(final Context context) {
-        if (context == null) {
-            throw new ValidateException("Context must not be null");
-        }
-        return new Fabric(context);
-    }
-
-    /**
-     * Returns the shared immutable context.
-     *
-     * @return shared context
-     */
-    public Context context() {
-        return context;
+    private Fabric() {
+        // No initialization required.
     }
 
     /**
      * Creates an HTTP exchange builder using a default context.
      *
-     * @return HTTP builder
+     * @return new HTTP builder bound to the lazily shared default context
      */
     public static HttpX.Builder http() {
         return http(defaultContext());
@@ -95,8 +63,8 @@ public final class Fabric {
     /**
      * Creates an HTTP exchange builder using the supplied context.
      *
-     * @param context shared context
-     * @return HTTP builder
+     * @param context non-null context to share with the exchange
+     * @return new HTTP builder bound to the supplied context
      */
     public static HttpX.Builder http(final Context context) {
         return HttpX.builder(require(context, "Context"));
@@ -105,8 +73,8 @@ public final class Fabric {
     /**
      * Creates a SOAP exchange using a default context.
      *
-     * @param url target URL
-     * @return SOAP exchange
+     * @param url target URL text accepted by the SOAP exchange
+     * @return new SOAP exchange using the shared default context
      */
     public static SoapX soap(final String url) {
         return soap(defaultContext(), url);
@@ -115,9 +83,9 @@ public final class Fabric {
     /**
      * Creates a SOAP exchange using the supplied context.
      *
-     * @param context shared context
-     * @param url     target URL
-     * @return SOAP exchange
+     * @param context non-null context to share with the exchange
+     * @param url     target URL text accepted by the SOAP exchange
+     * @return new SOAP exchange bound to the supplied context and URL
      */
     public static SoapX soap(final Context context, final String url) {
         return SoapX.of(require(context, "Context"), url);
@@ -126,8 +94,8 @@ public final class Fabric {
     /**
      * Creates a SOAP exchange using a default context.
      *
-     * @param url target URL
-     * @return SOAP exchange
+     * @param url non-null parsed target URL
+     * @return new SOAP exchange using the shared default context
      */
     public static SoapX soap(final UnoUrl url) {
         return soap(defaultContext(), url);
@@ -136,9 +104,9 @@ public final class Fabric {
     /**
      * Creates a SOAP exchange using the supplied context.
      *
-     * @param context shared context
-     * @param url     target URL
-     * @return SOAP exchange
+     * @param context non-null context to share with the exchange
+     * @param url     non-null parsed target URL
+     * @return new SOAP exchange bound to the supplied context and URL
      */
     public static SoapX soap(final Context context, final UnoUrl url) {
         return SoapX.of(require(context, "Context"), require(url, "URL"));
@@ -147,7 +115,7 @@ public final class Fabric {
     /**
      * Creates a socket exchange builder using a default context.
      *
-     * @return socket builder
+     * @return new socket builder bound to the lazily shared default context
      */
     public static SocketX.Builder socket() {
         return socket(defaultContext());
@@ -156,8 +124,8 @@ public final class Fabric {
     /**
      * Creates a socket exchange builder using the supplied context.
      *
-     * @param context shared context
-     * @return socket builder
+     * @param context non-null context to share with the exchange
+     * @return new socket builder bound to the supplied context
      */
     public static SocketX.Builder socket(final Context context) {
         return SocketX.builder(require(context, "Context"));
@@ -166,7 +134,7 @@ public final class Fabric {
     /**
      * Creates a socket server builder using a default context.
      *
-     * @return socket server builder
+     * @return new socket-server builder bound to the lazily shared default context
      */
     public static SocketServer.Builder socketServer() {
         return socketServer(defaultContext());
@@ -175,8 +143,8 @@ public final class Fabric {
     /**
      * Creates a socket server builder using the supplied context.
      *
-     * @param context shared context
-     * @return socket server builder
+     * @param context non-null context to share with the server
+     * @return new socket-server builder bound to the supplied context
      */
     public static SocketServer.Builder socketServer(final Context context) {
         return SocketServer.builder(require(context, "Context"));
@@ -185,7 +153,7 @@ public final class Fabric {
     /**
      * Creates a WebSocket exchange builder using a default context.
      *
-     * @return WebSocket builder
+     * @return new WebSocket builder bound to the lazily shared default context
      */
     public static WebSocketX.Builder websocket() {
         return websocket(defaultContext());
@@ -194,8 +162,8 @@ public final class Fabric {
     /**
      * Creates a WebSocket exchange builder using the supplied context.
      *
-     * @param context shared context
-     * @return WebSocket builder
+     * @param context non-null context to share with the exchange
+     * @return new WebSocket builder bound to the supplied context
      */
     public static WebSocketX.Builder websocket(final Context context) {
         return WebSocketX.builder(require(context, "Context"));
@@ -204,7 +172,7 @@ public final class Fabric {
     /**
      * Creates a WebSocket server builder using a default context.
      *
-     * @return WebSocket server builder
+     * @return new WebSocket-server builder bound to the lazily shared default context
      */
     public static WebSocketServer.Builder websocketServer() {
         return websocketServer(defaultContext());
@@ -213,8 +181,8 @@ public final class Fabric {
     /**
      * Creates a WebSocket server builder using the supplied context.
      *
-     * @param context shared context
-     * @return WebSocket server builder
+     * @param context non-null context to share with the server
+     * @return new WebSocket-server builder bound to the supplied context
      */
     public static WebSocketServer.Builder websocketServer(final Context context) {
         return WebSocketServer.builder(require(context, "Context"));
@@ -223,7 +191,7 @@ public final class Fabric {
     /**
      * Creates an SSE exchange builder using a default context.
      *
-     * @return SSE builder
+     * @return new SSE builder bound to the lazily shared default context
      */
     public static SseX.Builder sse() {
         return sse(defaultContext());
@@ -232,8 +200,8 @@ public final class Fabric {
     /**
      * Creates an SSE exchange builder using the supplied context.
      *
-     * @param context shared context
-     * @return SSE builder
+     * @param context non-null context to share with the exchange
+     * @return new SSE builder bound to the supplied context
      */
     public static SseX.Builder sse(final Context context) {
         return SseX.builder(require(context, "Context"));
@@ -242,7 +210,7 @@ public final class Fabric {
     /**
      * Creates a STOMP exchange builder using a default context.
      *
-     * @return STOMP builder
+     * @return new STOMP builder bound to the lazily shared default context
      */
     public static StompX.Builder stomp() {
         return stomp(defaultContext());
@@ -251,42 +219,82 @@ public final class Fabric {
     /**
      * Creates a STOMP exchange builder using the supplied context.
      *
-     * @param context shared context
-     * @return STOMP builder
+     * @param context non-null context to share with the exchange
+     * @return new STOMP builder bound to the supplied context
      */
     public static StompX.Builder stomp(final Context context) {
         return StompX.builder(require(context, "Context"));
     }
 
     /**
-     * Creates a default context and wraps initialization failures.
+     * Closes and removes the shared default context when it has been created; otherwise does nothing.
+     */
+    public static void shutdown() {
+        synchronized (DEFAULT_RUNTIME_LOCK) {
+            if (!Instances.exists(DefaultRuntime.class)) {
+                return;
+            }
+            try {
+                Instances.get(DefaultRuntime.class).context.close();
+            } finally {
+                Instances.remove(DefaultRuntime.class);
+            }
+        }
+    }
+
+    /**
+     * Returns the shared default Context, creating it when absent.
      *
-     * @return default context
+     * @return shared default context, created on first access
      */
     private static Context defaultContext() {
-        try {
-            return Context.create();
-        } catch (final RuntimeException e) {
-            if (e instanceof InternalException) {
-                throw e;
+        synchronized (DEFAULT_RUNTIME_LOCK) {
+            try {
+                return Instances.get(DefaultRuntime.class).context;
+            } catch (final RuntimeException e) {
+                if (e instanceof InternalException) {
+                    throw e;
+                }
+                throw new InternalException("Unable to create fabric context", e);
             }
-            throw new InternalException("Unable to create fabric context", e);
         }
     }
 
     /**
      * Validates a non-null reference.
      *
-     * @param value value
-     * @param name  value name
-     * @param <T>   value type
-     * @return validated value
+     * @param value reference to validate
+     * @param name  reference label included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         if (value == null) {
             throw new ValidateException(name + " must not be null");
         }
         return value;
+    }
+
+    /**
+     * Holder managed by {@link Instances} for the default runtime Context.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static final class DefaultRuntime {
+
+        /**
+         * Sole default runtime Context.
+         */
+        private final Context context;
+
+        /**
+         * Creates the default runtime holder.
+         */
+        private DefaultRuntime() {
+            this.context = Context.create();
+        }
+
     }
 
 }

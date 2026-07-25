@@ -23,13 +23,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.net.ssl.X509TrustManager;
 
@@ -44,6 +38,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.CertificateChainCleaner;
 import org.miaixz.bus.crypto.builtin.CertificatePin;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.Policy;
 
 /**
  * TLS certificate validation policy with trust manager, hostname, and pin checks.
@@ -51,7 +47,13 @@ import org.miaixz.bus.crypto.builtin.CertificatePin;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CertificatePolicy {
+public final class CertificatePolicy implements Policy {
+
+    /**
+     * Typed option for the TLS certificate policy.
+     */
+    public static final Options.Key<CertificatePolicy> OPTION = Options
+            .key("tls.certificate.policy", CertificatePolicy.class);
 
     /**
      * Trust manager.
@@ -79,6 +81,11 @@ public final class CertificatePolicy {
     private final CertificateChainCleaner chainCleaner;
 
     /**
+     * Stable, non-sensitive TLS context reuse identity.
+     */
+    private final ReuseIdentity explicitReuseIdentity;
+
+    /**
      * Creates a certificate policy.
      *
      * @param trustManager   trust manager
@@ -86,38 +93,73 @@ public final class CertificatePolicy {
      * @param pins           certificate pins
      * @param trustAll       trust all flag
      * @param chainCleaner   chain cleaner
+     * @param reuseIdentity  explicit TLS session reuse identity, or {@code null}
      */
     private CertificatePolicy(final X509TrustManager trustManager, final boolean hostnameVerify,
-            final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner) {
+            final Map<String, Set<String>> pins, final boolean trustAll, final CertificateChainCleaner chainCleaner,
+            final ReuseIdentity reuseIdentity) {
         this.trustManager = Assert.notNull(trustManager, () -> new ValidateException("Trust manager must not be null"));
         this.hostnameVerify = hostnameVerify;
         this.pins = copyPins(pins);
         this.trustAll = trustAll;
         this.chainCleaner = chainCleaner;
+        this.explicitReuseIdentity = reuseIdentity;
     }
 
     /**
      * Returns the system trust policy.
      *
-     * @return trust policy
+     * @return policy using the platform trust manager and hostname verification
      */
     public static CertificatePolicy trustSystem() {
         return builder().build();
     }
 
     /**
+     * Resolves the certificate policy from options.
+     *
+     * @param options option source
+     * @return configured policy or system trust policy
+     */
+    public static CertificatePolicy resolve(final Options options) {
+        final Options current = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
+        final CertificatePolicy configured = current.get(OPTION);
+        return configured == null ? trustSystem() : configured;
+    }
+
+    /**
+     * Adds this policy to an immutable option snapshot.
+     *
+     * @param options option source
+     * @return updated option snapshot
+     */
+    @Override
+    public Options from(final Options options) {
+        return Assert.notNull(options, () -> new ValidateException("Options must not be null")).with(OPTION, this);
+    }
+
+    /**
      * Creates a builder.
      *
-     * @return builder
+     * @return new certificate policy builder with system-trust defaults
      */
     public static Builder builder() {
         return new Builder();
     }
 
     /**
+     * Creates an opaque token that can be shared by explicitly equivalent policy builders.
+     *
+     * @return new reuse identity
+     */
+    public static ReuseIdentity newReuseIdentity() {
+        return new ReuseIdentity();
+    }
+
+    /**
      * Cleans and verifies a certificate chain.
      *
-     * @param host  host
+     * @param host  peer host used by chain cleaning and diagnostics
      * @param chain certificate chain
      * @return cleaned certificate chain
      */
@@ -143,7 +185,7 @@ public final class CertificatePolicy {
     /**
      * Checks a certificate chain against this policy.
      *
-     * @param host  host
+     * @param host  peer host used for trust, hostname, and pin validation
      * @param chain certificate chain
      */
     public void check(final String host, final CertificateChain chain) {
@@ -156,7 +198,7 @@ public final class CertificatePolicy {
     /**
      * Checks a peer chain after the SSL context has accepted it.
      *
-     * @param host  host
+     * @param host  peer host used for hostname and pin validation
      * @param chain peer certificate chain
      */
     public void checkPeer(final String host, final CertificateChain chain) {
@@ -175,7 +217,7 @@ public final class CertificatePolicy {
     /**
      * Returns configured trust manager.
      *
-     * @return trust manager
+     * @return X.509 trust manager used for chain validation
      */
     public X509TrustManager trustManager() {
         return trustManager;
@@ -202,7 +244,7 @@ public final class CertificatePolicy {
     /**
      * Returns configured chain cleaner.
      *
-     * @return chain cleaner or null
+     * @return configured chain cleaner, or {@code null} when cleaning is disabled
      */
     public CertificateChainCleaner chainCleaner() {
         return chainCleaner;
@@ -215,6 +257,15 @@ public final class CertificatePolicy {
      */
     public Map<String, Set<String>> pins() {
         return pins;
+    }
+
+    /**
+     * Returns this policy's stable, non-sensitive TLS context reuse identity.
+     *
+     * @return explicit shared token, or this policy instance when no token is configured
+     */
+    public Object reuseIdentity() {
+        return explicitReuseIdentity == null ? this : explicitReuseIdentity;
     }
 
     /**
@@ -244,8 +295,8 @@ public final class CertificatePolicy {
     /**
      * Cleans the chain with an adapter when one is configured.
      *
-     * @param host         host
-     * @param certificates certificates
+     * @param host         normalized peer host supplied to the cleaner
+     * @param certificates certificate chain to wrap or clean
      * @return cleaned chain
      */
     private CertificateChain cleanChain(final String host, final List<Certificate> certificates) {
@@ -276,7 +327,7 @@ public final class CertificatePolicy {
     /**
      * Checks configured pins.
      *
-     * @param host  host
+     * @param host  normalized peer host whose exact and wildcard pins are selected
      * @param chain certificate chain
      */
     private void checkPins(final String host, final CertificateChain chain) {
@@ -311,8 +362,8 @@ public final class CertificatePolicy {
     /**
      * Computes a certificate pin.
      *
-     * @param certificate certificate
-     * @return pin
+     * @param certificate certificate whose subject public key is hashed
+     * @return SHA-256 certificate pin string
      */
     public static String pin(final Certificate certificate) {
         return CertificatePin.sha256(certificate);
@@ -321,8 +372,8 @@ public final class CertificatePolicy {
     /**
      * Computes a SHA-1 certificate pin string.
      *
-     * @param certificate certificate
-     * @return pin
+     * @param certificate certificate whose subject public key is hashed
+     * @return SHA-1 certificate pin string
      */
     public static String sha1Pin(final Certificate certificate) {
         return CertificatePin.sha1(certificate);
@@ -344,7 +395,7 @@ public final class CertificatePolicy {
     /**
      * Validates a host.
      *
-     * @param host host
+     * @param host concrete peer host without wildcards
      * @return normalized host
      */
     private static String validateHost(final String host) {
@@ -382,7 +433,7 @@ public final class CertificatePolicy {
     /**
      * Returns pins that apply to a concrete host.
      *
-     * @param host host
+     * @param host normalized concrete peer host
      * @return matching pins
      */
     private Set<String> matchingPins(final String host) {
@@ -404,8 +455,8 @@ public final class CertificatePolicy {
     /**
      * Validates a pin.
      *
-     * @param pin pin
-     * @return pin
+     * @param pin candidate SHA-256 or SHA-1 pin string
+     * @return validated canonical pin string
      */
     private static String validatePin(final String pin) {
         return CertificatePin.validate(pin);
@@ -415,7 +466,7 @@ public final class CertificatePolicy {
      * Verifies a hostname against certificate subject names.
      *
      * @param host        normalized host
-     * @param certificate certificate
+     * @param certificate leaf X.509 certificate whose subject names are inspected
      * @return true when matched
      */
     private static boolean verifyHostname(final String host, final X509Certificate certificate) {
@@ -472,12 +523,12 @@ public final class CertificatePolicy {
     /**
      * Extracts a simple CN from the subject DN.
      *
-     * @param certificate certificate
+     * @param certificate X.509 certificate whose subject DN is inspected
      * @return common name or null
      */
     private static String commonName(final X509Certificate certificate) {
         final String subject = certificate.getSubjectX500Principal().getName();
-        for (final String part : subject.split(",")) {
+        for (final String part : subject.split(Symbol.COMMA)) {
             final String trimmed = part.trim();
             if (trimmed.regionMatches(true, Normal._0, "CN=", Normal._0, Normal._3)) {
                 return trimmed.substring(Normal._3).trim();
@@ -520,6 +571,11 @@ public final class CertificatePolicy {
         private CertificateChainCleaner chainCleaner;
 
         /**
+         * Explicit reuse identity, or null to isolate every built policy.
+         */
+        private ReuseIdentity reuseIdentity;
+
+        /**
          * Creates a builder with defaults.
          */
         private Builder() {
@@ -528,13 +584,14 @@ public final class CertificatePolicy {
             this.pins = new LinkedHashMap<>();
             this.trustAll = false;
             this.chainCleaner = null;
+            this.reuseIdentity = null;
         }
 
         /**
          * Adds a certificate pin.
          *
-         * @param host host
-         * @param pin  pin
+         * @param host exact host or single-label wildcard pattern
+         * @param pin  SHA-256 or SHA-1 public-key pin
          * @return this builder
          */
         public Builder pin(final String host, final String pin) {
@@ -595,6 +652,18 @@ public final class CertificatePolicy {
         }
 
         /**
+         * Explicitly declares this policy equivalent to other policies built with the same opaque token.
+         *
+         * @param reuseIdentity shared reuse identity
+         * @return this builder
+         */
+        public Builder reuseIdentity(final ReuseIdentity reuseIdentity) {
+            this.reuseIdentity = Assert
+                    .notNull(reuseIdentity, () -> new ValidateException("Reuse identity must not be null"));
+            return this;
+        }
+
+        /**
          * Uses custom trust roots and the current chain cleaner.
          *
          * @param caCerts CA certificates
@@ -609,13 +678,13 @@ public final class CertificatePolicy {
         /**
          * Builds a certificate policy.
          *
-         * @return certificate policy
+         * @return immutable certificate policy snapshot
          */
         public CertificatePolicy build() {
             if (trustAll && (!pins.isEmpty() || hostnameVerify)) {
                 throw new ValidateException("Trust-all policy cannot be combined with hostname verification or pins");
             }
-            return new CertificatePolicy(trustManager, hostnameVerify, pins, trustAll, chainCleaner);
+            return new CertificatePolicy(trustManager, hostnameVerify, pins, trustAll, chainCleaner, reuseIdentity);
         }
 
     }
@@ -641,8 +710,7 @@ public final class CertificatePolicy {
          * @param caCerts CA certificates
          */
         private RootTrustManager(final X509Certificate... caCerts) {
-            if (caCerts == null || caCerts.length == 0
-                    || java.util.Arrays.stream(caCerts).anyMatch(cert -> cert == null)) {
+            if (caCerts == null || caCerts.length == 0 || Arrays.stream(caCerts).anyMatch(cert -> cert == null)) {
                 throw new ValidateException(
                         "CA certificates must be non-null, non-empty, and contain no null elements");
             }
@@ -653,7 +721,7 @@ public final class CertificatePolicy {
         /**
          * Checks client trust.
          *
-         * @param chain    chain
+         * @param chain    presented client certificate chain
          * @param authType auth type
          */
         @Override
@@ -665,7 +733,7 @@ public final class CertificatePolicy {
         /**
          * Checks server trust.
          *
-         * @param chain    chain
+         * @param chain    presented server certificate chain
          * @param authType auth type
          */
         @Override
@@ -687,7 +755,7 @@ public final class CertificatePolicy {
         /**
          * Checks a chain against the configured cleaner.
          *
-         * @param chain chain
+         * @param chain presented X.509 chain to validate against configured roots
          * @throws CertificateException when not trusted
          */
         private void checkTrusted(final X509Certificate[] chain) throws CertificateException {
@@ -696,6 +764,25 @@ public final class CertificatePolicy {
             } catch (final RuntimeException e) {
                 throw new CertificateException("Certificate chain is not trusted by configured roots", e);
             }
+        }
+
+    }
+
+    /**
+     * Opaque capability used to declare that separately built policies are safe to reuse together.
+     *
+     * <p>
+     * Identity equality is deliberately based on the token instance. The token contains no certificate, key, hostname,
+     * pin, trust-manager text, or other sensitive material.
+     * </p>
+     */
+    public static final class ReuseIdentity {
+
+        /**
+         * Creates an opaque identity token.
+         */
+        private ReuseIdentity() {
+            // No initialization required.
         }
 
     }

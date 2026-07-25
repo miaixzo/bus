@@ -32,29 +32,47 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 
 /**
  * Current socket runtime options used by {@link SocketX}, {@link SocketRunner}, {@link SocketSession}, and server
  * adapters that create socket sessions.
  *
- * @param readBufferSize   read buffer size
+ * @param readBufferSize   positive per-session read buffer size in bytes
  * @param writeChunkSize   maximum bytes submitted in one low-level write
- * @param writeChunkCount  retained write chunk count hint
- * @param backlog          TCP server backlog
- * @param ioThreads        AIO read I/O thread count
- * @param socketOptions    JDK socket options passed to client channels
+ * @param writeChunkCount  positive retained write chunk count hint
+ * @param backlog          positive TCP server listen backlog
+ * @param ioThreads        positive AIO read I/O thread count
+ * @param socketOptions    immutable JDK socket-option snapshot passed to client channels
  * @param retainReadBuffer true to reuse one read buffer per session
- * @param connectTimeout   connection timeout
- * @param idleTimeout      operation-time idle timeout
+ * @param idleTimeout      non-negative operation-time idle timeout; zero disables enforcement
+ * @param kcpWireVersion   KCP wire-format version, either {@code 1} or {@code 2}
  * @author Kimi Liu
  * @since Java 21+
  */
 public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int ioThreads,
-        Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration connectTimeout,
-        Duration idleTimeout) {
+        Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration idleTimeout,
+        int kcpWireVersion) {
+
+    /**
+     * Typed option for a Socket-specific TLS policy.
+     * <p>
+     * Absence and explicit null both fall back to {@link TlsPolicy#OPTION}.
+     */
+    public static final Options.Key<TlsPolicy> TLS_POLICY = Options.key("socket.tlsPolicy", TlsPolicy.class);
 
     /**
      * Creates validated options.
+     *
+     * @param readBufferSize   read buffer size in bytes
+     * @param writeChunkSize   maximum bytes per low-level write
+     * @param writeChunkCount  retained write-chunk count hint
+     * @param backlog          TCP server accept backlog
+     * @param ioThreads        asynchronous I/O worker count
+     * @param socketOptions    JDK socket options copied into the snapshot
+     * @param retainReadBuffer whether sessions reuse their read buffer
+     * @param idleTimeout      operation-time idle timeout
+     * @param kcpWireVersion   supported KCP wire format version
      */
     public SocketOptions {
         readBufferSize = positive(readBufferSize, "Read buffer size");
@@ -63,14 +81,14 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         backlog = positive(backlog, "Backlog");
         ioThreads = positive(ioThreads, "I/O thread count");
         socketOptions = snapshotSocketOptions(socketOptions);
-        connectTimeout = timeout(connectTimeout, "Connect timeout");
         idleTimeout = timeout(idleTimeout, "Idle timeout");
+        kcpWireVersion = wireVersion(kcpWireVersion);
     }
 
     /**
      * Returns defaults.
      *
-     * @return defaults
+     * @return shared immutable defaults using the current processor count for AIO threads
      */
     public static SocketOptions defaults() {
         return Instances.get(
@@ -81,7 +99,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     /**
      * Creates a builder.
      *
-     * @return builder
+     * @return new builder seeded with socket defaults
      */
     public static Builder builder() {
         return new Builder();
@@ -90,51 +108,165 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     /**
      * Recreates socket options from a generic fabric option map.
      *
-     * @param options options
-     * @return socket options
+     * @param options non-null generic option map containing supported socket option keys
+     * @return validated socket options, with KCP wire version left at its builder default
      */
-    @SuppressWarnings("unchecked")
     public static SocketOptions from(final Options options) {
         final Options checkedOptions = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
         final Builder builder = builder();
         builder.readBufferSize(number(checkedOptions, OPTION_SOCKET_READ_BUFFER_SIZE, Normal._8192));
         builder.writeChunkSize(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_SIZE, Normal._8192));
         builder.writeChunkCount(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_COUNT, Normal._16));
-        builder.backlog(number(checkedOptions, OPTION_SOCKET_BACKLOG, _1000));
+        builder.backlog(number(checkedOptions, OPTION_SOCKET_BACKLOG, (int) Normal.KILO));
         builder.ioThreads(
                 number(
                         checkedOptions,
                         OPTION_SOCKET_IO_THREADS,
                         Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
-        final Object rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
-        if (rawSocketOptions instanceof Map<?, ?> map) {
-            for (final Map.Entry<?, ?> entry : map.entrySet()) {
+        final Map<?, ?> rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
+        if (rawSocketOptions != null) {
+            for (final Map.Entry<?, ?> entry : rawSocketOptions.entrySet()) {
                 if (!(entry.getKey() instanceof SocketOption<?> option)) {
                     throw new ValidateException("Socket option key must be a SocketOption");
                 }
                 builder.socketOption((SocketOption<Object>) option, entry.getValue());
             }
-        } else if (rawSocketOptions != null) {
-            throw new ValidateException("Socket options value must be a map");
         }
         builder.retainReadBuffer(bool(checkedOptions, OPTION_SOCKET_RETAIN_READ_BUFFER, false));
-        builder.connectTimeout(duration(checkedOptions, OPTION_SOCKET_CONNECT_TIMEOUT, Duration.ofSeconds(Normal._10)));
         builder.idleTimeout(duration(checkedOptions, OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
         return builder.build();
     }
 
     /**
-     * Converts to generic fabric options.
+     * Returns these socket settings as generic fabric options.
      *
-     * @return options
+     * @return generic option map containing all represented settings except the KCP wire version
      */
-    public Options toOptions() {
+    public Options options() {
         return Options.empty().with(OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
                 .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
                 .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
                 .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
-                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer)
-                .with(OPTION_SOCKET_CONNECT_TIMEOUT, connectTimeout).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+    }
+
+    /**
+     * Validates strictly positive numeric socket options.
+     *
+     * @param value integer candidate to validate
+     * @param name  option name used in validation messages
+     * @return validated value
+     */
+    private static int positive(final int value, final String name) {
+        if (value <= Normal._0) {
+            throw new ValidateException(name + " must be positive");
+        }
+        return value;
+    }
+
+    /**
+     * Validates timeout options while allowing zero to disable idle enforcement.
+     *
+     * @param value duration candidate to validate
+     * @param name  option name used in validation messages
+     * @return validated timeout
+     */
+    private static Duration timeout(final Duration value, final String name) {
+        final Duration checkedValue = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (checkedValue.isNegative()) {
+            throw new ValidateException(name + " must be non-negative");
+        }
+        return checkedValue;
+    }
+
+    /**
+     * Validates a KCP wire-format version.
+     *
+     * @param value KCP wire-format version candidate
+     * @return validated wire-format version
+     */
+    private static int wireVersion(final int value) {
+        if (value != Normal._1 && value != Normal._2) {
+            throw new ValidateException("KCP wire version must be 1 or 2");
+        }
+        return value;
+    }
+
+    /**
+     * Copies caller-provided JDK socket options into an immutable map.
+     *
+     * @param values caller-provided socket-option map, or null for no options
+     * @return immutable option snapshot
+     */
+    private static Map<SocketOption<?>, Object> snapshotSocketOptions(final Map<SocketOption<?>, Object> values) {
+        if (values == null) {
+            return Map.of();
+        }
+        final LinkedHashMap<SocketOption<?>, Object> copy = new LinkedHashMap<>();
+        values.forEach((option, value) -> {
+            if (option == null || value == null) {
+                throw new ValidateException("Socket option and value must not be null");
+            }
+            copy.put(option, value);
+        });
+        return Collections.unmodifiableMap(copy);
+    }
+
+    /**
+     * Reads an integer socket option from a generic fabric option map.
+     *
+     * @param options  generic option map to read
+     * @param key      typed integer option key
+     * @param fallback value returned when the key is absent
+     * @return non-null configured integer or the fallback
+     */
+    private static int number(final Options options, final Options.Key<Integer> key, final int fallback) {
+        final Integer value = options.get(key);
+        if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Numeric socket option must not be null");
+            }
+            return fallback;
+        }
+        return value;
+    }
+
+    /**
+     * Reads a boolean socket option from a generic fabric option map.
+     *
+     * @param options  generic option map to read
+     * @param key      typed boolean option key
+     * @param fallback value returned when the key is absent
+     * @return non-null configured boolean or the fallback
+     */
+    private static boolean bool(final Options options, final Options.Key<Boolean> key, final boolean fallback) {
+        final Boolean value = options.get(key);
+        if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Boolean socket option must not be null");
+            }
+            return fallback;
+        }
+        return value;
+    }
+
+    /**
+     * Reads a duration socket option from a generic fabric option map.
+     *
+     * @param options  generic option map to read
+     * @param key      typed duration option key
+     * @param fallback value returned when the key is absent
+     * @return non-null configured duration or the fallback
+     */
+    private static Duration duration(final Options options, final Options.Key<Duration> key, final Duration fallback) {
+        final Duration value = options.get(key);
+        if (value == null) {
+            if (options.contains(key)) {
+                throw new ValidateException("Duration socket option must not be null");
+            }
+            return fallback;
+        }
+        return value;
     }
 
     /**
@@ -160,7 +292,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Mutable TCP server backlog candidate.
          */
-        private int backlog = _1000;
+        private int backlog = (int) Normal.KILO;
 
         /**
          * Mutable AIO I/O thread count candidate.
@@ -178,14 +310,14 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         private boolean retainReadBuffer;
 
         /**
-         * Mutable connection timeout candidate.
-         */
-        private Duration connectTimeout = Duration.ofSeconds(Normal._10);
-
-        /**
          * Mutable idle timeout candidate.
          */
         private Duration idleTimeout = Duration.ZERO;
+
+        /**
+         * Mutable KCP wire-format version candidate.
+         */
+        private int kcpWireVersion = Normal._1;
 
         /**
          * Creates a builder seeded with socket defaults.
@@ -197,7 +329,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Sets the per-session read buffer size.
          *
-         * @param value byte size
+         * @param value positive per-session buffer size in bytes
          * @return this builder
          */
         public Builder readBufferSize(final int value) {
@@ -208,7 +340,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Sets the maximum bytes submitted in one low-level write chunk.
          *
-         * @param value byte size
+         * @param value positive maximum write-chunk size in bytes
          * @return this builder
          */
         public Builder writeChunkSize(final int value) {
@@ -219,7 +351,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Sets the retained write chunk count hint.
          *
-         * @param value chunk count
+         * @param value positive retained chunk count hint
          * @return this builder
          */
         public Builder writeChunkCount(final int value) {
@@ -230,7 +362,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Sets the TCP server listen backlog.
          *
-         * @param value backlog
+         * @param value positive listen backlog
          * @return this builder
          */
         public Builder backlog(final int value) {
@@ -241,7 +373,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Sets the AIO read I/O thread count.
          *
-         * @param value I/O thread count
+         * @param value positive AIO worker count
          * @return this builder
          */
         public Builder ioThreads(final int value) {
@@ -252,8 +384,8 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Adds a JDK socket option for client channels.
          *
-         * @param option socket option
-         * @param value  option value
+         * @param option non-null typed JDK socket option
+         * @param value  non-null value for that option
          * @param <T>    option value type
          * @return this builder
          */
@@ -269,7 +401,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Adds JDK socket options for client channels.
          *
-         * @param values socket option values
+         * @param values non-null socket-option map whose keys and values must all be non-null
          * @return this builder
          */
         public Builder socketOptions(final Map<SocketOption<?>, ?> values) {
@@ -296,20 +428,9 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         }
 
         /**
-         * Sets the connection timeout.
-         *
-         * @param value timeout
-         * @return this builder
-         */
-        public Builder connectTimeout(final Duration value) {
-            connectTimeout = timeout(value, "Connect timeout");
-            return this;
-        }
-
-        /**
          * Sets the operation-time idle timeout.
          *
-         * @param value timeout
+         * @param value non-null, non-negative timeout; zero disables idle enforcement
          * @return this builder
          */
         public Builder idleTimeout(final Duration value) {
@@ -318,121 +439,26 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         }
 
         /**
+         * Sets the KCP wire-format version.
+         *
+         * @param value wire-format version, either {@code 1} or {@code 2}
+         * @return this builder
+         */
+        public Builder kcpWireVersion(final int value) {
+            kcpWireVersion = wireVersion(value);
+            return this;
+        }
+
+        /**
          * Builds immutable socket options.
          *
-         * @return socket options
+         * @return validated immutable snapshot of the current builder state
          */
         public SocketOptions build() {
             return new SocketOptions(readBufferSize, writeChunkSize, writeChunkCount, backlog, ioThreads, socketOptions,
-                    retainReadBuffer, connectTimeout, idleTimeout);
+                    retainReadBuffer, idleTimeout, kcpWireVersion);
         }
 
-    }
-
-    /**
-     * Validates strictly positive numeric socket options.
-     *
-     * @param value option value
-     * @param name  option name used in validation messages
-     * @return validated value
-     */
-    private static int positive(final int value, final String name) {
-        if (value <= Normal._0) {
-            throw new ValidateException(name + " must be positive");
-        }
-        return value;
-    }
-
-    /**
-     * Validates timeout options while allowing zero to disable idle enforcement.
-     *
-     * @param value timeout value
-     * @param name  option name used in validation messages
-     * @return validated timeout
-     */
-    private static Duration timeout(final Duration value, final String name) {
-        final Duration checkedValue = Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
-        if (checkedValue.isNegative()) {
-            throw new ValidateException(name + " must be non-negative");
-        }
-        return checkedValue;
-    }
-
-    /**
-     * Copies caller-provided JDK socket options into an immutable map.
-     *
-     * @param values socket option values
-     * @return immutable option snapshot
-     */
-    private static Map<SocketOption<?>, Object> snapshotSocketOptions(final Map<SocketOption<?>, Object> values) {
-        if (values == null) {
-            return Map.of();
-        }
-        final LinkedHashMap<SocketOption<?>, Object> copy = new LinkedHashMap<>();
-        values.forEach((option, value) -> {
-            if (option == null || value == null) {
-                throw new ValidateException("Socket option and value must not be null");
-            }
-            copy.put(option, value);
-        });
-        return Collections.unmodifiableMap(copy);
-    }
-
-    /**
-     * Reads an integer socket option from a generic fabric option map.
-     *
-     * @param options  option map
-     * @param key      option key
-     * @param fallback fallback when absent
-     * @return option value
-     */
-    private static int number(final Options options, final String key, final int fallback) {
-        final Object value = options.get(key);
-        if (value == null) {
-            return fallback;
-        }
-        if (!(value instanceof Number number)) {
-            throw new ValidateException(key + " must be numeric");
-        }
-        return number.intValue();
-    }
-
-    /**
-     * Reads a boolean socket option from a generic fabric option map.
-     *
-     * @param options  option map
-     * @param key      option key
-     * @param fallback fallback when absent
-     * @return option value
-     */
-    private static boolean bool(final Options options, final String key, final boolean fallback) {
-        final Object value = options.get(key);
-        if (value == null) {
-            return fallback;
-        }
-        if (!(value instanceof Boolean bool)) {
-            throw new ValidateException(key + " must be boolean");
-        }
-        return bool;
-    }
-
-    /**
-     * Reads a duration socket option from a generic fabric option map.
-     *
-     * @param options  option map
-     * @param key      option key
-     * @param fallback fallback when absent
-     * @return option value
-     */
-    private static Duration duration(final Options options, final String key, final Duration fallback) {
-        final Object value = options.get(key);
-        if (value == null) {
-            return fallback;
-        }
-        if (!(value instanceof Duration duration)) {
-            throw new ValidateException(key + " must be a Duration");
-        }
-        return duration;
     }
 
 }

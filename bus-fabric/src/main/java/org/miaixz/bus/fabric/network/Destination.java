@@ -26,36 +26,64 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
+import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 
 /**
  * Immutable destination for grouping reusable network connections.
  *
- * @param protocol bus protocol
- * @param address  target address
- * @param options  immutable options
  * @author Kimi Liu
  * @since Java 21+
  */
-public record Destination(Protocol protocol, Address address, Options options) {
+public final class Destination {
+
+    /**
+     * Application protocol used for pooling.
+     */
+    private final Protocol protocol;
+
+    /**
+     * Remote network address.
+     */
+    private final Address address;
+
+    /**
+     * Normalized connection-reuse option identity.
+     */
+    private final Options options;
+
+    /**
+     * Precomputed hash because pool lookups reuse this immutable key several times per acquisition.
+     */
+    private final int hashCode;
 
     /**
      * Creates a connection destination.
+     *
+     * @param protocol application protocol used for pooling
+     * @param address  remote network address
+     * @param options  source options reduced to connection-reuse identity
+     * @throws ValidateException if a required component is {@code null} or a retained boolean or proxy option has the
+     *                           wrong type
      */
-    public Destination {
-        protocol = Assert.notNull(protocol, () -> new ValidateException("Connection protocol must not be null"));
-        address = Assert.notNull(address, () -> new ValidateException("Connection address must not be null"));
-        options = Options.from(
-                Assert.notNull(options, () -> new ValidateException("Connection options must not be null")).asMap());
+    public Destination(final Protocol protocol, final Address address, final Options options) {
+        this.protocol = Assert.notNull(protocol, () -> new ValidateException("Connection protocol must not be null"));
+        this.address = Assert.notNull(address, () -> new ValidateException("Connection address must not be null"));
+        this.options = stableOptions(
+                Assert.notNull(options, () -> new ValidateException("Connection options must not be null")));
+        this.hashCode = computeHashCode();
     }
 
     /**
      * Creates a connection destination.
      *
-     * @param protocol protocol
-     * @param address  address
-     * @param options  options
-     * @return connection destination
+     * @param protocol application protocol used for pooling
+     * @param address  remote network address
+     * @param options  source options reduced to connection-reuse identity
+     * @return immutable normalized connection destination
+     * @throws ValidateException if a required argument is {@code null} or a retained boolean or proxy option has the
+     *                           wrong type
      */
     public static Destination of(final Protocol protocol, final Address address, final Options options) {
         return new Destination(protocol, address, options);
@@ -64,9 +92,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns the protocol.
      *
-     * @return protocol
+     * @return application protocol used for pooling
      */
-    @Override
     public Protocol protocol() {
         return protocol;
     }
@@ -74,9 +101,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns the address.
      *
-     * @return address
+     * @return remote network address
      */
-    @Override
     public Address address() {
         return address;
     }
@@ -84,9 +110,8 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns the options.
      *
-     * @return options
+     * @return normalized immutable connection-reuse option subset
      */
-    @Override
     public Options options() {
         return options;
     }
@@ -94,53 +119,130 @@ public record Destination(Protocol protocol, Address address, Options options) {
     /**
      * Returns whether this destination describes a secure connection.
      *
-     * @return true when secure
+     * @return {@code true} when the address is secure or either retained TLS or secure option is explicitly true
      */
     public boolean secure() {
-        return address.secure() || Boolean.TRUE.equals(options.get("tls"))
-                || Boolean.TRUE.equals(options.get("secure"));
+        return address.secure() || Boolean.TRUE.equals(options.get(Builder.OPTION_TLS))
+                || Boolean.TRUE.equals(options.get(Builder.OPTION_SECURE));
     }
 
     /**
      * Returns whether this destination can share a single physical connection across concurrent logical streams.
      *
-     * @return true when multiplex capable
+     * @return explicit multiplex option when present; otherwise {@code true} for HTTP/2 protocol identities
      */
     public boolean multiplex() {
-        final Object explicit = options.get("multiplex");
-        if (explicit instanceof Boolean enabled) {
-            return enabled;
+        final Boolean explicit = options.get(Builder.OPTION_MULTIPLEX);
+        if (explicit != null) {
+            return explicit;
         }
         if (protocol == Protocol.HTTP_2 || protocol == Protocol.H2_PRIOR_KNOWLEDGE) {
             return true;
         }
-        final Object selected = options.get("protocol");
-        return selected != null
-                && ("h2".equalsIgnoreCase(selected.toString()) || "http/2".equalsIgnoreCase(selected.toString())
-                        || "h2_prior_knowledge".equalsIgnoreCase(selected.toString()));
+        final String selected = options.get(Builder.OPTION_PROTOCOL);
+        return selected != null && (Protocol.HTTP_2.name.equalsIgnoreCase(selected)
+                || "http/2".equalsIgnoreCase(selected) || Protocol.H2_PRIOR_KNOWLEDGE.name.equalsIgnoreCase(selected));
     }
 
     /**
      * Returns maximum concurrent logical streams for a multiplex destination.
      *
-     * @return stream capacity
+     * @return configured positive stream limit, or 100 when no limit is retained
+     * @throws ValidateException if the retained stream limit is not positive
      */
     public int maxMultiplexStreams() {
-        final Object value = options.get("maxMultiplexStreams") == null ? options.get("maxConcurrentStreams")
-                : options.get("maxMultiplexStreams");
+        final Integer value = options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS);
         if (value == null) {
             return Normal._100;
         }
-        final int parsed = value instanceof Number number ? number.intValue() : Integer.parseInt(value.toString());
-        Assert.isTrue(parsed > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
-        return parsed;
+        Assert.isTrue(value > Normal._0, () -> new ValidateException("Max multiplex streams must be positive"));
+        return value;
+    }
+
+    /**
+     * Builds the stable option subset used as part of a connection reuse key.
+     *
+     * @param source complete source option snapshot
+     * @return immutable subset containing only normalized connection-reuse identity options
+     */
+    private static Options stableOptions(final Options source) {
+        Options stable = Options.empty();
+        stable = copyBoolean(source, stable, Builder.OPTION_TLS);
+        stable = copyBoolean(source, stable, Builder.OPTION_SECURE);
+        stable = copyBoolean(source, stable, Builder.OPTION_MULTIPLEX);
+        stable = copy(source, stable, Builder.OPTION_PROTOCOL);
+        stable = copy(source, stable, Builder.OPTION_MAX_MULTIPLEX_STREAMS);
+        stable = copy(source, stable, TlsPolicy.OPTION);
+        stable = copyProxy(source, stable);
+        return copyBoolean(source, stable, Builder.OPTION_ROUTE_TUNNEL);
+    }
+
+    /**
+     * Copies one present typed option when its value is non-null.
+     *
+     * @param source source options inspected for the typed key
+     * @param target accumulated stable option subset
+     * @param key    typed option key to copy
+     * @param <T>    option value type
+     * @return target unchanged when absent or null; otherwise a new snapshot containing the value
+     */
+    private static <T> Options copy(final Options source, final Options target, final Options.Key<T> key) {
+        if (!source.contains(key)) {
+            return target;
+        }
+        final T value = source.get(key);
+        return value == null ? target : target.with(key, value);
+    }
+
+    /**
+     * Copies a canonical true boolean from a typed key or legacy string key.
+     *
+     * @param source source options inspected for typed and legacy forms
+     * @param target accumulated stable option subset
+     * @param key    canonical typed boolean key
+     * @return target containing canonical {@code true}, or unchanged when absent, null, or false
+     * @throws ValidateException if a selected non-null value is not boolean
+     */
+    private static Options copyBoolean(final Options source, final Options target, final Options.Key<Boolean> key) {
+        final Object value = source.get(key);
+        if (value == null || Boolean.FALSE.equals(value)) {
+            return target;
+        }
+        if (!(value instanceof Boolean current)) {
+            throw new ValidateException("Connection option " + key.name() + " must be boolean");
+        }
+        return current ? target.with(key, Boolean.TRUE) : target;
+    }
+
+    /**
+     * Copies and normalizes the typed proxy identity.
+     *
+     * @param source source options inspected for canonical or legacy proxy identity
+     * @param target accumulated stable option subset
+     * @return target containing a trimmed non-direct proxy identifier, or unchanged for absent or direct routing
+     * @throws ValidateException if a selected non-null proxy value is not a string
+     */
+    private static Options copyProxy(final Options source, final Options target) {
+        final Object value = source.get(Builder.OPTION_ROUTE_PROXY);
+        if (value == null) {
+            return target;
+        }
+        if (!(value instanceof String proxy)) {
+            throw new ValidateException("Connection route proxy must be a string");
+        }
+        final String normalized = proxy.trim();
+        if (normalized.isEmpty() || Builder.PROXY_PLAN_DIRECT_ID.equalsIgnoreCase(normalized)) {
+            return target;
+        }
+        return target.with(Builder.OPTION_ROUTE_PROXY, normalized);
     }
 
     /**
      * Compares destinations by value, including option snapshots.
      *
-     * @param other other object
-     * @return true when equal
+     * @param other object compared with this normalized destination
+     * @return {@code true} when protocol, address, retained option values, and complete TLS-policy identity are
+     *         equivalent
      */
     @Override
     public boolean equals(final Object other) {
@@ -151,7 +253,18 @@ public record Destination(Protocol protocol, Address address, Options options) {
             return false;
         }
         return protocol == that.protocol && address.equals(that.address)
-                && options.asMap().equals(that.options.asMap());
+                && Objects.equals(options.get(Builder.OPTION_TLS), that.options.get(Builder.OPTION_TLS))
+                && Objects.equals(options.get(Builder.OPTION_SECURE), that.options.get(Builder.OPTION_SECURE))
+                && Objects.equals(options.get(Builder.OPTION_MULTIPLEX), that.options.get(Builder.OPTION_MULTIPLEX))
+                && Objects.equals(options.get(Builder.OPTION_PROTOCOL), that.options.get(Builder.OPTION_PROTOCOL))
+                && Objects.equals(
+                        options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS),
+                        that.options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS))
+                && sameTlsPolicy(that)
+                && Objects.equals(options.get(Builder.OPTION_ROUTE_PROXY), that.options.get(Builder.OPTION_ROUTE_PROXY))
+                && Objects.equals(
+                        options.get(Builder.OPTION_ROUTE_TUNNEL),
+                        that.options.get(Builder.OPTION_ROUTE_TUNNEL));
     }
 
     /**
@@ -161,7 +274,56 @@ public record Destination(Protocol protocol, Address address, Options options) {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(protocol, address, options.asMap());
+        return hashCode;
+    }
+
+    /**
+     * Computes the immutable connection-key hash once during construction.
+     */
+    private int computeHashCode() {
+        int result = 31 * protocol.hashCode() + address.hashCode();
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_TLS));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_SECURE));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_MULTIPLEX));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_PROTOCOL));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS));
+        result = 31 * result + System.identityHashCode(contextIdentity(options));
+        result = 31 * result + Objects.hashCode(settings(options));
+        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_ROUTE_PROXY));
+        return 31 * result + Objects.hashCode(options.get(Builder.OPTION_ROUTE_TUNNEL));
+    }
+
+    /**
+     * Compares complete TLS policies by wrapped-context identity and immutable settings value.
+     *
+     * @param other normalized destination whose TLS policy is compared
+     * @return {@code true} when context identities and settings match
+     */
+    private boolean sameTlsPolicy(final Destination other) {
+        return contextIdentity(options) == contextIdentity(other.options)
+                && Objects.equals(settings(options), settings(other.options));
+    }
+
+    /**
+     * Returns stable wrapped SSL context identity without materializing an option map.
+     *
+     * @param source normalized options containing an optional complete TLS policy
+     * @return wrapped SSL-context identity reference, or {@code null} when no policy is retained
+     */
+    private static Object contextIdentity(final Options source) {
+        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
+        return policy == null ? null : policy.context().identity();
+    }
+
+    /**
+     * Returns stable TLS settings retained by a destination.
+     *
+     * @param source normalized options containing an optional complete TLS policy
+     * @return immutable TLS settings, or {@code null} when no policy is retained
+     */
+    private static Object settings(final Options source) {
+        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
+        return policy == null ? null : policy.settings();
     }
 
 }

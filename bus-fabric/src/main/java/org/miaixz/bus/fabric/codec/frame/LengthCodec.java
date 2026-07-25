@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
+
+import java.io.EOFException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Length-based frame codec for binary protocols that prefix payloads with a length value.
@@ -39,34 +39,34 @@ import org.miaixz.bus.fabric.Builder;
 public final class LengthCodec implements FrameCodec {
 
     /**
-     * Length field offset.
+     * Number of zero-prefixed header bytes before the length field.
      */
     private final int lengthFieldOffset;
 
     /**
-     * Length field byte count.
+     * Width of the unsigned big-endian length field in bytes.
      */
     private final int lengthFieldSize;
 
     /**
-     * Whether the encoded length includes the header.
+     * Whether the encoded field value represents the complete frame rather than only the payload.
      */
     private final boolean lengthIncludesHeader;
 
     /**
-     * Maximum payload length.
+     * Maximum decoded or encoded payload size in bytes.
      */
     private final int maxPayloadLength;
 
     /**
-     * Decoder buffer.
+     * Accumulator retaining incomplete frame bytes across decode calls.
      */
     private final Buffer buffer = new Buffer();
 
     /**
-     * Creates a codec.
+     * Creates a codec from a validated builder snapshot.
      *
-     * @param builder builder
+     * @param builder builder containing length-field configuration
      */
     private LengthCodec(final Builder builder) {
         this.lengthFieldOffset = validateOffset(builder.lengthFieldOffset);
@@ -76,28 +76,31 @@ public final class LengthCodec implements FrameCodec {
     }
 
     /**
-     * Creates the default codec.
+     * Creates a codec with a four-byte payload-length field at offset zero and a 16 MiB payload limit.
      *
-     * @return codec
+     * @return codec with default length-field configuration
      */
     public static LengthCodec create() {
         return builder().build();
     }
 
     /**
-     * Creates a builder.
+     * Creates a builder initialized with the default length-field configuration.
      *
-     * @return builder
+     * @return new length-codec builder
      */
     public static Builder builder() {
         return new Builder();
     }
 
     /**
-     * Decodes length-field frames.
+     * Appends non-empty input to the decoder accumulator and emits every complete length-field frame available.
      *
-     * @param input input bytes
-     * @return decoded frames
+     * @param input non-empty bytes consumed into the decoder accumulator
+     * @return immutable list of frames completed by this call, possibly empty when more bytes are required
+     * @throws ValidateException if {@code input} is {@code null} or empty
+     * @throws ProtocolException if a length field is invalid or exceeds configured limits
+     * @throws InternalException if a complete frame cannot be read from the accumulator
      */
     @Override
     public List<Frame> decode(final Buffer input) {
@@ -125,7 +128,7 @@ public final class LengthCodec implements FrameCodec {
                 buffer.skip(lengthFieldOffset);
                 buffer.skip(lengthFieldSize);
                 frames.add(Frame.of(buffer.readByteString(payloadLength)));
-            } catch (final java.io.EOFException e) {
+            } catch (final EOFException e) {
                 throw new InternalException("Unable to read length-field frame", e);
             }
         }
@@ -133,10 +136,13 @@ public final class LengthCodec implements FrameCodec {
     }
 
     /**
-     * Encodes a frame.
+     * Writes offset padding, a big-endian length field, and the frame payload to a destination buffer.
      *
-     * @param frame  frame
-     * @param output encoded byte destination
+     * @param frame  frame whose payload is encoded
+     * @param output destination to which encoded bytes are appended
+     * @throws ValidateException if {@code frame} or {@code output} is {@code null}
+     * @throws ProtocolException if the payload exceeds the configured maximum or its encoded length does not fit the
+     *                           configured field width
      */
     @Override
     public void encode(final Frame frame, final Buffer output) {
@@ -157,7 +163,7 @@ public final class LengthCodec implements FrameCodec {
     }
 
     /**
-     * Resets buffered bytes.
+     * Discards all incomplete bytes retained by the decoder accumulator.
      */
     @Override
     public void reset() {
@@ -167,7 +173,7 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Returns the header length.
      *
-     * @return header length
+     * @return number of bytes preceding the payload
      */
     private int headerLength() {
         return lengthFieldOffset + lengthFieldSize;
@@ -176,10 +182,11 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Reads a big-endian length value.
      *
-     * @param buffer frame buffer
-     * @param offset field offset
-     * @param size   field size
-     * @return length value
+     * @param buffer frame accumulator containing the complete header
+     * @param offset zero-based byte offset of the length field
+     * @param size   width of the length field in bytes
+     * @return non-negative decoded length value
+     * @throws ProtocolException if an eight-byte field exceeds the signed {@code long} range
      */
     private static long readLength(final Buffer buffer, final int offset, final int size) {
         long value = 0L;
@@ -196,9 +203,9 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Writes a big-endian length value.
      *
-     * @param target target buffer
-     * @param value  length value
-     * @param size   field size
+     * @param target destination buffer receiving the field bytes
+     * @param value  validated non-negative length value
+     * @param size   width of the length field in bytes
      */
     private static void writeLength(final Buffer target, final long value, final int size) {
         for (int shift = (size - 1) * Byte.SIZE; shift >= 0; shift -= Byte.SIZE) {
@@ -209,7 +216,8 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Validates input bytes.
      *
-     * @param input input bytes
+     * @param input decoder input to validate
+     * @throws ValidateException if {@code input} is {@code null} or empty
      */
     private static void validateInput(final Buffer input) {
         Assert.isTrue(
@@ -220,8 +228,9 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Validates length field offset.
      *
-     * @param offset offset
-     * @return validated offset
+     * @param offset number of bytes preceding the length field
+     * @return validated offset in the inclusive range 0 through 1024
+     * @throws ValidateException if {@code offset} is outside the supported range
      */
     private static int validateOffset(final int offset) {
         Assert.isTrue(
@@ -233,8 +242,9 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Validates length field size.
      *
-     * @param size size
-     * @return validated size
+     * @param size requested field width in bytes
+     * @return validated field width of 1, 2, 4, or 8 bytes
+     * @throws ValidateException if {@code size} is not a supported width
      */
     private static int validateSize(final int size) {
         Assert.isTrue(
@@ -247,7 +257,8 @@ public final class LengthCodec implements FrameCodec {
      * Validates maximum payload length.
      *
      * @param maxPayloadLength maximum payload length
-     * @return validated length
+     * @return validated positive payload limit
+     * @throws ValidateException if {@code maxPayloadLength} is not positive
      */
     private static int validateMaxPayloadLength(final int maxPayloadLength) {
         Assert.isTrue(maxPayloadLength > 0, () -> new ValidateException("Maximum payload length must be positive"));
@@ -257,8 +268,9 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Validates an encodable length value.
      *
-     * @param value length value
-     * @param size  field size
+     * @param value length value to validate
+     * @param size  configured field width in bytes
+     * @throws ProtocolException if {@code value} is negative or does not fit the field width
      */
     private static void validateEncodableLength(final long value, final int size) {
         if (value < 0 || value > maxEncodable(size)) {
@@ -269,8 +281,8 @@ public final class LengthCodec implements FrameCodec {
     /**
      * Returns the maximum encodable unsigned value for a field size.
      *
-     * @param size field size
-     * @return maximum value
+     * @param size field width in bytes
+     * @return largest non-negative value supported by the field width and a signed {@code long}
      */
     private static long maxEncodable(final int size) {
         return size == Long.BYTES ? Long.MAX_VALUE : (1L << (size * Byte.SIZE)) - 1L;
@@ -282,24 +294,24 @@ public final class LengthCodec implements FrameCodec {
     public static final class Builder {
 
         /**
-         * Length field offset.
+         * Number of zero-prefixed bytes before the length field.
          */
         private int lengthFieldOffset;
 
         /**
-         * Length field size.
+         * Width of the unsigned big-endian length field in bytes.
          */
         private int lengthFieldSize = Integer.BYTES;
 
         /**
-         * Whether length includes header bytes.
+         * Whether the encoded field value includes padding and length-field bytes.
          */
         private boolean lengthIncludesHeader;
 
         /**
-         * Maximum payload length.
+         * Maximum permitted payload size in bytes.
          */
-        private int maxPayloadLength = (int) (Normal._16 * Normal.MEBI);
+        private int maxPayloadLength = (int) org.miaixz.bus.fabric.Builder.BYTES_16_MIB;
 
         /**
          * Creates a builder.
@@ -311,8 +323,9 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Sets the length field offset.
          *
-         * @param value offset
+         * @param value number of zero-prefixed bytes before the length field
          * @return this builder
+         * @throws ValidateException if {@code value} is outside the inclusive range 0 through 1024
          */
         public Builder lengthFieldOffset(final int value) {
             this.lengthFieldOffset = validateOffset(value);
@@ -322,8 +335,9 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Sets the length field size.
          *
-         * @param value size
+         * @param value requested field width of 1, 2, 4, or 8 bytes
          * @return this builder
+         * @throws ValidateException if {@code value} is not a supported width
          */
         public Builder lengthFieldSize(final int value) {
             this.lengthFieldSize = validateSize(value);
@@ -333,7 +347,7 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Sets whether length includes header bytes.
          *
-         * @param value true when length includes header bytes
+         * @param value {@code true} to encode total frame length; {@code false} to encode payload length
          * @return this builder
          */
         public Builder lengthIncludesHeader(final boolean value) {
@@ -344,8 +358,9 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Sets the maximum payload length.
          *
-         * @param value maximum payload length
+         * @param value positive maximum payload size in bytes
          * @return this builder
+         * @throws ValidateException if {@code value} is not positive
          */
         public Builder maxPayloadLength(final int value) {
             this.maxPayloadLength = validateMaxPayloadLength(value);
@@ -355,7 +370,7 @@ public final class LengthCodec implements FrameCodec {
         /**
          * Builds the codec.
          *
-         * @return codec
+         * @return codec containing the current validated builder configuration
          */
         public LengthCodec build() {
             return new LengthCodec(this);

@@ -222,11 +222,6 @@ public final class Callout {
     private static final class Client {
 
         /**
-         * Normalized timeout in milliseconds.
-         */
-        private final long timeoutMs;
-
-        /**
          * Shared current fabric context.
          */
         private final Context context;
@@ -243,9 +238,8 @@ public final class Callout {
          */
         private Client(long timeoutMs) {
             Logger.debug(true, "Cortex", "Callout HTTP client creation started: timeoutMs={}", timeoutMs);
-            this.timeoutMs = timeoutMs;
-            Duration timeout = Duration.ofMillis(timeoutMs);
-            this.context = Context.create().withOptions(Options.of("timeout", Timeout.of(timeout)));
+            final Timeout timeout = Timeout.of(Duration.ofMillis(timeoutMs));
+            this.context = Context.builder().options(timeout.from(Options.empty())).build();
             this.calls = ConcurrentHashMap.newKeySet();
             Logger.debug(false, "Cortex", "Callout HTTP client created: timeoutMs={}", timeoutMs);
         }
@@ -257,7 +251,7 @@ public final class Callout {
          * @return local result snapshot
          */
         private Result get(String url) {
-            return execute(() -> Fabric.http(context).timeout(Duration.ofMillis(timeoutMs)).get(url).build().call());
+            return execute(() -> Fabric.http(context).get(url).build().call());
         }
 
         /**
@@ -268,9 +262,7 @@ public final class Callout {
          * @return local result snapshot
          */
         private Result postJson(String url, String body) {
-            return execute(
-                    () -> Fabric.http(context).timeout(Duration.ofMillis(timeoutMs)).post(url)
-                            .json(body == null ? "" : body).build().call());
+            return execute(() -> Fabric.http(context).post(url).json(body == null ? "" : body).build().call());
         }
 
         /**
@@ -284,12 +276,14 @@ public final class Callout {
             try {
                 call = supplier.get();
                 calls.add(call);
-                HttpResponse response = call.execute();
-                int status = response.code();
-                try {
-                    return new Result(ResultState.RESPONDED, status, response.decode(TEXT_CODEC, String.class), null);
-                } catch (RuntimeException e) {
-                    return new Result(ResultState.FAILED, status, null, e);
+                try (HttpResponse response = call.execute()) {
+                    int status = response.code();
+                    try {
+                        return new Result(ResultState.RESPONDED, status, response.decode(TEXT_CODEC, String.class),
+                                null);
+                    } catch (RuntimeException e) {
+                        return new Result(ResultState.FAILED, status, null, e);
+                    }
                 }
             } catch (RuntimeException e) {
                 return new Result(isTimeout(e) ? ResultState.TIMEOUT : ResultState.FAILED, 0, null, e);
@@ -314,7 +308,7 @@ public final class Callout {
             }
             calls.clear();
             try {
-                context.reactor().close();
+                context.close();
             } catch (RuntimeException e) {
                 failure = e;
             }

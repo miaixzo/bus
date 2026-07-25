@@ -22,9 +22,11 @@ package org.miaixz.bus.storage;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.storage.magic.Blob;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
 /**
@@ -41,7 +43,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The name of the file to download.
      * @return A {@link Message} containing the result of the operation, including the file stream if successful.
      */
-    Message download(String fileName);
+    Message<byte[]> download(String fileName);
 
     /**
      * Downloads a file from a specified bucket as a stream.
@@ -50,7 +52,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The name of the file to download.
      * @return A {@link Message} containing the result of the operation, including the file stream if successful.
      */
-    Message download(String bucket, String fileName);
+    Message<byte[]> download(String bucket, String fileName);
 
     /**
      * Downloads a file from a specified bucket to a local file.
@@ -60,7 +62,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param file     The target local file to save the downloaded content.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message download(String bucket, String fileName, File file);
+    Message<Void> download(String bucket, String fileName, File file);
 
     /**
      * Downloads a file to a local file.
@@ -69,15 +71,16 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param file     The target local file to save the downloaded content.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message download(String fileName, File file);
+    Message<Void> download(String fileName, File file);
 
     /**
      * Lists files in the default storage location.
      *
      * @return A {@link Message} containing the result of the operation. By default, returns a failure message.
      */
-    default Message list() {
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+    default Message<List<Blob>> list() {
+        return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                .build();
     }
 
     /**
@@ -86,8 +89,9 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param bucket The name of the storage bucket.
      * @return A {@link Message} containing the result of the operation. By default, returns a failure message.
      */
-    default Message list(String bucket) {
-        return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+    default Message<List<Blob>> list(String bucket) {
+        return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                .build();
     }
 
     /**
@@ -96,8 +100,8 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The file name or provider-level logical name.
      * @return A {@link Message} containing storage metadata when successful.
      */
-    default Message stat(String fileName) {
-        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    default Message<Blob> stat(String fileName) {
+        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -107,8 +111,8 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The file name or provider-level logical name.
      * @return A {@link Message} containing storage metadata when successful.
      */
-    default Message stat(String bucket, String fileName) {
-        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    default Message<Blob> stat(String bucket, String fileName) {
+        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -118,8 +122,8 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param objectKey The exact object key stored by the backend.
      * @return A {@link Message} containing storage metadata when successful.
      */
-    default Message statKey(String bucket, String objectKey) {
-        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    default Message<Blob> statKey(String bucket, String objectKey) {
+        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -128,8 +132,8 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The file name or provider-level logical name.
      * @return A {@link Message} containing a stream resource when successful.
      */
-    default Message stream(String fileName) {
-        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    default Message<Blob> stream(String fileName) {
+        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -139,8 +143,8 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The file name or provider-level logical name.
      * @return A {@link Message} containing a stream resource when successful.
      */
-    default Message stream(String bucket, String fileName) {
-        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    default Message<Blob> stream(String bucket, String fileName) {
+        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -150,8 +154,8 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param objectKey The exact object key stored by the backend.
      * @return A {@link Message} containing a stream resource when successful.
      */
-    default Message streamKey(String bucket, String objectKey) {
-        return Message.builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
+    default Message<Blob> streamKey(String bucket, String objectKey) {
+        return Message.<Blob>builder().errcode(ErrorCode._113013.getKey()).errmsg(ErrorCode._113013.getValue()).build();
     }
 
     /**
@@ -161,7 +165,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param newName The new name for the file.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message rename(String oldName, String newName);
+    Message<Void> rename(String oldName, String newName);
 
     /**
      * Renames a file within a specified path.
@@ -171,7 +175,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param newName The new name for the file.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message rename(String path, String oldName, String newName);
+    Message<Void> rename(String path, String oldName, String newName);
 
     /**
      * Renames a file within a specified bucket and path.
@@ -182,7 +186,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param newName The new name for the file.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message rename(String bucket, String path, String oldName, String newName);
+    Message<Void> rename(String bucket, String path, String oldName, String newName);
 
     /**
      * Uploads a file using a byte array.
@@ -191,7 +195,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param content  The file content as a byte array.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message upload(String fileName, byte[] content);
+    Message<Blob> upload(String fileName, byte[] content);
 
     /**
      * Uploads a file to a specified path using a byte array.
@@ -201,7 +205,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param content  The file content as a byte array.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message upload(String path, String fileName, byte[] content);
+    Message<Blob> upload(String path, String fileName, byte[] content);
 
     /**
      * Uploads a file to a specified bucket and path using a byte array.
@@ -212,7 +216,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param content  The file content as a byte array.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message upload(String bucket, String path, String fileName, byte[] content);
+    Message<Blob> upload(String bucket, String path, String fileName, byte[] content);
 
     /**
      * Uploads a file using an {@link InputStream}.
@@ -221,7 +225,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param content  The file content as an {@link InputStream}.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message upload(String fileName, InputStream content);
+    Message<Blob> upload(String fileName, InputStream content);
 
     /**
      * Uploads a file to a specified path using an {@link InputStream}.
@@ -231,7 +235,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param content  The file content as an {@link InputStream}.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message upload(String path, String fileName, InputStream content);
+    Message<Blob> upload(String path, String fileName, InputStream content);
 
     /**
      * Uploads a file to a specified bucket and path using an {@link InputStream}.
@@ -242,7 +246,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param content  The file content as an {@link InputStream}.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message upload(String bucket, String path, String fileName, InputStream content);
+    Message<Blob> upload(String bucket, String path, String fileName, InputStream content);
 
     /**
      * Removes a file.
@@ -250,7 +254,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The name of the file to remove.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message remove(String fileName);
+    Message<Void> remove(String fileName);
 
     /**
      * Removes a file from a specified path.
@@ -259,7 +263,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The name of the file to remove.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message remove(String path, String fileName);
+    Message<Void> remove(String path, String fileName);
 
     /**
      * Removes a file from a specified bucket and path.
@@ -269,7 +273,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param fileName The name of the file to remove.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message remove(String bucket, String path, String fileName);
+    Message<Void> remove(String bucket, String path, String fileName);
 
     /**
      * Removes a file from a specified bucket and target path.
@@ -278,7 +282,7 @@ public interface Provider extends org.miaixz.bus.core.Provider, AutoCloseable {
      * @param path   The target path of the file to remove.
      * @return A {@link Message} containing the result of the operation.
      */
-    Message remove(String bucket, Path path);
+    Message<Void> remove(String bucket, Path path);
 
     /**
      * Returns the type of this provider.

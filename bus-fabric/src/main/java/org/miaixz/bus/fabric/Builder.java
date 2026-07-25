@@ -21,110 +21,38 @@ package org.miaixz.bus.fabric;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.tls.TlsVersion;
-import org.miaixz.bus.fabric.protocol.http.agent.Browser;
-import org.miaixz.bus.fabric.protocol.http.agent.ClientOs;
-import org.miaixz.bus.fabric.protocol.http.agent.Device;
-import org.miaixz.bus.fabric.protocol.http.agent.Engine;
 
 /**
- * Module-level constants reserved for fabric builder APIs, options, attributes, tags, and protocol defaults.
+ * Central catalog of shared bus-fabric constants and typed option keys.
+ * <p>
+ * Names describe the value contract rather than a particular caller. Protocol prefixes are retained only for values
+ * defined by that protocol, while values shared across protocols use neutral names.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class Builder {
+public final class Builder {
 
     /**
-     * Creates a root builder marker.
+     * Creates an empty constant-catalog instance.
      */
     public Builder() {
         // No initialization required.
     }
 
     /**
-     * Numeric value 1000.
-     */
-    public static final int _1000 = 1000;
-
-    /**
-     * Numeric value 1001.
-     */
-    public static final int _1001 = 1001;
-
-    /**
-     * Numeric value 125.
-     */
-    public static final int _125 = 125;
-
-    /**
-     * Numeric value 127.
-     */
-    public static final int _127 = 127;
-
-    /**
      * AIO protocol scheme.
      */
     public static final String AIO_SCHEME = "aio";
-
-    /**
-     * Common 16 MiB byte count.
-     */
-    public static final long BYTES_16_MIB = Normal._16 * Normal.MEBI;
-
-    /**
-     * Common 64 KiB byte count.
-     */
-    public static final int BYTES_64_KIB = Normal._64 * Normal._1024;
-
-    /**
-     * Default maximum bytes allowed when materializing a payload.
-     */
-    public static final long DEFAULT_MATERIALIZE_MAX_BYTES = Normal._64 * Normal.MEBI;
-
-    /**
-     * Duration of one second.
-     */
-    public static final Duration DURATION_1_SECOND = Duration.ofSeconds(Normal._1);
-
-    /**
-     * Duration of sixty seconds.
-     */
-    public static final Duration DURATION_60_SECONDS = Duration.ofSeconds(Normal._60);
-
-    /**
-     * Host field value.
-     */
-    public static final String HOST = "host";
-
-    /**
-     * Route field value.
-     */
-    public static final String ROUTE = "route";
-
-    /**
-     * SOAP method namespace prefix.
-     */
-    public static final String SOAP_METHOD_PREFIX = "m";
-
-    /**
-     * Unsigned byte mask.
-     */
-    public static final int UNSIGNED_BYTE_MASK = 0xFF;
-
-    /**
-     * Unsigned 32-bit integer mask.
-     */
-    public static final long UNSIGNED_INT_MASK = 0xffff_ffffL;
 
     /**
      * Session attribute key for filters.
@@ -157,203 +85,83 @@ public class Builder {
     public static final String ATTRIBUTE_SOCKET_OPTIONS = "socketOptions";
 
     /**
-     * Option key for the maximum bytes allowed when materializing a payload.
+     * Common 16 MiB byte count.
      */
-    public static final String OPTION_MATERIALIZE_MAX_BYTES = "materialize.maxBytes";
+    public static final long BYTES_16_MIB = Normal._16 * Normal.MEBI;
 
     /**
-     * Socket option key for TCP server listen backlog.
+     * Common 64 KiB byte count.
      */
-    public static final String OPTION_SOCKET_BACKLOG = "socket.backlog";
-
-    /**
-     * Socket option key for connection timeout.
-     */
-    public static final String OPTION_SOCKET_CONNECT_TIMEOUT = "socket.connectTimeout";
-
-    /**
-     * Socket option key for operation-time idle timeout.
-     */
-    public static final String OPTION_SOCKET_IDLE_TIMEOUT = "socket.idleTimeout";
-
-    /**
-     * Socket option key for AIO read I/O thread count.
-     */
-    public static final String OPTION_SOCKET_IO_THREADS = "socket.ioThreads";
-
-    /**
-     * Socket option key for JDK socket options applied to client channels.
-     */
-    public static final String OPTION_SOCKET_OPTIONS = "socket.socketOptions";
-
-    /**
-     * Socket option key for per-session read buffer size.
-     */
-    public static final String OPTION_SOCKET_READ_BUFFER_SIZE = "socket.readBufferSize";
-
-    /**
-     * Socket option key for retaining one reusable read buffer per session.
-     */
-    public static final String OPTION_SOCKET_RETAIN_READ_BUFFER = "socket.retainReadBuffer";
-
-    /**
-     * Socket context key for a socket-scoped TLS context.
-     */
-    public static final String OPTION_SOCKET_TLS_CONTEXT = "socket.tlsContext";
-
-    /**
-     * Socket context key for socket-scoped TLS settings.
-     */
-    public static final String OPTION_SOCKET_TLS_SETTINGS = "socket.tlsSettings";
-
-    /**
-     * Socket option key for retained write chunk count hint.
-     */
-    public static final String OPTION_SOCKET_WRITE_CHUNK_COUNT = "socket.writeChunkCount";
-
-    /**
-     * Socket option key for maximum bytes submitted in one low-level write chunk.
-     */
-    public static final String OPTION_SOCKET_WRITE_CHUNK_SIZE = "socket.writeChunkSize";
-
-    /**
-     * Option key for protocol timeout settings.
-     */
-    public static final String OPTION_TIMEOUT = "timeout";
-
-    /**
-     * Socket context key for a generic TLS context.
-     */
-    public static final String OPTION_TLS_CONTEXT = "tlsContext";
-
-    /**
-     * Socket context key for generic TLS settings.
-     */
-    public static final String OPTION_TLS_SETTINGS = "tlsSettings";
-
-    /**
-     * Listener action tag key.
-     */
-    public static final String TAG_ACTION = "action";
-
-    /**
-     * Retry attempt tag key.
-     */
-    public static final String TAG_ATTEMPT = "attempt";
-
-    /**
-     * Byte count tag key.
-     */
-    public static final String TAG_BYTES = "bytes";
-
-    /**
-     * Cache action tag key.
-     */
-    public static final String TAG_CACHE = "cache";
-
-    /**
-     * Status code tag key.
-     */
-    public static final String TAG_CODE = "code";
-
-    /**
-     * Retry delay tag key.
-     */
-    public static final String TAG_DELAY = "delay";
-
-    /**
-     * Exception class tag key.
-     */
-    public static final String TAG_EXCEPTION = "exception";
-
-    /**
-     * Cache key tag key.
-     */
-    public static final String TAG_KEY = "key";
-
-    /**
-     * Method tag key.
-     */
-    public static final String TAG_METHOD = "method";
-
-    /**
-     * Module tag key.
-     */
-    public static final String TAG_MODULE = "module";
-
-    /**
-     * Phase tag key.
-     */
-    public static final String TAG_PHASE = "phase";
-
-    /**
-     * Port tag key.
-     */
-    public static final String TAG_PORT = "port";
-
-    /**
-     * Protocol tag key.
-     */
-    public static final String TAG_PROTOCOL = "protocol";
-
-    /**
-     * Redacted tag value marker.
-     */
-    public static final String TAG_REDACTED = "<redacted>";
-
-    /**
-     * Result tag key.
-     */
-    public static final String TAG_RESULT = "result";
-
-    /**
-     * Lifecycle source tag key.
-     */
-    public static final String TAG_SOURCE = "source";
-
-    /**
-     * URL tag key.
-     */
-    public static final String TAG_URL = "url";
+    public static final int BYTES_64_KIB = Normal._64 * Normal._1024;
 
     /**
      * Cacheable HTTP status codes.
      */
     public static final Set<Integer> CACHE_POLICY_CACHEABLE = Set.of(
-            HTTP.HTTP_OK,
-            HTTP.HTTP_NOT_AUTHORITATIVE,
-            HTTP.HTTP_NO_CONTENT,
-            HTTP.HTTP_MULT_CHOICE,
-            HTTP.HTTP_MOVED_PERM,
-            HTTP.HTTP_PERM_REDIRECT,
-            HTTP.HTTP_NOT_FOUND,
-            HTTP.HTTP_BAD_METHOD,
-            HTTP.HTTP_GONE,
-            HTTP.HTTP_REQ_TOO_LONG,
-            HTTP.HTTP_NOT_IMPLEMENTED);
+            Http.Status.OK,
+            Http.Status.NON_AUTHORITATIVE_INFORMATION,
+            Http.Status.NO_CONTENT,
+            Http.Status.MULTIPLE_CHOICES,
+            Http.Status.MOVED_PERMANENTLY,
+            Http.Status.PERMANENT_REDIRECT,
+            Http.Status.NOT_FOUND,
+            Http.Status.METHOD_NOT_ALLOWED,
+            Http.Status.GONE,
+            Http.Status.URI_TOO_LONG,
+            Http.Status.NOT_IMPLEMENTED);
 
     /**
-     * Disk lru cache clean value.
+     * Maximum representable cookie expiration instant in epoch milliseconds.
+     */
+    public static final long COOKIE_MAX_DATE_MILLIS = 253402300799999L;
+
+    /**
+     * Default header used to select a demultiplexed channel.
+     */
+    public static final String DEMUXER_DEFAULT_CHANNEL_HEADER = "X-Fabric-Channel";
+
+    /**
+     * Directory registry key for connection services.
+     */
+    public static final String DIRECTORY_CONNECTION = "connection";
+
+    /**
+     * Directory registry key for policy services.
+     */
+    public static final String DIRECTORY_POLICY = "policy";
+
+    /**
+     * Directory registry key for proxy services.
+     */
+    public static final String DIRECTORY_PROXY = "proxy";
+
+    /**
+     * Directory registry key for resolver services.
+     */
+    public static final String DIRECTORY_RESOLVER = "resolver";
+
+    /**
+     * Disk LRU journal token marking a readable entry.
      */
     public static final String DISK_LRU_CACHE_CLEAN = "CLEAN";
 
     /**
-     * Disk lru cache dirty value.
+     * Disk LRU journal token marking an entry under edit.
      */
     public static final String DISK_LRU_CACHE_DIRTY = "DIRTY";
 
     /**
-     * Disk lru cache journal file value.
+     * Disk LRU primary journal file name.
      */
     public static final String DISK_LRU_CACHE_JOURNAL_FILE = "journal";
 
     /**
-     * Disk lru cache journal file backup value.
+     * Disk LRU backup journal file name.
      */
     public static final String DISK_LRU_CACHE_JOURNAL_FILE_BACKUP = "journal.bkp";
 
     /**
-     * Disk lru cache journal file temp value.
+     * Disk LRU temporary journal file name.
      */
     public static final String DISK_LRU_CACHE_JOURNAL_FILE_TEMP = "journal.tmp";
 
@@ -363,328 +171,176 @@ public class Builder {
     public static final Pattern DISK_LRU_CACHE_LEGAL_KEY_PATTERN = Pattern.compile("[a-z0-9_-]{1,120}");
 
     /**
-     * Disk lru cache magic value.
+     * Disk LRU journal magic header.
      */
     public static final String DISK_LRU_CACHE_MAGIC = "libcore.io.DiskLruCache";
 
     /**
-     * Disk lru cache read value.
+     * Disk LRU journal token recording an entry read.
      */
     public static final String DISK_LRU_CACHE_READ = "READ";
 
     /**
-     * Disk lru cache remove value.
+     * Disk LRU journal token recording an entry removal.
      */
     public static final String DISK_LRU_CACHE_REMOVE = "REMOVE";
 
     /**
-     * Disk store version value.
+     * On-disk cache metadata format version.
      */
     public static final int DISK_STORE_VERSION = 20260706;
 
     /**
-     * Guard chain name value.
+     * Fallback lifetime in nanoseconds for successful DNS results without TTL metadata.
+     */
+    public static final long DNS_RESOLVER_DEFAULT_POSITIVE_TTL_NANOS = Duration.ofSeconds(Normal._60).toNanos();
+
+    /**
+     * Lifetime in nanoseconds for an authoritative empty DNS result.
+     */
+    public static final long DNS_RESOLVER_NEGATIVE_TTL_NANOS = Duration.ofSeconds(Normal._1).toNanos();
+
+    /**
+     * Duration of one second.
+     */
+    public static final Duration DURATION_1_SECOND = Duration.ofSeconds(Normal._1);
+
+    /**
+     * Duration of sixty seconds.
+     */
+    public static final Duration DURATION_60_SECONDS = Duration.ofSeconds(Normal._60);
+
+    /**
+     * Fabric meter invalid event counter name.
+     */
+    public static final String FABRIC_METER_INVALID_EVENT = "invalidEvent";
+
+    /**
+     * Stable name of the body-size limit guard.
+     */
+    public static final String GUARD_BODY_LIMIT_NAME = "body-limit";
+
+    /**
+     * Guard-chain name.
      */
     public static final String GUARD_CHAIN_NAME = "chain";
 
     /**
-     * Limit guard name value.
+     * Stable name of the frame-size limit guard.
      */
-    public static final String GUARD_FRAME_LIMIT_GUARD_NAME = "frame-limit";
+    public static final String GUARD_FRAME_LIMIT_NAME = "frame-limit";
 
     /**
-     * Limit guard name value.
+     * Stable name of the frame-rate guard.
      */
-    public static final String LIMIT_GUARD_NAME = "body-limit";
+    public static final String GUARD_FRAME_RATE_NAME = "frame-rate";
 
     /**
-     * Rate guard name value.
+     * Delay before starting the second address in one AIO Happy Eyeballs pair.
      */
-    public static final String RATE_GUARD_NAME = "frame-rate";
+    public static final Duration HAPPY_EYEBALLS_DELAY = Duration.ofMillis(250L);
 
     /**
-     * Tls guard name value.
+     * Canonical lowercase host key used by tags and HTTP header tables.
      */
-    public static final String TLS_GUARD_NAME = "tls";
+    public static final String HOST = "host";
 
     /**
-     * Aio worker idle park nanos value.
+     * Maximum time spent draining a reusable HTTP/1 response body.
      */
-    public static final long AIO_WORKER_IDLE_PARK_NANOS = TimeUnit.MILLISECONDS.toNanos(Normal._1);
+    public static final Duration HTTP1_CODEC_MAX_DRAIN_DURATION = Duration.ofMillis(Normal._100);
 
     /**
-     * Aio worker shutdown wait millis value.
+     * HTTP/2 client connection preface.
      */
-    public static final long AIO_WORKER_SHUTDOWN_WAIT_MILLIS = TimeUnit.SECONDS.toMillis(Normal._1);
+    public static final String HTTP2_CONNECTION_PREFACE = "PRI * HTTP/2.0" + Symbol.CRLF + Symbol.CRLF + "SM"
+            + Symbol.CRLF + Symbol.CRLF;
 
     /**
-     * DNS no-TTL marker.
+     * HTTP/2 receive-window threshold that triggers a WINDOW_UPDATE frame.
      */
-    public static final Duration DNS_NO_TTL = Duration.ZERO;
+    public static final long HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD = Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE
+            / Normal._2;
 
     /**
-     * Kcp network default retransmit delay value.
-     */
-    public static final Duration KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY = Duration.ofMillis(Normal._200);
-
-    /**
-     * Kcp network half sequence space value.
-     */
-    public static final long KCP_NETWORK_HALF_SEQUENCE_SPACE = (UNSIGNED_INT_MASK + Normal._1) / Normal._2;
-
-    /**
-     * Kcp packet header bytes value.
-     */
-    public static final int KCP_PACKET_HEADER_BYTES = Byte.BYTES + Byte.BYTES + Integer.BYTES + Integer.BYTES
-            + Short.BYTES + Long.BYTES;
-
-    /**
-     * Kcp packet max payload value.
-     */
-    public static final int KCP_PACKET_MAX_PAYLOAD = Normal._65535 - Normal._28 - KCP_PACKET_HEADER_BYTES;
-
-    /**
-     * Proxy header command proxy value.
-     */
-    public static final String PROXY_HEADER_COMMAND_PROXY = "PROXY";
-
-    /**
-     * Proxy header protocol tcp4 value.
-     */
-    public static final String PROXY_HEADER_PROTOCOL_TCP4 = "TCP4";
-
-    /**
-     * Proxy header protocol tcp6 value.
-     */
-    public static final String PROXY_HEADER_PROTOCOL_TCP6 = "TCP6";
-
-    /**
-     * Proxy header protocol unknown value.
-     */
-    public static final String PROXY_HEADER_PROTOCOL_UNKNOWN = "UNKNOWN";
-
-    /**
-     * Proxy header reader max line bytes value.
-     */
-    public static final int PROXY_HEADER_READER_MAX_LINE_BYTES = 108;
-
-    /**
-     * Proxy plan direct id value.
-     */
-    public static final String PROXY_PLAN_DIRECT_ID = "direct";
-
-    /**
-     * Public suffix public suffix resource value.
-     */
-    public static final String PUBLIC_SUFFIX_PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
-
-    /**
-     * Default TLS protocol versions.
-     */
-    public static final List<String> TLS_SETTINGS_DEFAULT_VERSIONS = List
-            .of(TlsVersion.TLSv1_3.javaName(), TlsVersion.TLSv1_2.javaName());
-
-    /**
-     * Meter event observer duration value.
-     */
-    public static final String METER_EVENT_OBSERVER_DURATION = ".duration";
-
-    /**
-     * Meter event observer failure value.
-     */
-    public static final String METER_EVENT_OBSERVER_FAILURE = "failure";
-
-    /**
-     * Rolling window nanos per second value.
-     */
-    public static final double ROLLING_WINDOW_NANOS_PER_SECOND = Normal.GIGA;
-
-    /**
-     * Cookie max date millis value.
-     */
-    public static final long COOKIE_MAX_DATE_MILLIS = 253402300799999L;
-
-    /**
-     * Demuxer default channel header value.
-     */
-    public static final String DEMUXER_DEFAULT_CHANNEL_HEADER = "X-Fabric-Channel";
-
-    /**
-     * Http2 connection window update threshold value.
-     */
-    public static final long HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD = HTTP.DEFAULT_INITIAL_WINDOW_SIZE / Normal._2;
-
-    /**
-     * HTTP/2 default writer timeout.
-     */
-    public static final Duration HTTP2_DEFAULT_WRITE_TIMEOUT = Duration.ofSeconds(Normal._5);
-
-    /**
-     * Http2 priority exclusive mask value.
+     * HTTP/2 PRIORITY exclusive-dependency bit mask.
      */
     public static final int HTTP2_PRIORITY_EXCLUSIVE_MASK = Integer.MIN_VALUE;
 
     /**
-     * Http2 stream default window value.
-     */
-    public static final long HTTP2_STREAM_DEFAULT_WINDOW = HTTP.DEFAULT_INITIAL_WINDOW_SIZE;
-
-    /**
-     * Default browser version pattern suffix.
-     */
-    public static final String HTTP_AGENT_BROWSER_OTHER_VERSION = "[\\/ ]([\\d\\w\\.\\-]+)";
-
-    /**
-     * Unknown browser.
-     */
-    public static final Browser HTTP_AGENT_BROWSER_UNKNOWN = Instances
-            .get(Browser.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new Browser(Normal.UNKNOWN, null, null));
-
-    /**
-     * Unknown client operating system.
-     */
-    public static final ClientOs HTTP_AGENT_CLIENT_OS_UNKNOWN = Instances
-            .get(ClientOs.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new ClientOs(Normal.UNKNOWN, null));
-
-    /**
-     * Android device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_ANDROID = Instances
-            .get(Device.class.getName() + ".android", () -> new Device("Android", "android"));
-
-    /**
-     * Google TV device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_GOOGLE_TV = Instances
-            .get(Device.class.getName() + ".googleTv", () -> new Device("GoogleTV", "googletv"));
-
-    /**
-     * HarmonyOS device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_HARMONY = Instances
-            .get(Device.class.getName() + ".harmony", () -> new Device("Harmony", "OpenHarmony"));
-
-    /**
-     * iPad device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_IPAD = Instances
-            .get(Device.class.getName() + ".ipad", () -> new Device("iPad", "ipad"));
-
-    /**
-     * iPhone device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_IPHONE = Instances
-            .get(Device.class.getName() + ".iphone", () -> new Device("iPhone", "iphone"));
-
-    /**
-     * iPod device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_IPOD = Instances
-            .get(Device.class.getName() + ".ipod", () -> new Device("iPod", "ipod"));
-
-    /**
-     * Unknown device.
-     */
-    public static final Device HTTP_AGENT_DEVICE_UNKNOWN = Instances
-            .get(Device.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new Device(Normal.UNKNOWN, null));
-
-    /**
-     * Windows Phone device classifier.
-     */
-    public static final Device HTTP_AGENT_DEVICE_WINDOWS_PHONE = Instances.get(
-            Device.class.getName() + ".windowsPhone",
-            () -> new Device("Windows Phone", "windows (ce|phone|mobile)( os)?"));
-
-    /**
-     * Unknown browser engine.
-     */
-    public static final Engine HTTP_AGENT_ENGINE_UNKNOWN = Instances
-            .get(Engine.class.getName() + Symbol.DOT + Normal.UNKNOWN, () -> new Engine(Normal.UNKNOWN, null));
-
-    /**
-     * Http auth basic value.
+     * Canonical HTTP Basic authentication scheme.
      */
     public static final String HTTP_AUTH_BASIC = "Basic";
 
     /**
-     * Http auth basic lower value.
+     * Lowercase HTTP Basic authentication scheme used for case-insensitive matching.
      */
     public static final String HTTP_AUTH_BASIC_LOWER = "basic";
 
     /**
-     * Http cache codec meta code value.
+     * HTTP cache metadata field containing the response status code.
      */
     public static final String HTTP_CACHE_CODEC_META_CODE = "Fabric-Http-Code";
 
     /**
-     * Http cache codec meta media value.
+     * HTTP cache metadata field containing the response media type.
      */
     public static final String HTTP_CACHE_CODEC_META_MEDIA = "Fabric-Http-Media";
 
     /**
-     * Http cache codec meta message value.
+     * HTTP cache metadata field containing the response reason phrase.
      */
     public static final String HTTP_CACHE_CODEC_META_MESSAGE = "Fabric-Http-Message";
 
     /**
-     * Http cache codec meta method value.
+     * HTTP cache metadata field containing the request method.
      */
     public static final String HTTP_CACHE_CODEC_META_METHOD = "Fabric-Http-Method";
 
     /**
-     * Http cache codec meta protocol value.
+     * HTTP cache metadata field identifying the cache-record protocol.
      */
     public static final String HTTP_CACHE_CODEC_META_PROTOCOL = "Fabric-Cache-Protocol";
 
     /**
-     * Http cache codec meta protocol http value.
-     */
-    public static final String HTTP_CACHE_CODEC_META_PROTOCOL_HTTP = Protocol.HTTP.name;
-
-    /**
-     * Http cache codec meta received at value.
+     * HTTP cache metadata field containing the response receive time.
      */
     public static final String HTTP_CACHE_CODEC_META_RECEIVED_AT = "Fabric-Http-Received-At";
 
     /**
-     * Http cache codec meta request header name value.
+     * HTTP cache metadata field for a stored request-header name.
      */
     public static final String HTTP_CACHE_CODEC_META_REQUEST_HEADER_NAME = "Fabric-Http-Request-Header-Name";
 
     /**
-     * Http cache codec meta request header value value.
+     * HTTP cache metadata field for a stored request-header value.
      */
     public static final String HTTP_CACHE_CODEC_META_REQUEST_HEADER_VALUE = "Fabric-Http-Request-Header-Value";
 
     /**
-     * Http cache codec meta response header name value.
+     * HTTP cache metadata field for a stored response-header name.
      */
     public static final String HTTP_CACHE_CODEC_META_RESPONSE_HEADER_NAME = "Fabric-Http-Response-Header-Name";
 
     /**
-     * Http cache codec meta response header value value.
+     * HTTP cache metadata field for a stored response-header value.
      */
     public static final String HTTP_CACHE_CODEC_META_RESPONSE_HEADER_VALUE = "Fabric-Http-Response-Header-Value";
 
     /**
-     * Http cache codec meta response protocol value.
+     * HTTP cache metadata field containing the response protocol.
      */
     public static final String HTTP_CACHE_CODEC_META_RESPONSE_PROTOCOL = "Fabric-Http-Response-Protocol";
 
     /**
-     * Http cache codec meta sent at value.
+     * HTTP cache metadata field containing the request send time.
      */
     public static final String HTTP_CACHE_CODEC_META_SENT_AT = "Fabric-Http-Sent-At";
 
     /**
-     * Http cache codec meta url value.
+     * HTTP cache metadata field containing the request URL.
      */
     public static final String HTTP_CACHE_CODEC_META_URL = "Fabric-Http-Url";
-
-    /**
-     * Http connect socks5 value.
-     */
-    public static final byte HTTP_CONNECT_SOCKS5 = 0x05;
 
     /**
      * HTTP request tag.
@@ -707,27 +363,272 @@ public class Builder {
     public static final String HTTP_TAG_SOAP_RESPONSE = "soap-response";
 
     /**
-     * Multipart body boundary parameter value.
+     * Default KCP packet retransmission delay.
+     */
+    public static final Duration KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY = Duration.ofMillis(Normal._200);
+
+    /**
+     * Half of the unsigned KCP sequence-number space used for wraparound comparisons.
+     */
+    public static final long KCP_NETWORK_HALF_SEQUENCE_SPACE = (1L << Integer.SIZE) / Normal._2;
+
+    /**
+     * KCP V2 incomplete-message reassembly deadline.
+     */
+    public static final Duration KCP_NETWORK_REASSEMBLY_TIMEOUT = Duration.ofSeconds(Normal._30);
+
+    /**
+     * KCP V1 packet header bytes.
+     */
+    public static final int KCP_PACKET_V1_HEADER_BYTES = Byte.BYTES + Byte.BYTES + Integer.BYTES + Integer.BYTES
+            + Short.BYTES + Long.BYTES;
+
+    /**
+     * Maximum KCP V1 payload within one legal UDP datagram.
+     */
+    public static final int KCP_PACKET_V1_MAX_PAYLOAD = Normal._65535 - Normal._28 - KCP_PACKET_V1_HEADER_BYTES;
+
+    /**
+     * KCP V2 packet header bytes.
+     */
+    public static final int KCP_PACKET_V2_HEADER_BYTES = KCP_PACKET_V1_HEADER_BYTES + Integer.BYTES + Short.BYTES
+            + Short.BYTES;
+
+    /**
+     * Maximum KCP V2 fragment payload within one legal UDP datagram.
+     */
+    public static final int KCP_PACKET_V2_MAX_PAYLOAD = Normal._65535 - Normal._28 - KCP_PACKET_V2_HEADER_BYTES;
+
+    /**
+     * Maximum KCP V2 reassembly bytes retained for one remote source.
+     */
+    public static final long KCP_REASSEMBLY_SOURCE_MAX_BYTES = Normal._32 * Normal.MEBI;
+
+    /**
+     * Event tag key containing a lifecycle-scope name.
+     */
+    public static final String LIFECYCLE_SCOPE_NAME = "name";
+
+    /**
+     * Duration suffix appended to metric-family names.
+     */
+    public static final String METER_EVENT_OBSERVER_DURATION = ".duration";
+
+    /**
+     * Canonical failure label used by event results and failure metrics.
+     */
+    public static final String METER_EVENT_OBSERVER_FAILURE = "failure";
+
+    /**
+     * Multipart media-type parameter naming the boundary token.
      */
     public static final String MULTIPART_BODY_BOUNDARY_PARAMETER = "boundary";
 
     /**
-     * Soap body soap namespace value.
+     * Typed option for the HTTP User-Agent value.
+     * <p>
+     * Absence and explicit null both use the framework default User-Agent.
+     */
+    public static final Options.Key<String> OPTION_HTTP_USER_AGENT = Options.key("http.userAgent", String.class);
+
+    /**
+     * Typed option for the positive payload materialization limit.
+     * <p>
+     * Absence uses {@link Normal#MEBI_64}; explicit null is invalid.
+     */
+    public static final Options.Key<Long> OPTION_MATERIALIZE_MAX_BYTES = Options
+            .key("materialize.maxBytes", Long.class);
+
+    /**
+     * Typed stable Destination option for maximum multiplex streams.
+     * <p>
+     * Absence means one; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_MAX_MULTIPLEX_STREAMS = Options
+            .key("maxMultiplexStreams", Integer.class);
+
+    /**
+     * Typed stable Destination option indicating multiplex capability.
+     * <p>
+     * Absence and explicit null are derived from the Protocol.
+     */
+    public static final Options.Key<Boolean> OPTION_MULTIPLEX = Options.key("multiplex", Boolean.class);
+
+    /**
+     * Typed stable Destination option carrying the request protocol name.
+     * <p>
+     * Absence and explicit null both use the request Protocol.
+     */
+    public static final Options.Key<String> OPTION_PROTOCOL = Options.key("protocol", String.class);
+
+    /**
+     * Typed stable Destination option carrying a normalized proxy URI.
+     * <p>
+     * Absence and explicit null both mean a direct route.
+     */
+    public static final Options.Key<String> OPTION_ROUTE_PROXY = Options.key("route.proxy", String.class);
+
+    /**
+     * Typed stable Destination option indicating an HTTP proxy tunnel.
+     * <p>
+     * Absence and explicit null both mean false.
+     */
+    public static final Options.Key<Boolean> OPTION_ROUTE_TUNNEL = Options.key("route.tunnel", Boolean.class);
+
+    /**
+     * Typed stable Destination option indicating secure transport.
+     * <p>
+     * Absence and explicit null are derived from the Address.
+     */
+    public static final Options.Key<Boolean> OPTION_SECURE = Options.key("secure", Boolean.class);
+
+    /**
+     * Typed option for the TCP server listen backlog.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_BACKLOG = Options.key("socket.backlog", Integer.class);
+
+    /**
+     * Typed option for operation-time Socket idle timeout.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Duration> OPTION_SOCKET_IDLE_TIMEOUT = Options
+            .key("socket.idleTimeout", Duration.class);
+
+    /**
+     * Typed option for Socket I/O thread count.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_IO_THREADS = Options.key("socket.ioThreads", Integer.class);
+
+    /**
+     * Typed option for immutable JDK Socket channel options.
+     * <p>
+     * Absence and explicit null both mean an empty Map.
+     */
+    public static final Options.Key<Map> OPTION_SOCKET_OPTIONS = Options.key("socket.socketOptions", Map.class);
+
+    /**
+     * Typed option for per-session Socket read buffer size.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_READ_BUFFER_SIZE = Options
+            .key("socket.readBufferSize", Integer.class);
+
+    /**
+     * Typed option for retaining one reusable Socket read buffer.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Boolean> OPTION_SOCKET_RETAIN_READ_BUFFER = Options
+            .key("socket.retainReadBuffer", Boolean.class);
+
+    /**
+     * Typed option for retained Socket write chunk count.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_WRITE_CHUNK_COUNT = Options
+            .key("socket.writeChunkCount", Integer.class);
+
+    /**
+     * Typed option for maximum bytes in one low-level Socket write chunk.
+     * <p>
+     * Absence uses the SocketOptions default; explicit null is invalid.
+     */
+    public static final Options.Key<Integer> OPTION_SOCKET_WRITE_CHUNK_SIZE = Options
+            .key("socket.writeChunkSize", Integer.class);
+
+    /**
+     * Typed option for the shared protocol timeout policy.
+     * <p>
+     * Absence and explicit null both use {@link Timeout#defaults()}.
+     */
+    public static final Options.Key<Timeout> OPTION_TIMEOUT = Options.key("timeout", Timeout.class);
+
+    /**
+     * Typed stable Destination option indicating TLS use.
+     * <p>
+     * Absence and explicit null both mean false.
+     */
+    public static final Options.Key<Boolean> OPTION_TLS = Options.key("tls", Boolean.class);
+
+    /**
+     * Reusable version-capture pattern suffix applied by platform browser classifiers.
+     */
+    public static final String PLATFORM_BROWSER_VERSION_PATTERN = "[\\/ ]([\\d\\w\\.\\-]+)";
+
+    /**
+     * PROXY protocol command indicating proxied endpoint metadata.
+     */
+    public static final String PROXY_HEADER_COMMAND_PROXY = "PROXY";
+
+    /**
+     * PROXY protocol TCP-over-IPv4 family token.
+     */
+    public static final String PROXY_HEADER_PROTOCOL_TCP4 = "TCP4";
+
+    /**
+     * PROXY protocol TCP-over-IPv6 family token.
+     */
+    public static final String PROXY_HEADER_PROTOCOL_TCP6 = "TCP6";
+
+    /**
+     * PROXY protocol token for an unknown address family.
+     */
+    public static final String PROXY_HEADER_PROTOCOL_UNKNOWN = "UNKNOWN";
+
+    /**
+     * Maximum accepted PROXY protocol v1 header-line length in bytes.
+     */
+    public static final int PROXY_HEADER_READER_MAX_LINE_BYTES = 108;
+
+    /**
+     * Stable proxy-plan identifier for a direct connection.
+     */
+    public static final String PROXY_PLAN_DIRECT_ID = "direct";
+
+    /**
+     * Classpath resource name of the encoded public-suffix list.
+     */
+    public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
+
+    /**
+     * Canonical route key used by the route guard and directory registry.
+     */
+    public static final String ROUTE = "route";
+
+    /**
+     * Maximum route-selection backoff duration.
+     */
+    public static final Duration SELECTOR_MAX_BACKOFF = Duration.ofMinutes(Normal._5);
+
+    /**
+     * SOAP envelope namespace URI.
      */
     public static final String SOAP_BODY_SOAP_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/";
 
     /**
-     * Soap body soap prefix value.
+     * SOAP envelope namespace prefix.
      */
     public static final String SOAP_BODY_SOAP_PREFIX = "soap";
 
     /**
-     * Soap x header namespace value.
+     * SOAP method namespace prefix.
+     */
+    public static final String SOAP_METHOD_PREFIX = "m";
+
+    /**
+     * Namespace URI for generated SOAP extension headers.
      */
     public static final String SOAP_X_HEADER_NAMESPACE = "urn:bus:fabric:soap:header";
 
     /**
-     * Soap x header prefix value.
+     * Namespace prefix for generated SOAP extension headers.
      */
     public static final String SOAP_X_HEADER_PREFIX = "h";
 
@@ -735,11 +636,6 @@ public class Builder {
      * Socket server accept activity name.
      */
     public static final String SOCKET_ACTIVITY_ACCEPT = "socket-server-accept";
-
-    /**
-     * Socket server message activity name.
-     */
-    public static final String SOCKET_ACTIVITY_MESSAGE = "socket-server-message";
 
     /**
      * Socket server read activity name.
@@ -752,7 +648,7 @@ public class Builder {
     public static final String SOCKET_TAG_OPEN = "socket-open";
 
     /**
-     * Socket x kcp scheme value.
+     * URI scheme selecting KCP socket transport.
      */
     public static final String SOCKET_X_KCP_SCHEME = "kcp";
 
@@ -767,24 +663,24 @@ public class Builder {
     public static final String SSE_ACTIVITY_RETRY = "sse-retry";
 
     /**
-     * Sse body data prefix value.
+     * SSE wire prefix for a data field.
      */
-    public static final String SSE_BODY_DATA_PREFIX = "data: ";
+    public static final String SSE_BODY_DATA_PREFIX = "data" + Symbol.COLON + Symbol.SPACE;
 
     /**
-     * Sse body event prefix value.
+     * SSE wire prefix for an event-type field.
      */
-    public static final String SSE_BODY_EVENT_PREFIX = "event: ";
+    public static final String SSE_BODY_EVENT_PREFIX = "event" + Symbol.COLON + Symbol.SPACE;
 
     /**
-     * Sse body id prefix value.
+     * SSE wire prefix for an event-identifier field.
      */
-    public static final String SSE_BODY_ID_PREFIX = "id: ";
+    public static final String SSE_BODY_ID_PREFIX = "id" + Symbol.COLON + Symbol.SPACE;
 
     /**
-     * Sse body retry prefix value.
+     * SSE wire prefix for a retry field.
      */
-    public static final String SSE_BODY_RETRY_PREFIX = "retry: ";
+    public static final String SSE_BODY_RETRY_PREFIX = "retry" + Symbol.COLON + Symbol.SPACE;
 
     /**
      * SSE default event name.
@@ -792,22 +688,22 @@ public class Builder {
     public static final String SSE_DEFAULT_EVENT = "message";
 
     /**
-     * Sse retry default current value.
+     * Initial SSE reconnection delay.
      */
     public static final Duration SSE_RETRY_DEFAULT_CURRENT = Duration.ofSeconds(Normal._3);
 
     /**
-     * Sse retry default max delay value.
+     * Maximum SSE reconnection delay.
      */
     public static final Duration SSE_RETRY_DEFAULT_MAX_DELAY = Duration.ofSeconds(Normal._30);
 
     /**
-     * Sse runner dispatch prefix value.
+     * Dispatch-key prefix for SSE runner activities.
      */
-    public static final String SSE_RUNNER_DISPATCH_PREFIX = "sse:" + Symbol.FORWARDSLASH;
+    public static final String SSE_RUNNER_DISPATCH_PREFIX = "sse" + Symbol.COLON + Symbol.FORWARDSLASH;
 
     /**
-     * Sse runner last event id value.
+     * HTTP header carrying the last SSE event identifier.
      */
     public static final String SSE_RUNNER_LAST_EVENT_ID = "Last-Event-ID";
 
@@ -934,7 +830,7 @@ public class Builder {
     /**
      * STOMP queue destination prefix.
      */
-    public static final String STOMP_QUEUE_PREFIX = "/queue";
+    public static final String STOMP_QUEUE_PREFIX = Symbol.SLASH + "queue";
 
     /**
      * STOMP connect tag.
@@ -967,17 +863,17 @@ public class Builder {
     public static final String STOMP_TAG_WRITE = "stomp-write";
 
     /**
-     * Stomp topic multi level wildcard value.
+     * STOMP topic suffix matching multiple destination levels.
      */
     public static final String STOMP_TOPIC_MULTI_LEVEL_WILDCARD = Symbol.SLASH + Symbol.STAR + Symbol.STAR;
 
     /**
      * STOMP topic destination prefix.
      */
-    public static final String STOMP_TOPIC_PREFIX = "/topic";
+    public static final String STOMP_TOPIC_PREFIX = Symbol.SLASH + "topic";
 
     /**
-     * Stomp topic single level wildcard value.
+     * STOMP topic suffix matching one destination level.
      */
     public static final String STOMP_TOPIC_SINGLE_LEVEL_WILDCARD = Symbol.SLASH + Symbol.STAR;
 
@@ -987,14 +883,149 @@ public class Builder {
     public static final String STOMP_VERSION_1_2 = "1.2";
 
     /**
+     * Listener action tag key.
+     */
+    public static final String TAG_ACTION = "action";
+
+    /**
+     * Retry attempt tag key.
+     */
+    public static final String TAG_ATTEMPT = "attempt";
+
+    /**
+     * Byte count tag key.
+     */
+    public static final String TAG_BYTES = "bytes";
+
+    /**
+     * Cache action tag key.
+     */
+    public static final String TAG_CACHE = "cache";
+
+    /**
+     * Status code tag key.
+     */
+    public static final String TAG_CODE = "code";
+
+    /**
+     * Retry delay tag key.
+     */
+    public static final String TAG_DELAY = "delay";
+
+    /**
+     * Exception class tag key.
+     */
+    public static final String TAG_EXCEPTION = "exception";
+
+    /**
+     * Cache key tag key.
+     */
+    public static final String TAG_KEY = "key";
+
+    /**
+     * Module tag key.
+     */
+    public static final String TAG_MODULE = "module";
+
+    /**
+     * Stable operation identifier tag key shared by one logical lifecycle.
+     */
+    public static final String TAG_OPERATION_ID = "operationId";
+
+    /**
+     * Phase tag key.
+     */
+    public static final String TAG_PHASE = "phase";
+
+    /**
+     * Port tag key.
+     */
+    public static final String TAG_PORT = "port";
+
+    /**
+     * Protocol tag key.
+     */
+    public static final String TAG_PROTOCOL = "protocol";
+
+    /**
+     * Redacted tag value marker.
+     */
+    public static final String TAG_REDACTED = "<redacted>";
+
+    /**
+     * Result tag key.
+     */
+    public static final String TAG_RESULT = "result";
+
+    /**
+     * Lifecycle source tag key.
+     */
+    public static final String TAG_SOURCE = "source";
+
+    /**
+     * URL tag key.
+     */
+    public static final String TAG_URL = "url";
+
+    /**
+     * Default TCP, TLS, and HTTP connection plus network read/write deadline.
+     */
+    public static final Duration TIMEOUT_DEFAULT_NETWORK = Duration.ofSeconds(Normal._10);
+
+    /**
+     * Default TLS protocol versions.
+     */
+    public static final List<String> TLS_SETTINGS_DEFAULT_VERSIONS = List.of(TlsVersion.TLSv1_3.javaName());
+
+    /**
+     * Bit mask selecting the low seven bits of an unsigned encoded value.
+     */
+    public static final int UNSIGNED_7_BIT_MASK = 127;
+
+    /**
+     * Unsigned byte mask.
+     */
+    public static final int UNSIGNED_BYTE_MASK = 0xFF;
+
+    /**
+     * Unsigned 32-bit integer mask.
+     */
+    public static final long UNSIGNED_INT_MASK = 0xffff_ffffL;
+
+    /**
      * WebSocket server accept activity name.
      */
     public static final String WEBSOCKET_ACTIVITY_ACCEPT = "websocket-server-accept";
 
     /**
-     * WebSocket close-timeout activity name.
+     * WebSocket close code indicating that an endpoint is going away, as defined by RFC 6455.
      */
-    public static final String WEBSOCKET_ACTIVITY_CLOSE_TIMEOUT = "websocket-close-timeout";
+    public static final int WEBSOCKET_CLOSE_GOING_AWAY_CODE = 1001;
+
+    /**
+     * WebSocket internal-error close code.
+     */
+    public static final int WEBSOCKET_CLOSE_INTERNAL_ERROR = 1011;
+
+    /**
+     * WebSocket invalid-payload close code.
+     */
+    public static final int WEBSOCKET_CLOSE_INVALID_PAYLOAD = 1007;
+
+    /**
+     * WebSocket message-too-large close code.
+     */
+    public static final int WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE = 1009;
+
+    /**
+     * WebSocket protocol-error close code.
+     */
+    public static final int WEBSOCKET_CLOSE_PROTOCOL_ERROR = 1002;
+
+    /**
+     * Maximum payload length, in bytes, permitted in a WebSocket control frame by RFC 6455.
+     */
+    public static final int WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES = 125;
 
     /**
      * WebSocket unsigned 16-bit payload length marker.
@@ -1052,11 +1083,6 @@ public class Builder {
     public static final String WEBSOCKET_PING = "websocket-ping";
 
     /**
-     * WebSocket outbound queue full close reason.
-     */
-    public static final String WEBSOCKET_QUEUE_FULL_REASON = "queue full";
-
-    /**
      * WebSocket read tag and activity name.
      */
     public static final String WEBSOCKET_READ = "websocket-read";
@@ -1077,53 +1103,18 @@ public class Builder {
     public static final int WEBSOCKET_RSV_MASK = 0x70;
 
     /**
+     * Diagnostic operation name used when materializing an outbound WebSocket payload.
+     */
+    public static final String WEBSOCKET_SEND_MATERIALIZE_OPERATION = "WebSocketSession.send(Payload)";
+
+    /**
+     * Lowest unescaped Unicode code point accepted by WebSocket text-frame validation.
+     */
+    public static final char WEBSOCKET_TEXT_MIN_CODE_POINT = 0x20;
+
+    /**
      * WebSocket write tag.
      */
     public static final String WEBSOCKET_WRITE = "websocket-write";
-
-    /**
-     * Web socket frame min text code point value.
-     */
-    public static final char WEB_SOCKET_FRAME_MIN_TEXT_CODE_POINT = 0x20;
-
-    /**
-     * Web socket reader default address value.
-     */
-    public static final String WEB_SOCKET_READER_DEFAULT_ADDRESS = Protocol.WS_PREFIX + "localhost";
-
-    /**
-     * Web socket session materialize send payload value.
-     */
-    public static final String WEB_SOCKET_SESSION_MATERIALIZE_SEND_PAYLOAD = "WebSocketSession.send(Payload)";
-
-    /**
-     * Directory connection value.
-     */
-    public static final String DIRECTORY_CONNECTION = "connection";
-
-    /**
-     * Directory policy value.
-     */
-    public static final String DIRECTORY_POLICY = "policy";
-
-    /**
-     * Directory proxy value.
-     */
-    public static final String DIRECTORY_PROXY = "proxy";
-
-    /**
-     * Directory resolver value.
-     */
-    public static final String DIRECTORY_RESOLVER = "resolver";
-
-    /**
-     * Selector max backoff value.
-     */
-    public static final Duration SELECTOR_MAX_BACKOFF = Duration.ofMinutes(Normal._5);
-
-    /**
-     * Lifecycle scope name value.
-     */
-    public static final String LIFECYCLE_SCOPE_NAME = "name";
 
 }

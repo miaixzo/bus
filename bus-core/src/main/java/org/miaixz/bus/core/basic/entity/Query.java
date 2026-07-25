@@ -32,8 +32,8 @@ import lombok.experimental.SuperBuilder;
 /**
  * Base class for query entities with pagination and sorting capabilities.
  * <p>
- * Extends {@link Lifecycle} to support filtering by audit fields and lifecycle status, while adding transient fields
- * for request control and data navigation.
+ * Extends {@link Audit} to support filtering by logical status and audit metadata while adding transient fields for
+ * request control and data navigation.
  * </p>
  *
  * @author Kimi Liu
@@ -44,7 +44,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Query extends Lifecycle {
+public class Query extends Audit {
 
     @Serial
     private static final long serialVersionUID = 2852290719650L;

@@ -94,8 +94,8 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Authorization.builder().token(callback.getCode()).build()).build();
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String code = authorization.getToken();
         Map<String, Object> param = new HashMap<>();
         param.put("tmp_auth_code", code);
@@ -139,7 +139,7 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
 
             Authorization token = Authorization.builder().openId(openId).unionId(unionId).build();
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick).username(nick)
                             .gender(Gender.UNKNOWN).source(complex.toString()).token(token).build())
                     .build();
@@ -165,8 +165,8 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                                 .queryParam("appid", context.getClientId()).queryParam("scope", "snsapi_login")

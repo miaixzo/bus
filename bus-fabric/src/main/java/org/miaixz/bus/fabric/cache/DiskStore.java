@@ -20,12 +20,14 @@
 package org.miaixz.bus.fabric.cache;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.Lifecycle.State;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -45,7 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
 
 /**
  * Disk-backed protocol-neutral cache store using DiskLruCache editor and snapshot storage.
@@ -56,25 +57,25 @@ import org.miaixz.bus.fabric.Status;
 public final class DiskStore implements CacheStore {
 
     /**
-     * Directory.
+     * Absolute directory containing journal and entry files.
      */
     private final Path directory;
 
     /**
-     * Disk LRU cache.
+     * Underlying journaled least-recently-used cache.
      */
     private final DiskLruCache cache;
 
     /**
-     * Lifecycle state.
+     * Thread-safe store lifecycle state.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicReference<State> state;
 
     /**
      * Creates a store.
      *
-     * @param directory directory
-     * @param maxSize   max size
+     * @param directory absolute cache directory
+     * @param maxSize   maximum total stored bytes
      */
     private DiskStore(final Path directory, final long maxSize) {
         this.directory = directory;
@@ -84,15 +85,15 @@ public final class DiskStore implements CacheStore {
                 Builder.DISK_STORE_VERSION,
                 Normal._2,
                 maxSize);
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.state = new AtomicReference<>(State.RUNNING);
     }
 
     /**
      * Opens a store.
      *
-     * @param directory directory
-     * @param maxSize   max size
-     * @return store
+     * @param directory cache directory to create or reuse
+     * @param maxSize   positive maximum total stored bytes
+     * @return initialized open disk store
      */
     public static DiskStore open(final Path directory, final long maxSize) {
         final Path checkedDirectory = Assert.notNull(
@@ -134,7 +135,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Returns the cache directory.
      *
-     * @return directory
+     * @return absolute cache directory
      */
     public Path directory() {
         return directory;
@@ -143,7 +144,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Returns current stored byte size.
      *
-     * @return size
+     * @return current journal-accounted stored bytes
      */
     public long size() {
         ensureOpen();
@@ -157,7 +158,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Returns maximum stored byte size.
      *
-     * @return max size
+     * @return configured maximum stored bytes
      */
     public long maxSize() {
         ensureOpen();
@@ -167,8 +168,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Gets a cached entry.
      *
-     * @param key key
-     * @return entry or null
+     * @param key logical cache key
+     * @return cached entry backed by its snapshot, or {@code null} when absent
      */
     @Override
     public CacheEntry get(final String key) {
@@ -185,8 +186,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Stores an entry.
      *
-     * @param key   key
-     * @param entry entry
+     * @param key   logical cache key
+     * @param entry metadata and payload to store
      */
     @Override
     public void put(final String key, final CacheEntry entry) {
@@ -201,8 +202,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Streams a payload into a cache writer.
      *
-     * @param writer  writer
-     * @param payload payload
+     * @param writer  destination cache writer
+     * @param payload payload whose source is streamed to the writer
      * @throws IOException when writing fails
      */
     private static void writePayload(final CacheWriter writer, final Payload payload) throws IOException {
@@ -210,10 +211,10 @@ public final class DiskStore implements CacheStore {
         Assert.notNull(payload, () -> new ValidateException("Cache payload must not be null"));
         final Buffer buffer = new Buffer();
         try (Source input = payload.source()) {
-            long read = input.read(buffer, Normal._64 * Normal._1024);
+            long read = input.read(buffer, Builder.BYTES_64_KIB);
             while (read != -1L) {
                 writer.write(buffer, read);
-                read = input.read(buffer, Normal._64 * Normal._1024);
+                read = input.read(buffer, Builder.BYTES_64_KIB);
             }
         }
     }
@@ -221,9 +222,9 @@ public final class DiskStore implements CacheStore {
     /**
      * Opens a streaming writer for one-shot bodies.
      *
-     * @param key   key
+     * @param key   logical cache key
      * @param entry entry metadata
-     * @return writer
+     * @return streaming writer for the entry, or {@code null} when another edit is active
      */
     @Override
     public CacheWriter writer(final String key, final CacheEntry entry) {
@@ -250,7 +251,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Removes an entry.
      *
-     * @param key key
+     * @param key logical cache key to remove
      */
     @Override
     public void remove(final String key) {
@@ -265,7 +266,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Returns key snapshot.
      *
-     * @return keys
+     * @return iterator over a stable snapshot of logical cache keys
      */
     @Override
     public Iterator<String> keys() {
@@ -307,16 +308,16 @@ public final class DiskStore implements CacheStore {
      * Closes and deletes all cache files.
      */
     public synchronized void delete() {
-        final Status current = state.get();
-        if (current == Status.CLOSED) {
+        final State current = state.get();
+        if (current == State.CLOSED) {
             return;
         }
-        state.set(Status.CLOSING);
+        state.set(State.CLOSING);
         try {
             cache.delete();
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
         } catch (final IOException e) {
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
             throw new InternalException("Unable to delete disk cache", e);
         }
     }
@@ -338,19 +339,19 @@ public final class DiskStore implements CacheStore {
      */
     @Override
     public synchronized void close() {
-        final Status current = state.get();
-        if (current == Status.CLOSED) {
+        final State current = state.get();
+        if (current == State.CLOSED) {
             return;
         }
-        if (!current.canTransit(Status.CLOSING)) {
+        if (current != State.RUNNING) {
             throw new StatefulException("Disk cache cannot close from state " + current);
         }
-        state.set(Status.CLOSING);
+        state.set(State.CLOSING);
         try {
             cache.close();
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
         } catch (final IOException e) {
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
             throw new InternalException("Unable to close disk cache", e);
         }
     }
@@ -359,7 +360,7 @@ public final class DiskStore implements CacheStore {
      * Reads entry.
      *
      * @param snapshot cache snapshot
-     * @return entry
+     * @return cache entry whose payload owns the supplied snapshot
      * @throws IOException when reading fails
      */
     private CacheEntry read(final DiskLruCache.Snapshot snapshot) throws IOException {
@@ -372,9 +373,9 @@ public final class DiskStore implements CacheStore {
     /**
      * Writes metadata.
      *
-     * @param target target sink
-     * @param key    key
-     * @param entry  entry
+     * @param target metadata part sink
+     * @param key    validated logical cache key
+     * @param entry  entry whose metadata headers are serialized
      * @throws IOException when writing fails
      */
     private static void writeMeta(final Sink target, final String key, final CacheEntry entry) throws IOException {
@@ -387,8 +388,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Writes headers.
      *
-     * @param sink    sink
-     * @param headers headers
+     * @param sink    buffered metadata destination
+     * @param headers metadata headers to serialize
      * @throws IOException when writing fails
      */
     private static void writeHeaders(final BufferSink sink, final Headers headers) throws IOException {
@@ -403,8 +404,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Reads headers.
      *
-     * @param source source
-     * @return headers
+     * @param source buffered metadata source positioned at the header count
+     * @return immutable deserialized metadata headers
      * @throws IOException when reading fails
      */
     private static Headers readHeaders(final BufferSource source) throws IOException {
@@ -419,8 +420,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Reads metadata.
      *
-     * @param source source
-     * @return metadata
+     * @param source metadata-part source
+     * @return deserialized logical key and metadata headers
      * @throws IOException when loading fails
      */
     private static Metadata readMeta(final Source source) throws IOException {
@@ -433,8 +434,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Reads an integer line.
      *
-     * @param source source
-     * @return integer
+     * @param source buffered source positioned at a decimal line
+     * @return validated non-negative integer read from the line
      * @throws IOException when reading fails
      */
     private static int readInt(final BufferSource source) throws IOException {
@@ -458,8 +459,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Validates key.
      *
-     * @param key key
-     * @return key
+     * @param key candidate logical cache key
+     * @return validated non-blank single-line key
      */
     private static String validateKey(final String key) {
         if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
@@ -471,8 +472,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Returns disk-safe file name for key.
      *
-     * @param key key
-     * @return name
+     * @param key logical cache key to hash
+     * @return lowercase MD5 hexadecimal file key accepted by the disk cache
      */
     private static String name(final String key) {
         return ByteString.encodeUtf8(validateKey(key)).md5().hex();
@@ -481,7 +482,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Aborts an editor quietly.
      *
-     * @param editor editor
+     * @param editor active editor to abort, or {@code null} when none was opened
      */
     private static void abortQuietly(final DiskLruCache.Editor editor) {
         if (editor == null) {
@@ -497,8 +498,8 @@ public final class DiskStore implements CacheStore {
     /**
      * Cache metadata.
      *
-     * @param key      key
-     * @param metadata metadata
+     * @param key      original logical cache key
+     * @param metadata serialized entry metadata headers
      */
     private record Metadata(String key, Headers metadata) {
 
@@ -510,7 +511,7 @@ public final class DiskStore implements CacheStore {
     private static final class EntrySink implements Sink {
 
         /**
-         * Sink.
+         * Underlying cache body sink.
          */
         private final Sink sink;
 
@@ -527,7 +528,7 @@ public final class DiskStore implements CacheStore {
         /**
          * Creates a sink adapter.
          *
-         * @param sink sink
+         * @param sink underlying cache body sink
          */
         private EntrySink(final Sink sink) {
             this.sink = sink;
@@ -568,7 +569,7 @@ public final class DiskStore implements CacheStore {
         /**
          * Returns sink timeout.
          *
-         * @return timeout
+         * @return timeout policy of the underlying sink
          */
         @Override
         public Timeout timeout() {
@@ -603,12 +604,12 @@ public final class DiskStore implements CacheStore {
     private static final class DiskWriter implements CacheWriter {
 
         /**
-         * Editor.
+         * Editor controlling the two cache entry part files.
          */
         private final DiskLruCache.Editor editor;
 
         /**
-         * Body sink.
+         * Counting sink for the entry payload part.
          */
         private final EntrySink body;
 
@@ -620,8 +621,8 @@ public final class DiskStore implements CacheStore {
         /**
          * Creates a writer.
          *
-         * @param editor editor
-         * @param body   body sink
+         * @param editor editor controlling entry commit or abort
+         * @param body   sink receiving entry payload bytes
          */
         private DiskWriter(final DiskLruCache.Editor editor, final EntrySink body) {
             this.editor = editor;
@@ -631,7 +632,7 @@ public final class DiskStore implements CacheStore {
         /**
          * Returns stream sink.
          *
-         * @return stream sink
+         * @return writable sink for the entry payload part
          */
         @Override
         public Sink body() {
@@ -696,31 +697,31 @@ public final class DiskStore implements CacheStore {
     private static final class SourcePayload implements Payload, AutoCloseable {
 
         /**
-         * Body source.
+         * Buffered source for the cached payload part.
          */
         private final BufferSource source;
 
         /**
-         * Snapshot.
+         * Snapshot retained until payload closure.
          */
         private final DiskLruCache.Snapshot snapshot;
 
         /**
-         * Length.
+         * Stored payload length in bytes.
          */
         private final long length;
 
         /**
-         * Opened flag.
+         * Flag enforcing one-shot source access.
          */
         private final AtomicBoolean opened = new AtomicBoolean();
 
         /**
          * Creates a source payload.
          *
-         * @param source   body source
-         * @param snapshot snapshot
-         * @param length   length
+         * @param source   buffered source for the payload part
+         * @param snapshot snapshot owning the source files
+         * @param length   stored payload length in bytes
          */
         private SourcePayload(final BufferSource source, final DiskLruCache.Snapshot snapshot, final long length) {
             this.source = source;
@@ -754,18 +755,18 @@ public final class DiskStore implements CacheStore {
         /**
          * Reads all body bytes.
          *
-         * @return bytes
+         * @return fully materialized payload bytes
          */
         @Override
         public byte[] bytes() {
-            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
          * Reads all body bytes with an explicit materialize threshold.
          *
          * @param maxBytes maximum bytes to materialize
-         * @return bytes
+         * @return fully materialized payload bytes within the threshold
          */
         @Override
         public byte[] bytes(final long maxBytes) {
@@ -783,23 +784,23 @@ public final class DiskStore implements CacheStore {
         /**
          * Reads body text.
          *
-         * @param charset charset
-         * @return text
+         * @param charset character encoding used to decode the payload
+         * @return fully materialized payload text
          */
         @Override
-        public String text(final java.nio.charset.Charset charset) {
-            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        public String text(final Charset charset) {
+            return text(charset, Normal.MEBI_64);
         }
 
         /**
          * Reads body text with an explicit materialize threshold.
          *
-         * @param charset  charset
+         * @param charset  character encoding used to decode the payload
          * @param maxBytes maximum bytes to materialize
-         * @return text
+         * @return fully materialized payload text within the threshold
          */
         @Override
-        public String text(final java.nio.charset.Charset charset, final long maxBytes) {
+        public String text(final Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes),
                     Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
         }

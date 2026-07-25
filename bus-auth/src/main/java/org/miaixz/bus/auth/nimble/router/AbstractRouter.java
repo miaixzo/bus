@@ -29,7 +29,7 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Claims;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -260,7 +260,7 @@ public abstract class AbstractRouter extends FabricX implements OAuth2Router {
      */
     protected void addUserinfoHeaders(Map<String, String> headers, Authorization authorization) {
         if (authorization.getToken() != null) {
-            headers.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
+            headers.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + authorization.getToken());
         }
     }
 

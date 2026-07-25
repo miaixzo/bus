@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.cache.CacheStore;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 
@@ -44,11 +44,13 @@ final class HttpCachePurge {
     }
 
     /**
-     * Removes all vary variants for one request.
+     * Removes every key with the request base-key prefix and, for unsafe methods, every method variant for the same
+     * serialized URI.
      *
-     * @param store   cache store
-     * @param request request
-     * @param removed removed key callback
+     * @param store   cache store whose key snapshot is scanned
+     * @param request request defining the base key, URI, and safe-method behavior
+     * @param removed callback invoked after each selected key is removed
+     * @throws ValidateException if a required argument is {@code null}
      */
     static void remove(final CacheStore store, final HttpRequest request, final Consumer<String> removed) {
         final CacheStore cacheStore = require(store, "Cache store");
@@ -56,7 +58,7 @@ final class HttpCachePurge {
         final Consumer<String> removeListener = require(removed, "Removed key callback");
         final String prefix = HttpCacheKey.baseKey(targetRequest);
         final String uri = targetRequest.url().toUri().toString();
-        final boolean unsafe = targetRequest.method() != HTTP.Method.GET && targetRequest.method() != HTTP.Method.HEAD;
+        final boolean unsafe = targetRequest.method() != Http.Method.GET && targetRequest.method() != Http.Method.HEAD;
         final var keys = cacheStore.keys();
         while (keys.hasNext()) {
             final String key = keys.next();
@@ -67,11 +69,12 @@ final class HttpCachePurge {
     }
 
     /**
-     * Removes one cache key.
+     * Removes one cache key and then reports that key to a callback.
      *
-     * @param store   cache store
-     * @param key     cache key
-     * @param removed removed key callback
+     * @param store   cache store from which the key is removed
+     * @param key     exact cache key passed to the store and callback
+     * @param removed callback invoked after the store removal returns
+     * @throws ValidateException if a required argument is {@code null}
      */
     static void removeKey(final CacheStore store, final String key, final Consumer<String> removed) {
         final CacheStore cacheStore = require(store, "Cache store");
@@ -84,9 +87,9 @@ final class HttpCachePurge {
     /**
      * Returns whether a cache key belongs to the supplied URI regardless of method.
      *
-     * @param key cache key
-     * @param uri request URI
-     * @return true when matching
+     * @param key serialized cache key containing method and vary separators
+     * @param uri serialized request URI compared with the key's URI segment
+     * @return {@code true} when the substring between the first {@code @} and following {@code #} equals the URI
      */
     private static boolean sameUri(final String key, final String uri) {
         final int method = key.indexOf(Symbol.C_AT);
@@ -95,12 +98,12 @@ final class HttpCachePurge {
     }
 
     /**
-     * Validates required value.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

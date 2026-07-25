@@ -19,15 +19,16 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Builder;
 
 /**
  * Fixed-length frame codec.
@@ -38,19 +39,19 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public final class FixedCodec implements FrameCodec {
 
     /**
-     * Fixed frame length.
+     * Required payload size for every encoded and decoded frame.
      */
     private final int length;
 
     /**
-     * Decoder buffer.
+     * Accumulator retaining bytes that do not yet form a complete frame.
      */
     private final Buffer buffer = new Buffer();
 
     /**
      * Creates a fixed-length codec.
      *
-     * @param length frame length
+     * @param length validated frame size from 1 byte through 16 MiB
      */
     private FixedCodec(final int length) {
         this.length = validateLength(length);
@@ -59,8 +60,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Creates a fixed-length codec.
      *
-     * @param length frame length
-     * @return codec
+     * @param length frame size from 1 byte through 16 MiB
+     * @return new stateful fixed-length codec
      */
     public static FixedCodec of(final int length) {
         return new FixedCodec(length);
@@ -69,8 +70,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Decodes fixed-length frames.
      *
-     * @param input input bytes
-     * @return frames
+     * @param input non-null, non-empty buffer whose bytes are consumed into the decoder accumulator
+     * @return immutable list of all complete fixed-length frames currently available
      */
     @Override
     public List<Frame> decode(final Buffer input) {
@@ -80,7 +81,7 @@ public final class FixedCodec implements FrameCodec {
         while (buffer.request(length)) {
             try {
                 frames.add(Frame.of(buffer.readByteString(length)));
-            } catch (final java.io.EOFException e) {
+            } catch (final EOFException e) {
                 throw new InternalException("Unable to read fixed frame", e);
             }
         }
@@ -90,8 +91,8 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Encodes a fixed-length frame.
      *
-     * @param frame  frame
-     * @param output encoded byte destination
+     * @param frame  non-null frame whose payload length must equal the configured fixed length
+     * @param output non-null destination receiving the frame payload without additional metadata
      */
     @Override
     public void encode(final Frame frame, final Buffer output) {
@@ -115,12 +116,12 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Validates frame length.
      *
-     * @param length frame length
-     * @return validated length
+     * @param length candidate fixed frame length
+     * @return unchanged length from 1 byte through 16 MiB
      */
     private static int validateLength(final int length) {
         Assert.isTrue(
-                length > 0 && length <= Normal._16 * Normal.MEBI,
+                length > 0 && length <= Builder.BYTES_16_MIB,
                 () -> new ValidateException("Frame length must be between 1 and 16777216"));
         return length;
     }
@@ -128,7 +129,7 @@ public final class FixedCodec implements FrameCodec {
     /**
      * Validates input buffer.
      *
-     * @param input input buffer
+     * @param input buffer required to be non-null and contain at least one byte
      */
     private static void validateInput(final Buffer input) {
         Assert.isTrue(

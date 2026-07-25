@@ -19,7 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
-import static org.miaixz.bus.fabric.Builder.*;
+import static org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT;
+import static org.miaixz.bus.fabric.Builder.STOMP_HEADER_HEART_BEAT;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,16 +36,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -61,9 +53,9 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
 public final class StompX {
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final StompSnapshot snapshot;
+    private final StompSpec spec;
 
     /**
      * Execution runner.
@@ -78,15 +70,17 @@ public final class StompX {
     /**
      * Creates an exchange.
      *
-     * @param builder builder
+     * @param builder configuration source used to create the immutable exchange specification
      */
     private StompX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.destination, builder.login, builder.passcode, builder.guard, builder.filter,
-                currentObserver, builder.handler == null ? noopHandler() : builder.handler, builder.listener);
-        this.runner = new StompRunner(snapshot);
+        final Headers connectHeaders = connectHeaders(builder.headers.build(), builder.policy);
+        this.spec = new StompSpec(current, builder.uri, Address.from(builder.uri), connectHeaders,
+                copyTimeout(builder.timeout), builder.policy, builder.destination, builder.login, builder.passcode,
+                builder.guard, builder.filter, currentObserver,
+                builder.handler == null ? noopHandler() : builder.handler, builder.listener);
+        this.runner = new StompRunner(spec);
         this.callback = builder.callback;
     }
 
@@ -94,7 +88,7 @@ public final class StompX {
      * Creates a STOMP builder.
      *
      * @param context shared context
-     * @return builder
+     * @return new STOMP exchange builder bound to the context
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
@@ -103,25 +97,25 @@ public final class StompX {
     /**
      * Returns the STOMP transport protocol.
      *
-     * @return protocol
+     * @return transport protocol derived from the target address
      */
     public Protocol protocol() {
-        return snapshot.address().protocol();
+        return spec.address().protocol();
     }
 
     /**
      * Returns the target address.
      *
-     * @return address
+     * @return immutable STOMP transport target address
      */
     public Address address() {
-        return snapshot.address();
+        return spec.address();
     }
 
     /**
      * Returns STOMP execution path.
      *
-     * @return itinerary
+     * @return execution itinerary containing the transport protocol and address
      */
     public Itinerary itinerary() {
         return Itinerary.of(protocol(), address());
@@ -130,35 +124,35 @@ public final class StompX {
     /**
      * Returns STOMP headers.
      *
-     * @return headers
+     * @return immutable STOMP CONNECT headers including heartbeat negotiation
      */
     public Headers headers() {
-        return snapshot.headers();
+        return spec.headers();
     }
 
     /**
      * Returns timeout policy.
      *
-     * @return timeout
+     * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
-        return snapshot.timeout();
+        return spec.timeout();
     }
 
     /**
      * Returns the default destination as the descriptor tag.
      *
-     * @return destination
+     * @return configured default STOMP destination, or {@code null} when absent
      */
     public Object tag() {
-        return snapshot.destination();
+        return spec.destination();
     }
 
     /**
      * Creates a protocol-neutral message from this STOMP exchange and payload.
      *
-     * @param payload payload
-     * @return message
+     * @param payload payload to attach to the protocol-neutral message
+     * @return message representing this exchange and its default destination
      */
     public Message message(final Payload payload) {
         return Message.of(protocol(), address(), headers(), payload, tag());
@@ -167,7 +161,7 @@ public final class StompX {
     /**
      * Opens a STOMP session over WebSocket.
      *
-     * @return session
+     * @return opened and STOMP-connected session
      */
     public StompSession open() {
         return call().execute();
@@ -176,7 +170,7 @@ public final class StompX {
     /**
      * Executes this exchange synchronously.
      *
-     * @return session
+     * @return STOMP session produced by synchronous execution
      */
     public StompSession execute() {
         return open();
@@ -185,7 +179,7 @@ public final class StompX {
     /**
      * Connects this exchange synchronously.
      *
-     * @return session
+     * @return synchronously connected STOMP session
      */
     public StompSession connect() {
         return execute();
@@ -194,13 +188,14 @@ public final class StompX {
     /**
      * Creates a single-use call for this exchange.
      *
-     * @return STOMP call
+     * @return new single-use call that opens this STOMP exchange
      */
     public Call<StompSession> call() {
         return StompCall.create(
-                snapshot.context().reactor().dispatcher(),
+                spec.context().reactor().dispatcher(),
                 callback,
-                snapshot.observer(),
+                spec.observer(),
+                spec.timeout(),
                 cancellation -> Mediator.execute(Type.STOMP, cancellation, runner::open),
                 dispatchKey());
     }
@@ -208,7 +203,7 @@ public final class StompX {
     /**
      * Enqueues this exchange asynchronously.
      *
-     * @return call
+     * @return enqueued call for this STOMP exchange
      */
     public Call<StompSession> enqueue() {
         return call().enqueue();
@@ -220,8 +215,8 @@ public final class StompX {
      * @return dispatch key
      */
     public String dispatchKey() {
-        return "stomp" + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + snapshot.address().host() + Symbol.C_COLON
-                + snapshot.address().port();
+        return "stomp" + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + spec.address().host() + Symbol.C_COLON
+                + spec.address().port();
     }
 
     /**
@@ -237,10 +232,10 @@ public final class StompX {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -249,8 +244,8 @@ public final class StompX {
     /**
      * Parses a target URI.
      *
-     * @param value target
-     * @return URI
+     * @param value raw STOMP transport URL
+     * @return validated WS, WSS, or TCP target URI
      */
     private static URI parseTarget(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -273,8 +268,8 @@ public final class StompX {
     /**
      * Validates a duration.
      *
-     * @param duration duration
-     * @return duration
+     * @param duration timeout duration to validate
+     * @return validated non-negative duration
      */
     private static Duration validateDuration(final Duration duration) {
         return validateDuration(duration, "Timeout");
@@ -283,15 +278,39 @@ public final class StompX {
     /**
      * Validates a duration.
      *
-     * @param duration duration
+     * @param duration candidate timeout or heartbeat duration
      * @param name     field name
-     * @return duration
+     * @return validated non-negative duration
      */
     private static Duration validateDuration(final Duration duration, final String name) {
         final Duration checked = Assert
                 .notNull(duration, () -> new ValidateException(name + " must be non-null and non-negative"));
         Assert.isFalse(checked.isNegative(), () -> new ValidateException(name + " must be non-null and non-negative"));
         return checked;
+    }
+
+    /**
+     * Creates CONNECT headers from immutable heartbeat request components.
+     *
+     * @param headers caller headers
+     * @param policy  complete STOMP policy
+     * @return CONNECT headers
+     */
+    private static Headers connectHeaders(final Headers headers, final StompPolicy policy) {
+        final StompPolicy current = require(policy, "STOMP policy");
+        return require(headers, "Headers").with(
+                STOMP_HEADER_HEART_BEAT,
+                current.clientSendHeartbeatMillis() + Symbol.COMMA + current.clientReceiveHeartbeatMillis());
+    }
+
+    /**
+     * Validates and retains the immutable timeout policy.
+     *
+     * @param timeout timeout policy
+     * @return validated timeout policy
+     */
+    private static Timeout copyTimeout(final Timeout timeout) {
+        return require(timeout, "Timeout");
     }
 
     /**
@@ -321,6 +340,11 @@ public final class StompX {
          * Timeout policy.
          */
         private Timeout timeout;
+
+        /**
+         * Complete client heartbeat policy.
+         */
+        private StompPolicy policy;
 
         /**
          * Default destination.
@@ -385,8 +409,9 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
-            this.timeout = configured == null ? Timeout.defaults() : configured;
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
+            this.timeout = copyTimeout(configured == null ? Timeout.defaults() : configured);
+            this.policy = StompPolicy.resolve(context.options());
             this.observer = EventObserver.noop();
             this.callback = null;
             this.handler = noopHandler();
@@ -400,7 +425,7 @@ public final class StompX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw STOMP transport URL
          * @return this builder
          */
         public Builder to(final String url) {
@@ -411,7 +436,7 @@ public final class StompX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw STOMP transport URL forwarded to {@link #to(String)}
          * @return this builder
          */
         public Builder url(final String url) {
@@ -421,7 +446,7 @@ public final class StompX {
         /**
          * Sets default destination.
          *
-         * @param destination destination
+         * @param destination default destination used by session operations
          * @return this builder
          */
         public Builder destination(final String destination) {
@@ -432,7 +457,7 @@ public final class StompX {
         /**
          * Sets login.
          *
-         * @param login login
+         * @param login STOMP authentication login token
          * @return this builder
          */
         public Builder login(final String login) {
@@ -443,7 +468,7 @@ public final class StompX {
         /**
          * Sets passcode.
          *
-         * @param passcode passcode
+         * @param passcode STOMP authentication passcode token
          * @return this builder
          */
         public Builder passcode(final String passcode) {
@@ -459,15 +484,26 @@ public final class StompX {
          * @return this builder
          */
         public Builder heartBeat(final Duration outgoing, final Duration incoming) {
-            headers.set(STOMP_HEADER_HEART_BEAT, heartbeat(outgoing) + "," + heartbeat(incoming));
+            this.policy = new StompPolicy(outgoing, incoming);
+            return this;
+        }
+
+        /**
+         * Sets the complete STOMP client heartbeat policy.
+         *
+         * @param policy complete STOMP policy
+         * @return this builder
+         */
+        public Builder heartBeat(final StompPolicy policy) {
+            this.policy = require(policy, "STOMP policy");
             return this;
         }
 
         /**
          * Sets login and passcode.
          *
-         * @param login    login
-         * @param passcode passcode
+         * @param login    STOMP authentication login token
+         * @param passcode STOMP authentication passcode token
          * @return this builder
          */
         public Builder login(final String login, final String passcode) {
@@ -477,8 +513,8 @@ public final class StompX {
         /**
          * Appends a header.
          *
-         * @param name  name
-         * @param value value
+         * @param name  STOMP CONNECT header name
+         * @param value STOMP CONNECT header value
          * @return this builder
          */
         public Builder header(final String name, final String value) {
@@ -489,7 +525,7 @@ public final class StompX {
         /**
          * Merges headers.
          *
-         * @param headers headers
+         * @param headers STOMP CONNECT headers whose values are appended
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -505,11 +541,12 @@ public final class StompX {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout non-negative duration assigned to connect, read, write, and call phases
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
-            this.timeout = Timeout.of(validateDuration(timeout));
+            final Duration current = validateDuration(timeout);
+            this.timeout = new Timeout(current, current, current, current, this.timeout.ping(), this.timeout.close());
             return this;
         }
 
@@ -520,14 +557,14 @@ public final class StompX {
          * @return this builder
          */
         public Builder timeout(final Timeout timeout) {
-            this.timeout = require(timeout, "Timeout");
+            this.timeout = copyTimeout(timeout);
             return this;
         }
 
         /**
          * Sets message handler.
          *
-         * @param handler handler
+         * @param handler STOMP message consumer, or {@code null} for no action
          * @return this builder
          */
         public Builder onMessage(final Consumer<StompMessage> handler) {
@@ -538,7 +575,7 @@ public final class StompX {
         /**
          * Sets open handler.
          *
-         * @param handler open handler
+         * @param handler consumer invoked after STOMP connection, or {@code null} for no action
          * @return this builder
          */
         public Builder onOpen(final Consumer<StompSession> handler) {
@@ -550,7 +587,7 @@ public final class StompX {
         /**
          * Sets error handler.
          *
-         * @param handler error handler
+         * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
         public Builder onError(final Consumer<Throwable> handler) {
@@ -562,7 +599,7 @@ public final class StompX {
         /**
          * Sets guard.
          *
-         * @param guard guard
+         * @param guard rule applied to STOMP messages
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -573,7 +610,7 @@ public final class StompX {
         /**
          * Sets message filter.
          *
-         * @param filter filter
+         * @param filter filter applied to STOMP messages
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -584,7 +621,7 @@ public final class StompX {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer event observer, or {@code null} to disable observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -595,7 +632,7 @@ public final class StompX {
         /**
          * Sets callback.
          *
-         * @param callback callback
+         * @param callback call-lifecycle callback for asynchronous opening
          * @return this builder
          */
         public Builder callback(final Callback<StompSession> callback) {
@@ -615,9 +652,9 @@ public final class StompX {
         }
 
         /**
-         * Builds an exchange snapshot.
+         * Builds an exchange specification.
          *
-         * @return exchange
+         * @return immutable STOMP exchange built from the current configuration
          */
         public StompX build() {
             Assert.notNull(uri, () -> new ValidateException("STOMP target must be set"));
@@ -627,7 +664,7 @@ public final class StompX {
         /**
          * Opens a built exchange.
          *
-         * @return session
+         * @return opened and STOMP-connected session
          */
         public StompSession open() {
             return build().open();
@@ -636,7 +673,7 @@ public final class StompX {
         /**
          * Connects a built exchange.
          *
-         * @return session
+         * @return synchronously connected STOMP session
          */
         public StompSession connect() {
             return open();
@@ -645,7 +682,7 @@ public final class StompX {
         /**
          * Executes a built exchange.
          *
-         * @return session
+         * @return STOMP session produced by synchronous execution
          */
         public StompSession execute() {
             return build().execute();
@@ -654,7 +691,7 @@ public final class StompX {
         /**
          * Creates a call for a built exchange.
          *
-         * @return STOMP call
+         * @return new single-use call for the built exchange
          */
         public Call<StompSession> call() {
             return build().call();
@@ -663,7 +700,7 @@ public final class StompX {
         /**
          * Enqueues a built exchange asynchronously.
          *
-         * @return call
+         * @return enqueued call for the built exchange
          */
         public Call<StompSession> enqueue() {
             return build().enqueue();
@@ -698,21 +735,6 @@ public final class StompX {
                 }
             };
             return this;
-        }
-
-        /**
-         * Converts a heartbeat duration to milliseconds.
-         *
-         * @param duration duration
-         * @return milliseconds
-         */
-        private static long heartbeat(final Duration duration) {
-            final Duration checked = validateDuration(duration, "STOMP heart-beat");
-            try {
-                return checked.toMillis();
-            } catch (final ArithmeticException e) {
-                throw new ValidateException("STOMP heart-beat is too large", e);
-            }
         }
 
     }

@@ -19,19 +19,13 @@
 */
 package org.miaixz.bus.fabric;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 
 /**
  * Immutable case-insensitive header collection with insertion-ordered multi-values.
@@ -39,12 +33,27 @@ import org.miaixz.bus.core.net.HTTP;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class Headers {
+public final class Headers {
+
+    /**
+     * Shared immutable empty headers.
+     */
+    private static final Headers EMPTY = new Headers(Normal.EMPTY_STRING_ARRAY, false);
 
     /**
      * Header names and values stored as adjacent pairs.
      */
     private final String[] namesAndValues;
+
+    /**
+     * Precomputed lowercase ASCII name hashes indexed by header-pair position.
+     */
+    private final int[] nameHashes;
+
+    /**
+     * Lazily initialized immutable map view.
+     */
+    private volatile Map<String, List<String>> mapSnapshot;
 
     /**
      * Creates immutable headers.
@@ -63,6 +72,10 @@ public class Headers {
      */
     private Headers(final String[] namesAndValues, final boolean copy) {
         this.namesAndValues = namesAndValues.length == 0 || !copy ? namesAndValues : namesAndValues.clone();
+        this.nameHashes = new int[this.namesAndValues.length >>> 1];
+        for (int index = 0; index < this.namesAndValues.length; index += 2) {
+            this.nameHashes[index >>> 1] = asciiLowerHash(this.namesAndValues[index]);
+        }
     }
 
     /**
@@ -71,7 +84,7 @@ public class Headers {
      * @return empty headers
      */
     public static Headers empty() {
-        return Instances.get(Headers.class.getName() + ".empty", () -> new Headers(new String[0], false));
+        return EMPTY;
     }
 
     /**
@@ -90,13 +103,12 @@ public class Headers {
         if (namesAndValues.length == 0) {
             return empty();
         }
-        final Builder builder = builder();
+        final String[] pairs = new String[namesAndValues.length];
         for (int i = 0; i < namesAndValues.length; i += 2) {
-            final String name = namesAndValues[i] == null ? null : namesAndValues[i].trim();
-            final String value = namesAndValues[i + 1] == null ? null : namesAndValues[i + 1].trim();
-            builder.add(name, value);
+            pairs[i] = validateName(namesAndValues[i]);
+            pairs[i + 1] = validateValue(namesAndValues[i + 1]);
         }
-        return builder.build();
+        return new Headers(pairs, false);
     }
 
     /**
@@ -114,9 +126,7 @@ public class Headers {
         }
         final Builder builder = builder();
         for (final Map.Entry<String, String> entry : headers.entrySet()) {
-            final String name = entry.getKey() == null ? null : entry.getKey().trim();
-            final String value = entry.getValue() == null ? null : entry.getValue().trim();
-            builder.add(name, value);
+            builder.add(entry.getKey(), entry.getValue());
         }
         return builder.build();
     }
@@ -137,8 +147,9 @@ public class Headers {
      * @return last value or null
      */
     public String get(final String name) {
+        final int hash = asciiLowerHash(name);
         for (int i = namesAndValues.length - 2; i >= 0; i -= 2) {
-            if (name.equalsIgnoreCase(namesAndValues[i])) {
+            if (nameHashes[i >>> 1] == hash && asciiEqualsIgnoreCase(name, namesAndValues[i])) {
                 return namesAndValues[i + 1];
             }
         }
@@ -152,23 +163,26 @@ public class Headers {
      * @return immutable values
      */
     public List<String> values(final String name) {
+        final int hash = asciiLowerHash(name);
         ArrayList<String> result = null;
+        String first = null;
         for (int i = 0; i < namesAndValues.length; i += 2) {
-            if (name.equalsIgnoreCase(namesAndValues[i])) {
-                if (result == null) {
-                    result = new ArrayList<>(2);
+            if (nameHashes[i >>> 1] == hash && asciiEqualsIgnoreCase(name, namesAndValues[i])) {
+                if (first == null) {
+                    first = namesAndValues[i + 1];
+                } else {
+                    if (result == null) {
+                        result = new ArrayList<>(4);
+                        result.add(first);
+                    }
+                    result.add(namesAndValues[i + 1]);
                 }
-                result.add(namesAndValues[i + 1]);
             }
         }
-        if (result == null) {
+        if (first == null) {
             return List.of();
         }
-        return switch (result.size()) {
-            case 0 -> List.of();
-            case 1 -> List.of(result.get(0));
-            default -> Collections.unmodifiableList(result);
-        };
+        return result == null ? List.of(first) : Collections.unmodifiableList(result);
     }
 
     /**
@@ -178,8 +192,9 @@ public class Headers {
      * @return true when present
      */
     public boolean contains(final String name) {
+        final int hash = asciiLowerHash(name);
         for (int i = 0; i < namesAndValues.length; i += 2) {
-            if (name.equalsIgnoreCase(namesAndValues[i])) {
+            if (nameHashes[i >>> 1] == hash && asciiEqualsIgnoreCase(name, namesAndValues[i])) {
                 return true;
             }
         }
@@ -220,17 +235,30 @@ public class Headers {
      *
      * @return content length, or -1 when absent
      */
-    public int contentLength() {
-        final String value = get(HTTP.CONTENT_LENGTH);
+    public long contentLength() {
+        String value = null;
+        for (int index = 0; index < namesAndValues.length; index += 2) {
+            if (asciiEqualsIgnoreCase(Http.Header.CONTENT_LENGTH, namesAndValues[index])) {
+                if (value != null) {
+                    throw new ProtocolException("Content-Length must be unique");
+                }
+                value = namesAndValues[index + 1];
+            }
+        }
         if (value == null) {
-            return -1;
+            return -1L;
+        }
+        if (value.isEmpty()) {
+            throw new ProtocolException("Invalid Content-Length");
+        }
+        for (int i = 0; i < value.length(); i++) {
+            final char current = value.charAt(i);
+            if (current < '0' || current > '9') {
+                throw new ProtocolException("Invalid Content-Length");
+            }
         }
         try {
-            final int length = Integer.parseInt(value);
-            if (length < 0) {
-                throw new ProtocolException("Content-Length must be non-negative");
-            }
-            return length;
+            return Long.parseLong(value);
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid Content-Length", e);
         }
@@ -244,7 +272,38 @@ public class Headers {
      * @return updated headers
      */
     public Headers with(final String name, final String value) {
-        return new Builder(this).set(name, value).build();
+        final String checkedName = validateName(name);
+        final String checkedValue = validateValue(value);
+        int matches = 0;
+        int matchedIndex = -1;
+        for (int index = 0; index < namesAndValues.length; index += 2) {
+            if (asciiEqualsIgnoreCase(checkedName, namesAndValues[index])) {
+                matches++;
+                matchedIndex = index;
+            }
+        }
+        if (matches == 0) {
+            final String[] pairs = Arrays.copyOf(namesAndValues, namesAndValues.length + 2);
+            pairs[namesAndValues.length] = checkedName;
+            pairs[namesAndValues.length + 1] = checkedValue;
+            return new Headers(pairs, false);
+        }
+        if (matches == 1 && matchedIndex == namesAndValues.length - 2
+                && namesAndValues[matchedIndex].equals(checkedName)
+                && namesAndValues[matchedIndex + 1].equals(checkedValue)) {
+            return this;
+        }
+        final String[] pairs = new String[namesAndValues.length - matches * 2 + 2];
+        int target = 0;
+        for (int index = 0; index < namesAndValues.length; index += 2) {
+            if (!asciiEqualsIgnoreCase(checkedName, namesAndValues[index])) {
+                pairs[target++] = namesAndValues[index];
+                pairs[target++] = namesAndValues[index + 1];
+            }
+        }
+        pairs[target] = checkedName;
+        pairs[target + 1] = checkedValue;
+        return new Headers(pairs, false);
     }
 
     /**
@@ -254,7 +313,40 @@ public class Headers {
      * @return updated headers
      */
     public Headers without(final String name) {
-        return new Builder(this).remove(name).build();
+        final String checkedName = validateName(name);
+        int matches = 0;
+        int matchedIndex = -1;
+        for (int index = 0; index < namesAndValues.length; index += 2) {
+            if (asciiEqualsIgnoreCase(checkedName, namesAndValues[index])) {
+                matches++;
+                matchedIndex = index;
+            }
+        }
+        if (matches == 0) {
+            return this;
+        }
+        if (matches * 2 == namesAndValues.length) {
+            return empty();
+        }
+        final String[] pairs = new String[namesAndValues.length - matches * 2];
+        if (matches == 1) {
+            System.arraycopy(namesAndValues, 0, pairs, 0, matchedIndex);
+            System.arraycopy(
+                    namesAndValues,
+                    matchedIndex + 2,
+                    pairs,
+                    matchedIndex,
+                    namesAndValues.length - matchedIndex - 2);
+            return new Headers(pairs, false);
+        }
+        int target = 0;
+        for (int index = 0; index < namesAndValues.length; index += 2) {
+            if (!asciiEqualsIgnoreCase(checkedName, namesAndValues[index])) {
+                pairs[target++] = namesAndValues[index];
+                pairs[target++] = namesAndValues[index + 1];
+            }
+        }
+        return new Headers(pairs, false);
     }
 
     /**
@@ -272,18 +364,50 @@ public class Headers {
      * @return immutable headers map
      */
     public Map<String, List<String>> asMap() {
-        final LinkedHashMap<String, String> names = new LinkedHashMap<>();
-        final LinkedHashMap<String, ArrayList<String>> values = new LinkedHashMap<>();
+        Map<String, List<String>> snapshot = mapSnapshot;
+        if (snapshot != null) {
+            return snapshot;
+        }
+        synchronized (this) {
+            snapshot = mapSnapshot;
+            if (snapshot == null) {
+                snapshot = buildMapSnapshot();
+                mapSnapshot = snapshot;
+            }
+        }
+        return snapshot;
+    }
+
+    /**
+     * Builds the immutable map view from the immutable pair array.
+     *
+     * @return immutable map snapshot
+     */
+    private Map<String, List<String>> buildMapSnapshot() {
+        if (namesAndValues.length == 0) {
+            return Map.of();
+        }
+        final LinkedHashMap<String, List<String>> values = new LinkedHashMap<>(namesAndValues.length / 2);
         for (int i = 0; i < namesAndValues.length; i += 2) {
-            final String key = namesAndValues[i].toLowerCase(Locale.ROOT);
-            names.putIfAbsent(key, namesAndValues[i]);
-            values.computeIfAbsent(key, ignored -> new ArrayList<>(2)).add(namesAndValues[i + 1]);
+            final String name = namesAndValues[i];
+            String existingName = null;
+            for (final String candidate : values.keySet()) {
+                if (asciiEqualsIgnoreCase(candidate, name)) {
+                    existingName = candidate;
+                    break;
+                }
+            }
+            if (existingName == null) {
+                values.put(name, List.of(namesAndValues[i + 1]));
+                continue;
+            }
+            final List<String> existing = values.get(existingName);
+            final ArrayList<String> combined = new ArrayList<>(existing.size() + 1);
+            combined.addAll(existing);
+            combined.add(namesAndValues[i + 1]);
+            values.put(existingName, List.copyOf(combined));
         }
-        final LinkedHashMap<String, List<String>> copy = new LinkedHashMap<>();
-        for (final Map.Entry<String, ArrayList<String>> entry : values.entrySet()) {
-            copy.put(names.get(entry.getKey()), Collections.unmodifiableList(new ArrayList<>(entry.getValue())));
-        }
-        return Collections.unmodifiableMap(copy);
+        return Map.copyOf(values);
     }
 
     /**
@@ -294,14 +418,81 @@ public class Headers {
      */
     private static String validateName(final String name) {
         if (name == null || name.isEmpty()) {
-            throw new ValidateException("Header name must be non-blank and single-line");
+            throw new ValidateException("Header name must be a non-empty RFC token");
         }
         for (int i = 0; i < name.length(); i++) {
-            if (name.charAt(i) <= Symbol.C_SPACE) {
-                throw new ValidateException("Header name must be non-blank and single-line");
+            if (!isTokenCharacter(name.charAt(i))) {
+                throw new ValidateException("Header name must contain only RFC token characters");
             }
         }
         return name;
+    }
+
+    /**
+     * Returns whether a character is an ASCII RFC tchar.
+     *
+     * @param value character
+     * @return true for RFC tchar
+     */
+    private static boolean isTokenCharacter(final char value) {
+        if ((value >= '0' && value <= '9') || (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z')) {
+            return true;
+        }
+        return switch (value) {
+            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, '`', Symbol.C_OR, Symbol.C_TILDE -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Compares validated ASCII header names without Unicode case folding.
+     *
+     * @param left  first validated header name
+     * @param right second validated header name
+     * @return {@code true} when the names match ignoring ASCII case
+     */
+    private static boolean asciiEqualsIgnoreCase(final String left, final String right) {
+        if (left == right) {
+            return true;
+        }
+        final int length = left.length();
+        if (length != right.length()) {
+            return false;
+        }
+        for (int index = 0; index < length; index++) {
+            final char a = left.charAt(index);
+            final char b = right.charAt(index);
+            if (a == b) {
+                continue;
+            }
+            final char foldedA = a >= 'A' && a <= 'Z' ? (char) (a + ('a' - 'A')) : a;
+            final char foldedB = b >= 'A' && b <= 'Z' ? (char) (b + ('a' - 'A')) : b;
+            if (foldedA != foldedB) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Computes a case-insensitive ASCII hash without creating a lowercase string.
+     *
+     * @param value header name to hash, or null
+     * @return lowercase ASCII hash, or zero for null
+     */
+    private static int asciiLowerHash(final String value) {
+        if (value == null) {
+            return 0;
+        }
+        int hash = 0;
+        for (int index = 0; index < value.length(); index++) {
+            char current = value.charAt(index);
+            if (current >= 'A' && current <= 'Z') {
+                current = (char) (current + ('a' - 'A'));
+            }
+            hash = 31 * hash + current;
+        }
+        return hash;
     }
 
     /**
@@ -316,8 +507,8 @@ public class Headers {
         }
         for (int i = 0; i < value.length(); i++) {
             final char current = value.charAt(i);
-            if (current == Symbol.C_CR || current == Symbol.C_LF) {
-                throw new ValidateException("Header value must be non-blank and single-line");
+            if (current == '\0' || current == '\u007f' || (current < Symbol.C_SPACE && current != Symbol.C_TAB)) {
+                throw new ValidateException("Header value contains a prohibited control character");
             }
         }
         return value;
@@ -345,7 +536,7 @@ public class Headers {
          * Creates an empty builder.
          */
         private Builder() {
-            this.namesAndValues = new String[20];
+            this.namesAndValues = new String[8];
         }
 
         /**
@@ -355,7 +546,7 @@ public class Headers {
          */
         private Builder(final Headers headers) {
             this.size = headers.namesAndValues.length;
-            this.namesAndValues = size == 0 ? new String[20] : headers.namesAndValues.clone();
+            this.namesAndValues = Arrays.copyOf(headers.namesAndValues, Math.max(8, size + 2));
         }
 
         /**
@@ -415,13 +606,35 @@ public class Headers {
         }
 
         /**
+         * Reuses an immutable candidate when this builder contains the same ordered pairs.
+         *
+         * @param candidate immutable candidate, or null
+         * @return candidate on an exact match, otherwise a newly built snapshot
+         */
+        public Headers buildOrReuse(final Headers candidate) {
+            if (candidate != null && candidate.namesAndValues.length == size) {
+                boolean same = true;
+                for (int index = 0; index < size; index++) {
+                    if (!namesAndValues[index].equals(candidate.namesAndValues[index])) {
+                        same = false;
+                        break;
+                    }
+                }
+                if (same) {
+                    return candidate;
+                }
+            }
+            return build();
+        }
+
+        /**
          * Removes all values for a validated name.
          *
          * @param name validated header name
          */
         private void removeAll(final String name) {
             for (int i = 0; i < size; i += 2) {
-                if (namesAndValues[i].equalsIgnoreCase(name)) {
+                if (asciiEqualsIgnoreCase(namesAndValues[i], name)) {
                     final int moved = size - i - 2;
                     if (moved > 0) {
                         System.arraycopy(namesAndValues, i + 2, namesAndValues, i, moved);

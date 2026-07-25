@@ -74,8 +74,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      *
      * @param kind    message kind
      * @param text    text value
-     * @param payload payload
-     * @param media   media
+     * @param payload encoded message payload
+     * @param media   payload media metadata
      */
     private WebSocketBody(final Kind kind, final String text, final Payload payload, final MediaType media) {
         this(kind, text, payload, media, null);
@@ -86,8 +86,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
      *
      * @param kind     message kind
      * @param text     text value
-     * @param payload  payload
-     * @param media    media
+     * @param payload  encoded message payload
+     * @param media    payload media metadata
      * @param progress optional progress tracker
      */
     private WebSocketBody(final Kind kind, final String text, final Payload payload, final MediaType media,
@@ -102,7 +102,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a text body.
      *
-     * @param text text
+     * @param text Unicode text validated for disallowed control characters
      * @return WebSocket body
      */
     public static WebSocketBody text(final String text) {
@@ -113,7 +113,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a text body.
      *
-     * @param text text bytes
+     * @param text strict UTF-8 text bytes
      * @return WebSocket body
      */
     public static WebSocketBody text(final ByteString text) {
@@ -126,7 +126,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param bytes bytes
+     * @param bytes binary message bytes
      * @return WebSocket body
      */
     public static WebSocketBody binary(final byte[] bytes) {
@@ -136,7 +136,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body.
      *
-     * @param bytes bytes
+     * @param bytes immutable binary message bytes
      * @return WebSocket body
      */
     public static WebSocketBody binary(final ByteString bytes) {
@@ -147,8 +147,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a binary body with media metadata.
      *
-     * @param payload payload
-     * @param media   media
+     * @param payload binary message payload of at most 16 MiB when length is known
+     * @param media   binary payload media metadata
      * @return WebSocket body
      */
     public static WebSocketBody of(final Payload payload, final MediaType media) {
@@ -162,7 +162,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Returns message kind.
      *
-     * @return kind
+     * @return text or binary message kind
      */
     public Kind kind() {
         return kind;
@@ -207,7 +207,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Returns a progress-aware copy of this WebSocket body.
      *
-     * @param listener listener
+     * @param listener callback receiving transferred and total byte counts
      * @return progress-aware WebSocket body
      */
     public WebSocketBody progress(final BiConsumer<Long, Long> listener) {
@@ -289,8 +289,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Validates text.
      *
-     * @param text text
-     * @return text
+     * @param text Unicode text to validate and encode
+     * @return validated text encoded as UTF-8 bytes
      */
     private static ByteString validateText(final String text) {
         final String checked = require(text, "WebSocket text");
@@ -301,8 +301,8 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Creates a text body from validated values.
      *
-     * @param bytes text bytes
-     * @param text  text value
+     * @param bytes validated UTF-8 text bytes
+     * @param text  decoded validated text value
      * @return WebSocket body
      */
     private static WebSocketBody text(final ByteString bytes, final String text) {
@@ -313,7 +313,7 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Validates text characters.
      *
-     * @param text text
+     * @param text decoded text whose control characters are validated
      */
     private static void validateTextValue(final String text) {
         for (int i = Normal._0; i < text.length(); i++) {
@@ -342,10 +342,10 @@ public final class WebSocketBody implements MessageBody, ProgressBody {
     /**
      * Validates a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

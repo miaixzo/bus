@@ -73,9 +73,9 @@ public class RenrenProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(tokenUrl(callback.getCode())))
-                .build();
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(this.getToken(tokenUrl(callback.getCode()))).build();
     }
 
     /**
@@ -85,11 +85,11 @@ public class RenrenProvider extends AbstractProvider {
      * @return {@link Claims} containing the user's information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String response = doGetUserInfo(authorization);
         Map<String, Object> userObj = (Map<String, Object>) JsonKit.toPojo(response, Map.class).get("response");
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
                                 .avatar(getAvatarUrl(userObj)).nickname((String) userObj.get("name"))
@@ -105,8 +105,8 @@ public class RenrenProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> refresh(Authorization authorization) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(this.refreshUrl(authorization.getRefresh()))).build();
     }
 
@@ -193,8 +193,8 @@ public class RenrenProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getScopes(RenrenScope.values())))
                         .build())

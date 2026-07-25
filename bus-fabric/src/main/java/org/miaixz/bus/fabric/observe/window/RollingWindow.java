@@ -21,11 +21,13 @@ package org.miaixz.bus.fabric.observe.window;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.StampedLock;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 
 /**
  * Bounded rolling sum and count window.
@@ -46,31 +48,36 @@ public final class RollingWindow {
     private final long bucketNanos;
 
     /**
-     * Ring buckets.
+     * Atomic ring of bucket states sized to the configured window.
      */
-    private final Bucket[] buckets;
+    private final AtomicReferenceArray<BucketState> buckets;
 
     /**
-     * Creates a rolling window.
+     * Lifecycle lock separating ordinary access from reset.
+     */
+    private final StampedLock lock;
+
+    /**
+     * Creates a rolling window from validated nanosecond durations.
      *
-     * @param windowNanos window nanoseconds
-     * @param bucketNanos bucket nanoseconds
+     * @param windowNanos total window duration in nanoseconds
+     * @param bucketNanos duration of each ring bucket in nanoseconds
      */
     private RollingWindow(final long windowNanos, final long bucketNanos) {
         this.windowNanos = windowNanos;
         this.bucketNanos = bucketNanos;
-        this.buckets = new Bucket[(int) (windowNanos / bucketNanos)];
-        for (int i = 0; i < buckets.length; i++) {
-            buckets[i] = new Bucket();
-        }
+        this.buckets = new AtomicReferenceArray<>((int) (windowNanos / bucketNanos));
+        this.lock = new StampedLock();
     }
 
     /**
-     * Creates a rolling window.
+     * Creates a rolling window whose bucket duration divides the total window exactly.
      *
-     * @param window window duration
-     * @param bucket bucket duration
-     * @return rolling window
+     * @param window positive total window duration
+     * @param bucket positive duration of each bucket
+     * @return empty rolling window with the requested durations
+     * @throws ValidateException if either duration is null, non-positive, outside nanosecond range, larger than the
+     *                           window, or does not divide the window exactly
      */
     public static RollingWindow of(final Duration window, final Duration bucket) {
         final long windowNanos = validateDuration(window, "Window");
@@ -82,110 +89,179 @@ public final class RollingWindow {
     }
 
     /**
-     * Adds a sample value.
+     * Adds a non-negative sample to the bucket containing its timestamp.
+     * <p>
+     * A sample older than a newer state already occupying the same ring slot is ignored.
+     * </p>
      *
-     * @param value value
-     * @param time  sample time
+     * @param value non-negative amount added to the bucket sum
+     * @param time  timestamp used to select the bucket
+     * @throws ValidateException if {@code value} is negative or {@code time} is null or outside the supported range
      */
-    public synchronized void add(final long value, final Instant time) {
+    public void add(final long value, final Instant time) {
         Assert.isTrue(value >= 0, () -> new ValidateException("Window value must be non-negative"));
         final long key = bucketKey(time);
-        final Bucket bucket = buckets[index(key)];
-        if (bucket.key != key) {
-            bucket.reset(key);
-        }
-        bucket.sum += value;
-        bucket.count++;
-    }
-
-    /**
-     * Returns window sum.
-     *
-     * @param now current time
-     * @return sum
-     */
-    public synchronized long sum(final Instant now) {
-        final long current = bucketKey(now);
-        long sum = 0;
-        for (final Bucket bucket : buckets) {
-            if (active(bucket, current)) {
-                sum += bucket.sum;
+        final int index = index(key);
+        final long stamp = lock.readLock();
+        try {
+            while (true) {
+                final BucketState state = buckets.get(index);
+                if (state == null) {
+                    final BucketState installed = new BucketState(key);
+                    if (buckets.compareAndSet(index, null, installed)) {
+                        installed.add(value);
+                        return;
+                    }
+                    continue;
+                }
+                if (state.key == key) {
+                    state.add(value);
+                    return;
+                }
+                if (state.key > key) {
+                    return;
+                }
+                final BucketState installed = new BucketState(key);
+                if (buckets.compareAndSet(index, state, installed)) {
+                    installed.add(value);
+                    return;
+                }
             }
+        } finally {
+            lock.unlockRead(stamp);
         }
-        return sum;
     }
 
     /**
-     * Returns window count.
+     * Returns the sum of samples in buckets active at the supplied time.
      *
-     * @param now current time
-     * @return count
+     * @param now timestamp defining the newest active bucket
+     * @return sum across the configured rolling window
+     * @throws ValidateException if {@code now} is null or outside the supported range
      */
-    public synchronized long count(final Instant now) {
+    public long sum(final Instant now) {
         final long current = bucketKey(now);
-        long count = 0;
-        for (final Bucket bucket : buckets) {
-            if (active(bucket, current)) {
-                count += bucket.count;
+        final long stamp = lock.readLock();
+        try {
+            long sum = 0L;
+            for (int i = 0; i < buckets.length(); i++) {
+                sum += value(i, current, true);
             }
+            return sum;
+        } finally {
+            lock.unlockRead(stamp);
         }
-        return count;
     }
 
     /**
-     * Returns sum rate per second.
+     * Returns the number of samples in buckets active at the supplied time.
      *
-     * @param now current time
-     * @return rate
+     * @param now timestamp defining the newest active bucket
+     * @return sample count across the configured rolling window
+     * @throws ValidateException if {@code now} is null or outside the supported range
      */
-    public synchronized double rate(final Instant now) {
-        final long total = sum(now);
-        return total == 0 ? 0D : total / (windowNanos / Builder.ROLLING_WINDOW_NANOS_PER_SECOND);
+    public long count(final Instant now) {
+        final long current = bucketKey(now);
+        final long stamp = lock.readLock();
+        try {
+            long count = 0L;
+            for (int i = 0; i < buckets.length(); i++) {
+                count += value(i, current, false);
+            }
+            return count;
+        } finally {
+            lock.unlockRead(stamp);
+        }
+    }
+
+    /**
+     * Returns the active sum normalized by the configured window duration in seconds.
+     *
+     * @param now timestamp defining the newest active bucket
+     * @return window sum per configured window-second, or {@code 0.0} when the sum is zero
+     * @throws ValidateException if {@code now} is null or outside the supported range
+     */
+    public double rate(final Instant now) {
+        final long current = bucketKey(now);
+        final long stamp = lock.readLock();
+        try {
+            long total = 0L;
+            for (int i = 0; i < buckets.length(); i++) {
+                total += value(i, current, true);
+            }
+            return total == 0L ? 0D : total / (windowNanos / Normal.GIGA);
+        } finally {
+            lock.unlockRead(stamp);
+        }
     }
 
     /**
      * Resets all buckets.
      */
-    public synchronized void reset() {
-        for (final Bucket bucket : buckets) {
-            bucket.clear();
+    public void reset() {
+        final long stamp = lock.writeLock();
+        try {
+            for (int i = 0; i < buckets.length(); i++) {
+                buckets.set(i, null);
+            }
+        } finally {
+            lock.unlockWrite(stamp);
         }
     }
 
     /**
      * Returns whether a bucket is active for a current key.
      *
-     * @param bucket  bucket
-     * @param current current key
-     * @return true when active
+     * @param bucket  bucket state to test, or {@code null} for an empty ring slot
+     * @param current key of the newest bucket included in the window
+     * @return {@code true} if the bucket key lies within the current rolling window
      */
-    private boolean active(final Bucket bucket, final long current) {
-        if (bucket.empty()) {
+    private boolean active(final BucketState bucket, final long current) {
+        if (bucket == null) {
             return false;
         }
-        final long oldest = current - buckets.length + 1L;
+        final long oldest = current - buckets.length() + 1L;
         if (bucket.key < oldest) {
-            bucket.clear();
             return false;
         }
         return bucket.key <= current;
     }
 
     /**
+     * Reads one stable bucket slot, retrying once if its reference changes.
+     *
+     * @param index   ring slot index to read
+     * @param current key of the newest bucket included in the window
+     * @param sum     {@code true} to read the sum; {@code false} to read the sample count
+     * @return selected aggregate for an active bucket, or zero for an inactive slot
+     */
+    private long value(final int index, final long current, final boolean sum) {
+        BucketState state = buckets.get(index);
+        long value = active(state, current) ? state.value(sum) : 0L;
+        final BucketState after = buckets.get(index);
+        if (after != state) {
+            state = after;
+            value = active(state, current) ? state.value(sum) : 0L;
+        }
+        return value;
+    }
+
+    /**
      * Returns a bucket array index.
      *
-     * @param key bucket key
-     * @return index
+     * @param key time-derived bucket key
+     * @return non-negative ring slot index for the key
      */
     private int index(final long key) {
-        return Math.floorMod(key, buckets.length);
+        return Math.floorMod(key, buckets.length());
     }
 
     /**
      * Returns a bucket key.
      *
-     * @param time time
-     * @return bucket key
+     * @param time timestamp to convert to a bucket key
+     * @return floor-divided epoch-nanosecond bucket key
+     * @throws ValidateException if {@code time} is null or its epoch nanoseconds overflow
      */
     private long bucketKey(final Instant time) {
         final Instant checked = Assert.notNull(time, () -> new ValidateException("Window time must not be null"));
@@ -201,9 +277,10 @@ public final class RollingWindow {
     /**
      * Validates a positive duration.
      *
-     * @param duration duration
-     * @param name     name
-     * @return nanoseconds
+     * @param duration duration to validate and convert
+     * @param name     logical duration name used in validation messages
+     * @return positive duration in nanoseconds
+     * @throws ValidateException if the duration is null, non-positive, or outside nanosecond range
      */
     private static long validateDuration(final Duration duration, final String name) {
         final Duration checked = Assert
@@ -221,50 +298,52 @@ public final class RollingWindow {
     /**
      * Rolling bucket state.
      */
-    private static final class Bucket {
+    private static final class BucketState {
 
         /**
-         * Bucket key.
+         * Epoch-relative key identifying the time interval represented by this state.
          */
-        private long key = Long.MIN_VALUE;
+        private final long key;
 
         /**
-         * Sum value.
+         * Concurrent sum of sample values added to this bucket.
          */
-        private long sum;
+        private final LongAdder sum;
 
         /**
-         * Sample count.
+         * Concurrent number of samples added to this bucket.
          */
-        private long count;
+        private final LongAdder count;
 
         /**
-         * Resets bucket to a key.
+         * Creates bucket state for a fixed key.
          *
-         * @param key bucket key
+         * @param key epoch-relative bucket key represented by this state
          */
-        private void reset(final long key) {
+        private BucketState(final long key) {
             this.key = key;
-            this.sum = 0;
-            this.count = 0;
+            this.sum = new LongAdder();
+            this.count = new LongAdder();
         }
 
         /**
-         * Clears bucket state.
-         */
-        private void clear() {
-            this.key = Long.MIN_VALUE;
-            this.sum = 0;
-            this.count = 0;
-        }
-
-        /**
-         * Returns whether the bucket is empty.
+         * Adds one sample.
          *
-         * @return true when empty
+         * @param value non-negative sample amount added to the sum
          */
-        private boolean empty() {
-            return key == Long.MIN_VALUE;
+        private void add(final long value) {
+            sum.add(value);
+            count.increment();
+        }
+
+        /**
+         * Returns the selected aggregate.
+         *
+         * @param selectSum {@code true} to read the sum; {@code false} to read the sample count
+         * @return current value of the selected concurrent aggregate
+         */
+        private long value(final boolean selectSum) {
+            return selectSum ? sum.sum() : count.sum();
         }
 
     }

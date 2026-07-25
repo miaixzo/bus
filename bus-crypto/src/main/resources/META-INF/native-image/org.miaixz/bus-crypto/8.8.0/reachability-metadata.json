@@ -65,30 +65,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.Holder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.lang.Wrapper"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.caller.StackTraceCaller"
-      },
-      "type": "org.miaixz.bus.core.xyz.LookupKit"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
       "type": "org.miaixz.bus.crypto.Builder"

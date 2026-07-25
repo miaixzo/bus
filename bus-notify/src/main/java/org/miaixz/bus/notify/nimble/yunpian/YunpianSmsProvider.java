@@ -57,7 +57,7 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(YunpianNotice entity) {
+    public Message<Void> send(YunpianNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -79,7 +79,7 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context>
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "msg");
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

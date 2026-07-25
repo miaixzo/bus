@@ -73,7 +73,7 @@ public class CodingProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -90,7 +90,7 @@ public class CodingProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
             String refresh = (String) object.get("refresh_token");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).build()).build();
         } catch (Exception e) {
             Logger.warn(
@@ -114,7 +114,7 @@ public class CodingProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String response = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -141,7 +141,7 @@ public class CodingProvider extends AbstractProvider {
             String email = (String) data.get("email");
             String slogan = (String) data.get("slogan");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(name)
                                     .avatar(avatar != null ? "https://coding.net" + avatar : null)
@@ -183,8 +183,8 @@ public class CodingProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(String.format(this.complex.authorize(), this.context.getPrefix()))
                         .queryParam("response_type", "code").queryParam("client_id", this.context.getClientId())
                         .queryParam("redirect_uri", this.context.getRedirectUri())

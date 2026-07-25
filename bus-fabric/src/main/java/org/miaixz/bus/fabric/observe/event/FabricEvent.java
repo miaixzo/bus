@@ -25,19 +25,21 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
  * Immutable fabric observation event.
  *
- * @param marker event marker
- * @param time   event time
- * @param tags   event tags
- * @param cause  event failure cause
+ * @param marker stable observation marker
+ * @param time   wall-clock event timestamp
+ * @param tags   immutable sanitized event tags
+ * @param cause  optional failure cause
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -46,10 +48,11 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Creates a fabric event.
      *
-     * @param marker event marker
-     * @param time   event time
-     * @param tags   event tags
-     * @param cause  event failure cause
+     * @param marker non-null observation marker
+     * @param time   non-null wall-clock timestamp
+     * @param tags   non-null immutable sanitized tags
+     * @param cause  optional failure cause
+     * @throws ValidateException if marker, time, or tags is {@code null}
      */
     public FabricEvent {
         marker = Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null"));
@@ -60,11 +63,62 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     /**
      * Creates an event builder.
      *
-     * @param marker event marker
-     * @return event builder
+     * @param marker observation marker used to derive default classification tags
+     * @return builder using the system clock and a generated operation identifier
+     * @throws ValidateException if {@code marker} is {@code null}
      */
     public static Builder builder(final ObservationMarker marker) {
-        return new Builder(Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null")));
+        return builder(marker, Clock.system());
+    }
+
+    /**
+     * Creates an event builder using an explicit runtime clock.
+     *
+     * @param marker observation marker used to derive default classification tags
+     * @param clock  runtime time source sampled when the event is built
+     * @return builder initialized with marker-derived tags and a generated operation identifier
+     * @throws ValidateException if the marker or clock is {@code null}
+     */
+    public static Builder builder(final ObservationMarker marker, final Clock clock) {
+        return new Builder(Assert.notNull(marker, () -> new ValidateException("Observe marker must not be null")),
+                Assert.notNull(clock, () -> new ValidateException("Event clock must not be null")));
+    }
+
+    /**
+     * Returns the marker module from its stable code prefix.
+     *
+     * @param marker observation marker whose stable code is inspected
+     * @return code prefix before the first dot, or the complete code when no dot exists
+     */
+    private static String module(final ObservationMarker marker) {
+        final String code = marker.code();
+        final int dot = code.indexOf(Symbol.C_DOT);
+        return dot < 0 ? code : code.substring(0, dot);
+    }
+
+    /**
+     * Returns the marker phase from its stable code suffix.
+     *
+     * @param marker observation marker whose stable code is inspected
+     * @return code suffix after the first dot, or the complete code when no non-empty suffix exists
+     */
+    private static String phase(final ObservationMarker marker) {
+        final String code = marker.code();
+        final int dot = code.indexOf(Symbol.C_DOT);
+        return dot < 0 || dot == code.length() - 1 ? code : code.substring(dot + 1);
+    }
+
+    /**
+     * Returns the normalized marker result.
+     *
+     * @param marker observation marker whose failure and terminal flags are classified
+     * @return {@code failure}, {@code success}, or {@code active}
+     */
+    private static String result(final ObservationMarker marker) {
+        if (marker.failure()) {
+            return METER_EVENT_OBSERVER_FAILURE;
+        }
+        return marker.terminal() ? "success" : "active";
     }
 
     /**
@@ -76,40 +130,49 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
     public static final class Builder {
 
         /**
-         * Event marker.
+         * Marker from which default module, protocol, phase, and result tags are derived.
          */
         private final ObservationMarker marker;
 
         /**
-         * Tag values.
+         * Borrowed time source sampled only when {@link #build()} is called.
+         */
+        private final Clock clock;
+
+        /**
+         * Mutable sanitized tag values retained in insertion order until build time.
          */
         private final Map<String, String> tags;
 
         /**
-         * Failure cause.
+         * Optional failure attached to the event.
          */
         private Throwable cause;
 
         /**
          * Creates a builder.
          *
-         * @param marker event marker
+         * @param marker validated observation marker
+         * @param clock  validated runtime time source
          */
-        private Builder(final ObservationMarker marker) {
+        private Builder(final ObservationMarker marker, final Clock clock) {
             this.marker = marker;
+            this.clock = clock;
             this.tags = new LinkedHashMap<>();
             tag(TAG_MODULE, module(marker));
             tag(TAG_PROTOCOL, module(marker));
             tag(TAG_PHASE, phase(marker));
             tag(TAG_RESULT, result(marker));
+            tag(TAG_OPERATION_ID, ID.objectId());
         }
 
         /**
          * Adds a tag.
          *
-         * @param key   key
-         * @param value value
+         * @param key   non-blank, single-line tag key
+         * @param value non-blank, single-line tag content to sanitize
          * @return this builder
+         * @throws ValidateException if the key or value is invalid
          */
         public Builder tag(final String key, final String value) {
             final String checkedKey = Tags.normalize(key, "Tag key");
@@ -120,7 +183,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
         /**
          * Sets the failure cause.
          *
-         * @param cause cause
+         * @param cause failure to attach, or {@code null} to clear a previously configured cause
          * @return this builder
          */
         public Builder cause(final Throwable cause) {
@@ -131,52 +194,15 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
         /**
          * Builds an event.
          *
-         * @return event
+         * @return immutable event timestamped at build time with a sanitized tag snapshot
          */
         public FabricEvent build() {
             if (cause != null) {
                 tags.putIfAbsent(TAG_EXCEPTION, cause.getClass().getName());
             }
-            return new FabricEvent(marker, Instant.now(), Tags.of(tags), cause);
+            return new FabricEvent(marker, clock.now(), Tags.of(tags), cause);
         }
 
-    }
-
-    /**
-     * Returns the marker module from its stable code prefix.
-     *
-     * @param marker marker
-     * @return module
-     */
-    private static String module(final ObservationMarker marker) {
-        final String code = marker.code();
-        final int dot = code.indexOf(Symbol.C_DOT);
-        return dot < 0 ? code : code.substring(0, dot);
-    }
-
-    /**
-     * Returns the marker phase from its stable code suffix.
-     *
-     * @param marker marker
-     * @return phase
-     */
-    private static String phase(final ObservationMarker marker) {
-        final String code = marker.code();
-        final int dot = code.indexOf(Symbol.C_DOT);
-        return dot < 0 || dot == code.length() - 1 ? code : code.substring(dot + 1);
-    }
-
-    /**
-     * Returns the normalized marker result.
-     *
-     * @param marker marker
-     * @return result
-     */
-    private static String result(final ObservationMarker marker) {
-        if (marker.failure()) {
-            return "failure";
-        }
-        return marker.terminal() ? "success" : "active";
     }
 
 }

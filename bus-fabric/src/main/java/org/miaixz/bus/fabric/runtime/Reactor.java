@@ -25,8 +25,13 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
+import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.dns.DnsPolicy;
+import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.registry.Directory;
+import org.miaixz.bus.fabric.registry.policy.PoolPolicy;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.resource.ResourceScope;
 
@@ -54,9 +59,19 @@ public final class Reactor implements AutoCloseable {
     private final Directory directory;
 
     /**
+     * Runtime-bound DNS resolver shared by network protocols.
+     */
+    private final DnsResolver resolver;
+
+    /**
      * Observer component.
      */
     private final EventObserver observer;
+
+    /**
+     * Single runtime metric owner borrowed by Directory, Registry and Pool.
+     */
+    private final FabricMeter meter;
 
     /**
      * Resource scope.
@@ -69,29 +84,35 @@ public final class Reactor implements AutoCloseable {
     private final AtomicBoolean closed;
 
     /**
-     * Creates a reactor.
+     * Creates a reactor from fully resolved owned collaborators.
      *
-     * @param dispatcher dispatcher
-     * @param clock      clock
-     * @param directory  directory
-     * @param observer   observer
-     * @param scope      scope
+     * @param clock      runtime wall and monotonic clock
+     * @param observer   runtime event observer
+     * @param meter      runtime metrics registry
+     * @param dispatcher runtime activity dispatcher
+     * @param scope      root resource scope
+     * @param directory  runtime registry and connection directory
+     * @param resolver   runtime-bound DNS resolver
      */
-    private Reactor(final Dispatcher dispatcher, final Clock clock, final Directory directory,
-            final EventObserver observer, final ResourceScope scope) {
-        this.dispatcher = require(dispatcher, "Dispatcher");
+    private Reactor(final Clock clock, final EventObserver observer, final FabricMeter meter,
+            final Dispatcher dispatcher, final ResourceScope scope, final Directory directory,
+            final DnsResolver resolver) {
         this.clock = require(clock, "Clock");
-        this.directory = require(directory, "Directory");
-        this.observer = EventObserver.safe(require(observer, "Observer"));
+        final EventObserver currentObserver = require(observer, "Observer");
+        this.observer = currentObserver;
+        this.meter = require(meter, "Fabric meter");
+        this.dispatcher = require(dispatcher, "Dispatcher");
         this.scope = require(scope, "Scope");
+        this.directory = require(directory, "Directory");
+        this.resolver = require(resolver, "DNS resolver");
         this.closed = new AtomicBoolean();
-        this.directory.connectionPool().startIdleEviction(this.dispatcher, this.clock);
+        this.directory.connectionPool().startIdleEviction(this.dispatcher);
     }
 
     /**
      * Creates a default reactor.
      *
-     * @return reactor
+     * @return reactor built with default runtime collaborators
      */
     public static Reactor create() {
         return builder().build();
@@ -100,7 +121,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Creates a reactor builder.
      *
-     * @return builder
+     * @return new reactor builder
      */
     public static Builder builder() {
         return new Builder();
@@ -109,7 +130,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the dispatcher.
      *
-     * @return dispatcher
+     * @return runtime activity dispatcher
      */
     public Dispatcher dispatcher() {
         return dispatcher;
@@ -118,7 +139,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the clock.
      *
-     * @return clock
+     * @return runtime wall and monotonic clock
      */
     public Clock clock() {
         return clock;
@@ -127,19 +148,37 @@ public final class Reactor implements AutoCloseable {
     /**
      * Returns the directory.
      *
-     * @return directory
+     * @return runtime registry and connection directory
      */
     public Directory directory() {
         return directory;
     }
 
     /**
+     * Returns the runtime-bound DNS resolver.
+     *
+     * @return resolver sharing this reactor's clock, observer, and dispatcher
+     */
+    public DnsResolver resolver() {
+        return resolver;
+    }
+
+    /**
      * Returns the observer.
      *
-     * @return observer
+     * @return runtime event observer
      */
     public EventObserver observer() {
         return observer;
+    }
+
+    /**
+     * Returns the unique runtime meter.
+     *
+     * @return meter shared by reactor-owned components
+     */
+    public FabricMeter meter() {
+        return meter;
     }
 
     /**
@@ -154,7 +193,7 @@ public final class Reactor implements AutoCloseable {
     /**
      * Cancels work associated with a tag.
      *
-     * @param tag tag
+     * @param tag activity ownership tag passed to the dispatcher
      * @return true when cancellation matched work
      */
     public boolean cancel(final Object tag) {
@@ -169,24 +208,28 @@ public final class Reactor implements AutoCloseable {
         if (!closed.compareAndSet(false, true)) {
             return;
         }
-        RuntimeException failure = null;
+        Throwable failure = null;
         try {
-            directory.close();
-        } catch (final RuntimeException e) {
+            scope.close();
+        } catch (final Throwable e) {
             failure = e;
         }
         try {
-            dispatcher.close();
-        } catch (final RuntimeException e) {
+            directory.close();
+        } catch (final Throwable e) {
             if (failure == null) {
                 failure = e;
+            } else {
+                failure.addSuppressed(e);
             }
         }
         try {
-            scope.close();
-        } catch (final RuntimeException e) {
+            dispatcher.close();
+        } catch (final Throwable e) {
             if (failure == null) {
                 failure = e;
+            } else {
+                failure.addSuppressed(e);
             }
         }
         if (failure != null) {
@@ -197,10 +240,10 @@ public final class Reactor implements AutoCloseable {
     /**
      * Validates non-null values.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -215,29 +258,39 @@ public final class Reactor implements AutoCloseable {
     public static final class Builder implements org.miaixz.bus.core.Builder<Reactor> {
 
         /**
-         * Dispatcher candidate.
-         */
-        private Dispatcher dispatcher = Dispatcher.create();
-
-        /**
          * Clock candidate.
          */
-        private Clock clock = Clock.system();
-
-        /**
-         * Directory candidate.
-         */
-        private Directory directory = Directory.create();
+        private Clock clock;
 
         /**
          * Observer candidate.
          */
-        private EventObserver observer = EventObserver.noop();
+        private EventObserver observer;
+
+        /**
+         * Dispatcher candidate.
+         */
+        private Dispatcher dispatcher;
 
         /**
          * Scope candidate.
          */
-        private ResourceScope scope = ResourceScope.create();
+        private ResourceScope scope;
+
+        /**
+         * Optional compatibility directory.
+         */
+        private Directory directory;
+
+        /**
+         * Connection pool policy.
+         */
+        private PoolPolicy poolPolicy;
+
+        /**
+         * Generic policy options supplied by a context composition root.
+         */
+        private Options options = Options.empty();
 
         /**
          * Creates a runtime builder.
@@ -249,7 +302,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Sets the dispatcher.
          *
-         * @param dispatcher dispatcher
+         * @param dispatcher runtime dispatcher borrowed by the reactor
          * @return this builder
          */
         public Builder dispatcher(final Dispatcher dispatcher) {
@@ -260,7 +313,7 @@ public final class Reactor implements AutoCloseable {
         /**
          * Sets the clock.
          *
-         * @param clock clock
+         * @param clock runtime clock borrowed by the reactor
          * @return this builder
          */
         public Builder clock(final Clock clock) {
@@ -269,20 +322,9 @@ public final class Reactor implements AutoCloseable {
         }
 
         /**
-         * Sets the directory.
-         *
-         * @param directory directory
-         * @return this builder
-         */
-        public Builder directory(final Directory directory) {
-            this.directory = require(directory, "Directory");
-            return this;
-        }
-
-        /**
          * Sets the observer.
          *
-         * @param observer observer
+         * @param observer runtime event observer
          * @return this builder
          */
         public Builder observer(final EventObserver observer) {
@@ -291,13 +333,112 @@ public final class Reactor implements AutoCloseable {
         }
 
         /**
-         * Builds a reactor.
+         * Sets the resource scope.
          *
-         * @return reactor
+         * @param scope resource scope
+         * @return this builder
+         */
+        public Builder scope(final ResourceScope scope) {
+            this.scope = require(scope, "Scope");
+            return this;
+        }
+
+        /**
+         * Sets an existing directory for compatibility injection.
+         *
+         * @param directory directory borrowed by the reactor
+         * @return this builder
+         */
+        public Builder directory(final Directory directory) {
+            this.directory = require(directory, "Directory");
+            return this;
+        }
+
+        /**
+         * Sets the connection-pool policy used by the runtime-owned directory.
+         *
+         * @param poolPolicy connection-pool policy
+         * @return this builder
+         */
+        public Builder poolPolicy(final PoolPolicy poolPolicy) {
+            this.poolPolicy = require(poolPolicy, "Pool policy");
+            return this;
+        }
+
+        /**
+         * Sets generic policy options used when no explicit component policy is supplied.
+         *
+         * @param options immutable option snapshot
+         * @return this builder
+         */
+        public Builder options(final Options options) {
+            this.options = require(options, "Options");
+            return this;
+        }
+
+        /**
+         * Builds a reactor, creating defaults in dependency order and transferring ownership only after success.
+         *
+         * @return fully initialized reactor owning any collaborators created by this build
          */
         @Override
         public Reactor build() {
-            return new Reactor(dispatcher, clock, directory, observer, scope);
+            final Clock resolvedClock = clock == null ? Clock.system() : clock;
+            final EventObserver resolvedObserver = observer == null ? EventObserver.noop() : observer;
+            final FabricMeter resolvedMeter = FabricMeter.create(resolvedClock);
+            Dispatcher resolvedDispatcher = dispatcher;
+            ResourceScope resolvedScope = scope;
+            Directory resolvedDirectory = directory;
+            DnsResolver resolvedResolver = null;
+            final boolean createdDispatcher = resolvedDispatcher == null;
+            final boolean createdScope = resolvedScope == null;
+            try {
+                if (createdDispatcher) {
+                    resolvedDispatcher = Dispatcher.create(resolvedObserver);
+                }
+                if (createdScope) {
+                    resolvedScope = ResourceScope.create();
+                }
+                resolvedResolver = DnsPolicy.resolve(options).resolver().withObserver(resolvedObserver)
+                        .withRuntime(resolvedClock, resolvedDispatcher);
+                if (resolvedDirectory == null) {
+                    resolvedDirectory = Directory.create(
+                            resolvedClock,
+                            poolPolicy == null ? PoolPolicy.resolve(options) : poolPolicy,
+                            resolvedMeter,
+                            resolvedDispatcher);
+                }
+                return new Reactor(resolvedClock, resolvedObserver, resolvedMeter, resolvedDispatcher, resolvedScope,
+                        resolvedDirectory, resolvedResolver);
+            } catch (final RuntimeException | Error failure) {
+                if (directory == null) {
+                    closeCreated(resolvedDirectory, failure);
+                }
+                if (createdScope) {
+                    closeCreated(resolvedScope, failure);
+                }
+                if (createdDispatcher) {
+                    closeCreated(resolvedDispatcher, failure);
+                }
+                throw failure;
+            }
+        }
+
+        /**
+         * Closes one default resource created by this build and suppresses cleanup failure on the primary failure.
+         *
+         * @param resource resource created by this builder, or null
+         * @param failure  primary build failure
+         */
+        private static void closeCreated(final AutoCloseable resource, final Throwable failure) {
+            if (resource == null) {
+                return;
+            }
+            try {
+                resource.close();
+            } catch (final Throwable closeFailure) {
+                failure.addSuppressed(closeFailure);
+            }
         }
 
     }

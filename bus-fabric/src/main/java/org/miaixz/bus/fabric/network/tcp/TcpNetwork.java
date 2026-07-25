@@ -44,30 +44,30 @@ import org.miaixz.bus.fabric.network.aio.AioNetwork;
 public final class TcpNetwork implements Connector {
 
     /**
-     * Supported transports.
+     * Transport set accepted by this connector and listener facade.
      */
     private static final EnumSet<Transport> SUPPORTED = EnumSet.of(Transport.TCP);
 
     /**
-     * AIO network.
+     * Owned AIO network that performs connection and server operations.
      */
     private final AioNetwork aio;
 
     /**
-     * Close flag.
+     * One-way flag ensuring the owned AIO network is closed once.
      */
     private final AtomicBoolean closed;
 
     /**
-     * Lifecycle listener.
+     * Optional listener forwarded to connection and server operations.
      */
     private final Listener<Object> listener;
 
     /**
-     * Creates a TCP network.
+     * Creates a TCP facade over an owned AIO network.
      *
      * @param aio      AIO network
-     * @param listener lifecycle listener
+     * @param listener lifecycle listener, or {@code null} when notifications are disabled
      */
     private TcpNetwork(final AioNetwork aio, final Listener<Object> listener) {
         this.aio = Assert.notNull(aio, () -> new ValidateException("AIO network must not be null"));
@@ -78,8 +78,9 @@ public final class TcpNetwork implements Connector {
     /**
      * Creates a TCP network.
      *
-     * @param aio AIO network
-     * @return TCP network
+     * @param aio AIO network whose ownership is transferred to the TCP facade
+     * @return TCP network without a lifecycle listener
+     * @throws ValidateException if {@code aio} is {@code null}
      */
     public static TcpNetwork create(final AioNetwork aio) {
         return new TcpNetwork(aio, null);
@@ -88,20 +89,23 @@ public final class TcpNetwork implements Connector {
     /**
      * Creates a TCP network with a lifecycle listener.
      *
-     * @param aio      AIO network
-     * @param listener lifecycle listener
-     * @return TCP network
+     * @param aio      AIO network whose ownership is transferred to the TCP facade
+     * @param listener lifecycle listener, or {@code null} to disable notifications
+     * @return TCP network configured with the supplied listener
+     * @throws ValidateException if {@code aio} is {@code null}
      */
     public static TcpNetwork create(final AioNetwork aio, final Listener<Object> listener) {
         return new TcpNetwork(aio, listener);
     }
 
     /**
-     * Opens a TCP connection.
+     * Delegates an asynchronous TCP connection attempt to the owned AIO network.
      *
-     * @param address address
-     * @param timeout timeout policy
-     * @return connection future
+     * @param address remote address whose scheme must resolve to TCP
+     * @param timeout timeout policy applied by the AIO connection attempt
+     * @return future completed with the opened connection or its connection failure
+     * @throws ValidateException if {@code address} or {@code timeout} is {@code null}
+     * @throws ProtocolException if the address scheme does not resolve to TCP
      */
     @Override
     public CompletableFuture<Connection> connect(final Address address, final Timeout timeout) {
@@ -115,11 +119,13 @@ public final class TcpNetwork implements Connector {
     }
 
     /**
-     * Opens a TCP listener.
+     * Opens a TCP server through the owned AIO network.
      *
-     * @param address address
-     * @param handler handler
-     * @return TCP server
+     * @param address local address whose scheme must resolve to TCP
+     * @param handler callback that handles accepted sessions
+     * @return opened TCP server bound by the AIO network
+     * @throws ValidateException if {@code address} or {@code handler} is {@code null}
+     * @throws ProtocolException if the address scheme does not resolve to TCP
      */
     public TcpServer listen(final Address address, final Handler handler) {
         final Address checkedAddress = Assert
@@ -136,8 +142,9 @@ public final class TcpNetwork implements Connector {
     /**
      * Returns whether a transport is supported.
      *
-     * @param transport transport
-     * @return true when supported
+     * @param transport transport to test
+     * @return {@code true} only for {@link Transport#TCP}
+     * @throws ValidateException if {@code transport} is {@code null}
      */
     @Override
     public boolean supports(final Transport transport) {
@@ -145,7 +152,7 @@ public final class TcpNetwork implements Connector {
     }
 
     /**
-     * Closes this network.
+     * Closes the owned AIO network once.
      */
     @Override
     public void close() {

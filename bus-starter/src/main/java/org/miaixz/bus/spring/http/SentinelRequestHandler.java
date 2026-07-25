@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.logger.Logger;
@@ -101,7 +101,8 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         this.requestInfo(request, method);
 
         // Handle logging based on the request method type.
-        if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
+        if (Http.Method.POST.value().equals(method) || Http.Method.PATCH.value().equals(method)
+                || Http.Method.PUT.value().equals(method)) {
             // For methods with a request body, log the body if it's a MutableRequestWrapper.
             if (request instanceof MutableRequestWrapper) {
                 String requestBody = new String(((MutableRequestWrapper) request).getBody())
@@ -275,14 +276,14 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     public void requestInfo(HttpServletRequest request, String method) {
         // Define a map of HTTP methods to colors.
         Map<String, Ansi4BitColor> methodColorMap = new HashMap<>();
-        methodColorMap.put(HTTP.GET, Ansi4BitColor.GREEN);
-        methodColorMap.put(HTTP.POST, Ansi4BitColor.MAGENTA);
-        methodColorMap.put(HTTP.DELETE, Ansi4BitColor.BLUE);
-        methodColorMap.put(HTTP.PUT, Ansi4BitColor.RED);
-        methodColorMap.put(HTTP.OPTIONS, Ansi4BitColor.YELLOW);
-        methodColorMap.put(HTTP.ALL, Ansi4BitColor.WHITE);
-        methodColorMap.put(HTTP.BEFORE, Ansi4BitColor.BLACK);
-        methodColorMap.put(HTTP.AFTER, Ansi4BitColor.CYAN);
+        methodColorMap.put(Http.Method.GET.value(), Ansi4BitColor.GREEN);
+        methodColorMap.put(Http.Method.POST.value(), Ansi4BitColor.MAGENTA);
+        methodColorMap.put(Http.Method.DELETE.value(), Ansi4BitColor.BLUE);
+        methodColorMap.put(Http.Method.PUT.value(), Ansi4BitColor.RED);
+        methodColorMap.put(Http.Method.OPTIONS.value(), Ansi4BitColor.YELLOW);
+        methodColorMap.put(Http.Method.ALL.value(), Ansi4BitColor.WHITE);
+        methodColorMap.put(Http.Method.BEFORE.value(), Ansi4BitColor.BLACK);
+        methodColorMap.put(Http.Method.AFTER.value(), Ansi4BitColor.CYAN);
 
         // Get the color for the method, defaulting to green.
         Ansi4BitColor color = methodColorMap.getOrDefault(method, Ansi4BitColor.GREEN);

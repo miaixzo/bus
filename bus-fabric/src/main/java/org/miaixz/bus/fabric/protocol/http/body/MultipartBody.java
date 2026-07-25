@@ -19,7 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import static org.miaixz.bus.fabric.Builder.*;
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+import static org.miaixz.bus.fabric.Builder.MULTIPART_BODY_BOUNDARY_PARAMETER;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -38,7 +39,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
@@ -59,32 +60,32 @@ public final class MultipartBody implements RequestBody {
     private static final byte[] CRLF = { Symbol.C_CR, Symbol.C_LF };
 
     /**
-     * Multipart boundary.
+     * Validated boundary token used between encoded parts.
      */
     private final String boundary;
 
     /**
-     * Multipart parts.
+     * Immutable ordered multipart part snapshot.
      */
     private final List<Part> parts;
 
     /**
-     * Multipart media.
+     * Multipart/form-data media type containing the boundary parameter.
      */
     private final MediaType media;
 
     /**
-     * Multipart payload.
+     * Lazily encoded multipart payload.
      */
     private final Payload payload;
 
     /**
      * Creates body.
      *
-     * @param boundary boundary
-     * @param parts    parts
-     * @param media    media
-     * @param payload  payload
+     * @param boundary validated multipart boundary token
+     * @param parts    ordered part snapshot
+     * @param media    multipart/form-data media type with boundary parameter
+     * @param payload  encoded multipart payload
      */
     private MultipartBody(final String boundary, final List<Part> parts, final MediaType media, final Payload payload) {
         this.boundary = validateBoundary(boundary);
@@ -100,7 +101,7 @@ public final class MultipartBody implements RequestBody {
     /**
      * Creates builder.
      *
-     * @return builder
+     * @return new multipart body builder with a generated boundary
      */
     public static Builder builder() {
         return new Builder();
@@ -109,7 +110,7 @@ public final class MultipartBody implements RequestBody {
     /**
      * Returns boundary.
      *
-     * @return boundary
+     * @return boundary token used by the encoded payload
      */
     public String boundary() {
         return boundary;
@@ -127,7 +128,7 @@ public final class MultipartBody implements RequestBody {
     /**
      * Returns media.
      *
-     * @return media
+     * @return multipart/form-data media type including the boundary parameter
      */
     @Override
     public MediaType media() {
@@ -137,11 +138,136 @@ public final class MultipartBody implements RequestBody {
     /**
      * Returns payload.
      *
-     * @return payload
+     * @return lazily encoded multipart payload
      */
     @Override
     public Payload payload() {
         return payload;
+    }
+
+    /**
+     * Builds a part header segment.
+     *
+     * @param boundary boundary token written before the part
+     * @param part     part whose headers are serialized
+     * @return UTF-8 boundary and header segment ending with an empty line
+     */
+    private static byte[] headerBytes(final String boundary, final Part part) {
+        final StringBuilder builder = new StringBuilder("--").append(boundary).append(Symbol.CRLF);
+        for (final Map.Entry<String, List<String>> entry : part.headers().asMap().entrySet()) {
+            for (final String value : entry.getValue()) {
+                builder.append(entry.getKey()).append(Symbol.COLON).append(Symbol.SPACE).append(value)
+                        .append(Symbol.CRLF);
+            }
+        }
+        builder.append(Symbol.CRLF);
+        return ByteString.encodeString(builder.toString(), UTF_8).toByteArray();
+    }
+
+    /**
+     * Builds part headers.
+     *
+     * @param name     form field name
+     * @param filename optional uploaded file name
+     * @param media    optional part media type
+     * @param length   payload length, or {@code -1} when unknown
+     * @return immutable Content-Disposition and available entity headers
+     */
+    private static Headers partHeaders(
+            final String name,
+            final String filename,
+            final MediaType media,
+            final long length) {
+        Assert.isFalse(length < Normal.__1, () -> new ProtocolException("Part content length must be -1 or greater"));
+        final Headers.Builder builder = Headers.builder()
+                .add(Http.Header.CONTENT_DISPOSITION, disposition(name, filename));
+        if (media != null) {
+            builder.add(Http.Header.CONTENT_TYPE, media.value());
+        }
+        if (length >= 0) {
+            builder.add(Http.Header.CONTENT_LENGTH, Long.toString(length));
+        }
+        return builder.build();
+    }
+
+    /**
+     * Builds a Content-Disposition header value.
+     *
+     * @param name     form field name
+     * @param filename optional uploaded file name
+     * @return quoted form-data Content-Disposition value
+     */
+    private static String disposition(final String name, final String filename) {
+        final StringBuilder builder = new StringBuilder("form-data; name=").append(Symbol.DOUBLE_QUOTES)
+                .append(quote(name)).append(Symbol.DOUBLE_QUOTES);
+        if (filename != null) {
+            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append("filename=").append(Symbol.DOUBLE_QUOTES)
+                    .append(quote(filename)).append(Symbol.DOUBLE_QUOTES);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Escapes a quoted header parameter.
+     *
+     * @param value parameter value
+     * @return escaped value
+     */
+    private static String quote(final String value) {
+        return value.replace(Symbol.BACKSLASH, Symbol.BACKSLASH + Symbol.BACKSLASH)
+                .replace(Symbol.DOUBLE_QUOTES, Symbol.BACKSLASH + Symbol.DOUBLE_QUOTES);
+    }
+
+    /**
+     * Validates a part name value.
+     *
+     * @param value candidate form field or file name
+     * @param name  logical value name included in validation failures
+     * @return validated value
+     */
+    private static String validatePartName(final String value, final String name) {
+        final String checked = Assert
+                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException(name + " must be non-blank and single-line"));
+        return checked;
+    }
+
+    /**
+     * Validates a part payload.
+     *
+     * @param payload part payload reference to validate
+     */
+    private static void validatePartPayload(final Payload payload) {
+        Assert.notNull(payload, () -> new ValidateException("Part payload must not be null"));
+    }
+
+    /**
+     * Builds the closing boundary segment.
+     *
+     * @param boundary boundary token to terminate
+     * @return UTF-8 final boundary segment including trailing CRLF
+     */
+    private static byte[] closingBytes(final String boundary) {
+        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, UTF_8).toByteArray();
+    }
+
+    /**
+     * Validates boundary.
+     *
+     * @param boundary candidate multipart boundary token
+     * @return validated non-blank single-line boundary of at most 70 characters
+     */
+    private static String validateBoundary(final String boundary) {
+        final String checked = Assert.notBlank(
+                boundary,
+                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
+        Assert.isFalse(
+                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
+                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
+        Assert.isFalse(checked.length() > Normal._70, () -> new ProtocolException("Multipart boundary is too long"));
+        return checked;
     }
 
     /**
@@ -175,10 +301,10 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a part.
          *
-         * @param name     part name
-         * @param filename file name
-         * @param headers  headers
-         * @param payload  payload
+         * @param name     validated form field name
+         * @param filename optional validated uploaded file name
+         * @param headers  immutable part headers
+         * @param payload  part content payload
          */
         private Part(final String name, final String filename, final Headers headers, final Payload payload) {
             this.name = validatePartName(name, "Part name");
@@ -193,9 +319,9 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a normal payload part.
          *
-         * @param name    part name
-         * @param payload payload
-         * @return part
+         * @param name    form field name
+         * @param payload part content payload
+         * @return form-data part without a filename or explicit media type
          */
         public static Part of(final String name, final Payload payload) {
             final String validName = validatePartName(name, "Part name");
@@ -206,10 +332,10 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a file part.
          *
-         * @param name  part name
-         * @param path  file path
-         * @param media media type
-         * @return part
+         * @param name  form field name
+         * @param path  file whose name and contents form the part
+         * @param media file content media type
+         * @return file part using the path's final name component
          */
         public static Part file(final String name, final Path path, final MediaType media) {
             final String validName = validatePartName(name, "Part name");
@@ -227,11 +353,11 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a file part with an explicit filename.
          *
-         * @param name     part name
-         * @param filename file name
-         * @param path     file path
-         * @param media    media type
-         * @return part
+         * @param name     form field name
+         * @param filename uploaded file name advertised in Content-Disposition
+         * @param path     file supplying the part content
+         * @param media    file content media type
+         * @return file part backed by the supplied path
          */
         public static Part file(final String name, final String filename, final Path path, final MediaType media) {
             final Path checkedPath = Assert
@@ -245,11 +371,11 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a file part from an arbitrary payload.
          *
-         * @param name     part name
-         * @param filename file name
-         * @param payload  payload
-         * @param media    media type
-         * @return part
+         * @param name     form field name
+         * @param filename uploaded file name advertised in Content-Disposition
+         * @param payload  arbitrary file content payload
+         * @param media    file content media type
+         * @return file part backed by the supplied payload
          */
         public static Part file(
                 final String name,
@@ -277,7 +403,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Returns the file name.
          *
-         * @return file name or null
+         * @return advertised file name, or {@code null} for a non-file part
          */
         public String filename() {
             return filename;
@@ -286,7 +412,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Returns part headers.
          *
-         * @return headers
+         * @return immutable headers serialized before the part payload
          */
         public Headers headers() {
             return headers;
@@ -295,7 +421,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Returns part payload.
          *
-         * @return payload
+         * @return content payload for this part
          */
         public Payload payload() {
             return payload;
@@ -312,12 +438,12 @@ public final class MultipartBody implements RequestBody {
     public static final class Builder {
 
         /**
-         * Boundary.
+         * Boundary token used for the body being assembled.
          */
         private String boundary;
 
         /**
-         * Parts.
+         * Mutable ordered parts accumulated by the builder.
          */
         private final ArrayList<Part> parts;
 
@@ -332,7 +458,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Adds a part.
          *
-         * @param part part
+         * @param part multipart part appended to the body
          * @return this builder
          */
         public Builder part(final Part part) {
@@ -343,7 +469,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Sets boundary.
          *
-         * @param boundary boundary
+         * @param boundary custom multipart boundary token
          * @return this builder
          */
         public Builder boundary(final String boundary) {
@@ -354,7 +480,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Builds body.
          *
-         * @return body
+         * @return immutable multipart body snapshot with a lazy payload
          */
         public MultipartBody build() {
             final String current = validateBoundary(boundary == null ? ID.fastSimpleUUID() : boundary);
@@ -372,20 +498,20 @@ public final class MultipartBody implements RequestBody {
     private static final class MultipartPayload implements Payload {
 
         /**
-         * Boundary.
+         * Validated boundary token used during encoding.
          */
         private final String boundary;
 
         /**
-         * Parts.
+         * Immutable ordered part snapshot encoded by this payload.
          */
         private final List<Part> parts;
 
         /**
          * Creates payload.
          *
-         * @param boundary boundary
-         * @param parts    parts
+         * @param boundary multipart boundary token
+         * @param parts    ordered parts to encode
          */
         private MultipartPayload(final String boundary, final List<Part> parts) {
             this.boundary = validateBoundary(boundary);
@@ -426,18 +552,18 @@ public final class MultipartBody implements RequestBody {
         /**
          * Returns multipart bytes.
          *
-         * @return multipart bytes
+         * @return fully materialized multipart representation
          */
         @Override
         public byte[] bytes() {
-            return bytes(DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
          * Returns multipart bytes with an explicit materialize threshold.
          *
          * @param maxBytes maximum bytes to materialize
-         * @return multipart bytes
+         * @return fully materialized multipart representation within the threshold
          */
         @Override
         public byte[] bytes(final long maxBytes) {
@@ -447,18 +573,18 @@ public final class MultipartBody implements RequestBody {
         /**
          * Reads multipart text using the supplied charset.
          *
-         * @param charset charset
+         * @param charset character encoding used to decode the multipart bytes
          * @return multipart text
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Normal.MEBI_64);
         }
 
         /**
          * Reads multipart text using the supplied charset and threshold.
          *
-         * @param charset  charset
+         * @param charset  character encoding used to decode the multipart bytes
          * @param maxBytes maximum bytes to materialize
          * @return multipart text
          */
@@ -492,12 +618,12 @@ public final class MultipartBody implements RequestBody {
     private static final class MultipartSource implements Source {
 
         /**
-         * Boundary.
+         * Boundary token used to generate framing segments.
          */
         private final String boundary;
 
         /**
-         * Parts.
+         * Ordered parts emitted by this source.
          */
         private final List<Part> parts;
 
@@ -512,12 +638,12 @@ public final class MultipartBody implements RequestBody {
         private Source current;
 
         /**
-         * Phase inside the current part.
+         * Current part phase: header, payload, or trailing CRLF.
          */
         private int phase;
 
         /**
-         * Closing marker flag.
+         * Whether the closing boundary has already been exposed.
          */
         private boolean closing;
 
@@ -529,8 +655,8 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a lazy multipart source.
          *
-         * @param boundary boundary
-         * @param parts    parts
+         * @param boundary multipart boundary token
+         * @param parts    ordered parts to emit lazily
          */
         private MultipartSource(final String boundary, final List<Part> parts) {
             this.boundary = boundary;
@@ -572,7 +698,7 @@ public final class MultipartBody implements RequestBody {
         /**
          * Returns the active source timeout.
          *
-         * @return timeout
+         * @return timeout of the active segment, or {@link Timeout#NONE} between segments
          */
         @Override
         public Timeout timeout() {
@@ -623,137 +749,13 @@ public final class MultipartBody implements RequestBody {
         /**
          * Creates a buffer source from bytes.
          *
-         * @param bytes bytes
-         * @return source
+         * @param bytes framing bytes to expose
+         * @return in-memory source positioned before the supplied bytes
          */
         private static Source source(final byte[] bytes) {
             return new Buffer().write(bytes);
         }
 
-    }
-
-    /**
-     * Builds a part header segment.
-     *
-     * @param boundary boundary
-     * @param part     part
-     * @return header bytes
-     */
-    private static byte[] headerBytes(final String boundary, final Part part) {
-        final StringBuilder builder = new StringBuilder("--").append(boundary).append(Symbol.CRLF);
-        for (final Map.Entry<String, List<String>> entry : part.headers().asMap().entrySet()) {
-            for (final String value : entry.getValue()) {
-                builder.append(entry.getKey()).append(": ").append(value).append(Symbol.CRLF);
-            }
-        }
-        builder.append(Symbol.CRLF);
-        return ByteString.encodeString(builder.toString(), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
-    }
-
-    /**
-     * Builds part headers.
-     *
-     * @param name     part name
-     * @param filename file name
-     * @param media    media type
-     * @param length   payload length
-     * @return headers
-     */
-    private static Headers partHeaders(
-            final String name,
-            final String filename,
-            final MediaType media,
-            final long length) {
-        Assert.isFalse(length < Normal.__1, () -> new ProtocolException("Part content length must be -1 or greater"));
-        final Headers.Builder builder = Headers.builder().add(HTTP.CONTENT_DISPOSITION, disposition(name, filename));
-        if (media != null) {
-            builder.add(HTTP.CONTENT_TYPE, media.value());
-        }
-        if (length >= 0) {
-            builder.add(HTTP.CONTENT_LENGTH, Long.toString(length));
-        }
-        return builder.build();
-    }
-
-    /**
-     * Builds a Content-Disposition header value.
-     *
-     * @param name     part name
-     * @param filename file name
-     * @return header value
-     */
-    private static String disposition(final String name, final String filename) {
-        final StringBuilder builder = new StringBuilder("form-data; name=").append(Symbol.DOUBLE_QUOTES)
-                .append(quote(name)).append(Symbol.DOUBLE_QUOTES);
-        if (filename != null) {
-            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append("filename=").append(Symbol.DOUBLE_QUOTES)
-                    .append(quote(filename)).append(Symbol.DOUBLE_QUOTES);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Escapes a quoted header parameter.
-     *
-     * @param value parameter value
-     * @return escaped value
-     */
-    private static String quote(final String value) {
-        return value.replace(Symbol.BACKSLASH, Symbol.BACKSLASH + Symbol.BACKSLASH)
-                .replace(Symbol.DOUBLE_QUOTES, Symbol.BACKSLASH + Symbol.DOUBLE_QUOTES);
-    }
-
-    /**
-     * Validates a part name value.
-     *
-     * @param value value
-     * @param name  value name
-     * @return validated value
-     */
-    private static String validatePartName(final String value, final String name) {
-        final String checked = Assert
-                .notBlank(value, () -> new ValidateException(name + " must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException(name + " must be non-blank and single-line"));
-        return checked;
-    }
-
-    /**
-     * Validates a part payload.
-     *
-     * @param payload payload
-     */
-    private static void validatePartPayload(final Payload payload) {
-        Assert.notNull(payload, () -> new ValidateException("Part payload must not be null"));
-    }
-
-    /**
-     * Builds the closing boundary segment.
-     *
-     * @param boundary boundary
-     * @return closing bytes
-     */
-    private static byte[] closingBytes(final String boundary) {
-        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, org.miaixz.bus.core.lang.Charset.UTF_8)
-                .toByteArray();
-    }
-
-    /**
-     * Validates boundary.
-     *
-     * @param boundary boundary
-     * @return boundary
-     */
-    private static String validateBoundary(final String boundary) {
-        final String checked = Assert.notBlank(
-                boundary,
-                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
-        Assert.isFalse(
-                StringKit.containsAny(checked, Symbol.C_CR, Symbol.C_LF),
-                () -> new ValidateException("Multipart boundary must be non-blank and single-line"));
-        Assert.isFalse(checked.length() > Normal._70, () -> new ProtocolException("Multipart boundary is too long"));
-        return checked;
     }
 
 }

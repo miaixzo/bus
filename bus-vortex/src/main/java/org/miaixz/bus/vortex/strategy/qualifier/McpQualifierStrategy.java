@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
@@ -175,7 +175,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
         if (!Integer.valueOf(1).equals(assets.getSign())) {
             return Mono.just(exchange);
         }
-        if (context.getHttpMethod() != HTTP.Method.POST) {
+        if (context.getHttpMethod() != Http.Method.POST) {
             return Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, new byte[0]))
                     .thenReturn(exchange);
         }

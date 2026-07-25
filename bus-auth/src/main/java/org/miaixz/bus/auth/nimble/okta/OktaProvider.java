@@ -36,7 +36,7 @@ import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -76,10 +76,11 @@ public class OktaProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String tokenUrl = tokenUrl(callback.getCode());
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(tokenUrl)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(tokenUrl))
+                .build();
     }
 
     /**
@@ -92,9 +93,9 @@ public class OktaProvider extends AbstractProvider {
     private Authorization getAuthToken(String tokenUrl) {
         Map<String, String> header = new HashMap<>();
         header.put("accept", MediaType.APPLICATION_JSON);
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put(
-                HTTP.AUTHORIZATION,
+                Http.Header.AUTHORIZATION,
                 "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
         String response = post(tokenUrl, null, header);
@@ -140,12 +141,14 @@ public class OktaProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         if (null == authorization.getRefresh()) {
-            return Message.builder().errcode(ErrorCode._100113.getKey()).errmsg(ErrorCode._100113.getValue()).build();
+            return Message.<Authorization>builder().errcode(ErrorCode._100113.getKey())
+                    .errmsg(ErrorCode._100113.getValue()).build();
         }
         String refreshUrl = refreshUrl(authorization.getRefresh());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl)).build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getAuthToken(refreshUrl))
+                .build();
     }
 
     /**
@@ -156,9 +159,9 @@ public class OktaProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + authorization.getToken());
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + authorization.getToken());
 
         String response = post(userInfoUrl(authorization), null, header);
         try {
@@ -180,7 +183,7 @@ public class OktaProvider extends AbstractProvider {
             Map<String, Object> address = (Map<String, Object>) object.get("address");
             String streetAddress = address != null ? (String) address.get("street_address") : null;
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name)
                                     .nickname(nickname).email(email).location(streetAddress).gender(Gender.of(sex))
@@ -207,18 +210,19 @@ public class OktaProvider extends AbstractProvider {
      * @return a {@link Message} indicating the result of the revocation
      */
     @Override
-    public Message revoke(Authorization authorization) {
+    public Message<Void> revoke(Authorization authorization) {
         Map<String, String> params = new HashMap<>(4);
         params.put("token", authorization.getToken());
         params.put("token_type_hint", "access_token");
 
         Map<String, String> header = new HashMap<>();
         header.put(
-                HTTP.AUTHORIZATION,
+                Http.Header.AUTHORIZATION,
                 "Basic " + Base64.encode(context.getClientId().concat(Symbol.COLON).concat(context.getClientSecret())));
 
         post(revokeUrl(authorization), params, header);
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+        return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                .build();
     }
 
     /**
@@ -242,8 +246,8 @@ public class OktaProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(
                         String.format(
                                 complex.authorize(),

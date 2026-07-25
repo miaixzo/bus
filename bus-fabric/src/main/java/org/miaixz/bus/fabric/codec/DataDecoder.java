@@ -35,16 +35,16 @@ public interface DataDecoder<T> extends Decoder<Payload, T> {
     /**
      * Decodes a payload into a value.
      *
-     * @param payload payload
-     * @return decoded value
+     * @param payload encoded payload to consume according to the implementation's format
+     * @return value reconstructed from the payload
      */
     T decode(Payload payload);
 
     /**
      * Returns whether the media type is supported.
      *
-     * @param media media type
-     * @return true when supported
+     * @param media media type proposed for decoding
+     * @return true when this decoder accepts that media type
      */
     boolean supports(MediaType media);
 

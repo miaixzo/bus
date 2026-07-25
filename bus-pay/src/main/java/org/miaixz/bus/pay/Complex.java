@@ -22,7 +22,7 @@ package org.miaixz.bus.pay;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.pay.nimble.AbstractProvider;
 
@@ -84,7 +84,7 @@ public interface Complex {
      * @return The string.
      */
     default String method() {
-        return HTTP.NONE;
+        return Http.Method.NONE.value();
     }
 
     /**

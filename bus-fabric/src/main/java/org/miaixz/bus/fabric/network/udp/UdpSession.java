@@ -20,34 +20,24 @@
 package org.miaixz.bus.fabric.network.udp;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.NetKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
+import org.miaixz.bus.fabric.protocol.MonoCall;
+import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
@@ -59,64 +49,73 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 public final class UdpSession implements Session {
 
     /**
-     * Remote address.
+     * Logical remote endpoint to which the owned UDP channel is bound.
      */
     private final Address remote;
 
     /**
-     * Local channel.
+     * Exclusively owned local channel.
      */
     private final UdpChannel channel;
 
     /**
-     * Lifecycle scope.
+     * Optional dispatcher for asynchronous Call submission.
+     */
+    private final Dispatcher dispatcher;
+
+    /**
+     * Lifecycle state and listener notification scope.
      */
     private final LifecycleScope scope;
 
     /**
-     * Pending asynchronous sends owned by this session.
-     */
-    private final ConcurrentLinkedQueue<CompletableFuture<Integer>> sends;
-
-    /**
-     * Close cleanup hook.
+     * Owner cleanup hook invoked once after channel close is attempted.
      */
     private final Runnable onClose;
 
     /**
-     * Creates a UDP session.
-     *
-     * @param remote  remote address
-     * @param channel channel
+     * Guard ensuring one terminal owner releases the channel.
      */
-    UdpSession(final Address remote, final UdpChannel channel) {
-        this(remote, channel, null);
-    }
+    private final AtomicBoolean terminating;
 
     /**
      * Creates a UDP session.
      *
-     * @param remote   remote address
-     * @param channel  channel
-     * @param listener lifecycle listener
+     * @param remote  logical remote endpoint
+     * @param channel exclusively owned connected UDP channel
      */
-    UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener) {
-        this(remote, channel, listener, () -> {
+    UdpSession(final Address remote, final UdpChannel channel) {
+        this(remote, channel, null, null, () -> {
         });
     }
 
     /**
      * Creates a UDP session.
      *
-     * @param remote   remote address
-     * @param channel  channel
-     * @param listener lifecycle listener
-     * @param onClose  close cleanup hook
+     * @param remote   logical remote endpoint
+     * @param channel  exclusively owned connected UDP channel
+     * @param listener optional lifecycle listener
+     */
+    UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener) {
+        this(remote, channel, listener, null, () -> {
+        });
+    }
+
+    /**
+     * Creates a UDP session.
+     *
+     * @param remote     logical remote endpoint
+     * @param channel    exclusively owned connected UDP channel
+     * @param listener   optional lifecycle listener
+     * @param dispatcher optional dispatcher for Call submission
+     * @param onClose    non-null owner cleanup hook invoked during termination
+     * @throws ValidateException if the remote address, channel, or cleanup hook is {@code null}
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
-            final Runnable onClose) {
+            final Dispatcher dispatcher, final Runnable onClose) {
         this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP channel must not be null"));
+        this.dispatcher = dispatcher;
         this.scope = LifecycleScope.session(
                 this,
                 "udp-session",
@@ -125,15 +124,15 @@ public final class UdpSession implements Session {
                 ObservationMarker.SOCKET_OPEN,
                 ObservationMarker.SOCKET_CLOSED,
                 ObservationMarker.SOCKET_FAILED);
-        this.sends = new ConcurrentLinkedQueue<>();
         this.onClose = Assert.notNull(onClose, () -> new ValidateException("UDP close hook must not be null"));
+        this.terminating = new AtomicBoolean();
         this.scope.open(this);
     }
 
     /**
      * Returns the session address.
      *
-     * @return session address
+     * @return logical remote endpoint represented by this session
      */
     @Override
     public Address address() {
@@ -143,7 +142,7 @@ public final class UdpSession implements Session {
     /**
      * Returns the remote address.
      *
-     * @return remote address
+     * @return logical remote endpoint represented by this session
      */
     public Address remote() {
         return remote;
@@ -152,123 +151,101 @@ public final class UdpSession implements Session {
     /**
      * Sends a payload.
      *
-     * @param payload payload
-     * @return send call
+     * @param payload datagram payload materialized when the returned call executes
+     * @return deferred send call that discards the transmitted byte count
+     * @throws ValidateException if {@code payload} is {@code null}
      */
     @Override
     public Call<Void> send(final Payload payload) {
-        return new DatagramCall(sendDatagram(payload));
+        final Payload checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("UDP payload must not be null"));
+        return MonoCall
+                .<Void>create("udp-session-send", "udp:session:send", dispatcher, EventObserver.noop(), null, () -> {
+                    sendPayload(checkedPayload);
+                    return null;
+                }, this::cancel);
     }
 
     /**
      * Sends a datagram payload.
      *
-     * @param payload payload
-     * @return sent byte count future
+     * @param payload datagram payload materialized when the returned call executes
+     * @return deferred call completed with the transmitted byte count
+     * @throws ValidateException if {@code payload} is {@code null}
      */
-    public CompletableFuture<Integer> sendDatagram(final Payload payload) {
+    public Call<Integer> sendDatagram(final Payload payload) {
         final Payload checkedPayload = Assert
                 .notNull(payload, () -> new ValidateException("UDP payload must not be null"));
-        ensureOpened();
-        final byte[] bytes = checkedPayload.bytes((Normal._65535 - Normal._28) + 1L);
-        if (bytes.length > (Normal._65535 - Normal._28)) {
-            return CompletableFuture.failedFuture(new ProtocolException("UDP payload exceeds maximum datagram size"));
-        }
-        final CompletableFuture<Integer> future = channel.send(ByteBuffer.wrap(bytes), socket(remote));
-        sends.add(future);
-        future.whenComplete((ignored, cause) -> sends.remove(future));
-        if (!opened()) {
-            sends.remove(future);
-            future.cancel(false);
-        }
-        return future;
+        return MonoCall.create(
+                "udp-session-send-datagram",
+                "udp:session:send-datagram",
+                dispatcher,
+                EventObserver.noop(),
+                null,
+                () -> sendPayload(checkedPayload),
+                this::cancel);
     }
 
     /**
      * Receives a message.
      *
-     * @return message future
+     * @return deferred call that receives one datagram from the bound remote endpoint
      */
-    public CompletableFuture<Message> receive() {
-        ensureOpened();
-        return channel.receive().thenApply(packet -> {
-            final InetSocketAddress expected = socket(remote);
-            if (!(packet.getSocketAddress() instanceof InetSocketAddress actual)
-                    || expected.getPort() != actual.getPort() || !expected.getAddress().equals(actual.getAddress())) {
-                throw new ProtocolException("UDP packet remote does not match session");
-            }
-            return Message.of(
-                    Protocol.UDP,
-                    remote,
-                    Headers.empty(),
-                    Payload.of(UdpChannel.bytes(packet)),
-                    packet.getSocketAddress());
-        });
+    public Call<Message> receive() {
+        return MonoCall.create(
+                "udp-session-receive",
+                "udp:session:receive",
+                dispatcher,
+                EventObserver.noop(),
+                null,
+                this::receiveMessage,
+                this::cancel);
     }
 
     /**
      * Closes this session.
      *
-     * @return true when closed by this call
+     * @return {@code true} when this invocation performs the terminal close transition
      */
     @Override
     public boolean close() {
-        if (scope.state().terminal()) {
-            return false;
-        }
-        scope.closing();
-        clearSends();
-        final RuntimeException failure = release();
-        final boolean changed = scope.close(this);
-        if (failure != null) {
-            throw failure;
-        }
-        return changed;
+        return terminate(false);
     }
 
     /**
      * Cancels this session.
      *
-     * @return true when cancelled by this call
+     * @return {@code true} when this invocation performs the terminal cancellation transition
      */
     @Override
     public boolean cancel() {
-        if (scope.state().terminal()) {
-            return false;
-        }
-        clearSends();
-        final RuntimeException failure = release();
-        final boolean changed = scope.cancel(new StatefulException("UDP session was cancelled"));
-        if (failure != null) {
-            throw failure;
-        }
-        return changed;
+        return terminate(true);
     }
 
     /**
      * Returns the lifecycle state.
      *
-     * @return state
+     * @return current lifecycle state
      */
     @Override
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
     /**
-     * Returns whether this session is opened.
+     * Returns whether this session remains active.
      *
-     * @return true when opened
+     * @return {@code true} when both lifecycle scope and owned channel remain open
      */
     @Override
-    public boolean opened() {
-        return scope.state() == Status.OPENED && channel.opened();
+    public boolean active() {
+        return scope.state() == State.RUNNING && channel.active();
     }
 
     /**
      * Returns session attributes.
      *
-     * @return attributes
+     * @return immutable attributes containing the channel's local endpoint and logical remote address
      */
     @Override
     public Map<String, Object> attributes() {
@@ -276,19 +253,19 @@ public final class UdpSession implements Session {
     }
 
     /**
-     * Returns pending send count owned by this session.
+     * Returns the pending send count of the exclusively owned channel.
      *
      * @return pending sends
      */
     public int pendingSends() {
-        return sends.size();
+        return channel.pendingSends();
     }
 
     /**
      * Creates a socket address.
      *
-     * @param address address
-     * @return socket address
+     * @param address logical address whose host and port are converted
+     * @return unresolved or resolved socket endpoint created by the network helper
      */
     static InetSocketAddress socket(final Address address) {
         return NetKit.createAddress(address.host(), address.port());
@@ -298,23 +275,77 @@ public final class UdpSession implements Session {
      * Ensures this session is open.
      */
     private void ensureOpened() {
-        if (!opened()) {
+        if (!active()) {
             throw new StatefulException("UDP session is closed");
         }
     }
 
     /**
-     * Clears pending sends.
+     * Materializes and sends one datagram through the channel exactly once.
+     *
+     * @param payload payload to materialize within the maximum safe UDP body size
+     * @return sent byte count
+     * @throws ProtocolException if the payload is oversized or the channel does not consume it completely
+     * @throws StatefulException if the session is not open
      */
-    private void clearSends() {
-        for (final CompletableFuture<Integer> future : sends) {
-            future.cancel(false);
+    private int sendPayload(final Payload payload) {
+        ensureOpened();
+        if (payload.length() > Normal._65535 - Normal._28) {
+            throw new ProtocolException("UDP payload exceeds maximum datagram size");
         }
-        sends.clear();
+        final byte[] bytes = payload.bytes(Normal._65535 - Normal._28 + 1L);
+        if (bytes.length > Normal._65535 - Normal._28) {
+            throw new ProtocolException("UDP payload exceeds maximum datagram size");
+        }
+        final Buffer source = new Buffer().write(bytes);
+        final long requested = source.size();
+        final int written = await(channel.send(source, requested, socket(remote)), "Unable to send UDP datagram");
+        if (written != requested || source.size() != Normal._0) {
+            throw new ProtocolException("UDP channel did not fully consume the datagram payload");
+        }
+        return written;
+    }
+
+    /**
+     * Receives one message through the channel exactly once.
+     *
+     * @return one datagram message verified to originate from the bound remote endpoint
+     * @throws ProtocolException if the received remote endpoint does not match this session
+     * @throws StatefulException if the session is not open
+     */
+    private Message receiveMessage() {
+        ensureOpened();
+        final Message message = await(channel.receive(), "Unable to receive UDP datagram");
+        if (!socket(remote).equals(socket(message.address()))) {
+            throw new ProtocolException("UDP packet remote does not match session");
+        }
+        return message;
+    }
+
+    /**
+     * Terminates the session after releasing its exclusively owned channel.
+     *
+     * @param cancelled {@code true} to report cancellation, or {@code false} for an ordinary close
+     * @return {@code true} when this invocation performs the terminal lifecycle transition
+     */
+    private boolean terminate(final boolean cancelled) {
+        if (!terminating.compareAndSet(false, true)) {
+            return false;
+        }
+        scope.closing();
+        final RuntimeException failure = release();
+        final boolean changed = cancelled ? scope.cancel(new StatefulException("UDP session was cancelled"))
+                : scope.close(this);
+        if (failure != null) {
+            throw failure;
+        }
+        return changed;
     }
 
     /**
      * Releases the underlying channel and session owner hook.
+     *
+     * @return first channel or cleanup-hook failure with any second failure suppressed, or {@code null}
      */
     private RuntimeException release() {
         RuntimeException failure = null;
@@ -322,164 +353,42 @@ public final class UdpSession implements Session {
             channel.close();
         } catch (final RuntimeException e) {
             failure = e;
-        } finally {
+        }
+        try {
             onClose.run();
+        } catch (final RuntimeException e) {
+            if (failure == null) {
+                failure = e;
+            } else if (failure != e) {
+                failure.addSuppressed(e);
+            }
         }
         return failure;
     }
 
     /**
-     * Future-backed datagram send call.
+     * Awaits a private channel operation and preserves runtime failures.
+     *
+     * @param future  non-null private channel operation to join
+     * @param message context used when a missing or checked result must be wrapped
+     * @param <T>     non-null completion type
+     * @return non-null channel operation result
      */
-    private static final class DatagramCall implements Call<Void> {
-
-        /**
-         * Datagram send future.
-         */
-        private final CompletableFuture<Integer> future;
-
-        /**
-         * Creates a call.
-         *
-         * @param future datagram send future
-         */
-        private DatagramCall(final CompletableFuture<Integer> future) {
-            this.future = Assert.notNull(future, () -> new ValidateException("UDP send future must not be null"));
-        }
-
-        /**
-         * Waits for the already-started send to complete.
-         *
-         * @return null
-         */
-        @Override
-        public Void execute() {
-            return await();
-        }
-
-        /**
-         * Returns this already-started call.
-         *
-         * @return this call
-         */
-        @Override
-        public Call<Void> enqueue() {
-            return this;
-        }
-
-        /**
-         * Waits for completion.
-         *
-         * @return null
-         */
-        @Override
-        public Void await() {
-            try {
-                future.get();
-                return null;
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for UDP send", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("UDP send failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("UDP send was cancelled", e);
+    private static <T> T await(final CompletableFuture<T> future, final String message) {
+        try {
+            final T result = Assert.notNull(future, () -> new ValidateException("UDP channel future must not be null"))
+                    .join();
+            return Assert.notNull(result, () -> new InternalException(message + ": missing result"));
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
             }
-        }
-
-        /**
-         * Waits for completion within a timeout.
-         *
-         * @param timeout timeout
-         * @return null
-         */
-        @Override
-        public Void await(final Duration timeout) {
-            validateTimeout(timeout);
-            if (timeout.isZero()) {
-                if (!future.isDone()) {
-                    cancel();
-                    throw new TimeoutException("UDP send timed out");
-                }
-                return await();
+            if (cause instanceof Error error) {
+                throw error;
             }
-            try {
-                future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
-                return null;
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InternalException("Interrupted while waiting for UDP send", e);
-            } catch (final ExecutionException e) {
-                throw new InternalException("UDP send failed", e.getCause());
-            } catch (final CancellationException e) {
-                throw new InternalException("UDP send was cancelled", e);
-            } catch (final java.util.concurrent.TimeoutException e) {
-                cancel();
-                throw new TimeoutException("UDP send timed out", e);
-            } catch (final ArithmeticException e) {
-                throw new ValidateException("Timeout is too large");
-            }
+            throw new InternalException(message, cause);
         }
-
-        /**
-         * Cancels the send.
-         *
-         * @return true when cancelled
-         */
-        @Override
-        public boolean cancel() {
-            return future.cancel(false);
-        }
-
-        /**
-         * Returns cancellation state.
-         *
-         * @return true when cancelled
-         */
-        @Override
-        public boolean cancelled() {
-            return future.isCancelled();
-        }
-
-        /**
-         * Returns completion state.
-         *
-         * @return true when complete
-         */
-        @Override
-        public boolean done() {
-            return future.isDone();
-        }
-
-        /**
-         * Returns lifecycle state.
-         *
-         * @return state
-         */
-        @Override
-        public Status state() {
-            if (future.isCancelled()) {
-                return Status.CANCELLED;
-            }
-            if (future.isCompletedExceptionally()) {
-                return Status.FAILED;
-            }
-            return future.isDone() ? Status.DONE : Status.RUNNING;
-        }
-
-        /**
-         * Validates timeout.
-         *
-         * @param timeout timeout
-         */
-        private static void validateTimeout(final Duration timeout) {
-            final Duration checkedTimeout = Assert
-                    .notNull(timeout, () -> new ValidateException("Timeout must be non-null and non-negative"));
-            Assert.isFalse(
-                    checkedTimeout.isNegative(),
-                    () -> new ValidateException("Timeout must be non-null and non-negative"));
-        }
-
     }
 
 }

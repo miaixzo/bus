@@ -29,7 +29,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -99,7 +99,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(HuaweiNotice entity) {
+    public Message<Void> send(HuaweiNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -120,13 +120,14 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
         bodys.put("signature", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put(HTTP.AUTHORIZATION, AUTH_HEADER_VALUE);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        headers.put(Http.Header.AUTHORIZATION, AUTH_HEADER_VALUE);
         headers.put("X-WSSE", buildWsseHeader());
 
         String response = post(this.getUrl(entity), bodys, headers);
         String errcode = JsonKit.getValue(response, "code");
-        Message result = Message.builder().errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message<Void> result = Message.<Void>builder()
+                .errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, "description")).build();
         Logger.info(
                 false,

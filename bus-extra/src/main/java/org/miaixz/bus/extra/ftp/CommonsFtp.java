@@ -35,11 +35,10 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.extra.ssh.Connector;
 import org.miaixz.bus.logger.Logger;
@@ -62,9 +61,9 @@ public class CommonsFtp extends AbstractFtp {
     private FTPClient client;
 
     /**
-     * The connection lifecycle (ACTIVE or PASSIVE).
+     * FTP data connection mode.
      */
-    private EnumValue.Lifecycle lifecycle;
+    private FtpMode mode;
 
     /**
      * Whether to return to the current working directory after an operation is completed.
@@ -74,12 +73,12 @@ public class CommonsFtp extends AbstractFtp {
     /**
      * Constructor.
      *
-     * @param config    The FTP configuration.
-     * @param lifecycle The connection lifecycle (ACTIVE or PASSIVE).
+     * @param config The FTP configuration.
+     * @param mode   The FTP data connection mode.
      */
-    public CommonsFtp(final FtpConfig config, final EnumValue.Lifecycle lifecycle) {
+    public CommonsFtp(final FtpConfig config, final FtpMode mode) {
         super(config);
-        this.lifecycle = lifecycle;
+        this.mode = mode;
         this.init();
     }
 
@@ -100,7 +99,7 @@ public class CommonsFtp extends AbstractFtp {
      * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(final String host) {
-        return of(host, PORT._21.getPort());
+        return of(host, Port._21.getPort());
     }
 
     /**
@@ -162,7 +161,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param charset            The character encoding.
      * @param serverLanguageCode The server language code.
      * @param systemKey          The system key.
-     * @param lifecycle          The connection lifecycle.
+     * @param mode               The FTP data connection mode.
      * @return A new CommonsFtp instance.
      */
     public static CommonsFtp of(
@@ -170,8 +169,8 @@ public class CommonsFtp extends AbstractFtp {
             final java.nio.charset.Charset charset,
             final String serverLanguageCode,
             final String systemKey,
-            final EnumValue.Lifecycle lifecycle) {
-        return new CommonsFtp(new FtpConfig(connector, charset, serverLanguageCode, systemKey), lifecycle);
+            final FtpMode mode) {
+        return new CommonsFtp(new FtpConfig(connector, charset, serverLanguageCode, systemKey), mode);
     }
 
     /**
@@ -180,17 +179,17 @@ public class CommonsFtp extends AbstractFtp {
      * @return this
      */
     public CommonsFtp init() {
-        return this.init(this.ftpConfig, this.lifecycle);
+        return this.init(this.ftpConfig, this.mode);
     }
 
     /**
      * Initializes the connection.
      *
-     * @param config    The FTP configuration.
-     * @param lifecycle The connection lifecycle.
+     * @param config The FTP configuration.
+     * @param mode   The FTP data connection mode.
      * @return this
      */
-    public CommonsFtp init(final FtpConfig config, final EnumValue.Lifecycle lifecycle) {
+    public CommonsFtp init(final FtpConfig config, final FtpMode mode) {
         final FTPClient client = new FTPClient();
         client.setRemoteVerificationEnabled(false);
 
@@ -245,22 +244,22 @@ public class CommonsFtp extends AbstractFtp {
                     replyCode);
         }
         this.client = client;
-        if (lifecycle != null) {
+        if (mode != null) {
             // noinspection resource
-            setMode(lifecycle);
+            setMode(mode);
         }
         return this;
     }
 
     /**
-     * Sets the FTP connection lifecycle (ACTIVE or PASSIVE).
+     * Sets the FTP data connection mode.
      *
-     * @param lifecycle The lifecycle enumeration.
+     * @param mode The FTP data connection mode.
      * @return this
      */
-    public CommonsFtp setMode(final EnumValue.Lifecycle lifecycle) {
-        this.lifecycle = lifecycle;
-        switch (lifecycle) {
+    public CommonsFtp setMode(final FtpMode mode) {
+        this.mode = mode;
+        switch (mode) {
             case ACTIVE:
                 this.client.enterLocalActiveMode();
                 break;

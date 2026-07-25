@@ -52,7 +52,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return the authorization URL
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
-    default Message build(String state) {
+    default Message<String> build(String state) {
         throw new AuthorizedException(ErrorCode._110001);
     }
 
@@ -63,7 +63,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return a {@link Message} containing the user information upon successful login
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
-    default Message authorize(Callback callback) {
+    default Message<Claims> authorize(Callback callback) {
         throw new AuthorizedException(ErrorCode._110001);
     }
 
@@ -74,7 +74,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return the {@link Authorization} containing access token details
      * @see AbstractProvider#build(String)
      */
-    Message token(Callback callback);
+    Message<Authorization> token(Callback callback);
 
     /**
      * Exchanges the token for user information.
@@ -83,7 +83,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return {@link Claims} containing the user's information
      * @see AbstractProvider#token(Callback)
      */
-    Message userInfo(Authorization authorization);
+    Message<Claims> userInfo(Authorization authorization);
 
     /**
      * Refreshes the access token (renews its validity).
@@ -92,7 +92,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return a {@link Message} containing the refreshed token information
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
-    default Message refresh(Authorization authorization) {
+    default Message<Authorization> refresh(Authorization authorization) {
         throw new AuthorizedException(ErrorCode._110001);
     }
 
@@ -103,7 +103,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return a {@link Message} indicating the result of the revocation
      * @throws AuthorizedException if the method is not implemented by the specific provider
      */
-    default Message revoke(Authorization authorization) {
+    default Message<Void> revoke(Authorization authorization) {
         throw new AuthorizedException(ErrorCode._110001);
     }
 

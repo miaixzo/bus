@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
-import static org.miaixz.bus.fabric.Builder.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -34,20 +32,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
@@ -65,9 +53,9 @@ import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
 public final class WebSocketX {
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final WebSocketSnapshot snapshot;
+    private final WebSocketSpec spec;
 
     /**
      * Execution runner.
@@ -82,14 +70,14 @@ public final class WebSocketX {
     /**
      * Creates an exchange.
      *
-     * @param builder builder
+     * @param builder configuration source used to create the immutable exchange specification
      */
     private WebSocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        this.snapshot = new WebSocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
+        this.spec = new WebSocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.guard, builder.filter, currentObserver, builder.handler(), builder.listener);
-        this.runner = new WebSocketRunner(snapshot);
+        this.runner = new WebSocketRunner(spec);
         this.callback = builder.callback;
     }
 
@@ -97,7 +85,7 @@ public final class WebSocketX {
      * Creates a WebSocket builder.
      *
      * @param context shared context
-     * @return builder
+     * @return new WebSocket exchange builder bound to the context
      */
     public static Builder builder(final Context context) {
         return new Builder(require(context, "Context"));
@@ -137,9 +125,10 @@ public final class WebSocketX {
      */
     public Call<WebSocketSession> call() {
         return WebSocketCall.create(
-                snapshot.context().reactor().dispatcher(),
+                spec.context().reactor().dispatcher(),
                 callback,
-                snapshot.observer(),
+                spec.observer(),
+                spec.timeout(),
                 cancellation -> Mediator.execute(Type.WEBSOCKET, cancellation, runner::open),
                 dispatchKey());
     }
@@ -147,7 +136,7 @@ public final class WebSocketX {
     /**
      * Enqueues the WebSocket asynchronously.
      *
-     * @return call
+     * @return enqueued call for this WebSocket exchange
      */
     public Call<WebSocketSession> enqueue() {
         return call().enqueue();
@@ -165,25 +154,25 @@ public final class WebSocketX {
     /**
      * Returns the WebSocket protocol.
      *
-     * @return protocol
+     * @return WS or WSS protocol derived from the target address
      */
     public Protocol protocol() {
-        return snapshot.address().protocol();
+        return spec.address().protocol();
     }
 
     /**
      * Returns address.
      *
-     * @return address
+     * @return immutable WebSocket target address
      */
     public Address address() {
-        return snapshot.address();
+        return spec.address();
     }
 
     /**
      * Returns WebSocket execution path.
      *
-     * @return itinerary
+     * @return execution itinerary containing the WebSocket protocol and target address
      */
     public Itinerary itinerary() {
         return Itinerary.of(protocol(), address());
@@ -192,26 +181,26 @@ public final class WebSocketX {
     /**
      * Returns headers.
      *
-     * @return headers
+     * @return immutable HTTP upgrade request headers
      */
     public Headers headers() {
-        return snapshot.headers();
+        return spec.headers();
     }
 
     /**
      * Returns timeout policy.
      *
-     * @return timeout
+     * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
-        return snapshot.timeout();
+        return spec.timeout();
     }
 
     /**
      * Creates a protocol-neutral message from this WebSocket exchange and payload.
      *
-     * @param payload payload
-     * @return message
+     * @param payload payload to attach to the protocol-neutral message
+     * @return message representing this exchange and the supplied payload
      */
     public Message message(final Payload payload) {
         return Message.of(protocol(), address(), headers(), payload, null);
@@ -220,10 +209,10 @@ public final class WebSocketX {
     /**
      * Validates a required value.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -232,8 +221,8 @@ public final class WebSocketX {
     /**
      * Parses a target URI.
      *
-     * @param value target value
-     * @return URI
+     * @param value raw WebSocket target URL
+     * @return validated WS or WSS target URI
      */
     private static URI parseTarget(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -255,9 +244,9 @@ public final class WebSocketX {
     /**
      * Validates a duration.
      *
-     * @param duration duration
-     * @param name     name
-     * @return duration
+     * @param duration candidate timeout duration
+     * @param name     field name included in validation failures
+     * @return validated non-negative duration
      */
     private static Duration validateDuration(final Duration duration, final String name) {
         final Duration checked = Assert
@@ -347,7 +336,7 @@ public final class WebSocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(OPTION_TIMEOUT, Timeout.class);
+            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.observer = EventObserver.noop();
             this.callback = null;
@@ -362,7 +351,7 @@ public final class WebSocketX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw WebSocket target URL
          * @return this builder
          */
         public Builder to(final String url) {
@@ -373,7 +362,7 @@ public final class WebSocketX {
         /**
          * Sets target URL.
          *
-         * @param url URL
+         * @param url raw WebSocket target URL forwarded to {@link #to(String)}
          * @return this builder
          */
         public Builder url(final String url) {
@@ -399,14 +388,14 @@ public final class WebSocketX {
          * @return this builder
          */
         public Builder protocol(final String protocol) {
-            headers.set(HTTP.SEC_WEBSOCKET_PROTOCOL, protocol);
+            headers.set(Http.WebSocket.PROTOCOL, protocol);
             return this;
         }
 
         /**
          * Merges headers.
          *
-         * @param headers headers
+         * @param headers HTTP upgrade headers whose values are appended
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -422,7 +411,7 @@ public final class WebSocketX {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout non-negative duration assigned to every timeout phase
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
@@ -433,7 +422,7 @@ public final class WebSocketX {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout complete WebSocket timeout policy
          * @return this builder
          */
         public Builder timeout(final Timeout timeout) {
@@ -444,7 +433,7 @@ public final class WebSocketX {
         /**
          * Sets guard.
          *
-         * @param guard guard
+         * @param guard rule applied to WebSocket messages
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -455,7 +444,7 @@ public final class WebSocketX {
         /**
          * Sets message filter.
          *
-         * @param filter filter
+         * @param filter applied to WebSocket messages
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -466,7 +455,7 @@ public final class WebSocketX {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer event observer, or {@code null} to disable observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -477,7 +466,7 @@ public final class WebSocketX {
         /**
          * Sets callback.
          *
-         * @param callback callback
+         * @param callback call-lifecycle callback for asynchronous opening
          * @return this builder
          */
         public Builder callback(final Callback<WebSocketSession> callback) {
@@ -488,7 +477,7 @@ public final class WebSocketX {
         /**
          * Sets message handler.
          *
-         * @param handler handler
+         * @param handler message handler, or {@code null} to install a no-op handler
          * @return this builder
          */
         public Builder onMessage(final Handler handler) {
@@ -501,7 +490,7 @@ public final class WebSocketX {
          * Registers a channel message handler.
          *
          * @param channel channel id
-         * @param handler handler
+         * @param handler handler invoked for messages on the channel
          * @return this builder
          */
         public Builder channel(final String channel, final Handler handler) {
@@ -534,7 +523,7 @@ public final class WebSocketX {
         /**
          * Sets a custom message channel resolver.
          *
-         * @param resolver resolver
+         * @param resolver function that resolves a channel identifier from each message
          * @return this builder
          */
         public Builder resolver(final Function<Message, String> resolver) {
@@ -545,7 +534,7 @@ public final class WebSocketX {
         /**
          * Sets a UTF-8 text message handler.
          *
-         * @param handler text handler
+         * @param handler UTF-8 text consumer, or {@code null} to install a no-op handler
          * @return this builder
          */
         public Builder onText(final Consumer<String> handler) {
@@ -561,7 +550,7 @@ public final class WebSocketX {
         /**
          * Sets open handler.
          *
-         * @param handler open handler
+         * @param handler consumer invoked after a session opens, or {@code null} for no action
          * @return this builder
          */
         public Builder onOpen(final Consumer<WebSocketSession> handler) {
@@ -573,7 +562,7 @@ public final class WebSocketX {
         /**
          * Sets error handler.
          *
-         * @param handler error handler
+         * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
         public Builder onError(final Consumer<Throwable> handler) {
@@ -594,9 +583,9 @@ public final class WebSocketX {
         }
 
         /**
-         * Builds an exchange snapshot.
+         * Builds an exchange specification.
          *
-         * @return exchange
+         * @return immutable WebSocket exchange built from the current configuration
          */
         public WebSocketX build() {
             Assert.notNull(uri, () -> new ValidateException("WebSocket target must be set"));
@@ -606,7 +595,7 @@ public final class WebSocketX {
         /**
          * Opens a built exchange.
          *
-         * @return session
+         * @return opened WebSocket session
          */
         public WebSocketSession open() {
             return build().open();
@@ -615,7 +604,7 @@ public final class WebSocketX {
         /**
          * Connects a built exchange.
          *
-         * @return session
+         * @return connected WebSocket session
          */
         public WebSocketSession connect() {
             return open();
@@ -624,7 +613,7 @@ public final class WebSocketX {
         /**
          * Executes a built exchange.
          *
-         * @return session
+         * @return WebSocket session produced by synchronous execution
          */
         public WebSocketSession execute() {
             return build().execute();
@@ -633,7 +622,7 @@ public final class WebSocketX {
         /**
          * Creates a call for a built exchange.
          *
-         * @return WebSocket call
+         * @return new single-use call for the built exchange
          */
         public Call<WebSocketSession> call() {
             return build().call();
@@ -642,7 +631,7 @@ public final class WebSocketX {
         /**
          * Enqueues a built exchange asynchronously.
          *
-         * @return call
+         * @return enqueued call for the built exchange
          */
         public Call<WebSocketSession> enqueue() {
             return build().enqueue();
@@ -682,7 +671,7 @@ public final class WebSocketX {
         /**
          * Returns the configured handler.
          *
-         * @return handler
+         * @return configured direct handler or assembled channel demultiplexer
          */
         private Handler handler() {
             if (demuxer != null) {
@@ -694,7 +683,7 @@ public final class WebSocketX {
         /**
          * Returns the demuxer builder.
          *
-         * @return demuxer builder
+         * @return lazily initialized channel demultiplexer builder
          */
         private Demuxer.Builder demuxer() {
             if (demuxer == null) {

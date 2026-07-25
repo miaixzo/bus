@@ -27,7 +27,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
@@ -47,7 +47,7 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
     /**
      * Creates a bridge around a JDK authenticator without taking ownership of credential storage.
      *
-     * @param authenticator authenticator
+     * @param authenticator non-null JDK credential provider borrowed by the bridge
      */
     private JavaAuthenticatorBridge(final Authenticator authenticator) {
         this.authenticator = require(authenticator, "Java authenticator");
@@ -56,19 +56,23 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
     /**
      * Wraps a JDK authenticator.
      *
-     * @param authenticator authenticator
-     * @return bridge
+     * @param authenticator JDK credential provider borrowed by the bridge
+     * @return HTTP authenticator backed by the supplied credential provider
+     * @throws ValidateException if {@code authenticator} is {@code null}
      */
     public static JavaAuthenticatorBridge of(final Authenticator authenticator) {
         return new JavaAuthenticatorBridge(authenticator);
     }
 
     /**
-     * Uses the wrapped JDK authenticator to answer an HTTP authentication challenge.
+     * Uses the wrapped JDK authenticator to obtain credentials for the first response challenge and constructs a Basic
+     * authentication retry.
      *
      * @param request  challenged request
      * @param response challenged response
-     * @return authenticated request, or null when no credentials are available
+     * @return authenticated request, or {@code null} when no challenge or credentials are available
+     * @throws ValidateException if {@code request} or {@code response} is {@code null}
+     * @throws ProtocolException if the request URL cannot be converted for the JDK authenticator
      */
     @Override
     public HttpRequest authenticate(final HttpRequest request, final HttpResponse response) {
@@ -78,7 +82,7 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
         if (challenges.isEmpty()) {
             return null;
         }
-        final boolean proxy = challenged.code() == HTTP.HTTP_PROXY_AUTH;
+        final boolean proxy = challenged.code() == Http.Status.PROXY_AUTHENTICATION_REQUIRED;
         final Challenge challenge = challenges.getFirst();
         final PasswordAuthentication authentication = requestPasswordAuthentication(current, challenge, proxy);
         if (authentication == null) {
@@ -91,10 +95,11 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
     /**
      * Builds the JDK authentication request from fabric request and challenge metadata.
      *
-     * @param request   challenged request
-     * @param challenge selected challenge
-     * @param proxy     true for proxy authentication
+     * @param request   challenged request supplying host, port, scheme, and URL
+     * @param challenge first response challenge supplying realm and authentication scheme
+     * @param proxy     {@code true} to request proxy credentials; {@code false} for origin-server credentials
      * @return credentials, or {@code null} when the authenticator declines
+     * @throws ProtocolException if the request URL cannot be converted to a JDK URL
      */
     private PasswordAuthentication requestPasswordAuthentication(
             final HttpRequest request,
@@ -119,10 +124,10 @@ public final class JavaAuthenticatorBridge implements HttpAuthenticator {
     /**
      * Validates bridge inputs before calling the JDK authentication API.
      *
-     * @param value value
+     * @param value reference to validate
      * @param name  field name used in validation messages
-     * @param <T>   value type
-     * @return validated value
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

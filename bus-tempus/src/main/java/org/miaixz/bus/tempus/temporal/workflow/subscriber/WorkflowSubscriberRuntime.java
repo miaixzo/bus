@@ -24,7 +24,7 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.Lifecycle;
 
 import io.temporal.client.WorkflowClient;
 import io.temporal.worker.Worker;
@@ -72,7 +72,7 @@ public class WorkflowSubscriberRuntime {
     /**
      * Lifecycle state.
      */
-    private EnumValue.Lifecycle state = EnumValue.Lifecycle.UNKNOWN;
+    private Lifecycle.State state = Lifecycle.State.UNKNOWN;
 
     /**
      * Startup time.
@@ -108,7 +108,7 @@ public class WorkflowSubscriberRuntime {
      * Marks the runtime as starting.
      */
     public void markStarting() {
-        state = EnumValue.Lifecycle.STARTING;
+        state = Lifecycle.State.STARTING;
         startedAt = Instant.now();
     }
 
@@ -116,7 +116,7 @@ public class WorkflowSubscriberRuntime {
      * Marks the runtime as running.
      */
     public void markRunning() {
-        state = EnumValue.Lifecycle.RUNNING;
+        state = Lifecycle.State.RUNNING;
         consecutiveFailures = 0;
         reconnectScheduled = false;
         lastHealthyAt = Instant.now();
@@ -128,7 +128,7 @@ public class WorkflowSubscriberRuntime {
      * @param cause failure cause reported by the caller
      */
     public void markFailure(Throwable cause) {
-        state = EnumValue.Lifecycle.ERROR;
+        state = Lifecycle.State.FAILED;
         consecutiveFailures++;
         lastFailureAt = Instant.now();
     }
@@ -145,14 +145,14 @@ public class WorkflowSubscriberRuntime {
      * Marks the runtime as stopping.
      */
     public void markStopping() {
-        state = EnumValue.Lifecycle.STOPPING;
+        state = Lifecycle.State.CLOSING;
     }
 
     /**
      * Marks the runtime as stopped.
      */
     public void markStopped() {
-        state = EnumValue.Lifecycle.STOPPED;
+        state = Lifecycle.State.CLOSED;
         reconnectScheduled = false;
     }
 
@@ -162,7 +162,7 @@ public class WorkflowSubscriberRuntime {
      * @return {@code true} when the runtime is active
      */
     public boolean isRunning() {
-        return state == EnumValue.Lifecycle.RUNNING && workerFactory != null && !workerFactory.isShutdown();
+        return state == Lifecycle.State.RUNNING && workerFactory != null && !workerFactory.isShutdown();
     }
 
 }

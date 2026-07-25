@@ -20,7 +20,6 @@
 package org.miaixz.bus.starter.sensitive;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,14 +103,14 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
             Class<? extends HttpMessageConverter<?>> selectedConverterType,
             ServerHttpRequest request,
             ServerHttpResponse response) {
-        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug() && body instanceof Message) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug() && body instanceof Message<?> message) {
             try {
                 final Sensitive sensitive = returnType.getMethodAnnotation(Sensitive.class);
                 if (ObjectKit.isEmpty(sensitive)) {
                     return body;
                 }
 
-                Object data = ((Message) body).getData();
+                Object data = message.getData();
                 Logger.debug(
                         true,
                         "Starter",
@@ -122,37 +121,31 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
                         sensitive.stage(),
                         data == null ? null : data.getClass().getName(),
                         selectedContentType);
-                if (data instanceof Result) {
-                    List<Object> processedRows = new ArrayList<>();
-                    for (Object row : ((Result) data).getRows()) {
+                if (data instanceof Result<?> result) {
+                    List<?> rows = result.getRows();
+                    for (Object row : rows) {
                         processObject(sensitive, row);
-                        processedRows.add(row);
                     }
-                    ((Result) data).setRows(processedRows);
                     Logger.debug(
                             false,
                             "Starter",
                             "Sensitive response processing completed: controller={}, method={}, resultRowCount={}",
                             returnType.getDeclaringClass().getName(),
                             returnType.getExecutable().getName(),
-                            processedRows.size());
-                } else if (data instanceof List) {
-                    List<Object> processedList = new ArrayList<>();
-                    for (Object item : (List<?>) data) {
+                            rows.size());
+                } else if (data instanceof List<?> list) {
+                    for (Object item : list) {
                         processObject(sensitive, item);
-                        processedList.add(item);
                     }
-                    ((Message) body).setData(processedList);
                     Logger.debug(
                             false,
                             "Starter",
                             "Sensitive response processing completed: controller={}, method={}, listSize={}",
                             returnType.getDeclaringClass().getName(),
                             returnType.getExecutable().getName(),
-                            processedList.size());
+                            list.size());
                 } else {
                     processObject(sensitive, data);
-                    ((Message) body).setData(data);
                     Logger.debug(
                             false,
                             "Starter",

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.provider;
 
-import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.cortex.Assets;
 
 import reactor.core.publisher.Mono;
@@ -71,8 +71,8 @@ public interface ProcessProvider {
      * Retrieves the current status of the service.
      *
      * @param assets The configuration of the service to check.
-     * @return A {@code Mono} emitting the current {@link EnumValue.Lifecycle}.
+     * @return A {@code Mono} emitting the current {@link Lifecycle.State}.
      */
-    Mono<EnumValue.Lifecycle> getStatus(Assets assets);
+    Mono<Lifecycle.State> getStatus(Assets assets);
 
 }

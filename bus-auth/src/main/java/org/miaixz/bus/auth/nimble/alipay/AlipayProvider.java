@@ -111,7 +111,7 @@ public class AlipayProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("app_id", context.getClientId());
         params.put("method", "alipay.system.auth.token");
@@ -131,7 +131,7 @@ public class AlipayProvider extends AbstractProvider {
                     (String) ((Map<String, Object>) tokenResponse.get("error_response")).get("sub_msg"));
         }
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) tokenResponse.get("access_token"))
                                 .uid((String) tokenResponse.get("user_id"))
@@ -148,7 +148,7 @@ public class AlipayProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> params = new HashMap<>();
         params.put("app_id", context.getClientId());
         params.put("method", "alipay.system.auth.token");
@@ -168,7 +168,7 @@ public class AlipayProvider extends AbstractProvider {
                     (String) ((Map<String, Object>) tokenResponse.get("error_response")).get("sub_msg"));
         }
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) tokenResponse.get("access_token"))
                                 .uid((String) tokenResponse.get("user_id"))
@@ -185,7 +185,7 @@ public class AlipayProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> params = new HashMap<>();
         params.put("app_id", context.getClientId());
         params.put("method", "alipay.user.info.share");
@@ -209,7 +209,7 @@ public class AlipayProvider extends AbstractProvider {
         String location = String
                 .format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(userResponse)).uuid((String) userResponse.get("user_id"))
                         .username(
                                 StringKit.isEmpty((String) userResponse.get("user_name"))
@@ -229,8 +229,8 @@ public class AlipayProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(this.complex.authorize()).queryParam("app_id", context.getClientId())
                                 .queryParam("scope", "auth_user").queryParam("redirect_uri", context.getRedirectUri())

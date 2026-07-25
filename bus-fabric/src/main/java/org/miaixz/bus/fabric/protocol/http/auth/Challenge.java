@@ -117,7 +117,7 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Reads one parameter value.
      *
-     * @param source source
+     * @param source full parameter text containing the value
      * @param index  start index
      * @return value result
      */
@@ -138,7 +138,7 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Reads a quoted-string value.
      *
-     * @param source source
+     * @param source full parameter text containing the quoted value
      * @param index  first content index
      * @return value result
      */
@@ -170,8 +170,8 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Finds the first whitespace.
      *
-     * @param value value
-     * @return index or -1
+     * @param value normalized challenge header text
+     * @return first whitespace index, or {@code -1} when the scheme stands alone
      */
     private static int firstSpace(final String value) {
         for (int i = 0; i < value.length(); i++) {
@@ -185,8 +185,8 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Skips whitespace and comma separators.
      *
-     * @param value value
-     * @param index index
+     * @param value parameter text being scanned
+     * @param index starting character index
      * @return next index
      */
     private static int skipWhitespaceAndComma(final String value, final int index) {
@@ -201,8 +201,8 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Skips whitespace.
      *
-     * @param value value
-     * @param index index
+     * @param value parameter text being scanned
+     * @param index starting character index
      * @return next index
      */
     private static int skipWhitespace(final String value, final int index) {
@@ -216,8 +216,8 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Skips trailing whitespace before the next comma.
      *
-     * @param value value
-     * @param index index
+     * @param value parameter text following a closing quote
+     * @param index first character after the closing quote
      * @return comma or end index
      */
     private static int skipUntilComma(final String value, final int index) {
@@ -231,7 +231,7 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Normalizes a token.
      *
-     * @param value value
+     * @param value candidate authentication scheme or parameter name
      * @param name  field name
      * @return normalized token
      */
@@ -248,9 +248,9 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
     /**
      * Validates a single-line value.
      *
-     * @param value value
+     * @param value candidate challenge header or parameter value
      * @param name  field name
-     * @return value
+     * @return validated non-blank single-line value
      */
     private static String validateValue(final String value, final String name) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {

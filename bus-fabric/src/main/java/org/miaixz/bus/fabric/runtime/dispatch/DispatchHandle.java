@@ -19,19 +19,17 @@
 */
 package org.miaixz.bus.fabric.runtime.dispatch;
 
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Lifecycle;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.Activity;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
 /**
  * Cancellable handle for a queued or running activity.
@@ -42,52 +40,78 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 public final class DispatchHandle implements Lifecycle {
 
     /**
-     * Dispatch key.
+     * Handle is queued and may still be cancelled before execution.
+     */
+    private static final int QUEUED = Normal._0;
+
+    /**
+     * Handle activity is currently running.
+     */
+    private static final int RUNNING = Normal._1;
+
+    /**
+     * Handle activity completed successfully.
+     */
+    private static final int DONE = Normal._2;
+
+    /**
+     * Handle activity completed with a failure.
+     */
+    private static final int FAILED = Normal._3;
+
+    /**
+     * Handle was cancelled before a successful terminal transition.
+     */
+    private static final int CANCELLED = Normal._4;
+
+    /**
+     * Trimmed, single-line key used for per-key dispatch accounting.
      */
     private final String key;
 
     /**
-     * Cancellation tag.
+     * Optional identity used to group cancellation requests.
      */
     private final Object tag;
 
     /**
-     * Activity.
+     * Activity controlled by this handle.
      */
     private final Activity activity;
 
     /**
-     * Execution result.
+     * Completion channel reflecting this handle's terminal transition.
      */
     private final CompletableFuture<Void> future;
 
     /**
-     * Handle lifecycle scope.
+     * Authoritative dispatch state shared by every dispatcher channel.
      */
-    private final LifecycleScope scope;
+    private final AtomicInteger state;
 
     /**
-     * Creates a dispatch handle.
+     * Creates a queued dispatch handle and a new incomplete future.
      *
-     * @param key      dispatch key
-     * @param tag      cancellation tag
-     * @param activity activity
+     * @param key      non-blank, single-line dispatch key
+     * @param tag      optional cancellation tag
+     * @param activity activity controlled by the handle
      */
     private DispatchHandle(final String key, final Object tag, final Activity activity) {
         this.key = validateKey(key);
         this.tag = tag;
         this.activity = require(activity, "Activity");
         this.future = new CompletableFuture<>();
-        this.scope = LifecycleScope.resource(this, this.key, null, EventObserver.noop());
+        this.state = new AtomicInteger(QUEUED);
     }
 
     /**
      * Creates a dispatch handle.
      *
-     * @param key      dispatch key
-     * @param tag      cancellation tag
-     * @param activity activity
-     * @return dispatch handle
+     * @param key      non-blank, single-line dispatch key
+     * @param tag      optional cancellation tag, which may be {@code null}
+     * @param activity activity controlled by the handle
+     * @return newly queued handle with an incomplete execution future
+     * @throws ValidateException if the key is blank or multi-line, or if {@code activity} is {@code null}
      */
     public static DispatchHandle of(final String key, final Object tag, final Activity activity) {
         return new DispatchHandle(key, tag, activity);
@@ -96,7 +120,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the dispatch key.
      *
-     * @return dispatch key
+     * @return trimmed, single-line key used for dispatch accounting
      */
     public String key() {
         return key;
@@ -105,7 +129,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the cancellation tag.
      *
-     * @return cancellation tag
+     * @return cancellation tag, or {@code null} when none was assigned
      */
     public Object tag() {
         return tag;
@@ -114,7 +138,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the activity.
      *
-     * @return activity
+     * @return activity controlled by this handle
      */
     public Activity activity() {
         return activity;
@@ -123,7 +147,7 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the execution future.
      *
-     * @return execution future
+     * @return future completed, failed, or cancelled with this handle
      */
     public CompletableFuture<Void> future() {
         return future;
@@ -132,76 +156,111 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Returns the handle lifecycle state.
      *
-     * @return lifecycle state
+     * @return current queued, running, or terminal dispatch status
      */
     @Override
-    public Status state() {
-        return scope.state();
+    public State state() {
+        return switch (state.get()) {
+            case QUEUED -> State.QUEUED;
+            case RUNNING -> State.RUNNING;
+            case DONE -> State.COMPLETED;
+            case FAILED -> State.FAILED;
+            case CANCELLED -> State.CANCELLED;
+            default -> throw new IllegalStateException("Unknown dispatch state");
+        };
     }
 
     /**
-     * Cancels this handle and its activity.
+     * Atomically promotes this handle before a worker invokes its activity.
      *
-     * @return true when this invocation changed the state
+     * @return {@code true} only for the invocation that changed the state from queued to running
+     */
+    boolean markRunning() {
+        return state.compareAndSet(QUEUED, RUNNING);
+    }
+
+    /**
+     * Atomically changes a queued or running handle to cancelled, then cancels its activity and future.
+     *
+     * @return {@code true} if this invocation won the terminal state transition
      */
     public boolean cancel() {
-        if (scope.cancel(new CancellationException("Dispatch handle cancelled: " + key))) {
-            activity.cancel();
-            future.cancel(false);
-            return true;
+        while (true) {
+            final int current = state.get();
+            if (current != QUEUED && current != RUNNING) {
+                return false;
+            }
+            if (state.compareAndSet(current, CANCELLED)) {
+                try {
+                    activity.cancel();
+                } finally {
+                    future.cancel(false);
+                }
+                return true;
+            }
         }
-        return false;
     }
 
     /**
      * Returns whether this handle is cancelled.
      *
-     * @return true when cancelled
+     * @return {@code true} if the authoritative handle state is cancelled
      */
     public boolean cancelled() {
-        return scope.state() == Status.CANCELLED || future.isCancelled() || activity.cancelled();
+        return state.get() == CANCELLED;
     }
 
     /**
-     * Completes this handle successfully.
+     * Atomically completes a queued or running handle and its future successfully.
+     *
+     * @throws StatefulException if the handle has already failed or been cancelled
      */
     public void complete() {
-        final Status current = scope.state();
-        if (current == Status.DONE) {
-            return;
-        }
-        if (current == Status.CANCELLED || current == Status.FAILED) {
-            throw new StatefulException("Dispatch handle cannot complete from state " + current);
-        }
-        if (scope.complete()) {
-            future.complete(null);
+        while (true) {
+            final int current = state.get();
+            if (current == DONE) {
+                return;
+            }
+            if (current != QUEUED && current != RUNNING) {
+                throw new StatefulException("Dispatch handle cannot complete from state " + state());
+            }
+            if (state.compareAndSet(current, DONE)) {
+                future.complete(null);
+                return;
+            }
         }
     }
 
     /**
-     * Fails this handle.
+     * Atomically fails a queued or running handle and completes its future exceptionally.
      *
-     * @param cause failure cause
+     * @param cause failure stored in the execution future
+     * @throws ValidateException if {@code cause} is {@code null}
+     * @throws StatefulException if the handle has already completed successfully or been cancelled
      */
     public void fail(final Throwable cause) {
-        require(cause, "Failure cause");
-        final Status current = scope.state();
-        if (current == Status.FAILED) {
-            return;
-        }
-        if (current == Status.DONE || current == Status.CANCELLED) {
-            throw new StatefulException("Dispatch handle cannot fail from state " + current);
-        }
-        if (scope.fail(cause)) {
-            future.completeExceptionally(cause);
+        final Throwable failure = require(cause, "Failure cause");
+        while (true) {
+            final int current = state.get();
+            if (current == FAILED) {
+                return;
+            }
+            if (current != QUEUED && current != RUNNING) {
+                throw new StatefulException("Dispatch handle cannot fail from state " + state());
+            }
+            if (state.compareAndSet(current, FAILED)) {
+                future.completeExceptionally(failure);
+                return;
+            }
         }
     }
 
     /**
      * Validates dispatch keys.
      *
-     * @param value key
-     * @return normalized key
+     * @param value candidate dispatch key
+     * @return trimmed, non-blank, single-line dispatch key
+     * @throws ValidateException if the candidate is blank or contains a carriage return or line feed
      */
     private static String validateKey(final String value) {
         final String current = Assert
@@ -213,12 +272,12 @@ public final class DispatchHandle implements Lifecycle {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

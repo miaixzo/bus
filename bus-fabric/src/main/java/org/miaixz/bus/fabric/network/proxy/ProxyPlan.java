@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -31,6 +30,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
@@ -40,6 +40,18 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  * @since Java 21+
  */
 public final class ProxyPlan {
+
+    /**
+     * Typed option for the HTTP proxy plan.
+     * <p>
+     * Absence selects through the system proxy selector; explicit null forces a direct route without consulting it.
+     */
+    public static final Options.Key<ProxyPlan> OPTION = Options.key("http.proxy", ProxyPlan.class);
+
+    /**
+     * Shared immutable direct route.
+     */
+    private static final ProxyPlan DIRECT = new ProxyPlan(Type.DIRECT, null, Headers.empty());
 
     /**
      * Proxy type.
@@ -76,9 +88,7 @@ public final class ProxyPlan {
      * @return direct plan
      */
     public static ProxyPlan direct() {
-        return Instances.get(
-                ProxyPlan.class.getName() + Symbol.DOT + Builder.PROXY_PLAN_DIRECT_ID,
-                () -> new ProxyPlan(Type.DIRECT, null, Headers.empty()));
+        return DIRECT;
     }
 
     /**

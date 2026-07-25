@@ -30,7 +30,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
@@ -166,7 +166,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
             URI uri = UrlKit.toURI(buildGrpcUrl(assets, fullMethodName));
 
             Logger.info(true, "Vortex", "GRPC method {} invoked successfully: protocol=grpc", fullMethodName);
-            return Egress.request(HttpMethod.POST, uri).header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                     .bodyValue(payload).retrieve().bodyToMono(String.class);
 
         } catch (Exception e) {
@@ -184,7 +184,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private WebClient.RequestHeadersSpec<?> request(Assets assets, String payload) {
         URI uri = UrlKit.toURI(buildGrpcUrl(assets, assets.getMethod()));
-        return Egress.request(HttpMethod.POST, uri).header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .bodyValue(payload);
     }
 

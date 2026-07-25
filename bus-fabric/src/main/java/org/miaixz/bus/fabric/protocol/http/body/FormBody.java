@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
-import static org.miaixz.bus.fabric.Builder.*;
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -29,7 +29,9 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
@@ -48,20 +50,21 @@ import org.miaixz.bus.fabric.codec.body.RequestBody;
 public final class FormBody implements RequestBody {
 
     /**
-     * Form media type.
+     * Canonical application/x-www-form-urlencoded media type.
      */
     private final MediaType media;
 
     /**
-     * Lazily encoded payload.
+     * Repeatable payload that re-encodes the immutable entry snapshot on demand.
      */
     private final Payload payload;
 
     /**
      * Creates a form body.
      *
-     * @param media   media type
-     * @param payload payload
+     * @param media   non-null form media type
+     * @param payload non-null repeatable encoded form payload
+     * @throws ValidateException if either component is {@code null}
      */
     private FormBody(final MediaType media, final Payload payload) {
         this.media = Assert.notNull(media, () -> new ValidateException("Form media must not be null"));
@@ -71,7 +74,7 @@ public final class FormBody implements RequestBody {
     /**
      * Creates a form body builder.
      *
-     * @return builder
+     * @return new empty form body builder
      */
     public static Builder builder() {
         return new Builder();
@@ -80,7 +83,7 @@ public final class FormBody implements RequestBody {
     /**
      * Returns form media.
      *
-     * @return media
+     * @return canonical form media type
      */
     public MediaType media() {
         return media;
@@ -89,7 +92,7 @@ public final class FormBody implements RequestBody {
     /**
      * Returns form payload.
      *
-     * @return payload
+     * @return repeatable lazily encoded form payload
      */
     public Payload payload() {
         return payload;
@@ -98,18 +101,18 @@ public final class FormBody implements RequestBody {
     /**
      * Encodes entries to UTF-8 form bytes.
      *
-     * @param entries entries
-     * @return encoded bytes
+     * @param entries immutable ordered form entries
+     * @return newly allocated UTF-8 form bytes
      */
     private static byte[] encodeEntries(final List<Entry> entries) {
-        return ByteString.encodeString(encodeText(entries), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
+        return ByteString.encodeString(encodeText(entries), UTF_8).toByteArray();
     }
 
     /**
      * Encodes entries to text.
      *
-     * @param entries entries
-     * @return encoded text
+     * @param entries immutable ordered form entries
+     * @return ampersand-separated name/value pairs with decoded components percent encoded
      */
     private static String encodeText(final List<Entry> entries) {
         final StringBuilder builder = new StringBuilder();
@@ -127,12 +130,13 @@ public final class FormBody implements RequestBody {
     /**
      * Encodes one form component using the same space rule as UnoUrl query encoding.
      *
-     * @param value decoded value
-     * @return encoded value
+     * @param value decoded form name or content
+     * @return UTF-8 percent-encoded component text
+     * @throws ProtocolException if the URL encoder cannot encode the component
      */
     private static String encode(final String value) {
         try {
-            return UrlEncoder.encodeAll(value, org.miaixz.bus.core.lang.Charset.UTF_8);
+            return UrlEncoder.encodeAll(value, UTF_8);
         } catch (final RuntimeException e) {
             throw new ProtocolException("Unable to encode form field", e);
         }
@@ -141,9 +145,10 @@ public final class FormBody implements RequestBody {
     /**
      * Validates a form field.
      *
-     * @param value field value
-     * @param name  field name
-     * @return validated value
+     * @param value form name or content to validate
+     * @param name  logical field label included in the validation error
+     * @return unchanged non-blank, single-line text
+     * @throws ValidateException if the text is blank or contains a line break
      */
     private static String validateField(final String value, final String name) {
         final String checked = Assert
@@ -157,7 +162,8 @@ public final class FormBody implements RequestBody {
     /**
      * Validates percent escapes in an already encoded field.
      *
-     * @param value encoded field
+     * @param value encoded form component to scan
+     * @throws ProtocolException if any percent sign is not followed by two hexadecimal digits
      */
     private static void validatePercentEncoding(final String value) {
         for (int i = 0; i < value.length(); i++) {
@@ -174,9 +180,9 @@ public final class FormBody implements RequestBody {
     /**
      * Form entry.
      *
-     * @param name    field name
-     * @param value   field value
-     * @param encoded whether values are already encoded
+     * @param name    validated field name
+     * @param value   validated field content
+     * @param encoded whether both components already contain their desired percent encoding
      */
     private record Entry(String name, String value, boolean encoded) {
 
@@ -195,7 +201,8 @@ public final class FormBody implements RequestBody {
         /**
          * Creates a form payload.
          *
-         * @param entries entries
+         * @param entries ordered form entries copied into an immutable snapshot
+         * @throws ValidateException if {@code entries} is {@code null}
          */
         private FormPayload(final List<Entry> entries) {
             this.entries = List
@@ -215,7 +222,7 @@ public final class FormBody implements RequestBody {
         /**
          * Opens an encoded source.
          *
-         * @return payload source
+         * @return in-memory source containing a newly encoded snapshot
          */
         @Override
         public Source source() {
@@ -225,18 +232,20 @@ public final class FormBody implements RequestBody {
         /**
          * Returns encoded bytes.
          *
-         * @return encoded bytes
+         * @return newly encoded bytes within the default materialization limit
          */
         @Override
         public byte[] bytes() {
-            return bytes(DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
          * Returns encoded bytes with an explicit materialize threshold.
          *
-         * @param maxBytes maximum bytes to materialize
-         * @return encoded bytes
+         * @param maxBytes maximum encoded bytes permitted
+         * @return newly encoded form bytes
+         * @throws ValidateException if {@code maxBytes} is invalid
+         * @throws InternalException if the encoded form exceeds the limit
          */
         @Override
         public byte[] bytes(final long maxBytes) {
@@ -251,20 +260,20 @@ public final class FormBody implements RequestBody {
         /**
          * Reads encoded text using the supplied charset.
          *
-         * @param charset charset
-         * @return encoded text
+         * @param charset character set used to decode the UTF-8 form bytes
+         * @return encoded form bytes interpreted using the supplied character set
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Normal.MEBI_64);
         }
 
         /**
          * Reads encoded text using the supplied charset and threshold.
          *
-         * @param charset  charset
-         * @param maxBytes maximum bytes to materialize
-         * @return encoded text
+         * @param charset  character set used to decode the UTF-8 form bytes
+         * @param maxBytes maximum encoded bytes permitted
+         * @return encoded form bytes interpreted using the supplied character set
          */
         @Override
         public String text(final Charset charset, final long maxBytes) {
@@ -276,7 +285,7 @@ public final class FormBody implements RequestBody {
         /**
          * Returns repeatability.
          *
-         * @return true
+         * @return {@code true}, because each source is created from a fresh encoding
          */
         @Override
         public boolean repeatable() {
@@ -294,7 +303,7 @@ public final class FormBody implements RequestBody {
     public static final class Builder {
 
         /**
-         * Form entries.
+         * Mutable ordered entries copied when {@link #build()} is called.
          */
         private final List<Entry> entries = new ArrayList<>();
 
@@ -311,6 +320,7 @@ public final class FormBody implements RequestBody {
          * @param name  field name
          * @param value field value
          * @return this builder
+         * @throws ValidateException if either component is blank or contains a line break
          */
         public Builder add(final String name, final String value) {
             final String validName = validateField(name, "Form field name");
@@ -325,6 +335,8 @@ public final class FormBody implements RequestBody {
          * @param name  encoded field name
          * @param value encoded field value
          * @return this builder
+         * @throws ProtocolException if either component contains an invalid percent escape
+         * @throws ValidateException if either component is blank or contains a line break
          */
         public Builder encoded(final String name, final String value) {
             final String validName = validateField(name, "Encoded form field name");
@@ -338,7 +350,7 @@ public final class FormBody implements RequestBody {
         /**
          * Builds an immutable form body.
          *
-         * @return form body
+         * @return immutable form body backed by a snapshot of the current entries
          */
         public FormBody build() {
             final List<Entry> snapshot = List.copyOf(entries);

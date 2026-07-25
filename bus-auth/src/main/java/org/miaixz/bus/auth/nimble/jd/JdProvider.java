@@ -106,7 +106,7 @@ public class JdProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getClientId());
         form.put("app_secret", context.getClientSecret());
@@ -130,7 +130,7 @@ public class JdProvider extends AbstractProvider {
             String scope = (String) object.get("scope");
             String openId = (String) object.get("open_id");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).scope(scope)
                                     .openId(openId).build())
@@ -181,7 +181,7 @@ public class JdProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getClientId());
         form.put("app_secret", context.getClientSecret());
@@ -205,7 +205,7 @@ public class JdProvider extends AbstractProvider {
             String scope = (String) object.get("scope");
             String openId = (String) object.get("open_id");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).expireIn(expiresIn).refresh(refresh).scope(scope)
                                     .openId(openId).build())
@@ -246,7 +246,7 @@ public class JdProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Builder urlBuilder = Builder.fromUrl(this.complex.userinfo())
                 .queryParam("access_token", authorization.getToken()).queryParam("app_key", context.getClientId())
                 .queryParam("method", "jingdong.user.getUserInfoByOpenId")
@@ -271,7 +271,7 @@ public class JdProvider extends AbstractProvider {
             String imageUrl = (String) data.get("imageUrl");
             String gender = (String) data.get("gendar");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(data)).uuid(authorization.getOpenId())
                                     .username(nickName).nickname(nickName).avatar(imageUrl).gender(Gender.of(gender))
@@ -299,8 +299,8 @@ public class JdProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(complex.authorize()).queryParam("app_key", context.getClientId())
                         .queryParam("response_type", "code").queryParam("redirect_uri", context.getRedirectUri())
                         .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(JdScope.values())))

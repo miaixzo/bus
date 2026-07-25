@@ -56,7 +56,7 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(BaiduNotice entity) {
+    public Message<Void> send(BaiduNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -75,7 +75,8 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
         bodys.put("contentVar", entity.getParams());
         String response = post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        Message result = Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
+        Message<Void> result = Message.<Void>builder()
+                .errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
                 .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
         Logger.info(
                 false,

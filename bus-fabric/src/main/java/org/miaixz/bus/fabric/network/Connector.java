@@ -35,17 +35,17 @@ public interface Connector extends AutoCloseable {
     /**
      * Opens a network connection.
      *
-     * @param address target address
-     * @param timeout timeout policy
-     * @return connection future
+     * @param address protocol address to connect
+     * @param timeout timeout policy governing connection establishment
+     * @return future completed with the opened connection or exceptionally when establishment fails
      */
     CompletableFuture<Connection> connect(Address address, Timeout timeout);
 
     /**
      * Returns whether this connector supports a transport.
      *
-     * @param transport transport
-     * @return true when supported
+     * @param transport transport implementation proposed for connection establishment
+     * @return true when this connector can open connections through that transport
      */
     boolean supports(Transport transport);
 

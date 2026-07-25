@@ -33,7 +33,7 @@ import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -95,7 +95,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String fileName) {
+    public Message<Blob> stat(String fileName) {
         return stat(this.context.getBucket(), fileName);
     }
 
@@ -107,7 +107,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message stat(String bucket, String fileName) {
+    public Message<Blob> stat(String bucket, String fileName) {
         String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
         return statKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
     }
@@ -120,37 +120,38 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing storage metadata.
      */
     @Override
-    public Message statKey(String bucket, String objectKey) {
+    public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature(HTTP.HEAD, path, date, 0);
+            String signature = generateSignature(Http.Method.HEAD.value(), path, date, 0);
 
             try (Response response = head(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
-                    return Message.builder().errcode(toError(response.code()).getKey())
+                    return Message.<Blob>builder().errcode(toError(response.code()).getKey())
                             .errmsg(toError(response.code()).getValue()).build();
                 }
 
                 String name = nameOf(objectKey);
                 Map<String, Object> extend = new HashMap<>();
-                extend.put("date", header(response, HTTP.DATE));
-                extend.put("lastModified", header(response, HTTP.LAST_MODIFIED));
+                extend.put("date", header(response, Http.Header.DATE));
+                extend.put("lastModified", header(response, Http.Header.LAST_MODIFIED));
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue())
                         .data(
                                 Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
-                                        .size(header(response, HTTP.CONTENT_LENGTH, "0"))
-                                        .type(header(response, HTTP.CONTENT_TYPE)).hash(header(response, HTTP.ETAG))
-                                        .extend(extend).build())
+                                        .size(header(response, Http.Header.CONTENT_LENGTH, "0"))
+                                        .type(header(response, Http.Header.CONTENT_TYPE))
+                                        .hash(header(response, Http.Header.ETAG)).extend(extend).build())
                         .build();
             }
         } catch (Exception e) {
@@ -164,7 +165,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     ErrorCode._113012.getKey(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                    .build();
         }
     }
 
@@ -175,7 +177,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String fileName) {
+    public Message<Blob> stream(String fileName) {
         return stream(this.context.getBucket(), fileName);
     }
 
@@ -187,7 +189,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message stream(String bucket, String fileName) {
+    public Message<Blob> stream(String bucket, String fileName) {
         String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
         return streamKey(bucket, Builder.buildObjectKey(prefix, Normal.EMPTY, fileName));
     }
@@ -200,38 +202,38 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing a storage resource.
      */
     @Override
-    public Message streamKey(String bucket, String objectKey) {
+    public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
                         .build();
             }
 
             String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature(HTTP.GET, path, date, 0);
+            String signature = generateSignature(Http.Method.GET.value(), path, date, 0);
 
             Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date));
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date));
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
-                return Message.builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+                return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
             }
 
             String name = nameOf(objectKey);
             Map<String, Object> extend = new HashMap<>();
-            extend.put("date", header(response, HTTP.DATE));
-            extend.put("lastModified", header(response, HTTP.LAST_MODIFIED));
+            extend.put("date", header(response, Http.Header.DATE));
+            extend.put("lastModified", header(response, Http.Header.LAST_MODIFIED));
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(stream(response)).bucket(bucket).key(objectKey).name(name)
-                                    .path(objectKey).size(header(response, HTTP.CONTENT_LENGTH, "0"))
-                                    .type(header(response, HTTP.CONTENT_TYPE)).hash(header(response, HTTP.ETAG))
-                                    .extend(extend).build())
+                                    .path(objectKey).size(header(response, Http.Header.CONTENT_LENGTH, "0"))
+                                    .type(header(response, Http.Header.CONTENT_TYPE))
+                                    .hash(header(response, Http.Header.ETAG)).extend(extend).build())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -244,7 +246,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     ErrorCode._113012.getKey(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._113012.getKey()).errmsg(ErrorCode._113012.getValue())
+                    .build();
         }
     }
 
@@ -256,7 +259,7 @@ public class UpyunOssProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message download(String fileName) {
+    public Message<byte[]> download(String fileName) {
         return download(this.context.getBucket(), fileName);
     }
 
@@ -278,7 +281,7 @@ public class UpyunOssProvider extends AbstractProvider {
      *         content as a byte array; otherwise, it contains error information.
      */
     @Override
-    public Message download(String bucket, String fileName) {
+    public Message<byte[]> download(String bucket, String fileName) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
@@ -288,8 +291,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -297,8 +300,8 @@ public class UpyunOssProvider extends AbstractProvider {
                 // Read all bytes directly from the response body
                 byte[] content = response.bytes();
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(content).build();
+                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -310,7 +313,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -322,7 +326,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message download(String fileName, File file) {
+    public Message<Void> download(String fileName, File file) {
         return download(this.context.getBucket(), fileName, file);
     }
 
@@ -345,7 +349,7 @@ public class UpyunOssProvider extends AbstractProvider {
      *         specified location; otherwise, error information is returned.
      */
     @Override
-    public Message download(String bucket, String fileName, File file) {
+    public Message<Void> download(String bucket, String fileName, File file) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
@@ -355,8 +359,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -367,8 +371,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     inputStream.transferTo(outputStream);
                 }
 
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -381,7 +385,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -392,7 +397,7 @@ public class UpyunOssProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message list() {
+    public Message<List<Blob>> list() {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String path = Symbol.SLASH + context.getBucket() + Symbol.SLASH + prefix;
@@ -401,8 +406,8 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date),
                     header("x-upyun-list-limit", "100"))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
@@ -421,8 +426,8 @@ public class UpyunOssProvider extends AbstractProvider {
                         files.add(Blob.builder().name(parts[0]).size(parts[2]).extend(extend).build());
                     }
                 }
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .data(files).build();
+                return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).data(files).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -433,7 +438,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
+                    .errmsg(ErrorCode._FAILURE.getValue()).build();
         }
     }
 
@@ -445,7 +451,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String oldName, String newName) {
+    public Message<Void> rename(String oldName, String newName) {
         return rename(this.context.getBucket(), Normal.EMPTY, oldName, newName);
     }
 
@@ -458,7 +464,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String path, String oldName, String newName) {
+    public Message<Void> rename(String path, String oldName, String newName) {
         return rename(this.context.getBucket(), path, oldName, newName);
     }
 
@@ -472,7 +478,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message rename(String bucket, String path, String oldName, String newName) {
+    public Message<Void> rename(String bucket, String path, String oldName, String newName) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String oldObjectKey = Builder.buildObjectKey(prefix, path, oldName);
@@ -487,8 +493,8 @@ public class UpyunOssProvider extends AbstractProvider {
             byte[] content;
             try (Response response = get(
                     this.context.getEndpoint() + oldPath,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -503,9 +509,9 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.context.getEndpoint() + newPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature),
-                    header(HTTP.DATE, putDate),
-                    header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature),
+                    header(Http.Header.DATE, putDate),
+                    header(Http.Header.CONTENT_LENGTH, String.valueOf(content.length)))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
@@ -517,14 +523,15 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + oldPath,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature),
-                    header(HTTP.DATE, deleteDate))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature),
+                    header(Http.Header.DATE, deleteDate))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                    .build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -537,7 +544,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -549,7 +557,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, byte[] content) {
+    public Message<Blob> upload(String fileName, byte[] content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
@@ -562,7 +570,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String bucket, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String fileName, byte[] content) {
         return upload(bucket, Normal.EMPTY, fileName, content);
     }
 
@@ -577,25 +585,26 @@ public class UpyunOssProvider extends AbstractProvider {
      *         successful.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, byte[] content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, byte[] content) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             String requestPath = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature(HTTP.PUT, requestPath, date, content.length);
+            String signature = generateSignature(Http.Method.PUT.value(), requestPath, date, content.length);
 
             try (Response response = put(
                     this.context.getEndpoint() + requestPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date),
-                    header(HTTP.CONTENT_LENGTH, String.valueOf(content.length)))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date),
+                    header(Http.Header.CONTENT_LENGTH, String.valueOf(content.length)))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue())
                         .data(Blob.builder().name(fileName).path(objectKey).build()).build();
             }
         } catch (Exception e) {
@@ -609,7 +618,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -621,7 +631,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String fileName, InputStream content) {
+    public Message<Blob> upload(String fileName, InputStream content) {
         return upload(this.context.getBucket(), Normal.EMPTY, fileName, content);
     }
 
@@ -634,7 +644,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message upload(String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String path, String fileName, InputStream content) {
         return upload(this.context.getBucket(), path, fileName, content);
     }
 
@@ -648,7 +658,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation, including blob details if successful.
      */
     @Override
-    public Message upload(String bucket, String path, String fileName, InputStream content) {
+    public Message<Blob> upload(String bucket, String path, String fileName, InputStream content) {
         try {
             // Read the content from the input stream
             byte[] contentBytes = content.readAllBytes();
@@ -664,7 +674,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -675,7 +686,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String fileName) {
+    public Message<Void> remove(String fileName) {
         return remove(this.context.getBucket(), Normal.EMPTY, fileName);
     }
 
@@ -687,7 +698,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, String fileName) {
+    public Message<Void> remove(String bucket, String fileName) {
         return remove(bucket, Normal.EMPTY, fileName);
     }
 
@@ -700,7 +711,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, String path, String fileName) {
+    public Message<Void> remove(String bucket, String path, String fileName) {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
@@ -710,13 +721,13 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + requestPath,
-                    header(HTTP.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
-                    header(HTTP.DATE, date))) {
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                        .build();
+                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
+                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -729,7 +740,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -741,7 +753,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * @return A {@link Message} containing the result of the operation.
      */
     @Override
-    public Message remove(String bucket, Path path) {
+    public Message<Void> remove(String bucket, Path path) {
         return remove(bucket, path.toString(), Normal.EMPTY);
     }
 

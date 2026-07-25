@@ -37,14 +37,14 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 public final class LimitGuard implements GuardRule {
 
     /**
-     * Maximum allowed bytes.
+     * Inclusive upper bound for declared and known payload lengths.
      */
     private final long maxBytes;
 
     /**
      * Creates a limit guard.
      *
-     * @param maxBytes maximum allowed bytes
+     * @param maxBytes validated inclusive body limit from 1 byte through 16 MiB
      */
     private LimitGuard(final long maxBytes) {
         this.maxBytes = validateMaxBytes(maxBytes);
@@ -53,8 +53,8 @@ public final class LimitGuard implements GuardRule {
     /**
      * Creates a limit guard.
      *
-     * @param maxBytes maximum allowed bytes
-     * @return limit guard
+     * @param maxBytes inclusive body limit from 1 byte through 16 MiB
+     * @return new body-length guard
      */
     public static LimitGuard of(final long maxBytes) {
         return new LimitGuard(maxBytes);
@@ -63,22 +63,31 @@ public final class LimitGuard implements GuardRule {
     /**
      * Checks message body length.
      *
-     * @param message message
-     * @return guard result
+     * @param message non-null message whose declared and payload lengths are compared
+     * @return rejection when either known length exceeds the limit or two known lengths differ; otherwise pass
      */
     @Override
     public GuardResult check(final Message message) {
         final Message checkedMessage = Assert.notNull(message, () -> new ValidateException("Message must not be null"));
-        final long length = knownLength(checkedMessage);
-        Assert.isTrue(length >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
-        return length > maxBytes ? GuardResult.reject("body length " + length + " exceeds max " + maxBytes)
-                : GuardResult.pass();
+        final long declaredLength = checkedMessage.headers().contentLength();
+        if (declaredLength > maxBytes) {
+            return GuardResult.reject("declared body length exceeds max " + maxBytes);
+        }
+        final long payloadLength = checkedMessage.payload().length();
+        Assert.isTrue(payloadLength >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
+        if (payloadLength > maxBytes) {
+            return GuardResult.reject("actual body length exceeds max " + maxBytes);
+        }
+        if (declaredLength >= Normal._0 && payloadLength >= Normal._0 && declaredLength != payloadLength) {
+            return GuardResult.reject("declared and actual body lengths differ");
+        }
+        return GuardResult.pass();
     }
 
     /**
      * Returns maximum bytes.
      *
-     * @return maximum bytes
+     * @return configured inclusive body-length limit
      */
     public long maxBytes() {
         return maxBytes;
@@ -87,38 +96,22 @@ public final class LimitGuard implements GuardRule {
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return stable body-limit guard name
      */
     @Override
     public String name() {
-        return Builder.LIMIT_GUARD_NAME;
-    }
-
-    /**
-     * Resolves known body length from payload and headers.
-     *
-     * @param message message
-     * @return known length or -1
-     */
-    private static long knownLength(final Message message) {
-        final long payloadLength = message.payload().length();
-        Assert.isTrue(payloadLength >= Normal.__1, () -> new ProtocolException("Body length must be -1 or greater"));
-        final int headerLength = message.headers().contentLength();
-        if (payloadLength >= 0 && headerLength >= 0) {
-            return Math.max(payloadLength, headerLength);
-        }
-        return payloadLength >= 0 ? payloadLength : headerLength;
+        return Builder.GUARD_BODY_LIMIT_NAME;
     }
 
     /**
      * Validates maximum bytes.
      *
-     * @param maxBytes maximum bytes
-     * @return maximum bytes
+     * @param maxBytes candidate inclusive body limit
+     * @return unchanged limit from 1 byte through 16 MiB
      */
     private static long validateMaxBytes(final long maxBytes) {
         Assert.isTrue(
-                maxBytes > 0 && maxBytes <= Normal._16 * Normal.MEBI,
+                maxBytes > 0 && maxBytes <= Builder.BYTES_16_MIB,
                 () -> new ValidateException("Body limit must be between 1 and 16777216"));
         return maxBytes;
     }

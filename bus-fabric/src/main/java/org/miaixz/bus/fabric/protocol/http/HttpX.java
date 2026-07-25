@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+import static org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,25 +37,17 @@ import java.util.function.BiConsumer;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -62,13 +57,9 @@ import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
-import org.miaixz.bus.fabric.protocol.http.body.FileBody;
-import org.miaixz.bus.fabric.protocol.http.body.FormBody;
-import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
-import org.miaixz.bus.fabric.protocol.http.body.SoapBody;
-import org.miaixz.bus.fabric.protocol.http.body.TextBody;
+import org.miaixz.bus.fabric.protocol.http.body.*;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Immutable HTTP exchange.
@@ -79,9 +70,14 @@ import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
 public final class HttpX {
 
     /**
-     * Immutable execution snapshot.
+     * Most recent safe immutable synchronous request shape.
      */
-    private final HttpSnapshot snapshot;
+    private static volatile RequestCache requestCache;
+
+    /**
+     * Immutable execution specification.
+     */
+    private final HttpSpec spec;
 
     /**
      * Execution runner.
@@ -98,15 +94,15 @@ public final class HttpX {
      *
      * @param context  shared context
      * @param request  request snapshot
-     * @param callback callback
-     * @param observer observer
-     * @param filter   filter
-     * @param guard    guard
+     * @param callback terminal callback receiving the HTTP result
+     * @param observer observer receiving exchange lifecycle events
+     * @param filter   filter applied to protocol-neutral messages
+     * @param guard    guard validating the exchange, or {@code null}
      */
     private HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
             final EventObserver observer, final Filter filter, final GuardRule guard) {
-        this.snapshot = new HttpSnapshot(context, request, observer, filter, guard);
-        this.runner = new HttpRunner(snapshot);
+        this.spec = new HttpSpec(context, request, observer, filter, guard);
+        this.runner = new HttpRunner(spec, observer != EventObserver.noop());
         this.callback = callback;
     }
 
@@ -126,7 +122,7 @@ public final class HttpX {
      * @return request
      */
     public HttpRequest request() {
-        return snapshot.request();
+        return spec.request();
     }
 
     /**
@@ -135,6 +131,9 @@ public final class HttpX {
      * @return response
      */
     public HttpResponse execute() {
+        if (callback == null) {
+            return execute(Cancellation.none());
+        }
         return call().execute();
     }
 
@@ -144,11 +143,17 @@ public final class HttpX {
      * @return response call
      */
     public Call<HttpResponse> call() {
-        return HttpCall.create(
-                snapshot.request(),
-                snapshot.context().reactor().dispatcher(),
-                callback,
-                cancellation -> Mediator.execute(Type.HTTP, cancellation, runner::run));
+        return HttpCall.create(spec.request(), spec.context().reactor().dispatcher(), callback, this::execute);
+    }
+
+    /**
+     * Executes the frozen exchange with a caller-owned cancellation scope.
+     *
+     * @param cancellation cancellation scope
+     * @return response
+     */
+    private HttpResponse execute(final Cancellation cancellation) {
+        return Mediator.execute(Type.HTTP, cancellation, runner::run);
     }
 
     /**
@@ -217,7 +222,7 @@ public final class HttpX {
     /**
      * Creates a protocol-neutral message from this HTTP exchange and payload.
      *
-     * @param payload payload
+     * @param payload HTTP payload represented by the message
      * @return message
      */
     public Message message(final Payload payload) {
@@ -227,13 +232,16 @@ public final class HttpX {
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  name
+     * @param value reference to validate
+     * @param name  diagnostic parameter name
      * @param <T>   type
-     * @return value
+     * @return the validated reference
      */
     private static <T> T require(final T value, final String name) {
-        return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+        if (value == null) {
+            throw new ValidateException(name + " must not be null");
+        }
+        return value;
     }
 
     /**
@@ -289,7 +297,7 @@ public final class HttpX {
         /**
          * HTTP method.
          */
-        private HTTP.Method method = HTTP.Method.GET;
+        private Http.Method method = Http.Method.GET;
 
         /**
          * Header builder.
@@ -299,17 +307,17 @@ public final class HttpX {
         /**
          * Query entries.
          */
-        private final List<QueryEntry> query = new ArrayList<>();
+        private List<QueryEntry> query;
 
         /**
          * Path segments to append.
          */
-        private final List<String> pathSegments = new ArrayList<>();
+        private List<String> pathSegments;
 
         /**
          * Path variable replacements.
          */
-        private final Map<String, String> pathVariables = new LinkedHashMap<>();
+        private Map<String, String> pathVariables;
 
         /**
          * Form builder.
@@ -319,7 +327,7 @@ public final class HttpX {
         /**
          * Multipart parts.
          */
-        private final List<MultipartBody.Part> parts = new ArrayList<>();
+        private List<MultipartBody.Part> parts;
 
         /**
          * Body payload.
@@ -382,15 +390,45 @@ public final class HttpX {
         private Callback<HttpResponse> callback;
 
         /**
+         * Materialization limit frozen with the builder's shared context.
+         */
+        private final long materializeMaxBytes;
+
+        /**
          * Creates a builder.
          *
          * @param context shared context
          */
         private Builder(final Context context) {
             this.context = context;
-            final Timeout configured = context.options().get("timeout", Timeout.class);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.proxy = configuredProxy();
+            this.materializeMaxBytes = context.options().materializeMaxBytes();
+        }
+
+        private List<QueryEntry> queryEntries() {
+            if (query == null)
+                query = new ArrayList<>(2);
+            return query;
+        }
+
+        private List<String> pathSegments() {
+            if (pathSegments == null)
+                pathSegments = new ArrayList<>(2);
+            return pathSegments;
+        }
+
+        private Map<String, String> pathVariables() {
+            if (pathVariables == null)
+                pathVariables = new LinkedHashMap<>(2);
+            return pathVariables;
+        }
+
+        private List<MultipartBody.Part> parts() {
+            if (parts == null)
+                parts = new ArrayList<>(2);
+            return parts;
         }
 
         /**
@@ -399,12 +437,8 @@ public final class HttpX {
          * @return proxy plan
          */
         private ProxyPlan configuredProxy() {
-            if (context.options().contains("http.proxy")) {
-                final ProxyPlan value = context.options().get("http.proxy", ProxyPlan.class);
-                return value == null ? ProxyPlan.direct() : value;
-            }
-            if (context.options().contains("proxy")) {
-                final ProxyPlan value = context.options().get("proxy", ProxyPlan.class);
+            if (context.options().contains(ProxyPlan.OPTION)) {
+                final ProxyPlan value = context.options().get(ProxyPlan.OPTION);
                 return value == null ? ProxyPlan.direct() : value;
             }
             return ProxyPlan.direct();
@@ -448,7 +482,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder get() {
-            this.method = HTTP.Method.GET;
+            this.method = Http.Method.GET;
             return this;
         }
 
@@ -468,7 +502,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder post() {
-            this.method = HTTP.Method.POST;
+            this.method = Http.Method.POST;
             return this;
         }
 
@@ -488,7 +522,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder put() {
-            this.method = HTTP.Method.PUT;
+            this.method = Http.Method.PUT;
             return this;
         }
 
@@ -508,7 +542,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder patch() {
-            this.method = HTTP.Method.PATCH;
+            this.method = Http.Method.PATCH;
             return this;
         }
 
@@ -528,7 +562,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder delete() {
-            this.method = HTTP.Method.DELETE;
+            this.method = Http.Method.DELETE;
             return this;
         }
 
@@ -548,7 +582,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder head() {
-            this.method = HTTP.Method.HEAD;
+            this.method = Http.Method.HEAD;
             return this;
         }
 
@@ -565,10 +599,10 @@ public final class HttpX {
         /**
          * Sets method.
          *
-         * @param method method
+         * @param method HTTP method token to use
          * @return this builder
          */
-        public Builder method(final HTTP.Method method) {
+        public Builder method(final Http.Method method) {
             this.method = require(method, "HTTP method");
             return this;
         }
@@ -580,7 +614,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder method(final String method) {
-            this.method = HTTP.Method.of(validateText(method, "HTTP method"));
+            this.method = Http.Method.of(validateText(method, "HTTP method"));
             return this;
         }
 
@@ -626,13 +660,13 @@ public final class HttpX {
          * @return this builder
          */
         public Builder userAgent(final String value) {
-            return replaceHeader(HTTP.USER_AGENT, value);
+            return replaceHeader(Http.Header.USER_AGENT, value);
         }
 
         /**
          * Merges headers.
          *
-         * @param headers headers
+         * @param headers multi-value headers to merge
          * @return this builder
          */
         public Builder headers(final Headers headers) {
@@ -643,7 +677,7 @@ public final class HttpX {
         /**
          * Merges single-value headers.
          *
-         * @param headers headers
+         * @param headers single-value headers to merge
          * @return this builder
          */
         public Builder headers(final Map<String, ?> headers) {
@@ -659,7 +693,8 @@ public final class HttpX {
          * @return this builder
          */
         public Builder query(final String name, final String value) {
-            query.add(new QueryEntry(validateText(name, "Query name"), validateText(value, "Query value"), false));
+            queryEntries()
+                    .add(new QueryEntry(validateText(name, "Query name"), validateText(value, "Query value"), false));
             return this;
         }
 
@@ -697,7 +732,7 @@ public final class HttpX {
             final String checkedValue = validateText(value, "Encoded query value");
             validatePercent(checkedName);
             validatePercent(checkedValue);
-            query.add(new QueryEntry(checkedName, checkedValue, true));
+            queryEntries().add(new QueryEntry(checkedName, checkedValue, true));
             return this;
         }
 
@@ -730,7 +765,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder path(final String segment) {
-            pathSegments.add(validateText(segment, "Path segment"));
+            pathSegments().add(validateText(segment, "Path segment"));
             return this;
         }
 
@@ -742,7 +777,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder path(final String name, final Object value) {
-            pathVariables.put(validateText(name, "Path variable name"), stringValue(value, "Path variable value"));
+            pathVariables().put(validateText(name, "Path variable name"), stringValue(value, "Path variable value"));
             return this;
         }
 
@@ -765,7 +800,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder param(final String name, final Object value) {
-            if (method == HTTP.Method.GET || method == HTTP.Method.HEAD || method == HTTP.Method.DELETE) {
+            if (method == Http.Method.GET || method == Http.Method.HEAD || method == Http.Method.DELETE) {
                 return query(name, value);
             }
             return form(name, value);
@@ -856,7 +891,7 @@ public final class HttpX {
          */
         public Builder file(final String name, final Path path) {
             ensureBodyMode(BodyMode.MULTIPART);
-            parts.add(
+            parts().add(
                     MultipartBody.Part.file(
                             StringKit.isBlank(name) ? "file" : name,
                             path,
@@ -878,7 +913,7 @@ public final class HttpX {
          * Appends a file part.
          *
          * @param name part name
-         * @param file file
+         * @param file file whose contents form the multipart part
          * @return this builder
          */
         public Builder file(final String name, final File file) {
@@ -890,7 +925,7 @@ public final class HttpX {
          *
          * @param name     file part name
          * @param filename filename hint
-         * @param file     file
+         * @param file     file whose contents form the multipart part
          * @return this builder
          */
         public Builder file(final String name, final String filename, final File file) {
@@ -900,7 +935,7 @@ public final class HttpX {
             final Path fileName = path.getFileName();
             final String selected = StringKit.isBlank(filename) ? fileName == null ? "file" : fileName.toString()
                     : stringValue(filename, "File name");
-            parts.add(
+            parts().add(
                     MultipartBody.Part.file(
                             StringKit.isBlank(name) ? "file" : name,
                             selected,
@@ -913,13 +948,13 @@ public final class HttpX {
          * Appends a file part from bytes.
          *
          * @param name     file part name
-         * @param filename filename
+         * @param filename filename reported in Content-Disposition
          * @param content  file content
          * @return this builder
          */
         public Builder file(final String name, final String filename, final byte[] content) {
             ensureBodyMode(BodyMode.MULTIPART);
-            parts.add(
+            parts().add(
                     MultipartBody.Part.file(
                             StringKit.isBlank(name) ? "file" : name,
                             stringValue(filename, "File name"),
@@ -932,7 +967,7 @@ public final class HttpX {
          * Appends a file part from bytes.
          *
          * @param name        file part name
-         * @param filename    filename
+         * @param filename    filename reported in Content-Disposition
          * @param content     file content
          * @param charsetName ignored charset name
          * @return this builder
@@ -945,14 +980,14 @@ public final class HttpX {
          * Appends a file part from a source.
          *
          * @param name     file part name
-         * @param filename filename
+         * @param filename filename reported in Content-Disposition
          * @param input    file source
          * @param length   declared length, or -1 when unknown
          * @return this builder
          */
         public Builder file(final String name, final String filename, final Source input, final long length) {
             ensureBodyMode(BodyMode.MULTIPART);
-            parts.add(
+            parts().add(
                     MultipartBody.Part.file(
                             StringKit.isBlank(name) ? "file" : name,
                             stringValue(filename, "File name"),
@@ -965,19 +1000,19 @@ public final class HttpX {
          * Appends a file part from text using UTF-8.
          *
          * @param name     file part name
-         * @param filename filename
+         * @param filename filename reported in Content-Disposition
          * @param content  file content
          * @return this builder
          */
         public Builder file(final String name, final String filename, final String content) {
-            return file(name, filename, content, org.miaixz.bus.core.lang.Charset.UTF_8.name());
+            return file(name, filename, content, UTF_8.name());
         }
 
         /**
          * Appends a file part from text.
          *
          * @param name        file part name
-         * @param filename    filename
+         * @param filename    filename reported in Content-Disposition
          * @param content     file content
          * @param charsetName charset name
          * @return this builder
@@ -993,12 +1028,12 @@ public final class HttpX {
         /**
          * Appends a multipart part.
          *
-         * @param part part
+         * @param part multipart part to append
          * @return this builder
          */
         public Builder part(final MultipartBody.Part part) {
             ensureBodyMode(BodyMode.MULTIPART);
-            parts.add(require(part, "Part"));
+            parts().add(require(part, "Part"));
             return this;
         }
 
@@ -1026,7 +1061,7 @@ public final class HttpX {
          * Sets a text body with explicit media.
          *
          * @param value body text
-         * @param media media
+         * @param media content type assigned to the text body
          * @return this builder
          */
         public Builder body(final String value, final MediaType media) {
@@ -1050,7 +1085,7 @@ public final class HttpX {
          * Sets a byte body with explicit media.
          *
          * @param value body bytes
-         * @param media media
+         * @param media content type assigned to the byte body
          * @return this builder
          */
         public Builder body(final byte[] value, final MediaType media) {
@@ -1076,7 +1111,7 @@ public final class HttpX {
          *
          * @param input  body source
          * @param length declared length, or -1 when unknown
-         * @param media  media
+         * @param media  content type assigned to the streaming body
          * @return this builder
          */
         public Builder body(final Source input, final long length, final MediaType media) {
@@ -1097,7 +1132,7 @@ public final class HttpX {
          * Sets a file as the complete request body.
          *
          * @param path  file path
-         * @param media media
+         * @param media content type assigned to the file body
          * @return this builder
          */
         public Builder body(final Path path, final MediaType media) {
@@ -1107,7 +1142,7 @@ public final class HttpX {
         /**
          * Sets a file as the complete request body.
          *
-         * @param file file
+         * @param file file used as the complete request body
          * @return this builder
          */
         public Builder body(final File file) {
@@ -1117,8 +1152,8 @@ public final class HttpX {
         /**
          * Sets a file as the complete request body.
          *
-         * @param file  file
-         * @param media media
+         * @param file  file used as the complete request body
+         * @param media content type assigned to the file body
          * @return this builder
          */
         public Builder body(final File file, final MediaType media) {
@@ -1142,16 +1177,13 @@ public final class HttpX {
          * @return this builder
          */
         public Builder json(final String value) {
-            return body(
-                    TextBody.of(
-                            value,
-                            MediaType.APPLICATION_JSON_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8)));
+            return body(TextBody.of(value, MediaType.APPLICATION_JSON_TYPE.withCharset(UTF_8)));
         }
 
         /**
          * Sets a payload body.
          *
-         * @param payload payload
+         * @param payload payload used as the complete request body
          * @return this builder
          */
         public Builder body(final Payload payload) {
@@ -1163,8 +1195,8 @@ public final class HttpX {
         /**
          * Sets a payload body with explicit media.
          *
-         * @param payload payload
-         * @param media   media
+         * @param payload payload used as the complete request body
+         * @param media   content type overriding the payload media type
          * @return this builder
          */
         public Builder body(final Payload payload, final MediaType media) {
@@ -1174,8 +1206,8 @@ public final class HttpX {
         /**
          * Encodes a value with the supplied codec and sets it as body.
          *
-         * @param value value
-         * @param codec codec
+         * @param value object to encode as the request body
+         * @param codec codec used to encode the object
          * @param <T>   value type
          * @return this builder
          */
@@ -1243,7 +1275,7 @@ public final class HttpX {
             if (codec != null) {
                 return body(value, (DataCodec) codec);
             }
-            return body(value == null ? "" : value.toString());
+            return body(value == null ? Normal.EMPTY : value.toString());
         }
 
         /**
@@ -1256,14 +1288,14 @@ public final class HttpX {
          */
         public Builder soap(final String namespace, final String method, final Map<String, ?> params) {
             final SoapBody soap = SoapBody.envelope().namespace(namespace).method(method).params(params).build();
-            headers.set(HTTP.SOAPACTION, soap.action());
+            headers.set(Http.Header.SOAP_ACTION, soap.action());
             return body(soap.body());
         }
 
         /**
          * Sets body media.
          *
-         * @param media media
+         * @param media content type assigned to the request body
          * @return this builder
          */
         public Builder media(final MediaType media) {
@@ -1274,7 +1306,7 @@ public final class HttpX {
         /**
          * Sets codec.
          *
-         * @param codec codec
+         * @param codec codec used for object request and response bodies
          * @return this builder
          */
         public Builder codec(final DataCodec<?> codec) {
@@ -1293,14 +1325,14 @@ public final class HttpX {
             Assert.isTrue(
                     start >= 0 && end >= 0 && end >= start,
                     () -> new ValidateException("Range bounds must be non-negative and ordered"));
-            headers.set(HTTP.RANGE, "bytes=" + start + Symbol.C_MINUS + end);
+            headers.set(Http.Header.RANGE, "bytes=" + start + Symbol.C_MINUS + end);
             return this;
         }
 
         /**
          * Sets progress listener.
          *
-         * @param listener listener
+         * @param listener progress listener notified during body transfer
          * @return this builder
          */
         public Builder progress(final BiConsumer<Long, Long> listener) {
@@ -1311,7 +1343,7 @@ public final class HttpX {
         /**
          * Sets tag.
          *
-         * @param tag tag
+         * @param tag application tag attached to the request
          * @return this builder
          */
         public Builder tag(final Object tag) {
@@ -1384,8 +1416,8 @@ public final class HttpX {
         /**
          * Sets Basic credentials for the current HTTP proxy.
          *
-         * @param username username
-         * @param password password
+         * @param username proxy authentication user name
+         * @param password proxy authentication password
          * @return this builder
          */
         public Builder proxyCredentials(final String username, final String password) {
@@ -1395,7 +1427,7 @@ public final class HttpX {
         /**
          * Sets filter.
          *
-         * @param filter filter
+         * @param filter message filter applied to the exchange
          * @return this builder
          */
         public Builder filter(final Filter filter) {
@@ -1406,7 +1438,7 @@ public final class HttpX {
         /**
          * Sets guard.
          *
-         * @param guard guard
+         * @param guard request guard applied before transport
          * @return this builder
          */
         public Builder guard(final GuardRule guard) {
@@ -1417,7 +1449,7 @@ public final class HttpX {
         /**
          * Sets observer.
          *
-         * @param observer observer
+         * @param observer event observer receiving exchange lifecycle events
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {
@@ -1428,7 +1460,7 @@ public final class HttpX {
         /**
          * Sets callback.
          *
-         * @param callback callback
+         * @param callback terminal callback receiving the HTTP result
          * @return this builder
          */
         public Builder callback(final Callback<HttpResponse> callback) {
@@ -1439,7 +1471,7 @@ public final class HttpX {
         /**
          * Sets all timeout values.
          *
-         * @param timeout timeout
+         * @param timeout duration assigned to every timeout phase
          * @return this builder
          */
         public Builder timeout(final Duration timeout) {
@@ -1453,7 +1485,7 @@ public final class HttpX {
         /**
          * Sets timeout.
          *
-         * @param timeout timeout
+         * @param timeout complete timeout policy to use
          * @return this builder
          */
         public Builder timeout(final Timeout timeout) {
@@ -1462,21 +1494,59 @@ public final class HttpX {
         }
 
         /**
-         * Builds an HTTP exchange snapshot.
+         * Builds an HTTP exchange specification.
          *
          * @return HTTP exchange
          */
         public HttpX build() {
-            final UnoUrl target = buildUrl();
+            return new HttpX(context, buildRequest(), callback, observer, filter, guard);
+        }
+
+        /**
+         * Freezes the current request fields exactly once.
+         *
+         * @return request snapshot
+         */
+        private HttpRequest buildRequest() {
             final PayloadBody payloadBody = buildBody();
-            final Headers requestHeaders = buildHeaders(payloadBody);
+            final RequestCache cached = requestCache;
+            final Headers reusableHeaders = cached == null ? null : cached.request.headers();
+            final Headers requestHeaders = buildHeaders(payloadBody, reusableHeaders);
+            if (cached != null && cached.context == context && cached.request.method() == method
+                    && simpleTargetMatches(cached.request) && cached.request.headers() == requestHeaders
+                    && cached.request.body() == payloadBody && cached.request.tag() == tag
+                    && cached.request.proxy().equals(proxy) && cached.request.timeout().equals(timeout)) {
+                return cached.request;
+            }
+            final UnoUrl target = buildUrl();
+            if (cached != null && cached.context == context && cached.request.method() == method
+                    && cached.request.url().toString().equals(target.toString())
+                    && cached.request.headers() == requestHeaders && cached.request.body() == payloadBody
+                    && cached.request.tag() == tag && cached.request.proxy().equals(proxy)
+                    && cached.request.timeout().equals(timeout)) {
+                return cached.request;
+            }
             final HttpRequest request = HttpRequest.builder().method(method).url(target).headers(requestHeaders)
                     .body(payloadBody).tag(tag).proxy(proxy).timeout(timeout).build();
             final Protocol protocol = request.url().address().protocol();
             if (protocol != Protocol.HTTP && protocol != Protocol.HTTPS) {
                 throw new ProtocolException("HTTP exchange requires http or https URL");
             }
-            return new HttpX(context, request, callback, observer, filter, guard);
+            if (payloadBody == PayloadBody.empty() && tag == null && !requestHeaders.contains(Http.Header.AUTHORIZATION)
+                    && !requestHeaders.contains(Http.Header.PROXY_AUTHORIZATION)
+                    && !requestHeaders.contains(Http.Header.COOKIE)) {
+                requestCache = new RequestCache(context, request);
+            }
+            return request;
+        }
+
+        /**
+         * Matches an unmodified absolute URL without reparsing it on repeated builder calls.
+         */
+        private boolean simpleTargetMatches(final HttpRequest request) {
+            return url != null && baseUrl == null && (query == null || query.isEmpty())
+                    && (pathSegments == null || pathSegments.isEmpty())
+                    && (pathVariables == null || pathVariables.isEmpty()) && request.url().toString().equals(url);
         }
 
         /**
@@ -1485,7 +1555,7 @@ public final class HttpX {
          * @return request
          */
         public HttpRequest request() {
-            return build().request();
+            return buildRequest();
         }
 
         /**
@@ -1503,6 +1573,9 @@ public final class HttpX {
          * @return response
          */
         public HttpResponse execute() {
+            if (callback == null) {
+                return HttpRunner.executeSync(context, buildRequest(), observer, filter, guard);
+            }
             return build().execute();
         }
 
@@ -1536,18 +1609,23 @@ public final class HttpX {
         /**
          * Builds headers with body metadata.
          *
-         * @param body body
+         * @param body request body supplying content headers
          * @return headers
          */
-        private Headers buildHeaders(final PayloadBody body) {
-            final Headers current = headers.build();
-            final Headers.Builder builder = Headers.builder();
-            current.asMap().forEach((name, values) -> values.forEach(value -> builder.add(name, value)));
-            if (body.length() > 0 && !current.contains(HTTP.CONTENT_LENGTH)) {
-                builder.set(HTTP.CONTENT_LENGTH, Long.toString(body.length()));
+        private Headers buildHeaders(final PayloadBody body, final Headers reusable) {
+            final Headers current = headers.buildOrReuse(reusable);
+            final long length = body.length();
+            final boolean needsLength = length > 0 && !current.contains(Http.Header.CONTENT_LENGTH);
+            final boolean needsType = length != 0 && !current.contains(Http.Header.CONTENT_TYPE);
+            if (!needsLength && !needsType) {
+                return current;
             }
-            if (!current.contains(HTTP.CONTENT_TYPE) && body.length() != 0) {
-                builder.set(HTTP.CONTENT_TYPE, body.media().value());
+            final Headers.Builder builder = current.newBuilder();
+            if (needsLength) {
+                builder.set(Http.Header.CONTENT_LENGTH, Long.toString(body.length()));
+            }
+            if (needsType) {
+                builder.set(Http.Header.CONTENT_TYPE, body.media().value());
             }
             return builder.build();
         }
@@ -1566,7 +1644,7 @@ public final class HttpX {
                 selectedMedia = formBody.media();
             } else if (bodyMode == BodyMode.MULTIPART) {
                 final MultipartBody.Builder multipart = MultipartBody.builder();
-                for (final MultipartBody.Part part : parts) {
+                for (final MultipartBody.Part part : parts == null ? List.<MultipartBody.Part>of() : parts) {
                     multipart.part(part);
                 }
                 final MultipartBody multipartBody = multipart.build();
@@ -1576,8 +1654,7 @@ public final class HttpX {
             if (codec != null && bodyMode == BodyMode.NONE) {
                 selectedMedia = codec.media();
             }
-            final PayloadBody payloadBody = PayloadBody
-                    .of(payload, selectedMedia, context.options().materializeMaxBytes());
+            final PayloadBody payloadBody = PayloadBody.of(payload, selectedMedia, materializeMaxBytes);
             return progress == null ? payloadBody : payloadBody.progress(progress);
         }
 
@@ -1624,6 +1701,9 @@ public final class HttpX {
          */
         private String applyPath(final String target) {
             String current = target;
+            if (pathVariables == null) {
+                return target;
+            }
             for (final Map.Entry<String, String> entry : pathVariables.entrySet()) {
                 final String token = Symbol.BRACE_LEFT + entry.getKey() + Symbol.BRACE_RIGHT;
                 if (!current.contains(token)) {
@@ -1644,7 +1724,7 @@ public final class HttpX {
          * @return URL with appended path segments
          */
         private String appendPathSegments(final String target) {
-            if (pathSegments.isEmpty()) {
+            if (pathSegments == null || pathSegments.isEmpty()) {
                 return target;
             }
             final int split = pathSplit(target);
@@ -1665,12 +1745,12 @@ public final class HttpX {
          * @return URL with query
          */
         private String appendQuery(final String target) {
-            if (query.isEmpty()) {
+            if (query == null || query.isEmpty()) {
                 return target;
             }
             final int fragment = target.indexOf(Symbol.C_HASH);
             final String head = fragment < 0 ? target : target.substring(0, fragment);
-            final String tail = fragment < 0 ? "" : target.substring(fragment);
+            final String tail = fragment < 0 ? Normal.EMPTY : target.substring(fragment);
             final StringBuilder builder = new StringBuilder(head);
             builder.append(head.indexOf(Symbol.C_QUESTION_MARK) >= 0 ? Symbol.C_AND : Symbol.C_QUESTION_MARK);
             for (int i = 0; i < query.size(); i++) {
@@ -1759,31 +1839,42 @@ public final class HttpX {
         /**
          * Encodes a URL component.
          *
-         * @param value value
+         * @param value raw component text to percent-encode
          * @return encoded value
          */
         private static String encode(final String value) {
-            return UrlEncoder.encodeAll(value, org.miaixz.bus.core.lang.Charset.UTF_8);
+            return UrlEncoder.encodeAll(value, UTF_8);
         }
 
         /**
          * Validates text input.
          *
-         * @param value value
-         * @param name  name
-         * @return value
+         * @param value text to validate
+         * @param name  diagnostic parameter name
+         * @return the validated text
          */
         private static String validateText(final String value, final String name) {
-            Assert.isFalse(
-                    StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
-                    () -> new ValidateException(name + " must be non-blank and single-line"));
+            if (value == null || value.isEmpty()) {
+                throw new ValidateException(name + " must be non-blank and single-line");
+            }
+            boolean nonWhitespace = false;
+            for (int index = 0; index < value.length(); index++) {
+                final char current = value.charAt(index);
+                if (current == Symbol.C_CR || current == Symbol.C_LF) {
+                    throw new ValidateException(name + " must be non-blank and single-line");
+                }
+                nonWhitespace |= !Character.isWhitespace(current);
+            }
+            if (!nonWhitespace) {
+                throw new ValidateException(name + " must be non-blank and single-line");
+            }
             return value;
         }
 
         /**
          * Converts a non-null value to a single-line string.
          *
-         * @param value value
+         * @param value object to convert
          * @param name  value name
          * @return string value
          */
@@ -1811,10 +1902,19 @@ public final class HttpX {
     }
 
     /**
+     * Safe last-request cache scoped by context identity.
+     *
+     * @param context context identity that owns the request
+     * @param request immutable request snapshot
+     */
+    private record RequestCache(Context context, HttpRequest request) {
+    }
+
+    /**
      * Query entry.
      *
-     * @param name    name
-     * @param value   value
+     * @param name    query parameter name
+     * @param value   query parameter value
      * @param encoded encoded flag
      */
     private record QueryEntry(String name, String value, boolean encoded) {

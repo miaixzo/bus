@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -58,7 +58,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
      * @return A {@link Message} indicating the result of the SMS sending operation.
      */
     @Override
-    public Message send(JdcloudNotice entity) {
+    public Message<Void> send(JdcloudNotice entity) {
         Logger.info(
                 true,
                 "Notify",
@@ -94,15 +94,15 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
         bodys.put("signId", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
         String response = post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");
 
-        String errcode = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = status == HTTP.HTTP_OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errcode = status == Http.Status.OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = status == Http.Status.OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.info(
                 false,
                 "Notify",

@@ -70,7 +70,7 @@ public class AfDianProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", this.context.getClientId());
@@ -82,7 +82,7 @@ public class AfDianProvider extends AbstractProvider {
 
         String userId = JsonKit.getValue(JsonKit.getValue(response, Consts.DATA), ("user_id"));
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(Authorization.builder().userId(userId).build()).build();
     }
 
@@ -94,8 +94,8 @@ public class AfDianProvider extends AbstractProvider {
      * @return {@link Claims} containing the user's information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Claims> userInfo(Authorization authorization) {
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().uuid(authorization.getUserId()).gender(Gender.UNKNOWN).token(authorization)
                                 .source(complex.toString()).build())
@@ -110,8 +110,8 @@ public class AfDianProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                                 .queryParam("scope", "basic").queryParam("client_id", context.getClientId())

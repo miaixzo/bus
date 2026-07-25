@@ -44,11 +44,9 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.net.Specifics;
 import org.miaixz.bus.core.net.url.UrlDecoder;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -932,56 +930,30 @@ public class ContextBuilder extends WebUtils {
     }
 
     /**
-     * Extracts the authentication token from the incoming request.
+     * Resolves the preferred request credential from current headers and parameters.
      *
-     * <p>
-     * The token extraction follows a specific order of precedence to ensure compatibility with both standard and legacy
-     * authentication methods:
-     * </p>
-     *
-     * <ol>
-     * <li><b>Standard Authorization Header:</b> It first checks for the standard {@code Authorization: Bearer <token>}
-     * header. This is the preferred and most secure method.</li>
-     * <li><b>Custom Header for Backward Compatibility:</b> If the standard header is not found, it searches for a
-     * custom header, {@code X-Access-Token}. This check is performed against a list of common case variations (e.g.,
-     * {@code X_ACCESS_TOKEN}, {@code x_access_token}) to accommodate different client implementations.</li>
-     * <li><b>Request Parameter as Fallback:</b> As a final fallback, if no token is found in the headers, the method
-     * searches for the token in the request parameters (query string) using the same set of keys as the custom header.
-     * </li>
-     * </ol>
-     *
-     * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
+     * @return The resolved credential, or {@code null} if no supported credential is present.
      */
-    public static String getToken() {
-        // 1. Check token in headers first, including Authorization and backward-compatible token headers.
-        String token = MapKit.getFirstNonNull(getHeaders(), Specifics.TOKEN_KEYS);
-        if (StringKit.isNotBlank(token)) {
-            token = token.trim();
-            if (token.regionMatches(true, 0, HTTP.BEARER, 0, HTTP.BEARER.length())) {
-                return token.substring(HTTP.BEARER.length()).trim();
-            }
-            return token;
-        }
-
-        // 2. If not found in headers, search in request parameters as a fallback.
-        return MapKit.getFirstNonNull(getParameters(), Specifics.TOKEN_KEYS);
+    public static Http.Auth.Credential getCredential() {
+        return Http.Auth.credential(getHeaders(), getParameters());
     }
 
     /**
-     * Searches for an API key in a predefined list of request parameters and headers.
+     * Extracts the authentication token from the incoming request.
+     *
+     * @return The extracted token string, or {@code null} if no token is found.
+     */
+    public static String getToken() {
+        return Http.Auth.token(getHeaders(), getParameters());
+    }
+
+    /**
+     * Searches for an API key in request headers and parameters.
      *
      * @return The found API key, or {@code null} if not present.
      */
     public static String getApiKey() {
-        // 1. Check API key in headers first.
-        String apiKey = MapKit.getFirstNonNull(getHeaders(), Specifics.API_KEY_KEYS);
-        if (StringKit.isNotBlank(apiKey)) {
-            return apiKey.trim();
-        }
-
-        // 2. If not found in headers, search in request parameters as a fallback.
-        apiKey = MapKit.getFirstNonNull(getParameters(), Specifics.API_KEY_KEYS);
-        return StringKit.isNotBlank(apiKey) ? apiKey.trim() : null;
+        return Http.Auth.apiKey(getHeaders(), getParameters());
     }
 
     /**

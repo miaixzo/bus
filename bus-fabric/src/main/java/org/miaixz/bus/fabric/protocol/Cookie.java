@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol;
 
-import static org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS;
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.UnoUrl;
@@ -74,7 +72,7 @@ public final class Cookie {
     private final String path;
 
     /**
-     * Expiration time.
+     * Explicit expiration time, or null for a session cookie.
      */
     private final Instant expires;
 
@@ -93,10 +91,10 @@ public final class Cookie {
      *
      * @param name     cookie name
      * @param value    cookie value
-     * @param domain   cookie domain
-     * @param host     host-only source host
+     * @param domain   normalized domain suffix, or null for a host-only cookie
+     * @param host     normalized source host for a parsed host-only cookie, otherwise null
      * @param path     cookie path
-     * @param expires  expiration time
+     * @param expires  explicit expiration time, or null for a session cookie
      * @param secure   secure flag
      * @param httpOnly HTTP-only flag
      */
@@ -115,14 +113,27 @@ public final class Cookie {
     /**
      * Parses a Set-Cookie header value for a URL.
      *
-     * @param header Set-Cookie header
-     * @param url    source URL
-     * @return parsed cookie
+     * @param header Set-Cookie header value to parse
+     * @param url    URL from which the header was received
+     * @return cookie bound to the supplied URL host when no Domain attribute is present
      */
     public static Cookie parse(final String header, final UnoUrl url) {
+        return parse(header, url, Instant.now());
+    }
+
+    /**
+     * Parses a Set-Cookie header value for a URL at an explicit current time.
+     *
+     * @param header Set-Cookie header value to parse
+     * @param url    URL from which the header was received
+     * @param now    current time used to resolve Max-Age
+     * @return cookie bound to the supplied URL host when no Domain attribute is present
+     */
+    public static Cookie parse(final String header, final UnoUrl url, final Instant now) {
         final String checkedHeader = Assert
                 .notBlank(header, () -> new ValidateException("Cookie header must be non-blank"));
         final UnoUrl checkedUrl = Assert.notNull(url, () -> new ValidateException("URL must not be null"));
+        final Instant currentTime = Assert.notNull(now, () -> new ValidateException("Current time must not be null"));
         final String[] parts = checkedHeader.split(Symbol.SEMICOLON);
         final int separator = parts[0].indexOf(Symbol.C_EQUAL);
         if (separator <= 0) {
@@ -148,7 +159,7 @@ public final class Cookie {
                 case "domain" -> domain = validateCookieDomain(value);
                 case "path" -> path = normalizePath(value);
                 case "expires" -> expires = parseExpires(value);
-                case "max-age" -> expires = parseMaxAge(value);
+                case Http.Cache.MAX_AGE -> expires = parseMaxAge(value, currentTime);
                 case "secure" -> builder.secure(true);
                 case "httponly" -> builder.httpOnly(true);
                 default -> {
@@ -173,9 +184,9 @@ public final class Cookie {
     /**
      * Creates a cookie builder.
      *
-     * @param name  cookie name
-     * @param value cookie value
-     * @return builder
+     * @param name  non-blank cookie name without line breaks or semicolons
+     * @param value non-blank cookie value without line breaks or semicolons
+     * @return new builder initialized with the validated name and value
      */
     public static Builder builder(final String name, final String value) {
         return new Builder(validateToken(name, "Cookie name"), validateToken(value, "Cookie value"));
@@ -202,7 +213,7 @@ public final class Cookie {
     /**
      * Returns the cookie domain, or null for host-only cookies.
      *
-     * @return cookie domain
+     * @return normalized domain suffix, or null for a host-only cookie
      */
     public String domain() {
         return domain;
@@ -229,7 +240,7 @@ public final class Cookie {
     /**
      * Returns the cookie expiration time.
      *
-     * @return expiration time
+     * @return explicit expiration time, or null for a session cookie
      */
     public Instant expires() {
         return expires;
@@ -241,7 +252,7 @@ public final class Cookie {
      * @return expiration time in milliseconds, or a far-future value for session cookies
      */
     public long expiresAt() {
-        return expires == null ? COOKIE_MAX_DATE_MILLIS : expires.toEpochMilli();
+        return expires == null ? org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS : expires.toEpochMilli();
     }
 
     /**
@@ -283,12 +294,24 @@ public final class Cookie {
     /**
      * Returns whether this cookie matches a URL.
      *
-     * @param url URL
-     * @return true when matched
+     * @param url candidate request URL
+     * @return true if the cookie is unexpired and its security, host, domain, and path constraints match the URL
      */
     public boolean matches(final UnoUrl url) {
+        return matches(url, Instant.now());
+    }
+
+    /**
+     * Returns whether this cookie matches a URL at an explicit current time.
+     *
+     * @param url candidate request URL
+     * @param now current time used for expiration
+     * @return true if all expiration, security, host, domain, and path constraints match
+     */
+    public boolean matches(final UnoUrl url, final Instant now) {
         final UnoUrl checkedUrl = Assert.notNull(url, () -> new ValidateException("URL must not be null"));
-        if (expires != null && !Instant.now().isBefore(expires)) {
+        final Instant currentTime = Assert.notNull(now, () -> new ValidateException("Current time must not be null"));
+        if (expires != null && !currentTime.isBefore(expires)) {
             return false;
         }
         if (secure && !checkedUrl.address().secure()) {
@@ -310,7 +333,7 @@ public final class Cookie {
     /**
      * Returns a Set-Cookie header value.
      *
-     * @return cookie header
+     * @return Set-Cookie-compatible header value containing this cookie's configured attributes
      */
     public String header() {
         final StringBuilder builder = new StringBuilder();
@@ -320,7 +343,7 @@ public final class Cookie {
         }
         builder.append("; Path=").append(path);
         if (expires != null) {
-            builder.append("; ").append(HTTP.EXPIRES).append(Symbol.C_EQUAL)
+            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append(Http.Header.EXPIRES).append(Symbol.C_EQUAL)
                     .append(DateTimeFormatter.RFC_1123_DATE_TIME.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
@@ -335,7 +358,7 @@ public final class Cookie {
     /**
      * Returns a redacted Set-Cookie header value for logs and metrics.
      *
-     * @return redacted cookie header
+     * @return Set-Cookie-compatible header value with the cookie value redacted
      */
     public String redactedHeader() {
         final StringBuilder builder = new StringBuilder();
@@ -345,7 +368,7 @@ public final class Cookie {
         }
         builder.append("; Path=").append(path);
         if (expires != null) {
-            builder.append("; ").append(HTTP.EXPIRES).append(Symbol.C_EQUAL)
+            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append(Http.Header.EXPIRES).append(Symbol.C_EQUAL)
                     .append(DateTimeFormatter.RFC_1123_DATE_TIME.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
@@ -360,8 +383,8 @@ public final class Cookie {
     /**
      * Parses an Expires attribute.
      *
-     * @param value attribute value
-     * @return parsed instant
+     * @param value RFC 1123 Expires attribute value
+     * @return parsed expiration instant
      */
     private static Instant parseExpires(final String value) {
         try {
@@ -374,12 +397,12 @@ public final class Cookie {
     /**
      * Parses a Max-Age attribute.
      *
-     * @param value attribute value
-     * @return expiration instant
+     * @param value Max-Age attribute value expressed as a signed number of seconds
+     * @return instant obtained by adding the supplied seconds to the current time
      */
-    private static Instant parseMaxAge(final String value) {
+    private static Instant parseMaxAge(final String value, final Instant now) {
         try {
-            return Instant.now().plusSeconds(Long.parseLong(value));
+            return now.plusSeconds(Long.parseLong(value));
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid cookie max-age attribute", e);
         }
@@ -388,8 +411,8 @@ public final class Cookie {
     /**
      * Derives a default cookie path from a URL path.
      *
-     * @param value URL path
-     * @return default path
+     * @param value request URL path
+     * @return containing directory path, or {@code /} when the path has no containing directory
      */
     private static String defaultPath(final String value) {
         final String normalized = normalizePath(value);
@@ -403,8 +426,8 @@ public final class Cookie {
     /**
      * Normalizes a cookie path.
      *
-     * @param value path
-     * @return normalized path
+     * @param value non-blank, single-line cookie path
+     * @return path with a leading slash
      */
     private static String normalizePath(final String value) {
         final String checked = Assert
@@ -418,8 +441,8 @@ public final class Cookie {
     /**
      * Validates and normalizes a domain.
      *
-     * @param value domain
-     * @return normalized domain
+     * @param value non-blank, single-line host or domain text
+     * @return normalized address literal or lowercase domain without a leading dot
      */
     private static String validateDomain(final String value) {
         final String checked = Assert
@@ -441,8 +464,8 @@ public final class Cookie {
     /**
      * Validates and normalizes a host-only source host.
      *
-     * @param value source host
-     * @return normalized host
+     * @param value source host text
+     * @return normalized address literal or lowercase host name
      */
     private static String validateHost(final String value) {
         return validateDomain(value);
@@ -451,8 +474,8 @@ public final class Cookie {
     /**
      * Validates and normalizes a Domain attribute.
      *
-     * @param value domain
-     * @return normalized domain
+     * @param value Domain attribute value
+     * @return normalized non-public domain suffix
      */
     private static String validateCookieDomain(final String value) {
         final String normalized = validateDomain(value);
@@ -475,9 +498,9 @@ public final class Cookie {
     /**
      * Returns whether a Domain attribute belongs to a source host.
      *
-     * @param host   source host
-     * @param domain cookie domain
-     * @return true when matched
+     * @param host   normalized source host
+     * @param domain normalized cookie domain
+     * @return true if the host equals the domain or is one of its subdomains
      */
     private static boolean domainMatches(final String host, final String domain) {
         return host.equals(domain) || host.endsWith(Symbol.C_DOT + domain);
@@ -486,9 +509,9 @@ public final class Cookie {
     /**
      * Validates a cookie name or value token.
      *
-     * @param value token
-     * @param name  field name
-     * @return validated token
+     * @param value cookie name or value to validate
+     * @param name  field label used in validation errors
+     * @return validated non-blank, single-line text without semicolons
      */
     private static String validateToken(final String value, final String name) {
         final String checked = Assert.notBlank(
@@ -519,7 +542,7 @@ public final class Cookie {
         private final String value;
 
         /**
-         * Cookie domain.
+         * Normalized domain suffix, or null when no domain has been configured.
          */
         private String domain;
 
@@ -529,7 +552,7 @@ public final class Cookie {
         private String path;
 
         /**
-         * Expiration time.
+         * Explicit expiration time, or null for a session cookie.
          */
         private Instant expires;
 
@@ -546,8 +569,8 @@ public final class Cookie {
         /**
          * Creates a builder.
          *
-         * @param name  cookie name
-         * @param value cookie value
+         * @param name  validated cookie name
+         * @param value validated cookie value
          */
         private Builder(final String name, final String value) {
             this.name = name;
@@ -558,7 +581,7 @@ public final class Cookie {
         /**
          * Sets the cookie domain.
          *
-         * @param domain domain
+         * @param domain non-public cookie domain suffix to normalize and store
          * @return this builder
          */
         public Builder domain(final String domain) {
@@ -569,7 +592,7 @@ public final class Cookie {
         /**
          * Sets the cookie path.
          *
-         * @param path path
+         * @param path non-blank, single-line cookie path
          * @return this builder
          */
         public Builder path(final String path) {
@@ -580,7 +603,7 @@ public final class Cookie {
         /**
          * Sets the expiration time.
          *
-         * @param expires expiration time
+         * @param expires non-null expiration instant
          * @return this builder
          */
         public Builder expires(final Instant expires) {
@@ -591,12 +614,13 @@ public final class Cookie {
         /**
          * Sets the expiration timestamp in epoch milliseconds.
          *
-         * @param expiresAt expiration time in milliseconds
+         * @param expiresAt epoch-millisecond expiration; non-positive values expire immediately and future values are
+         *                  capped
          * @return this builder
          */
         public Builder expiresAt(final long expiresAt) {
             this.expires = expiresAt <= 0 ? Instant.EPOCH
-                    : Instant.ofEpochMilli(Math.min(expiresAt, COOKIE_MAX_DATE_MILLIS));
+                    : Instant.ofEpochMilli(Math.min(expiresAt, org.miaixz.bus.fabric.Builder.COOKIE_MAX_DATE_MILLIS));
             return this;
         }
 
@@ -643,7 +667,7 @@ public final class Cookie {
         /**
          * Builds an immutable cookie.
          *
-         * @return cookie
+         * @return immutable cookie without a parser-supplied source-host binding
          */
         public Cookie build() {
             return buildWithHost(null);
@@ -652,8 +676,8 @@ public final class Cookie {
         /**
          * Builds an immutable cookie with a source host.
          *
-         * @param host source host
-         * @return cookie
+         * @param host source host for a host-only cookie, or null when no binding is required
+         * @return immutable cookie carrying the supplied source-host binding
          */
         private Cookie buildWithHost(final String host) {
             return new Cookie(name, value, domain, host, path, expires, secure, httpOnly);

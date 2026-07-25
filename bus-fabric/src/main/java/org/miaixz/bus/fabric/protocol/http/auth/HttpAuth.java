@@ -25,7 +25,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
@@ -41,12 +41,12 @@ import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 public final class HttpAuth {
 
     /**
-     * Authentication scheme.
+     * HTTP authentication scheme emitted before the credential token.
      */
     private final String scheme;
 
     /**
-     * Encoded credential token.
+     * Encoded credential token; this value must never be exposed through logs.
      */
     private final String token;
 
@@ -54,7 +54,7 @@ public final class HttpAuth {
      * Creates an authentication header generator.
      *
      * @param scheme authentication scheme
-     * @param token  encoded token
+     * @param token  encoded credential token
      */
     private HttpAuth(final String scheme, final String token) {
         this.scheme = scheme;
@@ -64,9 +64,10 @@ public final class HttpAuth {
     /**
      * Creates basic authentication.
      *
-     * @param username username
-     * @param password password
-     * @return authentication generator
+     * @param username non-blank, single-line user name
+     * @param password single-line password, which may be empty
+     * @return Basic authentication generator using UTF-8 credentials
+     * @throws ValidateException if either credential component is invalid
      */
     public static HttpAuth basic(final String username, final String password) {
         final String user = validateUsername(username);
@@ -77,29 +78,33 @@ public final class HttpAuth {
     /**
      * Applies Authorization to a headers snapshot.
      *
-     * @param headers headers
-     * @return updated headers
+     * @param headers source headers to copy and augment
+     * @return immutable headers with {@code Authorization} replaced by this credential
+     * @throws ValidateException if {@code headers} is {@code null}
      */
     public Headers apply(final Headers headers) {
-        return require(headers, "Headers").with(HTTP.AUTHORIZATION, value());
+        return require(headers, "Headers").with(Http.Header.AUTHORIZATION, value());
     }
 
     /**
      * Applies Proxy-Authorization to a headers snapshot.
      *
-     * @param headers headers
-     * @return updated headers
+     * @param headers source headers to copy and augment
+     * @return immutable headers with {@code Proxy-Authorization} replaced by this credential
+     * @throws ValidateException if {@code headers} is {@code null}
      */
     public Headers applyProxy(final Headers headers) {
-        return require(headers, "Headers").with(HTTP.PROXY_AUTHORIZATION, value());
+        return require(headers, "Headers").with(Http.Header.PROXY_AUTHORIZATION, value());
     }
 
     /**
      * Builds an authenticated request.
      *
-     * @param request   request
-     * @param challenge challenge
-     * @return authenticated request
+     * @param request   request to copy and augment
+     * @param challenge Basic challenge that selects origin or proxy authorization
+     * @return request copy containing the appropriate authorization header
+     * @throws ProtocolException if the challenge does not use the Basic scheme
+     * @throws ValidateException if the request or challenge is {@code null}
      */
     public HttpRequest authenticate(final HttpRequest request, final Challenge challenge) {
         final HttpRequest current = require(request, "Request");
@@ -107,14 +112,14 @@ public final class HttpAuth {
         if (!Builder.HTTP_AUTH_BASIC_LOWER.equals(currentChallenge.scheme())) {
             throw new ProtocolException("Unsupported authentication scheme");
         }
-        final String header = proxy(currentChallenge) ? HTTP.PROXY_AUTHORIZATION : HTTP.AUTHORIZATION;
+        final String header = proxy(currentChallenge) ? Http.Header.PROXY_AUTHORIZATION : Http.Header.AUTHORIZATION;
         return current.toBuilder().headers(current.headers().with(header, value())).build();
     }
 
     /**
      * Returns the header value.
      *
-     * @return header value
+     * @return authentication scheme, one space, and the encoded credential token
      */
     public String value() {
         return scheme + Symbol.SPACE + token;
@@ -123,7 +128,7 @@ public final class HttpAuth {
     /**
      * Returns a redacted header value for logs and metrics.
      *
-     * @return redacted header value
+     * @return authentication scheme followed by a stable fingerprint instead of the credential token
      */
     public String redactedValue() {
         return scheme + Symbol.SPACE + Tags.redact(token);
@@ -132,7 +137,7 @@ public final class HttpAuth {
     /**
      * Returns the redacted authorization header value.
      *
-     * @return redacted header value
+     * @return safe redacted representation suitable for logs and metrics
      */
     @Override
     public String toString() {
@@ -142,8 +147,8 @@ public final class HttpAuth {
     /**
      * Returns whether the challenge targets proxy authentication.
      *
-     * @param challenge challenge
-     * @return true when proxy authentication is requested
+     * @param challenge parsed challenge whose parameters are inspected
+     * @return {@code true} when its {@code proxy} parameter equals {@code true} ignoring case
      */
     private static boolean proxy(final Challenge challenge) {
         return "true".equalsIgnoreCase(challenge.parameters().get("proxy"));
@@ -152,8 +157,9 @@ public final class HttpAuth {
     /**
      * Validates a username.
      *
-     * @param username username
-     * @return username
+     * @param username user name to validate
+     * @return unchanged non-blank, single-line user name
+     * @throws ValidateException if the user name is blank or contains a line break
      */
     private static String validateUsername(final String username) {
         Assert.isFalse(
@@ -165,8 +171,9 @@ public final class HttpAuth {
     /**
      * Validates a password.
      *
-     * @param password password
-     * @return password
+     * @param password password to validate
+     * @return unchanged single-line password, including an empty password
+     * @throws ValidateException if the password is {@code null} or contains a line break
      */
     private static String validatePassword(final String password) {
         final String current = Assert.notNull(password, () -> new ValidateException("Password must be single-line"));
@@ -179,10 +186,11 @@ public final class HttpAuth {
     /**
      * Validates a required collaborator.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return validated value
+     * @param value collaborator reference to validate
+     * @param name  logical collaborator name included in the validation error
+     * @param <T>   collaborator type
+     * @return validated non-null collaborator
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

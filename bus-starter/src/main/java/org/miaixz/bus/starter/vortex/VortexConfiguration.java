@@ -41,7 +41,7 @@ import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.PORT;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
@@ -208,7 +208,7 @@ public class VortexConfiguration {
 
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
         HttpServer server = HttpServer.create()
-                .port(this.properties.getPort() != 0 ? this.properties.getPort() : PORT._8765.getPort())
+                .port(this.properties.getPort() != 0 ? this.properties.getPort() : Port._8765.getPort())
                 .handle(adapter);
 
         return new Vortex(server);

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import org.miaixz.bus.core.basic.advice.ErrorAdvice;
+import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.instance.Instances;
@@ -101,7 +102,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public Object defaultException(Exception e) {
+    public Message<Void> defaultException(Exception e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode._FAILURE);
     }
@@ -114,7 +115,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = InternalException.class)
-    public Object internalException(InternalException e) {
+    public Message<Void> internalException(InternalException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100805);
@@ -133,7 +134,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
-    public Object businessException(BusinessException e) {
+    public Message<Void> businessException(BusinessException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100807);
@@ -149,7 +150,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
-    public Object crontabException(CrontabException e) {
+    public Message<Void> crontabException(CrontabException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100808);
@@ -165,7 +166,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
-    public Object validateException(ValidateException e) {
+    public Message<Void> validateException(ValidateException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100805);
@@ -181,7 +182,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = AuthorizedException.class)
-    public Object authorizedException(AuthorizedException e) {
+    public Message<Void> authorizedException(AuthorizedException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100806);
@@ -197,7 +198,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = SignatureException.class)
-    public Object signatureException(SignatureException e) {
+    public Message<Void> signatureException(SignatureException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100109);
@@ -213,7 +214,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = UncheckedException.class)
-    public Object uncheckedException(UncheckedException e) {
+    public Message<Void> uncheckedException(UncheckedException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100805);
@@ -229,7 +230,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = RelevantException.class)
-    public Object relevantException(RelevantException e) {
+    public Message<Void> relevantException(RelevantException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode._100805);
@@ -246,7 +247,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
-    public Object httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public Message<Void> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode._100802);
     }
@@ -260,7 +261,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
-    public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+    public Message<Void> httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode._100803);
     }
@@ -273,21 +274,33 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = NoHandlerFoundException.class)
-    public Object noHandlerFoundException(NoHandlerFoundException e) {
+    public Message<Void> noHandlerFoundException(NoHandlerFoundException e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode._100804);
     }
 
     /**
-     * Parameter binding exception handler for {@link MethodArgumentNotValidException} and {@link BindException}. This
-     * handles exceptions that occur during parameter binding and validation.
+     * Request-body validation exception handler.
      *
      * @param e the caught validation exception
      * @return a unified error response object
      */
     @ResponseBody
-    @ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
-    public Object handleBodyValidException(MethodArgumentNotValidException e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Message<Void> handleBodyValidException(MethodArgumentNotValidException e) {
+        this.defaultExceptionHandler(e);
+        return write(ErrorCode._100809);
+    }
+
+    /**
+     * Request-parameter binding exception handler.
+     *
+     * @param e the caught binding exception
+     * @return a unified error response object
+     */
+    @ResponseBody
+    @ExceptionHandler(BindException.class)
+    public Message<Void> handleBindException(BindException e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode._100809);
     }

@@ -30,27 +30,27 @@ import java.util.Iterator;
 public interface CacheStore extends AutoCloseable {
 
     /**
-     * Gets a cached entry.
+     * Looks up the entry associated with a cache key.
      *
-     * @param key key
-     * @return entry or null
+     * @param key cache key to look up
+     * @return cached entry, or {@code null} when the key is absent
      */
     CacheEntry get(String key);
 
     /**
-     * Stores an entry.
+     * Stores or replaces the entry associated with a cache key.
      *
-     * @param key   key
-     * @param entry entry
+     * @param key   cache key under which the entry is stored
+     * @param entry cache metadata and body reference to store
      */
     void put(String key, CacheEntry entry);
 
     /**
      * Opens a streaming cache writer when the store supports cache-writing bodies.
      *
-     * @param key   key
-     * @param entry entry metadata
-     * @return writer or null when unsupported
+     * @param key   cache key under which the completed entry will be stored
+     * @param entry cache metadata associated with the streamed body
+     * @return streaming writer, or {@code null} when streaming writes are unsupported
      */
     default CacheWriter writer(final String key, final CacheEntry entry) {
         return null;
@@ -59,14 +59,14 @@ public interface CacheStore extends AutoCloseable {
     /**
      * Removes a cached entry.
      *
-     * @param key key
+     * @param key cache key to remove
      */
     void remove(String key);
 
     /**
-     * Returns a key snapshot iterator.
+     * Returns an iterator over a snapshot of the stored cache keys.
      *
-     * @return keys
+     * @return iterator over cache keys present when the snapshot was created
      */
     Iterator<String> keys();
 

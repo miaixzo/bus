@@ -60,7 +60,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
      * @throws InternalException if the email content, recipient address, or subject is empty.
      */
     @Override
-    public Message send(AliyunNotice entity) throws InternalException {
+    public Message<Void> send(AliyunNotice entity) throws InternalException {
         if (StringKit.isEmpty(entity.getContent())) {
             Logger.warn(
                     false,
@@ -190,7 +190,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
         for (String val : bodys.keySet()) {
             map.put(specialUrlEncode(val), specialUrlEncode(bodys.get(val)));
         }
-        Message result = checkResponse(get(this.getUrl(entity), map));
+        Message<Void> result = checkResponse(get(this.getUrl(entity), map));
         Logger.info(
                 false,
                 "Notify",

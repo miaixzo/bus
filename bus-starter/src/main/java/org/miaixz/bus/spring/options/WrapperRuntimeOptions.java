@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 
 /**
@@ -167,7 +167,8 @@ public class WrapperRuntimeOptions {
             return false;
         }
         String method = request.getMethod();
-        if (!HTTP.POST.equals(method) && !HTTP.PUT.equals(method) && !HTTP.PATCH.equals(method)) {
+        if (!Http.Method.POST.value().equals(method) && !Http.Method.PUT.value().equals(method)
+                && !Http.Method.PATCH.value().equals(method)) {
             return false;
         }
         String contentType = request.getContentType();

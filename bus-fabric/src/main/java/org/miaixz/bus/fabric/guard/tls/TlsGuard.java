@@ -30,7 +30,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 
@@ -52,7 +51,7 @@ public final class TlsGuard {
     /**
      * Returns the secure TLS guard.
      *
-     * @return TLS guard
+     * @return process-wide stateless secure-TLS guard
      */
     public static TlsGuard requireSecure() {
         return Instances.get(TlsGuard.class.getName() + ".secure", TlsGuard::new);
@@ -61,8 +60,10 @@ public final class TlsGuard {
     /**
      * Checks whether an address requires TLS.
      *
-     * @param address address
-     * @return guard result
+     * @param address route address whose scheme is validated and security flag is checked
+     * @return passing result for a secure address, or rejection naming the normalized plaintext scheme
+     * @throws ValidateException if {@code address} is {@code null}
+     * @throws ProtocolException if the address scheme is invalid
      */
     public GuardResult check(final Address address) {
         final Address checkedAddress = Assert.notNull(address, () -> new ValidateException("Address must not be null"));
@@ -74,10 +75,12 @@ public final class TlsGuard {
     }
 
     /**
-     * Checks TLS settings for weak configuration.
+     * Checks TLS versions, hostname verification, and cipher suites in that order for weak configuration.
      *
-     * @param settings TLS settings
-     * @return guard result
+     * @param settings immutable TLS configuration to inspect
+     * @return first weak-version, disabled-hostname-verification, or weak-cipher rejection; otherwise a passing result
+     * @throws ValidateException if {@code settings} is {@code null}
+     * @throws ProtocolException if a configured cipher name is blank or multi-line
      */
     public GuardResult check(final TlsSettings settings) {
         final TlsSettings checkedSettings = Assert
@@ -101,17 +104,18 @@ public final class TlsGuard {
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return stable TLS guard name
      */
     public String name() {
-        return Builder.TLS_GUARD_NAME;
+        return Protocol.TLS.name;
     }
 
     /**
      * Returns a validated address scheme.
      *
-     * @param address address
-     * @return scheme
+     * @param address non-null address supplying the scheme
+     * @return validated lower-case address scheme
+     * @throws ProtocolException if the scheme is invalid
      */
     private static String scheme(final Address address) {
         final String scheme = address.scheme();
@@ -122,8 +126,9 @@ public final class TlsGuard {
     /**
      * Returns whether a cipher suite is weak.
      *
-     * @param cipher cipher suite
-     * @return true when weak
+     * @param cipher non-blank, single-line cipher-suite name
+     * @return {@code true} when the upper-case name contains NULL, anonymous, export, RC4, MD5, or DES weakness markers
+     * @throws ProtocolException if {@code cipher} is blank or multi-line
      */
     private static boolean weakCipher(final String cipher) {
         Assert.isTrue(

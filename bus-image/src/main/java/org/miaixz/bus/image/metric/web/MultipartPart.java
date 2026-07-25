@@ -22,7 +22,7 @@ package org.miaixz.bus.image.metric.web;
 import java.io.InputStream;
 import java.util.Objects;
 
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 
 /**
  * Single part in a multipart message.
@@ -65,16 +65,16 @@ public record MultipartPart(String contentType, String location, Payload payload
     public String generateHeader(String boundary) {
         Objects.requireNonNull(boundary, "Boundary cannot be null");
         StringBuilder header = new StringBuilder(256).append("\r\n--").append(boundary).append("\r\n")
-                .append(HTTP.CONTENT_TYPE).append(": ").append(contentType);
+                .append(Http.Header.CONTENT_TYPE).append(": ").append(contentType);
 
         long size = payload.size();
         if (size < 0) {
-            header.append("\r\n").append(HTTP.CONTENT_ENCODING).append(": gzip, identity");
+            header.append("\r\n").append(Http.Header.CONTENT_ENCODING).append(": gzip, identity");
         } else {
-            header.append("\r\n").append(HTTP.CONTENT_LENGTH).append(": ").append(size);
+            header.append("\r\n").append(Http.Header.CONTENT_LENGTH).append(": ").append(size);
         }
         if (location != null && !location.isEmpty()) {
-            header.append("\r\n").append(HTTP.CONTENT_LOCATION).append(": ").append(location);
+            header.append("\r\n").append(Http.Header.CONTENT_LOCATION).append(": ").append(location);
         }
         return header.append("\r\n\r\n").toString();
     }

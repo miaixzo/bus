@@ -72,7 +72,7 @@ public class ProginnProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("code", callback.getCode());
         params.put("client_id", context.getClientId());
@@ -83,7 +83,7 @@ public class ProginnProvider extends AbstractProvider {
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .refresh((String) object.get("refresh_token")).uid((String) object.get("uid"))
@@ -100,12 +100,12 @@ public class ProginnProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userInfo = doGetUserInfo(authorization);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("uid"))
                                 .username((String) object.get("nickname")).nickname((String) object.get("nickname"))
@@ -134,8 +134,8 @@ public class ProginnProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(ProginnScope.values())))
                         .build())

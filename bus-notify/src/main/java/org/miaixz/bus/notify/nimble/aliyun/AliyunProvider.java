@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -100,7 +100,7 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
         }
         // Remove the first excess & symbol
         String sortedQueryString = sortQueryStringTmp.substring(1);
-        String stringToSign = HTTP.GET + Symbol.AND + specialUrlEncode(Symbol.SLASH) + Symbol.AND
+        String stringToSign = Http.Method.GET.value() + Symbol.AND + specialUrlEncode(Symbol.SLASH) + Symbol.AND
                 + specialUrlEncode(sortedQueryString);
         return sign(stringToSign);
     }
@@ -138,7 +138,7 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
      * @param response The raw JSON response string from Alibaba Cloud.
      * @return A {@link Message} indicating the success or failure of the operation.
      */
-    protected Message checkResponse(String response) {
+    protected Message<Void> checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
         Logger.info(
                 false,
@@ -146,8 +146,8 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
                 "Aliyun notify response received: code={}, responseBytes={}",
                 code,
                 response == null ? 0 : response.getBytes(Charset.UTF_8).length);
-        return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code).errmsg(code)
-                .build();
+        return Message.<Void>builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .errmsg(code).build();
     }
 
 }

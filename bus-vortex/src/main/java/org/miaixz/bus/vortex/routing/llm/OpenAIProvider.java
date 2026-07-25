@@ -27,7 +27,7 @@ import org.springframework.http.HttpMethod;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
@@ -144,8 +144,8 @@ public class OpenAIProvider implements LlmProvider {
         Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
         return Egress.request(HttpMethod.POST, chatCompletionsUri())
-                .header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
-                .header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
+                .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
+                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
                 .bodyToMono(String.class).map(this::parseResponse)
                 .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
     }
@@ -173,8 +173,8 @@ public class OpenAIProvider implements LlmProvider {
         Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
         return Egress.request(HttpMethod.POST, chatCompletionsUri())
-                .header(HTTP.AUTHORIZATION, HTTP.BEARER + this.apiKey)
-                .header(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
+                .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
+                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
                 .bodyToFlux(String.class).map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
                         e -> Logger
                                 .error(false, "Vortex", "Streaming request failed: {}", e.getClass().getSimpleName()));

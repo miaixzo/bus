@@ -22,11 +22,12 @@ package org.miaixz.bus.fabric;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Immutable option snapshot with copy-on-write update methods.
@@ -37,17 +38,32 @@ import org.miaixz.bus.core.xyz.StringKit;
 public final class Options {
 
     /**
+     * Shared immutable empty snapshot.
+     */
+    private static final Options EMPTY = new Options(Map.of());
+
+    /**
+     * Identity sentinel preserving an explicitly configured null value.
+     */
+    private static final Object NULL_VALUE = new Object();
+
+    /**
+     * Controlled external-name registry populated by declared typed keys.
+     */
+    private static final Map<String, Class<?>> KEY_TYPES = new ConcurrentHashMap<>();
+
+    /**
      * Immutable backing values.
      */
-    private final Map<String, Object> values;
+    private final Map<Key<?>, Object> values;
 
     /**
      * Creates an immutable option snapshot.
      *
-     * @param values backing values
+     * @param values owned backing values
      */
-    private Options(final Map<String, Object> values) {
-        this.values = Collections.unmodifiableMap(new LinkedHashMap<>(values));
+    private Options(final Map<Key<?>, Object> values) {
+        this.values = Collections.unmodifiableMap(values);
     }
 
     /**
@@ -56,7 +72,7 @@ public final class Options {
      * @return empty options
      */
     public static Options empty() {
-        return Instances.get(Options.class.getName() + ".empty", () -> new Options(Map.of()));
+        return EMPTY;
     }
 
     /**
@@ -64,12 +80,27 @@ public final class Options {
      *
      * @param key   option key
      * @param value option value
+     * @param <T>   option value type
      * @return options
      */
-    public static Options of(final String key, final Object value) {
-        final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put(validateKey(key), mask(value));
+    public static <T> Options of(final Key<T> key, final T value) {
+        final Key<T> checkedKey = validateTypedKey(key);
+        validateValue(checkedKey, value);
+        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>();
+        map.put(checkedKey, mask(value));
         return new Options(map);
+    }
+
+    /**
+     * Creates a typed option key.
+     *
+     * @param name option name
+     * @param type option value type
+     * @param <T>  option type
+     * @return typed key
+     */
+    public static <T> Key<T> key(final String name, final Class<T> type) {
+        return new Key<>(name, type);
     }
 
     /**
@@ -85,81 +116,70 @@ public final class Options {
         if (values.isEmpty()) {
             return empty();
         }
-        final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>();
         for (final Map.Entry<String, ?> entry : values.entrySet()) {
-            map.put(validateKey(entry.getKey()), mask(entry.getValue()));
+            final Key<?> key = resolve(entry.getKey());
+            validateValue(key, entry.getValue());
+            map.put(key, mask(entry.getValue()));
         }
         return new Options(map);
     }
 
     /**
-     * Reads an option using a target type.
+     * Reads an option using its typed key.
      *
-     * @param key  option key
-     * @param type target type
-     * @param <T>  target type
-     * @return typed value or null
+     * @param key typed option key
+     * @param <T> option type
+     * @return option value or null
      */
-    public <T> T get(final String key, final Class<T> type) {
-        if (type == null) {
-            throw new ValidateException("Option type must not be null");
-        }
-        final Object value = get(key);
-        if (value == null) {
-            return null;
-        }
-        if (!type.isInstance(value)) {
-            throw new ValidateException("Option value type mismatch for " + key);
-        }
-        return type.cast(value);
+    public <T> T get(final Key<T> key) {
+        final Key<T> checkedKey = validateTypedKey(key);
+        final Object value = unmask(values.get(checkedKey));
+        return value == null ? null : checkedKey.type().cast(value);
     }
 
     /**
-     * Reads an option value.
+     * Checks whether a typed option key exists, including an explicit null value.
      *
-     * @param key option key
-     * @return value or null
-     */
-    public Object get(final String key) {
-        return unmask(values.get(validateKey(key)));
-    }
-
-    /**
-     * Checks whether an option key exists.
-     *
-     * @param key option key
+     * @param key typed option key
      * @return true when present
      */
-    public boolean contains(final String key) {
-        return values.containsKey(validateKey(key));
+    public boolean contains(final Key<?> key) {
+        return values.containsKey(validateTypedKey(key));
     }
 
     /**
-     * Returns options with a replaced value.
+     * Returns options with a replaced typed value.
      *
-     * @param key   option key
+     * @param key   typed option key
      * @param value option value
+     * @param <T>   option type
      * @return updated options
      */
-    public Options with(final String key, final Object value) {
-        final LinkedHashMap<String, Object> map = new LinkedHashMap<>(values);
-        map.put(validateKey(key), mask(value));
+    public <T> Options with(final Key<T> key, final T value) {
+        final Key<T> checkedKey = validateTypedKey(key);
+        validateValue(checkedKey, value);
+        if (values.containsKey(checkedKey) && Objects.equals(unmask(values.get(checkedKey)), value)) {
+            return this;
+        }
+        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>(values);
+        map.put(checkedKey, mask(value));
         return new Options(map);
     }
 
     /**
-     * Returns options without a key.
+     * Returns options without a typed key.
      *
-     * @param key option key
+     * @param key typed option key
      * @return updated options
      */
-    public Options without(final String key) {
-        final String validKey = validateKey(key);
-        if (!values.containsKey(validKey)) {
+    public Options without(final Key<?> key) {
+        final Key<?> checkedKey = validateTypedKey(key);
+        if (!values.containsKey(checkedKey)) {
             return this;
         }
-        final LinkedHashMap<String, Object> map = new LinkedHashMap<>(values);
-        map.remove(validKey);
+        final LinkedHashMap<Key<?>, Object> map = new LinkedHashMap<>(values);
+        map.remove(checkedKey);
         return map.isEmpty() ? empty() : new Options(map);
     }
 
@@ -170,8 +190,11 @@ public final class Options {
      */
     public Map<String, Object> asMap() {
         final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        for (final Map.Entry<String, Object> entry : values.entrySet()) {
-            map.put(entry.getKey(), unmask(entry.getValue()));
+        for (final Map.Entry<Key<?>, Object> entry : values.entrySet()) {
+            final String name = entry.getKey().name();
+            if (map.putIfAbsent(name, unmask(entry.getValue())) != null) {
+                throw new ValidateException("Duplicate option name " + name);
+            }
         }
         return Collections.unmodifiableMap(map);
     }
@@ -182,14 +205,11 @@ public final class Options {
      * @return materialize byte threshold
      */
     public long materializeMaxBytes() {
-        final Object value = get(Builder.OPTION_MATERIALIZE_MAX_BYTES);
+        final Long value = get(Builder.OPTION_MATERIALIZE_MAX_BYTES);
         if (value == null) {
-            return Builder.DEFAULT_MATERIALIZE_MAX_BYTES;
+            return Normal.MEBI_64;
         }
-        if (!(value instanceof Number number)) {
-            throw new ValidateException("Materialize max bytes must be numeric");
-        }
-        return validateMaterializeMaxBytes(number.longValue());
+        return validateMaterializeMaxBytes(value);
     }
 
     /**
@@ -241,7 +261,7 @@ public final class Options {
      * @return null sentinel
      */
     private static Object nullValue() {
-        return Instances.get(Options.class.getName() + ".null", Object::new);
+        return NULL_VALUE;
     }
 
     /**
@@ -251,10 +271,91 @@ public final class Options {
      * @return validated key
      */
     private static String validateKey(final String key) {
-        if (StringKit.isBlank(key) || StringKit.containsAny(key, Symbol.C_CR, Symbol.C_LF)) {
+        if (key == null || key.isEmpty()) {
+            throw new ValidateException("Option key must be non-blank and single-line");
+        }
+        boolean nonWhitespace = false;
+        for (int index = 0; index < key.length(); index++) {
+            final char current = key.charAt(index);
+            if (current == Symbol.C_CR || current == Symbol.C_LF) {
+                throw new ValidateException("Option key must be non-blank and single-line");
+            }
+            nonWhitespace |= !Character.isWhitespace(current);
+        }
+        if (!nonWhitespace) {
             throw new ValidateException("Option key must be non-blank and single-line");
         }
         return key;
+    }
+
+    /**
+     * Validates a typed key reference.
+     *
+     * @param key typed key
+     * @param <T> key value type
+     * @return validated key
+     */
+    private static <T> Key<T> validateTypedKey(final Key<T> key) {
+        if (key == null) {
+            throw new ValidateException("Option key must not be null");
+        }
+        return key;
+    }
+
+    /**
+     * Resolves a formal external option name to its declared typed key.
+     *
+     * @param name external option name
+     * @return registered typed key
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static Key<?> resolve(final String name) {
+        final String checked = validateKey(name);
+        final Class<?> type = KEY_TYPES.get(checked);
+        if (type == null) {
+            throw new ValidateException("Unknown option key " + checked);
+        }
+        return new Key(checked, type);
+    }
+
+    /**
+     * Validates a non-null typed option value.
+     *
+     * @param key   typed key
+     * @param value option value
+     */
+    private static void validateValue(final Key<?> key, final Object value) {
+        if (value != null && !key.type().isInstance(value)) {
+            throw new ValidateException("Option value type mismatch for " + key.name());
+        }
+    }
+
+    /**
+     * Public immutable typed option key.
+     *
+     * @param name stable option name
+     * @param type option value type
+     * @param <T>  option type
+     */
+    public record Key<T>(String name, Class<T> type) {
+
+        /**
+         * Creates and validates a typed option key.
+         *
+         * @param name stable option name
+         * @param type option value type
+         */
+        public Key {
+            name = validateKey(name);
+            if (type == null) {
+                throw new ValidateException("Option type must not be null");
+            }
+            final Class<?> existing = KEY_TYPES.putIfAbsent(name, type);
+            if (existing != null && existing != type) {
+                throw new ValidateException("Option key type conflict for " + name);
+            }
+        }
+
     }
 
 }

@@ -33,7 +33,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -71,7 +71,7 @@ public class TeambitionProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getClientId());
         form.put("client_secret", context.getClientSecret());
@@ -83,7 +83,7 @@ public class TeambitionProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .refresh((String) object.get("refresh_token")).build())
@@ -98,10 +98,10 @@ public class TeambitionProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.AUTHORIZATION, "OAuth2 " + token);
+        header.put(Http.Header.AUTHORIZATION, "OAuth2 " + token);
 
         String response = get(this.complex.userinfo(), null, header);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -110,7 +110,7 @@ public class TeambitionProvider extends AbstractProvider {
 
         authorization.setUid((String) object.get("_id"));
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("_id"))
                                 .username((String) object.get("name")).nickname((String) object.get("name"))
@@ -128,7 +128,7 @@ public class TeambitionProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         String uid = authorization.getUid();
         String refresh = authorization.getRefresh();
 
@@ -140,7 +140,7 @@ public class TeambitionProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .refresh((String) object.get("refresh_token")).build())

@@ -19,13 +19,15 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.Cookie;
@@ -46,16 +48,19 @@ public final class HttpCookie {
     }
 
     /**
-     * Parses all Set-Cookie headers for a URL.
+     * Parses response {@code Set-Cookie} headers that pass the basic name/value shape check.
      *
-     * @param url     source URL
-     * @param headers response headers
-     * @return immutable cookies
+     * @param url     response URL used as the cookie origin
+     * @param headers response headers containing zero or more {@code Set-Cookie} values
+     * @return immutable list of parsed cookies in header order
+     * @throws ValidateException if {@code url} or {@code headers} is {@code null}, or if a structurally accepted value
+     *                           fails cookie validation
+     * @throws ProtocolException if a structurally accepted value violates cookie protocol rules
      */
     public static List<Cookie> parseAll(final UnoUrl url, final Headers headers) {
         final UnoUrl sourceUrl = require(url, "URL");
         final Headers sourceHeaders = require(headers, "Headers");
-        final List<String> values = sourceHeaders.values(HTTP.SET_COOKIE);
+        final List<String> values = sourceHeaders.values(Http.Header.SET_COOKIE);
         final List<Cookie> cookies = new ArrayList<>(values.size());
         for (final String header : values) {
             if (malformed(header)) {
@@ -67,17 +72,18 @@ public final class HttpCookie {
     }
 
     /**
-     * Attaches matching cookies to headers.
+     * Replaces any existing {@code Cookie} header with cookies that match a request URL.
      *
-     * @param url     request URL
-     * @param headers source headers
-     * @param cookies available cookies
-     * @return updated headers
+     * @param url     request URL used for cookie matching
+     * @param headers source headers copied into the result
+     * @param cookies available cookies considered in iteration order
+     * @return new headers containing a joined {@code Cookie} value, or no {@code Cookie} header when nothing matches
+     * @throws ValidateException if a required argument or cookie element is {@code null}
      */
     public static Headers attach(final UnoUrl url, final Headers headers, final List<Cookie> cookies) {
         final List<Cookie> matched = match(url, cookies);
         final Headers.Builder builder = copy(require(headers, "Headers"));
-        builder.remove(HTTP.COOKIE);
+        builder.remove(Http.Header.COOKIE);
         if (!matched.isEmpty()) {
             final StringBuilder value = new StringBuilder();
             for (int i = 0; i < matched.size(); i++) {
@@ -87,7 +93,7 @@ public final class HttpCookie {
                 final Cookie cookie = matched.get(i);
                 value.append(cookie.name()).append(Symbol.C_EQUAL).append(cookie.value());
             }
-            builder.set(HTTP.COOKIE, value.toString());
+            builder.set(Http.Header.COOKIE, value.toString());
         }
         return builder.build();
     }
@@ -95,17 +101,31 @@ public final class HttpCookie {
     /**
      * Returns cookies matching a URL.
      *
-     * @param url     request URL
-     * @param cookies cookies
-     * @return immutable matching cookies
+     * @param url     request URL used for expiration, security, domain, and path matching
+     * @param cookies candidate cookies considered in iteration order
+     * @return immutable list of cookies whose {@link Cookie#matches(UnoUrl)} checks succeed
+     * @throws ValidateException if {@code url}, {@code cookies}, or a cookie element is {@code null}
      */
     public static List<Cookie> match(final UnoUrl url, final List<Cookie> cookies) {
+        return match(url, cookies, Instant.now());
+    }
+
+    /**
+     * Returns cookies matching a URL at an explicit current time.
+     *
+     * @param url     request URL
+     * @param cookies candidate cookies
+     * @param now     current time used for expiration checks
+     * @return immutable list of matching cookies
+     */
+    public static List<Cookie> match(final UnoUrl url, final List<Cookie> cookies, final Instant now) {
         final UnoUrl target = require(url, "URL");
         final List<Cookie> source = require(cookies, "Cookies");
+        final Instant currentTime = require(now, "Current time");
         final List<Cookie> matched = new ArrayList<>(source.size());
         for (final Cookie cookie : source) {
             require(cookie, "Cookie");
-            if (cookie.matches(target)) {
+            if (cookie.matches(target, currentTime)) {
                 matched.add(cookie);
             }
         }
@@ -115,8 +135,9 @@ public final class HttpCookie {
     /**
      * Returns whether a Set-Cookie value is too malformed to parse.
      *
-     * @param header header value
-     * @return true when malformed
+     * @param header candidate {@code Set-Cookie} header value
+     * @return {@code true} when the value is blank, has no non-empty name, or places its first equals sign after the
+     *         first attribute boundary
      */
     private static boolean malformed(final String header) {
         if (header == null || header.isBlank()) {
@@ -130,8 +151,8 @@ public final class HttpCookie {
     /**
      * Copies headers into a new builder.
      *
-     * @param headers headers
-     * @return builder
+     * @param headers source headers whose names and values are copied
+     * @return mutable builder containing every source header value
      */
     private static Headers.Builder copy(final Headers headers) {
         final Headers.Builder builder = Headers.builder();
@@ -140,12 +161,12 @@ public final class HttpCookie {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

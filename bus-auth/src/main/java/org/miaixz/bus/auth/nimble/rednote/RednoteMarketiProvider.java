@@ -71,8 +71,8 @@ public class RednoteMarketiProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(this.complex.authorize()).queryParam("appId", this.context.getClientId())
                                 .queryParam("scope", this.getScopes(" ", true, getScopes(RednoteMarketiScope.values())))
@@ -89,7 +89,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", this.context.getClientId());
         form.put("secret", this.context.getClientSecret());
@@ -106,7 +106,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
                 throw new AuthorizedException("Missing access_token in response");
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Authorization.builder().token(token).expireIn((Integer) object.get("access_token_expires_in"))
                             .refresh((String) object.get("refresh_token")).scope((String) object.get("scope")).build())
                     .build();
@@ -133,7 +133,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
      * @throws UnsupportedOperationException if this operation is not supported by the platform
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         throw new UnsupportedOperationException("User info URL is not supported");
     }
 
@@ -145,7 +145,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", this.context.getClientId());
         form.put("secret", this.context.getClientSecret());
@@ -162,7 +162,7 @@ public class RednoteMarketiProvider extends AbstractProvider {
             if (token == null) {
                 throw new AuthorizedException("Missing access_token in response");
             }
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Authorization.builder().token(token).refresh((String) object.get("refresh_token"))
                             .scope((String) object.get("scope")).expireIn((Integer) object.get("expires_in")).build())
                     .build();

@@ -72,8 +72,8 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl(this.complex.authorize()).queryParam("response_type", "code")
                         .queryParam("client_id", context.getClientId())
                         .queryParam("scope", this.getScopes(Symbol.COMMA, true, getScopes(DingTalkScope.values())))
@@ -93,7 +93,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grantType", "authorization_code");
         params.put("clientId", context.getClientId());
@@ -115,7 +115,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
             int expireIn = expireInObj instanceof Number ? ((Number) expireInObj).intValue() : 0;
             String corpId = (String) object.get("corpId");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Authorization.builder().token(token).refresh(refresh).expireIn(expireIn).unionId(corpId).build())
                     .build();
         } catch (Exception e) {
@@ -140,7 +140,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         Map<String, String> header = new HashMap<>();
         header.put("x-acs-dingtalk-access-token", authorization.getToken());
         String response = get(this.complex.userinfo(), new HashMap<>(0), header);
@@ -164,7 +164,7 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
             authorization.setOpenId(openId);
             authorization.setUnionId(unionId);
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(nick)
                                     .nickname(nick).avatar(avatarUrl).snapshotUser(visitor).token(authorization)

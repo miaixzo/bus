@@ -30,7 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.logger.Logger;
@@ -86,11 +86,11 @@ public class McpVettingStrategy extends VettingStrategy {
     protected Mono<ServerWebExchange> validateAndEnrichMcpRequest(ServerWebExchange exchange, Context context) {
         return Mono.fromRunnable(() -> {
             ServerHttpRequest request = exchange.getRequest();
-            HTTP.Method method = context.getHttpMethod();
-            if (method != HTTP.Method.POST && method != HTTP.Method.GET && method != HTTP.Method.DELETE) {
+            Http.Method method = context.getHttpMethod();
+            if (method != Http.Method.POST && method != Http.Method.GET && method != Http.Method.DELETE) {
                 throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Unsupported MCP method");
             }
-            if (method == HTTP.Method.POST) {
+            if (method == Http.Method.POST) {
                 MediaType contentType = request.getHeaders().getContentType();
                 if (!isJsonContentType(contentType)) {
                     throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "MCP POST requires JSON");
@@ -99,7 +99,7 @@ public class McpVettingStrategy extends VettingStrategy {
                     throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                             "MCP POST Accept must include application/json and text/event-stream");
                 }
-            } else if (method == HTTP.Method.GET) {
+            } else if (method == Http.Method.GET) {
                 if (!accepts(request, MediaType.TEXT_EVENT_STREAM)) {
                     throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                             "MCP GET Accept must include text/event-stream");

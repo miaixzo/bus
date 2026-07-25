@@ -56,7 +56,7 @@ public class Delegate {
      * The message object containing the result status. On failure, it holds the error code and error message. On
      * success, it typically holds a success code (e.g., "0").
      */
-    private Message message;
+    private Message<Void> message;
 
     /**
      * The detailed authorization information, populated only on successful authentication. This contains data about the

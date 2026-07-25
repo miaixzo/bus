@@ -76,9 +76,9 @@ public class MiProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getToken(tokenUrl(callback.getCode())))
-                .build();
+    public Message<Authorization> token(Callback callback) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(getToken(tokenUrl(callback.getCode()))).build();
     }
 
     /**
@@ -139,7 +139,7 @@ public class MiProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         // Get user information
         String userResponse = doGetUserInfo(authorization);
         try {
@@ -182,7 +182,7 @@ public class MiProvider extends AbstractProvider {
                 Map<String, Object> userEmailPhone = JsonKit.toPojo(emailResponse, Map.class);
                 if (userEmailPhone == null) {
                     Logger.warn(false, "Auth", "Failed to parse email/phone response: empty response");
-                    return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(authUser).build();
+                    return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(authUser).build();
                 }
 
                 String emailResult = (String) userEmailPhone.get("result");
@@ -202,7 +202,7 @@ public class MiProvider extends AbstractProvider {
                 Logger.warn(false, "Auth", "Failed to parse email/phone response: " + e.getMessage());
             }
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(authUser).build();
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(authUser).build();
         } catch (Exception e) {
             Logger.warn(
                     false,
@@ -224,8 +224,8 @@ public class MiProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+    public Message<Authorization> refresh(Authorization authorization) {
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(getToken(refreshUrl(authorization.getRefresh()))).build();
     }
 
@@ -237,8 +237,8 @@ public class MiProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData()).queryParam("skip_confirm", "false")
                         .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(MiScope.values())))
                         .build())

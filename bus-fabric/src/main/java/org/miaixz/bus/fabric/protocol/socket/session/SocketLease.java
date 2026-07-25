@@ -19,8 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.session;
 
-import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,12 +33,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
@@ -61,25 +57,24 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 public final class SocketLease {
 
     /**
-     * Pool lease.
+     * Underlying connection-pool lease owned by this wrapper.
      */
     private final ConnectionLease lease;
 
     /**
-     * Session.
+     * Socket session created over the leased connection.
      */
     private SocketSession session;
 
     /**
-     * Released flag.
+     * One-shot guard shared by release and close operations.
      */
     private final AtomicBoolean released;
 
     /**
      * Creates a socket lease.
      *
-     * @param lease   lease
-     * @param session session
+     * @param lease pooled connection lease owned by this socket lease
      */
     private SocketLease(final ConnectionLease lease) {
         this.lease = require(lease, "Connection lease");
@@ -89,15 +84,15 @@ public final class SocketLease {
     /**
      * Acquires a lease.
      *
-     * @param pool        pool
+     * @param pool        connection pool from which a connection is leased
      * @param destination connection destination
-     * @return socket lease
+     * @return socket lease using default timeout, resolver, framing, and attributes
      */
     public static SocketLease acquire(final ConnectionPool pool, final Destination destination) {
         return acquire(
                 pool,
                 destination,
-                Timeout.of(Duration.ofSeconds(Normal._10)),
+                Timeout.of(Builder.TIMEOUT_DEFAULT_NETWORK),
                 null,
                 DnsResolver.system(),
                 FrameCodec.line(),
@@ -109,7 +104,7 @@ public final class SocketLease {
     /**
      * Acquires a lease.
      *
-     * @param pool            pool
+     * @param pool            connection pool from which a connection is leased
      * @param destination     connection destination
      * @param timeout         timeout policy
      * @param listener        network lifecycle listener
@@ -118,7 +113,7 @@ public final class SocketLease {
      * @param handler         message handler
      * @param attributes      session attributes
      * @param sessionListener session lifecycle listener
-     * @return socket lease
+     * @return socket lease and initialized session over the pooled connection
      */
     public static SocketLease acquire(
             final ConnectionPool pool,
@@ -140,13 +135,13 @@ public final class SocketLease {
                 handler,
                 attributes,
                 sessionListener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Normal.MEBI_64);
     }
 
     /**
      * Acquires a lease.
      *
-     * @param pool                pool
+     * @param pool                connection pool from which a connection is leased
      * @param destination         connection destination
      * @param timeout             timeout policy
      * @param listener            network lifecycle listener
@@ -156,7 +151,7 @@ public final class SocketLease {
      * @param attributes          session attributes
      * @param sessionListener     session lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
-     * @return socket lease
+     * @return socket lease and initialized session over the pooled connection
      */
     public static SocketLease acquire(
             final ConnectionPool pool,
@@ -204,7 +199,7 @@ public final class SocketLease {
     /**
      * Acquires a lease with a shared dispatcher.
      *
-     * @param pool            pool
+     * @param pool            connection pool from which a connection is leased
      * @param destination     connection destination
      * @param timeout         timeout policy
      * @param listener        network lifecycle listener
@@ -214,7 +209,7 @@ public final class SocketLease {
      * @param handler         message handler
      * @param attributes      session attributes
      * @param sessionListener session lifecycle listener
-     * @return socket lease
+     * @return socket lease using the supplied shared dispatcher
      */
     public static SocketLease acquire(
             final ConnectionPool pool,
@@ -238,13 +233,13 @@ public final class SocketLease {
                 handler,
                 attributes,
                 sessionListener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Normal.MEBI_64);
     }
 
     /**
      * Acquires a lease with a shared dispatcher.
      *
-     * @param pool                pool
+     * @param pool                connection pool from which a connection is leased
      * @param destination         connection destination
      * @param timeout             timeout policy
      * @param listener            network lifecycle listener
@@ -255,7 +250,7 @@ public final class SocketLease {
      * @param attributes          session attributes
      * @param sessionListener     session lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
-     * @return socket lease
+     * @return socket lease and initialized session using the supplied dispatcher
      */
     public static SocketLease acquire(
             final ConnectionPool pool,
@@ -311,7 +306,7 @@ public final class SocketLease {
     /**
      * Returns the session.
      *
-     * @return session
+     * @return initialized socket session backed by the leased connection
      */
     public SocketSession session() {
         return Assert.notNull(session, () -> new ValidateException("Socket session has not been initialized"));
@@ -320,7 +315,7 @@ public final class SocketLease {
     /**
      * Releases this lease.
      *
-     * @return true when released
+     * @return {@code true} when this call first released the lease to the pool
      */
     public boolean release() {
         if (!released.compareAndSet(false, true)) {
@@ -332,7 +327,7 @@ public final class SocketLease {
     /**
      * Closes this lease.
      *
-     * @return true when closed
+     * @return {@code true} when this call first closed the session and lease
      */
     public boolean close() {
         if (!released.compareAndSet(false, true)) {
@@ -348,7 +343,7 @@ public final class SocketLease {
     /**
      * Returns whether released.
      *
-     * @return true when released
+     * @return {@code true} after either release or close has claimed the lease
      */
     public boolean released() {
         return released.get();
@@ -357,7 +352,7 @@ public final class SocketLease {
     /**
      * Creates an owner handle for a socket session.
      *
-     * @return owner handle
+     * @return closeable owner handle delegating to this lease
      */
     public Owner owner() {
         return new Owner(this);
@@ -367,7 +362,10 @@ public final class SocketLease {
      * Opens a pooled connection.
      *
      * @param destination connection destination
-     * @return connection
+     * @param timeout     connection timeout policy
+     * @param listener    lifecycle listener for the opened connection
+     * @param resolver    DNS resolver used for host lookup
+     * @return connection wrapper that also owns the newly created AIO network
      */
     private static Connection connect(
             final Destination destination,
@@ -381,11 +379,11 @@ public final class SocketLease {
      * Opens a pooled connection.
      *
      * @param destination   connection destination
-     * @param timeout       timeout
-     * @param listener      listener
+     * @param timeout       connection timeout policy
+     * @param listener      lifecycle listener for the opened network and connection
      * @param resolver      DNS resolver
      * @param socketOptions socket options
-     * @return connection
+     * @return connection wrapper that also owns the newly created AIO network
      */
     private static Connection connect(
             final Destination destination,
@@ -406,7 +404,7 @@ public final class SocketLease {
         } catch (final java.util.concurrent.TimeoutException e) {
             aio.close();
             throw new TimeoutException("Socket lease connect timed out", e);
-        } catch (final java.util.concurrent.ExecutionException e) {
+        } catch (final ExecutionException e) {
             aio.close();
             throw new SocketException("Unable to acquire socket lease", e.getCause());
         } catch (final RuntimeException e) {
@@ -419,11 +417,11 @@ public final class SocketLease {
      * Opens a pooled connection with a shared dispatcher.
      *
      * @param destination connection destination
-     * @param timeout     timeout
-     * @param listener    listener
+     * @param timeout     connection timeout policy
+     * @param listener    lifecycle listener for the opened network and connection
      * @param resolver    DNS resolver
      * @param dispatcher  shared dispatcher
-     * @return connection
+     * @return connection wrapper using and owning an AIO network on the shared dispatcher
      */
     private static Connection connect(
             final Destination destination,
@@ -438,12 +436,12 @@ public final class SocketLease {
      * Opens a pooled connection with a shared dispatcher.
      *
      * @param destination   connection destination
-     * @param timeout       timeout
-     * @param listener      listener
+     * @param timeout       connection timeout policy
+     * @param listener      lifecycle listener for the opened network and connection
      * @param resolver      DNS resolver
      * @param dispatcher    shared dispatcher
      * @param socketOptions socket options
-     * @return connection
+     * @return connection wrapper using and owning an AIO network on the shared dispatcher
      */
     private static Connection connect(
             final Destination destination,
@@ -465,7 +463,7 @@ public final class SocketLease {
         } catch (final java.util.concurrent.TimeoutException e) {
             aio.close();
             throw new TimeoutException("Socket lease connect timed out", e);
-        } catch (final java.util.concurrent.ExecutionException e) {
+        } catch (final ExecutionException e) {
             aio.close();
             throw new SocketException("Unable to acquire socket lease", e.getCause());
         } catch (final RuntimeException e) {
@@ -477,9 +475,15 @@ public final class SocketLease {
     /**
      * Creates a session for a leased connection.
      *
-     * @param destination connection destination
-     * @param connection  connection
-     * @return session
+     * @param destination         connection destination
+     * @param connection          leased connection used by the session
+     * @param frameCodec          codec delimiting socket messages
+     * @param handler             inbound message handler
+     * @param attributes          initial session attributes
+     * @param owner               resource released with the session
+     * @param listener            session lifecycle listener
+     * @param materializeMaxBytes maximum payload bytes allowed for materialization
+     * @return socket session initialized from destination-derived socket options
      */
     private static SocketSession session(
             final Destination destination,
@@ -506,15 +510,15 @@ public final class SocketLease {
      * Creates a session for a leased connection.
      *
      * @param destination         connection destination
-     * @param connection          connection
+     * @param connection          leased connection used by the session
      * @param frameCodec          frame codec
-     * @param handler             handler
-     * @param attributes          attributes
-     * @param owner               owner
-     * @param listener            listener
-     * @param materializeMaxBytes materialize max bytes
-     * @param socketOptions       socket options
-     * @return session
+     * @param handler             inbound message handler
+     * @param attributes          immutable initial session attributes
+     * @param owner               resource released when the session terminates
+     * @param listener            session lifecycle listener
+     * @param materializeMaxBytes maximum payload bytes allowed for materialization
+     * @param socketOptions       session socket tuning options
+     * @return initialized socket session over the leased connection
      */
     private static SocketSession session(
             final Destination destination,
@@ -543,11 +547,10 @@ public final class SocketLease {
      *
      * @param socketOptions socket options
      * @param source        source attributes
-     * @return attributes
+     * @return immutable attribute map containing socket options when not already supplied
      */
     private static Map<String, Object> attributes(final SocketOptions socketOptions, final Map<String, Object> source) {
-        final java.util.LinkedHashMap<String, Object> values = new java.util.LinkedHashMap<>(
-                source == null ? Map.of() : source);
+        final LinkedHashMap<String, Object> values = new LinkedHashMap<>(source == null ? Map.of() : source);
         values.putIfAbsent(Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         return Map.copyOf(values);
     }
@@ -555,10 +558,10 @@ public final class SocketLease {
     /**
      * Validates required values.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   type
-     * @return value
+     * @param value reference to validate
+     * @param name  field name included in the validation failure
+     * @param <T>   reference type
+     * @return validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -570,14 +573,14 @@ public final class SocketLease {
     public static final class Owner implements AutoCloseable {
 
         /**
-         * Lease.
+         * Socket lease controlled by this owner handle.
          */
         private final SocketLease lease;
 
         /**
          * Creates an owner handle.
          *
-         * @param lease lease
+         * @param lease socket lease controlled by the handle
          */
         private Owner(final SocketLease lease) {
             this.lease = require(lease, "Socket lease");
@@ -637,7 +640,7 @@ public final class SocketLease {
         /**
          * Returns the delegated connection destination.
          *
-         * @return destination
+         * @return destination of the delegated pooled connection
          */
         @Override
         public Destination destination() {
@@ -647,7 +650,7 @@ public final class SocketLease {
         /**
          * Returns the delegated connection conduit.
          *
-         * @return conduit
+         * @return conduit of the delegated pooled connection
          */
         @Override
         public Conduit conduit() {
@@ -657,10 +660,10 @@ public final class SocketLease {
         /**
          * Returns the delegated connection state.
          *
-         * @return state
+         * @return lifecycle state of the delegated pooled connection
          */
         @Override
-        public Status state() {
+        public State state() {
             return delegate.state();
         }
 

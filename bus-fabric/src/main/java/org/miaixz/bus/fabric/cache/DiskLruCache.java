@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.cache;
 
 import java.io.*;
+import java.nio.file.FileSystem;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
@@ -44,8 +45,6 @@ import org.miaixz.bus.logger.Logger;
  * A cache that uses a limited amount of space on a filesystem. Each cache entry has a string key and a fixed number of
  * values. Each key must match the regex {@code [a-z0-9_-]{1,120}}. Values are byte sequences, accessible as streams or
  * files.
- * <p>
- * Each value must be between {@code 0} and {@code Integer.MAX_VALUE} bytes in length.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -152,6 +151,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * committed. A snapshot is stale if its sequence number is not equal to its entry's sequence number.
      */
     private long nextSequenceNumber = 0;
+
     /**
      * Background task that trims the journal and evicts entries after writes.
      */
@@ -251,6 +251,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * @param valueCount the number of values per cache entry.
      * @param maxSize    the maximum number of bytes this cache should use to store its data.
      * @return the disk cache.
+     * @throws IllegalArgumentException if {@code maxSize} or {@code valueCount} is not positive
      */
     public static DiskLruCache create(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize) {
         Assert.isTrue(maxSize > 0, "maxSize <= 0");
@@ -523,7 +524,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * Opens an editor only when the caller's expected snapshot sequence still matches the entry.
      *
      * @param key                    entry key
-     * @param expectedSequenceNumber expected committed sequence, or {@link #Builder.DISK_LRU_CACHE_ANY_SEQUENCE_NUMBER}
+     * @param expectedSequenceNumber expected committed sequence, or {@code -1} to accept any sequence
      * @return editor, or {@code null} when the entry is stale, locked, or temporarily unhealthy
      * @throws IOException when journal access fails
      */
@@ -584,7 +585,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * Changes the maximum number of bytes the cache can store and queues a job to trim the existing store, if
      * necessary.
      *
-     * @param maxSize the new maximum size in bytes.
+     * @param maxSize the new byte budget assigned without additional validation
      */
     public synchronized void setMaxSize(long maxSize) {
         this.maxSize = maxSize;
@@ -966,9 +967,9 @@ public class DiskLruCache implements Closeable, Flushable {
      * does not guarantee that {@link FileNotFoundException} will not be thrown. The file may be moved between the two
      * calls!
      * <p>
-     * This interface is less ambitious than {@link java.nio.file.FileSystem} introduced in Java 7. It lacks important
-     * features like file watching, metadata, permissions, and disk space information. In exchange for these
-     * limitations, this interface is easier to implement and works on all versions of Java and Android.
+     * This interface is less ambitious than {@link FileSystem} introduced in Java 7. It lacks important features like
+     * file watching, metadata, permissions, and disk space information. In exchange for these limitations, this
+     * interface is easier to implement and works on all versions of Java and Android.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -1061,8 +1062,8 @@ public class DiskLruCache implements Closeable, Flushable {
             /**
              * Returns whether a file exists.
              *
-             * @param file file
-             * @return true when the file exists
+             * @param file filesystem path to test
+             * @return {@code true} when the path currently exists
              */
             @Override
             public boolean exists(File file) {
@@ -1072,8 +1073,8 @@ public class DiskLruCache implements Closeable, Flushable {
             /**
              * Returns the file length.
              *
-             * @param file file
-             * @return file length
+             * @param file filesystem path to measure
+             * @return current file length in bytes, or zero when the path does not exist
              */
             @Override
             public long size(File file) {
@@ -1737,7 +1738,7 @@ public class DiskLruCache implements Closeable, Flushable {
         /**
          * Parsed journal line.
          *
-         * @param command command
+         * @param command parsed journal operation name
          * @param key     entry key
          * @param lengths optional length fields
          */

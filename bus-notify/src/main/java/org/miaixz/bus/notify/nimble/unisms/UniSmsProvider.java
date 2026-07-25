@@ -26,7 +26,7 @@ import java.util.*;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.crypto.Builder;
@@ -62,7 +62,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
      * @throws ValidateException if both template ID and template name are empty.
      */
     @Override
-    public Message send(UniNotice entity) {
+    public Message<Void> send(UniNotice entity) {
         if ("".equals(entity.getTemplate()) && "".equals(entity.getTemplateName())) {
             Logger.warn(
                     false,
@@ -91,7 +91,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
         map.put(entity.getTemplateName(), entity.getContent());
         // The template data for the SMS message.
         data.put("templateData", map);
-        Message result = request(entity, "sms.message.send", data);
+        Message<Void> result = request(entity, "sms.message.send", data);
         Logger.info(
                 false,
                 "Notify",
@@ -110,7 +110,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
      * @param bodys  The request body parameters.
      * @return A {@link Message} indicating the result of the API request.
      */
-    public Message request(final UniNotice entity, final String action, final Map<String, Object> bodys) {
+    public Message<Void> request(final UniNotice entity, final String action, final Map<String, Object> bodys) {
         Logger.debug(
                 true,
                 "Notify",
@@ -119,9 +119,9 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
                 bodys == null ? 0 : bodys.size(),
                 entity != null && entity.isSimple());
         Map<String, String> headers = new HashMap<>();
-        headers.put(HTTP.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
-        headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        headers.put(HTTP.ACCEPT, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.USER_AGENT, "uni-java-sdk" + "/" + "0.0.4");
+        headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        headers.put(Http.Header.ACCEPT, MediaType.APPLICATION_JSON);
         String url;
         if (entity.isSimple()) {
             url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey();
@@ -157,7 +157,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
         String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        Message result = Message.builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
         Logger.debug(
                 false,
                 "Notify",

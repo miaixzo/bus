@@ -72,7 +72,7 @@ public class GitlabProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -90,7 +90,7 @@ public class GitlabProvider extends AbstractProvider {
             String tokenType = (String) object.get("token_type");
             String scope = (String) object.get("scope");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Authorization.builder().token(token).refresh(refresh).idToken(idToken).token_type(tokenType)
                                     .scope(scope).build())
@@ -117,7 +117,7 @@ public class GitlabProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String response = doGetUserInfo(authorization);
         try {
             Map<String, Object> object = JsonKit.toPojo(response, Map.class);
@@ -139,7 +139,7 @@ public class GitlabProvider extends AbstractProvider {
             String email = (String) object.get("email");
             String bio = (String) object.get("bio");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                     Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(username).nickname(name)
                             .avatar(avatarUrl).blog(webUrl).company(organization).location(location).email(email)
                             .remark(bio).gender(Gender.UNKNOWN).token(authorization).source(complex.toString()).build())
@@ -185,8 +185,8 @@ public class GitlabProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+    public Message<String> build(String state) {
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Builder.fromUrl((String) super.build(state).getData())
                         .queryParam("scope", this.getScopes(Symbol.PLUS, false, this.getScopes(GitlabScope.values())))
                         .build())

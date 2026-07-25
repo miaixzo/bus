@@ -67,10 +67,10 @@ public class AliyunProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         String response = doPostToken(callback.getCode());
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Authorization.builder().token((String) object.get("access_token"))
                                 .expireIn(((Number) object.get("expires_in")).intValue())
@@ -86,10 +86,10 @@ public class AliyunProvider extends AbstractProvider {
      * @return {@link Claims} containing the user's information
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String userInfo = doGetUserInfo(authorization);
         Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("sub"))
                                 .username((String) object.get("login_name")).nickname((String) object.get("name"))

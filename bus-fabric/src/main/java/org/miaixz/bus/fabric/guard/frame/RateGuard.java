@@ -31,7 +31,10 @@ import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.guard.GuardRule;
 
 /**
- * Token bucket guard for frame throughput.
+ * Token bucket guard for frame throughput. One guard instance owns exactly one token bucket, so sessions that share an
+ * instance are limited by one global aggregate balance. Per-session limiting requires creating a separate
+ * {@code RateGuard} for every session; the framework never clones a guard implicitly. Rejected acquisitions return
+ * immediately without waiting, sleeping, or scheduling work.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -39,12 +42,12 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 public final class RateGuard implements GuardRule {
 
     /**
-     * Maximum bytes refilled per second.
+     * Token-bucket capacity and whole-second refill amount.
      */
     private final long bytesPerSecond;
 
     /**
-     * Available token count.
+     * Concurrent token balance shared by all callers of this guard instance.
      */
     private final AtomicLong available;
 
@@ -56,7 +59,7 @@ public final class RateGuard implements GuardRule {
     /**
      * Creates a rate guard.
      *
-     * @param bytesPerSecond bytes per second
+     * @param bytesPerSecond positive bucket capacity and refill rate in bytes per second
      */
     private RateGuard(final long bytesPerSecond) {
         this.bytesPerSecond = validateBytesPerSecond(bytesPerSecond);
@@ -67,18 +70,20 @@ public final class RateGuard implements GuardRule {
     /**
      * Creates a rate guard.
      *
-     * @param bytesPerSecond bytes per second
-     * @return rate guard
+     * @param bytesPerSecond positive bucket capacity and whole-second refill rate
+     * @return full token bucket initialized with the requested capacity
+     * @throws ValidateException if {@code bytesPerSecond} is not positive
      */
     public static RateGuard of(final long bytesPerSecond) {
         return new RateGuard(bytesPerSecond);
     }
 
     /**
-     * Acquires frame byte tokens.
+     * Refills from the system clock and atomically consumes frame-byte tokens without waiting.
      *
-     * @param bytes requested bytes
-     * @return guard result
+     * @param bytes non-negative token count requested by one frame
+     * @return passing result after successful consumption, or rejection containing the observed available balance
+     * @throws ValidateException if {@code bytes} is negative
      */
     public GuardResult acquire(final long bytes) {
         Assert.isTrue(bytes >= Normal._0, () -> new ValidateException("Requested bytes must be non-negative"));
@@ -97,8 +102,9 @@ public final class RateGuard implements GuardRule {
     /**
      * Checks a message payload length as a frame-rate request.
      *
-     * @param message message
-     * @return guard result
+     * @param message message whose payload length supplies the token request
+     * @return acquisition result; an unknown negative payload length is treated as zero
+     * @throws ValidateException if {@code message} is {@code null}
      */
     @Override
     public GuardResult check(final Message message) {
@@ -108,9 +114,10 @@ public final class RateGuard implements GuardRule {
     }
 
     /**
-     * Refills tokens from a runtime clock.
+     * Refills one rate unit for each complete elapsed second reported by a compatible monotonic clock.
      *
-     * @param clock runtime clock
+     * @param clock monotonic clock sharing the time base used by this guard's previous refill timestamp
+     * @throws ValidateException if {@code clock} is {@code null}
      */
     public void refill(final Clock clock) {
         final Clock checkedClock = Assert.notNull(clock, () -> new ValidateException("Runtime clock must not be null"));
@@ -133,7 +140,7 @@ public final class RateGuard implements GuardRule {
     /**
      * Returns available tokens.
      *
-     * @return available tokens
+     * @return current concurrent token balance
      */
     public long available() {
         return available.get();
@@ -142,17 +149,17 @@ public final class RateGuard implements GuardRule {
     /**
      * Returns rule name.
      *
-     * @return rule name
+     * @return stable frame-rate guard name
      */
     @Override
     public String name() {
-        return Builder.RATE_GUARD_NAME;
+        return Builder.GUARD_FRAME_RATE_NAME;
     }
 
     /**
      * Adds tokens without exceeding capacity.
      *
-     * @param tokens tokens to add
+     * @param tokens positive refill amount, capped to one bucket capacity
      */
     private void addTokens(final long tokens) {
         if (tokens <= Normal._0) {
@@ -170,9 +177,9 @@ public final class RateGuard implements GuardRule {
     /**
      * Multiplies with saturation.
      *
-     * @param seconds seconds
-     * @param bytes   bytes per second
-     * @return token count
+     * @param seconds non-negative complete elapsed seconds
+     * @param bytes   positive bytes refilled per second
+     * @return product, or {@link Long#MAX_VALUE} when multiplication would overflow
      */
     private static long safeMultiply(final long seconds, final long bytes) {
         if (seconds > Long.MAX_VALUE / bytes) {
@@ -184,8 +191,9 @@ public final class RateGuard implements GuardRule {
     /**
      * Validates bytes per second.
      *
-     * @param bytesPerSecond bytes per second
-     * @return bytes per second
+     * @param bytesPerSecond candidate bucket capacity and refill rate
+     * @return unchanged positive rate
+     * @throws ValidateException if {@code bytesPerSecond} is not positive
      */
     private static long validateBytesPerSecond(final long bytesPerSecond) {
         Assert.isTrue(bytesPerSecond > Normal._0, () -> new ValidateException("Frame rate must be greater than zero"));

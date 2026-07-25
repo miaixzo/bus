@@ -36,7 +36,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -78,7 +78,7 @@ public class AmazonProvider extends AbstractProvider {
      * @return the authorization URL
      */
     @Override
-    public Message build(String state) {
+    public Message<String> build(String state) {
         String realState = getRealState(state);
         Builder builder = Builder.fromUrl(this.complex.authorize()).queryParam("client_id", context.getClientId())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getScopes(AmazonScope.values())))
@@ -96,7 +96,7 @@ public class AmazonProvider extends AbstractProvider {
             this.cache.write(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
 
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(builder.build()).build();
     }
 
     /**
@@ -107,7 +107,7 @@ public class AmazonProvider extends AbstractProvider {
      * @return the {@link Authorization} containing access token details
      */
     @Override
-    public Message token(Callback callback) {
+    public Message<Authorization> token(Callback callback) {
         Map<String, String> form = new HashMap<>(9);
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
@@ -120,8 +120,8 @@ public class AmazonProvider extends AbstractProvider {
             String codeVerifier = String.valueOf(this.cache.read(cacheKey));
             form.put("code_verifier", codeVerifier);
         }
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(this.getToken(form, this.complex.token()))
-                .build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(this.getToken(form, this.complex.token())).build();
     }
 
     /**
@@ -131,14 +131,14 @@ public class AmazonProvider extends AbstractProvider {
      * @return a {@link Message} containing the refreshed token information
      */
     @Override
-    public Message refresh(Authorization authorization) {
+    public Message<Authorization> refresh(Authorization authorization) {
         Map<String, String> form = new HashMap<>(7);
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", authorization.getRefresh());
         form.put("client_id", context.getClientId());
         form.put("client_secret", context.getClientSecret());
-        return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getToken(form, this.complex.refresh()))
-                .build();
+        return Message.<Authorization>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(getToken(form, this.complex.refresh())).build();
     }
 
     /**
@@ -151,8 +151,8 @@ public class AmazonProvider extends AbstractProvider {
      */
     private Authorization getToken(Map<String, String> param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "api.amazon.com");
-        header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
+        header.put(Http.Header.HOST, "api.amazon.com");
+        header.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
 
         String response = post(url, param, header);
         try {
@@ -209,12 +209,12 @@ public class AmazonProvider extends AbstractProvider {
      * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
-    public Message userInfo(Authorization authorization) {
+    public Message<Claims> userInfo(Authorization authorization) {
         String token = authorization.getToken();
         this.checkToken(token);
         Map<String, String> header = new HashMap<>();
-        header.put(HTTP.HOST, "api.amazon.com");
-        header.put(HTTP.AUTHORIZATION, HTTP.BEARER + token);
+        header.put(Http.Header.HOST, "api.amazon.com");
+        header.put(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token);
 
         String userInfo = get(this.complex.userinfo(), new HashMap<>(0), header);
         try {
@@ -231,7 +231,7 @@ public class AmazonProvider extends AbstractProvider {
             String name = (String) object.get("name");
             String email = (String) object.get("email");
 
-            return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
+            return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                     .data(
                             Claims.builder().rawJson(JsonKit.toJsonString(object)).uuid(userId).username(name)
                                     .nickname(name).email(email).gender(Gender.UNKNOWN).source(complex.toString())

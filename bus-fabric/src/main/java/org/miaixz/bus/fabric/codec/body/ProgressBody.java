@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -47,18 +46,18 @@ public interface ProgressBody extends Body {
     /**
      * Reads all progress body bytes.
      *
-     * @return body bytes
+     * @return newly materialized payload bytes within the default safety limit
      */
     @Override
     default byte[] bytes() {
-        return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
+        return Payload.materialize(payload(), Normal.MEBI_64, "ProgressBody.bytes()");
     }
 
     /**
      * Reads all progress body bytes with an explicit materialize threshold.
      *
-     * @param maxBytes maximum bytes to materialize
-     * @return body bytes
+     * @param maxBytes maximum payload bytes permitted during materialization
+     * @return newly materialized payload bytes
      */
     @Override
     default byte[] bytes(final long maxBytes) {
@@ -68,8 +67,8 @@ public interface ProgressBody extends Body {
     /**
      * Reads progress body text.
      *
-     * @param charset charset
-     * @return body text
+     * @param charset character set used to decode the materialized bytes
+     * @return payload text decoded within the default materialization limit
      */
     @Override
     default String text(final Charset charset) {
@@ -79,9 +78,9 @@ public interface ProgressBody extends Body {
     /**
      * Reads progress body text with an explicit materialize threshold.
      *
-     * @param charset  charset
-     * @param maxBytes maximum bytes to materialize
-     * @return body text
+     * @param charset  character set used to decode the materialized bytes
+     * @param maxBytes maximum payload bytes permitted during materialization
+     * @return decoded payload text
      */
     @Override
     default String text(final Charset charset, final long maxBytes) {
@@ -92,7 +91,7 @@ public interface ProgressBody extends Body {
     /**
      * Returns transferred byte count.
      *
-     * @return transferred byte count
+     * @return cumulative observed byte count, or {@code 0} when tracking is not implemented
      */
     default long transferred() {
         return 0L;
@@ -101,7 +100,7 @@ public interface ProgressBody extends Body {
     /**
      * Returns total byte count.
      *
-     * @return total byte count, or -1 when unknown
+     * @return declared body length, or {@code -1} when unknown
      */
     default long total() {
         return length();
@@ -110,8 +109,9 @@ public interface ProgressBody extends Body {
     /**
      * Sets callback step in bytes.
      *
-     * @param bytes step bytes
+     * @param bytes positive number of transferred bytes between callbacks
      * @return this body
+     * @throws ValidateException if {@code bytes} is not positive
      */
     default ProgressBody stepBytes(final long bytes) {
         Tracker.validateStepBytes(bytes);
@@ -121,8 +121,9 @@ public interface ProgressBody extends Body {
     /**
      * Sets callback step as a total-length rate.
      *
-     * @param rate step rate
+     * @param rate finite fraction greater than {@code 0} and at most {@code 1} of the known total length
      * @return this body
+     * @throws ValidateException if the rate is outside the valid range or the total length is unknown
      */
     default ProgressBody stepRate(final double rate) {
         Tracker.validateStepRate(rate, total());
@@ -135,45 +136,45 @@ public interface ProgressBody extends Body {
     final class Tracker implements TransferObserver {
 
         /**
-         * Original payload.
+         * Original payload whose opened sources are observed.
          */
         private final Payload original;
 
         /**
-         * Progress listener.
+         * Callback receiving cumulative transferred and declared total byte counts.
          */
         private final BiConsumer<Long, Long> listener;
 
         /**
-         * Wrapped payload.
+         * Stable payload view that creates progress-reporting sources.
          */
         private final Payload payload;
 
         /**
-         * Transferred byte count.
+         * Saturating cumulative byte count shared by all opened wrapped sources.
          */
         private final AtomicLong transferred = new AtomicLong();
 
         /**
-         * Callback step in bytes.
+         * Positive byte interval between threshold callbacks.
          */
         private final AtomicLong stepBytes = new AtomicLong(Normal._8192);
 
         /**
-         * Next byte threshold for callback.
+         * Next cumulative byte count that triggers a callback.
          */
         private final AtomicLong nextStep = new AtomicLong(Normal._8192);
 
         /**
-         * Whether final callback has been fired.
+         * Guard ensuring the known-length completion callback is emitted at most once.
          */
         private final AtomicBoolean doneCalled = new AtomicBoolean();
 
         /**
          * Creates a tracker.
          *
-         * @param original original payload
-         * @param listener listener
+         * @param original non-null payload to observe
+         * @param listener non-null cumulative progress callback
          */
         private Tracker(final Payload original, final BiConsumer<Long, Long> listener) {
             this.original = require(original, "Progress payload");
@@ -184,9 +185,9 @@ public interface ProgressBody extends Body {
         /**
          * Creates a tracker.
          *
-         * @param payload  payload
-         * @param listener listener
-         * @return tracker
+         * @param payload  non-null payload to observe
+         * @param listener non-null cumulative progress callback
+         * @return tracker exposing a progress-aware payload view
          */
         public static Tracker of(final Payload payload, final BiConsumer<Long, Long> listener) {
             return new Tracker(payload, listener);
@@ -195,7 +196,7 @@ public interface ProgressBody extends Body {
         /**
          * Returns wrapped payload.
          *
-         * @return payload
+         * @return stable progress-aware wrapper around the original payload
          */
         public Payload payload() {
             return payload;
@@ -204,7 +205,7 @@ public interface ProgressBody extends Body {
         /**
          * Returns transferred byte count.
          *
-         * @return transferred bytes
+         * @return saturating cumulative byte count observed across wrapped sources
          */
         public long transferred() {
             return transferred.get();
@@ -213,7 +214,7 @@ public interface ProgressBody extends Body {
         /**
          * Returns total byte count.
          *
-         * @return total bytes, or -1 when unknown
+         * @return original payload length, or {@code -1} when unknown
          */
         public long total() {
             return original.length();
@@ -222,8 +223,9 @@ public interface ProgressBody extends Body {
         /**
          * Sets callback step in bytes.
          *
-         * @param bytes step bytes
+         * @param bytes positive number of transferred bytes between callbacks
          * @return this tracker
+         * @throws ValidateException if {@code bytes} is not positive
          */
         public Tracker stepBytes(final long bytes) {
             validateStepBytes(bytes);
@@ -235,8 +237,9 @@ public interface ProgressBody extends Body {
         /**
          * Sets callback step as a total-length rate.
          *
-         * @param rate step rate
+         * @param rate finite fraction greater than {@code 0} and at most {@code 1} of the known original length
          * @return this tracker
+         * @throws ValidateException if the rate is outside the valid range or the original length is unknown
          */
         public Tracker stepRate(final double rate) {
             validateStepRate(rate, original.length());
@@ -247,7 +250,8 @@ public interface ProgressBody extends Body {
         /**
          * Validates step bytes.
          *
-         * @param bytes step bytes
+         * @param bytes candidate callback interval in bytes
+         * @throws ValidateException if {@code bytes} is not positive
          */
         static void validateStepBytes(final long bytes) {
             Assert.isTrue(bytes > 0, () -> new ValidateException("Progress step bytes must be positive"));
@@ -256,8 +260,9 @@ public interface ProgressBody extends Body {
         /**
          * Validates step rate.
          *
-         * @param rate  step rate
-         * @param total total length
+         * @param rate  candidate fraction of the total length
+         * @param total declared total byte count
+         * @throws ValidateException if the rate is outside {@code (0, 1]} or the total is unknown
          */
         static void validateStepRate(final double rate, final long total) {
             Assert.isTrue(
@@ -279,8 +284,8 @@ public interface ProgressBody extends Body {
         /**
          * Observes a cumulative core transfer progress update.
          *
-         * @param total       total byte count
-         * @param transferred transferred byte count
+         * @param total       transfer-reported total byte count, ignored in favor of the original payload length
+         * @param transferred cumulative transferred byte count reported by the core transfer
          */
         @Override
         public void progress(final long total, final long transferred) {
@@ -301,18 +306,22 @@ public interface ProgressBody extends Body {
         /**
          * Updates progress and emits callbacks when thresholds are crossed.
          *
-         * @param count transferred count
+         * @param count positive byte-count increment to add
          */
         private void progress(final long count) {
             if (count <= 0) {
                 return;
             }
-            final long current = transferred.addAndGet(count);
+            final long current = addTransferred(count);
             final long total = original.length();
             long lastNotified = -1L;
             long threshold = nextStep.get();
             while (current >= threshold) {
-                if (nextStep.compareAndSet(threshold, threshold + stepBytes.get())) {
+                if (threshold == Long.MAX_VALUE) {
+                    break;
+                }
+                final long next = saturatedAdd(threshold, stepBytes.get());
+                if (nextStep.compareAndSet(threshold, next)) {
                     notifyListener(threshold, total);
                     lastNotified = threshold;
                     threshold = nextStep.get();
@@ -330,8 +339,9 @@ public interface ProgressBody extends Body {
         /**
          * Notifies listener.
          *
-         * @param current transferred bytes
-         * @param total   total bytes
+         * @param current cumulative bytes to report
+         * @param total   declared original payload length, or {@code -1}
+         * @throws InternalException if the listener throws a runtime exception
          */
         private void notifyListener(final long current, final long total) {
             try {
@@ -344,21 +354,51 @@ public interface ProgressBody extends Body {
         /**
          * Returns the next threshold after the transferred count.
          *
-         * @param current current bytes
-         * @param step    step bytes
-         * @return next threshold
+         * @param current current cumulative byte count
+         * @param step    positive callback interval
+         * @return first aligned threshold strictly greater than {@code current}, saturated at {@link Long#MAX_VALUE}
          */
         private static long nextThreshold(final long current, final long step) {
-            return (current / step + 1) * step;
+            final long remainder = current % step;
+            final long delta = remainder == 0L ? step : step - remainder;
+            return saturatedAdd(current, delta);
+        }
+
+        /**
+         * Adds transferred bytes with saturation at {@link Long#MAX_VALUE}.
+         *
+         * @param count positive byte count
+         * @return updated transferred count
+         */
+        private long addTransferred(final long count) {
+            while (true) {
+                final long current = transferred.get();
+                final long next = saturatedAdd(current, count);
+                if (transferred.compareAndSet(current, next)) {
+                    return next;
+                }
+            }
+        }
+
+        /**
+         * Adds two non-negative values with saturation.
+         *
+         * @param first  first value
+         * @param second second value
+         * @return saturated sum
+         */
+        private static long saturatedAdd(final long first, final long second) {
+            return first > Long.MAX_VALUE - second ? Long.MAX_VALUE : first + second;
         }
 
         /**
          * Validates a required value.
          *
-         * @param value value
-         * @param name  field name
-         * @param <T>   value type
-         * @return value
+         * @param value reference to validate
+         * @param name  logical field name included in the validation error
+         * @param <T>   reference type
+         * @return validated non-null reference
+         * @throws ValidateException if {@code value} is {@code null}
          */
         private static <T> T require(final T value, final String name) {
             return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
@@ -372,7 +412,7 @@ public interface ProgressBody extends Body {
             /**
              * Returns the wrapped payload length.
              *
-             * @return wrapped payload length
+             * @return original payload length, or {@code -1} when unknown
              */
             @Override
             public long length() {
@@ -382,7 +422,7 @@ public interface ProgressBody extends Body {
             /**
              * Opens a progress-reporting source over the wrapped payload.
              *
-             * @return progress-reporting source
+             * @return new source that reports positive reads to the shared tracker
              */
             @Override
             public Source source() {
@@ -392,18 +432,18 @@ public interface ProgressBody extends Body {
             /**
              * Materializes the payload using the default threshold.
              *
-             * @return materialized bytes
+             * @return newly materialized bytes within the default safety limit
              */
             @Override
             public byte[] bytes() {
-                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Normal.MEBI_64);
             }
 
             /**
              * Materializes the payload using an explicit threshold.
              *
-             * @param maxBytes maximum bytes to materialize
-             * @return materialized bytes
+             * @param maxBytes maximum payload bytes permitted during materialization
+             * @return newly materialized bytes read through a progress-reporting source
              */
             @Override
             public byte[] bytes(final long maxBytes) {
@@ -413,20 +453,20 @@ public interface ProgressBody extends Body {
             /**
              * Reads payload text using the default threshold.
              *
-             * @param charset charset
-             * @return text
+             * @param charset character set used to decode materialized bytes
+             * @return decoded payload text within the default materialization limit
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Normal.MEBI_64);
             }
 
             /**
              * Reads payload text using an explicit threshold.
              *
-             * @param charset  charset
-             * @param maxBytes maximum bytes to materialize
-             * @return text
+             * @param charset  character set used to decode materialized bytes
+             * @param maxBytes maximum payload bytes permitted during materialization
+             * @return decoded payload text
              */
             @Override
             public String text(final Charset charset, final long maxBytes) {
@@ -437,7 +477,7 @@ public interface ProgressBody extends Body {
             /**
              * Returns whether the wrapped payload is repeatable.
              *
-             * @return true when repeatable
+             * @return {@code true} when the original payload can open independent sources repeatedly
              */
             @Override
             public boolean repeatable() {
@@ -459,7 +499,7 @@ public interface ProgressBody extends Body {
             /**
              * Creates a progress source.
              *
-             * @param input delegate source
+             * @param input source opened from the original payload
              */
             private ProgressSource(final Source input) {
                 this.input = input;
@@ -485,7 +525,7 @@ public interface ProgressBody extends Body {
             /**
              * Returns the delegate timeout.
              *
-             * @return timeout
+             * @return timeout policy of the delegate source
              */
             @Override
             public Timeout timeout() {

@@ -20,8 +20,10 @@
 package org.miaixz.bus.fabric.protocol.stomp.frame;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -32,37 +34,70 @@ import org.miaixz.bus.fabric.Payload;
 /**
  * Immutable STOMP frame value.
  *
- * @param command command
- * @param headers headers
- * @param body    body
- * @param receipt whether a receipt header is present
  * @author Kimi Liu
  * @since Java 21+
  */
-public record StompFrame(String command, Headers headers, Payload body, boolean receipt) {
+public final class StompFrame {
+
+    /**
+     * Unique heartbeat frame.
+     */
+    private static final StompFrame HEARTBEAT = new StompFrame();
+
+    /**
+     * Frame command, empty only for the heartbeat singleton.
+     */
+    private final String command;
+
+    /**
+     * Immutable frame headers.
+     */
+    private final Headers headers;
+
+    /**
+     * Payload carried after the frame's blank header separator.
+     */
+    private final Payload body;
+
+    /**
+     * Whether a receipt header is present.
+     */
+    private final boolean receipt;
+
+    /**
+     * Creates the unique heartbeat frame.
+     */
+    private StompFrame() {
+        this.command = Normal.EMPTY;
+        this.headers = Headers.empty();
+        this.body = Payload.empty();
+        this.receipt = false;
+    }
 
     /**
      * Creates a validated frame.
      *
-     * @param command command
-     * @param headers headers
-     * @param body    body
-     * @param receipt receipt flag
+     * @param command non-blank STOMP command normalized to uppercase
+     * @param headers immutable frame headers
+     * @param body    frame payload
+     * @param receipt compatibility argument ignored in favor of deriving receipt state from the headers
+     * @throws ValidateException if the command, headers, or body is invalid
      */
-    public StompFrame {
-        command = validateCommand(command);
-        headers = require(headers, "STOMP headers");
-        body = require(body, "STOMP body");
-        receipt = headers.contains(Builder.STOMP_HEADER_RECEIPT);
+    public StompFrame(final String command, final Headers headers, final Payload body, final boolean receipt) {
+        this.command = validateCommand(command);
+        this.headers = require(headers, "STOMP headers");
+        this.body = require(body, "STOMP body");
+        this.receipt = this.headers.contains(Builder.STOMP_HEADER_RECEIPT);
     }
 
     /**
      * Creates a frame.
      *
-     * @param command command
-     * @param headers headers
-     * @param body    body
-     * @return frame
+     * @param command non-blank STOMP command normalized to uppercase
+     * @param headers immutable frame headers
+     * @param body    frame payload
+     * @return validated immutable frame with receipt state derived from its headers
+     * @throws ValidateException if the command, headers, or body is invalid
      */
     public static StompFrame of(final String command, final Headers headers, final Payload body) {
         return new StompFrame(command, headers, body,
@@ -70,11 +105,19 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
     }
 
     /**
+     * Returns the unique heartbeat frame.
+     *
+     * @return heartbeat singleton
+     */
+    public static StompFrame heartbeat() {
+        return HEARTBEAT;
+    }
+
+    /**
      * Returns command.
      *
-     * @return command
+     * @return uppercase STOMP command, or an empty string for the heartbeat singleton
      */
-    @Override
     public String command() {
         return command;
     }
@@ -82,9 +125,8 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
     /**
      * Returns headers.
      *
-     * @return headers
+     * @return immutable frame headers
      */
-    @Override
     public Headers headers() {
         return headers;
     }
@@ -92,9 +134,8 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
     /**
      * Returns body.
      *
-     * @return body
+     * @return payload carried by the frame
      */
-    @Override
     public Payload body() {
         return body;
     }
@@ -102,18 +143,60 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
     /**
      * Returns whether a receipt is requested.
      *
-     * @return true when a receipt header is present
+     * @return {@code true} when the headers contain a STOMP {@code receipt} field
      */
-    @Override
     public boolean receipt() {
         return receipt;
     }
 
     /**
+     * Compares normal frames by value while preserving heartbeat singleton semantics.
+     *
+     * @param other compared value
+     * @return {@code true} when both are non-heartbeat frames with equal command, headers, body, and receipt state
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof StompFrame frame) || this == HEARTBEAT || frame == HEARTBEAT) {
+            return false;
+        }
+        return receipt == frame.receipt && command.equals(frame.command) && headers.equals(frame.headers)
+                && body.equals(frame.body);
+    }
+
+    /**
+     * Returns the value hash for a normal frame or the heartbeat identity hash.
+     *
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        return this == HEARTBEAT ? System.identityHashCode(this) : Objects.hash(command, headers, body, receipt);
+    }
+
+    /**
+     * Returns a diagnostic frame representation.
+     *
+     * @return heartbeat marker or diagnostic representation of the frame fields
+     */
+    @Override
+    public String toString() {
+        if (this == HEARTBEAT) {
+            return "StompFrame[heartbeat]";
+        }
+        return "StompFrame[command=" + command + ", headers=" + headers + ", body=" + body + ", receipt=" + receipt
+                + "]";
+    }
+
+    /**
      * Validates and normalizes command names.
      *
-     * @param value command
-     * @return command
+     * @param value command text to validate and normalize
+     * @return trimmed uppercase command
+     * @throws ValidateException if the command is blank or contains a line break
      */
     private static String validateCommand(final String value) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
@@ -125,10 +208,11 @@ public record StompFrame(String command, Headers headers, Payload body, boolean 
     /**
      * Validates required references.
      *
-     * @param value value
-     * @param name  field name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical field name included in the validation error
+     * @param <T>   reference type
+     * @return validated non-null reference
+     * @throws ValidateException if {@code value} is {@code null}
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

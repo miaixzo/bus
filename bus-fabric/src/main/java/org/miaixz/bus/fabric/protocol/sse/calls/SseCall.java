@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Callback;
+import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.sse.SseSession;
@@ -41,46 +42,48 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 public final class SseCall extends MonoCall<SseSession> {
 
     /**
-     * SSE protocol operation.
+     * Single SSE-open operation receiving the call lifecycle's cancellation scope.
      */
     private final Function<Cancellation, SseSession> operation;
 
     /**
-     * Stable asynchronous dispatch key.
+     * Dispatch key returned when this call is submitted asynchronously.
      */
     private final String key;
 
     /**
-     * Opened session.
+     * Session produced by the operation and available to running-call cancellation.
      */
     private final AtomicReference<SseSession> session;
 
     /**
-     * Creates a call.
+     * Creates an unsubmitted SSE-open call.
      *
-     * @param dispatcher dispatcher used by enqueue()
-     * @param callback   callback managed by the call lifecycle
-     * @param observer   lifecycle observer
-     * @param operation  SSE protocol operation
-     * @param key        asynchronous dispatch key
+     * @param dispatcher dispatcher used by no-argument {@code enqueue()}
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param observer   observer receiving call lifecycle events
+     * @param timeout    complete protocol timeout policy
+     * @param operation  function that opens a session within the lifecycle cancellation scope
+     * @param key        dispatch key used for asynchronous submission
      */
     private SseCall(final Dispatcher dispatcher, final Callback<? super SseSession> callback,
-            final EventObserver observer, final Function<Cancellation, SseSession> operation, final String key) {
-        super(Builder.SSE_TAG_OPEN, dispatcher, observer, callback);
+            final EventObserver observer, final Timeout timeout, final Function<Cancellation, SseSession> operation,
+            final String key) {
+        super(Builder.SSE_TAG_OPEN, dispatcher, observer, callback, timeout);
         this.operation = require(operation, "SSE operation");
         this.key = require(key, "SSE dispatch key");
         this.session = new AtomicReference<>();
     }
 
     /**
-     * Creates a call.
+     * Creates a call with the shared default timeout policy.
      *
-     * @param dispatcher dispatcher used by enqueue()
-     * @param callback   callback managed by the call lifecycle
-     * @param observer   lifecycle observer
-     * @param operation  SSE protocol operation
-     * @param key        asynchronous dispatch key
-     * @return call
+     * @param dispatcher dispatcher used by no-argument {@code enqueue()}
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param observer   observer receiving call lifecycle events
+     * @param operation  function that opens a session within the lifecycle cancellation scope
+     * @param key        dispatch key used for asynchronous submission
+     * @return new single-use, unsubmitted SSE-open call
      */
     public static SseCall create(
             final Dispatcher dispatcher,
@@ -88,14 +91,37 @@ public final class SseCall extends MonoCall<SseSession> {
             final EventObserver observer,
             final Function<Cancellation, SseSession> operation,
             final String key) {
-        return new SseCall(require(dispatcher, "Dispatcher"), callback,
-                EventObserver.safe(require(observer, "Observer")), operation, key);
+        return create(dispatcher, callback, observer, Timeout.defaults(), operation, key);
     }
 
     /**
-     * Opens synchronously.
+     * Creates a call with a complete timeout policy.
      *
-     * @return session
+     * @param dispatcher dispatcher used by no-argument {@code enqueue()}
+     * @param callback   optional terminal callback managed by the call lifecycle
+     * @param observer   observer receiving call lifecycle events
+     * @param timeout    complete protocol timeout policy
+     * @param operation  function that opens a session within the lifecycle cancellation scope
+     * @param key        dispatch key used for asynchronous submission
+     * @return new single-use, unsubmitted SSE-open call
+     * @throws ValidateException if {@code dispatcher}, {@code observer}, {@code operation}, or {@code key} is
+     *                           {@code null}
+     */
+    public static SseCall create(
+            final Dispatcher dispatcher,
+            final Callback<? super SseSession> callback,
+            final EventObserver observer,
+            final Timeout timeout,
+            final Function<Cancellation, SseSession> operation,
+            final String key) {
+        return new SseCall(require(dispatcher, "Dispatcher"), callback,
+                EventObserver.safe(require(observer, "Observer")), require(timeout, "Timeout"), operation, key);
+    }
+
+    /**
+     * Claims the call's single submission path and opens the SSE session synchronously.
+     *
+     * @return session returned by the configured operation, which may be {@code null}
      */
     public SseSession open() {
         return execute();
@@ -104,7 +130,7 @@ public final class SseCall extends MonoCall<SseSession> {
     /**
      * Performs the SSE open operation.
      *
-     * @return SSE session
+     * @return result returned by the SSE-open function
      */
     @Override
     protected SseSession perform() {
@@ -127,7 +153,7 @@ public final class SseCall extends MonoCall<SseSession> {
     /**
      * Cancels a session produced after cancellation.
      *
-     * @param value produced session
+     * @param value session produced after cancellation, or {@code null}
      */
     @Override
     protected void closeAfterCancelled(final SseSession value) {
@@ -139,7 +165,7 @@ public final class SseCall extends MonoCall<SseSession> {
     /**
      * Returns the dispatch key.
      *
-     * @return dispatch key
+     * @return configured asynchronous dispatch key
      */
     @Override
     protected String dispatchKey() {
@@ -147,12 +173,12 @@ public final class SseCall extends MonoCall<SseSession> {
     }
 
     /**
-     * Validates required references.
+     * Validates and returns a required reference.
      *
-     * @param value value
-     * @param name  name
-     * @param <T>   value type
-     * @return value
+     * @param value reference to validate
+     * @param name  logical reference name used in the validation message
+     * @param <T>   reference type
+     * @return the validated non-null reference
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));

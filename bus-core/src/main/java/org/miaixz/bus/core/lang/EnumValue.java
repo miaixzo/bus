@@ -89,26 +89,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Enumeration for append modes.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    enum Append {
-
-        /**
-         * Append to the beginning.
-         */
-        FIRST,
-
-        /**
-         * Append to the end.
-         */
-        LAST
-
-    }
-
-    /**
      * Enumeration for text alignment options.
      *
      * @author Kimi Liu
@@ -129,6 +109,26 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * Center alignment.
          */
         CENTER
+
+    }
+
+    /**
+     * Enumeration for append modes.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    enum Append {
+
+        /**
+         * Append to the beginning.
+         */
+        FIRST,
+
+        /**
+         * Append to the end.
+         */
+        LAST
 
     }
 
@@ -204,6 +204,24 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
+     * Enumeration for request credential types.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    enum Credential {
+        /**
+         * Access token or bearer token.
+         */
+        TOKEN,
+        /**
+         * API key credential.
+         */
+        API_KEY
+
+    }
+
+    /**
      * Enumeration for gradient directions.
      *
      * @author Kimi Liu
@@ -228,54 +246,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * Gradient from top-right to bottom-left.
          */
         RIGHT_TOP_TO_LEFT_BOTTOM
-
-    }
-
-    /**
-     * Represents the lifecycle status of a managed service process.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    enum Lifecycle {
-
-        /**
-         * The service is currently running and operational.
-         */
-        RUNNING,
-
-        /**
-         * The service is not running.
-         */
-        STOPPED,
-
-        /**
-         * The service is in an error state or has crashed.
-         */
-        ERROR,
-
-        /**
-         * The service is in the process of starting up.
-         */
-        STARTING,
-
-        /**
-         * The service is in the process of shutting down.
-         */
-        STOPPING,
-
-        /**
-         * ACTIVE mode for FTP connections.
-         */
-        ACTIVE,
-        /**
-         * PASSIVE mode for FTP connections.
-         */
-        PASSIVE,
-        /**
-         * The status of the service is unknown.
-         */
-        UNKNOWN
 
     }
 

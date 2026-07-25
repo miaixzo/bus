@@ -28,27 +28,27 @@ package org.miaixz.bus.fabric;
 public interface Handler {
 
     /**
-     * Handles a received message.
+     * Handles a message delivered by an open session.
      *
-     * @param session session
-     * @param message message
+     * @param session session that received the message
+     * @param message protocol message delivered to the application
      */
     void message(Session session, Message message);
 
     /**
-     * Handles a session failure.
+     * Handles a terminal or operation failure reported by a session.
      *
-     * @param session session
-     * @param cause   failure cause
+     * @param session session that reported the failure
+     * @param cause   error associated with the failed session operation
      */
     default void failure(final Session session, final Throwable cause) {
         // Default failure handler intentionally performs no action.
     }
 
     /**
-     * Handles a session close notification.
+     * Handles notification that a session has closed.
      *
-     * @param session session
+     * @param session session whose close lifecycle completed
      */
     default void closed(final Session session) {
         // Default close handler intentionally performs no action.
