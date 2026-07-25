@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.Lifecycle.State;
+import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
@@ -35,11 +37,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.cache.CacheEntry;
 import org.miaixz.bus.fabric.cache.CacheStore;
 import org.miaixz.bus.fabric.cache.CacheWriter;
@@ -59,6 +57,13 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class HttpCache implements AutoCloseable {
+
+    /**
+     * Typed option for the HTTP cache runtime.
+     * <p>
+     * Absence and explicit null both disable caching.
+     */
+    public static final Options.Key<HttpCache> OPTION = Options.key("http.cache", HttpCache.class);
 
     /**
      * Cache store.
@@ -83,7 +88,7 @@ public final class HttpCache implements AutoCloseable {
     /**
      * Lifecycle state.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicReference<State> state;
 
     /**
      * Cache strategy request count.
@@ -139,7 +144,7 @@ public final class HttpCache implements AutoCloseable {
         this.policy = require(policy, "Cache policy");
         this.observer = EventObserver.safe(require(observer, "Event observer"));
         this.clock = clock;
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.state = new AtomicReference<>(State.RUNNING);
         this.requestCount = new AtomicLong();
         this.networkCount = new AtomicLong();
         this.hitCount = new AtomicLong();
@@ -679,7 +684,7 @@ public final class HttpCache implements AutoCloseable {
         Logger.info(true, "Fabric", "HTTP cache delete started: store={}", store.getClass().getName());
         if (store instanceof DiskStore disk) {
             disk.delete();
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
             Logger.info(false, "Fabric", "HTTP cache delete completed: store={}", store.getClass().getName());
             return;
         }
@@ -718,21 +723,21 @@ public final class HttpCache implements AutoCloseable {
      */
     @Override
     public synchronized void close() {
-        final Status current = state.get();
-        if (current == Status.CLOSED) {
+        final State current = state.get();
+        if (current == State.CLOSED) {
             return;
         }
-        if (!current.canTransit(Status.CLOSING)) {
+        if (current != State.RUNNING) {
             throw new StatefulException("HTTP cache cannot close from state " + current);
         }
-        state.set(Status.CLOSING);
+        state.set(State.CLOSING);
         RuntimeException failure = null;
         try {
             store.close();
         } catch (final RuntimeException e) {
             failure = e;
         }
-        state.set(Status.CLOSED);
+        state.set(State.CLOSED);
         if (failure != null) {
             Logger.error(
                     false,
@@ -919,7 +924,7 @@ public final class HttpCache implements AutoCloseable {
      * Ensures this cache is open.
      */
     private void ensureOpen() {
-        if (state.get() == Status.CLOSED) {
+        if (state.get() == State.CLOSED) {
             throw new StatefulException("HTTP cache is closed");
         }
     }
@@ -1075,13 +1080,13 @@ public final class HttpCache implements AutoCloseable {
         @Override
         public Sink body() {
             if (failed.get()) {
-                return new org.miaixz.bus.core.io.buffer.Buffer();
+                return new Buffer();
             }
             try {
                 return delegate.body();
             } catch (final RuntimeException e) {
                 fail(e);
-                return new org.miaixz.bus.core.io.buffer.Buffer();
+                return new Buffer();
             }
         }
 
@@ -1092,7 +1097,7 @@ public final class HttpCache implements AutoCloseable {
          * @param byteCount exact bytes consumed from the source buffer
          */
         @Override
-        public void write(final org.miaixz.bus.core.io.buffer.Buffer source, final long byteCount) {
+        public void write(final Buffer source, final long byteCount) {
             if (failed.get()) {
                 try {
                     source.skip(byteCount);

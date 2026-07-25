@@ -38,7 +38,7 @@ public abstract class StompListener implements Listener<StompSession> {
      * Creates a STOMP lifecycle listener adapter.
      */
     public StompListener() {
-        // Listener adapter.
+        // No initialization required.
     }
 
     /**

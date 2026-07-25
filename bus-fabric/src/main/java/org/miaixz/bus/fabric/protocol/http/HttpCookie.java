@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,12 +107,25 @@ public final class HttpCookie {
      * @throws ValidateException if {@code url}, {@code cookies}, or a cookie element is {@code null}
      */
     public static List<Cookie> match(final UnoUrl url, final List<Cookie> cookies) {
+        return match(url, cookies, Instant.now());
+    }
+
+    /**
+     * Returns cookies matching a URL at an explicit current time.
+     *
+     * @param url     request URL
+     * @param cookies candidate cookies
+     * @param now     current time used for expiration checks
+     * @return immutable list of matching cookies
+     */
+    public static List<Cookie> match(final UnoUrl url, final List<Cookie> cookies, final Instant now) {
         final UnoUrl target = require(url, "URL");
         final List<Cookie> source = require(cookies, "Cookies");
+        final Instant currentTime = require(now, "Current time");
         final List<Cookie> matched = new ArrayList<>(source.size());
         for (final Cookie cookie : source) {
             require(cookie, "Cookie");
-            if (cookie.matches(target)) {
+            if (cookie.matches(target, currentTime)) {
                 matched.add(cookie);
             }
         }

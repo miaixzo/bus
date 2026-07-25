@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.observe.tags;
 
+import static org.miaixz.bus.fabric.Builder.TAG_REDACTED;
+
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.crypto.Builder;
 
 /**
  * Immutable event tag set.
@@ -205,8 +207,7 @@ public final class Tags {
      */
     public static String redact(final String value) {
         final String checked = normalize(value, "Redacted value");
-        return Builder.TAG_REDACTED.substring(0, Builder.TAG_REDACTED.length() - 1) + Symbol.C_COLON
-                + fingerprint(checked) + ">";
+        return TAG_REDACTED.substring(0, TAG_REDACTED.length() - 1) + Symbol.C_COLON + fingerprint(checked) + ">";
     }
 
     /**
@@ -466,7 +467,7 @@ public final class Tags {
      * @return twelve-character hexadecimal fingerprint
      */
     private static String fingerprint(final String value) {
-        return org.miaixz.bus.crypto.Builder.sha256(value).substring(0, 12);
+        return Builder.sha256(value).substring(0, 12);
     }
 
 }

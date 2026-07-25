@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public final class FixedCodec implements FrameCodec {
         while (buffer.request(length)) {
             try {
                 frames.add(Frame.of(buffer.readByteString(length)));
-            } catch (final java.io.EOFException e) {
+            } catch (final EOFException e) {
                 throw new InternalException("Unable to read fixed frame", e);
             }
         }

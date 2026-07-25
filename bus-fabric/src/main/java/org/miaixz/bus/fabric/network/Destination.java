@@ -28,8 +28,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Options;
-import org.miaixz.bus.fabric.network.tls.TlsSettings;
-import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 
 /**
  * Immutable destination for grouping reusable network connections.
@@ -39,16 +38,24 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
  */
 public final class Destination {
 
-    /** Application protocol used for pooling. */
+    /**
+     * Application protocol used for pooling.
+     */
     private final Protocol protocol;
 
-    /** Remote network address. */
+    /**
+     * Remote network address.
+     */
     private final Address address;
 
-    /** Normalized connection-reuse option identity. */
+    /**
+     * Normalized connection-reuse option identity.
+     */
     private final Options options;
 
-    /** Precomputed hash because pool lookups reuse this immutable key several times per acquisition. */
+    /**
+     * Precomputed hash because pool lookups reuse this immutable key several times per acquisition.
+     */
     private final int hashCode;
 
     /**
@@ -133,8 +140,8 @@ public final class Destination {
             return true;
         }
         final String selected = options.get(Builder.OPTION_PROTOCOL);
-        return selected != null && ("h2".equalsIgnoreCase(selected) || "http/2".equalsIgnoreCase(selected)
-                || "h2_prior_knowledge".equalsIgnoreCase(selected));
+        return selected != null && (Protocol.HTTP_2.name.equalsIgnoreCase(selected)
+                || "http/2".equalsIgnoreCase(selected) || Protocol.H2_PRIOR_KNOWLEDGE.name.equalsIgnoreCase(selected));
     }
 
     /**
@@ -160,15 +167,14 @@ public final class Destination {
      */
     private static Options stableOptions(final Options source) {
         Options stable = Options.empty();
-        stable = copyBoolean(source, stable, Builder.OPTION_TLS, Builder.OPTION_TLS.name());
-        stable = copyBoolean(source, stable, Builder.OPTION_SECURE, null);
-        stable = copyBoolean(source, stable, Builder.OPTION_MULTIPLEX, null);
+        stable = copyBoolean(source, stable, Builder.OPTION_TLS);
+        stable = copyBoolean(source, stable, Builder.OPTION_SECURE);
+        stable = copyBoolean(source, stable, Builder.OPTION_MULTIPLEX);
         stable = copy(source, stable, Builder.OPTION_PROTOCOL);
         stable = copy(source, stable, Builder.OPTION_MAX_MULTIPLEX_STREAMS);
-        stable = copyContext(source, stable);
-        stable = copySettings(source, stable);
+        stable = copy(source, stable, TlsPolicy.OPTION);
         stable = copyProxy(source, stable);
-        return copyBoolean(source, stable, Builder.OPTION_ROUTE_TUNNEL, "tunnel");
+        return copyBoolean(source, stable, Builder.OPTION_ROUTE_TUNNEL);
     }
 
     /**
@@ -191,20 +197,14 @@ public final class Destination {
     /**
      * Copies a canonical true boolean from a typed key or legacy string key.
      *
-     * @param source    source options inspected for typed and legacy forms
-     * @param target    accumulated stable option subset
-     * @param key       canonical typed boolean key
-     * @param legacyKey legacy string key, or {@code null} when no fallback is supported
+     * @param source source options inspected for typed and legacy forms
+     * @param target accumulated stable option subset
+     * @param key    canonical typed boolean key
      * @return target containing canonical {@code true}, or unchanged when absent, null, or false
      * @throws ValidateException if a selected non-null value is not boolean
      */
-    private static Options copyBoolean(
-            final Options source,
-            final Options target,
-            final Options.Key<Boolean> key,
-            final String legacyKey) {
-        final Object value = source.contains(key) ? source.get(key)
-                : legacyKey != null && source.contains(legacyKey) ? source.get(legacyKey) : null;
+    private static Options copyBoolean(final Options source, final Options target, final Options.Key<Boolean> key) {
+        final Object value = source.get(key);
         if (value == null || Boolean.FALSE.equals(value)) {
             return target;
         }
@@ -215,33 +215,7 @@ public final class Destination {
     }
 
     /**
-     * Copies TLS context presence while preserving explicit disablement.
-     *
-     * @param source source options inspected for explicit TLS-context presence
-     * @param target accumulated stable option subset
-     * @return target preserving both context-key presence and its possibly null value
-     */
-    private static Options copyContext(final Options source, final Options target) {
-        if (!source.contains(Builder.OPTION_TLS_CONTEXT)) {
-            return target;
-        }
-        return target.with(Builder.OPTION_TLS_CONTEXT, source.get(Builder.OPTION_TLS_CONTEXT));
-    }
-
-    /**
-     * Copies a non-null immutable TLS settings identity.
-     *
-     * @param source source options containing an optional immutable settings snapshot
-     * @param target accumulated stable option subset
-     * @return target containing non-null TLS settings, or unchanged when absent or null
-     */
-    private static Options copySettings(final Options source, final Options target) {
-        final TlsSettings settings = source.get(Builder.OPTION_TLS_SETTINGS);
-        return settings == null ? target : target.with(Builder.OPTION_TLS_SETTINGS, settings);
-    }
-
-    /**
-     * Copies and normalizes typed or legacy proxy identity.
+     * Copies and normalizes the typed proxy identity.
      *
      * @param source source options inspected for canonical or legacy proxy identity
      * @param target accumulated stable option subset
@@ -249,8 +223,7 @@ public final class Destination {
      * @throws ValidateException if a selected non-null proxy value is not a string
      */
     private static Options copyProxy(final Options source, final Options target) {
-        final Object value = source.contains(Builder.OPTION_ROUTE_PROXY) ? source.get(Builder.OPTION_ROUTE_PROXY)
-                : source.contains("proxy") ? source.get("proxy") : null;
+        final Object value = source.get(Builder.OPTION_ROUTE_PROXY);
         if (value == null) {
             return target;
         }
@@ -268,7 +241,8 @@ public final class Destination {
      * Compares destinations by value, including option snapshots.
      *
      * @param other object compared with this normalized destination
-     * @return {@code true} when protocol, address, retained option values, and TLS-context identity are equivalent
+     * @return {@code true} when protocol, address, retained option values, and complete TLS-policy identity are
+     *         equivalent
      */
     @Override
     public boolean equals(final Object other) {
@@ -286,9 +260,7 @@ public final class Destination {
                 && Objects.equals(
                         options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS),
                         that.options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS))
-                && sameContext(that)
-                && Objects
-                        .equals(options.get(Builder.OPTION_TLS_SETTINGS), that.options.get(Builder.OPTION_TLS_SETTINGS))
+                && sameTlsPolicy(that)
                 && Objects.equals(options.get(Builder.OPTION_ROUTE_PROXY), that.options.get(Builder.OPTION_ROUTE_PROXY))
                 && Objects.equals(
                         options.get(Builder.OPTION_ROUTE_TUNNEL),
@@ -305,7 +277,9 @@ public final class Destination {
         return hashCode;
     }
 
-    /** Computes the immutable connection-key hash once during construction. */
+    /**
+     * Computes the immutable connection-key hash once during construction.
+     */
     private int computeHashCode() {
         int result = 31 * protocol.hashCode() + address.hashCode();
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_TLS));
@@ -313,33 +287,43 @@ public final class Destination {
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_MULTIPLEX));
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_PROTOCOL));
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_MAX_MULTIPLEX_STREAMS));
-        result = 31 * result + Boolean.hashCode(options.contains(Builder.OPTION_TLS_CONTEXT));
         result = 31 * result + System.identityHashCode(contextIdentity(options));
-        result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_TLS_SETTINGS));
+        result = 31 * result + Objects.hashCode(settings(options));
         result = 31 * result + Objects.hashCode(options.get(Builder.OPTION_ROUTE_PROXY));
         return 31 * result + Objects.hashCode(options.get(Builder.OPTION_ROUTE_TUNNEL));
     }
 
     /**
-     * Compares TLS context presence and stable wrapped-context identity.
+     * Compares complete TLS policies by wrapped-context identity and immutable settings value.
      *
-     * @param other normalized destination whose TLS-context option is compared
-     * @return {@code true} when key presence matches and wrapped context identities are the same reference
+     * @param other normalized destination whose TLS policy is compared
+     * @return {@code true} when context identities and settings match
      */
-    private boolean sameContext(final Destination other) {
-        return options.contains(Builder.OPTION_TLS_CONTEXT) == other.options.contains(Builder.OPTION_TLS_CONTEXT)
-                && contextIdentity(options) == contextIdentity(other.options);
+    private boolean sameTlsPolicy(final Destination other) {
+        return contextIdentity(options) == contextIdentity(other.options)
+                && Objects.equals(settings(options), settings(other.options));
     }
 
     /**
      * Returns stable wrapped SSL context identity without materializing an option map.
      *
-     * @param source normalized options containing an optional TLS context
-     * @return wrapped SSL-context identity reference, or {@code null} when no non-null context is retained
+     * @param source normalized options containing an optional complete TLS policy
+     * @return wrapped SSL-context identity reference, or {@code null} when no policy is retained
      */
     private static Object contextIdentity(final Options source) {
-        final TlsContext context = source.get(Builder.OPTION_TLS_CONTEXT);
-        return context == null ? null : context.identity();
+        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
+        return policy == null ? null : policy.context().identity();
+    }
+
+    /**
+     * Returns stable TLS settings retained by a destination.
+     *
+     * @param source normalized options containing an optional complete TLS policy
+     * @return immutable TLS settings, or {@code null} when no policy is retained
+     */
+    private static Object settings(final Options source) {
+        final TlsPolicy policy = source.get(TlsPolicy.OPTION);
+        return policy == null ? null : policy.settings();
     }
 
 }

@@ -33,12 +33,8 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 
@@ -215,7 +211,7 @@ public final class Http2Stream implements AutoCloseable {
      */
     Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed, final Runnable terminal,
             final Runnable cancel) {
-        this(id, headers, inboundConsumed, terminal, cancel, Builder.HTTP2_STREAM_DEFAULT_MAX_QUEUED_BYTES);
+        this(id, headers, inboundConsumed, terminal, cancel, Normal.MEBI);
     }
 
     /**
@@ -237,7 +233,7 @@ public final class Http2Stream implements AutoCloseable {
         }
         this.id = id;
         this.initialHeaders = require(headers, "HTTP/2 stream headers");
-        if (maxQueuedBytes <= Normal.LONG_ZERO || maxQueuedBytes > Builder.HTTP2_STREAM_DEFAULT_MAX_QUEUED_BYTES) {
+        if (maxQueuedBytes <= Normal.LONG_ZERO || maxQueuedBytes > Normal.MEBI) {
             throw new ValidateException("HTTP/2 queued DATA limit must be between 1 and 1 MiB");
         }
         this.maxQueuedBytes = maxQueuedBytes;
@@ -554,11 +550,10 @@ public final class Http2Stream implements AutoCloseable {
      *
      * @param timeout wait duration; zero waits without a deadline
      * @return final response headers
-     * @throws ValidateException                                   if {@code timeout} is {@code null} or negative
-     * @throws RuntimeException                                    if a stored stream failure is observed or the stream
-     *                                                             ends before final headers arrive
-     * @throws org.miaixz.bus.core.lang.exception.TimeoutException if a positive timeout expires
-     * @throws InternalException                                   if the waiting thread is interrupted
+     * @throws ValidateException if {@code timeout} is {@code null} or negative
+     * @throws RuntimeException  if a stored stream failure is observed or the stream ends before final headers arrive
+     * @throws TimeoutException  if a positive timeout expires
+     * @throws InternalException if the waiting thread is interrupted
      */
     public Headers awaitResponseHeaders(final Duration timeout) {
         final Duration checked = require(timeout, "HTTP/2 header timeout");
@@ -584,8 +579,7 @@ public final class Http2Stream implements AutoCloseable {
                     final long remaining = deadline - System.nanoTime();
                     if (remaining <= 0L) {
                         waiter = null;
-                        throw new org.miaixz.bus.core.lang.exception.TimeoutException(
-                                "Timed out waiting for HTTP/2 response headers");
+                        throw new TimeoutException("Timed out waiting for HTTP/2 response headers");
                     }
                     LockSupport.parkNanos(this, remaining);
                 }

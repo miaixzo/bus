@@ -110,7 +110,7 @@ public final class RouteGuard {
     /**
      * Returns rule name.
      *
-     * @return {@link Builder#ROUTE}
+     * @return stable route guard name
      */
     public String name() {
         return Builder.ROUTE;

@@ -27,11 +27,11 @@ import java.util.function.BiConsumer;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
@@ -95,7 +95,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @param media   HTTP media metadata
      */
     private PayloadBody(final Payload payload, final MediaType media) {
-        this(payload, media, null, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(payload, media, null, Normal.MEBI_64);
     }
 
     /**
@@ -106,7 +106,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      * @param progress optional progress tracker
      */
     private PayloadBody(final Payload payload, final MediaType media, final ProgressBody.Tracker progress) {
-        this(payload, media, progress, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(payload, media, progress, Normal.MEBI_64);
     }
 
     /**
@@ -160,7 +160,7 @@ public final class PayloadBody implements RequestBody, ResponseBody, ProgressBod
      */
     public static PayloadBody of(final Payload payload, final MediaType media, final long materializeMaxBytes) {
         if (payload == Payload.empty() && media == MediaType.APPLICATION_OCTET_STREAM_TYPE
-                && materializeMaxBytes == Builder.DEFAULT_MATERIALIZE_MAX_BYTES) {
+                && materializeMaxBytes == Normal.MEBI_64) {
             return empty();
         }
         return new PayloadBody(payload, media, null, materializeMaxBytes);

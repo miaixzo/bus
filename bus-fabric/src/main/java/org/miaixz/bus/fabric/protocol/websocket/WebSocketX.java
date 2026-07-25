@@ -35,17 +35,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
@@ -63,9 +53,9 @@ import org.miaixz.bus.fabric.protocol.websocket.calls.WebSocketCall;
 public final class WebSocketX {
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final WebSocketSnapshot snapshot;
+    private final WebSocketSpec spec;
 
     /**
      * Execution runner.
@@ -80,14 +70,14 @@ public final class WebSocketX {
     /**
      * Creates an exchange.
      *
-     * @param builder configuration source used to create the immutable exchange snapshot
+     * @param builder configuration source used to create the immutable exchange specification
      */
     private WebSocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        this.snapshot = new WebSocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
+        this.spec = new WebSocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.guard, builder.filter, currentObserver, builder.handler(), builder.listener);
-        this.runner = new WebSocketRunner(snapshot);
+        this.runner = new WebSocketRunner(spec);
         this.callback = builder.callback;
     }
 
@@ -135,10 +125,10 @@ public final class WebSocketX {
      */
     public Call<WebSocketSession> call() {
         return WebSocketCall.create(
-                snapshot.context().reactor().dispatcher(),
+                spec.context().reactor().dispatcher(),
                 callback,
-                snapshot.observer(),
-                snapshot.timeout(),
+                spec.observer(),
+                spec.timeout(),
                 cancellation -> Mediator.execute(Type.WEBSOCKET, cancellation, runner::open),
                 dispatchKey());
     }
@@ -167,7 +157,7 @@ public final class WebSocketX {
      * @return WS or WSS protocol derived from the target address
      */
     public Protocol protocol() {
-        return snapshot.address().protocol();
+        return spec.address().protocol();
     }
 
     /**
@@ -176,7 +166,7 @@ public final class WebSocketX {
      * @return immutable WebSocket target address
      */
     public Address address() {
-        return snapshot.address();
+        return spec.address();
     }
 
     /**
@@ -194,7 +184,7 @@ public final class WebSocketX {
      * @return immutable HTTP upgrade request headers
      */
     public Headers headers() {
-        return snapshot.headers();
+        return spec.headers();
     }
 
     /**
@@ -203,7 +193,7 @@ public final class WebSocketX {
      * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
-        return snapshot.timeout();
+        return spec.timeout();
     }
 
     /**
@@ -593,7 +583,7 @@ public final class WebSocketX {
         }
 
         /**
-         * Builds an exchange snapshot.
+         * Builds an exchange specification.
          *
          * @return immutable WebSocket exchange built from the current configuration
          */

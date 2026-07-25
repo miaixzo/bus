@@ -22,21 +22,16 @@ package org.miaixz.bus.fabric.runtime.dispatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.Lifecycle.State;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.runtime.Activity;
 
 /**
@@ -50,7 +45,7 @@ public final class DispatchWorker implements AutoCloseable {
     /**
      * Maximum entries accepted by one dispatcher-to-worker batch.
      */
-    private static final int MAX_BATCH = 64;
+    private static final int MAX_BATCH = Normal._64;
 
     /**
      * Executor used for asynchronous activity execution.
@@ -286,19 +281,19 @@ public final class DispatchWorker implements AutoCloseable {
     private void run(final DispatchQueue.Entry entry) {
         final DispatchHandle handle = entry.handle();
         try {
-            if (handle.state() != Status.RUNNING) {
+            if (handle.state() != State.RUNNING) {
                 return;
             }
             entry.activity().run();
             if (entry.cancellation().cancelled()) {
                 handle.cancel();
-            } else if (handle.state() == Status.RUNNING) {
+            } else if (handle.state() == State.RUNNING) {
                 handle.complete();
             }
         } catch (final Throwable cause) {
             final Throwable failure = entry.activity().failure();
             final Throwable original = failure == null ? cause : failure;
-            if (handle.state() == Status.CANCELLED || entry.activity().state() == Status.CANCELLED
+            if (handle.state() == State.CANCELLED || entry.activity().state() == State.CANCELLED
                     || original instanceof CancellationException) {
                 handle.cancel();
             } else {
@@ -316,7 +311,7 @@ public final class DispatchWorker implements AutoCloseable {
      * @param cause  failure reported by the activity or executor
      */
     private static void fail(final DispatchHandle handle, final Throwable cause) {
-        if (handle.state() != Status.RUNNING) {
+        if (handle.state() != State.RUNNING) {
             return;
         }
         try {

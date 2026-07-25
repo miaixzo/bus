@@ -24,6 +24,7 @@ import java.lang.invoke.VarHandle;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
@@ -52,17 +53,17 @@ public final class ConnectionLease {
     /**
      * Lease is active.
      */
-    private static final int LEASED = 0;
+    private static final int LEASED = Normal._0;
 
     /**
      * Lease was returned for reuse.
      */
-    private static final int RELEASED = 1;
+    private static final int RELEASED = Normal._1;
 
     /**
      * Lease was terminally closed.
      */
-    private static final int CLOSED = 2;
+    private static final int CLOSED = Normal._2;
 
     /**
      * Process-wide sequence allocated only when a diagnostic lease identifier is requested.
@@ -94,7 +95,9 @@ public final class ConnectionLease {
      */
     private final long acquiredAtMillis;
 
-    /** Whether this lease owns an explicitly non-reusable physical connection. */
+    /**
+     * Whether this lease owns an explicitly non-reusable physical connection.
+     */
     private final boolean transientConnection;
 
     /**

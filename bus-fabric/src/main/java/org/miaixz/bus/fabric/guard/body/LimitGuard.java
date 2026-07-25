@@ -96,11 +96,11 @@ public final class LimitGuard implements GuardRule {
     /**
      * Returns rule name.
      *
-     * @return shared limit-guard name from {@link Builder}
+     * @return stable body-limit guard name
      */
     @Override
     public String name() {
-        return Builder.LIMIT_GUARD_NAME;
+        return Builder.GUARD_BODY_LIMIT_NAME;
     }
 
     /**

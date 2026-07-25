@@ -19,11 +19,8 @@
 */
 package org.miaixz.bus.fabric.network.tls;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -286,7 +283,7 @@ public final class TlsSettings {
     private static SSLEngine defaultEngine() {
         try {
             return SSLContext.getDefault().createSSLEngine();
-        } catch (final java.security.NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             throw new ProtocolException("Default TLS engine is not available", e);
         }
     }

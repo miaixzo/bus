@@ -23,13 +23,15 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.Lifecycle.State;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
@@ -47,7 +49,7 @@ public final class LifecycleScope {
     /**
      * Current lifecycle state.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicReference<State> state;
 
     /**
      * Cancellation scope triggered by cancelled and failed terminal outcomes.
@@ -120,8 +122,9 @@ public final class LifecycleScope {
     private final ObservationMarker failureMarker;
 
     /**
-     * Creates a queued lifecycle scope with new cancellation and resource scopes.
+     * Creates a lifecycle scope with new cancellation and resource scopes.
      *
+     * @param initial       initial lifecycle state
      * @param source        default callback and event source, or {@code null}
      * @param name          non-blank lifecycle name attached to events
      * @param listener      lifecycle listener, or {@code null} to install a no-op listener
@@ -133,11 +136,12 @@ public final class LifecycleScope {
      * @param cancelMarker  marker emitted for cancellation, or {@code null}
      * @param failureMarker marker emitted for failure, or {@code null}
      */
-    private LifecycleScope(final Object source, final String name, final Listener<Object> listener,
+    private LifecycleScope(final State initial, final Object source, final String name, final Listener<Object> listener,
             final EventObserver observer, final Clock clock, final ObservationMarker startMarker,
             final ObservationMarker openMarker, final ObservationMarker closeMarker,
             final ObservationMarker cancelMarker, final ObservationMarker failureMarker) {
-        this.state = new AtomicReference<>(Status.QUEUED);
+        this.state = new AtomicReference<>(
+                Assert.notNull(initial, () -> new ValidateException("Initial lifecycle state must not be null")));
         this.cancellation = Cancellation.create();
         this.resources = ResourceScope.create();
         this.terminal = new AtomicBoolean();
@@ -176,8 +180,9 @@ public final class LifecycleScope {
      * @throws ValidateException if {@code name} is blank or {@code clock} is {@code null}
      */
     public static LifecycleScope call(final String name, final EventObserver observer, final Clock clock) {
-        return new LifecycleScope(null, name, noopListener(), observer, clock, ObservationMarker.CALL_START, null,
-                ObservationMarker.CALL_SUCCESS, ObservationMarker.CALL_CANCELLED, ObservationMarker.CALL_FAILED);
+        return new LifecycleScope(State.QUEUED, null, name, noopListener(), observer, clock,
+                ObservationMarker.CALL_START, null, ObservationMarker.CALL_SUCCESS, ObservationMarker.CALL_CANCELLED,
+                ObservationMarker.CALL_FAILED);
     }
 
     /**
@@ -229,8 +234,8 @@ public final class LifecycleScope {
             final ObservationMarker closeMarker,
             final ObservationMarker failureMarker,
             final Clock clock) {
-        return new LifecycleScope(source, name, cast(listener), observer, clock, null, openMarker, closeMarker,
-                cancellationMarker(openMarker, failureMarker), failureMarker);
+        return new LifecycleScope(State.NEW, source, name, cast(listener), observer, clock, null, openMarker,
+                closeMarker, cancellationMarker(openMarker, failureMarker), failureMarker);
     }
 
     /**
@@ -270,7 +275,8 @@ public final class LifecycleScope {
             final Listener<? super T> listener,
             final EventObserver observer,
             final Clock clock) {
-        return new LifecycleScope(source, name, cast(listener), observer, clock, null, null, null, null, null);
+        return new LifecycleScope(State.NEW, source, name, cast(listener), observer, clock, null, null, null, null,
+                null);
     }
 
     /**
@@ -278,7 +284,7 @@ public final class LifecycleScope {
      *
      * @return current authoritative lifecycle status
      */
-    public Status state() {
+    public State state() {
         return state.get();
     }
 
@@ -297,11 +303,9 @@ public final class LifecycleScope {
      * @param resource non-null closeable resource to own by identity
      * @param <T>      closeable resource type
      * @return the same resource reference
-     * @throws ValidateException                                    if {@code resource} is {@code null}
-     * @throws org.miaixz.bus.core.lang.exception.InternalException if the scope is closed and the rejected resource
-     *                                                              cannot be closed
-     * @throws org.miaixz.bus.core.lang.exception.StatefulException if terminal cleanup already closed the resource
-     *                                                              scope
+     * @throws ValidateException if {@code resource} is {@code null}
+     * @throws InternalException if the scope is closed and the rejected resource cannot be closed
+     * @throws StatefulException if terminal cleanup already closed the resource scope
      */
     public <T extends AutoCloseable> T own(final T resource) {
         return resources.add(Assert.notNull(resource, () -> new ValidateException("Resource must not be null")));
@@ -313,7 +317,7 @@ public final class LifecycleScope {
      * @return {@code true} when the state changed to running
      */
     public boolean start() {
-        final boolean changed = transit(Status.RUNNING);
+        final boolean changed = transit(State.RUNNING);
         if (changed) {
             emit(startMarker, null);
         }
@@ -321,22 +325,22 @@ public final class LifecycleScope {
     }
 
     /**
-     * Moves the lifecycle to opened using the configured source.
+     * Moves the lifecycle to running and available using the configured source.
      *
-     * @return {@code true} when the state changed to opened
+     * @return {@code true} when the state changed to running
      */
     public boolean open() {
         return open(source);
     }
 
     /**
-     * Moves the lifecycle to opened.
+     * Moves the lifecycle to running and available.
      *
      * @param openedSource source passed to the open listener, or {@code null} to use the configured source
-     * @return {@code true} when the state changed to opened
+     * @return {@code true} when the state changed to running
      */
     public boolean open(final Object openedSource) {
-        final boolean changed = transit(Status.OPENED);
+        final boolean changed = transit(State.RUNNING);
         if (changed) {
             emit(openMarker, null);
             notifyOpen(select(openedSource));
@@ -350,7 +354,7 @@ public final class LifecycleScope {
      * @return {@code true} when the state changed to done
      */
     public boolean complete() {
-        final boolean changed = transit(Status.DONE);
+        final boolean changed = transit(State.COMPLETED);
         if (changed) {
             terminal(closeMarker, null, false, false, source);
         }
@@ -363,7 +367,7 @@ public final class LifecycleScope {
      * @return {@code true} when the state changed to closing
      */
     public boolean closing() {
-        return transit(Status.CLOSING);
+        return transit(State.CLOSING);
     }
 
     /**
@@ -383,7 +387,7 @@ public final class LifecycleScope {
      */
     public boolean close(final Object closedSource) {
         closing();
-        final boolean changed = transit(Status.CLOSED);
+        final boolean changed = transit(State.CLOSED);
         if (changed) {
             terminal(closeMarker, null, false, false, select(closedSource));
         }
@@ -409,7 +413,7 @@ public final class LifecycleScope {
     public boolean cancel(final Throwable cause) {
         final Throwable current = Assert
                 .notNull(cause, () -> new ValidateException("Cancellation cause must not be null"));
-        final boolean changed = transit(Status.CANCELLED);
+        final boolean changed = transit(State.CANCELLED);
         if (changed) {
             terminal(cancelMarker, current, true, false, source);
         }
@@ -425,7 +429,7 @@ public final class LifecycleScope {
      */
     public boolean fail(final Throwable cause) {
         final Throwable current = Assert.notNull(cause, () -> new ValidateException("Failure cause must not be null"));
-        final boolean changed = transit(Status.FAILED);
+        final boolean changed = transit(State.FAILED);
         if (changed) {
             terminal(failureMarker, current, true, true, source);
         }
@@ -464,16 +468,42 @@ public final class LifecycleScope {
      * @return {@code true} when the atomic state changed; {@code false} for identical or disallowed transitions
      * @throws ValidateException if {@code next} is {@code null}
      */
-    private boolean transit(final Status next) {
+    private boolean transit(final State next) {
         while (true) {
-            final Status current = state.get();
-            if (current == next || !current.canTransit(next)) {
+            final State current = state.get();
+            if (current == next || !canTransit(current, next)) {
                 return false;
             }
             if (state.compareAndSet(current, next)) {
                 return true;
             }
         }
+    }
+
+    /**
+     * Returns whether one public lifecycle state may move to another.
+     *
+     * @param current current state
+     * @param next    requested state
+     * @return {@code true} when the generic work or resource lifecycle permits the transition
+     */
+    private static boolean canTransit(final State current, final State next) {
+        if (current.terminal()) {
+            return false;
+        }
+        return switch (current) {
+            case NEW -> next == State.QUEUED || next == State.STARTING || next == State.RUNNING || next == State.CLOSING
+                    || next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
+            case QUEUED -> next == State.STARTING || next == State.RUNNING || next == State.COMPLETED
+                    || next == State.CLOSING || next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
+            case STARTING -> next == State.RUNNING || next == State.CLOSING || next == State.CLOSED
+                    || next == State.CANCELLED || next == State.FAILED;
+            case RUNNING -> next == State.CLOSING || next == State.COMPLETED || next == State.CLOSED
+                    || next == State.CANCELLED || next == State.FAILED;
+            case CLOSING -> next == State.CLOSED || next == State.CANCELLED || next == State.FAILED;
+            case UNKNOWN -> false;
+            default -> false;
+        };
     }
 
     /**

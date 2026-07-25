@@ -22,9 +22,12 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 import java.util.List;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Headers;
 
 /**
@@ -48,14 +51,14 @@ final class HpackEncoder {
     /**
      * Maximum RFC 7541 decompressed header-list size accepted for one encoded block.
      */
-    private int maxHeaderListBytes = 64 * 1024;
+    private int maxHeaderListBytes = Normal._64 * Normal._1024;
 
     /**
      * Creates an encoder with a 64-KiB allocation maximum and 4096-byte effective table capacity.
      */
     HpackEncoder() {
-        dynamicTable = new HpackDynamicTable(64 * 1024);
-        dynamicTable.capacityBytes(4096);
+        dynamicTable = new HpackDynamicTable(Normal._64 * Normal._1024);
+        dynamicTable.capacityBytes(Normal._4096);
     }
 
     /**
@@ -77,14 +80,14 @@ final class HpackEncoder {
             final Buffer target) {
         require(target, "HPACK output");
         int bytes = 0;
-        bytes = encodeField(":method", method, false, target, bytes);
-        bytes = encodeField(":scheme", scheme, false, target, bytes);
-        bytes = encodeField(":authority", authority, false, target, bytes);
-        bytes = encodeField(":path", path, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_METHOD, method, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_SCHEME, scheme, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_AUTHORITY, authority, false, target, bytes);
+        bytes = encodeField(Http.Header.PSEUDO_PATH, path, false, target, bytes);
         if (headers != null) {
             for (int index = 0; index < headers.size(); index++) {
                 final String name = headers.name(index);
-                if (!hopByHop(name) && !name.startsWith(":")) {
+                if (!hopByHop(name) && !name.startsWith(Symbol.COLON)) {
                     bytes = encodeField(name, headers.value(index), sensitive(name), target, bytes);
                 }
             }
@@ -163,13 +166,13 @@ final class HpackEncoder {
         }
         final int dynamicExact = dynamicTable.findExact(name, value);
         if (!sensitive && dynamicExact != 0) {
-            writeInteger(target, Builder.HTTP2_HPACK_STATIC_TABLE_ENTRIES + dynamicExact, 0x80, 7);
+            writeInteger(target, Normal._61 + dynamicExact, 0x80, 7);
             return (int) next;
         }
         int nameIndex = staticNameIndex(name);
         if (nameIndex == 0) {
             final int dynamicName = dynamicTable.findName(name);
-            nameIndex = dynamicName == 0 ? 0 : Builder.HTTP2_HPACK_STATIC_TABLE_ENTRIES + dynamicName;
+            nameIndex = dynamicName == 0 ? 0 : Normal._61 + dynamicName;
         }
         final int prefix = sensitive ? 0x10 : 0x40;
         final int prefixBits = sensitive ? 4 : 6;
@@ -229,21 +232,24 @@ final class HpackEncoder {
      */
     private static int staticExactIndex(final String name, final String value) {
         return switch (name) {
-            case ":method" -> "GET".equals(value) ? 2 : "POST".equals(value) ? 3 : 0;
-            case ":path" -> "/".equals(value) ? 4 : "/index.html".equals(value) ? 5 : 0;
-            case ":scheme" -> "http".equals(value) ? 6 : "https".equals(value) ? 7 : 0;
-            case ":status" -> switch (value) {
-                case "200" -> 8;
-                case "204" -> 9;
-                case "206" -> 10;
-                case "304" -> 11;
-                case "400" -> 12;
-                case "404" -> 13;
-                case "500" -> 14;
-                default -> 0;
+            case Http.Header.PSEUDO_METHOD -> Http.Method.GET.value().equals(value) ? Normal._2
+                    : Http.Method.POST.value().equals(value) ? Normal._3 : Normal._0;
+            case Http.Header.PSEUDO_PATH -> Symbol.SLASH.equals(value) ? Normal._4
+                    : "/index.html".equals(value) ? Normal._5 : Normal._0;
+            case Http.Header.PSEUDO_SCHEME -> Protocol.HTTP.name.equals(value) ? Normal._6
+                    : Protocol.HTTPS.name.equals(value) ? Normal._7 : Normal._0;
+            case Http.Header.PSEUDO_STATUS -> switch (value) {
+                case "200" -> Normal._8;
+                case "204" -> Normal._9;
+                case "206" -> Normal._10;
+                case "304" -> Normal._11;
+                case "400" -> Normal._12;
+                case "404" -> Normal._13;
+                case "500" -> Normal._14;
+                default -> Normal._0;
             };
-            case "accept-encoding" -> "gzip, deflate".equals(value) ? 16 : 0;
-            default -> 0;
+            case "accept-encoding" -> "gzip, deflate".equals(value) ? Normal._16 : Normal._0;
+            default -> Normal._0;
         };
     }
 
@@ -255,24 +261,24 @@ final class HpackEncoder {
      */
     private static int staticNameIndex(final String name) {
         return switch (name) {
-            case ":authority" -> 1;
-            case ":method" -> 2;
-            case ":path" -> 4;
-            case ":scheme" -> 6;
-            case ":status" -> 8;
-            case "accept-encoding" -> 16;
-            case "authorization" -> 23;
-            case "cache-control" -> 24;
-            case "content-length" -> 28;
-            case "content-type" -> 31;
-            case "cookie" -> 32;
-            case "date" -> 33;
-            case "host" -> 38;
-            case "location" -> 46;
-            case "server" -> 54;
-            case "set-cookie" -> 55;
-            case "user-agent" -> 58;
-            default -> 0;
+            case Http.Header.PSEUDO_AUTHORITY -> Normal._1;
+            case Http.Header.PSEUDO_METHOD -> Normal._2;
+            case Http.Header.PSEUDO_PATH -> Normal._4;
+            case Http.Header.PSEUDO_SCHEME -> Normal._6;
+            case Http.Header.PSEUDO_STATUS -> Normal._8;
+            case "accept-encoding" -> Normal._16;
+            case "authorization" -> Normal._23;
+            case "cache-control" -> Normal._24;
+            case "content-length" -> Normal._28;
+            case "content-type" -> Normal._31;
+            case "cookie" -> Normal._32;
+            case "date" -> Normal._33;
+            case "host" -> Normal._38;
+            case "location" -> Normal._46;
+            case "server" -> Normal._54;
+            case "set-cookie" -> Normal._55;
+            case "user-agent" -> Normal._58;
+            default -> Normal._0;
         };
     }
 

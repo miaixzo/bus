@@ -17,13 +17,14 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.websocket;
+package org.miaixz.bus.fabric.protocol.websocket.frame;
 
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+
 import org.miaixz.bus.fabric.Builder;
 
 /**
@@ -46,7 +47,7 @@ public record WebSocketClose(int code, String reason, boolean normal) {
      */
     public WebSocketClose {
         reason = validate(code, reason);
-        normal = code == Builder._1000;
+        normal = code == Normal.KILO;
     }
 
     /**
@@ -57,7 +58,7 @@ public record WebSocketClose(int code, String reason, boolean normal) {
      * @return close description
      */
     public static WebSocketClose of(final int code, final String reason) {
-        return new WebSocketClose(code, reason, code == Builder._1000);
+        return new WebSocketClose(code, reason, code == Normal.KILO);
     }
 
     /**
@@ -88,8 +89,10 @@ public record WebSocketClose(int code, String reason, boolean normal) {
      * @return true when valid
      */
     private static boolean validCode(final int code) {
-        return code == Builder._1000 || code >= Builder._1001 && code <= Builder.WEBSOCKET_MAX_PROTOCOL_CLOSE_CODE
-                && code != Builder.WEBSOCKET_RESERVED_NO_STATUS_CODE && code != Builder.WEBSOCKET_RESERVED_ABNORMAL_CODE
+        return code == Normal.KILO
+                || code >= Builder.WEBSOCKET_CLOSE_GOING_AWAY_CODE && code <= Builder.WEBSOCKET_MAX_PROTOCOL_CLOSE_CODE
+                        && code != Builder.WEBSOCKET_RESERVED_NO_STATUS_CODE
+                        && code != Builder.WEBSOCKET_RESERVED_ABNORMAL_CODE
                 || code >= Builder.WEBSOCKET_MIN_APPLICATION_CLOSE_CODE
                         && code <= Builder.WEBSOCKET_MAX_APPLICATION_CLOSE_CODE;
     }

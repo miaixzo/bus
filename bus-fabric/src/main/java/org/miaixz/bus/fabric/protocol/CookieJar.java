@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpCookie;
 
@@ -38,6 +39,13 @@ import org.miaixz.bus.fabric.protocol.http.HttpCookie;
  * @since Java 21+
  */
 public final class CookieJar {
+
+    /**
+     * Typed option for the HTTP cookie jar.
+     * <p>
+     * Absence uses the Context-level memory jar; explicit null disables cookies.
+     */
+    public static final Options.Key<CookieJar> OPTION = Options.key("http.cookieJar", CookieJar.class);
 
     /**
      * Mutable collection of immutable cookies guarded by this jar's monitor.
@@ -54,7 +62,9 @@ public final class CookieJar {
      */
     private final Clock clock;
 
-    /** Lock-free empty-state hint that avoids monitor acquisition for the overwhelmingly common no-cookie path. */
+    /**
+     * Lock-free empty-state hint that avoids monitor acquisition for the overwhelmingly common no-cookie path.
+     */
     private volatile boolean empty = true;
 
     /**
@@ -128,7 +138,7 @@ public final class CookieJar {
         synchronized (this) {
             for (final String header : sourceHeaders.values(Http.Header.SET_COOKIE)) {
                 try {
-                    save(List.of(Cookie.parse(header, source)));
+                    save(List.of(Cookie.parse(header, source, clock.now())));
                 } catch (final RuntimeException ignored) {
                     // Invalid Set-Cookie values are ignored by the automatic store.
                 }
@@ -181,7 +191,7 @@ public final class CookieJar {
         }
         synchronized (this) {
             pruneExpired();
-            return HttpCookie.match(source, cookies);
+            return HttpCookie.match(source, cookies, clock.now());
         }
     }
 

@@ -178,8 +178,9 @@ session.close();
 `Context` is immutable. Change runtime behavior by creating a new context with a copied `Options` snapshot.
 
 ```java
-Context limited = context.withOptions(
-        context.options().materializeMaxBytes(16L * 1024L * 1024L));
+Context limited = Context.builder()
+        .options(context.options().materializeMaxBytes(16L * 1024L * 1024L))
+        .build();
 
 String text = Fabric.http(limited)
         .get("https://example.com/report.txt")
@@ -191,14 +192,12 @@ Important option keys currently read by the protocol chain:
 | Option key | Expected value | Used by |
 | --- | --- | --- |
 | `materialize.maxBytes` | `Number` | `Payload`, HTTP bodies, socket messages, WebSocket messages, and STOMP messages when bytes are materialized. |
-| `http.cache` | `HttpCache` | HTTP cache coordination. |
-| `http.cookieJar` | `CookieJar` | Automatic HTTP cookie loading and saving. |
-| `http.tlsSettings` | `TlsSettings` | HTTP TLS configuration. |
-| `http.tlsContext` | `TlsContext` | HTTP TLS context. |
-| `socket.tlsSettings` | `TlsSettings` | TLS socket configuration. |
-| `socket.tlsContext` | `TlsContext` | TLS socket context. |
-| `tlsSettings` | `TlsSettings` | Shared fallback TLS settings. |
-| `tlsContext` | `TlsContext` | Shared fallback TLS context. |
+| `HttpCache.OPTION` (`http.cache`) | `HttpCache` | HTTP cache coordination. |
+| `CookieJar.OPTION` (`http.cookieJar`) | `CookieJar` | Automatic HTTP cookie loading and saving. |
+| `HttpAuthenticator.OPTION` (`http.authenticator`) | `HttpAuthenticator` | HTTP challenge authentication. |
+| `ProxyPlan.OPTION` (`http.proxy`) | `ProxyPlan` | HTTP proxy selection. |
+| `TlsPolicy.OPTION` (`tls.policy`) | `TlsPolicy` | Shared atomic TLS context and settings. |
+| `SocketOptions.TLS_POLICY` (`socket.tlsPolicy`) | `TlsPolicy` | Socket-specific TLS override. |
 
 ### Materialization Limit
 
@@ -223,7 +222,7 @@ try (HttpResponse response = call.await(Duration.ofSeconds(5))) {
 
 ### HTTP Cache
 
-HTTP cache is attached through the context. Use `http.cache` for HTTP-specific configuration.
+HTTP cache is attached through the context with its typed option.
 
 ```java
 try (HttpCache cache = HttpCache.create(
@@ -231,7 +230,9 @@ try (HttpCache cache = HttpCache.create(
         CachePolicy.defaults(),
         EventObserver.noop())) {
 
-    Context cached = context.withOptions(context.options().with("http.cache", cache));
+    Context cached = Context.builder()
+            .options(Options.empty().with(HttpCache.OPTION, cache))
+            .build();
 
     String body = Fabric.http(cached)
             .get("https://example.com/cacheable")
@@ -243,11 +244,13 @@ try (HttpCache cache = HttpCache.create(
 
 ### Cookies
 
-Automatic cookies are opt-in. The shared `CookieJar` is attached through `http.cookieJar`.
+Automatic cookies are opt-in. Attach the shared `CookieJar` through its typed option.
 
 ```java
 CookieJar jar = CookieJar.memory();
-Context stateful = context.withOptions(context.options().with("http.cookieJar", jar));
+Context stateful = Context.builder()
+        .options(Options.empty().with(CookieJar.OPTION, jar))
+        .build();
 
 Fabric.http(stateful)
         .get("https://example.com/login")
@@ -284,7 +287,7 @@ String proxied = Fabric.http(context)
         .executeText();
 ```
 
-TLS settings belong on the context. Use the protocol-specific key when only one protocol should be affected.
+TLS context and settings are installed atomically through `TlsPolicy`.
 
 ```java
 TlsSettings tls = TlsSettings.builder()
@@ -293,17 +296,23 @@ TlsSettings tls = TlsSettings.builder()
                 .build())
         .build();
 
-Context pinned = context.withOptions(context.options().with("http.tlsSettings", tls));
+Context pinned = Context.builder()
+        .policy(TlsPolicy.of(TlsContext.defaults(), tls))
+        .build();
 
 String body = Fabric.http(pinned)
         .get("https://example.com")
         .executeText();
 ```
 
-Socket TLS uses the socket entry and the socket-specific key:
+Use the Socket-specific TLS policy option when the policy must not affect other protocols:
 
 ```java
-Context secureSocket = context.withOptions(context.options().with("socket.tlsSettings", tls));
+Context secureSocket = Context.builder()
+        .options(Options.empty().with(
+                SocketOptions.TLS_POLICY,
+                TlsPolicy.of(TlsContext.defaults(), tls)))
+        .build();
 
 SocketSession session = Fabric.socket(secureSocket)
         .tls("example.com", 443)

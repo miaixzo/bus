@@ -38,7 +38,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Options;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 
@@ -159,7 +158,7 @@ public final class Ingress implements Connection, Conduit {
      * @return lifecycle state
      */
     @Override
-    public Status state() {
+    public State state() {
         return lifecycle.state();
     }
 
@@ -299,7 +298,7 @@ public final class Ingress implements Connection, Conduit {
      */
     @Override
     public boolean healthy() {
-        return channel.isOpen() && lifecycle.state() == Status.OPENED;
+        return channel.isOpen() && lifecycle.state() == State.RUNNING;
     }
 
     /**

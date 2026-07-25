@@ -85,7 +85,6 @@ public final class AioGroup implements AutoCloseable {
         this.ownsDispatcher = ownsDispatcher;
         this.scope = LifecycleScope.resource(this, "aio-group", null, EventObserver.noop());
         this.opened = new AtomicBoolean(true);
-        this.scope.start();
         this.scope.open();
     }
 

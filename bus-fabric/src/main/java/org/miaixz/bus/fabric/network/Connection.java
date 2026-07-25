@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.fabric.network;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.Lifecycle;
 
 /**
  * Protocol-neutral network connection contract.

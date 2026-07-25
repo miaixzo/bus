@@ -44,15 +44,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.network.Ingress;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -270,17 +262,44 @@ public final class TcpServer implements AutoCloseable {
                         this,
                         Activity.of(Protocol.TCP.name + "-accept", this::acceptLoop));
                 notifyOpen(this);
+                if (Logger.isInfoEnabled()) {
+                    Logger.info(
+                            true,
+                            "Fabric",
+                            "TCP server started: host={}, port={}, backlog={}",
+                            address.host(),
+                            address.port(),
+                            backlog);
+                }
             } catch (final IOException e) {
                 running.set(false);
                 IoKit.closeQuietly(opened);
                 server = null;
                 notifyFailure(this, e);
+                if (Logger.isErrorEnabled()) {
+                    Logger.error(
+                            false,
+                            "Fabric",
+                            e,
+                            "TCP server start failed: host={}, port={}",
+                            address.host(),
+                            address.port());
+                }
                 throw new SocketException("Unable to start TCP server", e);
             } catch (final RuntimeException e) {
                 running.set(false);
                 IoKit.closeQuietly(opened);
                 server = null;
                 notifyFailure(this, e);
+                if (Logger.isErrorEnabled()) {
+                    Logger.error(
+                            false,
+                            "Fabric",
+                            e,
+                            "TCP server start failed: host={}, port={}",
+                            address.host(),
+                            address.port());
+                }
                 throw new InternalException("Unable to start TCP server", e);
             }
         }
@@ -353,7 +372,19 @@ public final class TcpServer implements AutoCloseable {
         }
         notifyClose(this);
         if (failure != null) {
+            if (Logger.isErrorEnabled()) {
+                Logger.error(
+                        false,
+                        "Fabric",
+                        failure,
+                        "TCP server close failed: host={}, port={}",
+                        address.host(),
+                        address.port());
+            }
             throw new InternalException("Unable to close TCP server", failure);
+        }
+        if (Logger.isInfoEnabled()) {
+            Logger.info(false, "Fabric", "TCP server closed: host={}, port={}", address.host(), address.port());
         }
     }
 
@@ -368,10 +399,22 @@ public final class TcpServer implements AutoCloseable {
                     return;
                 }
                 final SocketChannel socket = current.accept();
+                if (Logger.isDebugEnabled()) {
+                    Logger.debug(false, "Fabric", "TCP connection accepted: remote={}", socket.getRemoteAddress());
+                }
                 handle(socket);
             } catch (final IOException e) {
                 if (running.get()) {
                     notifyFailure(this, e);
+                    if (Logger.isErrorEnabled()) {
+                        Logger.error(
+                                false,
+                                "Fabric",
+                                e,
+                                "TCP accept loop failed: host={}, port={}",
+                                address.host(),
+                                address.port());
+                    }
                     throw new SocketException("TCP accept failed", e);
                 }
                 return;
@@ -630,7 +673,7 @@ public final class TcpServer implements AutoCloseable {
          * Starts the background session reader once.
          */
         private void startReader() {
-            if (!opened()) {
+            if (!active()) {
                 throw new StatefulException("TCP session is not open");
             }
             final DispatchHandle created = dispatcher
@@ -639,7 +682,7 @@ public final class TcpServer implements AutoCloseable {
                 created.cancel();
                 throw new StatefulException("TCP session reader can only be started once");
             }
-            if (!opened()) {
+            if (!active()) {
                 cancelReader();
             }
         }
@@ -649,7 +692,7 @@ public final class TcpServer implements AutoCloseable {
          */
         private void readLoop() {
             try {
-                while (opened()) {
+                while (active()) {
                     final Buffer buffer = new Buffer();
                     final long read = await(ingress.read(buffer, readBufferSize), "Unable to read TCP session");
                     if (read == Normal.__1) {
@@ -668,7 +711,7 @@ public final class TcpServer implements AutoCloseable {
                     handler.message(this, message);
                 }
             } catch (final RuntimeException e) {
-                if (opened()) {
+                if (active()) {
                     fail(e);
                 }
             }
@@ -690,7 +733,7 @@ public final class TcpServer implements AutoCloseable {
          * @return current lifecycle state
          */
         @Override
-        public Status state() {
+        public State state() {
             return scope.state();
         }
 
@@ -700,8 +743,8 @@ public final class TcpServer implements AutoCloseable {
          * @return {@code true} when both lifecycle scope and ingress remain open
          */
         @Override
-        public boolean opened() {
-            return scope.state() == Status.OPENED && ingress.opened();
+        public boolean active() {
+            return scope.state() == State.RUNNING && ingress.opened();
         }
 
         /**
@@ -734,7 +777,7 @@ public final class TcpServer implements AutoCloseable {
          * @throws StatefulException if the session is not open
          */
         private Void write(final Payload payload) {
-            if (!opened()) {
+            if (!active()) {
                 throw new StatefulException("TCP session is not open");
             }
             final Buffer source = new Buffer().write(payload.bytes());

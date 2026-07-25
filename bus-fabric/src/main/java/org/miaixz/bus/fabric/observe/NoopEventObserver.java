@@ -31,7 +31,9 @@ import org.miaixz.bus.fabric.observe.event.FabricEvent;
  */
 final class NoopEventObserver implements EventObserver {
 
-    /** Shared no-operation observer. */
+    /**
+     * Shared no-operation observer.
+     */
     private static final EventObserver INSTANCE = new NoopEventObserver();
 
     /**

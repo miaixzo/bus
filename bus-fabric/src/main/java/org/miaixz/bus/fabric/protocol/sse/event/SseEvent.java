@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.sse;
+package org.miaixz.bus.fabric.protocol.sse.event;
 
 import java.time.Duration;
 
@@ -80,7 +80,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
     /**
      * Returns the event type.
      *
-     * @return explicit event type or {@link Builder#SSE_DEFAULT_EVENT}
+     * @return explicit event type or the SSE default event name
      */
     @Override
     public String event() {
@@ -111,7 +111,7 @@ public record SseEvent(String id, String event, String data, Duration retry) {
      * Normalizes an event type.
      *
      * @param value event type candidate, or null
-     * @return validated value, or {@link Builder#SSE_DEFAULT_EVENT} when no non-space character is present
+     * @return validated value, or the SSE default event name when no non-space character is present
      */
     private static String normalizeEvent(final String value) {
         if (value == null) {

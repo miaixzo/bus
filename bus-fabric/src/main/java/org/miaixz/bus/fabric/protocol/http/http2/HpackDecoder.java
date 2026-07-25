@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -718,7 +719,7 @@ final class HpackDecoder {
         output.write(prefixMask | maxPrefix);
         int remaining = value - maxPrefix;
         while (remaining >= Normal._128) {
-            output.write((remaining & Builder._127) | Normal._128);
+            output.write((remaining & Builder.UNSIGNED_7_BIT_MASK) | Normal._128);
             remaining >>>= Normal._7;
         }
         output.write(remaining);
@@ -744,7 +745,7 @@ final class HpackDecoder {
         int shift = Normal._0;
         while (input.size() > Normal._0) {
             final int next = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
-            value += (long) (next & Builder._127) << shift;
+            value += (long) (next & Builder.UNSIGNED_7_BIT_MASK) << shift;
             if (value > Integer.MAX_VALUE) {
                 throw new ProtocolException("HPACK integer overflow");
             }
@@ -769,7 +770,7 @@ final class HpackDecoder {
     private static ByteString readByteString(final Buffer input, final int length) {
         try {
             return input.readByteString(length);
-        } catch (final java.io.EOFException e) {
+        } catch (final EOFException e) {
             throw new ProtocolException("Truncated HPACK bytes", e);
         }
     }

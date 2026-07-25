@@ -59,7 +59,7 @@ final class Http2FrameWriter implements AutoCloseable {
     /**
      * Current peer-advertised maximum frame payload size.
      */
-    private int maxFrameSize = Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE;
+    private int maxFrameSize = Normal._16384;
 
     /**
      * Number of complete frames accumulated since the previous transport write.
@@ -94,7 +94,7 @@ final class Http2FrameWriter implements AutoCloseable {
      * @param value peer-advertised payload limit from 16,384 through 16,777,215 bytes
      */
     void maxFrameSize(final int value) {
-        if (value < Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE || value > Builder.BYTES_16_MIB - Normal._1) {
+        if (value < Normal._16384 || value > Builder.BYTES_16_MIB - Normal._1) {
             throw new ProtocolException("Invalid HTTP/2 maximum frame size");
         }
         maxFrameSize = value;
@@ -119,7 +119,7 @@ final class Http2FrameWriter implements AutoCloseable {
         if (count < 0L || count > maxFrameSize || count > 0L && (payload == null || count > payload.size())) {
             throw new ProtocolException("Invalid HTTP/2 frame payload length");
         }
-        if (batch.size() != 0L && batch.size() + Builder.HTTP2_FRAME_HEADER_BYTES + count > BATCH_LIMIT) {
+        if (batch.size() != 0L && batch.size() + Normal._9 + count > BATCH_LIMIT) {
             emit(false);
         }
         writeMedium(batch, (int) count);
@@ -146,7 +146,7 @@ final class Http2FrameWriter implements AutoCloseable {
      */
     void writeIntFrame(final int type, final int streamId, final int flags, final int value) throws IOException {
         ensureOpen();
-        if (batch.size() + Builder.HTTP2_FRAME_HEADER_BYTES + Integer.BYTES > BATCH_LIMIT) {
+        if (batch.size() + Normal._9 + Integer.BYTES > BATCH_LIMIT) {
             emit(false);
         }
         writeMedium(batch, Integer.BYTES);

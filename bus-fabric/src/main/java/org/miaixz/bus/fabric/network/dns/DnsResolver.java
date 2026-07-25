@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
@@ -37,6 +38,7 @@ import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * DNS resolver with observer events and system fallback.
@@ -79,6 +81,9 @@ public final class DnsResolver {
      */
     private DnsResolver(final Resolver backend, final EventObserver observer) {
         this(backend, observer, new State(), null, null);
+        if (Logger.isInfoEnabled()) {
+            Logger.info(true, "Fabric", "DNS resolver initialized: backend={}", backend.getClass().getSimpleName());
+        }
     }
 
     /**
@@ -266,11 +271,25 @@ public final class DnsResolver {
     private DnsResult resolveBackend(final String host, final Clock clock) {
         final boolean observed = observer != EventObserver.noop();
         final String operationId = observed ? ID.objectId() : null;
+        final boolean debug = Logger.isDebugEnabled();
+        if (debug) {
+            Logger.debug(true, "Fabric", "DNS backend lookup started: host={}", host);
+        }
         if (observed) {
             emit(ObservationMarker.DNS_START, host, null, clock, operationId);
         }
         try {
             final DnsResult result = backend.resolveResult(host, clock);
+            if (result.empty() && Logger.isWarnEnabled()) {
+                Logger.warn(false, "Fabric", "DNS backend returned no addresses: host={}", host);
+            } else if (debug) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "DNS backend lookup completed: host={}, addresses={}",
+                        host,
+                        result.addresses().size());
+            }
             if (observed) {
                 emit(
                         result.empty() ? ObservationMarker.DNS_FAILED : ObservationMarker.DNS_SUCCESS,
@@ -285,6 +304,15 @@ public final class DnsResolver {
                     : new SocketException("Unable to resolve host " + host, failure);
             if (observed) {
                 emit(ObservationMarker.DNS_FAILED, host, mapped, clock, operationId);
+            }
+            if (Logger.isErrorEnabled()) {
+                Logger.error(
+                        false,
+                        "Fabric",
+                        mapped,
+                        "DNS backend lookup failed: host={}, exception={}",
+                        host,
+                        mapped.getClass().getSimpleName());
             }
             throw mapped;
         }
@@ -303,7 +331,7 @@ public final class DnsResolver {
         if (ttl <= 0L) {
             return;
         }
-        if (state.cache.size() >= Builder.DNS_RESOLVER_MAX_CACHE_ENTRIES && !state.cache.containsKey(host)) {
+        if (state.cache.size() >= Normal._1024 && !state.cache.containsKey(host)) {
             final var iterator = state.cache.entrySet().iterator();
             if (iterator.hasNext()) {
                 final Map.Entry<String, CacheEntry> victim = iterator.next();

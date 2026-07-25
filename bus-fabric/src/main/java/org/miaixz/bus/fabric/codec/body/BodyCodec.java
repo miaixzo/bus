@@ -27,13 +27,13 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.IllegalPathException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -205,7 +205,7 @@ public final class BodyCodec {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
@@ -232,7 +232,7 @@ public final class BodyCodec {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Normal.MEBI_64);
         }
 
         /**

@@ -301,8 +301,8 @@ public interface Conduit extends AutoCloseable {
              * @return timeout
              */
             @Override
-            public org.miaixz.bus.core.io.timout.Timeout timeout() {
-                return org.miaixz.bus.core.io.timout.Timeout.NONE;
+            public Timeout timeout() {
+                return Timeout.NONE;
             }
 
             /**

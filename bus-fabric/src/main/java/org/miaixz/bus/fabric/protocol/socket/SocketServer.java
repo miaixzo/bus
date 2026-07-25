@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -26,6 +28,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
@@ -35,31 +38,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Lifecycle;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.codec.frame.LineCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -81,7 +71,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.lifecycle.ServerRuntime;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
@@ -175,8 +165,6 @@ public final class SocketServer implements Lifecycle {
     /**
      * Terminal shutdown guard.
      */
-    private final AtomicBoolean shuttingDown;
-
     /**
      * Listening server channel.
      */
@@ -190,12 +178,7 @@ public final class SocketServer implements Lifecycle {
     /**
      * Lifecycle scope.
      */
-    private final LifecycleScope lifecycle;
-
-    /**
-     * Accepted sessions.
-     */
-    private final Queue<SocketSession> sessions;
+    private final ServerRuntime<SocketSession> runtime;
 
     /**
      * Accepted transports, including handshakes that have not produced sessions yet.
@@ -206,11 +189,6 @@ public final class SocketServer implements Lifecycle {
      * Raw channels still being inspected for an optional PROXY header.
      */
     private final Queue<SocketChannel> acceptedChannels;
-
-    /**
-     * Accepted dispatch handles.
-     */
-    private final Queue<DispatchHandle> handles;
 
     /**
      * Creates a socket server from a builder.
@@ -233,14 +211,11 @@ public final class SocketServer implements Lifecycle {
         this.listener = builder.listener;
         this.sessionListener = builder.sessionListener();
         this.dispatcher = context.reactor().dispatcher();
-        this.lifecycle = LifecycleScope.resource(this, "socket-server", listener, observer);
+        this.runtime = ServerRuntime.create(this, "socket-server", listener, observer);
         this.lifecycleLock = new Object();
         this.started = new AtomicBoolean();
-        this.shuttingDown = new AtomicBoolean();
-        this.sessions = new ConcurrentLinkedQueue<>();
         this.connections = new ConcurrentLinkedQueue<>();
         this.acceptedChannels = new ConcurrentLinkedQueue<>();
-        this.handles = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -260,10 +235,10 @@ public final class SocketServer implements Lifecycle {
      */
     public SocketServer start() {
         synchronized (lifecycleLock) {
-            if (running()) {
+            if (active()) {
                 return this;
             }
-            if (shuttingDown.get() || lifecycle.state().terminal()) {
+            if (runtime.shuttingDown() || runtime.state().terminal()) {
                 throw new StatefulException("Socket server is already closed");
             }
             if (!started.compareAndSet(false, true)) {
@@ -274,23 +249,23 @@ public final class SocketServer implements Lifecycle {
                 opened = ServerSocketChannel.open();
                 opened.bind(new InetSocketAddress(address.host(), address.port()), socketOptions.backlog());
                 serverChannel = opened;
-                lifecycle.open(this);
+                runtime.open(this);
                 acceptHandle = track(
                         dispatcher.background(
-                                org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT,
+                                SOCKET_ACTIVITY_ACCEPT,
                                 this,
-                                Activity.of(org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT, this::acceptLoop)));
+                                Activity.of(SOCKET_ACTIVITY_ACCEPT, this::acceptLoop)));
                 return this;
             } catch (final IOException e) {
                 closeServerChannel(opened);
                 serverChannel = null;
                 final SocketException failure = new SocketException("Unable to start socket server", e);
-                lifecycle.fail(failure);
+                runtime.fail(failure);
                 throw failure;
             } catch (final RuntimeException e) {
                 closeServerChannel(opened);
                 serverChannel = null;
-                lifecycle.fail(e);
+                runtime.fail(e);
                 throw e;
             }
         }
@@ -329,8 +304,8 @@ public final class SocketServer implements Lifecycle {
      * @return current server lifecycle state
      */
     @Override
-    public Status state() {
-        return lifecycle.state();
+    public State state() {
+        return runtime.state();
     }
 
     /**
@@ -339,9 +314,9 @@ public final class SocketServer implements Lifecycle {
      * @return true when running
      */
     @Override
-    public boolean running() {
+    public boolean active() {
         final ServerSocketChannel current = serverChannel;
-        return !shuttingDown.get() && lifecycle.state() == Status.OPENED && current != null && current.isOpen();
+        return !runtime.shuttingDown() && runtime.state() == State.RUNNING && current != null && current.isOpen();
     }
 
     /**
@@ -359,11 +334,7 @@ public final class SocketServer implements Lifecycle {
      * @return immutable attributes
      */
     public Map<String, Object> attributes() {
-        return Map.of(
-                org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER,
-                observer,
-                org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS,
-                socketOptions);
+        return Map.of(ATTRIBUTE_OBSERVER, observer, ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
     }
 
     /**
@@ -371,13 +342,13 @@ public final class SocketServer implements Lifecycle {
      */
     private void acceptLoop() {
         try {
-            while (!shuttingDown.get()) {
+            while (!runtime.shuttingDown()) {
                 final ServerSocketChannel current = serverChannel;
                 if (current == null || !current.isOpen()) {
                     return;
                 }
                 final SocketChannel channel = current.accept();
-                if (shuttingDown.get()) {
+                if (runtime.shuttingDown()) {
                     closeAcceptedChannel(channel);
                     return;
                 }
@@ -385,11 +356,9 @@ public final class SocketServer implements Lifecycle {
                 try {
                     track(
                             dispatcher.background(
-                                    org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT,
+                                    SOCKET_ACTIVITY_ACCEPT,
                                     channel,
-                                    Activity.of(
-                                            org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_ACCEPT,
-                                            () -> handleAccepted(channel))));
+                                    Activity.of(SOCKET_ACTIVITY_ACCEPT, () -> handleAccepted(channel))));
                 } catch (final RuntimeException e) {
                     acceptedChannels.remove(channel);
                     closeAcceptedChannel(channel);
@@ -397,11 +366,11 @@ public final class SocketServer implements Lifecycle {
                 }
             }
         } catch (final IOException e) {
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 failServer(new SocketException("Socket server accept failed", e));
             }
         } catch (final RuntimeException e) {
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 failServer(e);
             }
         }
@@ -417,11 +386,11 @@ public final class SocketServer implements Lifecycle {
         SocketSession session = null;
         boolean transferred = false;
         try {
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 return;
             }
             final ProxyHeaderReader.Result proxy = ProxyHeaderReader.read(channel);
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 return;
             }
             final Address peerAddress = peerAddress(channel, proxy.header());
@@ -429,7 +398,7 @@ public final class SocketServer implements Lifecycle {
             connection = new AcceptedConnection(channel, ingress);
             connections.add(connection);
             acceptedChannels.remove(channel);
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 connection.close();
                 return;
             }
@@ -443,16 +412,12 @@ public final class SocketServer implements Lifecycle {
                 connection.secure(tls);
                 await(tls.handshake(), "Socket server TLS handshake failed");
             }
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 connection.close();
                 return;
             }
-            Message opening = Message.of(
-                    peerAddress.protocol(),
-                    peerAddress,
-                    Headers.empty(),
-                    Payload.empty(),
-                    org.miaixz.bus.fabric.Builder.SOCKET_TAG_OPEN);
+            Message opening = Message
+                    .of(peerAddress.protocol(), peerAddress, Headers.empty(), Payload.empty(), SOCKET_TAG_OPEN);
             opening = FilterChain.apply(opening, context.filter(), filter);
             if (guard != null) {
                 guard.check(opening).throwIfRejected();
@@ -462,7 +427,7 @@ public final class SocketServer implements Lifecycle {
             session = new SocketSession(peerAddress, connection, null, null, SocketCodec.of(frameCodec), Demuxer.noop(),
                     attributes, null, registryListener(connection), context.options().materializeMaxBytes(),
                     socketOptions, dispatcher, context.clock(), timeout, Cancellation.create());
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 session.close();
                 return;
             }
@@ -474,7 +439,7 @@ public final class SocketServer implements Lifecycle {
             if (session != null) {
                 session.cancel();
             }
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 notifySetupFailure(e);
             }
         } finally {
@@ -496,9 +461,9 @@ public final class SocketServer implements Lifecycle {
     private void startReader(final SocketSession session) {
         track(
                 dispatcher.background(
-                        org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_READ,
+                        SOCKET_ACTIVITY_READ,
                         session,
-                        Activity.of(org.miaixz.bus.fabric.Builder.SOCKET_ACTIVITY_READ, () -> readLoop(session))));
+                        Activity.of(SOCKET_ACTIVITY_READ, () -> readLoop(session))));
     }
 
     /**
@@ -508,15 +473,15 @@ public final class SocketServer implements Lifecycle {
      */
     private void readLoop(final SocketSession session) {
         try {
-            while (!shuttingDown.get() && session.opened()) {
+            while (!runtime.shuttingDown() && session.active()) {
                 final Message message = session.receive().execute();
                 handler.message(session, message);
             }
         } catch (final RuntimeException e) {
-            if (session.opened()) {
+            if (session.active()) {
                 session.cancel();
             }
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 notifyHandlerFailure(session, e);
             }
         }
@@ -538,7 +503,7 @@ public final class SocketServer implements Lifecycle {
              */
             @Override
             public void open(final SocketSession source) {
-                sessions.add(source);
+                runtime.register(source);
                 notifySessionOpen(source);
             }
 
@@ -571,7 +536,7 @@ public final class SocketServer implements Lifecycle {
              * @param source terminal session
              */
             private void remove(final SocketSession source) {
-                sessions.remove(source);
+                runtime.remove(source);
                 connections.remove(connection);
             }
         };
@@ -584,20 +549,14 @@ public final class SocketServer implements Lifecycle {
      * @return tracked handle
      */
     private DispatchHandle track(final DispatchHandle handle) {
-        handles.add(handle);
-        handle.future().whenComplete((ignored, cause) -> handles.remove(handle));
-        return handle;
+        return runtime.track(handle);
     }
 
     /**
      * Cancels accepted dispatch handles.
      */
     private void cancelHandles() {
-        DispatchHandle handle = handles.poll();
-        while (handle != null) {
-            handle.cancel();
-            handle = handles.poll();
-        }
+        runtime.cancelTasks();
     }
 
     /**
@@ -607,10 +566,9 @@ public final class SocketServer implements Lifecycle {
      * @return true when the server lifecycle changed
      */
     private boolean shutdown(final boolean graceful) {
-        if (!shuttingDown.compareAndSet(false, true)) {
+        if (!runtime.beginShutdown()) {
             return false;
         }
-        lifecycle.closing();
         RuntimeException failure = stopAccept(null);
         failure = terminateSessions(graceful, failure);
         if (graceful) {
@@ -619,14 +577,14 @@ public final class SocketServer implements Lifecycle {
         failure = forceClose(failure);
         if (graceful) {
             if (failure == null) {
-                return lifecycle.close(this);
+                return runtime.close(this);
             }
-            lifecycle.fail(failure);
+            runtime.fail(failure);
             throw failure;
         }
-        final boolean changed = lifecycle.cancel();
+        final boolean changed = runtime.cancel();
         if (failure != null) {
-            lifecycle.emit(ObservationMarker.SOCKET_FAILED, failure);
+            runtime.emit(ObservationMarker.SOCKET_FAILED, failure);
         }
         return changed;
     }
@@ -669,7 +627,7 @@ public final class SocketServer implements Lifecycle {
      */
     private RuntimeException terminateSessions(final boolean graceful, final RuntimeException failure) {
         RuntimeException currentFailure = failure;
-        for (final SocketSession session : new ArrayList<>(sessions)) {
+        for (final SocketSession session : runtime.sessions()) {
             try {
                 if (graceful) {
                     session.close();
@@ -703,7 +661,7 @@ public final class SocketServer implements Lifecycle {
      * @return true when resources remain
      */
     private boolean hasAcceptedResources() {
-        return !sessions.isEmpty() || !connections.isEmpty() || !acceptedChannels.isEmpty();
+        return runtime.hasSessions() || !connections.isEmpty() || !acceptedChannels.isEmpty();
     }
 
     /**
@@ -730,7 +688,7 @@ public final class SocketServer implements Lifecycle {
                 currentFailure = append(currentFailure, new SocketException("Unable to close accepted channel", e));
             }
         }
-        sessions.clear();
+        runtime.clearSessions();
         connections.clear();
         acceptedChannels.clear();
         return currentFailure;
@@ -742,13 +700,13 @@ public final class SocketServer implements Lifecycle {
      * @param cause accept-loop failure
      */
     private void failServer(final RuntimeException cause) {
-        if (!shuttingDown.compareAndSet(false, true)) {
+        if (!runtime.beginShutdown()) {
             return;
         }
         RuntimeException failure = stopAccept(cause);
         failure = terminateSessions(false, failure);
         failure = forceClose(failure);
-        lifecycle.fail(failure);
+        runtime.fail(failure);
     }
 
     /**
@@ -780,7 +738,7 @@ public final class SocketServer implements Lifecycle {
         try {
             connection.close();
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.SOCKET_FAILED, e);
+            runtime.emit(ObservationMarker.SOCKET_FAILED, e);
         }
     }
 
@@ -796,7 +754,7 @@ public final class SocketServer implements Lifecycle {
         try {
             channel.close();
         } catch (final IOException e) {
-            lifecycle.emit(ObservationMarker.SOCKET_FAILED, new SocketException("Unable to close accepted channel", e));
+            runtime.emit(ObservationMarker.SOCKET_FAILED, new SocketException("Unable to close accepted channel", e));
         }
     }
 
@@ -867,17 +825,17 @@ public final class SocketServer implements Lifecycle {
      * @return immutable attributes installed on the accepted session
      */
     private Map<String, Object> attributes(final ProxyHeader proxyHeader, final Filter sessionFilter) {
-        final java.util.LinkedHashMap<String, Object> values = new java.util.LinkedHashMap<>();
-        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER, observer);
-        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
+        values.put(ATTRIBUTE_OBSERVER, observer);
+        values.put(ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         if (sessionFilter != null) {
-            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_FILTER, sessionFilter);
+            values.put(ATTRIBUTE_FILTER, sessionFilter);
         }
         if (guard != null) {
-            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_GUARD, guard);
+            values.put(ATTRIBUTE_GUARD, guard);
         }
         if (proxyHeader != null) {
-            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_PROXY_HEADER, proxyHeader);
+            values.put(ATTRIBUTE_PROXY_HEADER, proxyHeader);
         }
         return Map.copyOf(values);
     }
@@ -899,7 +857,7 @@ public final class SocketServer implements Lifecycle {
                 throw new ProtocolException("Accepted socket remote address must be InetSocketAddress");
             }
             return new Address(address.scheme(), socket.getHostString(), socket.getPort(), Symbol.SLASH);
-        } catch (final java.io.IOException e) {
+        } catch (final IOException e) {
             throw new ProtocolException("Unable to resolve accepted socket peer address", e);
         }
     }
@@ -913,7 +871,7 @@ public final class SocketServer implements Lifecycle {
         try {
             sessionListener.open(session);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -926,7 +884,7 @@ public final class SocketServer implements Lifecycle {
         try {
             sessionListener.close(session);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -940,7 +898,7 @@ public final class SocketServer implements Lifecycle {
         try {
             sessionListener.failure(session, cause);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -950,11 +908,11 @@ public final class SocketServer implements Lifecycle {
      * @param cause setup failure
      */
     private void notifySetupFailure(final Throwable cause) {
-        lifecycle.emit(ObservationMarker.SOCKET_FAILED, cause);
+        runtime.emit(ObservationMarker.SOCKET_FAILED, cause);
         try {
             sessionListener.failure(null, cause);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -968,7 +926,7 @@ public final class SocketServer implements Lifecycle {
         try {
             handler.failure(session, cause);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -1098,9 +1056,9 @@ public final class SocketServer implements Lifecycle {
          * @return current lifecycle state of the accepted connection
          */
         @Override
-        public Status state() {
+        public State state() {
             if (closed.get()) {
-                return Status.CLOSED;
+                return State.CLOSED;
             }
             final TlsChannel current = tls;
             return current == null ? ingress.state() : current.state();

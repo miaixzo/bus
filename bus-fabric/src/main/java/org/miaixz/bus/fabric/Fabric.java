@@ -48,7 +48,7 @@ public final class Fabric {
      * Creates an entry point around an already validated context.
      */
     private Fabric() {
-        // No instances.
+        // No initialization required.
     }
 
     /**

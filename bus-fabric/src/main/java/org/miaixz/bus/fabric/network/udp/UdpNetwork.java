@@ -181,7 +181,7 @@ public final class UdpNetwork implements AutoCloseable {
      * @return number of currently open managed channels
      */
     public int channelCount() {
-        channels.removeIf(channel -> !channel.opened());
+        channels.removeIf(channel -> !channel.active());
         return channels.size();
     }
 

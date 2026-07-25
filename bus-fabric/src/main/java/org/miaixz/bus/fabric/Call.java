@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
@@ -116,8 +117,8 @@ public interface Call<T> extends Lifecycle {
              * @return failed or cancelled state
              */
             @Override
-            public Status state() {
-                return cancelled.get() ? Status.CANCELLED : Status.FAILED;
+            public State state() {
+                return cancelled.get() ? State.CANCELLED : State.FAILED;
             }
 
         };

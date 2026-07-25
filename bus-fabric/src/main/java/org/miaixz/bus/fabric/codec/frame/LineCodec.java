@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +119,7 @@ public final class LineCodec implements FrameCodec {
             try {
                 frames.add(Frame.of(buffer.readByteString(index)));
                 buffer.skip(delimiter.size());
-            } catch (final java.io.EOFException e) {
+            } catch (final EOFException e) {
                 throw new InternalException("Unable to read line frame", e);
             }
         }
@@ -192,7 +194,7 @@ public final class LineCodec implements FrameCodec {
                 throw new ProtocolException("Line frame delimiter index exceeds integer range");
             }
             return (int) index;
-        } catch (final java.io.IOException e) {
+        } catch (final IOException e) {
             throw new InternalException("Unable to search line frame delimiter", e);
         }
     }

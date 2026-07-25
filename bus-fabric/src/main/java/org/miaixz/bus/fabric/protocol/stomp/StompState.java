@@ -23,9 +23,10 @@ import java.time.Duration;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Timeout;
 
 /**
- * Immutable STOMP heartbeat state negotiated independently from the transport {@link org.miaixz.bus.fabric.Timeout}.
+ * Immutable STOMP heartbeat state negotiated independently from the transport {@link Timeout}.
  *
  * @author Kimi Liu
  * @since Java 21+

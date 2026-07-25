@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket.upgrade;
 
+import static org.miaixz.bus.fabric.Builder.BYTES_64_KIB;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -47,8 +49,8 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.network.Ingress;
 
@@ -119,8 +121,7 @@ public final class WebSocketUpgrade {
         if (Base64.decode(checkedKey).length != Http.WebSocket.KEY_BYTES) {
             throw new ProtocolException("WebSocket key must decode to 16 bytes");
         }
-        return Base64.encode(
-                org.miaixz.bus.crypto.Builder.sha1(checkedKey + Http.WebSocket.ACCEPT_GUID, Charset.ISO_8859_1));
+        return Base64.encode(Builder.sha1(checkedKey + Http.WebSocket.ACCEPT_GUID, Charset.ISO_8859_1));
     }
 
     /**
@@ -290,17 +291,17 @@ public final class WebSocketUpgrade {
     private static Request readRequest(final BufferSource source) {
         try {
             long total = Normal.LONG_ZERO;
-            final String requestLine = source.readUtf8LineStrict(Builder.WEBSOCKET_UPGRADE_MAX_LINE_BYTES);
+            final String requestLine = source.readUtf8LineStrict(Normal._8192);
             total += requestLine.length() + Normal._2;
-            final String[] parts = requestLine.split(" ", Normal._3);
+            final String[] parts = requestLine.split(Symbol.SPACE, Normal._3);
             if (parts.length != Normal._3) {
                 throw new ProtocolException("Invalid WebSocket HTTP request line");
             }
             final Headers.Builder headers = Headers.builder();
             while (true) {
-                final String line = source.readUtf8LineStrict(Builder.WEBSOCKET_UPGRADE_MAX_LINE_BYTES);
+                final String line = source.readUtf8LineStrict(Normal._8192);
                 total += line.length() + Normal._2;
-                if (total > Builder.WEBSOCKET_UPGRADE_MAX_HEADER_BYTES) {
+                if (total > BYTES_64_KIB) {
                     throw new ProtocolException("WebSocket upgrade headers exceed 64 KiB");
                 }
                 if (line.isEmpty()) {
@@ -382,13 +383,16 @@ public final class WebSocketUpgrade {
      * @throws SocketException if the response cannot be written and flushed
      */
     private static void writeResponse(final Sink sink, final Headers headers) {
-        final Buffer response = new Buffer().writeUtf8("HTTP/1.1 101 Switching Protocols\r\n");
+        final Buffer response = new Buffer().writeUtf8(
+                Protocol.HTTP_1_1 + Symbol.SPACE + Http.Status.SWITCHING_PROTOCOLS + " Switching Protocols"
+                        + Symbol.CRLF);
         for (final Map.Entry<String, List<String>> entry : headers.asMap().entrySet()) {
             for (final String value : entry.getValue()) {
-                response.writeUtf8(entry.getKey()).writeUtf8(": ").writeUtf8(value).writeUtf8("\r\n");
+                response.writeUtf8(entry.getKey()).writeUtf8(Symbol.COLON).writeUtf8(Symbol.SPACE).writeUtf8(value)
+                        .writeUtf8(Symbol.CRLF);
             }
         }
-        response.writeUtf8("\r\n");
+        response.writeUtf8(Symbol.CRLF);
         try {
             sink.write(response, response.size());
             sink.flush();

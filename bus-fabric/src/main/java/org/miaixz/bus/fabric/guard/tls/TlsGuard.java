@@ -30,7 +30,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.guard.GuardResult;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 
@@ -105,10 +104,10 @@ public final class TlsGuard {
     /**
      * Returns rule name.
      *
-     * @return {@link Builder#TLS_GUARD_NAME}
+     * @return stable TLS guard name
      */
     public String name() {
-        return Builder.TLS_GUARD_NAME;
+        return Protocol.TLS.name;
     }
 
     /**

@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
+import java.net.SocketOption;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -35,22 +38,12 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
+import org.miaixz.bus.fabric.codec.frame.LineCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
-import org.miaixz.bus.fabric.network.tls.TlsSettings;
-import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -67,9 +60,9 @@ import org.miaixz.bus.fabric.protocol.socket.calls.SocketCall;
 public final class SocketX {
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final SocketSnapshot snapshot;
+    private final SocketSpec spec;
 
     /**
      * Execution runner.
@@ -84,18 +77,17 @@ public final class SocketX {
     /**
      * Creates an exchange.
      *
-     * @param builder configuration source used to create the immutable exchange snapshot
+     * @param builder configuration source used to create the immutable exchange specification
      */
     private SocketX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        final TlsContext tlsContext = tlsContext(current);
-        final TlsSettings tlsSettings = tlsContext == null ? null : tlsSettings(current);
-        this.snapshot = new SocketSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, tlsContext, tlsSettings, builder.frameCodec, builder.handler(), builder.guard,
-                builder.filter, currentObserver, builder.proxyHeader, builder.socketOptions, builder.listener,
-                builder.pooled);
-        this.runner = new SocketRunner(snapshot);
+        final TlsPolicy tlsPolicy = tlsPolicy(current);
+        this.spec = new SocketSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
+                builder.timeout, tlsPolicy.context(), tlsPolicy.settings(), builder.frameCodec, builder.handler(),
+                builder.guard, builder.filter, currentObserver, builder.proxyHeader, builder.socketOptions,
+                builder.listener, builder.pooled);
+        this.runner = new SocketRunner(spec);
         this.callback = builder.callback;
     }
 
@@ -115,7 +107,7 @@ public final class SocketX {
      * @return transport protocol derived from the target address
      */
     public Protocol protocol() {
-        return snapshot.address().protocol();
+        return spec.address().protocol();
     }
 
     /**
@@ -124,7 +116,7 @@ public final class SocketX {
      * @return immutable target address
      */
     public Address address() {
-        return snapshot.address();
+        return spec.address();
     }
 
     /**
@@ -142,7 +134,7 @@ public final class SocketX {
      * @return immutable headers sent when the socket is opened
      */
     public Headers headers() {
-        return snapshot.headers();
+        return spec.headers();
     }
 
     /**
@@ -151,7 +143,7 @@ public final class SocketX {
      * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
-        return snapshot.timeout();
+        return spec.timeout();
     }
 
     /**
@@ -160,7 +152,7 @@ public final class SocketX {
      * @return socket tuning options captured by this exchange
      */
     public SocketOptions options() {
-        return snapshot.socketOptions();
+        return spec.socketOptions();
     }
 
     /**
@@ -207,10 +199,10 @@ public final class SocketX {
      */
     public Call<SocketSession> call() {
         return SocketCall.create(
-                snapshot.context().reactor().dispatcher(),
+                spec.context().reactor().dispatcher(),
                 callback,
-                snapshot.observer(),
-                snapshot.timeout(),
+                spec.observer(),
+                spec.timeout(),
                 cancellation -> Mediator.execute(Type.SOCKET, cancellation, runner::open),
                 dispatchKey());
     }
@@ -230,8 +222,8 @@ public final class SocketX {
      * @return dispatch key
      */
     public String dispatchKey() {
-        return snapshot.address().scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + snapshot.address().host()
-                + Symbol.C_COLON + snapshot.address().port();
+        return spec.address().scheme() + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + spec.address().host()
+                + Symbol.C_COLON + spec.address().port();
     }
 
     /**
@@ -247,33 +239,14 @@ public final class SocketX {
     }
 
     /**
-     * Resolves the socket TLS context from typed options.
+     * Resolves the complete Socket-specific or generic TLS policy.
      *
      * @param context shared context
-     * @return TLS context or null when explicitly disabled
+     * @return configured or shared default TLS policy
      */
-    private static TlsContext tlsContext(final Context context) {
-        if (context.options().contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_CONTEXT)) {
-            return context.options().get(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_CONTEXT);
-        }
-        final TlsContext configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TLS_CONTEXT);
-        return configured == null ? TlsContext.defaults() : configured;
-    }
-
-    /**
-     * Resolves socket TLS settings from typed options.
-     *
-     * @param context shared context
-     * @return TLS settings
-     */
-    private static TlsSettings tlsSettings(final Context context) {
-        if (context.options().contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_SETTINGS)) {
-            final TlsSettings configured = context.options()
-                    .get(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_TLS_SETTINGS);
-            return configured == null ? TlsSettings.defaults() : configured;
-        }
-        final TlsSettings configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TLS_SETTINGS);
-        return configured == null ? TlsSettings.defaults() : configured;
+    private static TlsPolicy tlsPolicy(final Context context) {
+        final TlsPolicy configured = context.options().get(SocketOptions.TLS_POLICY);
+        return configured == null ? TlsPolicy.resolve(context.options()) : configured;
     }
 
     /**
@@ -290,10 +263,8 @@ public final class SocketX {
             final URI parsed = new URI(value.trim());
             final String scheme = parsed.getScheme();
             if (!Protocol.TCP.name.equalsIgnoreCase(scheme) && !Protocol.UDP.name.equalsIgnoreCase(scheme)
-                    && !Protocol.TLS.name.equalsIgnoreCase(scheme)
-                    && !org.miaixz.bus.fabric.Builder.SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
-                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme)
-                    && !org.miaixz.bus.fabric.Builder.AIO_SCHEME.equalsIgnoreCase(scheme)) {
+                    && !Protocol.TLS.name.equalsIgnoreCase(scheme) && !SOCKET_X_KCP_SCHEME.equalsIgnoreCase(scheme)
+                    && !Protocol.SOCKET.name.equalsIgnoreCase(scheme) && !AIO_SCHEME.equalsIgnoreCase(scheme)) {
                 throw new ProtocolException("Socket URL must use tcp, tls, udp, kcp, socket, or aio");
             }
             Address.from(parsed);
@@ -344,14 +315,11 @@ public final class SocketX {
      * @param options context option snapshot to inspect
      * @return true when socket-specific keys exist
      */
-    private static boolean hasSocketOptions(final org.miaixz.bus.fabric.Options options) {
-        return options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_READ_BUFFER_SIZE)
-                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_SIZE)
-                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_COUNT)
-                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IO_THREADS)
-                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_OPTIONS)
-                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_RETAIN_READ_BUFFER)
-                || options.contains(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IDLE_TIMEOUT);
+    private static boolean hasSocketOptions(final Options options) {
+        return options.contains(OPTION_SOCKET_READ_BUFFER_SIZE) || options.contains(OPTION_SOCKET_WRITE_CHUNK_SIZE)
+                || options.contains(OPTION_SOCKET_WRITE_CHUNK_COUNT) || options.contains(OPTION_SOCKET_IO_THREADS)
+                || options.contains(OPTION_SOCKET_OPTIONS) || options.contains(OPTION_SOCKET_RETAIN_READ_BUFFER)
+                || options.contains(OPTION_SOCKET_IDLE_TIMEOUT);
     }
 
     /**
@@ -455,7 +423,7 @@ public final class SocketX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.socketOptions = hasSocketOptions(context.options()) ? SocketOptions.from(context.options())
                     : SocketOptions.defaults();
@@ -532,7 +500,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder kcp(final String host, final int port) {
-            return to(target(org.miaixz.bus.fabric.Builder.SOCKET_X_KCP_SCHEME, host, port));
+            return to(target(SOCKET_X_KCP_SCHEME, host, port));
         }
 
         /**
@@ -644,7 +612,7 @@ public final class SocketX {
          * @param <T>    value type
          * @return this builder
          */
-        public <T> Builder socketOption(final java.net.SocketOption<T> option, final T value) {
+        public <T> Builder socketOption(final SocketOption<T> option, final T value) {
             return socketOptions(copySocketOptions().socketOption(option, value).build());
         }
 
@@ -705,7 +673,7 @@ public final class SocketX {
          * @return this builder
          */
         public Builder delimiterFrame(final byte[] delimiter) {
-            return frame(org.miaixz.bus.fabric.codec.frame.LineCodec.of(delimiter));
+            return frame(LineCodec.of(delimiter));
         }
 
         /**

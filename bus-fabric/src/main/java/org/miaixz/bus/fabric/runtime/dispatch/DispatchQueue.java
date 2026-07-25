@@ -19,19 +19,12 @@
 */
 package org.miaixz.bus.fabric.runtime.dispatch;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
+import org.miaixz.bus.core.Lifecycle.State;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
@@ -46,7 +39,7 @@ public final class DispatchQueue implements AutoCloseable {
     /**
      * Maximum number of short tasks retained in the ready partition.
      */
-    private static final int MAX_QUEUED = 65_536;
+    private static final int MAX_QUEUED = Normal._64 * Normal._1024;
 
     /**
      * Global and per-key concurrency limits applied during reservation.
@@ -130,7 +123,7 @@ public final class DispatchQueue implements AutoCloseable {
             final Cancellation cancellation,
             final DispatchHandle handle) {
         final DispatchHandle current = require(handle, "Dispatch handle");
-        if (closed || current.state() != Status.QUEUED || current.future().isDone() || contains(current)
+        if (closed || current.state() != State.QUEUED || current.future().isDone() || contains(current)
                 || queuedEntries.size() >= MAX_QUEUED) {
             return false;
         }
@@ -185,7 +178,7 @@ public final class DispatchQueue implements AutoCloseable {
                 continue;
             }
             final DispatchHandle handle = entry.handle();
-            if (handle.state() != Status.QUEUED || handle.future().isDone()) {
+            if (handle.state() != State.QUEUED || handle.future().isDone()) {
                 queuedEntries.remove(handle);
                 publishOrRemove(bucket);
                 continue;

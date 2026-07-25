@@ -19,34 +19,25 @@
 */
 package org.miaixz.bus.fabric.registry.connection;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
@@ -56,6 +47,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Thread-safe reusable connection pool.
@@ -74,12 +66,12 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Oldest proven-HTTP/1 waiters admitted together to avoid a descheduled queue-head convoy.
      */
-    private static final int HTTP1_ADMISSION_WINDOW = 1;
+    private static final int HTTP1_ADMISSION_WINDOW = Normal._1;
 
     /**
      * Normal per-destination H1 width before sustained queueing proves that the service is latency-bound.
      */
-    private static final int HTTP1_BASE_CONNECTIONS = 16;
+    private static final int HTTP1_BASE_CONNECTIONS = Normal._16;
 
     /**
      * Queue duration required before a proven H1 destination may expand beyond its normal width.
@@ -89,7 +81,7 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Minimum simultaneous queue depth required to latch full slow-service expansion.
      */
-    private static final int HTTP1_EXPANSION_LATCH_WAITERS = 48;
+    private static final int HTTP1_EXPANSION_LATCH_WAITERS = Normal._48;
 
     /**
      * Pool policy.
@@ -104,12 +96,7 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Idle connections by destination.
      */
-    private final ConcurrentHashMap<Destination, ArrayDeque<PooledConnection>> idle;
-
-    /**
-     * Reusable idle entry owned by each physical connection identity.
-     */
-    private final Map<Connection, PooledConnection> idleEntries;
+    private final IdleConnectionIndex idleIndex;
 
     /**
      * Destination values whose stable option identity has already been verified.
@@ -139,17 +126,7 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Multiplex-capable active connections by destination.
      */
-    private final Map<Destination, ArrayDeque<Connection>> multiplex;
-
-    /**
-     * Destinations whose completed protocol negotiation has explicitly produced HTTP/1.
-     */
-    private final Set<Destination> http1Destinations;
-
-    /**
-     * Destinations whose completed protocol negotiation has explicitly produced a multiplexed protocol.
-     */
-    private final Set<Destination> multiplexDestinations;
+    private final MultiplexCapacity multiplexCapacity;
 
     /**
      * Proven H1 destinations whose sustained queueing permits expansion through their configured upper bound.
@@ -159,8 +136,6 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Multiplex capacity listener registrations.
      */
-    private final Map<Connection, Connection.Registration> capacityRegistrations;
-
     /**
      * O(1) total physical connection count.
      */
@@ -169,8 +144,6 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * O(1) total idle connection count.
      */
-    private volatile int idleCount;
-
     /**
      * Coordination lock.
      */
@@ -189,7 +162,7 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Fair first-in-first-out acquisition waiters.
      */
-    private final ArrayDeque<PoolWaiter> waiters;
+    private final PoolWaiters waiters;
 
     /**
      * Closed flag.
@@ -240,22 +213,27 @@ public final class ConnectionPool implements AutoCloseable {
         this.clock = clock;
         this.meter = meter;
         this.runtimeDispatcher = dispatcher;
-        this.idle = new ConcurrentHashMap<>();
-        this.idleEntries = new IdentityHashMap<>();
+        this.idleIndex = new IdleConnectionIndex();
         this.validatedDestinations = ConcurrentHashMap.newKeySet();
         this.leased = Collections.newSetFromMap(new IdentityHashMap<>());
         this.active = new IdentityHashMap<>();
         this.physicalByDestination = new LinkedHashMap<>();
-        this.multiplex = new LinkedHashMap<>();
-        this.http1Destinations = ConcurrentHashMap.newKeySet();
-        this.multiplexDestinations = ConcurrentHashMap.newKeySet();
+        this.multiplexCapacity = new MultiplexCapacity();
         this.expandedHttp1Destinations = ConcurrentHashMap.newKeySet();
-        this.capacityRegistrations = new IdentityHashMap<>();
         this.lock = new Object();
         this.creatingByDestination = new LinkedHashMap<>();
-        this.waiters = new ArrayDeque<>();
+        this.waiters = new PoolWaiters();
         this.closed = new AtomicBoolean();
         this.evictionStarted = new AtomicBoolean();
+        if (Logger.isInfoEnabled()) {
+            Logger.info(
+                    true,
+                    "Fabric",
+                    "Connection pool initialized: maxConnections={}, maxIdle={}, perDestination={}",
+                    policy.maxConnections(),
+                    policy.maxIdle(),
+                    policy.maxConnectionsPerDestination());
+        }
     }
 
     /**
@@ -371,7 +349,7 @@ public final class ConnectionPool implements AutoCloseable {
         require(factory, "Connection factory");
         final Cancellation scope = require(cancellation, "Cancellation");
         final long deadline = deadline(policy.acquireTimeout());
-        PoolWaiter waiter = null;
+        PoolWaiters.Waiter waiter = null;
         scope.throwIfCancelled();
         final ConnectionLease immediateIdle = acquireIdle(target, null);
         if (immediateIdle != null) {
@@ -399,7 +377,7 @@ public final class ConnectionPool implements AutoCloseable {
                     return createLease(target, factory, scope);
                 }
                 if (waiter == null) {
-                    waiter = new PoolWaiter(target);
+                    waiter = new PoolWaiters.Waiter(target);
                 }
                 waitForAvailability(waiter, scope, deadline);
             }
@@ -462,7 +440,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @return idle count
      */
     public int idle() {
-        return idleCount;
+        return idleIndex.count;
     }
 
     /**
@@ -495,23 +473,23 @@ public final class ConnectionPool implements AutoCloseable {
         synchronized (lock) {
             final Instant now = clock.now();
             int kept = 0;
-            for (final ArrayDeque<PooledConnection> bucket : idle.values()) {
+            for (final ArrayDeque<PooledConnection> bucket : idleIndex.buckets.values()) {
                 final ArrayDeque<PooledConnection> retained = new ArrayDeque<>();
                 while (!bucket.isEmpty()) {
                     final PooledConnection pooled = bucket.removeFirst();
-                    idleCount--;
+                    idleIndex.count--;
                     final boolean expired = Duration.between(pooled.lastUsed(), now).compareTo(policy.keepAlive()) > 0;
                     if (expired || kept >= policy.maxIdle()) {
                         evicted.add(pooled.connection());
                     } else {
                         retained.addLast(pooled);
-                        idleCount++;
+                        idleIndex.count++;
                         kept++;
                     }
                 }
                 bucket.addAll(retained);
             }
-            idle.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            idleIndex.buckets.entrySet().removeIf(entry -> entry.getValue().isEmpty());
             for (final Connection connection : evicted) {
                 removePhysical(connection);
             }
@@ -580,7 +558,7 @@ public final class ConnectionPool implements AutoCloseable {
         final Dispatcher ownedDispatcher;
         synchronized (lock) {
             cancelEviction();
-            for (final ArrayDeque<PooledConnection> bucket : idle.values()) {
+            for (final ArrayDeque<PooledConnection> bucket : idleIndex.buckets.values()) {
                 while (!bucket.isEmpty()) {
                     final Connection connection = bucket.removeLast().connection();
                     if (seen.add(connection)) {
@@ -588,8 +566,8 @@ public final class ConnectionPool implements AutoCloseable {
                     }
                 }
             }
-            idle.clear();
-            idleEntries.clear();
+            idleIndex.buckets.clear();
+            idleIndex.entries.clear();
             validatedDestinations.clear();
             for (final ConnectionLease lease : List.copyOf(leased)) {
                 if (seen.add(lease.connection())) {
@@ -602,16 +580,16 @@ public final class ConnectionPool implements AutoCloseable {
             leased.clear();
             active.clear();
             physicalByDestination.clear();
-            multiplex.clear();
-            http1Destinations.clear();
-            multiplexDestinations.clear();
+            multiplexCapacity.candidates.clear();
+            multiplexCapacity.http1Destinations.clear();
+            multiplexCapacity.multiplexDestinations.clear();
             expandedHttp1Destinations.clear();
-            for (final Connection.Registration registration : capacityRegistrations.values()) {
+            for (final Connection.Registration registration : multiplexCapacity.registrations.values()) {
                 registration.close();
             }
-            capacityRegistrations.clear();
+            multiplexCapacity.registrations.clear();
             physicalCount = 0;
-            idleCount = 0;
+            idleIndex.count = 0;
             creatingByDestination.clear();
             signalAllWaiters();
             if (!waiters.isEmpty()) {
@@ -629,6 +607,9 @@ public final class ConnectionPool implements AutoCloseable {
                 ownedDispatcher.close();
             }
         }
+        if (Logger.isInfoEnabled()) {
+            Logger.info(false, "Fabric", "Connection pool closed: physicalConnections={}", connections.size());
+        }
     }
 
     /**
@@ -639,7 +620,7 @@ public final class ConnectionPool implements AutoCloseable {
     public Map<Destination, Integer> snapshot() {
         synchronized (lock) {
             final LinkedHashMap<Destination, Integer> snapshot = new LinkedHashMap<>();
-            for (final Map.Entry<Destination, ArrayDeque<PooledConnection>> entry : idle.entrySet()) {
+            for (final Map.Entry<Destination, ArrayDeque<PooledConnection>> entry : idleIndex.buckets.entrySet()) {
                 snapshot.put(entry.getKey(), entry.getValue().size());
             }
             for (final ConnectionLease lease : leased) {
@@ -679,15 +660,15 @@ public final class ConnectionPool implements AutoCloseable {
                 return true;
             }
             if (!closed.get() && !lease.leaked() && lease.connection().healthy()) {
-                PooledConnection pooled = idleEntries.get(lease.connection());
+                PooledConnection pooled = idleIndex.entries.get(lease.connection());
                 if (pooled == null) {
                     pooled = new PooledConnection(lease.connection(), clock.millis());
-                    idleEntries.put(lease.connection(), pooled);
+                    idleIndex.entries.put(lease.connection(), pooled);
                 } else {
                     pooled.lastUsedMillis(clock.millis());
                 }
-                idle.computeIfAbsent(lease.destination(), ignored -> new ArrayDeque<>()).addLast(pooled);
-                idleCount++;
+                idleIndex.buckets.computeIfAbsent(lease.destination(), ignored -> new ArrayDeque<>()).addLast(pooled);
+                idleIndex.count++;
                 removeMultiplex(lease.destination(), lease.connection());
                 scheduleEviction = true;
             } else {
@@ -706,7 +687,7 @@ public final class ConnectionPool implements AutoCloseable {
     }
 
     /**
-     * Closes a lease without returning its physical connection to idle.
+     * Closes a lease without returning its physical connection to idleIndex.buckets.
      *
      * @param lease lease removed without making its connection idle
      * @return true when this call changed state
@@ -743,7 +724,7 @@ public final class ConnectionPool implements AutoCloseable {
     }
 
     /**
-     * Detaches a lease without returning it to idle.
+     * Detaches a lease without returning it to idleIndex.buckets.
      *
      * @param lease leaked lease removed from active pool ownership
      */
@@ -768,14 +749,14 @@ public final class ConnectionPool implements AutoCloseable {
      * @param waiter      fair waiter or null for an immediate caller
      * @return shared lease or null
      */
-    private ConnectionLease acquireShared(final Destination destination, final PoolWaiter waiter) {
+    private ConnectionLease acquireShared(final Destination destination, final PoolWaiters.Waiter waiter) {
         synchronized (lock) {
             ensureOpen();
             if (!hasTurn(waiter)) {
                 return null;
             }
             Connection candidate = null;
-            final ArrayDeque<Connection> candidates = multiplex.get(destination);
+            final ArrayDeque<Connection> candidates = multiplexCapacity.candidates.get(destination);
             if (candidates != null) {
                 for (final Connection connection : candidates) {
                     if (usableCapacity(connection) > 0) {
@@ -803,7 +784,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @param waiter      fair waiter or null for an immediate caller
      * @return lease or null
      */
-    private ConnectionLease acquireIdle(final Destination destination, final PoolWaiter waiter) {
+    private ConnectionLease acquireIdle(final Destination destination, final PoolWaiters.Waiter waiter) {
         List<Connection> discarded = null;
         ConnectionLease lease = null;
         synchronized (lock) {
@@ -811,12 +792,12 @@ public final class ConnectionPool implements AutoCloseable {
             if (!hasTurn(waiter)) {
                 return null;
             }
-            final ArrayDeque<PooledConnection> bucket = idle.get(destination);
+            final ArrayDeque<PooledConnection> bucket = idleIndex.buckets.get(destination);
             while (bucket != null && !bucket.isEmpty()) {
                 // Reuse the hottest connection first. Under closed-loop concurrency this preserves TLS/codec
                 // cache locality and avoids rotating every connection across worker cores.
                 final Connection connection = bucket.removeLast().connection();
-                idleCount--;
+                idleIndex.count--;
                 if (connection.healthy()) {
                     lease = new ConnectionLease(this, destination, connection, clock.millis());
                     leased.add(lease);
@@ -824,7 +805,7 @@ public final class ConnectionPool implements AutoCloseable {
                     addMultiplex(destination, connection);
                     logicalAcquired();
                     if (bucket.isEmpty()) {
-                        idle.remove(destination, bucket);
+                        idleIndex.buckets.remove(destination, bucket);
                     }
                     completeWaiter(waiter);
                     break;
@@ -860,7 +841,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @param waiter      fair waiter or null for an immediate caller
      * @return true when under limit
      */
-    private boolean reserveCreate(final Destination destination, final PoolWaiter waiter) {
+    private boolean reserveCreate(final Destination destination, final PoolWaiters.Waiter waiter) {
         synchronized (lock) {
             ensureOpen();
             if (!hasTurn(waiter) || !creationAvailable(destination)) {
@@ -872,8 +853,8 @@ public final class ConnectionPool implements AutoCloseable {
             // connection into that publication window. Proven H1 destinations retain normal parallel expansion.
             final int physical = physicalByDestination.getOrDefault(destination, 0);
             final int pending = creatingByDestination.getOrDefault(destination, 0);
-            if (physical == 0 && pending != 0 || !http1Destinations.contains(destination)
-                    && multiplexDestinations.contains(destination) && physical + pending != 0) {
+            if (physical == 0 && pending != 0 || !multiplexCapacity.http1Destinations.contains(destination)
+                    && multiplexCapacity.multiplexDestinations.contains(destination) && physical + pending != 0) {
                 return false;
             }
             creating++;
@@ -902,9 +883,20 @@ public final class ConnectionPool implements AutoCloseable {
         } catch (final Throwable e) {
             releaseCreateReservation(destination);
             if (e instanceof Error error) {
+                if (Logger.isErrorEnabled()) {
+                    Logger.error(false, "Fabric", error, "Connection factory failed with an unrecoverable error");
+                }
                 throw error;
             }
             final RuntimeException failure = (RuntimeException) e;
+            if (Logger.isErrorEnabled()) {
+                Logger.error(
+                        false,
+                        "Fabric",
+                        failure,
+                        "Connection creation failed: exception={}",
+                        failure.getClass().getSimpleName());
+            }
             throw failure instanceof InternalException || failure instanceof ProtocolException
                     || failure instanceof SocketException || failure instanceof TimeoutException
                     || failure instanceof StatefulException || failure instanceof ValidateException ? failure
@@ -928,16 +920,24 @@ public final class ConnectionPool implements AutoCloseable {
                 physicalCount++;
                 physicalByDestination.merge(destination, 1, Integer::sum);
                 if (multiplexCapable) {
-                    multiplexDestinations.add(destination);
+                    multiplexCapacity.multiplexDestinations.add(destination);
                     addMultiplex(destination, connection);
                 } else {
-                    http1Destinations.add(destination);
+                    multiplexCapacity.http1Destinations.add(destination);
                 }
                 if (registration != null) {
-                    capacityRegistrations.put(connection, registration);
+                    multiplexCapacity.registrations.put(connection, registration);
                 }
                 logicalAcquired();
                 signalHead();
+                if (Logger.isDebugEnabled()) {
+                    Logger.debug(
+                            false,
+                            "Fabric",
+                            "Physical connection created: multiplex={}, physicalConnections={}",
+                            multiplexCapable,
+                            physicalCount);
+                }
                 return lease;
             }
             signalHead();
@@ -988,7 +988,10 @@ public final class ConnectionPool implements AutoCloseable {
      * @param cancellation cancellation scope
      * @param deadline     monotonic acquisition deadline
      */
-    private void waitForAvailability(final PoolWaiter waiter, final Cancellation cancellation, final long deadline) {
+    private void waitForAvailability(
+            final PoolWaiters.Waiter waiter,
+            final Cancellation cancellation,
+            final long deadline) {
         final Cancellation scope = require(cancellation, "Cancellation");
         while (true) {
             final long remaining;
@@ -999,6 +1002,14 @@ public final class ConnectionPool implements AutoCloseable {
                     waiters.addLast(waiter);
                     meter.incrementCounter(Counter.WAITERS_ENQUEUED);
                     meter.incrementCounter(Counter.ACTIVE_WAITERS);
+                    if (Logger.isWarnEnabled()) {
+                        Logger.warn(
+                                true,
+                                "Fabric",
+                                "Connection acquisition queued: waiters={}, physicalConnections={}",
+                                waiters.size(),
+                                physicalCount);
+                    }
                 }
                 scope.throwIfCancelled();
                 ensureOpen();
@@ -1008,6 +1019,14 @@ public final class ConnectionPool implements AutoCloseable {
                 remaining = remaining(deadline);
                 if (remaining <= 0L) {
                     removeWaiterLocked(waiter);
+                    if (Logger.isWarnEnabled()) {
+                        Logger.warn(
+                                false,
+                                "Fabric",
+                                "Connection acquisition timed out: physicalConnections={}, activeLeases={}",
+                                physicalCount,
+                                leased.size());
+                    }
                     throw new TimeoutException("Connection acquire timed out");
                 }
             }
@@ -1022,7 +1041,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @param remaining   remaining monotonic nanoseconds
      * @param cancellable whether periodic cancellation polling is required
      */
-    private void waitOnPool(final PoolWaiter waiter, final long remaining, final boolean cancellable) {
+    private void waitOnPool(final PoolWaiters.Waiter waiter, final long remaining, final boolean cancellable) {
         final long interval = cancellable ? Math.min(remaining, 100_000_000L) : remaining;
         LockSupport.parkNanos(this, Math.max(1L, interval));
         if (Thread.interrupted()) {
@@ -1037,13 +1056,13 @@ public final class ConnectionPool implements AutoCloseable {
      * @param waiter caller waiter or null for a new caller
      * @return true when the caller may attempt an acquisition
      */
-    private boolean hasTurn(final PoolWaiter waiter) {
+    private boolean hasTurn(final PoolWaiters.Waiter waiter) {
         if (waiter == null) {
             return waiters.isEmpty();
         }
         final int window = admissionWindow();
         int admitted = 0;
-        for (final PoolWaiter candidate : waiters) {
+        for (final PoolWaiters.Waiter candidate : waiters) {
             if (candidate == waiter) {
                 return true;
             }
@@ -1058,12 +1077,12 @@ public final class ConnectionPool implements AutoCloseable {
      * Keeps negotiation and multiplex destinations strict; widens only after a destination is proven HTTP/1.
      */
     private int admissionWindow() {
-        final PoolWaiter head = waiters.peekFirst();
+        final PoolWaiters.Waiter head = waiters.peekFirst();
         if (head == null) {
             return 1;
         }
         final Destination destination = head.destination;
-        return http1Destinations.contains(destination) ? HTTP1_ADMISSION_WINDOW : 1;
+        return multiplexCapacity.http1Destinations.contains(destination) ? HTTP1_ADMISSION_WINDOW : 1;
     }
 
     /**
@@ -1071,7 +1090,7 @@ public final class ConnectionPool implements AutoCloseable {
      *
      * @param waiter completed waiter or null
      */
-    private void completeWaiter(final PoolWaiter waiter) {
+    private void completeWaiter(final PoolWaiters.Waiter waiter) {
         if (waiter != null && waiters.remove(waiter)) {
             waiter.queued = false;
             meter.addCounter(Counter.ACTIVE_WAITERS, -1L);
@@ -1084,7 +1103,7 @@ public final class ConnectionPool implements AutoCloseable {
      *
      * @param waiter abandoned waiter or null
      */
-    private void removeWaiter(final PoolWaiter waiter) {
+    private void removeWaiter(final PoolWaiters.Waiter waiter) {
         if (waiter == null) {
             return;
         }
@@ -1098,7 +1117,7 @@ public final class ConnectionPool implements AutoCloseable {
      *
      * @param waiter abandoned waiter
      */
-    private void removeWaiterLocked(final PoolWaiter waiter) {
+    private void removeWaiterLocked(final PoolWaiters.Waiter waiter) {
         if (waiters.remove(waiter)) {
             waiter.queued = false;
             meter.addCounter(Counter.ACTIVE_WAITERS, -1L);
@@ -1125,22 +1144,26 @@ public final class ConnectionPool implements AutoCloseable {
     private boolean creationAvailable(final Destination destination) {
         final int physical = physicalByDestination.getOrDefault(destination, 0);
         final int pending = creatingByDestination.getOrDefault(destination, 0);
-        if (physical == 0 && pending > 0 || !http1Destinations.contains(destination)
-                && multiplexDestinations.contains(destination) && physical + pending > 0) {
-            return false;
-        }
-        final int destinationConnections = physical + pending;
         final int normalLimit = Math.min(HTTP1_BASE_CONNECTIONS, policy.maxConnectionsPerDestination());
-        return physicalCount + creating < policy.maxConnections()
-                && destinationConnections < policy.maxConnectionsPerDestination()
-                && (destinationConnections < normalLimit || sustainedWait(destination));
+        final boolean pressure = physical + pending >= normalLimit && sustainedWait(destination);
+        return PoolAdmission.allows(
+                physicalCount,
+                creating,
+                physical,
+                pending,
+                policy.maxConnections(),
+                policy.maxConnectionsPerDestination(),
+                normalLimit,
+                multiplexCapacity.http1Destinations.contains(destination),
+                multiplexCapacity.multiplexDestinations.contains(destination),
+                pressure);
     }
 
     /**
      * Returns true when queue depth or sustained wait proves that a negotiated H1 service needs expansion.
      */
     private boolean sustainedWait(final Destination destination) {
-        if (!http1Destinations.contains(destination)) {
+        if (!multiplexCapacity.http1Destinations.contains(destination)) {
             return false;
         }
         if (expandedHttp1Destinations.contains(destination)) {
@@ -1149,7 +1172,7 @@ public final class ConnectionPool implements AutoCloseable {
         final long now = clock.nanos();
         int destinationWaiters = 0;
         boolean aged = false;
-        for (final PoolWaiter waiter : waiters) {
+        for (final PoolWaiters.Waiter waiter : waiters) {
             if (waiter.destination.equals(destination)) {
                 destinationWaiters++;
                 aged |= waiter.queuedAtNanos != 0L && now - waiter.queuedAtNanos >= HTTP1_EXPANSION_WAIT_NANOS;
@@ -1202,11 +1225,11 @@ public final class ConnectionPool implements AutoCloseable {
      * @return true when an idle or multiplex-capable active connection may satisfy the request
      */
     private boolean existingCandidateAvailable(final Destination destination) {
-        final ArrayDeque<PooledConnection> bucket = idle.get(destination);
+        final ArrayDeque<PooledConnection> bucket = idleIndex.buckets.get(destination);
         if (bucket != null && !bucket.isEmpty()) {
             return true;
         }
-        final ArrayDeque<Connection> candidates = multiplex.get(destination);
+        final ArrayDeque<Connection> candidates = multiplexCapacity.candidates.get(destination);
         if (candidates == null) {
             return false;
         }
@@ -1260,7 +1283,8 @@ public final class ConnectionPool implements AutoCloseable {
         if (!connection.multiplex() || connection.draining()) {
             return;
         }
-        final ArrayDeque<Connection> candidates = multiplex.computeIfAbsent(destination, ignored -> new ArrayDeque<>());
+        final ArrayDeque<Connection> candidates = multiplexCapacity.candidates
+                .computeIfAbsent(destination, ignored -> new ArrayDeque<>());
         if (!candidates.contains(connection)) {
             candidates.addLast(connection);
         }
@@ -1273,11 +1297,11 @@ public final class ConnectionPool implements AutoCloseable {
      * @param connection  multiplex connection to remove
      */
     private void removeMultiplex(final Destination destination, final Connection connection) {
-        final ArrayDeque<Connection> candidates = multiplex.get(destination);
+        final ArrayDeque<Connection> candidates = multiplexCapacity.candidates.get(destination);
         if (candidates != null) {
             candidates.remove(connection);
             if (candidates.isEmpty()) {
-                multiplex.remove(destination);
+                multiplexCapacity.candidates.remove(destination);
             }
         }
     }
@@ -1333,14 +1357,14 @@ public final class ConnectionPool implements AutoCloseable {
         final int remaining = physicalByDestination.getOrDefault(destination, 0) - 1;
         if (remaining <= 0) {
             physicalByDestination.remove(destination);
-            http1Destinations.remove(destination);
+            multiplexCapacity.http1Destinations.remove(destination);
             expandedHttp1Destinations.remove(destination);
         } else {
             physicalByDestination.put(destination, remaining);
         }
         removeMultiplex(destination, connection);
-        idleEntries.remove(connection);
-        final Connection.Registration registration = capacityRegistrations.remove(connection);
+        idleIndex.entries.remove(connection);
+        final Connection.Registration registration = multiplexCapacity.registrations.remove(connection);
         if (registration != null) {
             registration.close();
         }
@@ -1361,7 +1385,7 @@ public final class ConnectionPool implements AutoCloseable {
     private void signalHead() {
         final int window = admissionWindow();
         int admitted = 0;
-        for (final PoolWaiter waiter : waiters) {
+        for (final PoolWaiters.Waiter waiter : waiters) {
             LockSupport.unpark(waiter.thread);
             if (++admitted >= window) {
                 break;
@@ -1373,7 +1397,7 @@ public final class ConnectionPool implements AutoCloseable {
      * Unparks every waiter for terminal close or cancellation checks.
      */
     private void signalAllWaiters() {
-        for (final PoolWaiter waiter : waiters) {
+        for (final PoolWaiters.Waiter waiter : waiters) {
             LockSupport.unpark(waiter.thread);
         }
     }
@@ -1427,7 +1451,7 @@ public final class ConnectionPool implements AutoCloseable {
         }
         final Instant now = clock.now();
         Duration delay = null;
-        for (final ArrayDeque<PooledConnection> bucket : idle.values()) {
+        for (final ArrayDeque<PooledConnection> bucket : idleIndex.buckets.values()) {
             for (final PooledConnection pooled : bucket) {
                 final Duration age = Duration.between(pooled.lastUsed(), now);
                 final Duration remaining = keepAlive.minus(age);
@@ -1574,49 +1598,11 @@ public final class ConnectionPool implements AutoCloseable {
                 || value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
             return false;
         }
-        return value instanceof TlsContext || value instanceof TlsSettings || value instanceof String
-                || value instanceof Boolean || value instanceof Character || value instanceof Byte
-                || value instanceof Short || value instanceof Integer || value instanceof Long || value instanceof Float
-                || value instanceof Double || value instanceof java.math.BigInteger
-                || value instanceof java.math.BigDecimal || value instanceof Duration || value instanceof Timeout
+        return value instanceof TlsPolicy || value instanceof TlsContext || value instanceof TlsSettings
+                || value instanceof String || value instanceof Boolean || value instanceof Character
+                || value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
+                || value instanceof Float || value instanceof Double || value instanceof BigInteger
+                || value instanceof BigDecimal || value instanceof Duration || value instanceof Timeout
                 || value instanceof Enum<?>;
     }
-
-    /**
-     * Fair acquisition waiter retaining its requested destination and blocked thread.
-     */
-    private static final class PoolWaiter {
-
-        /**
-         * Requested destination.
-         */
-        private final Destination destination;
-
-        /**
-         * Exact thread to unpark.
-         */
-        private final Thread thread;
-
-        /**
-         * Queue membership guard.
-         */
-        private boolean queued;
-
-        /**
-         * Monotonic time at which this waiter entered the queue, or zero before enqueue.
-         */
-        private long queuedAtNanos;
-
-        /**
-         * Captures the requesting thread and destination before the waiter enters the fair queue.
-         *
-         * @param destination requested destination
-         */
-        private PoolWaiter(final Destination destination) {
-            this.destination = destination;
-            this.thread = Thread.currentThread();
-        }
-
-    }
-
 }

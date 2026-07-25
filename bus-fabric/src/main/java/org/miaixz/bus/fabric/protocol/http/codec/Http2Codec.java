@@ -29,6 +29,7 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -39,7 +40,6 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
@@ -55,6 +55,28 @@ import org.miaixz.bus.fabric.protocol.http.http2.Http2Stream;
  * @since Java 21+
  */
 public final class Http2Codec implements HttpCodec {
+
+    /**
+     * Per-call codec activity independent from the HTTP/2 connection lifecycle.
+     */
+    private enum CodecState {
+
+        /**
+         * Ready to create or consume a stream.
+         */
+        IDLE,
+
+        /**
+         * Encoding or decoding the current stream.
+         */
+        BUSY,
+
+        /**
+         * Cancelled by the owning call.
+         */
+        CANCELLED
+
+    }
 
     /**
      * Reusable pseudo field for the dominant idempotent request method.
@@ -84,7 +106,7 @@ public final class Http2Codec implements HttpCodec {
     /**
      * Lifecycle state.
      */
-    private volatile Status state;
+    private volatile CodecState state;
 
     /**
      * Creates an HTTP/2 codec.
@@ -93,7 +115,7 @@ public final class Http2Codec implements HttpCodec {
      */
     public Http2Codec(final Http2Connection connection) {
         this.connection = require(connection, "HTTP/2 connection");
-        this.state = Status.OPENED;
+        this.state = CodecState.IDLE;
     }
 
     /**
@@ -135,15 +157,15 @@ public final class Http2Codec implements HttpCodec {
     @Override
     public void writeRequest(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        state = Status.RUNNING;
+        state = CodecState.BUSY;
         try {
             final Http2Stream stream = newStream(current);
             if (current.body().length() != Normal._0) {
                 writeBody(stream, current);
             }
         } finally {
-            if (state == Status.RUNNING) {
-                state = Status.OPENED;
+            if (state == CodecState.BUSY) {
+                state = CodecState.IDLE;
             }
         }
     }
@@ -161,7 +183,7 @@ public final class Http2Codec implements HttpCodec {
         if (stream == null || activeRequest != current) {
             throw new StatefulException("HTTP/2 stream is missing for request");
         }
-        state = Status.RUNNING;
+        state = CodecState.BUSY;
         try {
             final Headers headers = validateResponseHeaders(
                     stream.awaitResponseHeaders(current.timeout().read()),
@@ -173,7 +195,7 @@ public final class Http2Codec implements HttpCodec {
                     .body(PayloadBody.of(payload, media(headers))).protocol(Protocol.HTTP_2)
                     .trailers(() -> validateTrailers(stream.trailers())).build();
         } finally {
-            state = Status.OPENED;
+            state = CodecState.IDLE;
         }
     }
 
@@ -182,12 +204,12 @@ public final class Http2Codec implements HttpCodec {
      */
     @Override
     public void cancel() {
-        final Status previous;
+        final CodecState previous;
         synchronized (this) {
             previous = state;
-            state = Status.CANCELLED;
+            state = CodecState.CANCELLED;
         }
-        if (previous == Status.CANCELLED || previous == Status.CLOSED) {
+        if (previous == CodecState.CANCELLED) {
             return;
         }
         final Http2Stream stream = active;
@@ -205,7 +227,7 @@ public final class Http2Codec implements HttpCodec {
      */
     @Override
     public boolean reusable() {
-        return state == Status.OPENED;
+        return state == CodecState.IDLE;
     }
 
     /**
@@ -345,11 +367,11 @@ public final class Http2Codec implements HttpCodec {
         int start = Normal._0;
         while (start < values.length()) {
             while (start < values.length()
-                    && (values.charAt(start) == ',' || Character.isWhitespace(values.charAt(start)))) {
+                    && (values.charAt(start) == Symbol.C_COMMA || Character.isWhitespace(values.charAt(start)))) {
                 start++;
             }
             int end = start;
-            while (end < values.length() && values.charAt(end) != ',') {
+            while (end < values.length() && values.charAt(end) != Symbol.C_COMMA) {
                 end++;
             }
             int trimmed = end;
@@ -391,7 +413,7 @@ public final class Http2Codec implements HttpCodec {
         parseStatus(status);
         for (int index = Normal._0; index < headers.size(); index++) {
             final String name = lowerCase(headers.name(index));
-            if (name.startsWith(":")) {
+            if (name.startsWith(Symbol.COLON)) {
                 throw new ProtocolException("Invalid HTTP/2 response pseudo-header");
             } else {
                 if (forbidden(name, null) || Http.Header.TE.equalsIgnoreCase(name)) {
@@ -412,7 +434,7 @@ public final class Http2Codec implements HttpCodec {
     private static Headers validateTrailers(final Headers trailers) {
         for (int index = Normal._0; index < trailers.size(); index++) {
             final String name = lowerCase(trailers.name(index));
-            if (name.startsWith(":") || forbidden(name, null) || Http.Header.TE.equalsIgnoreCase(name)) {
+            if (name.startsWith(Symbol.COLON) || forbidden(name, null) || Http.Header.TE.equalsIgnoreCase(name)) {
                 throw new ProtocolException("Invalid HTTP/2 trailer field");
             }
         }

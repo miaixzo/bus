@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -45,67 +46,67 @@ final class Http2WriteScheduler implements AutoCloseable {
     /**
      * Structured DATA frame command routed through the data ring.
      */
-    static final int DATA = 0;
+    static final int DATA = Normal._0;
 
     /**
      * Structured HEADERS command routed through the control ring.
      */
-    static final int HEADERS = 1;
+    static final int HEADERS = Normal._1;
 
     /**
      * Structured WINDOW_UPDATE command routed through the control ring.
      */
-    static final int WINDOW_UPDATE = 2;
+    static final int WINDOW_UPDATE = Normal._2;
 
     /**
      * Structured RST_STREAM command routed through the control ring.
      */
-    static final int RST = 3;
+    static final int RST = Normal._3;
 
     /**
      * SETTINGS acknowledgement command routed through the control ring.
      */
-    static final int SETTINGS_ACK = 4;
+    static final int SETTINGS_ACK = Normal._4;
 
     /**
      * PING acknowledgement command routed through the control ring.
      */
-    static final int PING_ACK = 5;
+    static final int PING_ACK = Normal._5;
 
     /**
      * GOAWAY command routed through the control ring.
      */
-    static final int GOAWAY = 6;
+    static final int GOAWAY = Normal._6;
 
     /**
      * Explicit flush command routed through the control ring.
      */
-    static final int FLUSH = 7;
+    static final int FLUSH = Normal._7;
 
     /**
      * Writer close command routed through the control ring.
      */
-    static final int CLOSE = 8;
+    static final int CLOSE = Normal._8;
 
     /**
      * Raw non-DATA HTTP/2 frame command used by the connection facade.
      */
-    static final int FRAME = 9;
+    static final int FRAME = Normal._9;
 
     /**
      * Raw DATA frame command routed through the bounded data ring.
      */
-    static final int DATA_FRAME = 10;
+    static final int DATA_FRAME = Normal._10;
 
     /**
      * Total preallocated command slots across the control and data rings.
      */
-    private static final int TOTAL_CAPACITY = 4096;
+    private static final int TOTAL_CAPACITY = Normal._4096;
 
     /**
      * Slots reserved exclusively for control traffic.
      */
-    private static final int CONTROL_CAPACITY = 512;
+    private static final int CONTROL_CAPACITY = Normal._512;
 
     /**
      * Slots available exclusively to DATA traffic.
@@ -115,7 +116,7 @@ final class Http2WriteScheduler implements AutoCloseable {
     /**
      * Maximum number of commands processed in one writer batch.
      */
-    private static final int MAX_BATCH_COMMANDS = 64;
+    private static final int MAX_BATCH_COMMANDS = Normal._64;
 
     /**
      * Maximum sum of payload bytes processed in one writer batch.

@@ -187,8 +187,8 @@ public final class PublicSuffix {
 
         synchronized (this) {
             if (publicSuffixListBytes == null || publicSuffixExceptionListBytes == null) {
-                throw new IllegalStateException("Unable to load " + Builder.PUBLIC_SUFFIX_PUBLIC_SUFFIX_RESOURCE
-                        + " resource from the classpath.");
+                throw new IllegalStateException(
+                        "Unable to load " + Builder.PUBLIC_SUFFIX_RESOURCE + " resource from the classpath.");
             }
         }
 
@@ -279,8 +279,7 @@ public final class PublicSuffix {
      * @throws IOException if the present compressed resource cannot be read or decoded
      */
     private void readTheList() throws IOException {
-        final InputStream resource = PublicSuffix.class
-                .getResourceAsStream(Builder.PUBLIC_SUFFIX_PUBLIC_SUFFIX_RESOURCE);
+        final InputStream resource = PublicSuffix.class.getResourceAsStream(Builder.PUBLIC_SUFFIX_RESOURCE);
         if (resource == null) {
             return;
         }

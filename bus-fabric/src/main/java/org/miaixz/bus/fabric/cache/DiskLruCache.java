@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.cache;
 
 import java.io.*;
+import java.nio.file.FileSystem;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
@@ -966,9 +967,9 @@ public class DiskLruCache implements Closeable, Flushable {
      * does not guarantee that {@link FileNotFoundException} will not be thrown. The file may be moved between the two
      * calls!
      * <p>
-     * This interface is less ambitious than {@link java.nio.file.FileSystem} introduced in Java 7. It lacks important
-     * features like file watching, metadata, permissions, and disk space information. In exchange for these
-     * limitations, this interface is easier to implement and works on all versions of Java and Android.
+     * This interface is less ambitious than {@link FileSystem} introduced in Java 7. It lacks important features like
+     * file watching, metadata, permissions, and disk space information. In exchange for these limitations, this
+     * interface is easier to implement and works on all versions of Java and Android.
      *
      * @author Kimi Liu
      * @since Java 21+

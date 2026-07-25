@@ -25,8 +25,6 @@ import java.time.Duration;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
@@ -35,23 +33,17 @@ import java.util.function.Supplier;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Lifecycle;
 import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
@@ -59,6 +51,7 @@ import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Concurrent TLS state machine exposing one plaintext {@link Conduit} boundary.
@@ -67,11 +60,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
  * @since Java 21+
  */
 public final class TlsChannel implements Conduit, Lifecycle {
-
-    /** Bounded reusable carrier threads for blocking JSSE handshakes. */
-    private static final ExecutorService HANDSHAKE_WORKERS = Executors.newFixedThreadPool(
-            Math.max(Normal._2, Math.min(8, Runtime.getRuntime().availableProcessors())),
-            Thread.ofPlatform().daemon().name("fabric-tls-handshake-", Normal._0).factory());
 
     /**
      * Empty plaintext used for handshake and close records.
@@ -123,7 +111,9 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private final ReentrantLock writeLock;
 
-    /** H2-only provider boundary; HTTP/1.1 retains the lower-tail native duplex path. */
+    /**
+     * H2-only provider boundary; HTTP/1.1 retains the lower-tail native duplex path.
+     */
     private final ReentrantLock http2EngineLock;
 
     /**
@@ -180,6 +170,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * Immutable handshake metadata materialized once when the handshake completes.
      */
     private volatile TlsHandshake completedHandshake;
+
+    /**
+     * Shared in-flight handshake submitted to the owning Dispatcher, or {@code null} while idle.
+     */
+    private volatile CompletableFuture<TlsHandshake> handshakeFuture;
 
     /**
      * First terminal failure.
@@ -336,30 +331,42 @@ public final class TlsChannel implements Conduit, Lifecycle {
         if (!availableForHandshake()) {
             return CompletableFuture.failedFuture(closedFailure("TLS channel cannot handshake"));
         }
-        return submitHandshake(() -> {
-            try {
-                return ensureHandshake();
-            } catch (final TimeoutException e) {
-                fail(e);
-                throw e;
-            } catch (final RuntimeException e) {
-                final TlsException mapped = e instanceof TlsException tls ? tls
-                        : new TlsException("TLS handshake failed", e);
-                fail(mapped);
-                throw mapped;
+        synchronized (this) {
+            final CompletableFuture<TlsHandshake> current = handshakeFuture;
+            if (current != null) {
+                return current;
             }
-        });
-    }
-
-    /**
-     * Runs one blocking JSSE handshake on the shared bounded carrier pool.
-     *
-     * @param <T>       handshake result type
-     * @param operation blocking handshake operation
-     * @return future completed with the handshake result
-     */
-    static <T> CompletableFuture<T> submitHandshake(final Supplier<T> operation) {
-        return CompletableFuture.supplyAsync(operation, HANDSHAKE_WORKERS);
+            final CompletableFuture<TlsHandshake> created = background("tls:handshake", () -> {
+                if (Logger.isDebugEnabled()) {
+                    Logger.debug(true, "Fabric", "TLS handshake started");
+                }
+                try {
+                    return ensureHandshake();
+                } catch (final TimeoutException e) {
+                    if (Logger.isWarnEnabled()) {
+                        Logger.warn(false, "Fabric", e, "TLS handshake timed out");
+                    }
+                    fail(e);
+                    throw e;
+                } catch (final RuntimeException e) {
+                    final TlsException mapped = e instanceof TlsException tls ? tls
+                            : new TlsException("TLS handshake failed", e);
+                    if (Logger.isErrorEnabled()) {
+                        Logger.error(
+                                false,
+                                "Fabric",
+                                mapped,
+                                "TLS handshake failed: exception={}",
+                                mapped.getClass().getSimpleName());
+                    }
+                    fail(mapped);
+                    throw mapped;
+                }
+            });
+            handshakeFuture = created;
+            created.whenComplete((ignored, cause) -> clearHandshake(created));
+            return created;
+        }
     }
 
     /**
@@ -596,14 +603,14 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @return lifecycle state
      */
     @Override
-    public Status state() {
+    public State state() {
         return switch (tlsState) {
-            case NEW -> Status.QUEUED;
-            case HANDSHAKING -> Status.RUNNING;
-            case OPEN -> Status.OPENED;
-            case CLOSING -> Status.CLOSING;
-            case CLOSED -> Status.CLOSED;
-            case FAILED -> Status.FAILED;
+            case NEW -> State.NEW;
+            case HANDSHAKING -> State.STARTING;
+            case OPEN -> State.RUNNING;
+            case CLOSING -> State.CLOSING;
+            case CLOSED -> State.CLOSED;
+            case FAILED -> State.FAILED;
         };
     }
 
@@ -612,6 +619,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     @Override
     public void close() {
+        cancelHandshake();
         if (!beginClosing()) {
             return;
         }
@@ -651,7 +659,13 @@ public final class TlsChannel implements Conduit, Lifecycle {
             finishClosed();
         }
         if (closeFailure != null) {
+            if (Logger.isWarnEnabled()) {
+                Logger.warn(false, "Fabric", closeFailure, "TLS channel closed with cleanup failure");
+            }
             throw closeFailure;
+        }
+        if (Logger.isInfoEnabled()) {
+            Logger.info(false, "Fabric", "TLS channel closed");
         }
     }
 
@@ -664,6 +678,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * </p>
      */
     public void abort() {
+        cancelHandshake();
         if (!beginClosing()) {
             // A concurrent graceful close may already be waiting for the physical writer's lock. It must not prevent
             // protocol-directed abort from closing the socket that unblocks that writer. The original close owner
@@ -701,11 +716,19 @@ public final class TlsChannel implements Conduit, Lifecycle {
             finishClosed();
         }
         if (closeFailure != null) {
+            if (Logger.isWarnEnabled()) {
+                Logger.warn(false, "Fabric", closeFailure, "TLS channel abort completed with cleanup failure");
+            }
             throw closeFailure;
+        }
+        if (Logger.isInfoEnabled()) {
+            Logger.info(false, "Fabric", "TLS channel aborted");
         }
     }
 
-    /** Finalizes a previously published failure after its reader callback has been allowed to unwind. */
+    /**
+     * Finalizes a previously published failure after its reader callback has been allowed to unwind.
+     */
     private void finishFailedAbort() {
         conduit.close();
         readLock.lock();
@@ -758,6 +781,19 @@ public final class TlsChannel implements Conduit, Lifecycle {
             transition(TlsState.OPEN);
             recordHandshake(engine.sessionReuse());
             notifyOpen();
+            if (Logger.isInfoEnabled()) {
+                Logger.info(
+                        false,
+                        "Fabric",
+                        "TLS handshake completed: protocol={}, cipher={}, applicationProtocol={}, sessionReused={}",
+                        handshake.protocol(),
+                        handshake.cipher(),
+                        engine.applicationProtocol(),
+                        engine.sessionReuse());
+            }
+            if (Logger.isDebugEnabled()) {
+                Logger.debug(false, "Fabric", "TLS channel state changed: state={}", TlsState.OPEN);
+            }
             return handshake;
         } catch (final IOException e) {
             throw new TlsException("TLS handshake failed", e);
@@ -1010,7 +1046,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     private SSLEngineResult wrapProvider(final ByteBuffer source, final ByteBuffer target) {
-        if (!"h2".equals(engine.applicationProtocol()))
+        if (!Protocol.HTTP_2.name.equals(engine.applicationProtocol()))
             return engine.wrap(source, target);
         lockHttp2Engine();
         try {
@@ -1021,7 +1057,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
     }
 
     private SSLEngineResult unwrapProvider(final ByteBuffer source, final ByteBuffer target) {
-        if (!"h2".equals(engine.applicationProtocol()))
+        if (!Protocol.HTTP_2.name.equals(engine.applicationProtocol()))
             return engine.unwrap(source, target);
         lockHttp2Engine();
         try {
@@ -1231,7 +1267,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      */
     private static int grownCapacity(final int current, final int session, final String name) {
         final long requested = Math.max((long) current * Normal._2, session);
-        if (requested > Builder.TLS_MAX_STAGING_BUFFER_BYTES || requested <= current) {
+        if (requested > Normal.MEBI || requested <= current) {
             throw new ProtocolException("TLS " + name + " exceeded the 1 MiB staging limit");
         }
         return (int) requested;
@@ -1333,6 +1369,28 @@ public final class TlsChannel implements Conduit, Lifecycle {
             }
         });
         return result;
+    }
+
+    /**
+     * Clears the shared handshake reference after its Dispatcher task terminates.
+     *
+     * @param completed completed handshake future
+     */
+    private synchronized void clearHandshake(final CompletableFuture<TlsHandshake> completed) {
+        if (handshakeFuture == completed) {
+            handshakeFuture = null;
+        }
+    }
+
+    /**
+     * Cancels the shared in-flight handshake without owning or closing the Dispatcher.
+     */
+    private void cancelHandshake() {
+        final CompletableFuture<TlsHandshake> current = handshakeFuture;
+        if (current != null) {
+            current.cancel(true);
+        }
+        dispatcher.cancel(this);
     }
 
     /**
@@ -1588,7 +1646,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * @return validated size
      */
     private static int checkedInitialSize(final int size) {
-        if (size <= Normal._0 || size > Builder.TLS_MAX_STAGING_BUFFER_BYTES) {
+        if (size <= Normal._0 || size > Normal.MEBI) {
             throw new ProtocolException("TLS session buffer size exceeds the 1 MiB staging limit: " + size);
         }
         return size;

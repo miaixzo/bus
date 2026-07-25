@@ -28,13 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
@@ -189,7 +183,7 @@ public final class SseSession implements Session {
      *
      * @return current state maintained by the lifecycle scope
      */
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 

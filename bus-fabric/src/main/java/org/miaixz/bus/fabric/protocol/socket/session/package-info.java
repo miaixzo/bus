@@ -21,9 +21,8 @@
  * Contains internal socket session leasing and handler routing support.
  *
  * <p>
- * This package is intentionally not exported by the module. Public socket callers should use
- * {@code org.miaixz.bus.fabric.protocol.socket.SocketX}, {@code SocketSession}, and socket call APIs instead of
- * depending on pool leases or routing adapter details.
+ * This package is intentionally not exported by the module. Public socket callers should use {@code SocketX},
+ * {@code SocketSession}, and socket call APIs instead of depending on pool leases or routing adapter details.
  * </p>
  *
  * @author Kimi Liu

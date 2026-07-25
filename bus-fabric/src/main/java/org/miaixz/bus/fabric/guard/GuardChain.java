@@ -85,7 +85,7 @@ public final class GuardChain implements GuardRule {
     /**
      * Returns the stable composite-rule name.
      *
-     * @return {@link Builder#GUARD_CHAIN_NAME}
+     * @return stable composite guard name
      */
     @Override
     public String name() {

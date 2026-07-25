@@ -75,7 +75,8 @@ public record Binding<T>(String key, T value, Options options) {
      * @throws ValidateException if {@code key} is blank or multi-line, or {@code value} is {@code null}
      */
     public Binding<T> with(final String key, final Object value) {
-        return new Binding<>(this.key, this.value, options.with(validateKey(key), require(value, "Option value")));
+        final Object checked = require(value, "Option value");
+        return new Binding<>(this.key, this.value, options.with(Options.key(validateKey(key), Object.class), checked));
     }
 
     /**

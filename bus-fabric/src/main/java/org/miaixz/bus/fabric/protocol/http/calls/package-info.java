@@ -18,11 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Wraps HTTP exchanges in single-use call objects.
+ * Wraps HTTP exchanges in single-use cancellable call objects.
  *
  * <p>
- * HTTP calls bind protocol operations to dispatcher execution, cancellation and callback delivery. They own call state
- * and one-shot semantics, while the HTTP runner owns protocol execution and response creation.
+ * HTTP calls bind immutable requests to dispatcher execution, cancellation, timeout enforcement and callback delivery.
+ * The package remains an internal protocol implementation and is not exported by the module.
  * </p>
  *
  * @author Kimi Liu

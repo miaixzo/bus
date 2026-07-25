@@ -36,7 +36,6 @@ import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -427,7 +426,7 @@ public abstract class MonoCall<T> implements Call<T> {
      * @return lifecycle state
      */
     @Override
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
@@ -523,7 +522,7 @@ public abstract class MonoCall<T> implements Call<T> {
                     () -> new ValidateException("Dispatcher returned a null handle"));
             handle = enqueued;
             final CompletableFuture<T> completion = future;
-            if (scope.state() == Status.CANCELLED || completion != null && completion.isCancelled()) {
+            if (scope.state() == State.CANCELLED || completion != null && completion.isCancelled()) {
                 enqueued.cancel();
             }
             return this;
@@ -577,7 +576,7 @@ public abstract class MonoCall<T> implements Call<T> {
             scope.cancellation().throwIfCancelled();
             final T value = perform();
             final CompletableFuture<T> completion = future;
-            if (scope.state() == Status.CANCELLED || scope.cancellation().cancelled()
+            if (scope.state() == State.CANCELLED || scope.cancellation().cancelled()
                     || completion != null && completion.isCancelled()) {
                 throw closeAfterCancellation(value, cancellationFailure());
             }
@@ -674,13 +673,13 @@ public abstract class MonoCall<T> implements Call<T> {
         }
         completion = new CompletableFuture<>();
         future = completion;
-        final Status state = scope.state();
-        if (state == Status.DONE) {
+        final State state = scope.state();
+        if (state == State.COMPLETED) {
             completion.complete(outcome == NULL_RESULT ? null : (T) outcome);
             outcome = PENDING;
-        } else if (state == Status.CANCELLED) {
+        } else if (state == State.CANCELLED) {
             completion.cancel(false);
-        } else if (state == Status.FAILED) {
+        } else if (state == State.FAILED) {
             completion.completeExceptionally((Throwable) outcome);
             outcome = PENDING;
         }

@@ -118,9 +118,22 @@ public final class Cookie {
      * @return cookie bound to the supplied URL host when no Domain attribute is present
      */
     public static Cookie parse(final String header, final UnoUrl url) {
+        return parse(header, url, Instant.now());
+    }
+
+    /**
+     * Parses a Set-Cookie header value for a URL at an explicit current time.
+     *
+     * @param header Set-Cookie header value to parse
+     * @param url    URL from which the header was received
+     * @param now    current time used to resolve Max-Age
+     * @return cookie bound to the supplied URL host when no Domain attribute is present
+     */
+    public static Cookie parse(final String header, final UnoUrl url, final Instant now) {
         final String checkedHeader = Assert
                 .notBlank(header, () -> new ValidateException("Cookie header must be non-blank"));
         final UnoUrl checkedUrl = Assert.notNull(url, () -> new ValidateException("URL must not be null"));
+        final Instant currentTime = Assert.notNull(now, () -> new ValidateException("Current time must not be null"));
         final String[] parts = checkedHeader.split(Symbol.SEMICOLON);
         final int separator = parts[0].indexOf(Symbol.C_EQUAL);
         if (separator <= 0) {
@@ -146,7 +159,7 @@ public final class Cookie {
                 case "domain" -> domain = validateCookieDomain(value);
                 case "path" -> path = normalizePath(value);
                 case "expires" -> expires = parseExpires(value);
-                case "max-age" -> expires = parseMaxAge(value);
+                case Http.Cache.MAX_AGE -> expires = parseMaxAge(value, currentTime);
                 case "secure" -> builder.secure(true);
                 case "httponly" -> builder.httpOnly(true);
                 default -> {
@@ -285,8 +298,20 @@ public final class Cookie {
      * @return true if the cookie is unexpired and its security, host, domain, and path constraints match the URL
      */
     public boolean matches(final UnoUrl url) {
+        return matches(url, Instant.now());
+    }
+
+    /**
+     * Returns whether this cookie matches a URL at an explicit current time.
+     *
+     * @param url candidate request URL
+     * @param now current time used for expiration
+     * @return true if all expiration, security, host, domain, and path constraints match
+     */
+    public boolean matches(final UnoUrl url, final Instant now) {
         final UnoUrl checkedUrl = Assert.notNull(url, () -> new ValidateException("URL must not be null"));
-        if (expires != null && !Instant.now().isBefore(expires)) {
+        final Instant currentTime = Assert.notNull(now, () -> new ValidateException("Current time must not be null"));
+        if (expires != null && !currentTime.isBefore(expires)) {
             return false;
         }
         if (secure && !checkedUrl.address().secure()) {
@@ -318,7 +343,7 @@ public final class Cookie {
         }
         builder.append("; Path=").append(path);
         if (expires != null) {
-            builder.append("; ").append(Http.Header.EXPIRES).append(Symbol.C_EQUAL)
+            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append(Http.Header.EXPIRES).append(Symbol.C_EQUAL)
                     .append(DateTimeFormatter.RFC_1123_DATE_TIME.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
@@ -343,7 +368,7 @@ public final class Cookie {
         }
         builder.append("; Path=").append(path);
         if (expires != null) {
-            builder.append("; ").append(Http.Header.EXPIRES).append(Symbol.C_EQUAL)
+            builder.append(Symbol.SEMICOLON).append(Symbol.SPACE).append(Http.Header.EXPIRES).append(Symbol.C_EQUAL)
                     .append(DateTimeFormatter.RFC_1123_DATE_TIME.format(expires.atZone(ZoneOffset.UTC)));
         }
         if (secure) {
@@ -375,9 +400,9 @@ public final class Cookie {
      * @param value Max-Age attribute value expressed as a signed number of seconds
      * @return instant obtained by adding the supplied seconds to the current time
      */
-    private static Instant parseMaxAge(final String value) {
+    private static Instant parseMaxAge(final String value, final Instant now) {
         try {
-            return Instant.now().plusSeconds(Long.parseLong(value));
+            return now.plusSeconds(Long.parseLong(value));
         } catch (final NumberFormatException e) {
             throw new ProtocolException("Invalid cookie max-age attribute", e);
         }

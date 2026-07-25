@@ -51,7 +51,9 @@ public final class Cancellation {
      */
     private static final Runnable NOOP = Cancellation::noop;
 
-    /** Shared scope for synchronous operations that expose no cancellation handle. */
+    /**
+     * Shared scope for synchronous operations that expose no cancellation handle.
+     */
     private static final Cancellation NONE = new Cancellation(false);
 
     static {
@@ -79,7 +81,9 @@ public final class Cancellation {
      */
     private volatile Throwable cause;
 
-    /** Whether callers can transition this scope to cancelled. */
+    /**
+     * Whether callers can transition this scope to cancelled.
+     */
     private final boolean cancellable;
 
     /**

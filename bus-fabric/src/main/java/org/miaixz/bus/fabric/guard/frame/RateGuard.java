@@ -149,11 +149,11 @@ public final class RateGuard implements GuardRule {
     /**
      * Returns rule name.
      *
-     * @return {@link Builder#RATE_GUARD_NAME}
+     * @return stable frame-rate guard name
      */
     @Override
     public String name() {
-        return Builder.RATE_GUARD_NAME;
+        return Builder.GUARD_FRAME_RATE_NAME;
     }
 
     /**

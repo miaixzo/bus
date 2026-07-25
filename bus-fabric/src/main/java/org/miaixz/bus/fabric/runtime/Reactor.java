@@ -26,6 +26,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.dns.DnsPolicy;
+import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.registry.Directory;
@@ -57,6 +59,11 @@ public final class Reactor implements AutoCloseable {
     private final Directory directory;
 
     /**
+     * Runtime-bound DNS resolver shared by network protocols.
+     */
+    private final DnsResolver resolver;
+
+    /**
      * Observer component.
      */
     private final EventObserver observer;
@@ -85,9 +92,11 @@ public final class Reactor implements AutoCloseable {
      * @param dispatcher runtime activity dispatcher
      * @param scope      root resource scope
      * @param directory  runtime registry and connection directory
+     * @param resolver   runtime-bound DNS resolver
      */
     private Reactor(final Clock clock, final EventObserver observer, final FabricMeter meter,
-            final Dispatcher dispatcher, final ResourceScope scope, final Directory directory) {
+            final Dispatcher dispatcher, final ResourceScope scope, final Directory directory,
+            final DnsResolver resolver) {
         this.clock = require(clock, "Clock");
         final EventObserver currentObserver = require(observer, "Observer");
         this.observer = currentObserver;
@@ -95,6 +104,7 @@ public final class Reactor implements AutoCloseable {
         this.dispatcher = require(dispatcher, "Dispatcher");
         this.scope = require(scope, "Scope");
         this.directory = require(directory, "Directory");
+        this.resolver = require(resolver, "DNS resolver");
         this.closed = new AtomicBoolean();
         this.directory.connectionPool().startIdleEviction(this.dispatcher);
     }
@@ -142,6 +152,15 @@ public final class Reactor implements AutoCloseable {
      */
     public Directory directory() {
         return directory;
+    }
+
+    /**
+     * Returns the runtime-bound DNS resolver.
+     *
+     * @return resolver sharing this reactor's clock, observer, and dispatcher
+     */
+    public DnsResolver resolver() {
+        return resolver;
     }
 
     /**
@@ -370,6 +389,7 @@ public final class Reactor implements AutoCloseable {
             Dispatcher resolvedDispatcher = dispatcher;
             ResourceScope resolvedScope = scope;
             Directory resolvedDirectory = directory;
+            DnsResolver resolvedResolver = null;
             final boolean createdDispatcher = resolvedDispatcher == null;
             final boolean createdScope = resolvedScope == null;
             try {
@@ -379,6 +399,8 @@ public final class Reactor implements AutoCloseable {
                 if (createdScope) {
                     resolvedScope = ResourceScope.create();
                 }
+                resolvedResolver = DnsPolicy.resolve(options).resolver().withObserver(resolvedObserver)
+                        .withRuntime(resolvedClock, resolvedDispatcher);
                 if (resolvedDirectory == null) {
                     resolvedDirectory = Directory.create(
                             resolvedClock,
@@ -387,7 +409,7 @@ public final class Reactor implements AutoCloseable {
                             resolvedDispatcher);
                 }
                 return new Reactor(resolvedClock, resolvedObserver, resolvedMeter, resolvedDispatcher, resolvedScope,
-                        resolvedDirectory);
+                        resolvedDirectory, resolvedResolver);
             } catch (final RuntimeException | Error failure) {
                 if (directory == null) {
                     closeCreated(resolvedDirectory, failure);

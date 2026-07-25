@@ -25,7 +25,9 @@ import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.time.Duration;
 import java.util.ArrayDeque;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -381,7 +383,7 @@ public final class AioChannel implements AutoCloseable {
      * Applies configured JDK socket options.
      */
     private void applySocketOptions() {
-        for (final java.util.Map.Entry<SocketOption<?>, Object> entry : options.socketOptions().entrySet()) {
+        for (final Map.Entry<SocketOption<?>, Object> entry : options.socketOptions().entrySet()) {
             try {
                 channel.setOption((SocketOption) entry.getKey(), entry.getValue());
             } catch (final IOException e) {
@@ -397,7 +399,7 @@ public final class AioChannel implements AutoCloseable {
      * @param timeout   connect timeout
      */
     private void scheduleConnectTimeout(final Operation<Void> operation, final Timeout timeout) {
-        final java.time.Duration connectTimeout = timeout.connect();
+        final Duration connectTimeout = timeout.connect();
         if (connectTimeout.isZero()) {
             return;
         }

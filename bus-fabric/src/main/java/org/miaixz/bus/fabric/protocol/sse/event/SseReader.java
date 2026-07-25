@@ -34,18 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.observe.EventObserver;
-import org.miaixz.bus.fabric.protocol.sse.SseEvent;
-import org.miaixz.bus.fabric.protocol.sse.SseSession;
-import org.miaixz.bus.fabric.runtime.Activity;
-import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
-import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Streaming SSE line reader.
@@ -54,6 +43,28 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  * @since Java 21+
  */
 public final class SseReader implements AutoCloseable {
+
+    /**
+     * Reader-local parsing state independent from the owning session lifecycle.
+     */
+    private enum ReaderState {
+
+        /**
+         * Open and ready to parse the first event.
+         */
+        OPEN,
+
+        /**
+         * Actively parsing the event stream.
+         */
+        READING,
+
+        /**
+         * Source closed and no further parsing allowed.
+         */
+        CLOSED
+
+    }
 
     /**
      * UTF-8 event-stream source owned and closed by this reader.
@@ -66,9 +77,9 @@ public final class SseReader implements AutoCloseable {
     private final Buffer sourceBuffer;
 
     /**
-     * Reader lifecycle, transitioning from opened to running and finally closed.
+     * Reader state, transitioning from open to reading and finally closed.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicReference<ReaderState> state;
 
     /**
      * Expandable buffer containing the current line without its line terminator.
@@ -108,7 +119,7 @@ public final class SseReader implements AutoCloseable {
     public SseReader(final Source input) {
         this.input = Assert.notNull(input, () -> new ValidateException("SSE input source must not be null"));
         this.sourceBuffer = new Buffer();
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.state = new AtomicReference<>(ReaderState.OPEN);
         this.line = new byte[Normal._128];
         this.inputBuffer = new byte[Normal._8192];
     }
@@ -195,9 +206,7 @@ public final class SseReader implements AutoCloseable {
     /**
      * Reads events until EOF or close on the caller's current thread.
      * <p>
-     * Production loops must invoke this parser through
-     * {@link #start(Context, SseSession, Cancellation, Events, EventObserver, Clock, String)} so blocking reads never
-     * occupy the short-task queue.
+     * Production loops must submit this blocking parser through their owning Dispatcher.
      *
      * @param handler non-null consumer invoked for each assembled event
      */
@@ -236,74 +245,12 @@ public final class SseReader implements AutoCloseable {
     }
 
     /**
-     * Starts the blocking reader loop on the Context background channel.
-     * <p>
-     * Runtime values are snapshots supplied by the owning runner. This reader validates them for one start but does not
-     * retain Session, Observer, Clock, or operation ownership.
-     *
-     * @param context      non-null runtime context whose dispatcher runs the blocking loop
-     * @param session      non-null open SSE session used as the background dispatch owner
-     * @param cancellation non-null cancellation scope that closes this reader when cancelled
-     * @param handler      non-null callback receiving parsed events and retry directives
-     * @param observer     non-null observer snapshot validated for the owning operation
-     * @param clock        non-null clock snapshot validated for the owning operation
-     * @param operationId  non-blank operation identifier validated for the owning operation
-     * @return handle for the submitted background reader task
-     */
-    public DispatchHandle start(
-            final Context context,
-            final SseSession session,
-            final Cancellation cancellation,
-            final Events handler,
-            final EventObserver observer,
-            final Clock clock,
-            final String operationId) {
-        final Context currentContext = Assert
-                .notNull(context, () -> new ValidateException("SSE Context must not be null"));
-        final SseSession currentSession = Assert
-                .notNull(session, () -> new ValidateException("SSE Session must not be null"));
-        final Cancellation currentCancellation = Assert
-                .notNull(cancellation, () -> new ValidateException("SSE Cancellation must not be null"));
-        final Events currentHandler = Assert
-                .notNull(handler, () -> new ValidateException("SSE event handler must not be null"));
-        Assert.notNull(observer, () -> new ValidateException("SSE Observer must not be null"));
-        Assert.notNull(clock, () -> new ValidateException("SSE Clock must not be null"));
-        Assert.notBlank(operationId, () -> new ValidateException("SSE operation id must not be blank"));
-        currentCancellation.throwIfCancelled();
-        if (!currentSession.opened() || !opened()) {
-            throw new StatefulException("SSE reader cannot start after Session termination");
-        }
-        final Runnable unregister = currentCancellation.onCancel(this::close);
-        try {
-            final DispatchHandle handle = currentContext.reactor().dispatcher()
-                    .background("sse:reader", currentSession, Activity.of("sse:reader", () -> {
-                        try {
-                            currentCancellation.throwIfCancelled();
-                            if (currentSession.opened()) {
-                                readEvents(currentHandler);
-                            }
-                        } finally {
-                            unregister.run();
-                        }
-                    }));
-            if (currentCancellation.cancelled() || !currentSession.opened()) {
-                handle.cancel();
-                close();
-            }
-            return handle;
-        } catch (final RuntimeException e) {
-            unregister.run();
-            throw e;
-        }
-    }
-
-    /**
      * Closes this reader.
      */
     @Override
     public void close() {
-        if (!state.compareAndSet(Status.OPENED, Status.CLOSED) && !state.compareAndSet(Status.RUNNING, Status.CLOSED)
-                && !state.compareAndSet(Status.CLOSING, Status.CLOSED)) {
+        if (!state.compareAndSet(ReaderState.OPEN, ReaderState.CLOSED)
+                && !state.compareAndSet(ReaderState.READING, ReaderState.CLOSED)) {
             return;
         }
         try {
@@ -319,8 +266,8 @@ public final class SseReader implements AutoCloseable {
      * @return true while the state is opened or running
      */
     private boolean opened() {
-        final Status current = state.get();
-        return current == Status.OPENED || current == Status.RUNNING;
+        final ReaderState current = state.get();
+        return current == ReaderState.OPEN || current == ReaderState.READING;
     }
 
     /**
@@ -330,7 +277,7 @@ public final class SseReader implements AutoCloseable {
         if (!opened()) {
             return;
         }
-        state.compareAndSet(Status.OPENED, Status.RUNNING);
+        state.compareAndSet(ReaderState.OPEN, ReaderState.READING);
     }
 
     /**
@@ -369,7 +316,7 @@ public final class SseReader implements AutoCloseable {
                 }
                 final int start = inputPosition;
                 while (inputPosition < inputLimit) {
-                    final int current = inputBuffer[inputPosition++] & Builder.UNSIGNED_BYTE_MASK;
+                    final int current = inputBuffer[inputPosition++] & 0xff;
                     read = true;
                     if (current == Symbol.C_LF) {
                         append(inputBuffer, start, inputPosition - 1);
@@ -490,7 +437,7 @@ public final class SseReader implements AutoCloseable {
                 return Normal.__1;
             }
         }
-        return inputBuffer[inputPosition++] & Builder.UNSIGNED_BYTE_MASK;
+        return inputBuffer[inputPosition++] & 0xff;
     }
 
     /**

@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.protocol.websocket.WebSocketClose;
 
 /**
  * Parser for one WebSocket frame from a byte source.
@@ -88,7 +87,7 @@ public final class WebSocketReader {
         if (masked != expectMasked) {
             throw new ProtocolException("Unexpected WebSocket mask direction");
         }
-        final int marker = second & Builder._127;
+        final int marker = second & Builder.UNSIGNED_7_BIT_MASK;
         final long length = payloadLength(marker);
         validateControl(fin, control, length);
         if (length > Builder.BYTES_16_MIB) {
@@ -143,7 +142,7 @@ public final class WebSocketReader {
         if (control && !fin) {
             throw new ProtocolException("WebSocket control frames must set FIN");
         }
-        if (control && length > Builder._125) {
+        if (control && length > Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES) {
             throw new ProtocolException("WebSocket control payload exceeds 125 bytes");
         }
     }

@@ -31,45 +31,26 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.websocket.body.WebSocketBody;
+import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketClose;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketFrame;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader;
 import org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketWriter;
@@ -78,7 +59,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.lifecycle.SessionLifecycle;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -104,6 +85,11 @@ public final class WebSocketSession implements Session {
      * Endpoint role.
      */
     private final WebSocketRole role;
+
+    /**
+     * WebSocket-only protocol state.
+     */
+    private final WebSocketState state;
 
     /**
      * Single-frame writer.
@@ -188,17 +174,17 @@ public final class WebSocketSession implements Session {
     /**
      * Automatic ping dispatch handle.
      */
-    private final AtomicReference<DispatchHandle> pingHandle;
+    private final WebSocketPing ping;
 
     /**
      * Close-timeout dispatch handle.
      */
-    private final AtomicReference<DispatchHandle> closeTimeoutHandle;
+    private final WebSocketDeadline deadline;
 
     /**
      * Lifecycle scope.
      */
-    private final LifecycleScope scope;
+    private final SessionLifecycle scope;
 
     /**
      * Optional guard.
@@ -263,48 +249,9 @@ public final class WebSocketSession implements Session {
     /**
      * Guard allowing exactly one close entry.
      */
-    private final AtomicBoolean closeQueued;
-
-    /**
-     * Whether a close frame was physically flushed.
-     */
-    private final AtomicBoolean closeWritten;
-
-    /**
-     * Whether a peer close frame was received.
-     */
-    private final AtomicBoolean peerCloseReceived;
-
-    /**
-     * Failure delivered after the best-effort protocol close frame.
-     */
-    private final AtomicReference<Throwable> failureAfterClose;
-
     /**
      * Automatic ping awaiting pong flag.
      */
-    private final AtomicBoolean awaitingPong;
-
-    /**
-     * Whether one automatic ping is queued but not yet flushed.
-     */
-    private final AtomicBoolean automaticPingPending;
-
-    /**
-     * Sent ping count.
-     */
-    private final AtomicInteger sentPingCount;
-
-    /**
-     * Received ping count.
-     */
-    private final AtomicInteger receivedPingCount;
-
-    /**
-     * Received pong count.
-     */
-    private final AtomicInteger receivedPongCount;
-
     /**
      * Creates a transport-less session for validated upgrade snapshots.
      *
@@ -313,7 +260,7 @@ public final class WebSocketSession implements Session {
     WebSocketSession(final Address address) {
         this(address, null, null, null, null, null, null, null, false, defaultDispatchKey(address), Clock.system(),
                 Timeout.defaults(), null, WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null,
-                EventObserver.noop(), null, Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                EventObserver.noop(), null, Cancellation.create(), Normal.MEBI_64);
     }
 
     /**
@@ -330,7 +277,7 @@ public final class WebSocketSession implements Session {
         this(address, writer, reader, null, lease, null, handler, Dispatcher.create(), true,
                 defaultDispatchKey(address), Clock.system(), Timeout.defaults(), null, WebSocketRole.CLIENT,
                 defaultAttributes(EventObserver.noop()), null, EventObserver.noop(), null, Cancellation.create(),
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Normal.MEBI_64);
     }
 
     /**
@@ -348,7 +295,7 @@ public final class WebSocketSession implements Session {
             final ConnectionLease lease, final Handler handler, final Dispatcher dispatcher, final String dispatchKey) {
         this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(),
                 Timeout.defaults(), null, WebSocketRole.CLIENT, defaultAttributes(EventObserver.noop()), null,
-                EventObserver.noop(), null, Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                EventObserver.noop(), null, Cancellation.create(), Normal.MEBI_64);
     }
 
     /**
@@ -372,7 +319,7 @@ public final class WebSocketSession implements Session {
             final Listener<? super WebSocketSession> listener) {
         this(address, writer, reader, null, lease, null, handler, dispatcher, false, dispatchKey, Clock.system(),
                 timeout(ping), guard, WebSocketRole.CLIENT, defaultAttributes(observer), null, observer, listener,
-                Cancellation.create(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Cancellation.create(), Normal.MEBI_64);
     }
 
     /**
@@ -501,6 +448,7 @@ public final class WebSocketSession implements Session {
                 (reader != null || writer != null) && dispatcher == null,
                 () -> new ValidateException("Dispatcher must not be null"));
         this.role = require(role, "WebSocket role");
+        this.state = new WebSocketState(this.role);
         this.writer = writer;
         this.reader = reader;
         this.output = output;
@@ -522,26 +470,15 @@ public final class WebSocketSession implements Session {
         this.cancellationRegistration = new AtomicReference<>(WebSocketSession::noop);
         this.readerHandle = new AtomicReference<>();
         this.drainHandle = new AtomicReference<>();
-        this.pingHandle = new AtomicReference<>();
-        this.closeTimeoutHandle = new AtomicReference<>();
         this.outboundLock = new Object();
         this.outbound = new ArrayDeque<>();
         this.draining = new AtomicBoolean();
         this.activeEntry = new AtomicReference<>();
         this.terminalNotified = new AtomicBoolean();
         this.resourcesClosed = new AtomicBoolean();
-        this.closeQueued = new AtomicBoolean();
-        this.closeWritten = new AtomicBoolean();
-        this.peerCloseReceived = new AtomicBoolean();
-        this.failureAfterClose = new AtomicReference<>();
-        this.awaitingPong = new AtomicBoolean();
-        this.automaticPingPending = new AtomicBoolean();
-        this.sentPingCount = new AtomicInteger();
-        this.receivedPingCount = new AtomicInteger();
-        this.receivedPongCount = new AtomicInteger();
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
-        this.scope = LifecycleScope.session(
+        this.scope = SessionLifecycle.create(
                 this,
                 "websocket-session",
                 listener,
@@ -549,14 +486,21 @@ public final class WebSocketSession implements Session {
                 ObservationMarker.WEBSOCKET_OPEN,
                 ObservationMarker.WEBSOCKET_CLOSED,
                 ObservationMarker.WEBSOCKET_FAILED,
-                this.clock);
+                this.clock,
+                this.cancellation);
+        this.ping = new WebSocketPing(dispatcher, this.dispatchKey, this.timeout.ping(), this.cancellation,
+                () -> !terminalNotified.get() && scope.state() == State.RUNNING, this::enqueueAutomaticPing,
+                cause -> terminate(Termination.FAIL, cause));
+        this.deadline = new WebSocketDeadline(dispatcher, this.dispatchKey, this.timeout.close(), this.cancellation,
+                () -> !terminalNotified.get() && scope.state() == State.CLOSING,
+                () -> terminate(Termination.CANCEL, new TimeoutException("WebSocket close handshake timed out")));
         this.scope.open(this);
         this.cancellationRegistration.set(this.cancellation.onCancel(this::cancel));
         if (!terminalNotified.get() && reader != null) {
             startReader();
         }
         if (!terminalNotified.get()) {
-            schedulePing();
+            ping.schedule();
         }
     }
 
@@ -583,7 +527,7 @@ public final class WebSocketSession implements Session {
      *
      * @return lifecycle state
      */
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
@@ -613,7 +557,7 @@ public final class WebSocketSession implements Session {
      * @return sent ping count
      */
     public int sentPingCount() {
-        return sentPingCount.get();
+        return ping.sent();
     }
 
     /**
@@ -622,7 +566,7 @@ public final class WebSocketSession implements Session {
      * @return received ping count
      */
     public int receivedPingCount() {
-        return receivedPingCount.get();
+        return ping.receivedPingCount();
     }
 
     /**
@@ -631,7 +575,7 @@ public final class WebSocketSession implements Session {
      * @return received pong count
      */
     public int receivedPongCount() {
-        return receivedPongCount.get();
+        return ping.receivedPongCount();
     }
 
     /**
@@ -700,7 +644,7 @@ public final class WebSocketSession implements Session {
      */
     @Override
     public boolean close() {
-        return close(Builder._1000, Normal.EMPTY);
+        return close((int) Normal.KILO, Normal.EMPTY);
     }
 
     /**
@@ -776,8 +720,7 @@ public final class WebSocketSession implements Session {
     private WebSocketFrame binaryFrame(final Payload payload) {
         final Message outgoing = filter(payload, Builder.WEBSOCKET_WRITE);
         checkGuard(outgoing);
-        return WebSocketFrame
-                .binary(materialize(outgoing.payload(), Builder.WEB_SOCKET_SESSION_MATERIALIZE_SEND_PAYLOAD));
+        return WebSocketFrame.binary(materialize(outgoing.payload(), Builder.WEBSOCKET_SEND_MATERIALIZE_OPERATION));
     }
 
     /**
@@ -813,13 +756,13 @@ public final class WebSocketSession implements Session {
      * @return ping frame
      */
     private WebSocketFrame pingFrame(final ByteString payload) {
-        if (payload.size() > Builder._125) {
+        if (payload.size() > Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES) {
             throw new ValidateException("WebSocket ping payload is too large");
         }
         final Message outgoing = filter(Payload.of(ByteString.of(payload.toByteArray())), Builder.WEBSOCKET_PING);
         checkGuard(outgoing);
         final ByteString filtered = materialize(outgoing.payload(), "WebSocketSession.ping");
-        if (filtered.size() > Builder._125) {
+        if (filtered.size() > Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES) {
             throw new ValidateException("WebSocket ping payload is too large");
         }
         return new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PING, true, filtered, true);
@@ -834,10 +777,10 @@ public final class WebSocketSession implements Session {
      */
     private ByteString materialize(final Payload payload, final String operation) {
         final long declared = payload.length();
-        if (declared > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES) {
+        if (declared > Builder.BYTES_16_MIB) {
             throw new ValidateException("WebSocket message is too large");
         }
-        final long limit = Math.min(materializeMaxBytes, Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES);
+        final long limit = Math.min(materializeMaxBytes, Builder.BYTES_16_MIB);
         try {
             return ByteString.of(Payload.materialize(payload, limit, operation));
         } catch (final RuntimeException e) {
@@ -857,7 +800,7 @@ public final class WebSocketSession implements Session {
                 throw new StatefulException("WebSocket session is terminated");
             }
             final long next = queuedBytes + entry.wireBytes();
-            if (next < queuedBytes || next > Builder.WEB_SOCKET_SESSION_MAX_QUEUED_BYTES) {
+            if (next < queuedBytes || next > Normal.MEBI_64) {
                 throw new StatefulException("WebSocket write queue is full");
             }
             if (!entry.reserve()) {
@@ -899,13 +842,13 @@ public final class WebSocketSession implements Session {
      * @param frame close frame
      */
     private void enqueueClose(final WebSocketFrame frame) {
-        if (!closeQueued.compareAndSet(false, true)) {
+        if (!state.queueClose()) {
             return;
         }
         try {
-            enqueue(new OutboundEntry(frame, EntryKind.CLOSE, wireBytes(frame, role.writerMask())));
+            enqueue(new OutboundEntry(frame, EntryKind.CLOSE, wireBytes(frame, state.writerMask())));
         } catch (final RuntimeException e) {
-            closeQueued.set(false);
+            state.closeEnqueueFailed();
             throw e;
         }
     }
@@ -916,14 +859,14 @@ public final class WebSocketSession implements Session {
      * @param payload ping payload
      */
     private void enqueuePong(final ByteString payload) {
-        if (scope.state() != Status.OPENED) {
+        if (scope.state() != State.RUNNING) {
             return;
         }
         final WebSocketFrame frame = new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PONG, true, payload, true);
         try {
-            enqueue(new OutboundEntry(frame, EntryKind.PONG, wireBytes(frame, role.writerMask())));
+            enqueue(new OutboundEntry(frame, EntryKind.PONG, wireBytes(frame, state.writerMask())));
         } catch (final StatefulException e) {
-            if (scope.state() == Status.OPENED && !terminalNotified.get()) {
+            if (scope.state() == State.RUNNING && !terminalNotified.get()) {
                 throw e;
             }
         }
@@ -933,7 +876,7 @@ public final class WebSocketSession implements Session {
      * Starts at most one background drain.
      */
     private void startDrain() {
-        if (writer == null || terminalNotified.get() || closeWritten.get() || !hasQueued()
+        if (writer == null || terminalNotified.get() || state.closeWasWritten() || !hasQueued()
                 || !draining.compareAndSet(false, true)) {
             return;
         }
@@ -987,12 +930,11 @@ public final class WebSocketSession implements Session {
                 }
                 emit(ObservationMarker.WEBSOCKET_MESSAGE, actualBytes, null);
                 if (entry.kind() == EntryKind.PING || entry.kind() == EntryKind.AUTOMATIC_PING) {
-                    sentPingCount.incrementAndGet();
-                    awaitingPong.set(true);
-                }
-                if (entry.kind() == EntryKind.AUTOMATIC_PING) {
-                    automaticPingPending.set(false);
-                    schedulePing();
+                    if (entry.kind() == EntryKind.AUTOMATIC_PING) {
+                        ping.automaticPingWritten();
+                    } else {
+                        ping.publicPingWritten();
+                    }
                 }
                 Logger.debug(
                         false,
@@ -1004,7 +946,7 @@ public final class WebSocketSession implements Session {
                         entry.frame().opcode(),
                         actualBytes);
                 if (entry.kind() == EntryKind.CLOSE) {
-                    closeWritten.set(true);
+                    state.closeWritten();
                     afterCloseWritten();
                     return;
                 }
@@ -1103,7 +1045,7 @@ public final class WebSocketSession implements Session {
     }
 
     /**
-     * Waits for an entry using the shared thread utility.
+     * Waits for an entry using the shared thread helper.
      *
      * @param entry outbound entry whose completion is awaited
      */
@@ -1162,50 +1104,28 @@ public final class WebSocketSession implements Session {
      * Reads frames, aggregates data messages, and handles control frames.
      */
     private void readFrames() {
-        Buffer fragments = null;
-        int fragmentOpcode = Normal.__1;
-        long fragmentBytes = Normal.LONG_ZERO;
+        final WebSocketAssembler assembler = new WebSocketAssembler(Builder.BYTES_16_MIB);
         try {
             while (!terminalNotified.get() && !cancellation.cancelled()) {
                 final WebSocketFrame frame = reader.next();
-                emit(ObservationMarker.WEBSOCKET_MESSAGE, wireBytes(frame, role.readerExpectMasked()), null);
+                emit(ObservationMarker.WEBSOCKET_MESSAGE, wireBytes(frame, state.readerExpectMasked()), null);
                 final int opcode = frame.opcode();
                 if (opcode == Normal._8) {
                     peerClose(frame);
                     return;
                 }
                 if (opcode == Builder.WEBSOCKET_OPCODE_PING) {
-                    receivedPingCount.incrementAndGet();
+                    ping.receivedPing();
                     enqueuePong(frame.payload());
                     continue;
                 }
                 if (opcode == Builder.WEBSOCKET_OPCODE_PONG) {
-                    receivedPongCount.incrementAndGet();
-                    awaitingPong.set(false);
+                    ping.receivedPong();
                     continue;
                 }
-                if (opcode == Normal._1 || opcode == Builder.WEBSOCKET_OPCODE_BINARY) {
-                    if (fragments != null) {
-                        throw new ProtocolException("WebSocket fragmented message is already open");
-                    }
-                    if (frame.fin()) {
-                        deliver(opcode, frame.payload());
-                    } else {
-                        fragments = new Buffer();
-                        fragmentOpcode = opcode;
-                        fragmentBytes = appendFragment(fragments, Normal.LONG_ZERO, frame.payload());
-                    }
-                    continue;
-                }
-                if (opcode != Normal._0 || fragments == null) {
-                    throw new ProtocolException("WebSocket continuation has no initial frame");
-                }
-                fragmentBytes = appendFragment(fragments, fragmentBytes, frame.payload());
-                if (frame.fin()) {
-                    deliver(fragmentOpcode, fragments.readByteString());
-                    fragments = null;
-                    fragmentOpcode = Normal.__1;
-                    fragmentBytes = Normal.LONG_ZERO;
+                final WebSocketAssembler.Message message = assembler.accept(frame);
+                if (message != null) {
+                    deliver(message.opcode(), message.payload());
                 }
             }
         } catch (final CancellationException e) {
@@ -1219,24 +1139,9 @@ public final class WebSocketSession implements Session {
             if (e instanceof Error error) {
                 throw error;
             }
+        } finally {
+            assembler.reset();
         }
-    }
-
-    /**
-     * Appends a fragment while enforcing the complete aggregate limit.
-     *
-     * @param aggregate aggregate buffer
-     * @param current   current aggregate bytes
-     * @param fragment  fragment bytes
-     * @return updated aggregate bytes
-     */
-    private long appendFragment(final Buffer aggregate, final long current, final ByteString fragment) {
-        final long next = current + fragment.size();
-        if (next < current || next > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES) {
-            throw new ProtocolException("WebSocket aggregated message is too large");
-        }
-        aggregate.write(fragment);
-        return next;
     }
 
     /**
@@ -1246,7 +1151,7 @@ public final class WebSocketSession implements Session {
      * @param payload complete payload
      */
     private void deliver(final int opcode, final ByteString payload) {
-        if (payload.size() > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES) {
+        if (payload.size() > Builder.BYTES_16_MIB) {
             throw new ProtocolException("WebSocket aggregated message is too large");
         }
         final Payload source;
@@ -1277,7 +1182,7 @@ public final class WebSocketSession implements Session {
      */
     private void peerClose(final WebSocketFrame frame) {
         final WebSocketClose close = parseClose(frame);
-        peerCloseReceived.set(true);
+        state.peerCloseReceived();
         beginClosing();
         Logger.info(
                 true,
@@ -1287,7 +1192,7 @@ public final class WebSocketSession implements Session {
                 address.host(),
                 address.port(),
                 close.code());
-        if (closeWritten.get()) {
+        if (state.closeWasWritten()) {
             terminate(Termination.CLOSE, null);
             return;
         }
@@ -1304,9 +1209,9 @@ public final class WebSocketSession implements Session {
      * @param cause reader failure
      */
     private void readerFailure(final Throwable cause) {
-        failureAfterClose.compareAndSet(null, cause);
+        state.failureAfterClose(cause);
         beginClosing();
-        if (writer == null || closeWritten.get()) {
+        if (writer == null || state.closeWasWritten()) {
             terminate(Termination.FAIL, cause);
             return;
         }
@@ -1329,10 +1234,10 @@ public final class WebSocketSession implements Session {
      * Completes the terminal action selected by a flushed close entry.
      */
     private void afterCloseWritten() {
-        final Throwable failure = failureAfterClose.get();
+        final Throwable failure = state.failureAfterClose();
         if (failure != null) {
             terminate(Termination.FAIL, failure);
-        } else if (peerCloseReceived.get() || reader == null) {
+        } else if (state.peerCloseWasReceived() || reader == null) {
             terminate(Termination.CLOSE, null);
         } else {
             scheduleCloseTimeout();
@@ -1343,64 +1248,15 @@ public final class WebSocketSession implements Session {
      * Schedules forced cancellation after the close handshake deadline.
      */
     private void scheduleCloseTimeout() {
-        if (dispatcher == null || terminalNotified.get()) {
-            return;
-        }
-        final DispatchHandle next = dispatcher.schedule(
-                dispatchKey + ":close-timeout",
-                timeout.close(),
-                Activity.of(Builder.WEBSOCKET_ACTIVITY_CLOSE_TIMEOUT, () -> {
-                    if (!terminalNotified.get() && scope.state() == Status.CLOSING) {
-                        terminate(Termination.CANCEL, new TimeoutException("WebSocket close handshake timed out"));
-                    }
-                }, cancellation));
-        final DispatchHandle previous = closeTimeoutHandle.getAndSet(next);
-        if (previous != null) {
-            previous.cancel();
-        }
+        deadline.schedule();
     }
 
     /**
      * Schedules the next automatic ping tick.
      */
-    private void schedulePing() {
-        if (timeout.ping().isZero() || writer == null || dispatcher == null || terminalNotified.get()) {
-            return;
-        }
-        final DispatchHandle next = dispatcher.schedule(
-                dispatchKey + ":ping",
-                timeout.ping(),
-                Activity.of(Builder.WEBSOCKET_PING, this::automaticPing, cancellation));
-        final DispatchHandle previous = pingHandle.getAndSet(next);
-        if (previous != null && previous != next) {
-            previous.cancel();
-        }
-    }
-
-    /**
-     * Enqueues one internal automatic ping or fails an unanswered ping deadline.
-     */
-    private void automaticPing() {
-        pingHandle.set(null);
-        if (terminalNotified.get() || scope.state() != Status.OPENED) {
-            return;
-        }
-        if (awaitingPong.get()) {
-            terminate(Termination.FAIL, new TimeoutException("WebSocket pong timeout"));
-            return;
-        }
-        if (!automaticPingPending.compareAndSet(false, true)) {
-            schedulePing();
-            return;
-        }
-        try {
-            final WebSocketFrame frame = new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PING, true, ByteString.EMPTY,
-                    true);
-            enqueue(new OutboundEntry(frame, EntryKind.AUTOMATIC_PING, wireBytes(frame, role.writerMask())));
-        } catch (final RuntimeException e) {
-            automaticPingPending.set(false);
-            terminate(Termination.FAIL, e);
-        }
+    private void enqueueAutomaticPing() {
+        final WebSocketFrame frame = new WebSocketFrame(Builder.WEBSOCKET_OPCODE_PING, true, ByteString.EMPTY, true);
+        enqueue(new OutboundEntry(frame, EntryKind.AUTOMATIC_PING, wireBytes(frame, state.writerMask())));
     }
 
     /**
@@ -1423,10 +1279,8 @@ public final class WebSocketSession implements Session {
             cancellation.cancel(
                     terminalCause == null ? new CancellationException("WebSocket session closed") : terminalCause);
         }
-        awaitingPong.set(false);
-        automaticPingPending.set(false);
-        cancelHandle(closeTimeoutHandle);
-        cancelHandle(pingHandle);
+        ping.close();
+        deadline.close();
         cancelHandle(readerHandle);
         cancelHandle(drainHandle);
         completePending(termination, terminalCause);
@@ -1664,7 +1518,7 @@ public final class WebSocketSession implements Session {
         if (terminalNotified.get()) {
             throw new StatefulException("WebSocket session is terminated");
         }
-        if (kind != EntryKind.CLOSE && scope.state() != Status.OPENED) {
+        if (kind != EntryKind.CLOSE && scope.state() != State.RUNNING) {
             throw new StatefulException("WebSocket session is not open");
         }
         cancellation.throwIfCancelled();
@@ -1688,7 +1542,7 @@ public final class WebSocketSession implements Session {
      */
     private static long wireBytes(final WebSocketFrame frame, final boolean masked) {
         final long payloadBytes = frame.payload().size();
-        final long lengthBytes = payloadBytes <= Builder._125 ? Normal.LONG_ZERO
+        final long lengthBytes = payloadBytes <= Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES ? Normal.LONG_ZERO
                 : payloadBytes <= Normal._65535 ? Short.BYTES : Long.BYTES;
         return Normal._2 + lengthBytes + (masked ? Normal._4 : Normal._0) + payloadBytes;
     }
@@ -1702,7 +1556,7 @@ public final class WebSocketSession implements Session {
     private static WebSocketClose parseClose(final WebSocketFrame frame) {
         final byte[] payload = frame.payload().toByteArray();
         if (payload.length == Normal._0) {
-            return WebSocketClose.of(Builder._1000, Normal.EMPTY);
+            return WebSocketClose.of((int) Normal.KILO, Normal.EMPTY);
         }
         if (payload.length == Normal._1) {
             throw new ProtocolException("Invalid WebSocket close payload");
@@ -1926,7 +1780,7 @@ public final class WebSocketSession implements Session {
             ensureWritable(kind);
             cancellation().throwIfCancelled();
             final WebSocketFrame frame = factory.get();
-            final OutboundEntry created = new OutboundEntry(frame, kind, wireBytes(frame, role.writerMask()));
+            final OutboundEntry created = new OutboundEntry(frame, kind, wireBytes(frame, state.writerMask()));
             entry.set(created);
             cancellation().throwIfCancelled();
             WebSocketSession.this.enqueue(created);
@@ -1999,7 +1853,7 @@ public final class WebSocketSession implements Session {
         private OutboundEntry(final WebSocketFrame frame, final EntryKind kind, final long wireBytes) {
             this.frame = require(frame, "WebSocket frame");
             this.kind = require(kind, "WebSocket entry kind");
-            if (wireBytes < Normal._2 || wireBytes > Builder.WEB_SOCKET_SESSION_MAX_MESSAGE_BYTES + Normal._14) {
+            if (wireBytes < Normal._2 || wireBytes > Builder.BYTES_16_MIB + Normal._14) {
                 throw new ValidateException("WebSocket entry wire size is invalid");
             }
             this.wireBytes = wireBytes;

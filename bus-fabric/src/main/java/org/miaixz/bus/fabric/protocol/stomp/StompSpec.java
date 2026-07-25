@@ -24,17 +24,12 @@ import java.util.function.Consumer;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
 /**
- * Immutable execution snapshot for a STOMP exchange.
+ * Immutable execution specification for a STOMP exchange.
  *
  * @param context     runtime services used by the STOMP exchange
  * @param uri         original target URI requested by the caller
@@ -53,18 +48,18 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @author Kimi Liu
  * @since Java 21+
  */
-record StompSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout, StompPolicy policy,
+record StompSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, StompPolicy policy,
         String destination, String login, String passcode, GuardRule guard, Filter filter, EventObserver observer,
         Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
 
     /**
-     * Creates a validated snapshot.
+     * Creates a validated specification.
      *
      * @param context     runtime services used by the exchange
      * @param uri         original target URI
      * @param address     normalized broker address
      * @param headers     CONNECT frame headers
-     * @param timeout     timeout policy copied into the snapshot
+     * @param timeout     timeout policy copied into the specification
      * @param policy      complete STOMP policy
      * @param destination default send destination
      * @param login       optional CONNECT login
@@ -75,7 +70,7 @@ record StompSnapshot(Context context, URI uri, Address address, Headers headers,
      * @param handler     inbound STOMP message handler
      * @param listener    session lifecycle listener
      */
-    StompSnapshot {
+    StompSpec {
         context = require(context, "Context");
         uri = require(uri, "Target URI");
         address = require(address, "Address");

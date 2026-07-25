@@ -72,7 +72,7 @@ final class HttpCacheCodec {
      */
     static CacheEntry toEntry(final HttpRequest request, final HttpResponse response, final Payload payload) {
         final Headers.Builder metadata = Headers.builder()
-                .add(Builder.HTTP_CACHE_CODEC_META_PROTOCOL, Builder.HTTP_CACHE_CODEC_META_PROTOCOL_HTTP)
+                .add(Builder.HTTP_CACHE_CODEC_META_PROTOCOL, Protocol.HTTP.name)
                 .add(Builder.HTTP_CACHE_CODEC_META_METHOD, request.method().name())
                 .add(Builder.HTTP_CACHE_CODEC_META_URL, request.url().encoded())
                 .add(Builder.HTTP_CACHE_CODEC_META_CODE, Integer.toString(response.code()))
@@ -103,7 +103,7 @@ final class HttpCacheCodec {
      */
     static HttpResponse fromEntry(final CacheEntry entry) {
         final Headers metadata = entry.metadata();
-        if (!Builder.HTTP_CACHE_CODEC_META_PROTOCOL_HTTP.equals(metadata.get(Builder.HTTP_CACHE_CODEC_META_PROTOCOL))) {
+        if (!Protocol.HTTP.name.equals(metadata.get(Builder.HTTP_CACHE_CODEC_META_PROTOCOL))) {
             throw new ProtocolException("Cache entry is not an HTTP entry");
         }
         final HttpRequest request = HttpRequest.builder()

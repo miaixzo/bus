@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.http.agent;
+package org.miaixz.bus.fabric.platform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.fabric.Builder;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Device classifier parsed from a User-Agent value.
@@ -37,6 +37,46 @@ import org.miaixz.bus.fabric.Builder;
  * @since Java 21+
  */
 public final class Device {
+
+    /**
+     * Android device classifier.
+     */
+    public static final Device ANDROID = new Device("Android", "android");
+
+    /**
+     * Google TV device classifier.
+     */
+    public static final Device GOOGLE_TV = new Device("GoogleTV", "googletv");
+
+    /**
+     * HarmonyOS device classifier.
+     */
+    public static final Device HARMONY = new Device("Harmony", "OpenHarmony");
+
+    /**
+     * iPad device classifier.
+     */
+    public static final Device IPAD = new Device("iPad", "ipad");
+
+    /**
+     * iPhone device classifier.
+     */
+    public static final Device IPHONE = new Device("iPhone", "iphone");
+
+    /**
+     * iPod device classifier.
+     */
+    public static final Device IPOD = new Device("iPod", "ipod");
+
+    /**
+     * Windows Phone device classifier.
+     */
+    public static final Device WINDOWS_PHONE = new Device("Windows Phone", "windows (ce|phone|mobile)( os)?");
+
+    /**
+     * Shared unknown device classifier.
+     */
+    public static final Device UNKNOWN = new Device(Normal.UNKNOWN, null);
 
     /**
      * Validated display name and equality identity of this classifier.
@@ -53,19 +93,19 @@ public final class Device {
      *
      * @param name non-blank classifier name
      * @param rule case-insensitive match regular expression, or {@code null} to disable matching
-     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
-     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
+     * @throws ValidateException      if {@code name} is blank
+     * @throws PatternSyntaxException if {@code rule} is not a valid regular expression
      */
     public Device(final String name, final String rule) {
-        this.name = AgentRules.name(name);
-        this.rule = AgentRules.compile(rule);
+        this.name = PlatformMatcher.name(name);
+        this.rule = PlatformMatcher.compile(rule);
     }
 
     /**
      * Returns the first matching mobile classifier, then the first matching desktop classifier.
      *
      * @param text User-Agent text to classify, or {@code null}
-     * @return first matching classifier, or {@link Builder#HTTP_AGENT_DEVICE_UNKNOWN} when no rule matches
+     * @return first matching classifier, or the unknown-device classifier when no rule matches
      */
     public static Device parse(final String text) {
         for (final Device device : Registry.MOBILE) {
@@ -78,7 +118,7 @@ public final class Device {
                 return device;
             }
         }
-        return Builder.HTTP_AGENT_DEVICE_UNKNOWN;
+        return UNKNOWN;
     }
 
     /**
@@ -86,8 +126,8 @@ public final class Device {
      *
      * @param name non-blank classifier name
      * @param rule case-insensitive match regular expression, or {@code null} to disable matching
-     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
-     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
+     * @throws ValidateException      if {@code name} is blank
+     * @throws PatternSyntaxException if {@code rule} is not a valid regular expression
      */
     public static void addMobileDevice(final String name, final String rule) {
         Registry.MOBILE.add(new Device(name, rule));
@@ -98,8 +138,8 @@ public final class Device {
      *
      * @param name non-blank classifier name
      * @param rule case-insensitive match regular expression, or {@code null} to disable matching
-     * @throws org.miaixz.bus.core.lang.exception.ValidateException if {@code name} is blank
-     * @throws PatternSyntaxException                               if {@code rule} is not a valid regular expression
+     * @throws ValidateException      if {@code name} is blank
+     * @throws PatternSyntaxException if {@code rule} is not a valid regular expression
      */
     public static void addDesktopDevice(final String name, final String rule) {
         Registry.DESKTOP.add(new Device(name, rule));
@@ -132,7 +172,7 @@ public final class Device {
      * @return {@code true} when the configured rule finds a substring match
      */
     public boolean matches(final String text) {
-        return AgentRules.contains(rule, text);
+        return PlatformMatcher.contains(rule, text);
     }
 
     /**
@@ -150,7 +190,7 @@ public final class Device {
      * @return {@code true} when the classifier name equals the registered iPhone or iPod name
      */
     public boolean iPhoneOrIPod() {
-        return equals(Builder.HTTP_AGENT_DEVICE_IPHONE) || equals(Builder.HTTP_AGENT_DEVICE_IPOD);
+        return equals(IPHONE) || equals(IPOD);
     }
 
     /**
@@ -159,7 +199,7 @@ public final class Device {
      * @return {@code true} when the classifier name equals the registered iPad name
      */
     public boolean iPad() {
-        return equals(Builder.HTTP_AGENT_DEVICE_IPAD);
+        return equals(IPAD);
     }
 
     /**
@@ -177,7 +217,7 @@ public final class Device {
      * @return {@code true} when the classifier name equals the registered Android or Google TV name
      */
     public boolean android() {
-        return equals(Builder.HTTP_AGENT_DEVICE_ANDROID) || equals(Builder.HTTP_AGENT_DEVICE_GOOGLE_TV);
+        return equals(ANDROID) || equals(GOOGLE_TV);
     }
 
     /**
@@ -186,7 +226,7 @@ public final class Device {
      * @return {@code true} when the classifier name equals the registered HarmonyOS name
      */
     public boolean harmony() {
-        return equals(Builder.HTTP_AGENT_DEVICE_HARMONY);
+        return equals(HARMONY);
     }
 
     /**
@@ -240,14 +280,14 @@ public final class Device {
         private static final List<Device> MOBILE = Instances.get(
                 Device.class.getName() + ".mobileDevices",
                 () -> new CopyOnWriteArrayList<>(List.of(
-                        Builder.HTTP_AGENT_DEVICE_WINDOWS_PHONE,
-                        Builder.HTTP_AGENT_DEVICE_IPAD,
-                        Builder.HTTP_AGENT_DEVICE_IPOD,
-                        Builder.HTTP_AGENT_DEVICE_IPHONE,
+                        WINDOWS_PHONE,
+                        IPAD,
+                        IPOD,
+                        IPHONE,
                         new Device("Android", "XiaoMi|MI\\s+"),
-                        Builder.HTTP_AGENT_DEVICE_ANDROID,
-                        Builder.HTTP_AGENT_DEVICE_HARMONY,
-                        Builder.HTTP_AGENT_DEVICE_GOOGLE_TV,
+                        ANDROID,
+                        HARMONY,
+                        GOOGLE_TV,
                         new Device("htcFlyer", "htc_flyer"),
                         new Device("Symbian", "symbian(os)?"),
                         new Device("Blackberry", "blackberry"))));

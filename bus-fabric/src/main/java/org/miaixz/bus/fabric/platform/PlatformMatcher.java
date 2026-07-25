@@ -17,7 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.http.agent;
+package org.miaixz.bus.fabric.platform;
+
+import static org.miaixz.bus.core.center.regex.Pattern.get;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,12 +34,12 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-final class AgentRules {
+final class PlatformMatcher {
 
     /**
      * Prevents instantiation of this static classifier helper.
      */
-    private AgentRules() {
+    private PlatformMatcher() {
         // No initialization required.
     }
 
@@ -48,7 +50,7 @@ final class AgentRules {
      * @return cached case-insensitive pattern, or {@code null} for a disabled rule
      */
     static Pattern compile(final String rule) {
-        return rule == null ? null : org.miaixz.bus.core.center.regex.Pattern.get(rule, Pattern.CASE_INSENSITIVE);
+        return rule == null ? null : get(rule, Pattern.CASE_INSENSITIVE);
     }
 
     /**
@@ -86,7 +88,9 @@ final class AgentRules {
      * @throws ValidateException if {@code name} is blank
      */
     static String name(final String name) {
-        Assert.isFalse(StringKit.isBlank(name), () -> new ValidateException("Agent component name must be non-blank"));
+        Assert.isFalse(
+                StringKit.isBlank(name),
+                () -> new ValidateException("Platform component name must be non-blank"));
         return name;
     }
 

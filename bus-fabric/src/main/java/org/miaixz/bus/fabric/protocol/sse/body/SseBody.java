@@ -32,7 +32,7 @@ import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.codec.body.ProgressBody;
 import org.miaixz.bus.fabric.codec.body.ResponseBody;
-import org.miaixz.bus.fabric.protocol.sse.SseEvent;
+import org.miaixz.bus.fabric.protocol.sse.event.SseEvent;
 import org.miaixz.bus.fabric.protocol.sse.event.SseReader;
 
 /**

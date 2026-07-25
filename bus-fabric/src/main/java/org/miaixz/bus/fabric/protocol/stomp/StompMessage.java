@@ -22,12 +22,12 @@ package org.miaixz.bus.fabric.protocol.stomp;
 import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.protocol.stomp.body.StompBody;
@@ -130,7 +130,7 @@ public record StompMessage(String destination, Headers headers, Payload payload)
      * @return payload materialized as text within the default byte limit
      */
     public String text(final Charset charset) {
-        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Normal.MEBI_64);
     }
 
     /**

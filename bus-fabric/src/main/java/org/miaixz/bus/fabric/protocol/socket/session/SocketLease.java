@@ -19,23 +19,21 @@
 */
 package org.miaixz.bus.fabric.protocol.socket.session;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
@@ -137,7 +135,7 @@ public final class SocketLease {
                 handler,
                 attributes,
                 sessionListener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Normal.MEBI_64);
     }
 
     /**
@@ -235,7 +233,7 @@ public final class SocketLease {
                 handler,
                 attributes,
                 sessionListener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                Normal.MEBI_64);
     }
 
     /**
@@ -406,7 +404,7 @@ public final class SocketLease {
         } catch (final java.util.concurrent.TimeoutException e) {
             aio.close();
             throw new TimeoutException("Socket lease connect timed out", e);
-        } catch (final java.util.concurrent.ExecutionException e) {
+        } catch (final ExecutionException e) {
             aio.close();
             throw new SocketException("Unable to acquire socket lease", e.getCause());
         } catch (final RuntimeException e) {
@@ -465,7 +463,7 @@ public final class SocketLease {
         } catch (final java.util.concurrent.TimeoutException e) {
             aio.close();
             throw new TimeoutException("Socket lease connect timed out", e);
-        } catch (final java.util.concurrent.ExecutionException e) {
+        } catch (final ExecutionException e) {
             aio.close();
             throw new SocketException("Unable to acquire socket lease", e.getCause());
         } catch (final RuntimeException e) {
@@ -552,8 +550,7 @@ public final class SocketLease {
      * @return immutable attribute map containing socket options when not already supplied
      */
     private static Map<String, Object> attributes(final SocketOptions socketOptions, final Map<String, Object> source) {
-        final java.util.LinkedHashMap<String, Object> values = new java.util.LinkedHashMap<>(
-                source == null ? Map.of() : source);
+        final LinkedHashMap<String, Object> values = new LinkedHashMap<>(source == null ? Map.of() : source);
         values.putIfAbsent(Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         return Map.copyOf(values);
     }
@@ -666,7 +663,7 @@ public final class SocketLease {
          * @return lifecycle state of the delegated pooled connection
          */
         @Override
-        public Status state() {
+        public State state() {
             return delegate.state();
         }
 

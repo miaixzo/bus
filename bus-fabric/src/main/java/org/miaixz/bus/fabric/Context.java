@@ -19,14 +19,12 @@
 */
 package org.miaixz.bus.fabric;
 
+import static org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.network.dns.DnsResolver;
-import org.miaixz.bus.fabric.network.tls.TlsSettings;
-import org.miaixz.bus.fabric.network.tls.context.TlsContext;
-import org.miaixz.bus.fabric.registry.Directory;
 import org.miaixz.bus.fabric.runtime.Reactor;
 
 /**
@@ -53,11 +51,6 @@ public final class Context implements AutoCloseable {
     private final Options options;
 
     /**
-     * Context-local resolver view bound to the reactor clock, dispatcher, and observer.
-     */
-    private final DnsResolver resolver;
-
-    /**
      * Shared lifecycle listener for network and protocol resources.
      */
     private final Listener<Object> listener;
@@ -77,16 +70,14 @@ public final class Context implements AutoCloseable {
      *
      * @param runtime  shared reactor lease owned by this context
      * @param options  immutable option snapshot
-     * @param resolver context-local DNS resolver bound to runtime collaborators
      * @param listener lifecycle listener, or {@code null} when disabled
      * @param filter   protocol-neutral message filter, or {@code null} when disabled
      */
-    private Context(final RuntimeLease runtime, final Options options, final DnsResolver resolver,
-            final Listener<Object> listener, final Filter filter) {
+    private Context(final RuntimeLease runtime, final Options options, final Listener<Object> listener,
+            final Filter filter) {
         this.runtime = require(runtime, "Runtime lease");
         this.reactor = runtime.reactor;
         this.options = require(options, "Options");
-        this.resolver = require(resolver, "DNS resolver");
         this.listener = listener;
         this.filter = filter;
         this.closed = new AtomicBoolean();
@@ -138,24 +129,6 @@ public final class Context implements AutoCloseable {
     }
 
     /**
-     * Returns the shared directory.
-     *
-     * @return connection directory supplied by the shared reactor
-     */
-    public Directory directory() {
-        return reactor.directory();
-    }
-
-    /**
-     * Returns the shared DNS resolver.
-     *
-     * @return resolver view configured for this context's runtime
-     */
-    public DnsResolver resolver() {
-        return resolver;
-    }
-
-    /**
      * Returns the shared lifecycle listener.
      *
      * @return shared lifecycle listener, or {@code null} when disabled
@@ -181,7 +154,7 @@ public final class Context implements AutoCloseable {
      * @throws ValidateException if this context's runtime has already been fully released
      */
     public Context withFilter(final Filter filter) {
-        return new Context(runtime.retain(), options, resolver, listener, filter);
+        return new Context(runtime.retain(), options, listener, filter);
     }
 
     /**
@@ -229,11 +202,6 @@ public final class Context implements AutoCloseable {
         private Options options = Options.empty();
 
         /**
-         * Resolver used as the source for a runtime-bound context-local view.
-         */
-        private DnsResolver resolver;
-
-        /**
          * Optional lifecycle listener inherited by the context.
          */
         private Listener<Object> listener;
@@ -247,7 +215,7 @@ public final class Context implements AutoCloseable {
          * Creates an inert builder without allocating a reactor or resolver.
          */
         private Builder() {
-            // Defaults without resource allocation are declared on builder fields.
+            // No initialization required.
         }
 
         /**
@@ -287,40 +255,14 @@ public final class Context implements AutoCloseable {
         }
 
         /**
-         * Sets the shared TLS context without allocating another runtime owner.
+         * Sets the shared timeout value.
          *
-         * @param tlsContext TLS context
+         * @param timeout immutable timeout value
          * @return this builder
-         * @throws ValidateException if {@code tlsContext} is {@code null}
+         * @throws ValidateException if {@code timeout} is {@code null}
          */
-        public Builder tlsContext(final TlsContext tlsContext) {
-            this.options = options
-                    .with(org.miaixz.bus.fabric.Builder.OPTION_TLS_CONTEXT, require(tlsContext, "TLS context"));
-            return this;
-        }
-
-        /**
-         * Sets the immutable TLS settings snapshot.
-         *
-         * @param tlsSettings TLS settings
-         * @return this builder
-         * @throws ValidateException if {@code tlsSettings} is {@code null}
-         */
-        public Builder tlsSettings(final TlsSettings tlsSettings) {
-            this.options = options
-                    .with(org.miaixz.bus.fabric.Builder.OPTION_TLS_SETTINGS, require(tlsSettings, "TLS settings"));
-            return this;
-        }
-
-        /**
-         * Sets the resolver used to create the context-local runtime-bound resolver view.
-         *
-         * @param resolver DNS resolver
-         * @return this builder
-         * @throws ValidateException if {@code resolver} is {@code null}
-         */
-        public Builder resolver(final DnsResolver resolver) {
-            this.resolver = require(resolver, "DNS resolver");
+        public Builder timeout(final Timeout timeout) {
+            this.options = options.with(OPTION_TIMEOUT, require(timeout, "Timeout"));
             return this;
         }
 
@@ -358,10 +300,7 @@ public final class Context implements AutoCloseable {
                 resolvedReactor = Reactor.builder().options(options).build();
             }
             try {
-                final DnsResolver resolvedResolver = resolver == null ? DnsResolver.system() : resolver;
-                final DnsResolver localResolver = resolvedResolver.withObserver(resolvedReactor.observer())
-                        .withRuntime(resolvedReactor.clock(), resolvedReactor.dispatcher());
-                return new Context(new RuntimeLease(resolvedReactor), options, localResolver, listener, filter);
+                return new Context(new RuntimeLease(resolvedReactor), options, listener, filter);
             } catch (final RuntimeException | Error failure) {
                 if (createdReactor) {
                     try {

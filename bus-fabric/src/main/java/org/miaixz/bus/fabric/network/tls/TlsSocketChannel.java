@@ -27,9 +27,11 @@ import java.nio.ByteBuffer;
 import java.security.cert.Certificate;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
@@ -44,6 +46,8 @@ import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
+import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
  * Blocking {@link SSLSocket} conduit used by the built-in HTTP socket connector.
@@ -53,8 +57,12 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
  */
 public final class TlsSocketChannel implements Conduit {
 
-    /** Per-calling-thread socket staging reused across short-lived TLS connections. */
-    private static final ThreadLocal<byte[]> IO_SCRATCH = ThreadLocal.withInitial(() -> new byte[Normal._8192]);
+    /**
+     * Bounded staging pool shared by blocking reads and writes. A borrowed array belongs exclusively to one operation
+     * and is always returned in {@code finally}; excess concurrency allocates transient arrays without growing the
+     * retained pool.
+     */
+    private static final ArrayBlockingQueue<byte[]> SCRATCH = new ArrayBlockingQueue<>(Normal._256);
 
     /**
      * Connected TLS socket owned by this channel.
@@ -75,6 +83,16 @@ public final class TlsSocketChannel implements Conduit {
      * Read and write deadlines applied to socket operations.
      */
     private final Timeout timeout;
+
+    /**
+     * Dispatcher owning asynchronous blocking handshakes.
+     */
+    private final Dispatcher dispatcher;
+
+    /**
+     * Connection cancellation scope.
+     */
+    private final Cancellation cancellation;
 
     /**
      * Input stream borrowed from the connected socket.
@@ -101,18 +119,29 @@ public final class TlsSocketChannel implements Conduit {
      */
     private final Sink sink;
 
-    /** Negotiated session published after the physical handshake completes. */
+    /**
+     * Negotiated session published after the physical handshake completes.
+     */
     private volatile SSLSession session;
 
-    /** Lazily materialized public handshake metadata. */
+    /**
+     * Lazily materialized public handshake metadata.
+     */
     private volatile TlsHandshake handshake;
 
+    /**
+     * Shared in-flight asynchronous handshake.
+     */
+    private volatile CompletableFuture<TlsHandshake> handshakeFuture;
+
     private TlsSocketChannel(final SSLSocket socket, final Address address, final TlsSettings settings,
-            final Timeout timeout) {
+            final Timeout timeout, final Dispatcher dispatcher, final Cancellation cancellation) {
         this.socket = socket;
         this.address = address;
         this.settings = settings;
         this.timeout = timeout;
+        this.dispatcher = dispatcher;
+        this.cancellation = cancellation;
         try {
             this.input = socket.getInputStream();
             this.output = socket.getOutputStream();
@@ -126,11 +155,13 @@ public final class TlsSocketChannel implements Conduit {
     /**
      * Creates a configured channel over a connected socket.
      *
-     * @param context  TLS context used to create the layered socket
-     * @param raw      connected raw socket
-     * @param address  target network address
-     * @param settings TLS configuration
-     * @param timeout  socket timeout policy
+     * @param context      TLS context used to create the layered socket
+     * @param raw          connected raw socket
+     * @param address      target network address
+     * @param settings     TLS configuration
+     * @param timeout      socket timeout policy
+     * @param dispatcher   runtime dispatcher for asynchronous handshakes
+     * @param cancellation connection cancellation scope
      * @return configured TLS socket channel
      */
     public static TlsSocketChannel wrap(
@@ -138,8 +169,11 @@ public final class TlsSocketChannel implements Conduit {
             final Socket raw,
             final Address address,
             final TlsSettings settings,
-            final Timeout timeout) {
-        return new TlsSocketChannel(context.socket(raw, address, settings), address, settings, timeout);
+            final Timeout timeout,
+            final Dispatcher dispatcher,
+            final Cancellation cancellation) {
+        return new TlsSocketChannel(context.socket(raw, address, settings), address, settings, timeout, dispatcher,
+                cancellation);
     }
 
     /**
@@ -148,10 +182,29 @@ public final class TlsSocketChannel implements Conduit {
      * @return future completed with negotiated handshake metadata
      */
     public CompletableFuture<TlsHandshake> handshake() {
-        try {
-            return CompletableFuture.completedFuture(handshakeSynchronously());
-        } catch (final RuntimeException failure) {
-            return CompletableFuture.failedFuture(failure);
+        CompletableFuture<TlsHandshake> current = handshakeFuture;
+        if (current != null) {
+            return current;
+        }
+        synchronized (this) {
+            current = handshakeFuture;
+            if (current != null) {
+                return current;
+            }
+            cancellation.throwIfCancelled();
+            current = dispatcher.backgroundSupply("tls-socket:handshake", this, this::handshakeSynchronously);
+            handshakeFuture = current;
+            final CompletableFuture<TlsHandshake> published = current;
+            final Runnable unregister = cancellation.onCancel(() -> published.cancel(true));
+            current.whenComplete((result, cause) -> {
+                unregister.run();
+                synchronized (TlsSocketChannel.this) {
+                    if (handshakeFuture == published) {
+                        handshakeFuture = null;
+                    }
+                }
+            });
+            return current;
         }
     }
 
@@ -223,7 +276,7 @@ public final class TlsSocketChannel implements Conduit {
                 current = TlsHandshake.of(negotiated.getProtocol(), negotiated.getCipherSuite(), chain);
                 handshake = current;
                 return current;
-            } catch (final javax.net.ssl.SSLPeerUnverifiedException e) {
+            } catch (final SSLPeerUnverifiedException e) {
                 throw new SocketException("TLS peer certificate is not available", e);
             }
         }
@@ -236,7 +289,7 @@ public final class TlsSocketChannel implements Conduit {
      */
     public String applicationProtocol() {
         final String protocol = socket.getApplicationProtocol();
-        return protocol == null ? "" : protocol;
+        return protocol == null ? Normal.EMPTY : protocol;
     }
 
     @Override
@@ -252,23 +305,31 @@ public final class TlsSocketChannel implements Conduit {
     public long readSynchronously(final Buffer target, final long byteCount) throws IOException {
         if (byteCount == 0L)
             return 0L;
-        final byte[] scratch = IO_SCRATCH.get();
-        final int count = input.read(scratch, 0, (int) Math.min(byteCount, scratch.length));
-        if (count > 0)
-            target.write(scratch, 0, count);
-        return count;
+        final byte[] scratch = borrowScratch();
+        try {
+            final int count = input.read(scratch, 0, (int) Math.min(byteCount, scratch.length));
+            if (count > 0)
+                target.write(scratch, 0, count);
+            return count;
+        } finally {
+            releaseScratch(scratch);
+        }
     }
 
     @Override
     public int readSynchronously(final ByteBuffer target) throws IOException {
         if (!target.hasRemaining())
             return 0;
-        final byte[] scratch = IO_SCRATCH.get();
-        final int requested = Math.min(target.remaining(), scratch.length);
-        final int count = input.read(scratch, 0, requested);
-        if (count > 0)
-            target.put(scratch, 0, count);
-        return count;
+        final byte[] scratch = borrowScratch();
+        try {
+            final int requested = Math.min(target.remaining(), scratch.length);
+            final int count = input.read(scratch, 0, requested);
+            if (count > 0)
+                target.put(scratch, 0, count);
+            return count;
+        } finally {
+            releaseScratch(scratch);
+        }
     }
 
     @Override
@@ -282,27 +343,54 @@ public final class TlsSocketChannel implements Conduit {
 
     @Override
     public long writeSynchronously(final Buffer source, final long byteCount) throws IOException {
-        final byte[] scratch = IO_SCRATCH.get();
-        long remaining = byteCount;
-        while (remaining > 0L) {
-            final int count = (int) Math.min(remaining, scratch.length);
-            source.read(scratch, 0, count);
-            output.write(scratch, 0, count);
-            remaining -= count;
+        final byte[] scratch = borrowScratch();
+        try {
+            long remaining = byteCount;
+            while (remaining > 0L) {
+                final int count = (int) Math.min(remaining, scratch.length);
+                source.read(scratch, 0, count);
+                output.write(scratch, 0, count);
+                remaining -= count;
+            }
+            return byteCount;
+        } finally {
+            releaseScratch(scratch);
         }
-        return byteCount;
     }
 
     @Override
     public int writeSynchronously(final ByteBuffer source) throws IOException {
-        final byte[] scratch = IO_SCRATCH.get();
-        final int total = source.remaining();
-        while (source.hasRemaining()) {
-            final int count = Math.min(source.remaining(), scratch.length);
-            source.get(scratch, 0, count);
-            output.write(scratch, 0, count);
+        final byte[] scratch = borrowScratch();
+        try {
+            final int total = source.remaining();
+            while (source.hasRemaining()) {
+                final int count = Math.min(source.remaining(), scratch.length);
+                source.get(scratch, 0, count);
+                output.write(scratch, 0, count);
+            }
+            return total;
+        } finally {
+            releaseScratch(scratch);
         }
-        return total;
+    }
+
+    /**
+     * Borrows an exclusive staging array without blocking the I/O operation.
+     *
+     * @return reusable or transient staging array
+     */
+    private static byte[] borrowScratch() {
+        final byte[] scratch = SCRATCH.poll();
+        return scratch == null ? new byte[Normal._8192] : scratch;
+    }
+
+    /**
+     * Returns a staging array to the bounded pool.
+     *
+     * @param scratch staging array no longer used by the caller
+     */
+    private static void releaseScratch(final byte[] scratch) {
+        SCRATCH.offer(scratch);
     }
 
     @Override
@@ -324,6 +412,10 @@ public final class TlsSocketChannel implements Conduit {
     public void close() {
         if (!closed.compareAndSet(false, true))
             return;
+        final CompletableFuture<TlsHandshake> current = handshakeFuture;
+        if (current != null) {
+            current.cancel(true);
+        }
         try {
             socket.close();
         } catch (final IOException e) {
@@ -331,12 +423,20 @@ public final class TlsSocketChannel implements Conduit {
         }
     }
 
-    /** Marks the wrapper closed; the owning raw connection closes the transport without close_notify. */
+    /**
+     * Marks the wrapper closed; the owning raw connection closes the transport without close_notify.
+     */
     public void abort() {
         closed.set(true);
+        final CompletableFuture<TlsHandshake> current = handshakeFuture;
+        if (current != null) {
+            current.cancel(true);
+        }
     }
 
-    /** JSSE already performs trust and endpoint verification; only custom cleaning or pins need a second pass. */
+    /**
+     * JSSE already performs trust and endpoint verification; only custom cleaning or pins need a second pass.
+     */
     private boolean requiresPolicyValidation() {
         return settings.certificate().chainCleaner() != null || !settings.certificate().pins().isEmpty();
     }

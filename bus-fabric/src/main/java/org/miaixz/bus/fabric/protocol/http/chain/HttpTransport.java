@@ -24,10 +24,12 @@ import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
@@ -68,10 +70,15 @@ public final class HttpTransport implements HttpStage {
     private final Function<HttpChain, HttpCodec> codecs;
 
     /**
+     * Runtime time source used for request/response timing.
+     */
+    private final Clock clock;
+
+    /**
      * Creates a transport stage that owns any dispatcher needed by an HTTP/2 session.
      */
     public HttpTransport() {
-        this(DEFAULT_CODECS);
+        this(DEFAULT_CODECS, Clock.system());
     }
 
     /**
@@ -81,7 +88,17 @@ public final class HttpTransport implements HttpStage {
      * @throws ValidateException if {@code dispatcher} is {@code null}
      */
     public HttpTransport(final Dispatcher dispatcher) {
-        this(chain -> networkCodec(chain, require(dispatcher, "Dispatcher")));
+        this(dispatcher, Clock.system());
+    }
+
+    /**
+     * Creates a transport stage with shared runtime collaborators.
+     *
+     * @param dispatcher shared dispatcher used when an HTTP/2 session must be created
+     * @param clock      runtime time source used for response timing
+     */
+    public HttpTransport(final Dispatcher dispatcher, final Clock clock) {
+        this(chain -> networkCodec(chain, require(dispatcher, "Dispatcher")), clock);
     }
 
     /**
@@ -91,8 +108,19 @@ public final class HttpTransport implements HttpStage {
      * @throws ValidateException if {@code codecs} is {@code null}
      */
     HttpTransport(final Function<HttpChain, HttpCodec> codecs) {
+        this(codecs, Clock.system());
+    }
+
+    /**
+     * Creates a transport stage with a codec factory and explicit time source.
+     *
+     * @param codecs chain-aware codec factory used for each exchange
+     * @param clock  runtime time source
+     */
+    HttpTransport(final Function<HttpChain, HttpCodec> codecs, final Clock clock) {
         this.name = normalizeName("http-transport");
         this.codecs = require(codecs, "HTTP codec factory");
+        this.clock = require(clock, "Clock");
     }
 
     /**
@@ -120,7 +148,7 @@ public final class HttpTransport implements HttpStage {
             } catch (final RuntimeException e) {
                 throw failure(cancellation, HttpChain.FailureScope.REQUEST, e);
             }
-            final long sentRequestAtMillis = System.currentTimeMillis();
+            final long sentRequestAtMillis = clock.millis();
             cancellation.throwIfCancelled();
             final HttpResponse response;
             try {
@@ -130,7 +158,7 @@ public final class HttpTransport implements HttpStage {
             } catch (final RuntimeException e) {
                 throw failure(cancellation, connectionScope(codec), e);
             }
-            final long receivedResponseAtMillis = System.currentTimeMillis();
+            final long receivedResponseAtMillis = clock.millis();
             return response.withTiming(sentRequestAtMillis, receivedResponseAtMillis);
         } finally {
             unregister.run();
@@ -290,9 +318,7 @@ public final class HttpTransport implements HttpStage {
             final HttpChain.FailureScope scope,
             final RuntimeException cause) {
         final HttpChain.FailureReason reason = cancellation.cancelled() ? HttpChain.FailureReason.CANCELLED
-                : cause instanceof org.miaixz.bus.core.lang.exception.ProtocolException
-                        ? HttpChain.FailureReason.PROTOCOL
-                        : HttpChain.FailureReason.IO;
+                : cause instanceof ProtocolException ? HttpChain.FailureReason.PROTOCOL : HttpChain.FailureReason.IO;
         return new HttpChain.ExchangeFailure(HttpChain.DeliveryState.MAYBE_PROCESSED, scope, reason, cause);
     }
 

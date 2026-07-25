@@ -25,18 +25,14 @@ import java.util.function.Consumer;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
+import org.miaixz.bus.fabric.protocol.sse.event.SseEvent;
 import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
 
 /**
- * Immutable execution snapshot for an SSE exchange.
+ * Immutable execution specification for an SSE exchange.
  *
  * @param context         runtime services used by the SSE exchange
  * @param uri             original target URI requested by the caller
@@ -55,13 +51,12 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  * @author Kimi Liu
  * @since Java 21+
  */
-record SseSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
-        SseRetryPolicy retryPolicy, String lastEventId, boolean autoReconnect,
-        BiConsumer<Integer, Headers> responseHandler, GuardRule guard, Filter filter, EventObserver observer,
-        Consumer<SseEvent> handler, Listener<? super SseSession> listener) {
+record SseSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetryPolicy retryPolicy,
+        String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler, GuardRule guard,
+        Filter filter, EventObserver observer, Consumer<SseEvent> handler, Listener<? super SseSession> listener) {
 
     /**
-     * Creates a validated snapshot.
+     * Creates a validated specification.
      *
      * @param context         runtime services used by the exchange
      * @param uri             original target URI
@@ -78,7 +73,7 @@ record SseSnapshot(Context context, URI uri, Address address, Headers headers, T
      * @param handler         application event handler
      * @param listener        session lifecycle listener
      */
-    SseSnapshot {
+    SseSpec {
         context = require(context, "Context");
         uri = require(uri, "Target URI");
         address = require(address, "Address");

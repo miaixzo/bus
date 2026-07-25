@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.http.retry;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.time.Duration;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -234,7 +235,7 @@ public final class HttpRetryPolicy implements Policy {
      */
     private static boolean connectionFailure(final Throwable cause) {
         return cause instanceof SocketException || cause instanceof java.net.SocketException
-                || cause instanceof java.net.ConnectException || cause instanceof IOException;
+                || cause instanceof ConnectException || cause instanceof IOException;
     }
 
     /**

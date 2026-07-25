@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
@@ -40,7 +41,16 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
  */
 public final class ProxyPlan {
 
-    /** Shared immutable direct route. */
+    /**
+     * Typed option for the HTTP proxy plan.
+     * <p>
+     * Absence selects through the system proxy selector; explicit null forces a direct route without consulting it.
+     */
+    public static final Options.Key<ProxyPlan> OPTION = Options.key("http.proxy", ProxyPlan.class);
+
+    /**
+     * Shared immutable direct route.
+     */
     private static final ProxyPlan DIRECT = new ProxyPlan(Type.DIRECT, null, Headers.empty());
 
     /**

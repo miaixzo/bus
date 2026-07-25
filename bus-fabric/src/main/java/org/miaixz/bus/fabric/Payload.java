@@ -49,7 +49,9 @@ public interface Payload {
         return EmptyHolder.EMPTY;
     }
 
-    /** Lazily initialized holder for the shared empty payload. */
+    /**
+     * Lazily initialized holder for the shared empty payload.
+     */
     final class EmptyHolder {
 
         /**
@@ -58,6 +60,7 @@ public interface Payload {
         private static final Payload EMPTY = Payload.owned(ByteString.EMPTY);
 
         private EmptyHolder() {
+            // No initialization required.
         }
     }
 
@@ -205,7 +208,7 @@ public interface Payload {
              */
             @Override
             public byte[] bytes() {
-                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Normal.MEBI_64);
             }
 
             /**
@@ -231,7 +234,7 @@ public interface Payload {
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Normal.MEBI_64);
             }
 
             /**
@@ -330,7 +333,7 @@ public interface Payload {
              */
             @Override
             public byte[] bytes() {
-                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Normal.MEBI_64);
             }
 
             /**
@@ -352,7 +355,7 @@ public interface Payload {
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Normal.MEBI_64);
             }
 
             /**
@@ -400,7 +403,7 @@ public interface Payload {
      * @return payload bytes
      */
     default byte[] bytes() {
-        return materialize(this, Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "Payload.bytes()");
+        return materialize(this, Normal.MEBI_64, "Payload.bytes()");
     }
 
     /**
@@ -420,7 +423,7 @@ public interface Payload {
      * @return payload text
      */
     default String text(final Charset charset) {
-        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Normal.MEBI_64);
     }
 
     /**

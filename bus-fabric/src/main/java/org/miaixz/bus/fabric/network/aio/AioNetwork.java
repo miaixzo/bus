@@ -19,17 +19,6 @@
 */
 package org.miaixz.bus.fabric.network.aio;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -41,12 +30,7 @@ import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
@@ -60,6 +44,18 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.logger.Logger;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Default AIO network adapter for client connections and TCP servers.
@@ -113,7 +109,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param listener optional network-wide lifecycle listener
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
-            final Listener<Object> listener) {
+                       final Listener<Object> listener) {
         this(group, provider, resolver, listener, SocketOptions.defaults());
     }
 
@@ -127,7 +123,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param socketOptions options applied to newly opened sockets, or {@code null} for defaults
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
-            final Listener<Object> listener, final SocketOptions socketOptions) {
+                       final Listener<Object> listener, final SocketOptions socketOptions) {
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
         this.provider = Assert.notNull(provider, () -> new ValidateException("AIO provider must not be null"));
         this.resolver = Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null"));
@@ -135,6 +131,9 @@ public final class AioNetwork implements AutoCloseable {
         this.closed = new AtomicBoolean();
         this.listener = safe(listener);
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
+        if (Logger.isInfoEnabled()) {
+            Logger.info(true, "Fabric", "AIO network initialized: ioThreads={}", this.socketOptions.ioThreads());
+        }
     }
 
     /**
@@ -343,6 +342,15 @@ public final class AioNetwork implements AutoCloseable {
             return CompletableFuture
                     .failedFuture(new SocketException("Unable to resolve host " + checkedAddress.host()));
         }
+        if (Logger.isDebugEnabled()) {
+            Logger.debug(
+                    true,
+                    "Fabric",
+                    "AIO connection race started: host={}, port={}, candidates={}",
+                    checkedAddress.host(),
+                    checkedAddress.port(),
+                    result.addresses().size());
+        }
         final ConnectRace race = new ConnectRace(checkedAddress, checkedTimeout, current, result.addresses());
         race.startPair(Normal._0, null);
         return race.result;
@@ -405,7 +413,18 @@ public final class AioNetwork implements AutoCloseable {
                 failures.add(e);
             }
             if (!failures.isEmpty()) {
+                if (Logger.isErrorEnabled()) {
+                    Logger.error(
+                            false,
+                            "Fabric",
+                            failures.get(0),
+                            "AIO network close failed: failures={}",
+                            failures.size());
+                }
                 throw new InternalException("Unable to close AIO network", failures.get(0));
+            }
+            if (Logger.isInfoEnabled()) {
+                Logger.info(false, "Fabric", "AIO network closed");
             }
         }
     }
@@ -490,7 +509,7 @@ public final class AioNetwork implements AutoCloseable {
          * @param addresses resolved addresses in stable resolver order
          */
         private ConnectRace(final Address address, final Timeout timeout, final Listener<Object> listener,
-                final List<InetAddress> addresses) {
+                            final List<InetAddress> addresses) {
             this.address = address;
             this.timeout = timeout;
             this.listener = listener;
@@ -519,7 +538,7 @@ public final class AioNetwork implements AutoCloseable {
             }
             final int count = Math.min(Normal._2, addresses.size() - index);
             final AtomicInteger remaining = new AtomicInteger(count);
-            final Throwable[] failures = new Throwable[] { previousFailure };
+            final Throwable[] failures = new Throwable[]{previousFailure};
             startAttempt(index, index + count, remaining, failures);
             if (count == Normal._2 && !terminal.get()) {
                 delayed = group.dispatcher().schedule(
@@ -566,10 +585,18 @@ public final class AioNetwork implements AutoCloseable {
                     return;
                 }
                 final Connection connection = new AioConnection(
-                        Destination.of(address.protocol(), address, socketOptions.toOptions()), channel, listener);
+                        Destination.of(address.protocol(), address, socketOptions.options()), channel, listener);
                 if (terminal.compareAndSet(false, true)) {
                     attempts.remove(attempt);
                     cancelRemaining(channel);
+                    if (Logger.isDebugEnabled()) {
+                        Logger.debug(
+                                false,
+                                "Fabric",
+                                "AIO connection race completed: host={}, port={}",
+                                address.host(),
+                                address.port());
+                    }
                     result.complete(connection);
                 } else {
                     closeAttempt(attempt);
@@ -624,6 +651,26 @@ public final class AioNetwork implements AutoCloseable {
                 terminalFailure = new SocketException("Unable to connect to resolved host " + address.host(), root);
             }
             listener.failure(AioNetwork.this, terminalFailure);
+            if (terminalFailure instanceof TimeoutException) {
+                if (Logger.isWarnEnabled()) {
+                    Logger.warn(
+                            false,
+                            "Fabric",
+                            terminalFailure,
+                            "AIO connection timed out: host={}, port={}",
+                            address.host(),
+                            address.port());
+                }
+            } else if (Logger.isErrorEnabled()) {
+                Logger.error(
+                        false,
+                        "Fabric",
+                        terminalFailure,
+                        "AIO connection failed: host={}, port={}, exception={}",
+                        address.host(),
+                        address.port(),
+                        terminalFailure.getClass().getSimpleName());
+            }
             cancelRemaining(null);
             result.completeExceptionally(terminalFailure);
         }
@@ -745,7 +792,7 @@ public final class AioNetwork implements AutoCloseable {
          * @return current lifecycle state
          */
         @Override
-        public Status state() {
+        public State state() {
             return scope.state();
         }
 
@@ -776,7 +823,7 @@ public final class AioNetwork implements AutoCloseable {
          */
         @Override
         public boolean healthy() {
-            return scope.state() == Status.OPENED && aio.opened();
+            return scope.state() == State.RUNNING && aio.opened();
         }
 
         /**

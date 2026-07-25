@@ -19,13 +19,9 @@
 */
 package org.miaixz.bus.fabric;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -37,12 +33,12 @@ import org.miaixz.bus.core.net.Http;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class Headers {
+public final class Headers {
 
     /**
      * Shared immutable empty headers.
      */
-    private static final Headers EMPTY = new Headers(new String[0], false);
+    private static final Headers EMPTY = new Headers(Normal.EMPTY_STRING_ARRAY, false);
 
     /**
      * Header names and values stored as adjacent pairs.
@@ -443,7 +439,7 @@ public class Headers {
             return true;
         }
         return switch (value) {
-            case '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' -> true;
+            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, '`', Symbol.C_OR, Symbol.C_TILDE -> true;
             default -> false;
         };
     }

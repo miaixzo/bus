@@ -30,7 +30,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.protocol.websocket.WebSocketClose;
 
 /**
  * Immutable WebSocket frame payload snapshot.
@@ -61,7 +60,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
         if (control && !fin) {
             throw new ProtocolException("WebSocket control frame must be final");
         }
-        if (control && payload.size() > Builder._125) {
+        if (control && payload.size() > Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES) {
             throw new ProtocolException("WebSocket control payload is too large");
         }
     }
@@ -172,8 +171,7 @@ public record WebSocketFrame(int opcode, boolean fin, ByteString payload, boolea
         final String checked = require(value, "WebSocket text");
         for (int i = Normal._0; i < checked.length(); i++) {
             final char current = checked.charAt(i);
-            if (current < Builder.WEB_SOCKET_FRAME_MIN_TEXT_CODE_POINT && current != Symbol.C_CR
-                    && current != Symbol.C_LF) {
+            if (current < Builder.WEBSOCKET_TEXT_MIN_CODE_POINT && current != Symbol.C_CR && current != Symbol.C_LF) {
                 throw new ValidateException("WebSocket text contains an invalid control character");
             }
         }

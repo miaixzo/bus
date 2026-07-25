@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.sse;
 
+import static org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -34,22 +36,14 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.sse.calls.SseCall;
+import org.miaixz.bus.fabric.protocol.sse.event.SseEvent;
 import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
 
 /**
@@ -61,9 +55,9 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
 public final class SseX {
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final SseSnapshot snapshot;
+    private final SseSpec spec;
 
     /**
      * Execution runner.
@@ -78,16 +72,16 @@ public final class SseX {
     /**
      * Creates an exchange.
      *
-     * @param builder configuration source used to create the immutable exchange snapshot
+     * @param builder configuration source used to create the immutable exchange specification
      */
     private SseX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
-        this.snapshot = new SseSnapshot(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
+        this.spec = new SseSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
                 builder.timeout, builder.retryPolicy, builder.lastEventId, builder.autoReconnect,
                 builder.responseHandler, builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
-        this.runner = new SseRunner(snapshot);
+        this.runner = new SseRunner(spec);
         this.callback = builder.callback;
     }
 
@@ -107,7 +101,7 @@ public final class SseX {
      * @return HTTP or HTTPS protocol derived from the stream address
      */
     public Protocol protocol() {
-        return snapshot.address().protocol();
+        return spec.address().protocol();
     }
 
     /**
@@ -116,7 +110,7 @@ public final class SseX {
      * @return immutable SSE endpoint address
      */
     public Address address() {
-        return snapshot.address();
+        return spec.address();
     }
 
     /**
@@ -134,7 +128,7 @@ public final class SseX {
      * @return immutable SSE request headers
      */
     public Headers headers() {
-        return snapshot.headers();
+        return spec.headers();
     }
 
     /**
@@ -143,7 +137,7 @@ public final class SseX {
      * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
-        return snapshot.timeout();
+        return spec.timeout();
     }
 
     /**
@@ -190,10 +184,10 @@ public final class SseX {
      */
     public Call<SseSession> call() {
         return SseCall.create(
-                snapshot.context().reactor().dispatcher(),
+                spec.context().reactor().dispatcher(),
                 callback,
-                snapshot.observer(),
-                snapshot.timeout(),
+                spec.observer(),
+                spec.timeout(),
                 cancellation -> Mediator.execute(Type.SSE, cancellation, runner::open),
                 dispatchKey());
     }
@@ -384,7 +378,7 @@ public final class SseX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.retryPolicy = SseRetryPolicy.resolve(context.options());
             this.autoReconnect = true;
@@ -650,7 +644,7 @@ public final class SseX {
         }
 
         /**
-         * Builds an exchange snapshot.
+         * Builds an exchange specification.
          *
          * @return immutable SSE exchange built from the current configuration
          */

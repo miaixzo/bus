@@ -27,6 +27,7 @@ import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLSession;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -93,12 +94,12 @@ final class TlsHandshakeDriver {
     /**
      * Negotiated ALPN value cached on stable-session entry, empty when unavailable.
      */
-    private volatile String applicationProtocol = "";
+    private volatile String applicationProtocol = Normal.EMPTY;
 
     /**
      * Negotiated cipher-suite name cached on stable-session entry.
      */
-    private volatile String cipherSuite = "";
+    private volatile String cipherSuite = Normal.EMPTY;
 
     /**
      * Negotiated SSL session, or null before stable-session entry.

@@ -20,12 +20,14 @@
 package org.miaixz.bus.fabric.cache;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.Lifecycle.State;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -45,7 +47,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
 
 /**
  * Disk-backed protocol-neutral cache store using DiskLruCache editor and snapshot storage.
@@ -68,7 +69,7 @@ public final class DiskStore implements CacheStore {
     /**
      * Thread-safe store lifecycle state.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicReference<State> state;
 
     /**
      * Creates a store.
@@ -84,7 +85,7 @@ public final class DiskStore implements CacheStore {
                 Builder.DISK_STORE_VERSION,
                 Normal._2,
                 maxSize);
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.state = new AtomicReference<>(State.RUNNING);
     }
 
     /**
@@ -307,16 +308,16 @@ public final class DiskStore implements CacheStore {
      * Closes and deletes all cache files.
      */
     public synchronized void delete() {
-        final Status current = state.get();
-        if (current == Status.CLOSED) {
+        final State current = state.get();
+        if (current == State.CLOSED) {
             return;
         }
-        state.set(Status.CLOSING);
+        state.set(State.CLOSING);
         try {
             cache.delete();
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
         } catch (final IOException e) {
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
             throw new InternalException("Unable to delete disk cache", e);
         }
     }
@@ -338,19 +339,19 @@ public final class DiskStore implements CacheStore {
      */
     @Override
     public synchronized void close() {
-        final Status current = state.get();
-        if (current == Status.CLOSED) {
+        final State current = state.get();
+        if (current == State.CLOSED) {
             return;
         }
-        if (!current.canTransit(Status.CLOSING)) {
+        if (current != State.RUNNING) {
             throw new StatefulException("Disk cache cannot close from state " + current);
         }
-        state.set(Status.CLOSING);
+        state.set(State.CLOSING);
         try {
             cache.close();
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
         } catch (final IOException e) {
-            state.set(Status.CLOSED);
+            state.set(State.CLOSED);
             throw new InternalException("Unable to close disk cache", e);
         }
     }
@@ -758,7 +759,7 @@ public final class DiskStore implements CacheStore {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
@@ -787,8 +788,8 @@ public final class DiskStore implements CacheStore {
          * @return fully materialized payload text
          */
         @Override
-        public String text(final java.nio.charset.Charset charset) {
-            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        public String text(final Charset charset) {
+            return text(charset, Normal.MEBI_64);
         }
 
         /**
@@ -799,7 +800,7 @@ public final class DiskStore implements CacheStore {
          * @return fully materialized payload text within the threshold
          */
         @Override
-        public String text(final java.nio.charset.Charset charset, final long maxBytes) {
+        public String text(final Charset charset, final long maxBytes) {
             return new String(bytes(maxBytes),
                     Assert.notNull(charset, () -> new ValidateException("Charset must not be null")));
         }

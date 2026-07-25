@@ -19,17 +19,15 @@
 */
 package org.miaixz.bus.fabric.protocol.websocket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -38,30 +36,17 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Lifecycle;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Ingress;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
@@ -79,7 +64,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.lifecycle.ServerRuntime;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
@@ -168,7 +153,7 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Server lifecycle scope.
      */
-    private final LifecycleScope lifecycle;
+    private final ServerRuntime<WebSocketSession> runtime;
 
     /**
      * Server lifecycle coordination lock.
@@ -183,8 +168,6 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Terminal shutdown guard.
      */
-    private final AtomicBoolean shuttingDown;
-
     /**
      * Listening server channel.
      */
@@ -198,8 +181,6 @@ public final class WebSocketServer implements Lifecycle {
     /**
      * Sessions registered only after successful HTTP upgrade.
      */
-    private final Queue<WebSocketSession> sessions;
-
     /**
      * Accepted transports, including TLS and HTTP handshakes still in progress.
      */
@@ -209,11 +190,6 @@ public final class WebSocketServer implements Lifecycle {
      * Raw channels still being inspected for an optional PROXY header.
      */
     private final Queue<SocketChannel> acceptedChannels;
-
-    /**
-     * Accepted setup and accept-loop handles.
-     */
-    private final Queue<DispatchHandle> handles;
 
     /**
      * Creates a WebSocket server from one validated builder snapshot.
@@ -237,14 +213,11 @@ public final class WebSocketServer implements Lifecycle {
         this.listener = builder.listener;
         this.sessionListener = builder.sessionListener();
         this.dispatcher = context.reactor().dispatcher();
-        this.lifecycle = LifecycleScope.resource(this, "websocket-server", listener, observer);
+        this.runtime = ServerRuntime.create(this, "websocket-server", listener, observer);
         this.lifecycleLock = new Object();
         this.started = new AtomicBoolean();
-        this.shuttingDown = new AtomicBoolean();
-        this.sessions = new ConcurrentLinkedQueue<>();
         this.transports = new ConcurrentLinkedQueue<>();
         this.acceptedChannels = new ConcurrentLinkedQueue<>();
-        this.handles = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -264,10 +237,10 @@ public final class WebSocketServer implements Lifecycle {
      */
     public WebSocketServer start() {
         synchronized (lifecycleLock) {
-            if (running()) {
+            if (active()) {
                 return this;
             }
-            if (shuttingDown.get() || lifecycle.state().terminal()) {
+            if (runtime.shuttingDown() || runtime.state().terminal()) {
                 throw new StatefulException("WebSocket server is already closed");
             }
             if (!started.compareAndSet(false, true)) {
@@ -278,25 +251,23 @@ public final class WebSocketServer implements Lifecycle {
                 opened = ServerSocketChannel.open();
                 opened.bind(new InetSocketAddress(address.host(), address.port()), socketOptions.backlog());
                 serverChannel = opened;
-                lifecycle.open(this);
+                runtime.open(this);
                 acceptHandle = track(
                         dispatcher.background(
-                                org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
+                                WEBSOCKET_ACTIVITY_ACCEPT,
                                 this,
-                                Activity.of(
-                                        org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
-                                        this::acceptLoop)));
+                                Activity.of(WEBSOCKET_ACTIVITY_ACCEPT, this::acceptLoop)));
                 return this;
             } catch (final IOException e) {
                 closeServerChannel(opened);
                 serverChannel = null;
                 final SocketException failure = new SocketException("Unable to start WebSocket server", e);
-                lifecycle.fail(failure);
+                runtime.fail(failure);
                 throw failure;
             } catch (final RuntimeException e) {
                 closeServerChannel(opened);
                 serverChannel = null;
-                lifecycle.fail(e);
+                runtime.fail(e);
                 throw e;
             }
         }
@@ -335,8 +306,8 @@ public final class WebSocketServer implements Lifecycle {
      * @return current server lifecycle state
      */
     @Override
-    public Status state() {
-        return lifecycle.state();
+    public State state() {
+        return runtime.state();
     }
 
     /**
@@ -345,9 +316,9 @@ public final class WebSocketServer implements Lifecycle {
      * @return true when running
      */
     @Override
-    public boolean running() {
+    public boolean active() {
         final ServerSocketChannel current = serverChannel;
-        return !shuttingDown.get() && lifecycle.state() == Status.OPENED && current != null && current.isOpen();
+        return !runtime.shuttingDown() && runtime.state() == State.RUNNING && current != null && current.isOpen();
     }
 
     /**
@@ -365,11 +336,7 @@ public final class WebSocketServer implements Lifecycle {
      * @return immutable observer and socket-option attributes exposed by the server
      */
     public Map<String, Object> attributes() {
-        return Map.of(
-                org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER,
-                observer,
-                org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS,
-                socketOptions);
+        return Map.of(ATTRIBUTE_OBSERVER, observer, ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
     }
 
     /**
@@ -377,13 +344,13 @@ public final class WebSocketServer implements Lifecycle {
      */
     private void acceptLoop() {
         try {
-            while (!shuttingDown.get()) {
+            while (!runtime.shuttingDown()) {
                 final ServerSocketChannel current = serverChannel;
                 if (current == null || !current.isOpen()) {
                     return;
                 }
                 final SocketChannel channel = current.accept();
-                if (shuttingDown.get()) {
+                if (runtime.shuttingDown()) {
                     closeAcceptedChannel(channel);
                     return;
                 }
@@ -391,11 +358,9 @@ public final class WebSocketServer implements Lifecycle {
                 try {
                     track(
                             dispatcher.background(
-                                    org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
+                                    WEBSOCKET_ACTIVITY_ACCEPT,
                                     channel,
-                                    Activity.of(
-                                            org.miaixz.bus.fabric.Builder.WEBSOCKET_ACTIVITY_ACCEPT,
-                                            () -> handleAccepted(channel))));
+                                    Activity.of(WEBSOCKET_ACTIVITY_ACCEPT, () -> handleAccepted(channel))));
                 } catch (final RuntimeException e) {
                     acceptedChannels.remove(channel);
                     closeAcceptedChannel(channel);
@@ -403,11 +368,11 @@ public final class WebSocketServer implements Lifecycle {
                 }
             }
         } catch (final IOException e) {
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 failServer(new SocketException("WebSocket server accept failed", e));
             }
         } catch (final RuntimeException e) {
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 failServer(e);
             }
         }
@@ -423,11 +388,11 @@ public final class WebSocketServer implements Lifecycle {
         WebSocketSession session = null;
         boolean transferred = false;
         try {
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 return;
             }
             final ProxyHeaderReader.Result proxy = ProxyHeaderReader.read(channel);
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 return;
             }
             final Address peerAddress = peerAddress(channel, proxy.header());
@@ -435,7 +400,7 @@ public final class WebSocketServer implements Lifecycle {
             transport = new AcceptedTransport(channel, ingress);
             transports.add(transport);
             acceptedChannels.remove(channel);
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 transport.close();
                 return;
             }
@@ -459,7 +424,7 @@ public final class WebSocketServer implements Lifecycle {
                         responseHeaders,
                         headers -> validateOpening(peerAddress, headers));
             }
-            if (shuttingDown.get()) {
+            if (runtime.shuttingDown()) {
                 transport.close();
                 return;
             }
@@ -468,8 +433,8 @@ public final class WebSocketServer implements Lifecycle {
                     timeout, dispatchKey(peerAddress), guard, WebSocketRole.SERVER,
                     sessionAttributes(upgrade.requestHeaders(), proxy.header()), transport, sessionFilter, observer,
                     registryListener(transport), Cancellation.create());
-            if (shuttingDown.get()) {
-                session.close(org.miaixz.bus.fabric.Builder._1001, "Server shutting down");
+            if (runtime.shuttingDown()) {
+                session.close(WEBSOCKET_CLOSE_GOING_AWAY_CODE, "Server shutting down");
                 return;
             }
             transferred = true;
@@ -479,7 +444,7 @@ public final class WebSocketServer implements Lifecycle {
             if (session != null) {
                 session.cancel();
             }
-            if (!shuttingDown.get()) {
+            if (!runtime.shuttingDown()) {
                 notifySetupFailure(e);
             }
         } finally {
@@ -500,12 +465,7 @@ public final class WebSocketServer implements Lifecycle {
      * @param headers     request headers
      */
     private void validateOpening(final Address peerAddress, final Headers headers) {
-        Message opening = Message.of(
-                peerAddress.protocol(),
-                peerAddress,
-                headers,
-                Payload.empty(),
-                org.miaixz.bus.fabric.Builder.WEBSOCKET_OPEN);
+        Message opening = Message.of(peerAddress.protocol(), peerAddress, headers, Payload.empty(), WEBSOCKET_OPEN);
         opening = FilterChain.apply(opening, context.filter(), filter);
         if (guard != null) {
             guard.check(opening).throwIfRejected();
@@ -528,7 +488,7 @@ public final class WebSocketServer implements Lifecycle {
              */
             @Override
             public void open(final WebSocketSession source) {
-                sessions.add(source);
+                runtime.register(source);
                 notifySessionOpen(source);
             }
 
@@ -561,7 +521,7 @@ public final class WebSocketServer implements Lifecycle {
              * @param source terminal session
              */
             private void remove(final WebSocketSession source) {
-                sessions.remove(source);
+                runtime.remove(source);
                 transports.remove(transport);
             }
         };
@@ -574,20 +534,14 @@ public final class WebSocketServer implements Lifecycle {
      * @return the same handle after registration
      */
     private DispatchHandle track(final DispatchHandle handle) {
-        handles.add(handle);
-        handle.future().whenComplete((ignored, cause) -> handles.remove(handle));
-        return handle;
+        return runtime.track(handle);
     }
 
     /**
      * Cancels and clears all tracked handles.
      */
     private void cancelHandles() {
-        DispatchHandle handle = handles.poll();
-        while (handle != null) {
-            handle.cancel();
-            handle = handles.poll();
-        }
+        runtime.cancelTasks();
     }
 
     /**
@@ -597,10 +551,9 @@ public final class WebSocketServer implements Lifecycle {
      * @return true when lifecycle changed
      */
     private boolean shutdown(final boolean graceful) {
-        if (!shuttingDown.compareAndSet(false, true)) {
+        if (!runtime.beginShutdown()) {
             return false;
         }
-        lifecycle.closing();
         RuntimeException failure = stopAccept(null);
         failure = terminateSessions(graceful, failure);
         if (graceful) {
@@ -609,14 +562,14 @@ public final class WebSocketServer implements Lifecycle {
         failure = forceClose(failure);
         if (graceful) {
             if (failure == null) {
-                return lifecycle.close(this);
+                return runtime.close(this);
             }
-            lifecycle.fail(failure);
+            runtime.fail(failure);
             throw failure;
         }
-        final boolean changed = lifecycle.cancel();
+        final boolean changed = runtime.cancel();
         if (failure != null) {
-            lifecycle.emit(ObservationMarker.WEBSOCKET_FAILED, failure);
+            runtime.emit(ObservationMarker.WEBSOCKET_FAILED, failure);
         }
         return changed;
     }
@@ -659,10 +612,10 @@ public final class WebSocketServer implements Lifecycle {
      */
     private RuntimeException terminateSessions(final boolean graceful, final RuntimeException failure) {
         RuntimeException currentFailure = failure;
-        for (final WebSocketSession session : new ArrayList<>(sessions)) {
+        for (final WebSocketSession session : runtime.sessions()) {
             try {
                 if (graceful) {
-                    session.close(org.miaixz.bus.fabric.Builder._1001, "Server shutting down");
+                    session.close(WEBSOCKET_CLOSE_GOING_AWAY_CODE, "Server shutting down");
                 } else {
                     session.cancel();
                 }
@@ -693,7 +646,7 @@ public final class WebSocketServer implements Lifecycle {
      * @return true when resources remain
      */
     private boolean hasAcceptedResources() {
-        return !sessions.isEmpty() || !transports.isEmpty() || !acceptedChannels.isEmpty();
+        return runtime.hasSessions() || !transports.isEmpty() || !acceptedChannels.isEmpty();
     }
 
     /**
@@ -720,7 +673,7 @@ public final class WebSocketServer implements Lifecycle {
                 currentFailure = append(currentFailure, new SocketException("Unable to close accepted channel", e));
             }
         }
-        sessions.clear();
+        runtime.clearSessions();
         transports.clear();
         acceptedChannels.clear();
         return currentFailure;
@@ -732,13 +685,13 @@ public final class WebSocketServer implements Lifecycle {
      * @param cause accept-loop failure
      */
     private void failServer(final RuntimeException cause) {
-        if (!shuttingDown.compareAndSet(false, true)) {
+        if (!runtime.beginShutdown()) {
             return;
         }
         RuntimeException failure = stopAccept(cause);
         failure = terminateSessions(false, failure);
         failure = forceClose(failure);
-        lifecycle.fail(failure);
+        runtime.fail(failure);
     }
 
     /**
@@ -770,11 +723,11 @@ public final class WebSocketServer implements Lifecycle {
      */
     private Map<String, Object> sessionAttributes(final Headers headers, final ProxyHeader proxyHeader) {
         final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
-        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_HEADERS, headers);
-        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_OBSERVER, observer);
-        values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
+        values.put(ATTRIBUTE_HEADERS, headers);
+        values.put(ATTRIBUTE_OBSERVER, observer);
+        values.put(ATTRIBUTE_SOCKET_OPTIONS, socketOptions);
         if (proxyHeader != null) {
-            values.put(org.miaixz.bus.fabric.Builder.ATTRIBUTE_PROXY_HEADER, proxyHeader);
+            values.put(ATTRIBUTE_PROXY_HEADER, proxyHeader);
         }
         return Map.copyOf(values);
     }
@@ -823,7 +776,7 @@ public final class WebSocketServer implements Lifecycle {
         try {
             sessionListener.open(session);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -836,7 +789,7 @@ public final class WebSocketServer implements Lifecycle {
         try {
             sessionListener.close(session);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -850,7 +803,7 @@ public final class WebSocketServer implements Lifecycle {
         try {
             sessionListener.failure(session, cause);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -860,11 +813,11 @@ public final class WebSocketServer implements Lifecycle {
      * @param cause setup failure
      */
     private void notifySetupFailure(final Throwable cause) {
-        lifecycle.emit(ObservationMarker.WEBSOCKET_FAILED, cause);
+        runtime.emit(ObservationMarker.WEBSOCKET_FAILED, cause);
         try {
             sessionListener.failure(null, cause);
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.LISTENER_FAILED, e);
+            runtime.emit(ObservationMarker.LISTENER_FAILED, e);
         }
     }
 
@@ -877,7 +830,7 @@ public final class WebSocketServer implements Lifecycle {
         try {
             transport.close();
         } catch (final RuntimeException e) {
-            lifecycle.emit(ObservationMarker.WEBSOCKET_FAILED, e);
+            runtime.emit(ObservationMarker.WEBSOCKET_FAILED, e);
         }
     }
 
@@ -893,7 +846,7 @@ public final class WebSocketServer implements Lifecycle {
         try {
             channel.close();
         } catch (final IOException e) {
-            lifecycle.emit(
+            runtime.emit(
                     ObservationMarker.WEBSOCKET_FAILED,
                     new SocketException("Unable to close accepted WebSocket channel", e));
         }

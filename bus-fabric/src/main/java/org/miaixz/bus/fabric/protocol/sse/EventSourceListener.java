@@ -33,7 +33,7 @@ public abstract class EventSourceListener {
      * Creates an event source listener adapter.
      */
     public EventSourceListener() {
-        // Listener adapter.
+        // No initialization required.
     }
 
     /**

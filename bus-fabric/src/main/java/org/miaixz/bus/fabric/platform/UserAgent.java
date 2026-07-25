@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.fabric.protocol.http.agent;
+package org.miaixz.bus.fabric.platform;
 
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -45,14 +45,14 @@ public final class UserAgent {
     private final Device device;
 
     /**
-     * First matching client operating-system classifier or the shared unknown classifier.
+     * First matching operating-system family or the shared unknown family.
      */
-    private final ClientOs clientOs;
+    private final OsFamily osFamily;
 
     /**
      * First matching rendering-engine classifier or the shared unknown classifier.
      */
-    private final Engine engine;
+    private final EngineClassifier engine;
 
     /**
      * Optional first capture extracted by the browser's version rule.
@@ -67,7 +67,7 @@ public final class UserAgent {
     /**
      * Optional first capture extracted by the operating system's version rule.
      */
-    private final String clientOsVersion;
+    private final String osVersion;
 
     /**
      * Derived mobile classification after the macOS exclusion is applied.
@@ -77,27 +77,27 @@ public final class UserAgent {
     /**
      * Creates a fully parsed User-Agent snapshot.
      *
-     * @param value           original non-blank User-Agent text
-     * @param browser         selected browser classifier
-     * @param device          selected device classifier
-     * @param clientOs        selected client operating-system classifier
-     * @param engine          selected rendering-engine classifier
-     * @param browserVersion  extracted browser version, or {@code null}
-     * @param engineVersion   extracted engine version, or {@code null}
-     * @param clientOsVersion extracted operating-system version, or {@code null}
-     * @param mobile          derived mobile classification
+     * @param value          original non-blank User-Agent text
+     * @param browser        selected browser classifier
+     * @param device         selected device classifier
+     * @param osFamily       selected operating-system family
+     * @param engine         selected rendering-engine classifier
+     * @param browserVersion extracted browser version, or {@code null}
+     * @param engineVersion  extracted engine version, or {@code null}
+     * @param osVersion      extracted operating-system version, or {@code null}
+     * @param mobile         derived mobile classification
      */
-    private UserAgent(final String value, final Browser browser, final Device device, final ClientOs clientOs,
-            final Engine engine, final String browserVersion, final String engineVersion, final String clientOsVersion,
-            final boolean mobile) {
+    private UserAgent(final String value, final Browser browser, final Device device, final OsFamily osFamily,
+            final EngineClassifier engine, final String browserVersion, final String engineVersion,
+            final String osVersion, final boolean mobile) {
         this.value = value;
         this.browser = browser;
         this.device = device;
-        this.clientOs = clientOs;
+        this.osFamily = osFamily;
         this.engine = engine;
         this.browserVersion = browserVersion;
         this.engineVersion = engineVersion;
-        this.clientOsVersion = clientOsVersion;
+        this.osVersion = osVersion;
         this.mobile = mobile;
     }
 
@@ -112,12 +112,12 @@ public final class UserAgent {
             return null;
         }
         final Browser browser = Browser.parse(text);
-        final Engine engine = Engine.parse(text);
-        final ClientOs clientOs = ClientOs.parse(text);
+        final EngineClassifier engine = EngineClassifier.parse(text);
+        final OsFamily osFamily = OsFamily.parse(text);
         final Device device = Device.parse(text);
-        final boolean mobile = (device.mobile() || browser.mobile()) && !clientOs.macOS();
-        return new UserAgent(text, browser, device, clientOs, engine, browser.version(text), engine.version(text),
-                clientOs.version(text), mobile);
+        final boolean mobile = (device.mobile() || browser.mobile()) && !osFamily.macOS();
+        return new UserAgent(text, browser, device, osFamily, engine, browser.version(text), engine.version(text),
+                osFamily.version(text), mobile);
     }
 
     /**
@@ -148,12 +148,12 @@ public final class UserAgent {
     }
 
     /**
-     * Returns the client OS.
+     * Returns the operating-system family.
      *
-     * @return selected client operating-system classifier, possibly the shared unknown classifier
+     * @return selected operating-system family, possibly the shared unknown family
      */
-    public ClientOs clientOs() {
-        return clientOs;
+    public OsFamily osFamily() {
+        return osFamily;
     }
 
     /**
@@ -161,7 +161,7 @@ public final class UserAgent {
      *
      * @return selected rendering-engine classifier, possibly the shared unknown classifier
      */
-    public Engine engine() {
+    public EngineClassifier engine() {
         return engine;
     }
 
@@ -193,12 +193,12 @@ public final class UserAgent {
     }
 
     /**
-     * Returns the client OS version.
+     * Returns the operating-system version.
      *
-     * @return extracted client operating-system version, or {@code null} when unavailable
+     * @return extracted operating-system version, or {@code null} when unavailable
      */
-    public String clientOsVersion() {
-        return clientOsVersion;
+    public String osVersion() {
+        return osVersion;
     }
 
     /**

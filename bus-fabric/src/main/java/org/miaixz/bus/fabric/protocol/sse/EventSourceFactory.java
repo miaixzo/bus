@@ -25,17 +25,13 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -266,7 +262,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
         /**
          * Factory removal hook.
          */
-        private final java.util.function.Consumer<EventSource> onClose;
+        private final Consumer<EventSource> onClose;
 
         /**
          * Response metadata.
@@ -302,7 +298,7 @@ public final class EventSourceFactory implements EventSource.Factory, AutoClosea
          * @param onClose  factory removal hook
          */
         private DefaultEventSource(final Context context, final HttpRequest request, final EventSourceListener listener,
-                final java.util.function.Consumer<EventSource> onClose) {
+                final Consumer<EventSource> onClose) {
             this.context = require(context, "Context");
             this.request = require(request, "Request");
             this.listener = require(listener, "Listener");

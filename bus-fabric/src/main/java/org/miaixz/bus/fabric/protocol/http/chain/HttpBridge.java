@@ -66,7 +66,9 @@ public final class HttpBridge implements HttpStage {
      */
     private final String userAgent;
 
-    /** Most recent cookie-free prepared request shape and its immutable prepared result. */
+    /**
+     * Most recent cookie-free prepared request shape and its immutable prepared result.
+     */
     private volatile PreparedRequest preparedRequest;
 
     /**
@@ -106,7 +108,7 @@ public final class HttpBridge implements HttpStage {
     public static String defaultUserAgent() {
         final Package source = HttpBridge.class.getPackage();
         final String version = source == null ? null : source.getImplementationVersion();
-        return version == null || version.isBlank() ? Keys.BUS : Keys.BUS + "/" + version;
+        return version == null || version.isBlank() ? Keys.BUS : Keys.BUS + Symbol.SLASH + version;
     }
 
     /**
@@ -194,7 +196,9 @@ public final class HttpBridge implements HttpStage {
      */
     private record PreparedRequest(HttpRequest source, HttpRequest prepared) {
 
-        /** Returns whether a request is value-identical for all fields changed or observed by this bridge. */
+        /**
+         * Returns whether a request is value-identical for all fields changed or observed by this bridge.
+         */
         private boolean matches(final HttpRequest candidate) {
             return source.method() == candidate.method() && source.url().toString().equals(candidate.url().toString())
                     && source.bodyLength() == Normal._0 && candidate.bodyLength() == Normal._0
@@ -202,7 +206,9 @@ public final class HttpBridge implements HttpStage {
                     && candidate.tag() == null && sameHeaders(source.headers(), candidate.headers());
         }
 
-        /** Compares ordered header pairs without materializing map views. */
+        /**
+         * Compares ordered header pairs without materializing map views.
+         */
         private static boolean sameHeaders(final Headers left, final Headers right) {
             final int size = left.size();
             if (size != right.size()) {
@@ -216,7 +222,9 @@ public final class HttpBridge implements HttpStage {
             return true;
         }
 
-        /** Compares timeout values because Timeout intentionally has identity equality. */
+        /**
+         * Compares timeout values because Timeout intentionally has identity equality.
+         */
         private static boolean sameTimeout(final Timeout left, final Timeout right) {
             return left.connect().equals(right.connect()) && left.read().equals(right.read())
                     && left.write().equals(right.write()) && left.call().equals(right.call())

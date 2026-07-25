@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -91,7 +94,7 @@ public final class SoapBody implements RequestBody {
         this.params = Collections.unmodifiableMap(
                 new LinkedHashMap<>(
                         Assert.notNull(params, () -> new ValidateException("SOAP params must not be null"))));
-        this.charset = charset == null ? org.miaixz.bus.core.lang.Charset.UTF_8 : charset;
+        this.charset = charset == null ? UTF_8 : charset;
         this.action = optionalLine(action, "SOAPAction");
     }
 
@@ -121,25 +124,24 @@ public final class SoapBody implements RequestBody {
     public String xml() {
         final StringBuilder builder = new StringBuilder(256);
         builder.append("<?xml version=\"1.0\" encoding=\"").append(charset.name()).append("\"?>");
-        builder.append('<').append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:")
-                .append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append("=\"")
-                .append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_NAMESPACE).append('"');
+        builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:").append(SOAP_BODY_SOAP_PREFIX)
+                .append("=\"").append(SOAP_BODY_SOAP_NAMESPACE).append('"');
         if (!namespace.isBlank()) {
-            builder.append(" xmlns:").append(org.miaixz.bus.fabric.Builder.SOAP_METHOD_PREFIX).append("=\"")
-                    .append(escapeAttribute(namespace)).append('"');
+            builder.append(" xmlns:").append(SOAP_METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
+                    .append('"');
         }
         builder.append('>');
         if (!headers.isEmpty()) {
-            builder.append('<').append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append(":Header>");
+            builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
             appendElements(builder, headers);
-            builder.append("</").append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append(":Header>");
+            builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Header>");
         }
-        builder.append('<').append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append(":Body>");
+        builder.append('<').append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
         appendOpen(builder, method, !namespace.isBlank());
         appendElements(builder, params);
         appendClose(builder, method, !namespace.isBlank());
-        builder.append("</").append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append(":Body>");
-        builder.append("</").append(org.miaixz.bus.fabric.Builder.SOAP_BODY_SOAP_PREFIX).append(":Envelope>");
+        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Body>");
+        builder.append("</").append(SOAP_BODY_SOAP_PREFIX).append(":Envelope>");
         return builder.toString();
     }
 
@@ -206,7 +208,7 @@ public final class SoapBody implements RequestBody {
     private static void appendOpen(final StringBuilder builder, final String name, final boolean method) {
         builder.append('<');
         if (method) {
-            builder.append(org.miaixz.bus.fabric.Builder.SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
+            builder.append(SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
         }
         builder.append(name).append('>');
     }
@@ -221,7 +223,7 @@ public final class SoapBody implements RequestBody {
     private static void appendClose(final StringBuilder builder, final String name, final boolean method) {
         builder.append("</");
         if (method) {
-            builder.append(org.miaixz.bus.fabric.Builder.SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
+            builder.append(SOAP_METHOD_PREFIX).append(Symbol.C_COLON);
         }
         builder.append(name).append('>');
     }
@@ -243,7 +245,8 @@ public final class SoapBody implements RequestBody {
      * @return escaped text
      */
     private static String escapeAttribute(final String value) {
-        return escapeText(value).replace("\"", "&quot;").replace("'", "&apos;");
+        return escapeText(value).replace(Symbol.DOUBLE_QUOTES, Symbol.HTML_QUOTE)
+                .replace(Symbol.SINGLE_QUOTE, Symbol.HTML_APOS);
     }
 
     /**
@@ -327,7 +330,7 @@ public final class SoapBody implements RequestBody {
         /**
          * XML character encoding candidate.
          */
-        private Charset charset = org.miaixz.bus.core.lang.Charset.UTF_8;
+        private Charset charset = UTF_8;
 
         /**
          * Optional explicit SOAPAction candidate.
@@ -407,7 +410,7 @@ public final class SoapBody implements RequestBody {
          * @return this builder
          */
         public Builder charset(final Charset charset) {
-            this.charset = charset == null ? org.miaixz.bus.core.lang.Charset.UTF_8 : charset;
+            this.charset = charset == null ? UTF_8 : charset;
             return this;
         }
 

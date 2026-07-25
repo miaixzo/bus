@@ -26,7 +26,7 @@ import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
 /**
- * Immutable execution snapshot for an HTTP exchange.
+ * Immutable execution specification for an HTTP exchange.
  *
  * @param context  runtime services used by the exchange
  * @param request  immutable HTTP request to execute
@@ -36,10 +36,10 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @author Kimi Liu
  * @since Java 21+
  */
-record HttpSnapshot(Context context, HttpRequest request, EventObserver observer, Filter filter, GuardRule guard) {
+record HttpSpec(Context context, HttpRequest request, EventObserver observer, Filter filter, GuardRule guard) {
 
     /**
-     * Creates a validated snapshot.
+     * Creates a validated specification.
      *
      * @param context  runtime services used by the exchange
      * @param request  non-null immutable HTTP request
@@ -47,7 +47,7 @@ record HttpSnapshot(Context context, HttpRequest request, EventObserver observer
      * @param filter   optional message filter, preserved without validation
      * @param guard    optional request guard, preserved without validation
      */
-    HttpSnapshot {
+    HttpSpec {
         context = require(context, "Context");
         request = require(request, "HTTP request");
         observer = EventObserver.safe(require(observer, "Observer"));

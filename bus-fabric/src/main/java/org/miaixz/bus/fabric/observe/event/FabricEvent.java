@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.observe.event;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -114,7 +116,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
      */
     private static String result(final ObservationMarker marker) {
         if (marker.failure()) {
-            return org.miaixz.bus.fabric.Builder.METER_EVENT_OBSERVER_FAILURE;
+            return METER_EVENT_OBSERVER_FAILURE;
         }
         return marker.terminal() ? "success" : "active";
     }
@@ -157,11 +159,11 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
             this.marker = marker;
             this.clock = clock;
             this.tags = new LinkedHashMap<>();
-            tag(org.miaixz.bus.fabric.Builder.TAG_MODULE, module(marker));
-            tag(org.miaixz.bus.fabric.Builder.TAG_PROTOCOL, module(marker));
-            tag(org.miaixz.bus.fabric.Builder.TAG_PHASE, phase(marker));
-            tag(org.miaixz.bus.fabric.Builder.TAG_RESULT, result(marker));
-            tag(org.miaixz.bus.fabric.Builder.TAG_OPERATION_ID, ID.objectId());
+            tag(TAG_MODULE, module(marker));
+            tag(TAG_PROTOCOL, module(marker));
+            tag(TAG_PHASE, phase(marker));
+            tag(TAG_RESULT, result(marker));
+            tag(TAG_OPERATION_ID, ID.objectId());
         }
 
         /**
@@ -196,7 +198,7 @@ public record FabricEvent(ObservationMarker marker, Instant time, Tags tags, Thr
          */
         public FabricEvent build() {
             if (cause != null) {
-                tags.putIfAbsent(org.miaixz.bus.fabric.Builder.TAG_EXCEPTION, cause.getClass().getName());
+                tags.putIfAbsent(TAG_EXCEPTION, cause.getClass().getName());
             }
             return new FabricEvent(marker, clock.now(), Tags.of(tags), cause);
         }

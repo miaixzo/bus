@@ -20,13 +20,7 @@
 package org.miaixz.bus.fabric.network.kcp;
 
 import java.time.Duration;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -538,7 +532,7 @@ public final class KcpNetwork implements AutoCloseable {
      * @throws ProtocolException if the datagram encoding is malformed
      */
     public KcpPacket unpack(final Payload payload) {
-        return unpack(payload, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return unpack(payload, Normal.MEBI_64);
     }
 
     /**
@@ -926,7 +920,7 @@ public final class KcpNetwork implements AutoCloseable {
         public List<byte[]> payloadArrays() {
             final ArrayList<byte[]> values = new ArrayList<>(delivered.size());
             for (final Payload payload : delivered) {
-                values.add(payload.bytes(Builder.KCP_NETWORK_MAX_MESSAGE_BYTES));
+                values.add(payload.bytes(Builder.BYTES_16_MIB));
             }
             return List.copyOf(values);
         }

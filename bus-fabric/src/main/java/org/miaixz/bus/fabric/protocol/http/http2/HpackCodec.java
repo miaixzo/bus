@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.fabric.Headers;
 
 /**
  * Compatibility facade over direction-private HPACK encoder and decoder state.
@@ -111,7 +112,7 @@ public final class HpackCodec {
             final String scheme,
             final String authority,
             final String path,
-            final org.miaixz.bus.fabric.Headers headers,
+            final Headers headers,
             final Buffer target) {
         encoder.encodeRequest(method, scheme, authority, path, headers, target);
     }

@@ -67,7 +67,7 @@ public final class Http2Reader implements AutoCloseable {
     /**
      * Current peer-advertised maximum frame payload size in bytes.
      */
-    private int maxFrameSize = Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE;
+    private int maxFrameSize = Normal._16384;
 
     /**
      * Whether the reader has released its borrowed source and rejects further parsing.
@@ -214,7 +214,7 @@ public final class Http2Reader implements AutoCloseable {
      * @return reusable holder populated with the next frame's decoded header fields
      */
     private FrameHeader readHeader() {
-        ensureAvailable(Builder.HTTP2_FRAME_HEADER_BYTES);
+        ensureAvailable(Normal._9);
         final int length = readMedium(input);
         final int type = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
         final int flags = input.readByte() & Builder.UNSIGNED_BYTE_MASK;
@@ -235,8 +235,7 @@ public final class Http2Reader implements AutoCloseable {
             // Read ahead enough for a frame header plus a useful part of its payload. Requesting only the missing
             // nine header bytes forced a second transport/TLS read for virtually every frame.
             final long missing = length - input.size();
-            final long remaining = Math
-                    .min(Math.max(missing, Normal._8192), (long) maxFrameSize + Builder.HTTP2_FRAME_HEADER_BYTES);
+            final long remaining = Math.min(Math.max(missing, Normal._8192), (long) maxFrameSize + Normal._9);
             final long read;
             try {
                 read = source.read(input, remaining);
@@ -513,7 +512,7 @@ public final class Http2Reader implements AutoCloseable {
      * @throws ValidateException if the limit is outside the HTTP/2 range {@code 16384..16777215}
      */
     void maxFrameSize(final int size) {
-        if (size < Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE || size > Builder.BYTES_16_MIB - Normal._1) {
+        if (size < Normal._16384 || size > Builder.BYTES_16_MIB - Normal._1) {
             throw new ValidateException("HTTP/2 max frame size is out of range");
         }
         maxFrameSize = size;

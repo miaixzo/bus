@@ -25,6 +25,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+
 import org.miaixz.bus.fabric.Builder;
 
 /**
@@ -294,7 +295,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
                     fragmentCount,
                     payload);
         }
-        if (datagram.length >= Builder.KCP_PACKET_LEGACY_HEADER_BYTES) {
+        if (datagram.length >= Long.BYTES) {
             final Buffer buffer = new Buffer().write(datagram);
             final long sequence = buffer.readLong();
             final ByteString payload = buffer.readByteString();
@@ -319,7 +320,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      * @return header bytes
      */
     public static int headerBytes() {
-        return Builder.KCP_PACKET_HEADER_BYTES;
+        return Builder.KCP_PACKET_V1_HEADER_BYTES;
     }
 
     /**
@@ -337,7 +338,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      * @return max payload bytes
      */
     public static int maxPayloadBytes() {
-        return Builder.KCP_PACKET_MAX_PAYLOAD;
+        return Builder.KCP_PACKET_V1_MAX_PAYLOAD;
     }
 
     /**
@@ -431,7 +432,7 @@ public record KcpPacket(int version, Type type, long sequence, long acknowledgem
      */
     private static int maxPayloadBytes(final int version) {
         return switch (version) {
-            case Normal._0 -> maxDatagramBytes() - Builder.KCP_PACKET_LEGACY_HEADER_BYTES;
+            case Normal._0 -> maxDatagramBytes() - Long.BYTES;
             case Normal._1 -> Builder.KCP_PACKET_V1_MAX_PAYLOAD;
             case Normal._2 -> Builder.KCP_PACKET_V2_MAX_PAYLOAD;
             default -> throw new ValidateException("Unsupported KCP version");

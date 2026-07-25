@@ -52,17 +52,12 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 public record Timeout(Duration connect, Duration read, Duration write, Duration call, Duration ping, Duration close) {
 
     /**
-     * Typed option for the shared protocol timeout policy.
-     */
-    public static final Options.Key<Timeout> OPTION = Options.key("timeout", Timeout.class);
-
-    /**
      * Shared immutable default time policy.
      */
     private static final Timeout DEFAULTS = new Timeout(org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
             org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK,
             org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_NETWORK, Duration.ZERO, Duration.ZERO,
-            org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE);
+            org.miaixz.bus.fabric.Builder.DURATION_60_SECONDS);
 
     /**
      * Creates a validated immutable time policy.
@@ -84,20 +79,6 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     }
 
     /**
-     * Creates a compatibility policy whose close deadline is fixed at sixty seconds.
-     *
-     * @param connect TCP, TLS, and HTTP-family connection establishment deadline
-     * @param read    HTTP, Socket, WebSocket, SSE, STOMP, and TLS read deadline
-     * @param write   HTTP, Socket, WebSocket, SSE, STOMP, and TLS write deadline
-     * @param call    complete protocol Call deadline
-     * @param ping    WebSocket and Socket keep-alive interval
-     */
-    public Timeout(final Duration connect, final Duration read, final Duration write, final Duration call,
-            final Duration ping) {
-        this(connect, read, write, call, ping, org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE);
-    }
-
-    /**
      * Returns the default time policy.
      *
      * @return default time policy
@@ -107,16 +88,17 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     }
 
     /**
-     * Adds this timeout policy to an immutable option snapshot.
+     * Reads the unique timeout value from an immutable option snapshot.
      *
      * @param options option source
-     * @return updated option snapshot
+     * @return configured timeout or {@link #defaults()}
      */
-    public Options from(final Options options) {
+    public static Timeout from(final Options options) {
         if (options == null) {
             throw new ValidateException("Options must not be null");
         }
-        return options.with(OPTION, this);
+        final Timeout timeout = options.get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
+        return timeout == null ? DEFAULTS : timeout;
     }
 
     /**
@@ -131,7 +113,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
     public static Timeout of(final Duration timeout) {
         final Duration validated = validate(timeout, "Timeout");
         return new Timeout(validated, validated, validated, validated, Duration.ZERO,
-                org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE);
+                org.miaixz.bus.fabric.Builder.DURATION_60_SECONDS);
     }
 
     /**
@@ -282,7 +264,7 @@ public record Timeout(Duration connect, Duration read, Duration write, Duration 
         /**
          * Candidate TLS, WebSocket, server, and session graceful-close deadline.
          */
-        private Duration close = org.miaixz.bus.fabric.Builder.TIMEOUT_DEFAULT_CLOSE;
+        private Duration close = org.miaixz.bus.fabric.Builder.DURATION_60_SECONDS;
 
         /**
          * Creates a builder initialized to the complete default policy.

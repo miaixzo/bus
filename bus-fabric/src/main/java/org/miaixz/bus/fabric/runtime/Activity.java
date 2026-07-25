@@ -22,14 +22,14 @@ package org.miaixz.bus.fabric.runtime;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Lifecycle;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
@@ -43,27 +43,27 @@ public final class Activity implements Runnable, Lifecycle {
     /**
      * Activity has been accepted but has not started running.
      */
-    private static final int QUEUED = 0;
+    private static final int QUEUED = Normal._0;
 
     /**
      * Activity action is currently running.
      */
-    private static final int RUNNING = 1;
+    private static final int RUNNING = Normal._1;
 
     /**
      * Activity action completed successfully.
      */
-    private static final int DONE = 2;
+    private static final int DONE = Normal._2;
 
     /**
      * Activity action terminated with a retained failure.
      */
-    private static final int FAILED = 3;
+    private static final int FAILED = Normal._3;
 
     /**
      * Activity was cancelled before a successful terminal transition.
      */
-    private static final int CANCELLED = 4;
+    private static final int CANCELLED = Normal._4;
 
     /**
      * Trimmed non-blank, single-line diagnostic name.
@@ -156,13 +156,13 @@ public final class Activity implements Runnable, Lifecycle {
      *
      * @return lifecycle state
      */
-    public Status state() {
+    public State state() {
         return switch (state.get()) {
-            case QUEUED -> Status.QUEUED;
-            case RUNNING -> Status.RUNNING;
-            case DONE -> Status.DONE;
-            case FAILED -> Status.FAILED;
-            case CANCELLED -> Status.CANCELLED;
+            case QUEUED -> State.QUEUED;
+            case RUNNING -> State.RUNNING;
+            case DONE -> State.COMPLETED;
+            case FAILED -> State.FAILED;
+            case CANCELLED -> State.CANCELLED;
             default -> throw new IllegalStateException("Unknown activity state");
         };
     }

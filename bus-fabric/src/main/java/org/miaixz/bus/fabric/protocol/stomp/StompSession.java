@@ -19,12 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -36,26 +33,11 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -70,7 +52,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.lifecycle.SessionLifecycle;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -205,7 +187,7 @@ public final class StompSession implements Session {
     /**
      * Lifecycle scope.
      */
-    private final LifecycleScope scope;
+    private final SessionLifecycle scope;
 
     /**
      * Creates an opened session.
@@ -217,8 +199,7 @@ public final class StompSession implements Session {
      */
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler) {
-        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null, Normal.MEBI_64);
     }
 
     /**
@@ -236,8 +217,7 @@ public final class StompSession implements Session {
     StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
             final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Listener<? super StompSession> listener) {
-        this(sender, closeHook, cancelHook, handler, address, guard, observer, null, listener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(sender, closeHook, cancelHook, handler, address, guard, observer, null, listener, Normal.MEBI_64);
     }
 
     /**
@@ -339,7 +319,7 @@ public final class StompSession implements Session {
         this.timeout = require(timeout, "STOMP timeout");
         this.state = require(state, "STOMP state");
         this.ownsDispatcher = ownsDispatcher;
-        this.scope = LifecycleScope.session(
+        this.scope = SessionLifecycle.create(
                 this,
                 "stomp-session",
                 listener,
@@ -347,7 +327,8 @@ public final class StompSession implements Session {
                 ObservationMarker.STOMP_OPEN,
                 ObservationMarker.STOMP_CLOSED,
                 ObservationMarker.STOMP_FAILED,
-                this.clock);
+                this.clock,
+                this.cancellation);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
         this.outboundHeartbeatHandle = new AtomicReference<>();
@@ -426,9 +407,7 @@ public final class StompSession implements Session {
      * @return send call
      */
     public Call<Void> sendTo(final String destination, final String data) {
-        return send(
-                destination,
-                Payload.of(data == null ? Normal.EMPTY : data, java.nio.charset.StandardCharsets.UTF_8));
+        return send(destination, Payload.of(data == null ? Normal.EMPTY : data, StandardCharsets.UTF_8));
     }
 
     /**
@@ -639,7 +618,7 @@ public final class StompSession implements Session {
      */
     public boolean unsubscribe(final StompTopic topic) {
         Assert.notNull(topic, () -> new ValidateException("STOMP topic must not be null"));
-        if (!opened()) {
+        if (!active()) {
             return false;
         }
         final Subscription removed;
@@ -728,7 +707,7 @@ public final class StompSession implements Session {
      * @return state
      */
     @Override
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
@@ -759,7 +738,7 @@ public final class StompSession implements Session {
      */
     void dispatch(final StompFrame frame) {
         final StompFrame current = require(frame, "STOMP frame");
-        if (!opened()) {
+        if (!active()) {
             return;
         }
         touchRead();
@@ -785,8 +764,7 @@ public final class StompSession implements Session {
             return;
         }
         if (Builder.STOMP_COMMAND_ERROR.equals(current.command())) {
-            final ProtocolException failure = new ProtocolException(
-                    current.body().text(java.nio.charset.StandardCharsets.UTF_8));
+            final ProtocolException failure = new ProtocolException(current.body().text(StandardCharsets.UTF_8));
             emit(ObservationMarker.STOMP_MESSAGE, frameBytes, null);
             fail(failure);
             Logger.warn(
@@ -1187,7 +1165,7 @@ public final class StompSession implements Session {
      * Schedules the next outbound heartbeat relative to the latest successful write.
      */
     private void scheduleOutboundHeartbeat() {
-        if (state.outboundHeartbeat().isZero() || terminating.get() || !opened()) {
+        if (state.outboundHeartbeat().isZero() || terminating.get() || !active()) {
             return;
         }
         scheduleOutboundHeartbeat(state.outboundHeartbeat(), lastWriteNanos);
@@ -1205,7 +1183,7 @@ public final class StompSession implements Session {
                 delay,
                 Activity.of("stomp:heartbeat:write", () -> outboundHeartbeatExpired(activityNanos)));
         replaceHandle(outboundHeartbeatHandle, created);
-        if (terminating.get() || !opened()) {
+        if (terminating.get() || !active()) {
             cancelHandle(outboundHeartbeatHandle);
         }
     }
@@ -1216,7 +1194,7 @@ public final class StompSession implements Session {
      * @param activityNanos write timestamp guarded by the check
      */
     private void outboundHeartbeatExpired(final long activityNanos) {
-        if (!opened() || terminating.get() || activityNanos != lastWriteNanos) {
+        if (!active() || terminating.get() || activityNanos != lastWriteNanos) {
             return;
         }
         final long intervalNanos = state.outboundHeartbeatNanos();
@@ -1242,7 +1220,7 @@ public final class StompSession implements Session {
      * Schedules the next inbound heartbeat deadline relative to the latest received byte.
      */
     private void scheduleInboundDeadline() {
-        if (state.inboundHeartbeatDeadline().isZero() || terminating.get() || !opened()) {
+        if (state.inboundHeartbeatDeadline().isZero() || terminating.get() || !active()) {
             return;
         }
         scheduleInboundDeadline(state.inboundHeartbeatDeadline(), lastReadNanos);
@@ -1260,7 +1238,7 @@ public final class StompSession implements Session {
                 delay,
                 Activity.of("stomp:heartbeat:read", () -> inboundDeadlineExpired(activityNanos)));
         replaceHandle(inboundDeadlineHandle, created);
-        if (terminating.get() || !opened()) {
+        if (terminating.get() || !active()) {
             cancelHandle(inboundDeadlineHandle);
         }
     }
@@ -1271,7 +1249,7 @@ public final class StompSession implements Session {
      * @param activityNanos read timestamp guarded by the check
      */
     private void inboundDeadlineExpired(final long activityNanos) {
-        if (!opened() || terminating.get() || activityNanos != lastReadNanos) {
+        if (!active() || terminating.get() || activityNanos != lastReadNanos) {
             return;
         }
         final long deadlineNanos = state.inboundHeartbeatDeadlineNanos();
@@ -1310,7 +1288,7 @@ public final class StompSession implements Session {
         }
         cancelHandle(outboundHeartbeatHandle);
         cancelHandle(inboundDeadlineHandle);
-        if (termination == Termination.CLOSE && opened()) {
+        if (termination == Termination.CLOSE && active()) {
             try {
                 writeNow(StompFrame.of(Builder.STOMP_COMMAND_DISCONNECT, Headers.empty(), Payload.empty()), true);
             } catch (final RuntimeException ignored) {
@@ -1424,7 +1402,7 @@ public final class StompSession implements Session {
      * Ensures the session is open.
      */
     private void ensureOpen() {
-        if (!opened() || terminating.get()) {
+        if (!active() || terminating.get()) {
             throw new StatefulException("STOMP session is not open");
         }
         cancellation.throwIfCancelled();
@@ -1436,7 +1414,7 @@ public final class StompSession implements Session {
      * @param terminalWrite true for the close-owned DISCONNECT
      */
     private void ensureWritable(final boolean terminalWrite) {
-        if (!opened() || !terminalWrite && terminating.get()) {
+        if (!active() || !terminalWrite && terminating.get()) {
             throw new StatefulException("STOMP session is not open");
         }
         if (!terminalWrite) {

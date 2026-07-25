@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.registry.connection;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -298,7 +299,7 @@ final class ConnectionBucket {
     private void signalHead() {
         final Thread thread = waiters.peekFirst();
         if (thread != null) {
-            java.util.concurrent.locks.LockSupport.unpark(thread);
+            LockSupport.unpark(thread);
         }
     }
 

@@ -27,9 +27,9 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.cache.CacheWriter;
 
@@ -125,7 +125,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public byte[] bytes() {
-        return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return bytes(Normal.MEBI_64);
     }
 
     /**
@@ -147,7 +147,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      */
     @Override
     public String text(final Charset charset) {
-        return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        return text(charset, Normal.MEBI_64);
     }
 
     /**

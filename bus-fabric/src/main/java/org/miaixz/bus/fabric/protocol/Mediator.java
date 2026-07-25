@@ -40,7 +40,7 @@ public final class Mediator {
      * Restricts construction because protocol routing is exposed through static operations.
      */
     private Mediator() {
-        // Static routing entry.
+        // No initialization required.
     }
 
     /**

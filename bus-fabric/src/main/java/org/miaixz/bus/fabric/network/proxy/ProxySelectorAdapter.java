@@ -20,11 +20,7 @@
 package org.miaixz.bus.fabric.network.proxy;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +40,19 @@ import org.miaixz.bus.fabric.UnoUrl;
  */
 public final class ProxySelectorAdapter {
 
-    /** Reuses the adapter for the process-wide selector without changing selector identity semantics. */
+    /**
+     * Reuses the adapter for the process-wide selector without changing selector identity semantics.
+     */
     private static volatile ProxySelector cachedSelector;
 
-    /** Adapter paired with {@link #cachedSelector}. */
+    /**
+     * Adapter paired with {@link #cachedSelector}.
+     */
     private static volatile ProxySelectorAdapter cachedAdapter;
 
-    /** Short cache avoids repeatedly parsing an unchanged platform proxy decision. */
+    /**
+     * Short cache avoids repeatedly parsing an unchanged platform proxy decision.
+     */
     private volatile SelectionCache selectionCache;
 
     /**

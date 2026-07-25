@@ -21,6 +21,7 @@ package org.miaixz.bus.fabric;
 
 import java.util.Map;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**

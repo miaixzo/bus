@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.io.EOFException;
 import java.util.List;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -65,7 +66,7 @@ public final class RawCodec implements FrameCodec {
         }
         try {
             return List.of(Frame.of(checkedInput.readByteString(checkedInput.size())));
-        } catch (final java.io.EOFException e) {
+        } catch (final EOFException e) {
             throw new InternalException("Unable to read raw frame", e);
         }
     }

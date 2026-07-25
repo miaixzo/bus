@@ -62,10 +62,11 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.observe.window;
     exports org.miaixz.bus.fabric.protocol;
     exports org.miaixz.bus.fabric.protocol.http;
-    exports org.miaixz.bus.fabric.protocol.http.agent;
+    exports org.miaixz.bus.fabric.platform;
     exports org.miaixz.bus.fabric.protocol.http.auth;
     exports org.miaixz.bus.fabric.protocol.http.body;
     exports org.miaixz.bus.fabric.protocol.http.cache;
+    exports org.miaixz.bus.fabric.protocol.http.http2;
     exports org.miaixz.bus.fabric.protocol.http.retry;
     exports org.miaixz.bus.fabric.protocol.socket;
     exports org.miaixz.bus.fabric.protocol.socket.body;
@@ -83,11 +84,7 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.protocol.websocket.frame;
     exports org.miaixz.bus.fabric.protocol.websocket.upgrade;
     exports org.miaixz.bus.fabric.registry;
-    exports org.miaixz.bus.fabric.registry.connection;
     exports org.miaixz.bus.fabric.registry.policy;
     exports org.miaixz.bus.fabric.registry.route;
-    exports org.miaixz.bus.fabric.runtime;
-    exports org.miaixz.bus.fabric.runtime.dispatch;
-    exports org.miaixz.bus.fabric.runtime.resource;
 
 }

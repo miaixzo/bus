@@ -99,10 +99,10 @@ public final class LimitGuard {
     /**
      * Returns rule name.
      *
-     * @return shared frame-limit guard name from {@link Builder}
+     * @return stable frame-limit guard name
      */
     public String name() {
-        return Builder.GUARD_FRAME_LIMIT_GUARD_NAME;
+        return Builder.GUARD_FRAME_LIMIT_NAME;
     }
 
     /**

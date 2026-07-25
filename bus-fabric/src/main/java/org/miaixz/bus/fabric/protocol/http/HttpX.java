@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+import static org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT;
+
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,6 +37,7 @@ import java.util.function.BiConsumer;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -43,16 +47,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -62,12 +57,7 @@ import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Mediator;
 import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
-import org.miaixz.bus.fabric.protocol.http.body.FileBody;
-import org.miaixz.bus.fabric.protocol.http.body.FormBody;
-import org.miaixz.bus.fabric.protocol.http.body.MultipartBody;
-import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
-import org.miaixz.bus.fabric.protocol.http.body.SoapBody;
-import org.miaixz.bus.fabric.protocol.http.body.TextBody;
+import org.miaixz.bus.fabric.protocol.http.body.*;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
@@ -79,13 +69,15 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
  */
 public final class HttpX {
 
-    /** Most recent safe immutable synchronous request shape. */
+    /**
+     * Most recent safe immutable synchronous request shape.
+     */
     private static volatile RequestCache requestCache;
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final HttpSnapshot snapshot;
+    private final HttpSpec spec;
 
     /**
      * Execution runner.
@@ -109,8 +101,8 @@ public final class HttpX {
      */
     private HttpX(final Context context, final HttpRequest request, final Callback<HttpResponse> callback,
             final EventObserver observer, final Filter filter, final GuardRule guard) {
-        this.snapshot = new HttpSnapshot(context, request, observer, filter, guard);
-        this.runner = new HttpRunner(snapshot, observer != EventObserver.noop());
+        this.spec = new HttpSpec(context, request, observer, filter, guard);
+        this.runner = new HttpRunner(spec, observer != EventObserver.noop());
         this.callback = callback;
     }
 
@@ -130,7 +122,7 @@ public final class HttpX {
      * @return request
      */
     public HttpRequest request() {
-        return snapshot.request();
+        return spec.request();
     }
 
     /**
@@ -151,7 +143,7 @@ public final class HttpX {
      * @return response call
      */
     public Call<HttpResponse> call() {
-        return HttpCall.create(snapshot.request(), snapshot.context().reactor().dispatcher(), callback, this::execute);
+        return HttpCall.create(spec.request(), spec.context().reactor().dispatcher(), callback, this::execute);
     }
 
     /**
@@ -409,7 +401,7 @@ public final class HttpX {
          */
         private Builder(final Context context) {
             this.context = context;
-            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = configured == null ? Timeout.defaults() : configured;
             this.proxy = configuredProxy();
             this.materializeMaxBytes = context.options().materializeMaxBytes();
@@ -445,8 +437,8 @@ public final class HttpX {
          * @return proxy plan
          */
         private ProxyPlan configuredProxy() {
-            if (context.options().contains(org.miaixz.bus.fabric.Builder.OPTION_HTTP_PROXY)) {
-                final ProxyPlan value = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_HTTP_PROXY);
+            if (context.options().contains(ProxyPlan.OPTION)) {
+                final ProxyPlan value = context.options().get(ProxyPlan.OPTION);
                 return value == null ? ProxyPlan.direct() : value;
             }
             return ProxyPlan.direct();
@@ -1013,7 +1005,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder file(final String name, final String filename, final String content) {
-            return file(name, filename, content, org.miaixz.bus.core.lang.Charset.UTF_8.name());
+            return file(name, filename, content, UTF_8.name());
         }
 
         /**
@@ -1185,10 +1177,7 @@ public final class HttpX {
          * @return this builder
          */
         public Builder json(final String value) {
-            return body(
-                    TextBody.of(
-                            value,
-                            MediaType.APPLICATION_JSON_TYPE.withCharset(org.miaixz.bus.core.lang.Charset.UTF_8)));
+            return body(TextBody.of(value, MediaType.APPLICATION_JSON_TYPE.withCharset(UTF_8)));
         }
 
         /**
@@ -1286,7 +1275,7 @@ public final class HttpX {
             if (codec != null) {
                 return body(value, (DataCodec) codec);
             }
-            return body(value == null ? "" : value.toString());
+            return body(value == null ? Normal.EMPTY : value.toString());
         }
 
         /**
@@ -1505,7 +1494,7 @@ public final class HttpX {
         }
 
         /**
-         * Builds an HTTP exchange snapshot.
+         * Builds an HTTP exchange specification.
          *
          * @return HTTP exchange
          */
@@ -1551,7 +1540,9 @@ public final class HttpX {
             return request;
         }
 
-        /** Matches an unmodified absolute URL without reparsing it on repeated builder calls. */
+        /**
+         * Matches an unmodified absolute URL without reparsing it on repeated builder calls.
+         */
         private boolean simpleTargetMatches(final HttpRequest request) {
             return url != null && baseUrl == null && (query == null || query.isEmpty())
                     && (pathSegments == null || pathSegments.isEmpty())
@@ -1759,7 +1750,7 @@ public final class HttpX {
             }
             final int fragment = target.indexOf(Symbol.C_HASH);
             final String head = fragment < 0 ? target : target.substring(0, fragment);
-            final String tail = fragment < 0 ? "" : target.substring(fragment);
+            final String tail = fragment < 0 ? Normal.EMPTY : target.substring(fragment);
             final StringBuilder builder = new StringBuilder(head);
             builder.append(head.indexOf(Symbol.C_QUESTION_MARK) >= 0 ? Symbol.C_AND : Symbol.C_QUESTION_MARK);
             for (int i = 0; i < query.size(); i++) {
@@ -1852,7 +1843,7 @@ public final class HttpX {
          * @return encoded value
          */
         private static String encode(final String value) {
-            return UrlEncoder.encodeAll(value, org.miaixz.bus.core.lang.Charset.UTF_8);
+            return UrlEncoder.encodeAll(value, UTF_8);
         }
 
         /**

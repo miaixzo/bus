@@ -25,6 +25,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 
@@ -36,6 +37,13 @@ import org.miaixz.bus.fabric.protocol.http.HttpResponse;
  */
 @FunctionalInterface
 public interface HttpAuthenticator {
+
+    /**
+     * Typed option for HTTP authentication.
+     * <p>
+     * Absence and explicit null both disable authentication.
+     */
+    Options.Key<HttpAuthenticator> OPTION = Options.key("http.authenticator", HttpAuthenticator.class);
 
     /**
      * Returns an authenticator that always declines to create a follow-up request.

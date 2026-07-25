@@ -23,13 +23,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.net.ssl.X509TrustManager;
 
@@ -534,7 +528,7 @@ public final class CertificatePolicy implements Policy {
      */
     private static String commonName(final X509Certificate certificate) {
         final String subject = certificate.getSubjectX500Principal().getName();
-        for (final String part : subject.split(",")) {
+        for (final String part : subject.split(Symbol.COMMA)) {
             final String trimmed = part.trim();
             if (trimmed.regionMatches(true, Normal._0, "CN=", Normal._0, Normal._3)) {
                 return trimmed.substring(Normal._3).trim();
@@ -716,8 +710,7 @@ public final class CertificatePolicy implements Policy {
          * @param caCerts CA certificates
          */
         private RootTrustManager(final X509Certificate... caCerts) {
-            if (caCerts == null || caCerts.length == 0
-                    || java.util.Arrays.stream(caCerts).anyMatch(cert -> cert == null)) {
+            if (caCerts == null || caCerts.length == 0 || Arrays.stream(caCerts).anyMatch(cert -> cert == null)) {
                 throw new ValidateException(
                         "CA certificates must be non-null, non-empty, and contain no null elements");
             }
@@ -789,6 +782,7 @@ public final class CertificatePolicy implements Policy {
          * Creates an opaque identity token.
          */
         private ReuseIdentity() {
+            // No initialization required.
         }
 
     }

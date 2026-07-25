@@ -37,7 +37,7 @@ import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.codec.body.RequestBody;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
-import org.miaixz.bus.fabric.protocol.http.agent.UserAgent;
+import org.miaixz.bus.fabric.platform.UserAgent;
 import org.miaixz.bus.fabric.protocol.http.body.FileBody;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.body.TextBody;

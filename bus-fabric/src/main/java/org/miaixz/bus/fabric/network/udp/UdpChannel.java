@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
@@ -40,10 +41,8 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Lifecycle;
 import org.miaixz.bus.fabric.Message;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.Activity;
@@ -205,13 +204,13 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
     }
 
     /**
-     * Returns whether this channel is opened.
+     * Returns whether this channel remains active.
      *
-     * @return true when opened
+     * @return {@code true} while the lifecycle and datagram channel remain active
      */
     @Override
-    public boolean opened() {
-        return Lifecycle.super.opened() && channel.isOpen();
+    public boolean active() {
+        return Lifecycle.super.active() && channel.isOpen();
     }
 
     /**
@@ -220,7 +219,7 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
      * @return state
      */
     @Override
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
@@ -259,7 +258,7 @@ public final class UdpChannel implements Lifecycle, AutoCloseable {
      * Ensures this channel is open.
      */
     private void ensureOpened() {
-        if (!opened()) {
+        if (!active()) {
             throw new StatefulException("UDP channel is closed");
         }
     }

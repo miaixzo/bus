@@ -19,10 +19,12 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -41,7 +43,7 @@ final class Http2StreamRegistry {
     /**
      * Bit shift dividing compact stream indexes into lazily allocated segments.
      */
-    private static final int SEGMENT_SHIFT = 8;
+    private static final int SEGMENT_SHIFT = Normal._8;
 
     /**
      * Number of atomic stream slots in each segment.
@@ -56,7 +58,7 @@ final class Http2StreamRegistry {
     /**
      * Volatile directory of lazily allocated atomic stream segments.
      */
-    private volatile AtomicReferenceArray<Http2StreamState>[] segments;
+    private volatile AtomicReferenceArray<Http2Stream>[] segments;
 
     /**
      * Atomic count incremented and decremented with successful slot publication and removal.
@@ -67,7 +69,7 @@ final class Http2StreamRegistry {
      * Creates a registry with one empty directory position and no allocated segments.
      */
     Http2StreamRegistry() {
-        segments = (AtomicReferenceArray<Http2StreamState>[]) new AtomicReferenceArray<?>[1];
+        segments = (AtomicReferenceArray<Http2Stream>[]) new AtomicReferenceArray<?>[1];
     }
 
     /**
@@ -76,12 +78,12 @@ final class Http2StreamRegistry {
      * @param state state to register
      * @return {@code true} when the slot was empty
      */
-    boolean open(final Http2StreamState state) {
+    boolean open(final Http2Stream state) {
         if (state == null) {
-            throw new ValidateException("HTTP/2 stream state must not be null");
+            throw new ValidateException("HTTP/2 stream must not be null");
         }
-        final int index = index(state.streamId());
-        final AtomicReferenceArray<Http2StreamState> segment = segment(index, true);
+        final int index = index(state.id());
+        final AtomicReferenceArray<Http2Stream> segment = segment(index, true);
         if (!segment.compareAndSet(index & SEGMENT_MASK, null, state)) {
             return false;
         }
@@ -95,9 +97,9 @@ final class Http2StreamRegistry {
      * @param streamId positive HTTP/2 stream identifier
      * @return registered state, or {@code null}
      */
-    Http2StreamState get(final int streamId) {
+    Http2Stream get(final int streamId) {
         final int index = index(streamId);
-        final AtomicReferenceArray<Http2StreamState> segment = segment(index, false);
+        final AtomicReferenceArray<Http2Stream> segment = segment(index, false);
         return segment == null ? null : segment.get(index & SEGMENT_MASK);
     }
 
@@ -107,15 +109,15 @@ final class Http2StreamRegistry {
      * @param streamId positive HTTP/2 stream identifier
      * @return removed state, or {@code null}
      */
-    Http2StreamState remove(final int streamId) {
+    Http2Stream remove(final int streamId) {
         final int index = index(streamId);
-        final AtomicReferenceArray<Http2StreamState> segment = segment(index, false);
+        final AtomicReferenceArray<Http2Stream> segment = segment(index, false);
         if (segment == null) {
             return null;
         }
         final int slot = index & SEGMENT_MASK;
         for (;;) {
-            final Http2StreamState current = segment.get(slot);
+            final Http2Stream current = segment.get(slot);
             if (current == null) {
                 return null;
             }
@@ -136,6 +138,96 @@ final class Http2StreamRegistry {
     }
 
     /**
+     * Publishes a stream only when its identifier is not already registered.
+     *
+     * @param streamId stream identifier, which must match {@code stream.id()}
+     * @param stream   stream to publish
+     * @return existing stream, or {@code null} when publication succeeded
+     */
+    Http2Stream putIfAbsent(final int streamId, final Http2Stream stream) {
+        if (stream == null || stream.id() != streamId) {
+            throw new ValidateException("HTTP/2 stream id does not match registry key");
+        }
+        final int index = index(streamId);
+        final AtomicReferenceArray<Http2Stream> segment = segment(index, true);
+        final int slot = index & SEGMENT_MASK;
+        for (;;) {
+            final Http2Stream existing = segment.get(slot);
+            if (existing != null) {
+                return existing;
+            }
+            if (segment.compareAndSet(slot, null, stream)) {
+                active.incrementAndGet();
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Publishes a stream and rejects replacement of an existing identifier.
+     *
+     * @param streamId stream identifier
+     * @param stream   stream to publish
+     * @return {@code null} when published
+     */
+    Http2Stream put(final int streamId, final Http2Stream stream) {
+        final Http2Stream existing = putIfAbsent(streamId, stream);
+        if (existing != null) {
+            throw new ValidateException("HTTP/2 stream id is already registered");
+        }
+        return null;
+    }
+
+    /**
+     * Returns whether a stream identifier is registered.
+     *
+     * @param streamId stream identifier
+     * @return true when present
+     */
+    boolean containsKey(final int streamId) {
+        return get(streamId) != null;
+    }
+
+    /**
+     * Returns a stable snapshot of current streams for uncommon settings and shutdown traversal.
+     *
+     * @return stream snapshot
+     */
+    Collection<Http2Stream> values() {
+        final List<Http2Stream> values = new ArrayList<>(active.get());
+        forEach((id, stream) -> values.add(stream));
+        return values;
+    }
+
+    /**
+     * Returns a stable entry snapshot for GOAWAY and shutdown traversal.
+     *
+     * @return immutable entry snapshot
+     */
+    Set<Map.Entry<Integer, Http2Stream>> entrySet() {
+        final HashSet<Map.Entry<Integer, Http2Stream>> entries = new HashSet<>(active.get());
+        forEach((id, stream) -> entries.add(Map.entry(id, stream)));
+        return Set.copyOf(entries);
+    }
+
+    /**
+     * Removes every stream reference without invoking stream callbacks.
+     */
+    void clear() {
+        final AtomicReferenceArray<Http2Stream>[] snapshot = segments;
+        for (final AtomicReferenceArray<Http2Stream> segment : snapshot) {
+            if (segment == null) {
+                continue;
+            }
+            for (int slot = 0; slot < segment.length(); slot++) {
+                if (segment.getAndSet(slot, null) != null) {
+                    active.decrementAndGet();
+                }
+            }
+        }
+    }
+
+    /**
      * Fails and removes every registered stream.
      *
      * @param problem connection failure
@@ -144,13 +236,13 @@ final class Http2StreamRegistry {
         if (problem == null) {
             throw new ValidateException("HTTP/2 registry failure must not be null");
         }
-        final AtomicReferenceArray<Http2StreamState>[] snapshot = segments;
-        for (final AtomicReferenceArray<Http2StreamState> segment : snapshot) {
+        final AtomicReferenceArray<Http2Stream>[] snapshot = segments;
+        for (final AtomicReferenceArray<Http2Stream> segment : snapshot) {
             if (segment == null) {
                 continue;
             }
             for (int slot = 0; slot < segment.length(); slot++) {
-                final Http2StreamState state = segment.getAndSet(slot, null);
+                final Http2Stream state = segment.getAndSet(slot, null);
                 if (state != null) {
                     active.decrementAndGet();
                     state.fail(problem);
@@ -166,9 +258,9 @@ final class Http2StreamRegistry {
      * @param create whether a missing segment should be allocated
      * @return segment, or {@code null}
      */
-    private AtomicReferenceArray<Http2StreamState> segment(final int index, final boolean create) {
+    private AtomicReferenceArray<Http2Stream> segment(final int index, final boolean create) {
         final int segmentIndex = index >>> SEGMENT_SHIFT;
-        AtomicReferenceArray<Http2StreamState>[] directory = segments;
+        AtomicReferenceArray<Http2Stream>[] directory = segments;
         if (segmentIndex < directory.length && directory[segmentIndex] != null) {
             return directory[segmentIndex];
         }
@@ -181,7 +273,7 @@ final class Http2StreamRegistry {
                 directory = Arrays.copyOf(directory, Math.max(segmentIndex + 1, directory.length << 1));
                 segments = directory;
             }
-            AtomicReferenceArray<Http2StreamState> segment = directory[segmentIndex];
+            AtomicReferenceArray<Http2Stream> segment = directory[segmentIndex];
             if (segment == null) {
                 segment = new AtomicReferenceArray<>(SEGMENT_SIZE);
                 directory[segmentIndex] = segment;
@@ -200,7 +292,28 @@ final class Http2StreamRegistry {
         if (streamId <= 0) {
             throw new ValidateException("HTTP/2 stream id must be positive");
         }
-        return streamId >>> 1;
+        return streamId - 1;
+    }
+
+    /**
+     * Visits a weakly consistent snapshot of all published slots.
+     *
+     * @param consumer entry consumer
+     */
+    private void forEach(final BiConsumer<Integer, Http2Stream> consumer) {
+        final AtomicReferenceArray<Http2Stream>[] snapshot = segments;
+        for (int segmentIndex = 0; segmentIndex < snapshot.length; segmentIndex++) {
+            final AtomicReferenceArray<Http2Stream> segment = snapshot[segmentIndex];
+            if (segment == null) {
+                continue;
+            }
+            for (int slot = 0; slot < segment.length(); slot++) {
+                final Http2Stream stream = segment.get(slot);
+                if (stream != null) {
+                    consumer.accept((segmentIndex << SEGMENT_SHIFT) + slot + 1, stream);
+                }
+            }
+        }
     }
 
 }

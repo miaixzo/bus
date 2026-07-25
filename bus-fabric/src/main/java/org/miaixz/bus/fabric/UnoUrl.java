@@ -21,12 +21,7 @@ package org.miaixz.bus.fabric;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -97,10 +92,14 @@ public final class UnoUrl {
      */
     private volatile URI uri;
 
-    /** Cached authority including the effective port. */
+    /**
+     * Cached authority including the effective port.
+     */
     private volatile String authority;
 
-    /** Cached encoded origin-form request target. */
+    /**
+     * Cached encoded origin-form request target.
+     */
     private volatile String requestTarget;
 
     /**
@@ -426,10 +425,10 @@ public final class UnoUrl {
      *
      * @return query names
      */
-    public java.util.Set<String> queryParameterNames() {
-        final java.util.LinkedHashSet<String> names = new java.util.LinkedHashSet<>();
+    public Set<String> queryParameterNames() {
+        final LinkedHashSet<String> names = new LinkedHashSet<>();
         queryParameters.forEach(parameter -> names.add(parameter.name()));
-        return java.util.Collections.unmodifiableSet(names);
+        return Collections.unmodifiableSet(names);
     }
 
     /**

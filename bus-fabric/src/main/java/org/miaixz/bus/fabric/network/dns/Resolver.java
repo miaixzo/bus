@@ -28,7 +28,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Clock;
 
 /**
@@ -85,7 +84,7 @@ public interface Resolver {
             }
         }
         final long elapsed = Math.max(0L, operationClock.nanos() - started);
-        return DnsResult.of(normalized, addresses, operationClock.now(), Builder.DNS_NO_TTL, Duration.ofNanos(elapsed));
+        return DnsResult.of(normalized, addresses, operationClock.now(), Duration.ZERO, Duration.ofNanos(elapsed));
     }
 
     /**

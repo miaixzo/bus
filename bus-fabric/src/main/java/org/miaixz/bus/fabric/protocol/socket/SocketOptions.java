@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.net.SocketOption;
 import java.time.Duration;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 
 /**
  * Current socket runtime options used by {@link SocketX}, {@link SocketRunner}, {@link SocketSession}, and server
@@ -50,6 +53,13 @@ import org.miaixz.bus.fabric.Options;
 public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChunkCount, int backlog, int ioThreads,
         Map<SocketOption<?>, Object> socketOptions, boolean retainReadBuffer, Duration idleTimeout,
         int kcpWireVersion) {
+
+    /**
+     * Typed option for a Socket-specific TLS policy.
+     * <p>
+     * Absence and explicit null both fall back to {@link TlsPolicy#OPTION}.
+     */
+    public static final Options.Key<TlsPolicy> TLS_POLICY = Options.key("socket.tlsPolicy", TlsPolicy.class);
 
     /**
      * Creates validated options.
@@ -104,23 +114,16 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
     public static SocketOptions from(final Options options) {
         final Options checkedOptions = Assert.notNull(options, () -> new ValidateException("Options must not be null"));
         final Builder builder = builder();
-        builder.readBufferSize(
-                number(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_READ_BUFFER_SIZE, Normal._8192));
-        builder.writeChunkSize(
-                number(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_SIZE, Normal._8192));
-        builder.writeChunkCount(
-                number(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_COUNT, Normal._16));
-        builder.backlog(
-                number(
-                        checkedOptions,
-                        org.miaixz.bus.fabric.Builder.OPTION_SOCKET_BACKLOG,
-                        org.miaixz.bus.fabric.Builder._1000));
+        builder.readBufferSize(number(checkedOptions, OPTION_SOCKET_READ_BUFFER_SIZE, Normal._8192));
+        builder.writeChunkSize(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_SIZE, Normal._8192));
+        builder.writeChunkCount(number(checkedOptions, OPTION_SOCKET_WRITE_CHUNK_COUNT, Normal._16));
+        builder.backlog(number(checkedOptions, OPTION_SOCKET_BACKLOG, (int) Normal.KILO));
         builder.ioThreads(
                 number(
                         checkedOptions,
-                        org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IO_THREADS,
+                        OPTION_SOCKET_IO_THREADS,
                         Math.max(Normal._1, Runtime.getRuntime().availableProcessors())));
-        final Map<?, ?> rawSocketOptions = checkedOptions.get(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_OPTIONS);
+        final Map<?, ?> rawSocketOptions = checkedOptions.get(OPTION_SOCKET_OPTIONS);
         if (rawSocketOptions != null) {
             for (final Map.Entry<?, ?> entry : rawSocketOptions.entrySet()) {
                 if (!(entry.getKey() instanceof SocketOption<?> option)) {
@@ -129,27 +132,22 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
                 builder.socketOption((SocketOption<Object>) option, entry.getValue());
             }
         }
-        builder.retainReadBuffer(
-                bool(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_RETAIN_READ_BUFFER, false));
-        builder.idleTimeout(
-                duration(checkedOptions, org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
+        builder.retainReadBuffer(bool(checkedOptions, OPTION_SOCKET_RETAIN_READ_BUFFER, false));
+        builder.idleTimeout(duration(checkedOptions, OPTION_SOCKET_IDLE_TIMEOUT, Duration.ZERO));
         return builder.build();
     }
 
     /**
-     * Converts to generic fabric options.
+     * Returns these socket settings as generic fabric options.
      *
      * @return generic option map containing all represented settings except the KCP wire version
      */
-    public Options toOptions() {
-        return Options.empty().with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_BACKLOG, backlog)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IO_THREADS, ioThreads)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_OPTIONS, socketOptions)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer)
-                .with(org.miaixz.bus.fabric.Builder.OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
+    public Options options() {
+        return Options.empty().with(OPTION_SOCKET_READ_BUFFER_SIZE, readBufferSize)
+                .with(OPTION_SOCKET_WRITE_CHUNK_SIZE, writeChunkSize)
+                .with(OPTION_SOCKET_WRITE_CHUNK_COUNT, writeChunkCount).with(OPTION_SOCKET_BACKLOG, backlog)
+                .with(OPTION_SOCKET_IO_THREADS, ioThreads).with(OPTION_SOCKET_OPTIONS, socketOptions)
+                .with(OPTION_SOCKET_RETAIN_READ_BUFFER, retainReadBuffer).with(OPTION_SOCKET_IDLE_TIMEOUT, idleTimeout);
     }
 
     /**
@@ -294,7 +292,7 @@ public record SocketOptions(int readBufferSize, int writeChunkSize, int writeChu
         /**
          * Mutable TCP server backlog candidate.
          */
-        private int backlog = org.miaixz.bus.fabric.Builder._1000;
+        private int backlog = (int) Normal.KILO;
 
         /**
          * Mutable AIO I/O thread count candidate.

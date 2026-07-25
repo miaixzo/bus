@@ -20,11 +20,7 @@
 package org.miaixz.bus.fabric.protocol.socket;
 
 import java.time.Duration;
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,26 +32,10 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.TimeoutException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
@@ -75,7 +55,7 @@ import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
-import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
+import org.miaixz.bus.fabric.runtime.lifecycle.SessionLifecycle;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
@@ -205,7 +185,7 @@ public final class SocketSession implements Session {
     /**
      * Lifecycle scope.
      */
-    private final LifecycleScope scope;
+    private final SessionLifecycle scope;
 
     /**
      * Creates a current connection-backed socket session for framework integrations.
@@ -264,7 +244,7 @@ public final class SocketSession implements Session {
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
             final Map<String, Object> attributes, final AutoCloseable owner,
             final Listener<? super SocketSession> listener) {
-        this(address, connection, codec, handler, attributes, owner, listener, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, connection, codec, handler, attributes, owner, listener, Normal.MEBI_64);
     }
 
     /**
@@ -338,8 +318,7 @@ public final class SocketSession implements Session {
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
             final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
             final Listener<? super SocketSession> listener) {
-        this(address, datagram, kcp, codec, handler, attributes, owner, listener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, datagram, kcp, codec, handler, attributes, owner, listener, Normal.MEBI_64);
     }
 
     /**
@@ -400,8 +379,7 @@ public final class SocketSession implements Session {
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
             final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
             final AutoCloseable owner, final Listener<? super SocketSession> listener) {
-        this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener,
-                Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+        this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, Normal.MEBI_64);
     }
 
     /**
@@ -523,7 +501,7 @@ public final class SocketSession implements Session {
         this.timeout = require(timeout, "Socket timeout");
         this.cancellation = require(cancellation, "Socket cancellation");
         this.ownsDispatcher = ownsDispatcher;
-        this.scope = LifecycleScope.session(
+        this.scope = SessionLifecycle.create(
                 this,
                 "socket-session",
                 listener,
@@ -531,7 +509,8 @@ public final class SocketSession implements Session {
                 ObservationMarker.SOCKET_OPEN,
                 ObservationMarker.SOCKET_CLOSED,
                 ObservationMarker.SOCKET_FAILED,
-                this.clock);
+                this.clock,
+                this.cancellation);
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
@@ -559,7 +538,7 @@ public final class SocketSession implements Session {
      *
      * @return state
      */
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
@@ -788,7 +767,7 @@ public final class SocketSession implements Session {
      */
     private void readStreamFrames() {
         long wireBytes = Normal._0;
-        while (opened()) {
+        while (active()) {
             final Buffer input = new Buffer();
             final long read = await(
                     connection.conduit().read(input, socketOptions.readBufferSize()),
@@ -830,7 +809,7 @@ public final class SocketSession implements Session {
      * Waits for the KCP Pump to publish a complete decoded frame.
      */
     private void awaitKcpFrame() {
-        while (opened()) {
+        while (active()) {
             if (hasPending()) {
                 return;
             }
@@ -901,7 +880,7 @@ public final class SocketSession implements Session {
      */
     private void pumpKcp() {
         try {
-            while (opened() && !cancellation.cancelled()) {
+            while (active() && !cancellation.cancelled()) {
                 final Message packetMessage = datagram.receive().execute();
                 final KcpPacket packet = kcp.unpack(packetMessage.payload(), materializeMaxBytes);
                 final KcpNetwork.Inbound inbound = kcp.receive(packet);
@@ -918,11 +897,11 @@ public final class SocketSession implements Session {
                 scheduleRetransmission();
             }
         } catch (final RuntimeException e) {
-            if (opened()) {
+            if (active()) {
                 operationFailed(e);
             }
         } catch (final Error e) {
-            if (opened()) {
+            if (active()) {
                 operationFailed(e);
             }
             throw e;
@@ -933,7 +912,7 @@ public final class SocketSession implements Session {
      * Schedules one KCP retransmission pass while packets remain pending.
      */
     private void scheduleRetransmission() {
-        if (kcp == null || kcp.pending() == Normal._0 || !opened() || retransmitHandle.get() != null) {
+        if (kcp == null || kcp.pending() == Normal._0 || !active() || retransmitHandle.get() != null) {
             return;
         }
         final DispatchHandle created = dispatcher.schedule(
@@ -953,7 +932,7 @@ public final class SocketSession implements Session {
     private void retransmitKcp() {
         retransmitHandle.set(null);
         try {
-            if (opened()) {
+            if (active()) {
                 sendKcpPackets(kcp.retransmitDue());
                 scheduleRetransmission();
             }
@@ -1042,7 +1021,7 @@ public final class SocketSession implements Session {
      * Ensures session is open.
      */
     private void ensureOpen() {
-        if (!opened()) {
+        if (!active()) {
             throw new StatefulException("Socket session is not open");
         }
         cancellation.throwIfCancelled();
@@ -1061,7 +1040,7 @@ public final class SocketSession implements Session {
      */
     private void scheduleIdle() {
         final Duration idle = socketOptions.idleTimeout();
-        if (idle.isZero() || terminating.get() || !opened()) {
+        if (idle.isZero() || terminating.get() || !active()) {
             return;
         }
         scheduleIdle(idle, lastActivityNanos);
@@ -1083,7 +1062,7 @@ public final class SocketSession implements Session {
             previous.cancel();
         }
         created.future().whenComplete((ignored, cause) -> idleHandle.compareAndSet(created, null));
-        if (terminating.get() || !opened()) {
+        if (terminating.get() || !active()) {
             cancelHandle(idleHandle);
         }
     }
@@ -1094,7 +1073,7 @@ public final class SocketSession implements Session {
      * @param activityNanos activity timestamp guarded by this check
      */
     private void idleExpired(final long activityNanos) {
-        if (!opened() || activityNanos != lastActivityNanos) {
+        if (!active() || activityNanos != lastActivityNanos) {
             return;
         }
         final long idleNanos = durationNanos(socketOptions.idleTimeout());

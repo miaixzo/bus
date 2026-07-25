@@ -30,15 +30,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
-import org.miaixz.bus.fabric.UnoUrl;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -54,7 +46,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Opens WebSocket sessions from an immutable exchange snapshot.
+ * Opens WebSocket sessions from an immutable exchange specification.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -64,15 +56,15 @@ public final class WebSocketRunner {
     /**
      * Immutable exchange configuration used by every open attempt.
      */
-    private final WebSocketSnapshot snapshot;
+    private final WebSocketSpec spec;
 
     /**
-     * Creates a runner from a validated exchange snapshot.
+     * Creates a runner from a validated exchange specification.
      *
-     * @param snapshot immutable WebSocket exchange configuration
+     * @param spec immutable WebSocket exchange configuration
      */
-    WebSocketRunner(final WebSocketSnapshot snapshot) {
-        this.snapshot = require(snapshot, "WebSocket exchange snapshot");
+    WebSocketRunner(final WebSocketSpec spec) {
+        this.spec = require(spec, "WebSocket exchange specification");
     }
 
     /**
@@ -83,7 +75,7 @@ public final class WebSocketRunner {
      * @param headers headers included in the opening handshake
      * @param timeout timeout policy applied to the upgrade and session
      * @param handler handler for messages received by the opened session
-     * @return runner backed by a new immutable exchange snapshot
+     * @return runner backed by a new immutable exchange specification
      * @throws ValidateException if a required argument is {@code null}
      */
     public static WebSocketRunner create(
@@ -93,9 +85,9 @@ public final class WebSocketRunner {
             final Timeout timeout,
             final Handler handler) {
         final URI currentUri = require(uri, "WebSocket URI");
-        return new WebSocketRunner(new WebSocketSnapshot(require(context, "Context"), currentUri,
-                Address.from(currentUri), require(headers, "Headers"), require(timeout, "Timeout"), null, null,
-                EventObserver.noop(), require(handler, "Handler"), null));
+        return new WebSocketRunner(new WebSocketSpec(require(context, "Context"), currentUri, Address.from(currentUri),
+                require(headers, "Headers"), require(timeout, "Timeout"), null, null, EventObserver.noop(),
+                require(handler, "Handler"), null));
     }
 
     /**
@@ -128,47 +120,47 @@ public final class WebSocketRunner {
                 true,
                 "Fabric",
                 "WebSocket open started: scheme={}, host={}, port={}",
-                snapshot.address().scheme(),
-                snapshot.address().host(),
-                snapshot.address().port());
+                spec.address().scheme(),
+                spec.address().host(),
+                spec.address().port());
         try {
             currentCancellation.throwIfCancelled();
             final Message opening = prepareOpen();
             currentCancellation.throwIfCancelled();
             final WebSocketUpgrade upgrade = new WebSocketUpgrade();
             final HttpRequest request = HttpRequest.builder().method(Http.Method.GET)
-                    .url(UnoUrl.parse(upgrade.httpUri(snapshot.uri()).toString()))
-                    .headers(upgrade.headers(opening.headers())).timeout(snapshot.timeout()).build();
+                    .url(UnoUrl.parse(upgrade.httpUri(spec.uri()).toString()))
+                    .headers(upgrade.headers(opening.headers())).timeout(spec.timeout()).build();
             upgraded = Mediator.convert(
                     Type.WEBSOCKET,
                     Type.HTTP_UPGRADE,
                     currentCancellation,
-                    current -> HttpRunner.upgrade(snapshot.context(), request, current));
+                    current -> HttpRunner.upgrade(spec.context(), request, current));
             currentCancellation.throwIfCancelled();
             upgrade.validate(upgraded.status(), upgraded.headers());
             final Connection connection = upgraded.connection();
             lease = upgraded.lease();
             upgraded = null;
-            final WebSocketSession session = new WebSocketSession(snapshot.address(), connection.source(),
-                    connection.sink(), lease, snapshot.handler(), snapshot.context(), snapshot.timeout(), dispatchKey(),
-                    snapshot.guard(), WebSocketRole.CLIENT,
+            final WebSocketSession session = new WebSocketSession(spec.address(), connection.source(),
+                    connection.sink(), lease, spec.handler(), spec.context(), spec.timeout(), dispatchKey(),
+                    spec.guard(), WebSocketRole.CLIENT,
                     Map.of(
                             Builder.ATTRIBUTE_HEADERS,
                             opening.headers(),
                             Builder.ATTRIBUTE_OBSERVER,
-                            snapshot.observer(),
+                            spec.observer(),
                             Builder.TAG_OPERATION_ID,
                             operationId),
-                    null, FilterChain.compose(snapshot.context().filter(), snapshot.filter()), snapshot.observer(),
-                    snapshot.listener(), currentCancellation);
+                    null, FilterChain.compose(spec.context().filter(), spec.filter()), spec.observer(), spec.listener(),
+                    currentCancellation);
             lease = null;
             Logger.info(
                     false,
                     "Fabric",
                     "WebSocket open completed: scheme={}, host={}, port={}",
-                    snapshot.address().scheme(),
-                    snapshot.address().host(),
-                    snapshot.address().port());
+                    spec.address().scheme(),
+                    spec.address().host(),
+                    spec.address().port());
             return session;
         } catch (final CancellationException e) {
             closeUpgrade(upgraded);
@@ -179,9 +171,9 @@ public final class WebSocketRunner {
                     "Fabric",
                     e,
                     "WebSocket open cancelled: scheme={}, host={}, port={}",
-                    snapshot.address().scheme(),
-                    snapshot.address().host(),
-                    snapshot.address().port());
+                    spec.address().scheme(),
+                    spec.address().host(),
+                    spec.address().port());
             throw e;
         } catch (final RuntimeException e) {
             closeUpgrade(upgraded);
@@ -193,9 +185,9 @@ public final class WebSocketRunner {
                     "Fabric",
                     failure,
                     "WebSocket open failed: scheme={}, host={}, port={}, exception={}",
-                    snapshot.address().scheme(),
-                    snapshot.address().host(),
-                    snapshot.address().port(),
+                    spec.address().scheme(),
+                    spec.address().host(),
+                    spec.address().port(),
                     failure.getClass().getSimpleName());
             throw failure;
         }
@@ -207,8 +199,8 @@ public final class WebSocketRunner {
      * @return scheme, host, and port joined as a stable dispatch key
      */
     String dispatchKey() {
-        return snapshot.address().scheme() + Symbol.COLON + Symbol.FORWARDSLASH + snapshot.address().host()
-                + Symbol.C_COLON + snapshot.address().port();
+        return spec.address().scheme() + Symbol.COLON + Symbol.FORWARDSLASH + spec.address().host() + Symbol.C_COLON
+                + spec.address().port();
     }
 
     /**
@@ -218,24 +210,24 @@ public final class WebSocketRunner {
      */
     private Message prepareOpen() {
         Message opening = Message
-                .of(Protocol.WS, snapshot.address(), snapshot.headers(), Payload.empty(), Builder.WEBSOCKET_OPEN);
-        opening = FilterChain.apply(opening, snapshot.context().filter(), snapshot.filter());
-        if (snapshot.guard() == null) {
+                .of(Protocol.WS, spec.address(), spec.headers(), Payload.empty(), Builder.WEBSOCKET_OPEN);
+        opening = FilterChain.apply(opening, spec.context().filter(), spec.filter());
+        if (spec.guard() == null) {
             return opening;
         }
         Logger.debug(
                 true,
                 "Fabric",
                 "WebSocket guard check started: host={}, port={}",
-                snapshot.address().host(),
-                snapshot.address().port());
-        snapshot.guard().check(opening).throwIfRejected();
+                spec.address().host(),
+                spec.address().port());
+        spec.guard().check(opening).throwIfRejected();
         Logger.debug(
                 false,
                 "Fabric",
                 "WebSocket guard check accepted: host={}, port={}",
-                snapshot.address().host(),
-                snapshot.address().port());
+                spec.address().host(),
+                spec.address().port());
         return opening;
     }
 
@@ -247,14 +239,14 @@ public final class WebSocketRunner {
      * @param operationId stable identifier for this open lifecycle
      */
     private void emit(final ObservationMarker marker, final Throwable cause, final String operationId) {
-        final FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
-                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
-                .tag(Builder.HOST, snapshot.address().host())
-                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
+        final FabricEvent.Builder event = FabricEvent.builder(marker, spec.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, spec.address().scheme())
+                .tag(Builder.HOST, spec.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(spec.address().port()));
         if (cause != null) {
             event.cause(cause);
         }
-        snapshot.observer().emit(event.build());
+        spec.observer().emit(event.build());
     }
 
     /**

@@ -29,7 +29,6 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
-import org.miaixz.bus.fabric.Builder;
 
 /**
  * Immutable DNS resolution result.
@@ -37,7 +36,7 @@ import org.miaixz.bus.fabric.Builder;
  * @param host       normalized queried host
  * @param addresses  immutable, duplicate-free address snapshot in resolver order
  * @param resolvedAt wall-clock completion time
- * @param ttl        non-negative DNS TTL or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL} when unavailable
+ * @param ttl        non-negative DNS TTL or {@link Duration#ZERO} when unavailable
  * @param duration   non-negative backend lookup duration
  * @author Kimi Liu
  * @since Java 21+
@@ -70,23 +69,10 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Creates a DNS result.
      *
-     * @param host      queried host to normalize
-     * @param addresses resolved addresses to de-duplicate while preserving order
-     * @param duration  non-negative backend lookup duration
-     * @return result timestamped with the current wall clock and no authoritative TTL
-     * @throws ValidateException if the host, address list, or duration is invalid
-     */
-    public static DnsResult of(final String host, final List<InetAddress> addresses, final Duration duration) {
-        return of(host, addresses, Instant.now(), Builder.DNS_NO_TTL, duration);
-    }
-
-    /**
-     * Creates a DNS result.
-     *
      * @param host       queried host to normalize
      * @param addresses  resolved addresses to de-duplicate while preserving order
      * @param resolvedAt wall-clock completion time
-     * @param ttl        non-negative TTL or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
+     * @param ttl        non-negative TTL or {@link Duration#ZERO}
      * @param duration   non-negative backend lookup duration
      * @return validated immutable DNS result
      * @throws ValidateException if any component is invalid
@@ -133,7 +119,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
     /**
      * Returns ttl metadata.
      *
-     * @return authoritative non-negative TTL or {@link org.miaixz.bus.fabric.Builder#DNS_NO_TTL}
+     * @return authoritative non-negative TTL or {@link Duration#ZERO}
      */
     @Override
     public Duration ttl() {
@@ -165,7 +151,7 @@ public record DnsResult(String host, List<InetAddress> addresses, Instant resolv
      * @return {@code true} when {@link #ttl()} differs from the no-TTL sentinel
      */
     public boolean hasTtl() {
-        return !Builder.DNS_NO_TTL.equals(ttl);
+        return !Duration.ZERO.equals(ttl);
     }
 
     /**

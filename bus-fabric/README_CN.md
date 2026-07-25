@@ -173,8 +173,9 @@ session.close();
 `Context` 是不可变对象。需要改变运行时行为时，通过复制后的 `Options` 创建新的 `Context`。
 
 ```java
-Context limited = context.withOptions(
-        context.options().materializeMaxBytes(16L * 1024L * 1024L));
+Context limited = Context.builder()
+        .options(context.options().materializeMaxBytes(16L * 1024L * 1024L))
+        .build();
 
 String text = Fabric.http(limited)
         .get("https://example.com/report.txt")
@@ -186,14 +187,12 @@ String text = Fabric.http(limited)
 | Option key | 期望值 | 使用方 |
 | --- | --- | --- |
 | `materialize.maxBytes` | `Number` | `Payload`、HTTP Body、Socket 消息、WebSocket 消息、STOMP 消息在一次性读取 bytes/text 时使用。 |
-| `http.cache` | `HttpCache` | HTTP 缓存编排。 |
-| `http.cookieJar` | `CookieJar` | HTTP 自动加载与保存 Cookie。 |
-| `http.tlsSettings` | `TlsSettings` | HTTP TLS 配置。 |
-| `http.tlsContext` | `TlsContext` | HTTP TLS 上下文。 |
-| `socket.tlsSettings` | `TlsSettings` | TLS Socket 配置。 |
-| `socket.tlsContext` | `TlsContext` | TLS Socket 上下文。 |
-| `tlsSettings` | `TlsSettings` | 共享 TLS 配置 fallback。 |
-| `tlsContext` | `TlsContext` | 共享 TLS 上下文 fallback。 |
+| `HttpCache.OPTION`（`http.cache`） | `HttpCache` | HTTP 缓存编排。 |
+| `CookieJar.OPTION`（`http.cookieJar`） | `CookieJar` | HTTP 自动加载与保存 Cookie。 |
+| `HttpAuthenticator.OPTION`（`http.authenticator`） | `HttpAuthenticator` | HTTP 挑战认证。 |
+| `ProxyPlan.OPTION`（`http.proxy`） | `ProxyPlan` | HTTP 代理选择。 |
+| `TlsPolicy.OPTION`（`tls.policy`） | `TlsPolicy` | 共享且原子的 TLS 上下文与设置。 |
+| `SocketOptions.TLS_POLICY`（`socket.tlsPolicy`） | `TlsPolicy` | Socket 专属 TLS 覆盖。 |
 
 ### 一次性读取阈值
 
@@ -216,7 +215,7 @@ try (HttpResponse response = call.await(Duration.ofSeconds(5))) {
 
 ### HTTP 缓存
 
-HTTP 缓存通过 `Context` 挂载，HTTP 专用配置使用 `http.cache`。
+HTTP 缓存通过自身的类型化选项挂载到 `Context`。
 
 ```java
 try (HttpCache cache = HttpCache.create(
@@ -224,7 +223,9 @@ try (HttpCache cache = HttpCache.create(
         CachePolicy.defaults(),
         EventObserver.noop())) {
 
-    Context cached = context.withOptions(context.options().with("http.cache", cache));
+    Context cached = Context.builder()
+            .options(Options.empty().with(HttpCache.OPTION, cache))
+            .build();
 
     String body = Fabric.http(cached)
             .get("https://example.com/cacheable")
@@ -236,11 +237,13 @@ try (HttpCache cache = HttpCache.create(
 
 ### Cookie
 
-自动 Cookie 是显式开启的能力。共享 `CookieJar` 通过 `http.cookieJar` 挂载。
+自动 Cookie 是显式开启的能力。共享 `CookieJar` 通过自身的类型化选项挂载。
 
 ```java
 CookieJar jar = CookieJar.memory();
-Context stateful = context.withOptions(context.options().with("http.cookieJar", jar));
+Context stateful = Context.builder()
+        .options(Options.empty().with(CookieJar.OPTION, jar))
+        .build();
 
 Fabric.http(stateful)
         .get("https://example.com/login")
@@ -276,7 +279,7 @@ String proxied = Fabric.http(context)
         .executeText();
 ```
 
-TLS 配置属于 `Context`。只影响单个协议时使用协议专用 key。
+TLS 上下文与设置通过 `TlsPolicy` 原子写入 `Context`。
 
 ```java
 TlsSettings tls = TlsSettings.builder()
@@ -285,17 +288,23 @@ TlsSettings tls = TlsSettings.builder()
                 .build())
         .build();
 
-Context pinned = context.withOptions(context.options().with("http.tlsSettings", tls));
+Context pinned = Context.builder()
+        .policy(TlsPolicy.of(TlsContext.defaults(), tls))
+        .build();
 
 String body = Fabric.http(pinned)
         .get("https://example.com")
         .executeText();
 ```
 
-TLS Socket 使用 socket 入口和 socket 专用 key：
+仅影响 Socket 协议时使用 Socket 专属 TLS 策略选项：
 
 ```java
-Context secureSocket = context.withOptions(context.options().with("socket.tlsSettings", tls));
+Context secureSocket = Context.builder()
+        .options(Options.empty().with(
+                SocketOptions.TLS_POLICY,
+                TlsPolicy.of(TlsContext.defaults(), tls)))
+        .build();
 
 SocketSession session = Fabric.socket(secureSocket)
         .tls("example.com", 443)

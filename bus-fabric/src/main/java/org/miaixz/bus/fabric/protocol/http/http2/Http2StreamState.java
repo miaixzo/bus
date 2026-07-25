@@ -24,6 +24,7 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.function.LongConsumer;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Headers;
@@ -45,7 +46,7 @@ final class Http2StreamState {
     /**
      * Terminal bit indicating that the local sending side is closed.
      */
-    static final int LOCAL_END = 1;
+    static final int LOCAL_END = Normal._1;
 
     /**
      * Terminal bit indicating that the remote sending side is closed.

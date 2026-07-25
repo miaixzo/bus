@@ -19,9 +19,12 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+
 import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.fabric.Payload;
@@ -70,7 +73,7 @@ public final class TextBody implements RequestBody {
      * @return body encoded as UTF-8 plain text
      */
     public static TextBody of(final String text) {
-        return of(text, org.miaixz.bus.core.lang.Charset.UTF_8);
+        return of(text, UTF_8);
     }
 
     /**
@@ -96,10 +99,10 @@ public final class TextBody implements RequestBody {
      * @throws ValidateException if {@code media} is {@code null}
      */
     public static TextBody of(final String text, final MediaType media) {
-        final String value = text == null ? "" : text;
+        final String value = text == null ? Normal.EMPTY : text;
         final MediaType checkedMedia = Assert
                 .notNull(media, () -> new ValidateException("Text media must not be null"));
-        final Charset charset = checkedMedia.charset(org.miaixz.bus.core.lang.Charset.UTF_8);
+        final Charset charset = checkedMedia.charset(UTF_8);
         return new TextBody(value, checkedMedia, Payload.of(value, charset));
     }
 

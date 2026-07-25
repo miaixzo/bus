@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.http.http2;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 
 /**
  * Allocation-stable ring implementation of the RFC 7541 dynamic table.
@@ -92,7 +92,7 @@ final class HpackDynamicTable {
         }
         this.maximumBytes = maximumBytes;
         this.capacityBytes = maximumBytes;
-        final int slots = Math.max(1, maximumBytes / Builder.HTTP2_HPACK_ENTRY_OVERHEAD_BYTES);
+        final int slots = Math.max(Normal._1, maximumBytes / Normal._32);
         this.entries = new Http2Header[slots];
         this.exactHashes = new int[slots];
         this.nameHashes = new int[slots];

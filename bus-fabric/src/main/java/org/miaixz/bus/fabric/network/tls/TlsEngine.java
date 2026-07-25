@@ -26,19 +26,15 @@ import java.security.cert.Certificate;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLEngineResult;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSession;
+import javax.net.ssl.*;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 
 /**
@@ -87,10 +83,14 @@ public final class TlsEngine implements AutoCloseable {
      */
     private final Runnable task;
 
-    /** Reused one-element plaintext source array required by the SSLEngine bulk API. */
+    /**
+     * Reused one-element plaintext source array required by the SSLEngine bulk API.
+     */
     private final ByteBuffer[] wrapSources;
 
-    /** Reused one-element plaintext target array required by the SSLEngine bulk API. */
+    /**
+     * Reused one-element plaintext target array required by the SSLEngine bulk API.
+     */
     private final ByteBuffer[] unwrapTargets;
 
     /**
@@ -250,7 +250,7 @@ public final class TlsEngine implements AutoCloseable {
             return stableApplicationProtocol;
         }
         final String protocol = engine.getApplicationProtocol();
-        return protocol == null ? "" : protocol;
+        return protocol == null ? Normal.EMPTY : protocol;
     }
 
     /**
@@ -373,7 +373,7 @@ public final class TlsEngine implements AutoCloseable {
             final SSLSession session = engine.getSession();
             stableSession = session;
             final String protocol = engine.getApplicationProtocol();
-            stableApplicationProtocol = protocol == null ? "" : protocol;
+            stableApplicationProtocol = protocol == null ? Normal.EMPTY : protocol;
             stablePacketBufferSize = bufferHint(session.getPacketBufferSize());
             stableApplicationBufferSize = bufferHint(session.getApplicationBufferSize());
             stable = true;
@@ -393,7 +393,7 @@ public final class TlsEngine implements AutoCloseable {
         if (providerHint <= 0) {
             throw new SocketException("TLS provider returned an invalid buffer size");
         }
-        return Math.min(providerHint, Builder.TLS_ENGINE_MAX_BUFFER_HINT);
+        return Math.min(providerHint, (int) Normal.MEBI);
     }
 
     /**

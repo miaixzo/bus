@@ -124,7 +124,7 @@ public final class WebSocketWriter {
      */
     private void writeLength(final Buffer target, final long length) {
         final int maskBit = mask ? Normal._128 : Normal._0;
-        if (length <= Builder._125) {
+        if (length <= Builder.WEBSOCKET_CONTROL_PAYLOAD_MAX_BYTES) {
             target.writeByte(maskBit | (int) length);
             return;
         }
@@ -134,7 +134,7 @@ public final class WebSocketWriter {
             target.writeByte((int) length & Builder.UNSIGNED_BYTE_MASK);
             return;
         }
-        target.writeByte(maskBit | Builder._127);
+        target.writeByte(maskBit | Builder.UNSIGNED_7_BIT_MASK);
         for (int shift = Normal._56; shift >= Normal._0; shift -= Byte.SIZE) {
             target.writeByte((int) (length >>> shift) & Builder.UNSIGNED_BYTE_MASK);
         }

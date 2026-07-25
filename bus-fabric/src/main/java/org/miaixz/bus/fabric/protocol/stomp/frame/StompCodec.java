@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 
@@ -267,7 +266,7 @@ public final class StompCodec {
         if (length < Normal.LONG_ZERO) {
             return Normal.__1;
         }
-        if (length > Builder.DEFAULT_MATERIALIZE_MAX_BYTES || length > Integer.MAX_VALUE) {
+        if (length > Normal.MEBI_64 || length > Integer.MAX_VALUE) {
             throw new ProtocolException("STOMP content-length exceeds the materialization limit");
         }
         return (int) length;

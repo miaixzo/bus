@@ -28,7 +28,6 @@ import java.util.concurrent.locks.StampedLock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 
 /**
  * Bounded rolling sum and count window.
@@ -190,7 +189,7 @@ public final class RollingWindow {
             for (int i = 0; i < buckets.length(); i++) {
                 total += value(i, current, true);
             }
-            return total == 0L ? 0D : total / (windowNanos / Builder.ROLLING_WINDOW_NANOS_PER_SECOND);
+            return total == 0L ? 0D : total / (windowNanos / Normal.GIGA);
         } finally {
             lock.unlockRead(stamp);
         }

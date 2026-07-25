@@ -32,18 +32,14 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 import org.miaixz.bus.fabric.protocol.Mediator;
@@ -56,7 +52,7 @@ import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Opens STOMP sessions from an immutable STOMP exchange snapshot.
+ * Opens STOMP sessions from an immutable STOMP exchange specification.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -66,16 +62,16 @@ final class StompRunner {
     /**
      * Immutable exchange configuration and borrowed runtime services.
      */
-    private final StompSnapshot snapshot;
+    private final StompSpec spec;
 
     /**
      * Creates a runner.
      *
-     * @param snapshot execution snapshot
-     * @throws ValidateException if {@code snapshot} is {@code null}
+     * @param spec execution specification
+     * @throws ValidateException if {@code spec} is {@code null}
      */
-    StompRunner(final StompSnapshot snapshot) {
-        this.snapshot = require(snapshot, "STOMP exchange snapshot");
+    StompRunner(final StompSpec spec) {
+        this.spec = require(spec, "STOMP exchange specification");
     }
 
     /**
@@ -104,14 +100,13 @@ final class StompRunner {
                 true,
                 "Fabric",
                 "STOMP open started: scheme={}, host={}, port={}, destinationPresent={}",
-                snapshot.address().scheme(),
-                snapshot.address().host(),
-                snapshot.address().port(),
-                snapshot.destination() != null);
+                spec.address().scheme(),
+                spec.address().host(),
+                spec.address().port(),
+                spec.destination() != null);
         try {
             currentCancellation.throwIfCancelled();
-            if (!Protocol.WS.name.equals(snapshot.uri().getScheme())
-                    && !Protocol.WSS.name.equals(snapshot.uri().getScheme())) {
+            if (!Protocol.WS.name.equals(spec.uri().getScheme()) && !Protocol.WSS.name.equals(spec.uri().getScheme())) {
                 throw new ProtocolException("STOMP open requires ws or wss target");
             }
             final Message opening = prepareOpen();
@@ -123,16 +118,15 @@ final class StompRunner {
                     Type.WEBSOCKET,
                     currentCancellation,
                     current -> WebSocketRunner.create(
-                            snapshot.context().withFilter(null),
-                            snapshot.uri(),
+                            spec.context().withFilter(null),
+                            spec.uri(),
                             opening.headers(),
-                            snapshot.timeout(),
+                            spec.timeout(),
                             (ignored, message) -> {
                                 try {
                                     final Buffer input = new Buffer();
                                     input.write(
-                                            message.payload()
-                                                    .bytes(snapshot.context().options().materializeMaxBytes()));
+                                            message.payload().bytes(spec.context().options().materializeMaxBytes()));
                                     for (final StompFrame frame : inbound.decode(input)) {
                                         if (Builder.STOMP_COMMAND_CONNECTED.equals(frame.command())) {
                                             final StompFrame filtered = filter(frame, Builder.STOMP_TAG_CONNECTED);
@@ -169,25 +163,24 @@ final class StompRunner {
                         false,
                         "Fabric",
                         "STOMP CONNECT accepted: scheme={}, host={}, port={}",
-                        snapshot.address().scheme(),
-                        snapshot.address().host(),
-                        snapshot.address().port());
+                        spec.address().scheme(),
+                        spec.address().host(),
+                        spec.address().port());
                 final StompSession opened = new StompSession(
                         buffer -> openedSocket.send(Payload.of(buffer.readByteString())), openedSocket::close,
-                        openedSocket::cancel, snapshot.handler(), snapshot.address(), snapshot.guard(),
-                        snapshot.observer(), FilterChain.compose(snapshot.context().filter(), snapshot.filter()),
-                        snapshot.listener(), snapshot.context().options().materializeMaxBytes(),
-                        snapshot.context().reactor().dispatcher(), snapshot.context().clock(), currentCancellation,
-                        snapshot.timeout(), state);
+                        openedSocket::cancel, spec.handler(), spec.address(), spec.guard(), spec.observer(),
+                        FilterChain.compose(spec.context().filter(), spec.filter()), spec.listener(),
+                        spec.context().options().materializeMaxBytes(), spec.context().reactor().dispatcher(),
+                        spec.context().clock(), currentCancellation, spec.timeout(), state);
                 session.set(opened);
                 currentCancellation.throwIfCancelled();
                 Logger.info(
                         false,
                         "Fabric",
                         "STOMP open completed: scheme={}, host={}, port={}",
-                        snapshot.address().scheme(),
-                        snapshot.address().host(),
-                        snapshot.address().port());
+                        spec.address().scheme(),
+                        spec.address().host(),
+                        spec.address().port());
                 return opened;
             } finally {
                 unregisterCancellation.run();
@@ -202,9 +195,9 @@ final class StompRunner {
                     "Fabric",
                     e,
                     "STOMP open cancelled: scheme={}, host={}, port={}",
-                    snapshot.address().scheme(),
-                    snapshot.address().host(),
-                    snapshot.address().port());
+                    spec.address().scheme(),
+                    spec.address().host(),
+                    spec.address().port());
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.STOMP_FAILED, e, operationId);
@@ -216,9 +209,9 @@ final class StompRunner {
                     "Fabric",
                     e,
                     "STOMP open failed: scheme={}, host={}, port={}, exception={}",
-                    snapshot.address().scheme(),
-                    snapshot.address().host(),
-                    snapshot.address().port(),
+                    spec.address().scheme(),
+                    spec.address().host(),
+                    spec.address().port(),
                     e.getClass().getSimpleName());
             throw e;
         }
@@ -232,14 +225,14 @@ final class StompRunner {
     StompFrame connectFrame() {
         final Headers.Builder builder = Headers.builder()
                 .add(Builder.STOMP_HEADER_ACCEPT_VERSION, Builder.STOMP_VERSION_1_2)
-                .add(Builder.HOST, snapshot.address().host());
-        if (snapshot.login() != null) {
-            builder.add(Builder.STOMP_HEADER_LOGIN, snapshot.login());
+                .add(Builder.HOST, spec.address().host());
+        if (spec.login() != null) {
+            builder.add(Builder.STOMP_HEADER_LOGIN, spec.login());
         }
-        if (snapshot.passcode() != null) {
-            builder.add(Builder.STOMP_HEADER_PASSCODE, snapshot.passcode());
+        if (spec.passcode() != null) {
+            builder.add(Builder.STOMP_HEADER_PASSCODE, spec.passcode());
         }
-        for (final Map.Entry<String, List<String>> entry : snapshot.headers().asMap().entrySet()) {
+        for (final Map.Entry<String, List<String>> entry : spec.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
                 builder.add(entry.getKey(), value);
             }
@@ -259,12 +252,12 @@ final class StompRunner {
      */
     private StompFrame awaitConnected(final CompletableFuture<StompFrame> connected, final Cancellation cancellation) {
         final Duration connectTimeout = connectTimeout();
-        final long started = snapshot.context().clock().nanos();
+        final long started = spec.context().clock().nanos();
         final long limit = connectTimeout.isZero() ? Long.MAX_VALUE : durationNanos(connectTimeout);
         try {
             while (!connected.isDone()) {
                 cancellation.throwIfCancelled();
-                if (limit != Long.MAX_VALUE && elapsed(started, snapshot.context().clock().nanos()) >= limit) {
+                if (limit != Long.MAX_VALUE && elapsed(started, spec.context().clock().nanos()) >= limit) {
                     throw new TimeoutException("STOMP CONNECT timed out");
                 }
                 if (!ThreadKit.sleep(Normal._1)) {
@@ -296,8 +289,8 @@ final class StompRunner {
             throw new ProtocolException("STOMP CONNECTED heart-beat header must be unique");
         }
         final long[] server = heartbeatPair(values.isEmpty() ? null : values.getFirst());
-        final long clientSend = snapshot.policy().clientSendHeartbeatMillis();
-        final long clientReceive = snapshot.policy().clientReceiveHeartbeatMillis();
+        final long clientSend = spec.policy().clientSendHeartbeatMillis();
+        final long clientReceive = spec.policy().clientReceiveHeartbeatMillis();
         final long serverSend = server[Normal._0];
         final long serverReceive = server[Normal._1];
         final Duration outbound = clientSend == Normal.LONG_ZERO || serverReceive == Normal.LONG_ZERO ? Duration.ZERO
@@ -307,7 +300,7 @@ final class StompRunner {
             state = new StompState(outbound, Duration.ZERO);
         } else {
             final long inbound = Math.max(clientReceive, serverSend);
-            final long tolerance = Math.max(Builder._1000, halfCeiling(inbound));
+            final long tolerance = Math.max(Normal.KILO, halfCeiling(inbound));
             final long deadline;
             try {
                 deadline = Math.addExact(inbound, tolerance);
@@ -341,8 +334,8 @@ final class StompRunner {
         if (value == null) {
             return new long[] { Normal.LONG_ZERO, Normal.LONG_ZERO };
         }
-        final int comma = value.indexOf(',');
-        if (comma <= Normal._0 || comma != value.lastIndexOf(',') || comma == value.length() - Normal._1) {
+        final int comma = value.indexOf(Symbol.C_COMMA);
+        if (comma <= Normal._0 || comma != value.lastIndexOf(Symbol.C_COMMA) || comma == value.length() - Normal._1) {
             throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
         }
         return new long[] { unsignedMillis(value, Normal._0, comma),
@@ -427,7 +420,7 @@ final class StompRunner {
      * @param call deferred CONNECT-frame send operation to await
      */
     private void awaitSend(final Call<Void> call) {
-        final Duration writeTimeout = snapshot.timeout().write();
+        final Duration writeTimeout = spec.timeout().write();
         if (writeTimeout.isZero()) {
             call.await();
         } else {
@@ -441,7 +434,7 @@ final class StompRunner {
      * @return handshake timeout
      */
     private Duration connectTimeout() {
-        return snapshot.timeout().call().isZero() ? snapshot.timeout().connect() : snapshot.timeout().call();
+        return spec.timeout().call().isZero() ? spec.timeout().connect() : spec.timeout().call();
     }
 
     /**
@@ -452,13 +445,13 @@ final class StompRunner {
     private Message prepareOpen() {
         final Message opening = FilterChain.apply(
                 Message.of(
-                        snapshot.address().protocol(),
-                        snapshot.address(),
-                        snapshot.headers(),
+                        spec.address().protocol(),
+                        spec.address(),
+                        spec.headers(),
                         Payload.empty(),
                         Builder.STOMP_TAG_OPEN),
-                snapshot.context().filter(),
-                snapshot.filter());
+                spec.context().filter(),
+                spec.filter());
         checkGuard(opening);
         return opening;
     }
@@ -478,24 +471,24 @@ final class StompRunner {
      * @param message filtered opening or frame message to authorize
      */
     private void checkGuard(final Message message) {
-        if (snapshot.guard() == null) {
+        if (spec.guard() == null) {
             return;
         }
         Logger.debug(
                 true,
                 "Fabric",
                 "STOMP guard check started: host={}, port={}, destinationPresent={}",
-                snapshot.address().host(),
-                snapshot.address().port(),
-                snapshot.destination() != null);
-        snapshot.guard().check(message).throwIfRejected();
+                spec.address().host(),
+                spec.address().port(),
+                spec.destination() != null);
+        spec.guard().check(message).throwIfRejected();
         Logger.debug(
                 false,
                 "Fabric",
                 "STOMP guard check accepted: host={}, port={}, destinationPresent={}",
-                snapshot.address().host(),
-                snapshot.address().port(),
-                snapshot.destination() != null);
+                spec.address().host(),
+                spec.address().port(),
+                spec.destination() != null);
     }
 
     /**
@@ -507,9 +500,9 @@ final class StompRunner {
      */
     private StompFrame filter(final StompFrame frame, final Object tag) {
         final Message filtered = FilterChain.apply(
-                Message.of(Protocol.STOMP, snapshot.address(), frame.headers(), frame.body(), tag),
-                snapshot.context().filter(),
-                snapshot.filter());
+                Message.of(Protocol.STOMP, spec.address(), frame.headers(), frame.body(), tag),
+                spec.context().filter(),
+                spec.filter());
         checkGuard(filtered);
         return StompFrame.of(frame.command(), filtered.headers(), filtered.payload());
     }
@@ -522,14 +515,14 @@ final class StompRunner {
      * @param operationId identifier correlating events for this opening operation
      */
     private void emit(final ObservationMarker marker, final Throwable cause, final String operationId) {
-        FabricEvent.Builder event = FabricEvent.builder(marker, snapshot.context().clock())
-                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, snapshot.address().scheme())
-                .tag(Builder.HOST, snapshot.address().host())
-                .tag(Builder.TAG_PORT, Integer.toString(snapshot.address().port()));
+        FabricEvent.Builder event = FabricEvent.builder(marker, spec.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_PROTOCOL, spec.address().scheme())
+                .tag(Builder.HOST, spec.address().host())
+                .tag(Builder.TAG_PORT, Integer.toString(spec.address().port()));
         if (cause != null) {
             event = event.cause(cause);
         }
-        snapshot.observer().emit(event.build());
+        spec.observer().emit(event.build());
     }
 
     /**

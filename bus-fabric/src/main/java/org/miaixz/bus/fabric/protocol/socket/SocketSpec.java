@@ -23,13 +23,7 @@ import java.net.URI;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Handler;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
@@ -38,7 +32,7 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.EventObserver;
 
 /**
- * Immutable execution snapshot for a socket exchange.
+ * Immutable execution specification for a socket exchange.
  *
  * @param context       runtime services used by the socket exchange
  * @param uri           original target URI requested by the caller
@@ -59,19 +53,19 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @author Kimi Liu
  * @since Java 21+
  */
-record SocketSnapshot(Context context, URI uri, Address address, Headers headers, Timeout timeout,
-        TlsContext tlsContext, TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard,
-        Filter filter, EventObserver observer, ProxyHeader proxyHeader, SocketOptions socketOptions,
+record SocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, TlsContext tlsContext,
+        TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter,
+        EventObserver observer, ProxyHeader proxyHeader, SocketOptions socketOptions,
         Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
-     * Creates a validated snapshot.
+     * Creates a validated specification.
      *
      * @param context       runtime services used by the exchange
      * @param uri           original target URI
      * @param address       normalized transport address
      * @param headers       handshake or first-message headers
-     * @param timeout       timeout policy copied into the snapshot
+     * @param timeout       timeout policy copied into the specification
      * @param tlsContext    TLS context, or {@code null} with {@code tlsSettings}
      * @param tlsSettings   TLS settings, or {@code null} with {@code tlsContext}
      * @param frameCodec    socket message framing codec
@@ -84,7 +78,7 @@ record SocketSnapshot(Context context, URI uri, Address address, Headers headers
      * @param listener      session lifecycle listener
      * @param pooled        whether pooled transport resources may be used
      */
-    SocketSnapshot {
+    SocketSpec {
         context = require(context, "Context");
         uri = require(uri, "Target URI");
         address = require(address, "Address");

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -102,7 +105,7 @@ public final class FormBody implements RequestBody {
      * @return newly allocated UTF-8 form bytes
      */
     private static byte[] encodeEntries(final List<Entry> entries) {
-        return ByteString.encodeString(encodeText(entries), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
+        return ByteString.encodeString(encodeText(entries), UTF_8).toByteArray();
     }
 
     /**
@@ -133,7 +136,7 @@ public final class FormBody implements RequestBody {
      */
     private static String encode(final String value) {
         try {
-            return UrlEncoder.encodeAll(value, org.miaixz.bus.core.lang.Charset.UTF_8);
+            return UrlEncoder.encodeAll(value, UTF_8);
         } catch (final RuntimeException e) {
             throw new ProtocolException("Unable to encode form field", e);
         }
@@ -233,7 +236,7 @@ public final class FormBody implements RequestBody {
          */
         @Override
         public byte[] bytes() {
-            return bytes(org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
@@ -262,7 +265,7 @@ public final class FormBody implements RequestBody {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Normal.MEBI_64);
         }
 
         /**

@@ -117,6 +117,7 @@ final class DefaultLedger<T> implements Ledger<T> {
      * Creates an empty concurrent ledger.
      */
     DefaultLedger() {
+        // No initialization required.
     }
 
     /**

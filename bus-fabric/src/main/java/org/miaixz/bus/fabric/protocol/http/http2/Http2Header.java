@@ -128,7 +128,7 @@ public record Http2Header(String name, String value, boolean pseudo) {
             return true;
         }
         return switch (value) {
-            case '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' -> true;
+            case Symbol.C_NOT, Symbol.C_HASH, Symbol.C_DOLLAR, Symbol.C_PERCENT, Symbol.C_AND, Symbol.C_SINGLE_QUOTE, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_DOT, Symbol.C_CARET, Symbol.C_UNDERLINE, '`', Symbol.C_OR, Symbol.C_TILDE -> true;
             default -> false;
         };
     }

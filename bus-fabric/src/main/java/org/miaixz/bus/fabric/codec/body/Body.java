@@ -23,10 +23,10 @@ import java.nio.charset.Charset;
 
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -79,14 +79,14 @@ public interface Body extends AutoCloseable {
     }
 
     /**
-     * Materializes all body bytes using {@link Builder#DEFAULT_MATERIALIZE_MAX_BYTES} as the safety threshold.
+     * Materializes all body bytes using {@link Normal#MEBI_64} as the safety threshold.
      *
      * @return newly materialized body bytes
      * @throws InternalException if the payload exceeds the threshold or JVM array limit, violates its declared length,
      *                           or cannot be read
      */
     default byte[] bytes() {
-        return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "Body.bytes()");
+        return Payload.materialize(payload(), Normal.MEBI_64, "Body.bytes()");
     }
 
     /**

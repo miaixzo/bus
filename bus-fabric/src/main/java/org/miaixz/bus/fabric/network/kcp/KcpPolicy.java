@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.network.kcp;
 
+import static org.miaixz.bus.fabric.Builder.*;
+
 import java.time.Duration;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -405,48 +407,48 @@ public final class KcpPolicy implements Policy {
         /**
          * Retransmission delay candidate.
          */
-        private Duration retransmitDelay = org.miaixz.bus.fabric.Builder.KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY;
+        private Duration retransmitDelay = KCP_NETWORK_DEFAULT_RETRANSMIT_DELAY;
 
         /**
          * Retransmission attempt limit candidate.
          */
-        private int maxRetransmissions = org.miaixz.bus.fabric.Builder.KCP_NETWORK_MAX_RETRANSMISSIONS;
+        private int maxRetransmissions = Normal._8;
 
         /**
          * Reassembly timeout candidate.
          */
-        private Duration reassemblyTimeout = org.miaixz.bus.fabric.Builder.KCP_NETWORK_REASSEMBLY_TIMEOUT;
+        private Duration reassemblyTimeout = KCP_NETWORK_REASSEMBLY_TIMEOUT;
 
         /**
          * Concurrent reassembly limit candidate.
          */
-        private int maxActiveReassemblies = org.miaixz.bus.fabric.Builder.KCP_NETWORK_MAX_ACTIVE_REASSEMBLIES;
+        private int maxActiveReassemblies = Normal._64;
 
         /**
          * Decoded message size limit candidate.
          */
-        private long maxMessageBytes = org.miaixz.bus.fabric.Builder.KCP_NETWORK_MAX_MESSAGE_BYTES;
+        private long maxMessageBytes = BYTES_16_MIB;
 
         /**
          * Outbound queue size limit candidate.
          */
-        private long maxOutboundQueueBytes = org.miaixz.bus.fabric.Builder.KCP_NETWORK_MAX_OUTBOUND_QUEUE_BYTES;
+        private long maxOutboundQueueBytes = Normal.MEBI_64;
 
         /**
          * Aggregate reassembly memory limit candidate.
          */
-        private long maxReassemblyBytes = org.miaixz.bus.fabric.Builder.KCP_NETWORK_MAX_REASSEMBLY_BYTES;
+        private long maxReassemblyBytes = Normal.MEBI_64;
 
         /**
          * Per-source reassembly memory limit candidate.
          */
-        private long maxSourceReassemblyBytes = org.miaixz.bus.fabric.Builder.KCP_NETWORK_MAX_SOURCE_REASSEMBLY_BYTES;
+        private long maxSourceReassemblyBytes = KCP_REASSEMBLY_SOURCE_MAX_BYTES;
 
         /**
          * Creates a builder initialized with default KCP values.
          */
         private Builder() {
-            // Field initializers provide the complete default policy.
+            // No initialization required.
         }
 
         /**

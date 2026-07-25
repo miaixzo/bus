@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -67,7 +68,7 @@ public final class StompFrame {
      * Creates the unique heartbeat frame.
      */
     private StompFrame() {
-        this.command = "";
+        this.command = Normal.EMPTY;
         this.headers = Headers.empty();
         this.body = Payload.empty();
         this.receipt = false;

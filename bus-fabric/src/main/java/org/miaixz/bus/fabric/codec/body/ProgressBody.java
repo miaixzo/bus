@@ -33,7 +33,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Payload;
 
 /**
@@ -51,7 +50,7 @@ public interface ProgressBody extends Body {
      */
     @Override
     default byte[] bytes() {
-        return Payload.materialize(payload(), Builder.DEFAULT_MATERIALIZE_MAX_BYTES, "ProgressBody.bytes()");
+        return Payload.materialize(payload(), Normal.MEBI_64, "ProgressBody.bytes()");
     }
 
     /**
@@ -437,7 +436,7 @@ public interface ProgressBody extends Body {
              */
             @Override
             public byte[] bytes() {
-                return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return bytes(Normal.MEBI_64);
             }
 
             /**
@@ -459,7 +458,7 @@ public interface ProgressBody extends Body {
              */
             @Override
             public String text(final Charset charset) {
-                return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+                return text(charset, Normal.MEBI_64);
             }
 
             /**

@@ -32,16 +32,13 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.proxy.ProxySelectorAdapter;
+import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.EventObserver;
@@ -51,20 +48,17 @@ import org.miaixz.bus.fabric.protocol.CookieJar;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.cache.HttpCache;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpBridge;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpConnect;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator;
-import org.miaixz.bus.fabric.protocol.http.chain.HttpTransport;
+import org.miaixz.bus.fabric.protocol.http.chain.*;
 import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
 import org.miaixz.bus.fabric.protocol.http.retry.HttpRetry;
 import org.miaixz.bus.fabric.protocol.http.retry.HttpRetryPolicy;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
+import org.miaixz.bus.logger.Logger;
 
 /**
- * Executes an immutable HTTP exchange snapshot through the HTTP chain.
+ * Executes an immutable HTTP exchange specification through the HTTP chain.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -89,13 +83,15 @@ public final class HttpRunner {
      */
     private static final String PIPELINE_SERVICE = HttpRunner.class.getName() + ".pipeline.";
 
-    /** Most recently resolved context pipeline, avoiding service-key construction on repeated calls. */
+    /**
+     * Most recently resolved context pipeline, avoiding service-key construction on repeated calls.
+     */
     private static volatile PipelineCache pipelineCache;
 
     /**
-     * Execution snapshot.
+     * Execution specification.
      */
-    private final HttpSnapshot snapshot;
+    private final HttpSpec spec;
 
     /**
      * Single execution guard.
@@ -108,7 +104,7 @@ public final class HttpRunner {
     private final String operationId;
 
     /**
-     * Immutable request/response filter captured from the execution snapshot.
+     * Immutable request/response filter captured from the execution specification.
      */
     private final Filter filter;
 
@@ -165,7 +161,7 @@ public final class HttpRunner {
     /**
      * Ordered immutable HTTP stage snapshot executed for this exchange.
      */
-    private final List<org.miaixz.bus.fabric.protocol.http.chain.HttpStage> stages;
+    private final List<HttpStage> stages;
 
     /**
      * Whether lifecycle events have a non-noop observer and therefore require publication.
@@ -175,29 +171,29 @@ public final class HttpRunner {
     /**
      * Creates an HTTP runner.
      *
-     * @param snapshot immutable request and exchange-hook snapshot
-     * @throws ValidateException if {@code snapshot} is {@code null}
+     * @param spec immutable request and exchange-hook specification
+     * @throws ValidateException if {@code spec} is {@code null}
      */
-    HttpRunner(final HttpSnapshot snapshot) {
-        this(snapshot, true);
+    HttpRunner(final HttpSpec spec) {
+        this(spec, true);
     }
 
     /**
      * Creates an HTTP runner and records whether lifecycle events have a real consumer. The public factory supplies the
-     * known no-op observer directly, while builder-created snapshots retain their configured observer.
+     * known no-op observer directly, while builder-created specifications retain their configured observer.
      *
-     * @param snapshot immutable request and exchange-hook snapshot
+     * @param spec     immutable request and exchange-hook specification
      * @param observed whether lifecycle events have a non-noop consumer
-     * @throws ValidateException if {@code snapshot} is {@code null}
+     * @throws ValidateException if {@code spec} is {@code null}
      */
-    HttpRunner(final HttpSnapshot snapshot, final boolean observed) {
-        this.snapshot = require(snapshot, "HTTP exchange snapshot");
-        final Context context = snapshot.context();
+    HttpRunner(final HttpSpec spec, final boolean observed) {
+        this.spec = require(spec, "HTTP exchange specification");
+        final Context context = spec.context();
         final Pipeline pipeline = pipeline(context);
         this.observed = observed;
         this.operationId = observed ? ID.objectId() : null;
         final Filter contextFilter = context.filter();
-        final Filter exchangeFilter = snapshot.filter();
+        final Filter exchangeFilter = spec.filter();
         this.filter = contextFilter == null && exchangeFilter == null ? null
                 : FilterChain.compose(contextFilter, exchangeFilter);
         this.cache = pipeline.cache;
@@ -206,7 +202,7 @@ public final class HttpRunner {
         this.userAgent = pipeline.userAgent;
         this.tlsContext = pipeline.tlsContext;
         this.tlsSettings = pipeline.tlsSettings;
-        this.proxy = pipeline.proxy(snapshot.request());
+        this.proxy = pipeline.proxy(spec.request());
         this.materializeMaxBytes = pipeline.materializeMaxBytes;
         this.bridge = pipeline.bridge;
         this.connect = pipeline.connect;
@@ -224,7 +220,7 @@ public final class HttpRunner {
         if (cached != null && cached.context == context) {
             return cached.pipeline;
         }
-        final Pipeline resolved = context.directory().service(
+        final Pipeline resolved = context.reactor().directory().service(
                 PIPELINE_SERVICE + Integer.toUnsignedString(System.identityHashCode(context)),
                 Pipeline.class,
                 () -> Pipeline.create(context));
@@ -241,7 +237,7 @@ public final class HttpRunner {
      * @throws ValidateException if the context or request is {@code null}
      */
     public static HttpRunner create(final Context context, final HttpRequest request) {
-        return new HttpRunner(new HttpSnapshot(require(context, "Context"), require(request, "HTTP request"),
+        return new HttpRunner(new HttpSpec(require(context, "Context"), require(request, "HTTP request"),
                 EventObserver.noop(), null, null), false);
     }
 
@@ -261,8 +257,8 @@ public final class HttpRunner {
             final EventObserver observer,
             final Filter filter,
             final GuardRule guard) {
-        final HttpSnapshot snapshot = new HttpSnapshot(context, request, observer, filter, guard);
-        return new HttpRunner(snapshot, observer != EventObserver.noop()).run(Cancellation.none());
+        final HttpSpec spec = new HttpSpec(context, request, observer, filter, guard);
+        return new HttpRunner(spec, observer != EventObserver.noop()).run(Cancellation.none());
     }
 
     /**
@@ -337,6 +333,10 @@ public final class HttpRunner {
     public HttpResponse run(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
+        final boolean debug = Logger.isDebugEnabled();
+        if (debug) {
+            Logger.debug(true, "Fabric", "HTTP exchange started: method={}", spec.request().method());
+        }
         try {
             currentCancellation.throwIfCancelled();
             final HttpRequest current = prepareRequest();
@@ -345,12 +345,33 @@ public final class HttpRunner {
             final HttpResponse response = exchange(current, currentCancellation);
             currentCancellation.throwIfCancelled();
             emit(ObservationMarker.HTTP_RESPONSE, response, null);
+            if (debug) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "HTTP exchange completed: method={}, status={}, protocol={}",
+                        current.method(),
+                        response.code(),
+                        response.protocol());
+            }
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
+            if (Logger.isWarnEnabled()) {
+                Logger.warn(false, "Fabric", e, "HTTP exchange cancelled: method={}", spec.request().method());
+            }
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
+            if (Logger.isErrorEnabled()) {
+                Logger.error(
+                        false,
+                        "Fabric",
+                        e,
+                        "HTTP exchange failed: method={}, exception={}",
+                        spec.request().method(),
+                        e.getClass().getSimpleName());
+            }
             throw e;
         }
     }
@@ -365,7 +386,7 @@ public final class HttpRunner {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
         currentCancellation.throwIfCancelled();
-        final HttpRequest request = bridge.prepare(snapshot.request());
+        final HttpRequest request = bridge.prepare(spec.request());
         final ConnectionLease lease = connect.acquire(request, currentCancellation);
         try {
             currentCancellation.throwIfCancelled();
@@ -399,9 +420,9 @@ public final class HttpRunner {
      * @return prepared request
      */
     private HttpRequest prepareRequest() {
-        final HttpRequest source = snapshot.request();
+        final HttpRequest source = spec.request();
         final HttpRequest request = source.proxy() == proxy ? source : source.toBuilder().proxy(proxy).build();
-        if (filter == null && snapshot.guard() == null) {
+        if (filter == null && spec.guard() == null) {
             return request;
         }
         Message message = Message.of(
@@ -413,8 +434,8 @@ public final class HttpRunner {
         if (filter != null) {
             message = FilterChain.apply(message, filter);
         }
-        if (snapshot.guard() != null) {
-            snapshot.guard().check(message).throwIfRejected();
+        if (spec.guard() != null) {
+            spec.guard().check(message).throwIfRejected();
         }
         if (filter == null) {
             return request;
@@ -491,7 +512,7 @@ public final class HttpRunner {
      * @return cache or null
      */
     private static HttpCache cache(final Context context) {
-        return context.options().get(Builder.OPTION_HTTP_CACHE);
+        return context.options().get(HttpCache.OPTION);
     }
 
     /**
@@ -501,13 +522,11 @@ public final class HttpRunner {
      * @return cookie jar or null
      */
     private static CookieJar cookieJar(final Context context) {
-        if (context.options().contains(Builder.OPTION_HTTP_COOKIE_JAR)) {
-            return context.options().get(Builder.OPTION_HTTP_COOKIE_JAR);
+        if (context.options().contains(CookieJar.OPTION)) {
+            return context.options().get(CookieJar.OPTION);
         }
-        return context.directory().service(
-                Builder.OPTION_HTTP_COOKIE_JAR.name(),
-                CookieJar.class,
-                () -> CookieJar.memory(context.clock()));
+        return context.reactor().directory()
+                .service(CookieJar.OPTION.name(), CookieJar.class, () -> CookieJar.memory(context.clock()));
     }
 
     /**
@@ -517,7 +536,7 @@ public final class HttpRunner {
      * @return authenticator
      */
     private static HttpAuthenticator authenticator(final Context context) {
-        final HttpAuthenticator value = context.options().get(Builder.OPTION_HTTP_AUTHENTICATOR);
+        final HttpAuthenticator value = context.options().get(HttpAuthenticator.OPTION);
         return value == null ? HttpAuthenticator.none() : value;
     }
 
@@ -533,25 +552,13 @@ public final class HttpRunner {
     }
 
     /**
-     * Returns configured TLS context.
+     * Returns the complete configured TLS policy.
      *
      * @param context runtime context containing TLS options
-     * @return TLS context
+     * @return configured or shared default TLS policy
      */
-    private static TlsContext tlsContext(final Context context) {
-        final TlsContext value = context.options().get(Builder.OPTION_TLS_CONTEXT);
-        return value == null ? TlsContext.defaults() : value;
-    }
-
-    /**
-     * Returns configured TLS settings.
-     *
-     * @param context runtime context containing TLS options
-     * @return TLS settings
-     */
-    private static TlsSettings tlsSettings(final Context context) {
-        final TlsSettings value = context.options().get(Builder.OPTION_TLS_SETTINGS);
-        return value == null ? TlsSettings.defaults() : value;
+    private static TlsPolicy tlsPolicy(final Context context) {
+        return TlsPolicy.resolve(context.options());
     }
 
     /**
@@ -565,16 +572,16 @@ public final class HttpRunner {
         if (!observed) {
             return;
         }
-        FabricEvent.Builder builder = FabricEvent.builder(marker, snapshot.context().clock())
-                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Builder.TAG_METHOD, snapshot.request().method().value())
-                .tag(Builder.TAG_URL, snapshot.request().url().encoded());
+        FabricEvent.Builder builder = FabricEvent.builder(marker, spec.context().clock())
+                .tag(Builder.TAG_OPERATION_ID, operationId).tag(Http.Param.METHOD, spec.request().method().value())
+                .tag(Builder.TAG_URL, spec.request().url().encoded());
         if (response != null) {
             builder = builder.tag(Builder.TAG_CODE, Integer.toString(response.code()));
         }
         if (cause != null) {
             builder = builder.cause(cause);
         }
-        snapshot.observer().emit(builder.build());
+        spec.observer().emit(builder.build());
     }
 
     /**
@@ -615,7 +622,9 @@ public final class HttpRunner {
          */
         private final Context context;
 
-        /** Most recent system proxy decision, keyed by selector identity and immutable URL text. */
+        /**
+         * Most recent system proxy decision, keyed by selector identity and immutable URL text.
+         */
         private volatile ProxySelection proxySelection;
 
         /**
@@ -666,7 +675,7 @@ public final class HttpRunner {
         /**
          * Immutable ordered stage chain.
          */
-        private final List<org.miaixz.bus.fabric.protocol.http.chain.HttpStage> stages;
+        private final List<HttpStage> stages;
 
         /**
          * Creates one frozen pipeline.
@@ -679,28 +688,40 @@ public final class HttpRunner {
             this.cookies = cookieJar(context);
             this.authenticator = authenticator(context);
             this.userAgent = userAgent(context);
-            this.tlsContext = tlsContext(context);
-            this.tlsSettings = tlsSettings(context);
+            final TlsPolicy tlsPolicy = tlsPolicy(context);
+            this.tlsContext = tlsPolicy.context();
+            this.tlsSettings = tlsPolicy.settings();
             this.materializeMaxBytes = context.options().materializeMaxBytes();
             this.bridge = new HttpBridge(cookies, userAgent);
-            this.connect = new HttpConnect(context.directory().connectionPool(), tlsContext, tlsSettings,
-                    context.listener(), context.resolver(), context.reactor().dispatcher());
+            this.connect = new HttpConnect(context.reactor().directory().connectionPool(), tlsContext, tlsSettings,
+                    context.listener(), context.reactor().resolver(), context.reactor().dispatcher());
             this.stages = List.of(
                     new HttpRetry(HttpRetryPolicy.resolve(context.options()), authenticator),
                     bridge,
                     cache == null ? HttpCoordinator.disabled(context.reactor().clock())
                             : HttpCoordinator.create(cache, context.reactor().clock()),
                     connect,
-                    new HttpTransport(context.reactor().dispatcher()));
+                    new HttpTransport(context.reactor().dispatcher(), context.reactor().clock()));
+            if (Logger.isInfoEnabled()) {
+                Logger.info(
+                        true,
+                        "Fabric",
+                        "HTTP pipeline initialized: cacheEnabled={}, stages={}, materializeMaxBytes={}",
+                        cache != null,
+                        stages.size(),
+                        materializeMaxBytes);
+            }
         }
 
-        /** Resolves explicit proxy policy first and caches the common stable system-selector decision. */
+        /**
+         * Resolves explicit proxy policy first and caches the common stable system-selector decision.
+         */
         private ProxyPlan proxy(final HttpRequest request) {
             if (!request.proxy().isDirect()) {
                 return request.proxy();
             }
-            if (context.options().contains(Builder.OPTION_HTTP_PROXY)) {
-                final ProxyPlan configured = context.options().get(Builder.OPTION_HTTP_PROXY);
+            if (context.options().contains(ProxyPlan.OPTION)) {
+                final ProxyPlan configured = context.options().get(ProxyPlan.OPTION);
                 return configured == null ? ProxyPlan.direct() : configured;
             }
             final ProxySelector selector = ProxySelector.getDefault();

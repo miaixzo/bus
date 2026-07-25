@@ -19,12 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -38,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.observe.tags.Tags;
-import org.miaixz.bus.fabric.protocol.http.agent.UserAgent;
+import org.miaixz.bus.fabric.platform.UserAgent;
 
 /**
  * HTTP-specific header helpers built on the shared immutable {@link Headers} value.

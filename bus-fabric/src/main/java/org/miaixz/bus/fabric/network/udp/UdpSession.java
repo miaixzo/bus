@@ -33,13 +33,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Session;
-import org.miaixz.bus.fabric.Status;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
 import org.miaixz.bus.fabric.protocol.MonoCall;
@@ -234,18 +228,18 @@ public final class UdpSession implements Session {
      * @return current lifecycle state
      */
     @Override
-    public Status state() {
+    public State state() {
         return scope.state();
     }
 
     /**
-     * Returns whether this session is opened.
+     * Returns whether this session remains active.
      *
      * @return {@code true} when both lifecycle scope and owned channel remain open
      */
     @Override
-    public boolean opened() {
-        return scope.state() == Status.OPENED && channel.opened();
+    public boolean active() {
+        return scope.state() == State.RUNNING && channel.active();
     }
 
     /**
@@ -271,7 +265,7 @@ public final class UdpSession implements Session {
      * Creates a socket address.
      *
      * @param address logical address whose host and port are converted
-     * @return unresolved or resolved socket endpoint created by the network utility
+     * @return unresolved or resolved socket endpoint created by the network helper
      */
     static InetSocketAddress socket(final Address address) {
         return NetKit.createAddress(address.host(), address.port());
@@ -281,7 +275,7 @@ public final class UdpSession implements Session {
      * Ensures this session is open.
      */
     private void ensureOpened() {
-        if (!opened()) {
+        if (!active()) {
             throw new StatefulException("UDP session is closed");
         }
     }

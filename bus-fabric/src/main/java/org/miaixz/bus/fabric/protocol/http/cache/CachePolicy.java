@@ -30,11 +30,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.fabric.Builder;
-import org.miaixz.bus.fabric.Clock;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Options;
-import org.miaixz.bus.fabric.Policy;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 

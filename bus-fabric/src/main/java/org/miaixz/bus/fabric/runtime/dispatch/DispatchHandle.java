@@ -22,13 +22,13 @@ package org.miaixz.bus.fabric.runtime.dispatch;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Lifecycle;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.runtime.Activity;
 
 /**
@@ -42,27 +42,27 @@ public final class DispatchHandle implements Lifecycle {
     /**
      * Handle is queued and may still be cancelled before execution.
      */
-    private static final int QUEUED = 0;
+    private static final int QUEUED = Normal._0;
 
     /**
      * Handle activity is currently running.
      */
-    private static final int RUNNING = 1;
+    private static final int RUNNING = Normal._1;
 
     /**
      * Handle activity completed successfully.
      */
-    private static final int DONE = 2;
+    private static final int DONE = Normal._2;
 
     /**
      * Handle activity completed with a failure.
      */
-    private static final int FAILED = 3;
+    private static final int FAILED = Normal._3;
 
     /**
      * Handle was cancelled before a successful terminal transition.
      */
-    private static final int CANCELLED = 4;
+    private static final int CANCELLED = Normal._4;
 
     /**
      * Trimmed, single-line key used for per-key dispatch accounting.
@@ -159,13 +159,13 @@ public final class DispatchHandle implements Lifecycle {
      * @return current queued, running, or terminal dispatch status
      */
     @Override
-    public Status state() {
+    public State state() {
         return switch (state.get()) {
-            case QUEUED -> Status.QUEUED;
-            case RUNNING -> Status.RUNNING;
-            case DONE -> Status.DONE;
-            case FAILED -> Status.FAILED;
-            case CANCELLED -> Status.CANCELLED;
+            case QUEUED -> State.QUEUED;
+            case RUNNING -> State.RUNNING;
+            case DONE -> State.COMPLETED;
+            case FAILED -> State.FAILED;
+            case CANCELLED -> State.CANCELLED;
             default -> throw new IllegalStateException("Unknown dispatch state");
         };
     }

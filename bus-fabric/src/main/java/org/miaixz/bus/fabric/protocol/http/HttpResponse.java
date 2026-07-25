@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -40,11 +42,7 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -470,7 +468,7 @@ public final class HttpResponse implements AutoCloseable {
      */
     public String text() {
         try {
-            final Charset charset = body.media().charset(org.miaixz.bus.core.lang.Charset.UTF_8);
+            final Charset charset = body.media().charset(UTF_8);
             return new String(bytes(), charset);
         } finally {
             close();
@@ -947,7 +945,7 @@ public final class HttpResponse implements AutoCloseable {
         /**
          * Status code candidate.
          */
-        private int code = 200;
+        private int code = Http.Status.OK;
 
         /**
          * Reason phrase candidate.

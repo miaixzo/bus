@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.http.body;
 
+import static org.miaixz.bus.core.lang.Charset.UTF_8;
+import static org.miaixz.bus.fabric.Builder.MULTIPART_BODY_BOUNDARY_PARAMETER;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -153,11 +156,12 @@ public final class MultipartBody implements RequestBody {
         final StringBuilder builder = new StringBuilder("--").append(boundary).append(Symbol.CRLF);
         for (final Map.Entry<String, List<String>> entry : part.headers().asMap().entrySet()) {
             for (final String value : entry.getValue()) {
-                builder.append(entry.getKey()).append(": ").append(value).append(Symbol.CRLF);
+                builder.append(entry.getKey()).append(Symbol.COLON).append(Symbol.SPACE).append(value)
+                        .append(Symbol.CRLF);
             }
         }
         builder.append(Symbol.CRLF);
-        return ByteString.encodeString(builder.toString(), org.miaixz.bus.core.lang.Charset.UTF_8).toByteArray();
+        return ByteString.encodeString(builder.toString(), UTF_8).toByteArray();
     }
 
     /**
@@ -246,8 +250,7 @@ public final class MultipartBody implements RequestBody {
      * @return UTF-8 final boundary segment including trailing CRLF
      */
     private static byte[] closingBytes(final String boundary) {
-        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, org.miaixz.bus.core.lang.Charset.UTF_8)
-                .toByteArray();
+        return ByteString.encodeString("--" + boundary + "--" + Symbol.CRLF, UTF_8).toByteArray();
     }
 
     /**
@@ -483,8 +486,7 @@ public final class MultipartBody implements RequestBody {
             final String current = validateBoundary(boundary == null ? ID.fastSimpleUUID() : boundary);
             final List<Part> snapshot = List.copyOf(parts);
             final MediaType media = new MediaType(MediaType.MULTIPART_FORM_DATA_TYPE.type(),
-                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(),
-                    Map.of(org.miaixz.bus.fabric.Builder.MULTIPART_BODY_BOUNDARY_PARAMETER, current));
+                    MediaType.MULTIPART_FORM_DATA_TYPE.subtype(), Map.of(MULTIPART_BODY_BOUNDARY_PARAMETER, current));
             return new MultipartBody(current, snapshot, media, new MultipartPayload(current, snapshot));
         }
 
@@ -554,7 +556,7 @@ public final class MultipartBody implements RequestBody {
          */
         @Override
         public byte[] bytes() {
-            return bytes(org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
@@ -576,7 +578,7 @@ public final class MultipartBody implements RequestBody {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, org.miaixz.bus.fabric.Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Normal.MEBI_64);
         }
 
         /**

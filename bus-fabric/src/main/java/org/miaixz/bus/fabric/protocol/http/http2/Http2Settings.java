@@ -23,6 +23,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
+
 import org.miaixz.bus.fabric.Builder;
 
 /**
@@ -258,7 +259,7 @@ public final class Http2Settings {
             throw new ValidateException("HTTP/2 initial window is too large");
         }
         if (id == Http.Setting.MAX_FRAME_SIZE_ID
-                && (value < Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE || value > (int) (Builder.BYTES_16_MIB - Normal._1))) {
+                && (value < Normal._16384 || value > (int) (Builder.BYTES_16_MIB - Normal._1))) {
             throw new ValidateException("HTTP/2 max frame size is out of range");
         }
     }
@@ -276,7 +277,7 @@ public final class Http2Settings {
             case Http.Setting.ENABLE_PUSH_ID -> Normal._1;
             case Http.Setting.MAX_CONCURRENT_STREAMS_ID, Http.Setting.MAX_HEADER_LIST_SIZE_ID -> Builder.UNSIGNED_INT_MASK;
             case Http.Setting.INITIAL_WINDOW_SIZE_ID -> Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE;
-            case Http.Setting.MAX_FRAME_SIZE_ID -> Builder.HTTP2_DEFAULT_MAX_FRAME_SIZE;
+            case Http.Setting.MAX_FRAME_SIZE_ID -> Normal._16384;
             default -> throw new ValidateException("HTTP/2 setting id must be between 1 and 6");
         };
     }

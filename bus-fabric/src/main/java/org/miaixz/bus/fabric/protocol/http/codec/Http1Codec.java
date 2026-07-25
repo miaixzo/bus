@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,11 +37,7 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ProtocolException;
-import org.miaixz.bus.core.lang.exception.SocketException;
-import org.miaixz.bus.core.lang.exception.StatefulException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
@@ -50,10 +45,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Status;
 import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
-import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -67,6 +60,28 @@ import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 public final class Http1Codec implements HttpCodec {
 
     /**
+     * Connection-local codec activity independent from the public connection lifecycle.
+     */
+    private enum CodecState {
+
+        /**
+         * Ready for another request or response operation.
+         */
+        IDLE,
+
+        /**
+         * Encoding or decoding the current exchange.
+         */
+        BUSY,
+
+        /**
+         * Cancelled because the exchange or owning call was cancelled.
+         */
+        CANCELLED
+
+    }
+
+    /**
      * Most recently parsed response headers, reused when a server repeats an identical immutable header block.
      */
     private static volatile Headers cachedResponseHeaders;
@@ -75,11 +90,6 @@ public final class Http1Codec implements HttpCodec {
      * Most recently parsed response media type.
      */
     private static volatile MediaCache cachedResponseMedia;
-
-    /**
-     * Most recently parsed status-line reason phrase.
-     */
-    private static volatile ReasonCache cachedReason;
 
     /**
      * Bound connection.
@@ -104,7 +114,7 @@ public final class Http1Codec implements HttpCodec {
     /**
      * Lifecycle state.
      */
-    private final AtomicReference<Status> state;
+    private final AtomicReference<CodecState> state;
 
     /**
      * Response body completion flag.
@@ -141,7 +151,7 @@ public final class Http1Codec implements HttpCodec {
         this.sink = this.connection.sink();
         this.writeBuffer = new Buffer();
         this.reader = new NetworkReader(connection);
-        this.state = new AtomicReference<>(Status.OPENED);
+        this.state = new AtomicReference<>(CodecState.IDLE);
         this.bodyComplete = new AtomicBoolean(true);
         this.connectionClose = new AtomicBoolean();
         this.trailers = new AtomicReference<>(Headers.empty());
@@ -158,10 +168,10 @@ public final class Http1Codec implements HttpCodec {
     public void writeRequest(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
         timeout = current.timeout();
-        state.set(Status.RUNNING);
+        state.set(CodecState.BUSY);
         writeHeaders(current);
         if (current.body().length() == Normal._0) {
-            state.set(Status.OPENED);
+            state.set(CodecState.IDLE);
             return;
         }
         try (Sink sink = createRequestBody(current)) {
@@ -170,7 +180,7 @@ public final class Http1Codec implements HttpCodec {
         } catch (final IOException e) {
             throw new SocketException("Unable to write HTTP request body", e);
         }
-        state.set(Status.OPENED);
+        state.set(CodecState.IDLE);
     }
 
     /**
@@ -180,7 +190,7 @@ public final class Http1Codec implements HttpCodec {
      */
     public void writeHeaders(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        validateFraming(current.headers());
+        Http1Framing.validate(current.headers());
         final Buffer encoded = writeBuffer;
         encoded.writeUtf8(HttpLine.request(current)).writeUtf8(Symbol.CRLF);
         for (int index = Normal._0; index < current.headers().size(); index++) {
@@ -199,9 +209,9 @@ public final class Http1Codec implements HttpCodec {
      */
     public Sink createRequestBody(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
-        validateFraming(current.headers());
-        final long declared = declaredLength(current.headers());
-        if (chunked(current.headers())) {
+        Http1Framing.validate(current.headers());
+        final long declared = Http1Framing.declaredLength(current.headers());
+        if (Http1Framing.chunked(current.headers())) {
             return new ChunkedSink(this);
         }
         if (declared >= Normal._0) {
@@ -223,23 +233,23 @@ public final class Http1Codec implements HttpCodec {
     public HttpResponse readResponse(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
         timeout = current.timeout();
-        state.set(Status.RUNNING);
+        state.set(CodecState.BUSY);
         trailers.set(Headers.empty());
         String line = reader.readLine(timeout.read());
-        int code = HttpLine.status(line);
+        int code = Http1Parser.status(line);
         Headers headers = readHeaders();
         while (code >= Http.Status.CONTINUE && code < Http.Status.OK && code != Http.Status.SWITCHING_PROTOCOLS) {
             line = reader.readLine(timeout.read());
-            code = HttpLine.status(line);
+            code = Http1Parser.status(line);
             headers = readHeaders();
         }
-        final String message = reason(line);
+        final String message = Http1Parser.reason(line);
         final MediaType responseMedia = media(headers);
         final Source source = openResponseBody(current, code, headers, responseMedia);
         final Payload payload = payload(source);
         final PayloadBody body = payload.length() == Normal._0 ? PayloadBody.empty()
                 : PayloadBody.of(payload, responseMedia);
-        state.set(Status.OPENED);
+        state.set(CodecState.IDLE);
         return HttpResponse.transport(current, code, message, headers, body, Protocol.HTTP_1_1, trailerSupplier);
     }
 
@@ -285,15 +295,15 @@ public final class Http1Codec implements HttpCodec {
             final int code,
             final Headers headers,
             final MediaType responseMedia) {
-        final long length = responseLength(request, code, headers);
+        final long length = Http1Framing.response(request, code, headers).length();
         if (length == Normal._0) {
             bodyComplete.set(true);
             return new EmptySource(this);
         }
         bodyComplete.set(false);
-        connectionClose.set(connectionClose(request.headers()) || connectionClose(headers));
+        connectionClose.set(Http1Framing.connectionClose(request.headers()) || Http1Framing.connectionClose(headers));
         final InputStream input;
-        if (chunked(headers)) {
+        if (Http1Framing.chunked(headers)) {
             input = new ChunkedInputStream(reader, timeout, this);
         } else if (length >= Normal._0) {
             input = new FixedInputStream(reader, timeout, length, this);
@@ -309,8 +319,8 @@ public final class Http1Codec implements HttpCodec {
      */
     @Override
     public void cancel() {
-        final Status previous = state.getAndSet(Status.CANCELLED);
-        if (previous != Status.CANCELLED && previous != Status.CLOSED) {
+        final CodecState previous = state.getAndSet(CodecState.CANCELLED);
+        if (previous != CodecState.CANCELLED) {
             connection.close();
         }
     }
@@ -322,7 +332,7 @@ public final class Http1Codec implements HttpCodec {
      */
     @Override
     public boolean reusable() {
-        return state.get() == Status.OPENED && bodyComplete.get() && !connectionClose.get() && connection.healthy();
+        return state.get() == CodecState.IDLE && bodyComplete.get() && !connectionClose.get() && connection.healthy();
     }
 
     /**
@@ -431,7 +441,7 @@ public final class Http1Codec implements HttpCodec {
             }
             if (builder != null) {
                 final String line = reader.consumeHeaderLine();
-                addHeader(builder, line, colon, valueStart, valueEnd);
+                Http1Parser.addHeader(builder, line, colon, valueStart, valueEnd);
             } else {
                 reader.skipHeaderLine(rawLength);
             }
@@ -449,45 +459,7 @@ public final class Http1Codec implements HttpCodec {
                 builder.add(cached.name(prior), cached.value(prior));
             }
         }
-        return canonicalResponseHeaders(normalizedFraming(builder.build()));
-    }
-
-    /**
-     * Adds one validated materialized header line.
-     */
-    private static void addHeader(
-            final Headers.Builder builder,
-            final String line,
-            final int colon,
-            final int valueStart,
-            final int valueEnd) {
-        try {
-            builder.add(line.substring(Normal._0, colon), line.substring(valueStart, valueEnd));
-        } catch (final RuntimeException e) {
-            throw new ProtocolException("Invalid HTTP response header", e);
-        }
-    }
-
-    /**
-     * Finds the first non-whitespace header value character.
-     */
-    private static int valueStart(final String line, final int start) {
-        int index = start;
-        while (index < line.length() && line.charAt(index) <= Symbol.C_SPACE) {
-            index++;
-        }
-        return index;
-    }
-
-    /**
-     * Finds the exclusive final non-whitespace header value character.
-     */
-    private static int valueEnd(final String line, final int start) {
-        int index = line.length();
-        while (index > start && line.charAt(index - Normal._1) <= Symbol.C_SPACE) {
-            index--;
-        }
-        return index;
+        return canonicalResponseHeaders(Http1Parser.headers(builder.build()));
     }
 
     /**
@@ -524,160 +496,6 @@ public final class Http1Codec implements HttpCodec {
             }
         }
         return true;
-    }
-
-    /**
-     * Extracts a reason phrase from a validated status line.
-     *
-     * @param line status line
-     * @return reason phrase
-     */
-    private static String reason(final String line) {
-        final ReasonCache cached = cachedReason;
-        if (cached != null && cached.line.equals(line)) {
-            return cached.reason;
-        }
-        final int first = line.indexOf(Symbol.SPACE);
-        final int second = first < Normal._0 ? Normal.__1 : line.indexOf(Symbol.SPACE, first + Normal._1);
-        final String reason = second < Normal._0 ? Normal.EMPTY : line.substring(second + Normal._1);
-        cachedReason = new ReasonCache(line, reason);
-        return reason;
-    }
-
-    /**
-     * Cached status line and immutable reason phrase.
-     *
-     * @param line   complete HTTP status line
-     * @param reason parsed immutable reason phrase
-     */
-    private record ReasonCache(String line, String reason) {
-    }
-
-    /**
-     * Computes response body length semantics.
-     *
-     * @param request originating request defining method-specific body rules
-     * @param code    response status code
-     * @param headers response headers whose framing length is computed
-     * @return length, or -1 for unknown
-     */
-    private static long responseLength(final HttpRequest request, final int code, final Headers headers) {
-        validateFraming(headers);
-        if (request.method() == Http.Method.HEAD
-                || request.method() == Http.Method.CONNECT && code >= Http.Status.OK && code < 300
-                || code == Http.Status.NO_CONTENT || code == Http.Status.NOT_MODIFIED
-                || (code >= Http.Status.CONTINUE && code < Http.Status.OK)) {
-            return Normal._0;
-        }
-        if (chunked(headers)) {
-            return Normal.__1;
-        }
-        return declaredLength(headers);
-    }
-
-    /**
-     * Returns declared Content-Length.
-     *
-     * @param headers HTTP headers containing the Content-Length field
-     * @return length or -1
-     */
-    private static long declaredLength(final Headers headers) {
-        final List<String> values = headers.values(Http.Header.CONTENT_LENGTH);
-        if (values.isEmpty()) {
-            return Normal.__1;
-        }
-        long normalized = Normal.__1;
-        for (final String value : values) {
-            final long current = parseLength(value);
-            if (normalized == Normal.__1) {
-                normalized = current;
-            } else if (normalized != current) {
-                throw new ProtocolException("Conflicting Content-Length values");
-            }
-        }
-        return normalized;
-    }
-
-    /**
-     * Parses one non-negative decimal Content-Length value without constructing a temporary header collection.
-     *
-     * @param value decimal header value
-     * @return parsed length
-     */
-    private static long parseLength(final String value) {
-        if (value.isEmpty()) {
-            throw new ProtocolException("Invalid Content-Length");
-        }
-        long length = Normal._0;
-        for (int index = Normal._0; index < value.length(); index++) {
-            final char current = value.charAt(index);
-            if (current < '0' || current > '9') {
-                throw new ProtocolException("Invalid Content-Length");
-            }
-            final int digit = current - '0';
-            if (length > (Long.MAX_VALUE - digit) / Normal._10) {
-                throw new ProtocolException("Invalid Content-Length");
-            }
-            length = length * Normal._10 + digit;
-        }
-        return length;
-    }
-
-    /**
-     * Rejects ambiguous HTTP/1 framing before any body framing is selected.
-     *
-     * @param headers HTTP headers to validate for conflicting framing fields
-     */
-    private static void validateFraming(final Headers headers) {
-        require(headers, "Headers");
-        if (headers.contains(Http.Header.CONTENT_LENGTH) && headers.contains(Http.Header.TRANSFER_ENCODING)) {
-            throw new ProtocolException("HTTP/1 cannot combine Content-Length and Transfer-Encoding");
-        }
-        declaredLength(headers);
-    }
-
-    /**
-     * Collapses equivalent repeated Content-Length fields to one canonical decimal value.
-     *
-     * @param headers parsed headers
-     * @return normalized headers
-     */
-    private static Headers normalizedFraming(final Headers headers) {
-        validateFraming(headers);
-        if (headers.values(Http.Header.CONTENT_LENGTH).size() <= Normal._1) {
-            return headers;
-        }
-        return headers.with(Http.Header.CONTENT_LENGTH, Long.toString(declaredLength(headers)));
-    }
-
-    /**
-     * Returns whether headers use chunked transfer coding.
-     *
-     * @param headers HTTP headers inspected for transfer coding
-     * @return true when chunked
-     */
-    private static boolean chunked(final Headers headers) {
-        for (final String value : HttpHeaders.values(headers, Http.Header.TRANSFER_ENCODING)) {
-            if (Http.Header.TRANSFER_CODING_CHUNKED.equalsIgnoreCase(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether response closes the connection.
-     *
-     * @param headers HTTP headers inspected for connection-close semantics
-     * @return true when closed
-     */
-    private static boolean connectionClose(final Headers headers) {
-        for (final String value : HttpHeaders.values(headers, Http.Header.CONNECTION)) {
-            if (Http.Header.CONNECTION_CLOSE.equalsIgnoreCase(value)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -1508,7 +1326,7 @@ public final class Http1Codec implements HttpCodec {
          */
         @Override
         public byte[] bytes() {
-            return bytes(Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return bytes(Normal.MEBI_64);
         }
 
         /**
@@ -1557,7 +1375,7 @@ public final class Http1Codec implements HttpCodec {
          */
         @Override
         public String text(final Charset charset) {
-            return text(charset, Builder.DEFAULT_MATERIALIZE_MAX_BYTES);
+            return text(charset, Normal.MEBI_64);
         }
 
         /**
@@ -1729,7 +1547,7 @@ public final class Http1Codec implements HttpCodec {
             if (remaining == Normal._0) {
                 return true;
             }
-            if (remaining > Builder.HTTP1_CODEC_MAX_DRAIN_BYTES) {
+            if (remaining > Builder.BYTES_64_KIB) {
                 return false;
             }
             final byte[] buffer = new byte[(int) Math.min(remaining, Normal._8192)];
@@ -1928,8 +1746,8 @@ public final class Http1Codec implements HttpCodec {
             final byte[] buffer = new byte[Normal._8192];
             int drained = Normal._0;
             final Duration original = timeout.read();
-            while (drained < Builder.HTTP1_CODEC_MAX_DRAIN_BYTES) {
-                final int limit = Math.min(buffer.length, Builder.HTTP1_CODEC_MAX_DRAIN_BYTES - drained);
+            while (drained < Builder.BYTES_64_KIB) {
+                final int limit = Math.min(buffer.length, Builder.BYTES_64_KIB - drained);
                 final int read;
                 try {
                     read = readBounded(buffer, Normal._0, limit, drainTimeout(original));

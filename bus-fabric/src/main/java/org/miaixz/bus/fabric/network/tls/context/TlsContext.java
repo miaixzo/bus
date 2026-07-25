@@ -25,15 +25,11 @@ import java.security.Provider;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSessionContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.*;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -53,20 +49,26 @@ public final class TlsContext {
     /**
      * Shared empty protocol array.
      */
-    private static final String[] EMPTY_PROTOCOLS = new String[0];
+    private static final String[] EMPTY_PROTOCOLS = Normal.EMPTY_STRING_ARRAY;
 
     /**
      * SSL context.
      */
     private final SSLContext context;
 
-    /** Stable client socket factory owned by the immutable SSL context. */
+    /**
+     * Stable client socket factory owned by the immutable SSL context.
+     */
     private final SSLSocketFactory socketFactory;
 
-    /** Default enabled protocols captured from the context's client socket factory. */
+    /**
+     * Default enabled protocols captured from the context's client socket factory.
+     */
     private final String[] defaultProtocols;
 
-    /** Default enabled cipher suites captured from the context's client socket factory. */
+    /**
+     * Default enabled cipher suites captured from the context's client socket factory.
+     */
     private final String[] defaultCiphers;
 
     /**
@@ -74,7 +76,9 @@ public final class TlsContext {
      */
     private volatile EngineConfiguration engineConfiguration;
 
-    /** Most recent immutable client-socket parameter template, including host-specific SNI. */
+    /**
+     * Most recent immutable client-socket parameter template, including host-specific SNI.
+     */
     private volatile SocketConfiguration socketConfiguration;
 
     /**
@@ -286,7 +290,9 @@ public final class TlsContext {
         return current;
     }
 
-    /** Builds and reuses the host-specific parameter template copied by each newly created SSLSocket. */
+    /**
+     * Builds and reuses the host-specific parameter template copied by each newly created SSLSocket.
+     */
     private SSLParameters socketParameters(
             final String host,
             final TlsSettings settings,

@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp;
 
+import static org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT;
+import static org.miaixz.bus.fabric.Builder.STOMP_HEADER_HEART_BEAT;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -33,16 +36,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.fabric.Address;
-import org.miaixz.bus.fabric.Call;
-import org.miaixz.bus.fabric.Callback;
-import org.miaixz.bus.fabric.Context;
-import org.miaixz.bus.fabric.Filter;
-import org.miaixz.bus.fabric.Headers;
-import org.miaixz.bus.fabric.Listener;
-import org.miaixz.bus.fabric.Message;
-import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
@@ -59,9 +53,9 @@ import org.miaixz.bus.fabric.protocol.stomp.calls.StompCall;
 public final class StompX {
 
     /**
-     * Immutable execution snapshot.
+     * Immutable execution specification.
      */
-    private final StompSnapshot snapshot;
+    private final StompSpec spec;
 
     /**
      * Execution runner.
@@ -76,17 +70,17 @@ public final class StompX {
     /**
      * Creates an exchange.
      *
-     * @param builder configuration source used to create the immutable exchange snapshot
+     * @param builder configuration source used to create the immutable exchange specification
      */
     private StompX(final Builder builder) {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         final Headers connectHeaders = connectHeaders(builder.headers.build(), builder.policy);
-        this.snapshot = new StompSnapshot(current, builder.uri, Address.from(builder.uri), connectHeaders,
+        this.spec = new StompSpec(current, builder.uri, Address.from(builder.uri), connectHeaders,
                 copyTimeout(builder.timeout), builder.policy, builder.destination, builder.login, builder.passcode,
                 builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
-        this.runner = new StompRunner(snapshot);
+        this.runner = new StompRunner(spec);
         this.callback = builder.callback;
     }
 
@@ -106,7 +100,7 @@ public final class StompX {
      * @return transport protocol derived from the target address
      */
     public Protocol protocol() {
-        return snapshot.address().protocol();
+        return spec.address().protocol();
     }
 
     /**
@@ -115,7 +109,7 @@ public final class StompX {
      * @return immutable STOMP transport target address
      */
     public Address address() {
-        return snapshot.address();
+        return spec.address();
     }
 
     /**
@@ -133,7 +127,7 @@ public final class StompX {
      * @return immutable STOMP CONNECT headers including heartbeat negotiation
      */
     public Headers headers() {
-        return snapshot.headers();
+        return spec.headers();
     }
 
     /**
@@ -142,7 +136,7 @@ public final class StompX {
      * @return timeout policy captured by this exchange
      */
     public Timeout timeout() {
-        return snapshot.timeout();
+        return spec.timeout();
     }
 
     /**
@@ -151,7 +145,7 @@ public final class StompX {
      * @return configured default STOMP destination, or {@code null} when absent
      */
     public Object tag() {
-        return snapshot.destination();
+        return spec.destination();
     }
 
     /**
@@ -198,10 +192,10 @@ public final class StompX {
      */
     public Call<StompSession> call() {
         return StompCall.create(
-                snapshot.context().reactor().dispatcher(),
+                spec.context().reactor().dispatcher(),
                 callback,
-                snapshot.observer(),
-                snapshot.timeout(),
+                spec.observer(),
+                spec.timeout(),
                 cancellation -> Mediator.execute(Type.STOMP, cancellation, runner::open),
                 dispatchKey());
     }
@@ -221,8 +215,8 @@ public final class StompX {
      * @return dispatch key
      */
     public String dispatchKey() {
-        return "stomp" + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + snapshot.address().host() + Symbol.C_COLON
-                + snapshot.address().port();
+        return "stomp" + Symbol.COLON + Symbol.SLASH + Symbol.SLASH + spec.address().host() + Symbol.C_COLON
+                + spec.address().port();
     }
 
     /**
@@ -305,8 +299,8 @@ public final class StompX {
     private static Headers connectHeaders(final Headers headers, final StompPolicy policy) {
         final StompPolicy current = require(policy, "STOMP policy");
         return require(headers, "Headers").with(
-                org.miaixz.bus.fabric.Builder.STOMP_HEADER_HEART_BEAT,
-                current.clientSendHeartbeatMillis() + "," + current.clientReceiveHeartbeatMillis());
+                STOMP_HEADER_HEART_BEAT,
+                current.clientSendHeartbeatMillis() + Symbol.COMMA + current.clientReceiveHeartbeatMillis());
     }
 
     /**
@@ -415,7 +409,7 @@ public final class StompX {
         private Builder(final Context context) {
             this.context = context;
             this.headers = Headers.builder();
-            final Timeout configured = context.options().get(org.miaixz.bus.fabric.Builder.OPTION_TIMEOUT);
+            final Timeout configured = context.options().get(OPTION_TIMEOUT);
             this.timeout = copyTimeout(configured == null ? Timeout.defaults() : configured);
             this.policy = StompPolicy.resolve(context.options());
             this.observer = EventObserver.noop();
@@ -658,7 +652,7 @@ public final class StompX {
         }
 
         /**
-         * Builds an exchange snapshot.
+         * Builds an exchange specification.
          *
          * @return immutable STOMP exchange built from the current configuration
          */

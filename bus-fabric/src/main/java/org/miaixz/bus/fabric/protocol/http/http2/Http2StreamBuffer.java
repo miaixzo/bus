@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.LongConsumer;
@@ -334,7 +335,7 @@ final class Http2StreamBuffer {
         final long producer = (long) PRODUCER_INDEX.getAcquire(this);
         // Cancellation runs on the connection reader and may race the request-side consumer. Never chase a moving
         // index with an unbounded inequality loop: clear the fixed ring directly and advance monotonically.
-        java.util.Arrays.fill(slots, null);
+        Arrays.fill(slots, null);
         queuedBytes.set(0L);
         CONSUMER_INDEX.setRelease(this, Math.max(consumerIndex, producer));
         reportConsumed(0L, true);
