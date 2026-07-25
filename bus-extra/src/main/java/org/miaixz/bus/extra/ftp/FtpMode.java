@@ -15,17 +15,26 @@
  ~ See the License for the specific language governing permissions and       ~
  ~ limitations under the License.                                            ~
  ~                                                                           ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.extra.ftp;
+
 /**
- * Parses User-Agent text into browser, engine, operating system and device descriptors.
- *
- * <p>
- * Agent classes classify header values for callers that need request metadata. They do not influence connection
- * routing, TLS policy or HTTP execution unless a caller explicitly uses the parsed result.
- * </p>
+ * FTP data connection mode.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.fabric.protocol.http.agent;
+public enum FtpMode {
+
+    /**
+     * The client listens for a data connection initiated by the server.
+     */
+    ACTIVE,
+
+    /**
+     * The client initiates the data connection to an endpoint selected by the server.
+     */
+    PASSIVE
+
+}

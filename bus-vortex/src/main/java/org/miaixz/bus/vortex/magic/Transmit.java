@@ -22,7 +22,7 @@ package org.miaixz.bus.vortex.magic;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.Lifecycle;
 
 /**
  * A data transfer object (DTO) that provides a consolidated view of a single managed service, including its status and
@@ -58,8 +58,8 @@ public class Transmit {
     private Metrics metrics;
 
     /**
-     * The current lifecycle status of the service process (e.g., RUNNING, STOPPED).
+     * The current lifecycle status of the service process (e.g., RUNNING, CLOSED).
      */
-    private EnumValue.Lifecycle lifecycle;
+    private Lifecycle.State lifecycle;
 
 }

@@ -28,8 +28,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -540,7 +540,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
         if (targetRuntime == null) {
             return;
         }
-        if (finalStop || targetRuntime.getState() != EnumValue.Lifecycle.ERROR) {
+        if (finalStop || targetRuntime.getState() != Lifecycle.State.FAILED) {
             targetRuntime.markStopping();
         }
         WorkerFactory workerFactory = targetRuntime.getWorkerFactory();

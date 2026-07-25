@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.vortex.registry;
 
-import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.magic.Metrics;
 import org.miaixz.bus.vortex.magic.Transmit;
@@ -90,8 +90,8 @@ public class ServerRegistry {
      * @return A {@code Mono} emitting the consolidated {@link Transmit}.
      */
     private Mono<Transmit> buildServerStatusView(Assets assets) {
-        Mono<EnumValue.Lifecycle> statusMono = processProvider.getStatus(assets)
-                .defaultIfEmpty(EnumValue.Lifecycle.UNKNOWN);
+        Mono<Lifecycle.State> statusMono = processProvider.getStatus(assets)
+                .defaultIfEmpty(Lifecycle.State.UNKNOWN);
         Mono<Metrics> metricsMono = metricsProvider.getMetrics(assets.getId())
                 .defaultIfEmpty(Metrics.builder().cpu(0).memory(0).build());
 
