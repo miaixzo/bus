@@ -1024,25 +1024,25 @@
     },
     {
       "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+      "type": "org.miaixz.bus.core.basic.entity.Audit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+      "type": "org.miaixz.bus.core.basic.entity.Audit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+      "type": "org.miaixz.bus.core.basic.entity.Audit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+      "type": "org.miaixz.bus.core.basic.entity.Audit"
     },
     {
       "condition": {
@@ -1062,29 +1062,29 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
+            "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
           ]
         }
       ],
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle"
+      "type": "org.miaixz.bus.core.basic.entity.Audit"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
     },
     {
       "condition": {
@@ -1096,19 +1096,19 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilder"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilderImpl"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilderImpl"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilderImpl"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilderImpl"
     },
     {
       "condition": {
@@ -1120,7 +1120,7 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.core.basic.entity.Lifecycle$LifecycleBuilderImpl"
+      "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilderImpl"
     },
     {
       "allDeclaredFields": true,
@@ -21589,7 +21589,7 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.lang.EnumValue$Lifecycle"
+      "type": "org.miaixz.bus.core.Lifecycle$State"
     },
     {
       "condition": {
@@ -21604,7 +21604,7 @@
           ]
         }
       ],
-      "type": "org.miaixz.bus.core.lang.EnumValue$Lifecycle"
+      "type": "org.miaixz.bus.core.Lifecycle$State"
     },
     {
       "condition": {

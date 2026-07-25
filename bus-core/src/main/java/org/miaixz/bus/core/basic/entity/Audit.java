@@ -15,7 +15,7 @@
  ~ See the License for the specific language governing permissions and       ~
  ~ limitations under the License.                                            ~
  ~                                                                           ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.core.basic.entity;
 
@@ -32,11 +32,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.lang.annotation.Logical;
 
 /**
- * Base class for entities with lifecycle management capabilities.
- * <p>
- * Provides standard audit fields (creator, modifier, timestamps) and a logical status field to track the data's
- * existence and validity.
- * </p>
+ * Base entity carrying logical status and audit metadata.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -46,17 +42,17 @@ import org.miaixz.bus.core.lang.annotation.Logical;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lifecycle extends Entity {
+public class Audit extends Entity {
 
     @Serial
     private static final long serialVersionUID = 2852290719630L;
 
     /**
-     * Data status:
+     * Logical data status:
      * <ul>
-     * <li>-1: Deleted (Logical deletion)</li>
-     * <li>0: Invalid / Disabled</li>
-     * <li>1: Normal / Active</li>
+     * <li>-1: logically deleted</li>
+     * <li>0: invalid or disabled</li>
+     * <li>1: normal or active</li>
      * </ul>
      */
     @Logical
@@ -64,25 +60,25 @@ public class Lifecycle extends Entity {
     protected Integer status;
 
     /**
-     * The identifier of the user who created this entity.
+     * Identifier of the user who created the entity.
      */
     @Column(length = 24, nullable = false)
     protected String creator;
 
     /**
-     * The creation timestamp (milliseconds) of the entity.
+     * Entity creation timestamp in milliseconds.
      */
     @Column(nullable = false)
     protected Long created;
 
     /**
-     * The identifier of the user who last modified this entity.
+     * Identifier of the user who last modified the entity.
      */
     @Column(length = 24, nullable = false)
     protected String modifier;
 
     /**
-     * The last modification timestamp (milliseconds) of the entity.
+     * Entity modification timestamp in milliseconds.
      */
     @Column(nullable = false)
     protected Long modified;

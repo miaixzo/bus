@@ -250,54 +250,6 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     }
 
     /**
-     * Represents the lifecycle status of a managed service process.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    enum Lifecycle {
-
-        /**
-         * The service is currently running and operational.
-         */
-        RUNNING,
-
-        /**
-         * The service is not running.
-         */
-        STOPPED,
-
-        /**
-         * The service is in an error state or has crashed.
-         */
-        ERROR,
-
-        /**
-         * The service is in the process of starting up.
-         */
-        STARTING,
-
-        /**
-         * The service is in the process of shutting down.
-         */
-        STOPPING,
-
-        /**
-         * ACTIVE mode for FTP connections.
-         */
-        ACTIVE,
-        /**
-         * PASSIVE mode for FTP connections.
-         */
-        PASSIVE,
-        /**
-         * The status of the service is unknown.
-         */
-        UNKNOWN
-
-    }
-
-    /**
      * Enumeration of desensitization types.
      *
      * @author Kimi Liu
