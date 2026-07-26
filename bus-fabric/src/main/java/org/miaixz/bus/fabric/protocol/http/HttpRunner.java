@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.fabric.protocol.http;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.net.ProxySelector;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
@@ -49,13 +56,6 @@ import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.FilterChain;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
-import java.net.ProxySelector;
-import java.util.List;
-import java.util.concurrent.CancellationException;
 
 /**
  * Executes an immutable HTTP exchange specification through the HTTP chain.

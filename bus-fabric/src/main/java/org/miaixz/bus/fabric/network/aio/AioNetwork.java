@@ -19,6 +19,17 @@
 */
 package org.miaixz.bus.fabric.network.aio;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -45,17 +56,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Default AIO network adapter for client connections and TCP servers.
@@ -109,7 +109,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param listener optional network-wide lifecycle listener
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
-                       final Listener<Object> listener) {
+            final Listener<Object> listener) {
         this(group, provider, resolver, listener, SocketOptions.defaults());
     }
 
@@ -123,7 +123,7 @@ public final class AioNetwork implements AutoCloseable {
      * @param socketOptions options applied to newly opened sockets, or {@code null} for defaults
      */
     private AioNetwork(final AioGroup group, final AioProvider provider, final DnsResolver resolver,
-                       final Listener<Object> listener, final SocketOptions socketOptions) {
+            final Listener<Object> listener, final SocketOptions socketOptions) {
         this.group = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
         this.provider = Assert.notNull(provider, () -> new ValidateException("AIO provider must not be null"));
         this.resolver = Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null"));
@@ -509,7 +509,7 @@ public final class AioNetwork implements AutoCloseable {
          * @param addresses resolved addresses in stable resolver order
          */
         private ConnectRace(final Address address, final Timeout timeout, final Listener<Object> listener,
-                            final List<InetAddress> addresses) {
+                final List<InetAddress> addresses) {
             this.address = address;
             this.timeout = timeout;
             this.listener = listener;
@@ -538,7 +538,7 @@ public final class AioNetwork implements AutoCloseable {
             }
             final int count = Math.min(Normal._2, addresses.size() - index);
             final AtomicInteger remaining = new AtomicInteger(count);
-            final Throwable[] failures = new Throwable[]{previousFailure};
+            final Throwable[] failures = new Throwable[] { previousFailure };
             startAttempt(index, index + count, remaining, failures);
             if (count == Normal._2 && !terminal.get()) {
                 delayed = group.dispatcher().schedule(

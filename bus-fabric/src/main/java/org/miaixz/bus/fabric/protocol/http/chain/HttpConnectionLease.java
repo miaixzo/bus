@@ -19,6 +19,12 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
@@ -29,12 +35,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
-import java.nio.charset.Charset;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Idempotent response-body ownership bridge for one pooled HTTP connection lease.

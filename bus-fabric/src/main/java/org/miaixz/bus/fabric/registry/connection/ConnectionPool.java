@@ -19,6 +19,16 @@
 */
 package org.miaixz.bus.fabric.registry.connection;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.LockSupport;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
@@ -38,16 +48,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.LockSupport;
-import java.util.function.Supplier;
 
 /**
  * Thread-safe reusable connection pool.
@@ -208,7 +208,7 @@ public final class ConnectionPool implements AutoCloseable {
      * @param dispatcher dispatcher used for scheduled eviction, or {@code null}
      */
     private ConnectionPool(final PoolPolicy policy, final Clock clock, final FabricMeter meter,
-                           final Dispatcher dispatcher) {
+            final Dispatcher dispatcher) {
         this.policy = policy;
         this.clock = clock;
         this.meter = meter;
@@ -915,7 +915,7 @@ public final class ConnectionPool implements AutoCloseable {
             throw failure instanceof InternalException || failure instanceof ProtocolException
                     || failure instanceof SocketException || failure instanceof TimeoutException
                     || failure instanceof StatefulException || failure instanceof ValidateException ? failure
-                    : new InternalException("Unable to create connection", failure);
+                            : new InternalException("Unable to create connection", failure);
         }
         final boolean multiplexCapable = connection.multiplex();
         final Connection.MultiplexAttachment attachment = multiplexCapable ? connection.multiplexAttachment() : null;

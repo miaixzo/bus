@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.io.EOFException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-
-import java.io.EOFException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Length-based frame codec for binary protocols that prefix payloads with a length value.
