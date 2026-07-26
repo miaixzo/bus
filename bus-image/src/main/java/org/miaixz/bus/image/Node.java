@@ -67,6 +67,11 @@ public class Node {
     private final Long id;
 
     /**
+     * The human-readable description of the node.
+     */
+    private final String description;
+
+    /**
      * Constructs a new Node with only an AE Title. Hostname and port will be null.
      *
      * @param aet The Application Entity Title.
@@ -97,6 +102,18 @@ public class Node {
     }
 
     /**
+     * Constructs a new Node with AE Title, hostname, port, and description.
+     *
+     * @param aet         The Application Entity Title.
+     * @param hostname    The hostname or IP address.
+     * @param port        The port number.
+     * @param description The human-readable description.
+     */
+    public Node(String aet, String hostname, Integer port, String description) {
+        this(null, aet, hostname, port, false, description);
+    }
+
+    /**
      * Constructs a new Node with an ID, AE Title, hostname, and port. Hostname validation will be disabled by default.
      *
      * @param id       The unique identifier for the node.
@@ -119,6 +136,21 @@ public class Node {
      * @throws IllegalArgumentException if AET is missing, exceeds 16 characters, or if the port is out of bounds.
      */
     public Node(Long id, String aet, String hostname, Integer port, boolean validateHostname) {
+        this(id, aet, hostname, port, validateHostname, null);
+    }
+
+    /**
+     * The primary constructor for creating a new Node with a description.
+     *
+     * @param id               The unique identifier for the node. Can be null.
+     * @param aet              The Application Entity Title. Must not be empty and must not exceed 16 characters.
+     * @param hostname         The hostname or IP address. Can be null.
+     * @param port             The port number. Can be null, but if specified, must be within the valid range (1-65535).
+     * @param validateHostname A flag indicating whether to validate the hostname.
+     * @param description      The human-readable description. Can be null.
+     * @throws IllegalArgumentException if AET is missing, exceeds 16 characters, or if the port is out of bounds.
+     */
+    public Node(Long id, String aet, String hostname, Integer port, boolean validateHostname, String description) {
         validateAet(aet);
         validatePort(port);
         this.id = id;
@@ -126,6 +158,7 @@ public class Node {
         this.hostname = hostname;
         this.port = port;
         this.validateHostname = validateHostname;
+        this.description = description;
     }
 
     /**
@@ -241,6 +274,15 @@ public class Node {
      */
     public Long getId() {
         return id;
+    }
+
+    /**
+     * Gets the human-readable description of this node.
+     *
+     * @return The description.
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**

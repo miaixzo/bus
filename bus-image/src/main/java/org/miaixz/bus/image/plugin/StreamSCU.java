@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.ProgressStatus;
@@ -39,6 +35,11 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.image.nimble.ImageOutputData;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * The {@code StreamSCU} class provides a flexible Service Class User (SCU) for DICOM C-STORE operations, designed for
  * scenarios where multiple images are streamed over a persistent association. It manages the DICOM association
@@ -48,6 +49,16 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public class StreamSCU {
+
+    /**
+     * The maximum number of wait loops.
+     */
+    private static final int MAX_WAIT_LOOPS = 3000;
+
+    /**
+     * The outstanding response timeout in milliseconds.
+     */
+    private static final long OUTSTANDING_RSP_TIMEOUT_MS = 10_000;
 
     /**
      * Helper for managing SOP Class Relationship extended negotiation.
@@ -175,7 +186,7 @@ public class StreamSCU {
                 case Status.ElementsDiscarded:
                 case Status.DataSetDoesNotMatchSOPClassWarning:
                     ps = ProgressStatus.WARNING;
-                    if (lastStatusCode != status && nbStatusLog < 3) {
+                    if (lastStatusCode != status && nbStatusLog < Normal._3) {
                         nbStatusLog++;
                         lastStatusCode = status;
                         Logger.warn(
@@ -188,7 +199,7 @@ public class StreamSCU {
 
                 default:
                     ps = ProgressStatus.FAILED;
-                    if (lastStatusCode != status && nbStatusLog < 3) {
+                    if (lastStatusCode != status && nbStatusLog < Normal._3) {
                         nbStatusLog++;
                         lastStatusCode = status;
                         Logger.error(
@@ -521,34 +532,94 @@ public class StreamSCU {
      * @param force If {@code true}, closes immediately. If {@code false}, only closes if the countdown is active.
      */
     public synchronized void close(boolean force) {
-        if (force || countdown.compareAndSet(true, false)) {
-            if (as != null) {
-                try {
-                    Logger.debug(
-                            true,
-                            "Image",
-                            "DICOM stream association close started: force={}, associationReady={}",
-                            force,
-                            as.isReadyForDataTransfer());
-                    if (as.isReadyForDataTransfer()) {
-                        as.release();
-                    }
-                    as.waitForSocketClose();
-                    Logger.info(false, "Image", "DICOM stream association closed: force={}", force);
-                } catch (Exception e) {
-                    if (e instanceof InterruptedException) {
+        if (force) {
+            closeAssociation(true);
+            return;
+        }
+        if (!countdown.compareAndSet(true, false)) {
+            return;
+        }
+        if (!instanceUidsCurrentlyProcessed.isEmpty()) {
+            Logger.debug(
+                    false,
+                    "Image",
+                    "DICOM stream association idle close deferred: activeTransferCount={}",
+                    instanceUidsCurrentlyProcessed.size());
+            countdown.set(true);
+            scheduledFuture = closeAssociationExecutor.schedule(
+                    closeAssociationTask,
+                    Normal._15,
+                    TimeUnit.SECONDS);
+            return;
+        }
+        closeAssociation(false);
+    }
+
+    /**
+     * Closes the current association.
+     *
+     * @param force whether the close is forced.
+     */
+    private void closeAssociation(boolean force) {
+        cancelScheduledClose();
+        if (as != null) {
+            try {
+                Logger.debug(
+                        true,
+                        "Image",
+                        "DICOM stream association close started: force={}, associationReady={}",
+                        force,
+                        as.isReadyForDataTransfer());
+                if (as.isReadyForDataTransfer()) {
+                    drainOutstandingResponses(as);
+                    as.release();
+                }
+                as.waitForSocketClose();
+                Logger.info(false, "Image", "DICOM stream association closed: force={}", force);
+            } catch (Exception e) {
+                if (e instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
+                Logger.warn(
+                        false,
+                        "Image",
+                        e,
+                        "DICOM stream association close failed: force={}, exception={}",
+                        force,
+                        e.getClass().getSimpleName());
+            }
+            as = null;
+        }
+    }
+
+    /**
+     * Waits for outstanding DIMSE responses before releasing the association.
+     *
+     * @param association the association.
+     */
+    private void drainOutstandingResponses(Association association) {
+        Thread waiter = new Thread(
+                () -> {
+                    try {
+                        association.waitForOutstandingRSP();
+                    } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    Logger.warn(
-                            false,
-                            "Image",
-                            e,
-                            "DICOM stream association close failed: force={}, exception={}",
-                            force,
-                            e.getClass().getSimpleName());
-                }
-                as = null;
-            }
+                },
+                "streamscu-drain-rsp");
+        waiter.setDaemon(true);
+        waiter.start();
+        try {
+            waiter.join(OUTSTANDING_RSP_TIMEOUT_MS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        if (waiter.isAlive()) {
+            Logger.warn(
+                    false,
+                    "Image",
+                    "Timeout after {} ms waiting for outstanding C-STORE responses before closing association",
+                    OUTSTANDING_RSP_TIMEOUT_MS);
         }
     }
 
@@ -592,8 +663,21 @@ public class StreamSCU {
      * Starts a countdown to close the association after a period of inactivity.
      */
     public synchronized void triggerCloseExecutor() {
-        if ((scheduledFuture == null || scheduledFuture.isDone()) && countdown.compareAndSet(false, true)) {
-            scheduledFuture = closeAssociationExecutor.schedule(closeAssociationTask, 15, TimeUnit.SECONDS);
+        cancelScheduledClose();
+        countdown.set(true);
+        scheduledFuture = closeAssociationExecutor.schedule(
+                closeAssociationTask,
+                Normal._20,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Cancels the scheduled close task.
+     */
+    private void cancelScheduledClose() {
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+            scheduledFuture = null;
         }
     }
 
@@ -609,6 +693,8 @@ public class StreamSCU {
      */
     public void prepareTransfer(Centre service, String iuid, String cuid, String dstTsuid) throws IOException {
         synchronized (this) {
+            cancelScheduledClose();
+            countdown.set(false);
             Logger.debug(
                     true,
                     "Image",
@@ -659,30 +745,34 @@ public class StreamSCU {
         Set<String> tss = getTransferSyntaxesFor(cuid);
         if (!tss.contains(dstTsuid)) {
             countdown.set(false);
-            int loop = 0;
-            while (true) {
-                try {
-                    if (instanceUidsCurrentlyProcessed.isEmpty()) {
-                        break;
-                    }
-                    TimeUnit.MILLISECONDS.sleep(20);
-                    loop++;
-                    if (loop > 3000) { // Let 1 min max
-                        Logger.warn(false, "Image", "prepareTransfer: StreamSCU timeout reached");
-                        instanceUidsCurrentlyProcessed.clear();
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                    Logger.error(
-                            false,
-                            "Image",
-                            "prepareTransfer: InterruptedException {}",
-                            e.getClass().getSimpleName());
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
+            waitForPendingTransfers();
             close(true);
+        }
+    }
+
+    /**
+     * Waits for pending transfers to finish.
+     */
+    private void waitForPendingTransfers() {
+        int loop = 0;
+        while (!instanceUidsCurrentlyProcessed.isEmpty() && loop < MAX_WAIT_LOOPS) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(Normal._20);
+                loop++;
+            } catch (InterruptedException e) {
+                Logger.error(
+                        false,
+                        "Image",
+                        "prepareTransfer: InterruptedException {}",
+                        e.getClass().getSimpleName());
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        if (loop >= MAX_WAIT_LOOPS) {
+            Logger.warn(false, "Image", "prepareTransfer: StreamSCU timeout reached");
+            instanceUidsCurrentlyProcessed.clear();
         }
     }
 

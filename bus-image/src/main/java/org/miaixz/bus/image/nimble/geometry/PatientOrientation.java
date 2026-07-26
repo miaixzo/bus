@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.nimble.geometry;
 
 import java.awt.Color;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -122,7 +123,7 @@ public final class PatientOrientation {
                 return null;
             }
             try {
-                return valueOf(value.trim().toUpperCase());
+                return valueOf(value.trim().toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException exception) {
                 return null;
             }
@@ -225,7 +226,7 @@ public final class PatientOrientation {
                 return null;
             }
             try {
-                return valueOf(value.trim().toUpperCase());
+                return valueOf(value.trim().toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException exception) {
                 return null;
             }

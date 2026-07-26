@@ -21,6 +21,7 @@ package org.miaixz.bus.image.builtin.hp;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -107,7 +108,7 @@ public final class RelativeTime {
      * @return the start date.
      */
     public LocalDateTime getStartDate() {
-        return toDate(values[0], Clock.systemDefaultZone());
+        return toDate(values[0], Clock.system(ZoneId.of("CET")));
     }
 
     /**
@@ -116,7 +117,7 @@ public final class RelativeTime {
      * @return the end date.
      */
     public LocalDateTime getEndDate() {
-        return toDate(values[1], Clock.systemDefaultZone());
+        return toDate(values[1], Clock.system(ZoneId.of("CET")));
     }
 
     /**
