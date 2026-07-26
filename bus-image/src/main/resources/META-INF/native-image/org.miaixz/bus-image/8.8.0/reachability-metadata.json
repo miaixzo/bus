@@ -11240,7 +11240,7 @@
           "name": "mapSequence",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Sequence",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -51882,7 +51882,7 @@
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes",
             "long",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {
@@ -51909,14 +51909,14 @@
         {
           "name": "readDataset",
           "parameterTypes": [
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {
           "name": "readDataset",
           "parameterTypes": [
             "long",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {
@@ -51964,7 +51964,7 @@
         {
           "name": "readHeader",
           "parameterTypes": [
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {
@@ -68387,7 +68387,7 @@
         {
           "name": "createBodyPublisher",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -79969,7 +79969,7 @@
           "name": "cieLab2RGB",
           "parameterTypes": [
             "int[]",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -80071,7 +80071,7 @@
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes",
             "int",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -83264,7 +83264,7 @@
         {
           "name": "filtered",
           "parameterTypes": [
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {

@@ -467,7 +467,7 @@
         {
           "name": "orderBy",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -2369,7 +2369,7 @@
           "name": "runWith",
           "parameterTypes": [
             "org.miaixz.bus.mapper.Context$MapperConfig",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -5704,7 +5704,7 @@
         {
           "name": "callIgnore",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -9341,14 +9341,14 @@
         {
           "name": "callIgnore",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
           "name": "callWith",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -9810,7 +9810,7 @@
         {
           "name": "runIgnore",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -12842,7 +12842,7 @@
           "name": "applySet",
           "parameterTypes": [
             "java.util.Properties",
-            "java.util.function.Consumer",
+            "org.miaixz.bus.core.center.function.ConsumerX",
             "java.lang.String[]"
           ]
         },

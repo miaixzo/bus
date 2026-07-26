@@ -4597,8 +4597,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Predicate",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {

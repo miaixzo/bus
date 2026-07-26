@@ -5435,7 +5435,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -8766,7 +8766,7 @@
           "name": "firstAcrossTypes",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Vector",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -9443,7 +9443,7 @@
           "name": "firstAcrossTypes",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Vector",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -11526,7 +11526,7 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String",
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         }
       ],

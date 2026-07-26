@@ -4377,7 +4377,7 @@
           "name": "getChildProcesses",
           "parameterTypes": [
             "int",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Comparator",
             "int"
           ]
@@ -4409,7 +4409,7 @@
           "name": "getDescendantProcesses",
           "parameterTypes": [
             "int",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Comparator",
             "int"
           ]
@@ -4425,7 +4425,7 @@
         {
           "name": "getProcesses",
           "parameterTypes": [
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Comparator",
             "int"
           ]
@@ -7259,9 +7259,9 @@
           "name": "getGraphicsCardsFromLspci",
           "parameterTypes": [
             "java.util.List",
-            "java.util.function.Function",
+            "org.miaixz.bus.core.center.function.FunctionX",
             "java.util.function.ToLongFunction",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -11116,13 +11116,13 @@
         {
           "name": "memoize",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
           "name": "memoize",
           "parameterTypes": [
-            "java.util.function.Supplier",
+            "org.miaixz.bus.core.center.function.SupplierX",
             "long"
           ]
         },
@@ -12849,7 +12849,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -12975,7 +12975,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -13119,7 +13119,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -13161,7 +13161,7 @@
         {
           "name": "getGraphicsCards",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -13429,7 +13429,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -13481,7 +13481,7 @@
         {
           "name": "getSoundCards",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -13526,7 +13526,7 @@
           "name": "getUsbDevices",
           "parameterTypes": [
             "boolean",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
