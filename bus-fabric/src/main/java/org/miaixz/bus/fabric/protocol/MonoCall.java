@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -279,6 +281,27 @@ public abstract class MonoCall<T> implements Call<T> {
             }
 
         };
+    }
+
+    /**
+     * Creates a reusable immutable template for calls whose synchronous path needs no observation or timeout scope.
+     *
+     * @param name         call name
+     * @param dispatchKey  asynchronous dispatch key
+     * @param dispatcher   optional enqueue dispatcher
+     * @param operation    operation receiving the per-call input
+     * @param cancelAction optional cancellation action
+     * @param <I>          input type
+     * @param <T>          result type
+     * @return direct-call template
+     */
+    public static <I, T> DirectTemplate<I, T> directTemplate(
+            final String name,
+            final String dispatchKey,
+            final Dispatcher dispatcher,
+            final FunctionX<? super I, T> operation,
+            final Runnable cancelAction) {
+        return new DirectTemplate<>(name, dispatchKey, dispatcher, operation, cancelAction);
     }
 
     /**
@@ -988,6 +1011,330 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     private Callback<? super T> takeCallback() {
         return (Callback<? super T>) CALLBACK.getAndSet(this, null);
+    }
+
+    /**
+     * Reusable metadata and operation for allocation-light direct calls.
+     *
+     * @param <I> per-call input type
+     * @param <T> call result type
+     */
+    public static final class DirectTemplate<I, T> {
+
+        /**
+         * Human-readable call name.
+         */
+        private final String name;
+
+        /**
+         * Dispatcher routing key.
+         */
+        private final String dispatchKey;
+
+        /**
+         * Optional dispatcher used by enqueued calls.
+         */
+        private final Dispatcher dispatcher;
+
+        /**
+         * Reusable operation receiving each call input.
+         */
+        private final FunctionX<? super I, T> operation;
+
+        /**
+         * Cancellation action shared by calls created from this template.
+         */
+        private final Runnable cancelAction;
+
+        /**
+         * Creates immutable direct-call metadata.
+         *
+         * @param name         call name
+         * @param dispatchKey  dispatcher routing key
+         * @param dispatcher   optional enqueue dispatcher
+         * @param operation    reusable call operation
+         * @param cancelAction optional cancellation action
+         */
+        private DirectTemplate(final String name, final String dispatchKey, final Dispatcher dispatcher,
+                final FunctionX<? super I, T> operation, final Runnable cancelAction) {
+            this.name = Assert.notBlank(name, () -> new ValidateException("Call name must not be blank"));
+            this.dispatchKey = Assert
+                    .notBlank(dispatchKey, () -> new ValidateException("Call dispatch key must not be blank"));
+            this.dispatcher = dispatcher;
+            this.operation = Assert.notNull(operation, () -> new ValidateException("Call operation must not be null"));
+            this.cancelAction = cancelAction == null ? () -> {
+            } : cancelAction;
+        }
+
+        /**
+         * Creates a one-shot call for the supplied input.
+         *
+         * @param input per-call input
+         * @return new one-shot call
+         */
+        public Call<T> call(final I input) {
+            return new DirectCall<>(this, input);
+        }
+
+    }
+
+    /**
+     * One-shot direct call. The synchronous path allocates no lifecycle, timeout or observation objects.
+     *
+     * @param <I> per-call input type
+     * @param <T> call result type
+     */
+    private static final class DirectCall<I, T> implements Call<T> {
+
+        /**
+         * Atomic lifecycle-state handle.
+         */
+        private static final VarHandle STATE;
+
+        /**
+         * Immutable metadata and operation template.
+         */
+        private final DirectTemplate<I, T> template;
+
+        /**
+         * Input owned by this one-shot call.
+         */
+        private final I input;
+
+        /**
+         * Current call lifecycle state.
+         */
+        private volatile Lifecycle.State state = Lifecycle.State.QUEUED;
+
+        /**
+         * Successful result retained for subsequent await calls.
+         */
+        private volatile T result;
+
+        /**
+         * Terminal failure retained for subsequent await calls.
+         */
+        private volatile Throwable failure;
+
+        /**
+         * Asynchronous completion allocated only for enqueued execution.
+         */
+        private volatile CompletableFuture<T> completion;
+
+        /**
+         * Creates a one-shot direct call.
+         *
+         * @param template immutable call template
+         * @param input    per-call input
+         */
+        private DirectCall(final DirectTemplate<I, T> template, final I input) {
+            this.template = template;
+            this.input = input;
+        }
+
+        /**
+         * Executes the operation synchronously.
+         *
+         * @return operation result
+         */
+        @Override
+        public T execute() {
+            claim();
+            return run();
+        }
+
+        /**
+         * Submits the operation through the template dispatcher.
+         *
+         * @return this call
+         */
+        @Override
+        public Call<T> enqueue() {
+            final Dispatcher target = Assert
+                    .notNull(template.dispatcher, () -> new ValidateException("Dispatcher must not be null"));
+            if (!STATE.compareAndSet(this, Lifecycle.State.QUEUED, Lifecycle.State.RUNNING)) {
+                throw new StatefulException(template.name + " was already submitted");
+            }
+            completion = new CompletableFuture<>();
+            try {
+                target.enqueue(template.dispatchKey, Activity.of(template.name, this::run));
+                return this;
+            } catch (final RuntimeException | Error cause) {
+                fail(cause);
+                throw cause;
+            }
+        }
+
+        /**
+         * Cancels queued or running execution.
+         *
+         * @return true when cancellation changed the lifecycle state
+         */
+        @Override
+        public boolean cancel() {
+            Lifecycle.State current;
+            do {
+                current = state;
+                if (current.terminal()) {
+                    return false;
+                }
+            } while (!STATE.compareAndSet(this, current, Lifecycle.State.CANCELLED));
+            final CompletableFuture<T> future = completion;
+            if (future != null) {
+                future.cancel(false);
+            }
+            template.cancelAction.run();
+            return true;
+        }
+
+        /**
+         * Returns the current lifecycle state.
+         *
+         * @return current lifecycle state
+         */
+        @Override
+        public Lifecycle.State state() {
+            return state;
+        }
+
+        /**
+         * Waits without an explicit deadline.
+         *
+         * @return operation result
+         */
+        @Override
+        public T await() {
+            final Lifecycle.State current = state;
+            if (current == Lifecycle.State.COMPLETED) {
+                return result;
+            }
+            if (current == Lifecycle.State.FAILED) {
+                throw propagate(failure);
+            }
+            if (current == Lifecycle.State.CANCELLED) {
+                throw new CancellationException(template.name + " cancelled");
+            }
+            final CompletableFuture<T> future = completion;
+            return future == null ? execute() : awaitCompletion(future, null);
+        }
+
+        /**
+         * Waits up to the supplied duration.
+         *
+         * @param timeout maximum wait duration
+         * @return operation result
+         */
+        @Override
+        public T await(final Duration timeout) {
+            final Duration checked = validateTimeout(timeout);
+            final Lifecycle.State current = state;
+            if (current == Lifecycle.State.COMPLETED) {
+                return result;
+            }
+            if (current == Lifecycle.State.FAILED) {
+                throw propagate(failure);
+            }
+            if (current == Lifecycle.State.CANCELLED) {
+                throw new CancellationException(template.name + " cancelled");
+            }
+            final CompletableFuture<T> future = completion;
+            return future == null ? execute() : awaitCompletion(future, checked);
+        }
+
+        /**
+         * Atomically claims synchronous execution ownership.
+         */
+        private void claim() {
+            if (!STATE.compareAndSet(this, Lifecycle.State.QUEUED, Lifecycle.State.RUNNING)) {
+                throw new StatefulException(template.name + " was already submitted");
+            }
+        }
+
+        /**
+         * Runs the operation and publishes its terminal state.
+         *
+         * @return operation result
+         */
+        private T run() {
+            try {
+                final T value = template.operation.apply(input);
+                result = value;
+                if (!STATE.compareAndSet(this, Lifecycle.State.RUNNING, Lifecycle.State.COMPLETED)) {
+                    result = null;
+                    throw new CancellationException(template.name + " cancelled");
+                }
+                final CompletableFuture<T> future = completion;
+                if (future != null) {
+                    future.complete(value);
+                }
+                return value;
+            } catch (final RuntimeException | Error cause) {
+                fail(cause);
+                throw cause;
+            }
+        }
+
+        /**
+         * Records and publishes an operation failure.
+         *
+         * @param cause operation failure
+         */
+        private void fail(final Throwable cause) {
+            failure = cause;
+            if (STATE.compareAndSet(this, Lifecycle.State.RUNNING, Lifecycle.State.FAILED)) {
+                final CompletableFuture<T> future = completion;
+                if (future != null) {
+                    future.completeExceptionally(cause);
+                }
+            } else if (state != Lifecycle.State.FAILED) {
+                failure = null;
+            }
+        }
+
+        /**
+         * Waits on an asynchronous completion with an optional timeout.
+         *
+         * @param future  asynchronous completion
+         * @param timeout optional maximum wait
+         * @return completed result
+         */
+        private T awaitCompletion(final CompletableFuture<T> future, final Duration timeout) {
+            try {
+                return timeout == null ? future.get() : future.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
+            } catch (final InterruptedException cause) {
+                Thread.currentThread().interrupt();
+                throw new InternalException("Call wait interrupted", cause);
+            } catch (final ExecutionException cause) {
+                throw propagate(cause.getCause());
+            } catch (final java.util.concurrent.TimeoutException cause) {
+                throw new TimeoutException("Call wait timed out", cause);
+            }
+        }
+
+        /**
+         * Converts an arbitrary failure into the call runtime contract.
+         *
+         * @param cause failure to propagate
+         * @return runtime failure
+         */
+        private static RuntimeException propagate(final Throwable cause) {
+            if (cause instanceof RuntimeException runtime) {
+                return runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            return new InternalException("Call failed", cause);
+        }
+
+        static {
+            try {
+                STATE = MethodHandles.lookup().findVarHandle(DirectCall.class, "state", Lifecycle.State.class);
+            } catch (final ReflectiveOperationException e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
+
     }
 
 }

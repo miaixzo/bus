@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -86,6 +88,34 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
      * @return frames completed by this input, in wire order
      */
     List<Frame> decode(Buffer input);
+
+    /**
+     * Decodes immutable payload owners without requiring protocol runtimes to retain Frame wrappers.
+     *
+     * @param input encoded input
+     * @return decoded payload owners
+     */
+    default List<ByteString> decodeOwned(final Buffer input) {
+        final List<Frame> decoded = decode(input);
+        final ArrayList<ByteString> payloads = new ArrayList<>(decoded.size());
+        for (final Frame frame : decoded) {
+            payloads.add(frame.payload());
+        }
+        return List.copyOf(payloads);
+    }
+
+    /**
+     * Decodes into caller-owned storage. Built-in codecs may override this to avoid a transient result list.
+     *
+     * @param input  encoded input
+     * @param output destination collection
+     * @return number of decoded payloads
+     */
+    default int decodeOwned(final Buffer input, final Collection<? super ByteString> output) {
+        final List<ByteString> decoded = decodeOwned(input);
+        output.addAll(decoded);
+        return decoded.size();
+    }
 
     /**
      * Encodes a frame.

@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.socket.frame;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -96,12 +97,22 @@ public final class SocketCodec {
      * @return immutable list of decoded immutable payload owners
      */
     public List<ByteString> decodeOwned(final Buffer input) {
-        final List<Frame> decoded = decodeFrames(input);
-        final ArrayList<ByteString> frames = new ArrayList<>(decoded.size());
-        for (final Frame frame : decoded) {
-            frames.add(frame.payload());
-        }
-        return List.copyOf(frames);
+        final Buffer checkedInput = Assert
+                .notNull(input, () -> new ValidateException("Socket codec input must not be null"));
+        return codec.decodeOwned(checkedInput);
+    }
+
+    /**
+     * Decodes payload owners into caller-owned storage.
+     *
+     * @param input  non-null buffer containing newly available socket bytes
+     * @param output destination collection
+     * @return number of decoded payload owners
+     */
+    public int decodeOwned(final Buffer input, final Collection<? super ByteString> output) {
+        final Buffer checkedInput = Assert
+                .notNull(input, () -> new ValidateException("Socket codec input must not be null"));
+        return codec.decodeOwned(checkedInput, output);
     }
 
     /**

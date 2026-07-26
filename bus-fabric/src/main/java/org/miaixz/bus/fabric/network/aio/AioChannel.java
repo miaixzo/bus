@@ -20,6 +20,8 @@
 package org.miaixz.bus.fabric.network.aio;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
@@ -34,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
@@ -43,6 +46,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Timeout;
+import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.protocol.socket.SocketOptions;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
@@ -55,7 +59,7 @@ import org.miaixz.bus.fabric.runtime.lifecycle.LifecycleScope;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class AioChannel implements AutoCloseable {
+public final class AioChannel implements Conduit {
 
     /**
      * JDK socket channel.
@@ -83,6 +87,31 @@ public final class AioChannel implements AutoCloseable {
     private final NioBufferAllocator buffers;
 
     /**
+     * Socket-server callback lane read storage. Future-based callers continue to use {@link #buffers}.
+     */
+    private final ByteBuffer callbackReadBuffer;
+
+    /**
+     * Ensures only one callback or future read owns the native channel at a time.
+     */
+    private final AtomicBoolean callbackReadActive;
+
+    /**
+     * Caller-owned target of the active callback read.
+     */
+    private Buffer callbackReadTarget;
+
+    /**
+     * Terminal callback of the active callback read.
+     */
+    private BiConsumerX<? super Long, ? super Throwable> callbackReadCompletion;
+
+    /**
+     * Reusable native completion handler for callback reads.
+     */
+    private final CompletionHandler<Integer, Void> callbackReadHandler;
+
+    /**
      * Operations that must be failed when this channel closes.
      */
     private final Set<Operation<?>> pending;
@@ -101,6 +130,11 @@ public final class AioChannel implements AutoCloseable {
      * Reentrancy guard that turns synchronous completion callbacks into an iterative drain.
      */
     private boolean writeDraining;
+
+    /**
+     * Reusable native completion handler for callback writes.
+     */
+    private final CompletionHandler<Integer, WriteRequest> callbackWriteHandler;
 
     /**
      * Local socket address.
@@ -130,12 +164,77 @@ public final class AioChannel implements AutoCloseable {
      * @param options    socket options
      */
     AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher, final SocketOptions options) {
+        this(channel, dispatcher, options, false);
+    }
+
+    /**
+     * Creates an AIO channel with an optional allocation-light callback lane.
+     *
+     * @param channel      JDK channel
+     * @param dispatcher   runtime dispatcher
+     * @param options      socket options
+     * @param callbackLane whether callback read and write state is enabled
+     */
+    private AioChannel(final AsynchronousSocketChannel channel, final Dispatcher dispatcher,
+            final SocketOptions options, final boolean callbackLane) {
         this.channel = Assert.notNull(channel, () -> new ValidateException("AIO channel must not be null"));
         this.dispatcher = Assert.notNull(dispatcher, () -> new ValidateException("AIO dispatcher must not be null"));
         this.options = options == null ? SocketOptions.defaults() : options;
         this.buffers = NioBufferAllocator.heap(this.options.readBufferSize(), Normal._4);
+        this.callbackReadBuffer = callbackLane ? ByteBuffer.allocateDirect(this.options.readBufferSize()) : null;
+        this.callbackReadActive = callbackLane ? new AtomicBoolean() : null;
+        this.callbackReadHandler = callbackLane ? new CompletionHandler<>() {
+
+            /**
+             * Publishes a successful native callback read.
+             *
+             * @param count   completed byte count
+             * @param ignored unused attachment
+             */
+            @Override
+            public void completed(final Integer count, final Void ignored) {
+                completeCallbackRead(count, null);
+            }
+
+            /**
+             * Publishes a failed native callback read.
+             *
+             * @param cause   native failure
+             * @param ignored unused attachment
+             */
+            @Override
+            public void failed(final Throwable cause, final Void ignored) {
+                completeCallbackRead(null, socketFailure("AIO read failed", cause));
+            }
+
+        } : null;
         this.pending = ConcurrentHashMap.newKeySet();
         this.writes = new ArrayDeque<>();
+        this.callbackWriteHandler = callbackLane ? new CompletionHandler<>() {
+
+            /**
+             * Continues a successful callback write.
+             *
+             * @param count   completed byte count
+             * @param request active write request
+             */
+            @Override
+            public void completed(final Integer count, final WriteRequest request) {
+                completeCallbackWrite(request, count, null);
+            }
+
+            /**
+             * Terminates a failed callback write.
+             *
+             * @param cause   native failure
+             * @param request active write request
+             */
+            @Override
+            public void failed(final Throwable cause, final WriteRequest request) {
+                completeCallbackWrite(request, null, socketFailure("AIO write failed", cause));
+            }
+
+        } : null;
         this.closed = new AtomicBoolean();
         applySocketOptions();
     }
@@ -152,6 +251,32 @@ public final class AioChannel implements AutoCloseable {
             final SocketOptions options) {
         this(channel, dispatcher, options);
         Assert.notNull(scope, () -> new ValidateException("AIO lifecycle scope must not be null")).own(this);
+    }
+
+    /**
+     * Wraps an already accepted native channel and captures its addresses.
+     *
+     * @param channel    accepted JDK channel
+     * @param dispatcher borrowed runtime dispatcher
+     * @param scope      lifecycle owning the accepted channel
+     * @param options    accepted socket options
+     * @return callback-enabled accepted channel
+     */
+    static AioChannel accepted(
+            final AsynchronousSocketChannel channel,
+            final Dispatcher dispatcher,
+            final LifecycleScope scope,
+            final SocketOptions options) {
+        final AioChannel accepted = new AioChannel(channel, dispatcher, options, true);
+        Assert.notNull(scope, () -> new ValidateException("AIO lifecycle scope must not be null")).own(accepted);
+        try {
+            accepted.local = channel.getLocalAddress();
+            accepted.remote = channel.getRemoteAddress();
+            return accepted;
+        } catch (final IOException e) {
+            accepted.closeAfterFailure();
+            throw new SocketException("Unable to read accepted AIO channel addresses", e);
+        }
     }
 
     /**
@@ -285,6 +410,85 @@ public final class AioChannel implements AutoCloseable {
     }
 
     /**
+     * Completion-driven read used by transports that already serialize their data plane.
+     *
+     * @param target     destination receiving completed bytes
+     * @param byteCount  maximum byte count
+     * @param completion terminal completion callback
+     */
+    @Override
+    public void read(
+            final Buffer target,
+            final long byteCount,
+            final BiConsumerX<? super Long, ? super Throwable> completion) {
+        if (callbackReadBuffer == null) {
+            Conduit.super.read(target, byteCount, completion);
+            return;
+        }
+        final BiConsumerX<? super Long, ? super Throwable> callback = Assert
+                .notNull(completion, () -> new ValidateException("AIO read completion must not be null"));
+        final Buffer checkedTarget;
+        try {
+            checkedTarget = Assert.notNull(target, () -> new ValidateException("Read target must not be null"));
+            Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Read byte count must not be negative"));
+            if (byteCount == Normal._0) {
+                callback.accept(0L, null);
+                return;
+            }
+            if (!opened()) {
+                callback.accept(null, new SocketException("AIO read failed: channel is closed"));
+                return;
+            }
+        } catch (final RuntimeException e) {
+            callback.accept(null, e);
+            return;
+        }
+        if (!callbackReadActive.compareAndSet(false, true)) {
+            callback.accept(null, new SocketException("AIO read already in progress"));
+            return;
+        }
+        try {
+            callbackReadBuffer.clear();
+            callbackReadBuffer.limit(readCapacity(byteCount));
+            callbackReadTarget = checkedTarget;
+            callbackReadCompletion = callback;
+            channel.read(callbackReadBuffer, null, callbackReadHandler);
+        } catch (final RuntimeException e) {
+            callbackReadTarget = null;
+            callbackReadCompletion = null;
+            callbackReadActive.set(false);
+            callback.accept(null, socketFailure("AIO read failed", e));
+        }
+    }
+
+    /**
+     * Transfers one native callback read into the caller buffer and publishes its terminal outcome.
+     *
+     * @param count completed byte count, or {@code null} on failure
+     * @param cause terminal failure, or {@code null} on success
+     */
+    private void completeCallbackRead(final Integer count, final Throwable cause) {
+        final Buffer target = callbackReadTarget;
+        final BiConsumerX<? super Long, ? super Throwable> callback = callbackReadCompletion;
+        Throwable failure = cause;
+        if (failure == null && count == null) {
+            failure = new SocketException("AIO read completed without a byte count");
+        }
+        if (failure == null && count != null && count > Normal._0) {
+            try {
+                callbackReadBuffer.flip();
+                target.write(callbackReadBuffer);
+            } catch (final IOException | RuntimeException e) {
+                failure = e;
+            }
+        }
+        callbackReadTarget = null;
+        callbackReadCompletion = null;
+        callbackReadActive.set(false);
+        callback.accept(failure == null ? count.longValue() : null, failure);
+    }
+
+    /**
      * Writes bytes from a core.io buffer.
      *
      * @param source    source buffer
@@ -310,6 +514,54 @@ public final class AioChannel implements AutoCloseable {
         }
         drainWrites();
         return request.future;
+    }
+
+    /**
+     * Completion-driven write that avoids a future and completion-stage allocation.
+     *
+     * @param source     source whose bytes are consumed
+     * @param byteCount  requested byte count
+     * @param completion terminal completion callback
+     */
+    @Override
+    public void write(
+            final Buffer source,
+            final long byteCount,
+            final BiConsumerX<? super Long, ? super Throwable> completion) {
+        if (callbackWriteHandler == null) {
+            Conduit.super.write(source, byteCount, completion);
+            return;
+        }
+        final BiConsumerX<? super Long, ? super Throwable> callback = Assert
+                .notNull(completion, () -> new ValidateException("AIO write completion must not be null"));
+        final Buffer checkedSource;
+        try {
+            checkedSource = Assert.notNull(source, () -> new ValidateException("Write source must not be null"));
+            Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Write byte count must not be negative"));
+            Assert.isTrue(
+                    byteCount <= checkedSource.size(),
+                    () -> new ValidateException("Write byte count must not exceed source size"));
+            if (byteCount == Normal._0) {
+                callback.accept(0L, null);
+                return;
+            }
+            if (!opened()) {
+                callback.accept(null, new SocketException("AIO write failed: channel is closed"));
+                return;
+            }
+        } catch (final RuntimeException e) {
+            callback.accept(null, e);
+            return;
+        }
+        final CallbackWriteRequest request = new CallbackWriteRequest(checkedSource, byteCount, callback);
+        synchronized (writes) {
+            if (writes.size() >= 1024) {
+                callback.accept(null, new SocketException("AIO write queue is full"));
+                return;
+            }
+            writes.addLast(request);
+        }
+        drainWrites();
     }
 
     /**
@@ -345,7 +597,13 @@ public final class AioChannel implements AutoCloseable {
                 synchronized (writes) {
                     final SocketException closedFailure = new SocketException("AIO channel is closed");
                     for (final WriteRequest request : writes) {
-                        request.future.completeExceptionally(closedFailure);
+                        if (request instanceof CallbackWriteRequest callback) {
+                            if (callback.terminate()) {
+                                callback.complete(null, closedFailure);
+                            }
+                        } else {
+                            request.future.completeExceptionally(closedFailure);
+                        }
                     }
                     writes.clear();
                 }
@@ -366,7 +624,7 @@ public final class AioChannel implements AutoCloseable {
      *
      * @return true when open
      */
-    boolean opened() {
+    public boolean opened() {
         return !closed.get() && channel.isOpen();
     }
 
@@ -514,9 +772,13 @@ public final class AioChannel implements AutoCloseable {
                 }
                 writeActive = true;
             }
-            final Operation<Long> operation = new Operation<>("AIO write failed", null);
-            operation.future().whenComplete((value, cause) -> finishWrite(request, value, cause));
-            writeChunk(request.source, request.byteCount, Normal._0, Normal._0, operation);
+            if (!(request instanceof CallbackWriteRequest callback)) {
+                final Operation<Long> operation = new Operation<>("AIO write failed", null);
+                operation.future().whenComplete((value, cause) -> finishWrite(request, value, cause));
+                writeChunk(request.source, request.byteCount, Normal._0, Normal._0, operation);
+            } else {
+                writeCallbackChunk(callback, Normal._0, Normal._0);
+            }
             synchronized (writes) {
                 if (writeActive) {
                     writeDraining = false;
@@ -534,16 +796,96 @@ public final class AioChannel implements AutoCloseable {
      * @param cause   terminal failure, or {@code null} on success
      */
     private void finishWrite(final WriteRequest request, final Long value, final Throwable cause) {
+        if (request instanceof CallbackWriteRequest callback && !callback.terminate()) {
+            return;
+        }
         synchronized (writes) {
             writes.removeFirstOccurrence(request);
             writeActive = false;
         }
-        if (cause == null) {
+        if (request instanceof CallbackWriteRequest callback) {
+            callback.complete(value, cause);
+        } else if (cause == null) {
             request.future.complete(value);
         } else {
             request.future.completeExceptionally(cause);
         }
         drainWrites();
+    }
+
+    /**
+     * Starts or continues one callback write chunk.
+     *
+     * @param request      active callback request
+     * @param written      bytes already accepted
+     * @param zeroProgress consecutive zero-progress completions
+     */
+    private void writeCallbackChunk(final CallbackWriteRequest request, final long written, final int zeroProgress) {
+        if (request.terminal()) {
+            return;
+        }
+        if (closed.get()) {
+            finishWrite(request, null, new SocketException("AIO channel is closed"));
+            return;
+        }
+        if (written == request.byteCount) {
+            finishWrite(request, request.byteCount, null);
+            return;
+        }
+        final int chunk = toIntSize(Math.min(request.byteCount - written, options.writeChunkSize()));
+        final ByteBuffer view;
+        try {
+            view = request.source.nioBuffer(chunk);
+        } catch (final RuntimeException e) {
+            finishWrite(request, null, socketFailure("AIO write failed", e));
+            return;
+        }
+        request.written = written;
+        request.zeroProgress = zeroProgress;
+        request.chunk = chunk;
+        try {
+            channel.write(view, request, callbackWriteHandler);
+        } catch (final RuntimeException e) {
+            finishWrite(request, null, socketFailure("AIO write failed", e));
+        }
+    }
+
+    /**
+     * Processes one native callback write completion.
+     *
+     * @param queued active queued request
+     * @param count  completed byte count, or {@code null} on failure
+     * @param cause  terminal failure, or {@code null} on success
+     */
+    private void completeCallbackWrite(final WriteRequest queued, final Integer count, final Throwable cause) {
+        final CallbackWriteRequest request = (CallbackWriteRequest) queued;
+        if (request.terminal()) {
+            return;
+        }
+        if (cause != null) {
+            finishWrite(request, null, cause);
+            return;
+        }
+        if (count == null || count < Normal._0 || count > request.chunk) {
+            finishWrite(request, null, new SocketException("AIO write returned an invalid byte count"));
+            return;
+        }
+        if (count == Normal._0) {
+            final int stalled = request.zeroProgress + Normal._1;
+            if (stalled >= Normal._16) {
+                finishWrite(request, null, new SocketException("AIO write made no progress after 16 attempts"));
+            } else {
+                writeCallbackChunk(request, request.written, stalled);
+            }
+            return;
+        }
+        try {
+            request.source.skip(count);
+        } catch (final IOException e) {
+            finishWrite(request, null, new SocketException("AIO write failed", e));
+            return;
+        }
+        writeCallbackChunk(request, request.written + count, Normal._0);
     }
 
     /**
@@ -739,22 +1081,22 @@ public final class AioChannel implements AutoCloseable {
      * thread.
      * </p>
      */
-    private static final class WriteRequest {
+    private static class WriteRequest {
 
         /**
          * Source whose position advances only as bytes are accepted by the channel.
          */
-        private final Buffer source;
+        final Buffer source;
 
         /**
          * Total number of bytes promised by this request.
          */
-        private final long byteCount;
+        final long byteCount;
 
         /**
          * Completion carrying the written byte count or terminal failure.
          */
-        private final CompletableFuture<Long> future = new CompletableFuture<>();
+        private final CompletableFuture<Long> future;
 
         /**
          * Creates a queued write request.
@@ -763,8 +1105,105 @@ public final class AioChannel implements AutoCloseable {
          * @param byteCount bytes to write
          */
         private WriteRequest(final Buffer source, final long byteCount) {
+            this(source, byteCount, true);
+        }
+
+        /**
+         * Creates a queued request and optionally allocates its compatibility future.
+         *
+         * @param source    caller-owned source
+         * @param byteCount bytes to write
+         * @param future    whether to allocate a caller-visible future
+         */
+        private WriteRequest(final Buffer source, final long byteCount, final boolean future) {
             this.source = source;
             this.byteCount = byteCount;
+            this.future = future ? new CompletableFuture<>() : null;
+        }
+    }
+
+    /**
+     * Allocation-light write request completed through a reusable callback.
+     */
+    private static final class CallbackWriteRequest extends WriteRequest {
+
+        /**
+         * Atomic terminal-state handle.
+         */
+        private static final VarHandle TERMINAL;
+
+        /**
+         * Caller completion callback.
+         */
+        private final BiConsumerX<? super Long, ? super Throwable> completion;
+
+        /**
+         * Zero while active and one after terminal ownership is claimed.
+         */
+        private volatile int terminal;
+
+        /**
+         * Bytes accepted before the active native write.
+         */
+        private long written;
+
+        /**
+         * Consecutive zero-progress native completions.
+         */
+        private int zeroProgress;
+
+        /**
+         * Byte count submitted by the active native write.
+         */
+        private int chunk;
+
+        /**
+         * Creates a callback write request.
+         *
+         * @param source     caller-owned source
+         * @param byteCount  bytes to write
+         * @param completion terminal completion callback
+         */
+        private CallbackWriteRequest(final Buffer source, final long byteCount,
+                final BiConsumerX<? super Long, ? super Throwable> completion) {
+            super(source, byteCount, false);
+            this.completion = completion;
+        }
+
+        /**
+         * Publishes the terminal outcome.
+         *
+         * @param value completed byte count
+         * @param cause terminal failure
+         */
+        private void complete(final Long value, final Throwable cause) {
+            completion.accept(cause == null ? value : null, cause);
+        }
+
+        /**
+         * Returns whether terminal ownership was already claimed.
+         *
+         * @return true after terminal ownership is claimed
+         */
+        private boolean terminal() {
+            return terminal != Normal._0;
+        }
+
+        /**
+         * Claims terminal ownership exactly once.
+         *
+         * @return true when this invocation claimed ownership
+         */
+        private boolean terminate() {
+            return TERMINAL.compareAndSet(this, Normal._0, Normal._1);
+        }
+
+        static {
+            try {
+                TERMINAL = MethodHandles.lookup().findVarHandle(CallbackWriteRequest.class, "terminal", int.class);
+            } catch (final ReflectiveOperationException e) {
+                throw new ExceptionInInitializerError(e);
+            }
         }
     }
 

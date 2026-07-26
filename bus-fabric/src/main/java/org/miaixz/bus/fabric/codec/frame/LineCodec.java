@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.codec.frame;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -124,6 +125,53 @@ public final class LineCodec implements FrameCodec {
             }
         }
         return List.copyOf(frames);
+    }
+
+    /**
+     * Decodes line payload owners without creating frame wrappers.
+     *
+     * @param input encoded line bytes
+     * @return decoded immutable payload owners
+     */
+    @Override
+    public List<ByteString> decodeOwned(final Buffer input) {
+        final ArrayList<ByteString> frames = new ArrayList<>();
+        decodeOwned(input, frames);
+        return List.copyOf(frames);
+    }
+
+    /**
+     * Decodes line payload owners into caller-owned storage.
+     *
+     * @param input  encoded line bytes
+     * @param output destination collection
+     * @return number of decoded payload owners
+     */
+    @Override
+    public int decodeOwned(final Buffer input, final Collection<? super ByteString> output) {
+        validateInput(input);
+        buffer.write(input, input.size());
+        int decoded = 0;
+        while (buffer.size() > 0) {
+            final int index = indexOf(buffer, delimiter);
+            if (index < 0) {
+                if (buffer.size() > Builder.BYTES_16_MIB) {
+                    throw new ProtocolException("Line frame exceeds maximum length");
+                }
+                break;
+            }
+            if (index > Builder.BYTES_16_MIB) {
+                throw new ProtocolException("Line frame exceeds maximum length");
+            }
+            try {
+                output.add(buffer.readByteString(index));
+                decoded++;
+                buffer.skip(delimiter.size());
+            } catch (final EOFException e) {
+                throw new InternalException("Unable to read line frame", e);
+            }
+        }
+        return decoded;
     }
 
     /**

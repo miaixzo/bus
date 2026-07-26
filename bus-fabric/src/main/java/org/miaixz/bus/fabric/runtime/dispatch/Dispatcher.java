@@ -161,6 +161,18 @@ public interface Dispatcher extends AutoCloseable {
     }
 
     /**
+     * Starts a tagged long-running activity on a platform thread when the implementation supports it.
+     *
+     * @param key      dispatch key
+     * @param tag      cancellation tag
+     * @param activity long-running activity
+     * @return handle
+     */
+    default DispatchHandle backgroundPlatform(final String key, final Object tag, final Activity activity) {
+        return background(key, tag, activity);
+    }
+
+    /**
      * Schedules a short activity after a delay.
      *
      * @param key      dispatch key

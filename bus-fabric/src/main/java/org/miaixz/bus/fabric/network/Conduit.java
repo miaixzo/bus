@@ -25,6 +25,7 @@ import java.nio.ReadOnlyBufferException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -65,6 +66,34 @@ public interface Conduit extends AutoCloseable {
      * @return future containing exactly {@code byteCount} on success
      */
     CompletableFuture<Long> write(Buffer source, long byteCount);
+
+    /**
+     * Reads bytes and publishes the terminal result without forcing callback-based transports to allocate a future.
+     *
+     * @param target     target buffer
+     * @param byteCount  maximum byte count
+     * @param completion terminal completion
+     */
+    default void read(
+            final Buffer target,
+            final long byteCount,
+            final BiConsumerX<? super Long, ? super Throwable> completion) {
+        read(target, byteCount).whenComplete(completion);
+    }
+
+    /**
+     * Writes bytes and publishes the terminal result without forcing callback-based transports to allocate a future.
+     *
+     * @param source     source buffer
+     * @param byteCount  byte count to consume
+     * @param completion terminal completion
+     */
+    default void write(
+            final Buffer source,
+            final long byteCount,
+            final BiConsumerX<? super Long, ? super Throwable> completion) {
+        write(source, byteCount).whenComplete(completion);
+    }
 
     /**
      * Performs a synchronous read for blocking transports. Native synchronous conduits should override this method;

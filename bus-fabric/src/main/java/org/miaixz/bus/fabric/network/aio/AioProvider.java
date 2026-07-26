@@ -70,6 +70,27 @@ public interface AioProvider {
     }
 
     /**
+     * Opens a completion-driven server on an existing asynchronous group.
+     *
+     * @param address  local listening address
+     * @param group    asynchronous group
+     * @param listener lifecycle listener
+     * @param options  socket options
+     * @return asynchronous server
+     */
+    default AioServer openAsyncServer(
+            final Address address,
+            final AioGroup group,
+            final Listener<Object> listener,
+            final SocketOptions options) {
+        final AioGroup checkedGroup = Assert.notNull(group, () -> new ValidateException("AIO group must not be null"));
+        if (!checkedGroup.opened()) {
+            throw new StatefulException("AIO group is closed");
+        }
+        return new AioServer(address, checkedGroup, listener, options);
+    }
+
+    /**
      * Opens a server.
      *
      * @param address  local TCP listening address
