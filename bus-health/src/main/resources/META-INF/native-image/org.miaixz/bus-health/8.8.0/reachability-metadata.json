@@ -17102,6 +17102,65 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
+      "type": "org.miaixz.bus.health.unix.shared.driver.ProcAddressSpaceReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
+      },
+      "type": "org.miaixz.bus.health.unix.shared.driver.ProcAddressSpaceReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.health.unix.shared.jna.CLibrary",
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "open",
+          "parameterTypes": [
+            "org.miaixz.bus.health.unix.shared.jna.CLibrary",
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "readPointer",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "readString",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ],
+      "type": "org.miaixz.bus.health.unix.shared.driver.ProcAddressSpaceReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
+      },
+      "type": "org.miaixz.bus.health.unix.shared.driver.ProcAddressSpaceReader"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
+      },
       "type": "org.miaixz.bus.health.unix.shared.driver.Who"
     },
     {

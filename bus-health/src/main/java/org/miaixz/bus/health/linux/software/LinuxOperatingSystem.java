@@ -900,6 +900,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         for (String text : systemctl) {
             String[] split = Pattern.SPACES_PATTERN.split(text);
             if (split.length >= 2 && split[0].endsWith(".service") && Normal.ENABLED.equals(split[1])) {
+                systemctlFound = true;
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);
                 int index = name.lastIndexOf('.');
@@ -907,15 +908,15 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 if (!running.contains(name) && !running.contains(shortName)) {
                     OSService s = new OSService(name, 0, OSService.State.STOPPED);
                     services.add(s);
-                    systemctlFound = true;
                 }
             }
         }
         if (!systemctlFound) {
             // Get Directories for stopped services
             File dir = new File("/etc/init");
-            if (dir.exists() && dir.isDirectory()) {
-                for (File f : dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"))) {
+            File[] confFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"));
+            if (confFiles != null) {
+                for (File f : confFiles) {
                     // remove .conf extension
                     String name = f.getName().substring(0, f.getName().length() - 5);
                     int index = name.lastIndexOf('.');

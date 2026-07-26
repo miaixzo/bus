@@ -241,15 +241,20 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         }
         // Get Directories for stopped services
         ArrayList<File> files = new ArrayList<>();
+        File[] listFiles;
         File dir = new File(SYSTEM_LIBRARY_LAUNCH_AGENTS);
         if (dir.exists() && dir.isDirectory()) {
-            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
+            if ((listFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))) != null) {
+                files.addAll(Arrays.asList(listFiles));
+            }
         } else {
             Logger.error(false, "Health", "Directory: /System/Library/LaunchAgents does not exist");
         }
         dir = new File(SYSTEM_LIBRARY_LAUNCH_DAEMONS);
         if (dir.exists() && dir.isDirectory()) {
-            files.addAll(Arrays.asList(dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))));
+            if ((listFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))) != null) {
+                files.addAll(Arrays.asList(listFiles));
+            }
         } else {
             Logger.error(false, "Health", "Directory: /System/Library/LaunchDaemons does not exist");
         }

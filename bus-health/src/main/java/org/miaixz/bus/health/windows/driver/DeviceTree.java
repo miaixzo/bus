@@ -89,8 +89,8 @@ public final class DeviceTree {
                 null,
                 SetupApi.DIGCF_DEVICEINTERFACE | SetupApi.DIGCF_PRESENT);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hDevInfo)) {
-            try (Memory buf = new Memory(MAX_PATH);
-                    ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(MAX_PATH);
+            try (Memory buf = new Memory(MAX_PATH * 2L);
+                    ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(MAX_PATH * 2);
                     ByRef.CloseableIntByReference child = new ByRef.CloseableIntByReference();
                     ByRef.CloseableIntByReference sibling = new ByRef.CloseableIntByReference();
                     Struct.CloseableSpDevinfoData devInfoData = new Struct.CloseableSpDevinfoData()) {

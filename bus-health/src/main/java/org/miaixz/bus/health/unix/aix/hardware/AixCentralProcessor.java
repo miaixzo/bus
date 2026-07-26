@@ -109,16 +109,16 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         final String bitnessMarker = "CPU Type:";
         for (final String checkLine : Executor.runNative("prtconf")) {
             if (checkLine.startsWith(nameMarker)) {
-                cpuName = checkLine.split(nameMarker)[1].trim();
+                cpuName = checkLine.substring(nameMarker.length()).trim();
                 if (cpuName.startsWith("P")) {
                     cpuVendor = "IBM";
                 } else if (cpuName.startsWith("I")) {
                     cpuVendor = "Intel";
                 }
             } else if (checkLine.startsWith(familyMarker)) {
-                cpuFamily = checkLine.split(familyMarker)[1].trim();
+                cpuFamily = checkLine.substring(familyMarker.length()).trim();
             } else if (checkLine.startsWith(bitnessMarker)) {
-                cpu64bit = checkLine.split(bitnessMarker)[1].contains("64");
+                cpu64bit = checkLine.substring(bitnessMarker.length()).contains("64");
             }
         }
 
@@ -181,7 +181,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         // The only info available in the OS is the L2 size
         // But we can hardcode POWER7, POWER8, and POWER9 configs
         List<CentralProcessor.ProcessorCache> caches = new ArrayList<>();
-        int powerVersion = Parsing.getFirstIntValue(Executor.getFirstAnswer("uname -n"));
+        int powerVersion = parsePowerVersion(Executor.runNative("prtconf"));
         switch (powerVersion) {
             case 7:
                 caches.add(
@@ -235,6 +235,22 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
                 // Don't guess
         }
         return caches;
+    }
+
+    /**
+     * Parses the POWER generation from {@code prtconf}'s processor version line.
+     *
+     * @param prtconf the {@code prtconf} output
+     * @return the POWER generation, or 0 if unavailable
+     */
+    private static int parsePowerVersion(List<String> prtconf) {
+        final String versionMarker = "Processor Version:";
+        for (String line : prtconf) {
+            if (line.startsWith(versionMarker)) {
+                return Parsing.getFirstIntValue(line.substring(versionMarker.length()));
+            }
+        }
+        return 0;
     }
 
     /**

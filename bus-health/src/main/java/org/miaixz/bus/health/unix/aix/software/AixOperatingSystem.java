@@ -364,11 +364,15 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             inetd            tcpip            2752656      active
             lpd              spooler                       inoperative
                         ...
-         */
+        */
         List<String> systemServicesInfoList = Executor.runNative("lssrc -a");
         if (systemServicesInfoList.size() > 1) {
-            systemServicesInfoList.remove(0); // remove header
+            boolean header = true;
             for (String systemService : systemServicesInfoList) {
+                if (header) {
+                    header = false;
+                    continue;
+                }
                 String[] serviceSplit = Pattern.SPACES_PATTERN.split(systemService.trim());
                 if (systemService.contains("active")) {
                     if (serviceSplit.length == 4) {

@@ -47,57 +47,57 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     /**
      * The ifType value.
      */
-    private int ifType;
+    private volatile int ifType;
 
     /**
      * The bytesRecv value.
      */
-    private long bytesRecv;
+    private volatile long bytesRecv;
 
     /**
      * The bytesSent value.
      */
-    private long bytesSent;
+    private volatile long bytesSent;
 
     /**
      * The packetsRecv value.
      */
-    private long packetsRecv;
+    private volatile long packetsRecv;
 
     /**
      * The packetsSent value.
      */
-    private long packetsSent;
+    private volatile long packetsSent;
 
     /**
      * The inErrors value.
      */
-    private long inErrors;
+    private volatile long inErrors;
 
     /**
      * The outErrors value.
      */
-    private long outErrors;
+    private volatile long outErrors;
 
     /**
      * The inDrops value.
      */
-    private long inDrops;
+    private volatile long inDrops;
 
     /**
      * The collisions value.
      */
-    private long collisions;
+    private volatile long collisions;
 
     /**
      * The speed value.
      */
-    private long speed;
+    private volatile long speed;
 
     /**
      * The timeStamp value.
      */
-    private long timeStamp;
+    private volatile long timeStamp;
 
     /**
      * Constructs a new {@code MacNetworkIF} object.
@@ -131,7 +131,9 @@ public final class MacNetworkIF extends AbstractNetworkIF {
                     if (cfName != null && name.equals(cfName.stringValue())) {
                         CFStringRef cfDisplayName = SystemConfiguration.INSTANCE
                                 .SCNetworkInterfaceGetLocalizedDisplayName(scNetIf);
-                        return cfDisplayName.stringValue();
+                        if (cfDisplayName != null) {
+                            return cfDisplayName.stringValue();
+                        }
                     }
                 }
             } finally {

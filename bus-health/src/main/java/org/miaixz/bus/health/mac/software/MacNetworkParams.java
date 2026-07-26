@@ -94,7 +94,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
                 return Normal.EMPTY;
             }
             try (CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue())) {
-                String canonname = info.ai_canonname.trim();
+                String canonname = info.ai_canonname == null ? Normal.EMPTY : info.ai_canonname.trim();
                 SYS.freeaddrinfo(ptr.getValue());
                 return canonname;
             }

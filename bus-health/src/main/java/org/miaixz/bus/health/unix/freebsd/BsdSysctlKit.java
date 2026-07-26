@@ -25,6 +25,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
@@ -84,7 +85,7 @@ public final class BsdSysctlKit {
                 Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
-            return p.getLong(0);
+            return size.longValue() == FreeBsdLibc.INT_SIZE ? Parsing.unsignedIntToLong(p.getInt(0)) : p.getLong(0);
         }
     }
 

@@ -88,17 +88,17 @@ public class SolarisOSProcess extends AbstractOSProcess {
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The commandLineBackup value.
      */
-    private String commandLineBackup;
+    private volatile String commandLineBackup;
 
     /**
      * The commandLine value.
@@ -108,110 +108,110 @@ public class SolarisOSProcess extends AbstractOSProcess {
     /**
      * The user value.
      */
-    private String user;
+    private volatile String user;
 
     /**
      * The userID value.
      */
-    private String userID;
+    private volatile String userID;
 
     /**
      * The group value.
      */
-    private String group;
+    private volatile String group;
 
     /**
      * The groupID value.
      */
-    private String groupID;
+    private volatile String groupID;
 
     /**
      * The state value.
      */
-    private OSProcess.State state = OSProcess.State.INVALID;
+    private volatile OSProcess.State state = OSProcess.State.INVALID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The residentSetSize value.
      */
-    private long residentSetSize;
+    private volatile long residentSetSize;
 
     /**
      * The residentSetSizePrivate value.
      */
-    private long residentSetSizePrivate;
+    private volatile long residentSetSizePrivate;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The minorFaults value.
      */
-    private long minorFaults;
+    private volatile long minorFaults;
 
     /**
      * The majorFaults value.
      */
-    private long majorFaults;
+    private volatile long majorFaults;
 
     /**
      * The contextSwitches value.
      */
-    private long contextSwitches = 0; // default
+    private volatile long contextSwitches = 0; // default
     /**
      * The voluntaryContextSwitches value.
      */
-    private long voluntaryContextSwitches = 0; // default
+    private volatile long voluntaryContextSwitches = 0; // default
     /**
      * The involuntaryContextSwitches value.
      */
-    private long involuntaryContextSwitches = 0; // default
+    private volatile long involuntaryContextSwitches = 0; // default
 
     /**
      * Creates a new SolarisOSProcess instance.

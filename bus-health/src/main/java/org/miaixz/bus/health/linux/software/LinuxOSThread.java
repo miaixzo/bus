@@ -61,57 +61,57 @@ public class LinuxOSThread extends AbstractOSThread {
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The state value.
      */
-    private OSProcess.State state = OSProcess.State.INVALID;
+    private volatile OSProcess.State state = OSProcess.State.INVALID;
 
     /**
      * The minorFaults value.
      */
-    private long minorFaults;
+    private volatile long minorFaults;
 
     /**
      * The majorFaults value.
      */
-    private long majorFaults;
+    private volatile long majorFaults;
 
     /**
      * The startMemoryAddress value.
      */
-    private long startMemoryAddress;
+    private volatile long startMemoryAddress;
 
     /**
      * The contextSwitches value.
      */
-    private long contextSwitches;
+    private volatile long contextSwitches;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * Creates a new LinuxOSThread instance.

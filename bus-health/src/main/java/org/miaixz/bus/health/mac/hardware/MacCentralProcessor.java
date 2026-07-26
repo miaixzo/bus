@@ -124,12 +124,12 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     /**
      * The performanceCoreFrequency value.
      */
-    private long performanceCoreFrequency = DEFAULT_FREQUENCY;
+    private volatile long performanceCoreFrequency = DEFAULT_FREQUENCY;
 
     /**
      * The efficiencyCoreFrequency value.
      */
-    private long efficiencyCoreFrequency = DEFAULT_FREQUENCY;
+    private volatile long efficiencyCoreFrequency = DEFAULT_FREQUENCY;
 
     /**
      * Queries the platform expert device for the CPU manufacturer.

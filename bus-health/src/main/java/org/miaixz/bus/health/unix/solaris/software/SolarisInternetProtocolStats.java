@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.unix.solaris.software;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -60,7 +61,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
         long segmentsRetransmitted = 0;
         long inErrors = 0;
         long outResets = 0;
-        List<String> netstat = Executor.runNative("netstat -s -P tcp");
+        List<String> netstat = new ArrayList<>(Executor.runNative("netstat -s -P tcp"));
         // append IP
         netstat.addAll(Executor.runNative("netstat -s -P ip"));
         for (String s : netstat) {
@@ -69,7 +70,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             // Now of form tcpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
-                    String[] split = stat.split(Symbol.EQUAL);
+                    String[] split = stat.split(Symbol.EQUAL, 2);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "tcpCurrEstab":
@@ -135,7 +136,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
         long datagramsReceived = 0;
         long datagramsNoPort = 0;
         long datagramsReceivedErrors = 0;
-        List<String> netstat = Executor.runNative("netstat -s -P udp");
+        List<String> netstat = new ArrayList<>(Executor.runNative("netstat -s -P udp"));
         // append IP
         netstat.addAll(Executor.runNative("netstat -s -P ip"));
         for (String s : netstat) {
@@ -144,7 +145,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             // Now of form udpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
-                    String[] split = stat.split(Symbol.EQUAL);
+                    String[] split = stat.split(Symbol.EQUAL, 2);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "udpOutDatagrams":

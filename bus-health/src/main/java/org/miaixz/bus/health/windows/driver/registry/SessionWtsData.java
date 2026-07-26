@@ -160,10 +160,12 @@ public final class SessionWtsData {
                                                 WTS_CLIENTADDRESS,
                                                 ppBuffer,
                                                 pBytes)) {
+                                            sessions.add(new OSSession(userName, device, logonTime, "::"));
                                             continue;
                                         }
                                         pBuffer = ppBuffer.getValue(); // returns WTS_CLIENT_ADDRESS
                                         if (pBuffer == null) {
+                                            sessions.add(new OSSession(userName, device, logonTime, "::"));
                                             continue;
                                         }
                                         WTS_CLIENT_ADDRESS addr;

@@ -98,12 +98,12 @@ public class AixOSProcess extends AbstractOSProcess {
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The commandLineBackup value.
      */
-    private String commandLineBackup;
+    private volatile String commandLineBackup;
 
     /**
      * The commandLine value.
@@ -113,92 +113,92 @@ public class AixOSProcess extends AbstractOSProcess {
     /**
      * The user value.
      */
-    private String user;
+    private volatile String user;
 
     /**
      * The userID value.
      */
-    private String userID;
+    private volatile String userID;
 
     /**
      * The group value.
      */
-    private String group;
+    private volatile String group;
 
     /**
      * The groupID value.
      */
-    private String groupID;
+    private volatile String groupID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The residentSetSize value.
      */
-    private long residentSetSize;
+    private volatile long residentSetSize;
 
     /**
      * The privateResidentMemory value.
      */
-    private long privateResidentMemory;
+    private volatile long privateResidentMemory;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The state value.
      */
-    private OSProcess.State state = INVALID;
+    private volatile OSProcess.State state = INVALID;
 
     /**
      * Creates a new AixOSProcess instance.

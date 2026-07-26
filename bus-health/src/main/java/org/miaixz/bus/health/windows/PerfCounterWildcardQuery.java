@@ -163,10 +163,10 @@ public final class PerfCounterWildcardQuery {
             throw new IllegalArgumentException("Enum " + propertyEnum.getName()
                     + " must have at least two elements, an instance filter and a counter.");
         }
-        String instanceFilter = StringKit.isBlank(customFilter)
+        String instanceFilter = (StringKit.isBlank(customFilter)
                 ? ((PdhCounterWildcardProperty) propertyEnum.getEnumConstants()[0]).getCounter()
                         .toLowerCase(Locale.ROOT)
-                : customFilter;
+                : customFilter).toLowerCase(Locale.ROOT);
         // Localize the perfObject using different variable for the EnumObjectItems
         // Will still use unlocalized perfObject for the query
         String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject, true);
@@ -218,6 +218,8 @@ public final class PerfCounterWildcardQuery {
                     }
                     valuesMap.put(prop, values);
                 }
+            } else {
+                return Pair.of(Collections.emptyList(), Collections.emptyMap());
             }
         }
         return Pair.of(instances, valuesMap);

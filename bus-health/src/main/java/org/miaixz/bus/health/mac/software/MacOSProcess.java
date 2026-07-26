@@ -166,137 +166,137 @@ public class MacOSProcess extends AbstractOSProcess {
     /**
      * The name value.
      */
-    private String name = Normal.EMPTY;
+    private volatile String name = Normal.EMPTY;
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The currentWorkingDirectory value.
      */
-    private String currentWorkingDirectory;
+    private volatile String currentWorkingDirectory;
 
     /**
      * The user value.
      */
-    private String user;
+    private volatile String user;
 
     /**
      * The userID value.
      */
-    private String userID;
+    private volatile String userID;
 
     /**
      * The group value.
      */
-    private String group;
+    private volatile String group;
 
     /**
      * The groupID value.
      */
-    private String groupID;
+    private volatile String groupID;
 
     /**
      * The state value.
      */
-    private State state = State.INVALID;
+    private volatile State state = State.INVALID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The residentSetSize value.
      */
-    private long residentSetSize;
+    private volatile long residentSetSize;
 
     /**
      * The memoryFootprint value.
      */
-    private long memoryFootprint;
+    private volatile long memoryFootprint;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The openFiles value.
      */
-    private long openFiles;
+    private volatile long openFiles;
 
     /**
      * The bitness value.
      */
-    private int bitness;
+    private volatile int bitness;
 
     /**
      * The minorFaults value.
      */
-    private long minorFaults;
+    private volatile long minorFaults;
 
     /**
      * The majorFaults value.
      */
-    private long majorFaults;
+    private volatile long majorFaults;
 
     /**
      * The contextSwitches value.
      */
-    private long contextSwitches;
+    private volatile long contextSwitches;
 
     /**
      * The voluntaryContextSwitches value.
      */
-    private long voluntaryContextSwitches;
+    private volatile long voluntaryContextSwitches;
 
     /**
      * The involuntaryContextSwitches value.
      */
-    private long involuntaryContextSwitches;
+    private volatile long involuntaryContextSwitches;
 
     /**
      * Creates a new MacOSProcess instance.
@@ -867,7 +867,7 @@ public class MacOSProcess extends AbstractOSProcess {
         }
         try (Struct.CloseableVnodePathInfo vpi = new Struct.CloseableVnodePathInfo()) {
             if (0 < SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDVNODEPATHINFO, 0, vpi, vpi.size())) {
-                this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, Charset.US_ASCII);
+                this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, Charset.UTF_8);
             }
         }
         return true;

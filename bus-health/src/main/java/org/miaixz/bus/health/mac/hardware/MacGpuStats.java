@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sun.jna.Pointer;
@@ -106,9 +105,14 @@ final class MacGpuStats implements GpuStats {
     private final boolean isAppleSilicon;
 
     /**
-     * The cardName value.
+     * The normalized card name value.
      */
-    private final String cardName;
+    private final String normCardName;
+
+    /**
+     * The cardNamePattern value.
+     */
+    private final Pattern cardNamePattern;
 
     // Non-null only on Apple Silicon
     /**
@@ -129,7 +133,8 @@ final class MacGpuStats implements GpuStats {
      */
     MacGpuStats(boolean isAppleSilicon, String cardName) {
         this.isAppleSilicon = isAppleSilicon;
-        this.cardName = cardName;
+        this.normCardName = TRADEMARK_PATTERN.matcher(cardName.toLowerCase(Locale.ROOT)).replaceAll("").trim();
+        this.cardNamePattern = Pattern.compile("\\b" + Pattern.quote(normCardName) + "\\b");
         this.ioReportClient = isAppleSilicon ? IOReportClient.create() : null;
         if (isAppleSilicon && ioReportClient == null) {
             Logger.warn(
@@ -416,12 +421,10 @@ final class MacGpuStats implements GpuStats {
             return false;
         }
         String normModel = TRADEMARK_PATTERN.matcher(model.toLowerCase(Locale.ROOT)).replaceAll("").trim();
-        String normName = TRADEMARK_PATTERN.matcher(cardName.toLowerCase(Locale.ROOT)).replaceAll("").trim();
-        if (normModel.equals(normName)) {
+        if (normModel.equals(normCardName)) {
             return true;
         }
-        Matcher m = Pattern.compile("\\b" + Pattern.quote(normName) + "\\b").matcher(normModel);
-        return m.find();
+        return cardNamePattern.matcher(normModel).find();
     }
 
 }

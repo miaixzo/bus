@@ -69,11 +69,12 @@ public final class Lssrad {
         int slot = 0;
         Map<Integer, Pair<Integer, Integer>> nodeMap = new HashMap<>();
         List<String> lssrad = Executor.runNative("lssrad -av");
-        // remove header
-        if (!lssrad.isEmpty()) {
-            lssrad.remove(0);
-        }
+        boolean header = true;
         for (String s : lssrad) {
+            if (header) {
+                header = false;
+                continue;
+            }
             String t = s.trim();
             if (!t.isEmpty()) {
                 if (Character.isDigit(s.charAt(0))) {

@@ -75,7 +75,7 @@ public final class Prtvtoc {
                 if (line.startsWith(Symbol.STAR)) {
                     if (line.endsWith("bytes/sector")) {
                         split = Pattern.SPACES_PATTERN.split(line);
-                        if (split.length > 0) {
+                        if (split.length > 1) {
                             bytesPerSector = Parsing.parseIntOrDefault(split[1], 0);
                         }
                     } else if (line.contains("Volume Name")) {

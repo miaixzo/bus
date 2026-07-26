@@ -617,10 +617,12 @@ public final class Parsing {
      */
     public static String getStringBetween(String line, char c) {
         int firstOcc = line.indexOf(c);
-        if (firstOcc < 0) {
+        int lastOcc = line.lastIndexOf(c);
+        // Absent, or a single unmatched delimiter: nothing is enclosed.
+        if (firstOcc < 0 || firstOcc == lastOcc) {
             return Normal.EMPTY;
         }
-        return line.substring(firstOcc + 1, line.lastIndexOf(c)).trim();
+        return line.substring(firstOcc + 1, lastOcc).trim();
     }
 
     /**

@@ -19,12 +19,8 @@
 */
 package org.miaixz.bus.health.windows;
 
-import static com.sun.jna.platform.win32.WinError.ERROR_SUCCESS;
-import static com.sun.jna.platform.win32.WinNT.KEY_READ;
+import java.util.Map;
 
-import java.util.Objects;
-
-import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg.HKEY;
@@ -49,11 +45,6 @@ public final class RegistryKit {
      * Constant for 30 years in seconds. Used for validating timestamps.
      */
     private static final long THIRTY_YEARS_IN_SECS = 30L * 365 * 24 * 60 * 60;
-
-    /**
-     * Instance of the Advapi32 library for direct registry access.
-     */
-    private static final Advapi32 ADV = Advapi32.INSTANCE;
 
     /**
      * Creates a new RegistryKit instance.
@@ -110,11 +101,18 @@ public final class RegistryKit {
      * @return The registry value as an Object, or {@code null} if the key is not found or an error occurs.
      */
     public static Object getRegistryValueOrNull(HKEY root, String path, String key, int accessFlag) {
-        HKEY hKey = null;
         try {
-            hKey = Advapi32Util.registryGetKey(root, path, KEY_READ | accessFlag).getValue();
-            Object value = Advapi32Util.registryGetValue(root, path, key);
-            return Objects.isNull(value) ? null : value;
+            Map<String, Object> values = Advapi32Util.registryGetValues(root, path, accessFlag);
+            String valueName = key == null ? "" : key;
+            Object value = values.get(valueName);
+            if (value == null) {
+                for (Map.Entry<String, Object> entry : values.entrySet()) {
+                    if (entry.getKey().equalsIgnoreCase(valueName)) {
+                        return entry.getValue();
+                    }
+                }
+            }
+            return value;
         } catch (Win32Exception e) {
             Logger.trace(
                     false,
@@ -123,13 +121,6 @@ public final class RegistryKit {
                     path,
                     accessFlag,
                     e.getClass().getSimpleName());
-        } finally {
-            if (hKey != null) {
-                int rc = ADV.RegCloseKey(hKey);
-                if (rc != ERROR_SUCCESS) {
-                    Logger.trace(false, "Health", "Unable to close registry key {}: {}", path, rc);
-                }
-            }
         }
         return null;
     }
@@ -153,7 +144,7 @@ public final class RegistryKit {
         long currentTimeSecs = System.currentTimeMillis() / 1000L;
         long minSaneTimestamp = currentTimeSecs - THIRTY_YEARS_IN_SECS;
         if (val instanceof Integer) {
-            int value = (Integer) val;
+            long value = Integer.toUnsignedLong((Integer) val);
             if (value > minSaneTimestamp && value < currentTimeSecs) {
                 return value * 1000L;
             }
@@ -174,7 +165,8 @@ public final class RegistryKit {
     /**
      * Retrieves a registry value as a {@code String}. (No extra access flags)
      * <p>
-     * Currently supports converting Registry types REG_SZ (String) and REG_BINARY (byte[]) to String.
+     * Currently supports converting Registry types REG_SZ (String), REG_DWORD (Integer), and REG_BINARY (byte[]) to
+     * String.
      * </p>
      *
      * @param root The root HKEY.
@@ -195,7 +187,8 @@ public final class RegistryKit {
     /**
      * Retrieves a registry value as a {@code String} with specific access flags.
      * <p>
-     * Currently supports converting Registry types REG_SZ (String) and REG_BINARY (byte[]) to String.
+     * Currently supports converting Registry types REG_SZ (String), REG_DWORD (Integer), and REG_BINARY (byte[]) to
+     * String.
      * </p>
      *
      * @param root       The root HKEY.
@@ -212,7 +205,8 @@ public final class RegistryKit {
     /**
      * Decodes a registry value object to a {@code String} using multiple fallback encodings.
      * <p>
-     * Handles {@code String} (REG_SZ, REG_EXPAND_SZ) and {@code byte[]} (REG_BINARY) types.
+     * Handles {@code String} (REG_SZ, REG_EXPAND_SZ), {@code Integer} (REG_DWORD), and {@code byte[]} (REG_BINARY)
+     * types.
      * </p>
      *
      * @param val The registry value object.
@@ -226,6 +220,11 @@ public final class RegistryKit {
         // Already a string (REG_SZ or REG_EXPAND_SZ)
         if (val instanceof String) {
             return ((String) val).trim();
+        }
+
+        // Handle unsigned REG_DWORD.
+        if (val instanceof Integer) {
+            return Integer.toUnsignedString((Integer) val);
         }
 
         // Handle binary (REG_BINARY)

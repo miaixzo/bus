@@ -68,8 +68,9 @@ public final class CpuStat {
             // If ticks don't at least go user/nice/system/idle, abort
             return ticks;
         }
-        // Note tickArr is offset by 1 because first element is "cpu"
-        for (int i = 0; i < CentralProcessor.TickType.values().length; i++) {
+        // Note tickArr is offset by 1 because first element is "cpu".
+        // Leave zero defaults when a truncated line runs out of fields.
+        for (int i = 0; i < CentralProcessor.TickType.values().length && i + 1 < tickArr.length; i++) {
             ticks[i] = Parsing.parseLongOrDefault(tickArr[i + 1], 0L);
         }
         // Ignore guest or guest_nice, they are included in user/nice
@@ -101,8 +102,9 @@ public final class CpuStat {
                     // If ticks don't at least go user/nice/system/idle, abort
                     return ticks;
                 }
-                // Note tickArr is offset by 1
-                for (int i = 0; i < CentralProcessor.TickType.values().length; i++) {
+                // Note tickArr is offset by 1.
+                // Leave zero defaults when a truncated line runs out of fields.
+                for (int i = 0; i < CentralProcessor.TickType.values().length && i + 1 < tickArr.length; i++) {
                     ticks[cpu][i] = Parsing.parseLongOrDefault(tickArr[i + 1], 0L);
                 }
                 // Ignore guest or guest_nice, they are included in
@@ -161,7 +163,9 @@ public final class CpuStat {
         for (String stat : procStat) {
             if (stat.startsWith("btime")) {
                 String[] bTime = Pattern.SPACES_PATTERN.split(stat);
-                return Parsing.parseLongOrDefault(bTime[1], 0L);
+                if (bTime.length >= 2) {
+                    return Parsing.parseLongOrDefault(bTime[1], 0L);
+                }
             }
         }
         return 0;

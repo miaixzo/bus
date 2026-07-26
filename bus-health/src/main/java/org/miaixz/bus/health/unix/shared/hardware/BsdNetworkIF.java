@@ -41,47 +41,47 @@ public final class BsdNetworkIF extends AbstractNetworkIF {
     /**
      * The bytesRecv value.
      */
-    private long bytesRecv;
+    private volatile long bytesRecv;
 
     /**
      * The bytesSent value.
      */
-    private long bytesSent;
+    private volatile long bytesSent;
 
     /**
      * The packetsRecv value.
      */
-    private long packetsRecv;
+    private volatile long packetsRecv;
 
     /**
      * The packetsSent value.
      */
-    private long packetsSent;
+    private volatile long packetsSent;
 
     /**
      * The inErrors value.
      */
-    private long inErrors;
+    private volatile long inErrors;
 
     /**
      * The outErrors value.
      */
-    private long outErrors;
+    private volatile long outErrors;
 
     /**
      * The inDrops value.
      */
-    private long inDrops;
+    private volatile long inDrops;
 
     /**
      * The collisions value.
      */
-    private long collisions;
+    private volatile long collisions;
 
     /**
      * The timeStamp value.
      */
-    private long timeStamp;
+    private volatile long timeStamp;
 
     /**
      * Constructs a new {@code BsdNetworkIF} object.

@@ -74,20 +74,11 @@ final class WindowsSoundCard extends AbstractSoundCard {
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")) {
                     soundCards.add(
                             new WindowsSoundCard(
-                                    Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")
-                                            + Symbol.SPACE + Advapi32Util.registryGetStringValue(
-                                                    WinReg.HKEY_LOCAL_MACHINE,
-                                                    fullKey,
-                                                    "DriverVersion"),
-                                    Advapi32Util
-                                            .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "ProviderName")
-                                            + Symbol.SPACE
-                                            + Advapi32Util.registryGetStringValue(
-                                                    WinReg.HKEY_LOCAL_MACHINE,
-                                                    fullKey,
-                                                    "DriverDesc"),
-                                    Advapi32Util
-                                            .registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "DriverDesc")));
+                                    getRegString(fullKey, "Driver") + Symbol.SPACE
+                                            + getRegString(fullKey, "DriverVersion"),
+                                    getRegString(fullKey, "ProviderName") + Symbol.SPACE
+                                            + getRegString(fullKey, "DriverDesc"),
+                                    getRegString(fullKey, "DriverDesc")));
                 }
             } catch (Win32Exception e) {
                 if (e.getErrorCode() != WinError.ERROR_ACCESS_DENIED) {
@@ -97,6 +88,21 @@ final class WindowsSoundCard extends AbstractSoundCard {
             }
         }
         return soundCards;
+    }
+
+    /**
+     * Returns a registry string value if present.
+     *
+     * @param keyPath   the registry key path
+     * @param valueName the value name
+     * @return the registry string, or an empty string if unavailable
+     */
+    private static String getRegString(String keyPath, String valueName) {
+        if (!Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, keyPath, valueName)) {
+            return "";
+        }
+        Object val = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, keyPath, valueName);
+        return val instanceof String ? (String) val : "";
     }
 
 }

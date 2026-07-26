@@ -110,9 +110,9 @@ public final class Lscfg {
         String model = null;
         String serial = null;
         for (String s : Executor.runNative("lscfg -vl " + device)) {
-            // Default model to description at end of first line
+            // Default model to description at end of first line.
             if (model == null && s.contains(device)) {
-                String locDesc = s.split(device)[1].trim();
+                String locDesc = s.substring(s.indexOf(device) + device.length()).trim();
                 int idx = locDesc.indexOf(Symbol.C_SPACE);
                 if (idx > 0) {
                     model = locDesc.substring(idx).trim();

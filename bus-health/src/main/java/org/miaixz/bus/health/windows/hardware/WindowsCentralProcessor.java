@@ -104,11 +104,11 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                     WindowsCentralProcessor::queryProcessorUtilityCounters,
                     TimeUnit.MILLISECONDS.toNanos(300L))
             : null;
-    // populated by initProcessorCounts called by the parent constructor
+    // Populated by initProcessorCounts called by the parent constructor.
     /**
      * The numaNodeProcToLogicalProcMap value.
      */
-    private Map<String, Integer> numaNodeProcToLogicalProcMap;
+    private volatile Map<String, Integer> numaNodeProcToLogicalProcMap;
     // Store the initial query and start the memoizer expiration
     /**
      * The initialUtilityCounters value.
@@ -149,6 +149,15 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      */
     private static Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>> queryProcessorUtilityCounters() {
         return ProcessorInformation.queryProcessorCapacityCounters();
+    }
+
+    /**
+     * Returns whether the legacy system counter path should be used.
+     *
+     * @return true if the legacy system counter path should be used
+     */
+    protected boolean useLegacySystemCounters() {
+        return USE_LEGACY_SYSTEM_COUNTERS;
     }
 
     /**
@@ -227,13 +236,14 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             Map<Integer, Integer> nextProcIndexByNode = new HashMap<>();
             // 0-indexed list of all lps for array lookup
             int lp = 0;
-            this.numaNodeProcToLogicalProcMap = new HashMap<>();
+            Map<String, Integer> numaMap = new HashMap<>();
             for (CentralProcessor.LogicalProcessor logProc : lpi.getLeft()) {
                 int node = logProc.getNumaNode();
                 int procNum = nextProcIndexByNode.getOrDefault(node, 0);
-                numaNodeProcToLogicalProcMap.put(String.format(Locale.ROOT, "%d,%d", node, procNum), lp++);
+                numaMap.put(String.format(Locale.ROOT, "%d,%d", node, procNum), lp++);
                 nextProcIndexByNode.put(node, procNum + 1);
             }
+            this.numaNodeProcToLogicalProcMap = numaMap;
         } else {
             lpi = LogicalProcessorInformation.getLogicalProcessorInformation();
         }
@@ -251,7 +261,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[TickType.values().length];
-        if (USE_LEGACY_SYSTEM_COUNTERS) {
+        if (useLegacySystemCounters()) {
             WinBase.FILETIME lpIdleTime = new WinBase.FILETIME();
             WinBase.FILETIME lpKernelTime = new WinBase.FILETIME();
             WinBase.FILETIME lpUserTime = new WinBase.FILETIME();

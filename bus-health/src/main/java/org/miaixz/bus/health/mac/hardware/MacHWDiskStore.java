@@ -455,6 +455,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
             IOIterator driveListIter = IOKitUtil.getMatchingServices(matchingDict);
             if (driveListIter != null) {
                 // getMatchingServices releases matchingDict
+                boolean updated = false;
                 IORegistryEntry drive = driveListIter.next();
                 // Should only match one drive
                 if (drive != null) {
@@ -501,6 +502,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                             }
 
                             properties.release();
+                            updated = true;
                         } else {
                             // This is normal for FileVault drives, Fusion
                             // drives, and other virtual bsd names
@@ -595,7 +597,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                     drive.release();
                 }
                 driveListIter.release();
-                return true;
+                return updated;
             }
         }
         return false;

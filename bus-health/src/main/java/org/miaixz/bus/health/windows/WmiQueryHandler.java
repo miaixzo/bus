@@ -20,8 +20,9 @@
 package org.miaixz.bus.health.windows;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 import com.sun.jna.platform.win32.COM.COMException;
@@ -83,12 +84,12 @@ public class WmiQueryHandler {
     /**
      * The failedWmiClassNames value.
      */
-    private final Set<String> failedWmiClassNames = new HashSet<>();
+    private final Set<String> failedWmiClassNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
     // Timeout for WMI queries
     /**
      * The wmiTimeout value.
      */
-    private int wmiTimeout = globalTimeout;
+    private volatile int wmiTimeout = globalTimeout;
     // Preferred threading model
     /**
      * The comThreading value.
