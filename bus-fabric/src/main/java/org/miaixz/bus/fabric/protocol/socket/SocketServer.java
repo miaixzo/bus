@@ -424,9 +424,19 @@ public final class SocketServer implements Lifecycle {
             }
             final Filter sessionFilter = FilterChain.compose(context.filter(), filter);
             final Map<String, Object> attributes = attributes(proxy.header(), sessionFilter);
-            session = new SocketSession(peerAddress, connection, null, null, SocketCodec.of(frameCodec), Demuxer.noop(),
-                    attributes, null, registryListener(connection), context.options().materializeMaxBytes(),
-                    socketOptions, dispatcher, context.clock(), timeout, Cancellation.create());
+            session = SocketSession.createServer(
+                    peerAddress,
+                    connection,
+                    SocketCodec.forSession(frameCodec),
+                    Demuxer.noop(),
+                    attributes,
+                    registryListener(connection),
+                    context.options().materializeMaxBytes(),
+                    socketOptions,
+                    dispatcher,
+                    context.clock(),
+                    timeout,
+                    Cancellation.create());
             if (runtime.shuttingDown()) {
                 session.close();
                 return;
@@ -474,7 +484,7 @@ public final class SocketServer implements Lifecycle {
     private void readLoop(final SocketSession session) {
         try {
             while (!runtime.shuttingDown() && session.active()) {
-                final Message message = session.receive().execute();
+                final Message message = session.readDataPlane();
                 handler.message(session, message);
             }
         } catch (final RuntimeException e) {

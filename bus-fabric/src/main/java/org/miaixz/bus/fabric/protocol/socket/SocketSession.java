@@ -21,10 +21,7 @@ package org.miaixz.bus.fabric.protocol.socket;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -33,6 +30,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
+import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.*;
@@ -49,7 +47,6 @@ import org.miaixz.bus.fabric.protocol.Demuxer;
 import org.miaixz.bus.fabric.protocol.MonoCall;
 import org.miaixz.bus.fabric.protocol.socket.body.SocketBody;
 import org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec;
-import org.miaixz.bus.fabric.protocol.socket.frame.SocketFrame;
 import org.miaixz.bus.fabric.protocol.socket.session.SocketLease;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.FilterChain;
@@ -66,6 +63,11 @@ import org.miaixz.bus.logger.Logger;
  * @since Java 21+
  */
 public final class SocketSession implements Session {
+
+    /**
+     * Stable debug gate kept out of the per-frame data path.
+     */
+    private static final boolean DEBUG_ENABLED = Logger.isDebugEnabled();
 
     /**
      * Remote address.
@@ -108,6 +110,16 @@ public final class SocketSession implements Session {
     private final Map<String, Object> attributes;
 
     /**
+     * Immutable session filter resolved once from the attributes.
+     */
+    private final Filter messageFilter;
+
+    /**
+     * Immutable session guard resolved once from the attributes.
+     */
+    private final GuardRule messageGuard;
+
+    /**
      * Close owner.
      */
     private final AutoCloseable owner;
@@ -148,9 +160,29 @@ public final class SocketSession implements Session {
     private final EventObserver observer;
 
     /**
+     * Whether observation decoration and traffic events are enabled.
+     */
+    private final boolean observationEnabled;
+
+    /**
      * Per-emission wire byte count consumed by the observer decorator.
      */
     private final ThreadLocal<Long> trafficBytes;
+
+    /**
+     * Whether successful traffic must refresh an idle deadline.
+     */
+    private final boolean idleTrackingEnabled;
+
+    /**
+     * Whether the server-owned reader can invoke the existing receive core directly.
+     */
+    private final boolean directDataPlane;
+
+    /**
+     * Whether the stream receive path is owned by one server reader.
+     */
+    private final boolean exclusiveReader;
 
     /**
      * Whether this session owns the dispatcher lifecycle.
@@ -213,6 +245,26 @@ public final class SocketSession implements Session {
             final SocketOptions socketOptions) {
         return new SocketSession(address, connection, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions);
+    }
+
+    /**
+     * Creates a server session whose stream receive path has one framework-owned reader.
+     */
+    static SocketSession createServer(
+            final Address address,
+            final Connection connection,
+            final SocketCodec codec,
+            final Handler handler,
+            final Map<String, Object> attributes,
+            final Listener<? super SocketSession> listener,
+            final long materializeMaxBytes,
+            final SocketOptions socketOptions,
+            final Dispatcher dispatcher,
+            final Clock clock,
+            final Timeout timeout,
+            final Cancellation cancellation) {
+        return new SocketSession(address, connection, null, null, codec, handler, attributes, null, listener,
+                materializeMaxBytes, socketOptions, dispatcher, clock, timeout, cancellation, false, true);
     }
 
     /**
@@ -423,7 +475,8 @@ public final class SocketSession implements Session {
             final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
             final SocketOptions socketOptions) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
-                socketOptions, Dispatcher.create(), Clock.system(), Timeout.defaults(), Cancellation.create(), true);
+                socketOptions, Dispatcher.create(), Clock.system(), Timeout.defaults(), Cancellation.create(), true,
+                false);
     }
 
     /**
@@ -451,7 +504,7 @@ public final class SocketSession implements Session {
             final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
             final Cancellation cancellation) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
-                socketOptions, dispatcher, clock, timeout, cancellation, false);
+                socketOptions, dispatcher, clock, timeout, cancellation, false, false);
     }
 
     /**
@@ -473,12 +526,13 @@ public final class SocketSession implements Session {
      * @param timeout             timeout policy governing session operations
      * @param cancellation        shared cancellation
      * @param ownsDispatcher      true when cleanup closes the dispatcher
+     * @param exclusiveReader     true when one server reader owns stream receives
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
             final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
             final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
             final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
-            final Cancellation cancellation, final boolean ownsDispatcher) {
+            final Cancellation cancellation, final boolean ownsDispatcher, final boolean exclusiveReader) {
         this.address = require(address, "Socket address");
         if (connection == null && datagram == null) {
             throw new ValidateException("Socket transport must not be null");
@@ -490,17 +544,23 @@ public final class SocketSession implements Session {
         this.handler = handler == null ? Demuxer.noop() : handler;
         this.pendingFrames = new ArrayDeque<>();
         this.attributes = new LinkedHashMap<>(attributes == null ? Map.of() : attributes);
+        final Object configuredFilter = this.attributes.get(Builder.ATTRIBUTE_FILTER);
+        this.messageFilter = configuredFilter instanceof Filter current ? current : null;
+        final Object configuredGuard = this.attributes.get(Builder.ATTRIBUTE_GUARD);
+        this.messageGuard = configuredGuard instanceof GuardRule current ? current : null;
         this.owner = owner;
         final Object configuredObserver = this.attributes.get(Builder.ATTRIBUTE_OBSERVER);
         final EventObserver sink = configuredObserver instanceof EventObserver current ? EventObserver.safe(current)
                 : EventObserver.noop();
-        this.trafficBytes = new ThreadLocal<>();
-        this.observer = event -> sink.emit(withTrafficBytes(event));
+        this.observationEnabled = sink != EventObserver.noop();
+        this.trafficBytes = observationEnabled ? new ThreadLocal<>() : null;
+        this.observer = observationEnabled ? event -> sink.emit(withTrafficBytes(event)) : EventObserver.noop();
         this.dispatcher = require(dispatcher, "Socket dispatcher");
         this.clock = require(clock, "Socket clock");
         this.timeout = require(timeout, "Socket timeout");
         this.cancellation = require(cancellation, "Socket cancellation");
         this.ownsDispatcher = ownsDispatcher;
+        this.exclusiveReader = exclusiveReader;
         this.scope = SessionLifecycle.create(
                 this,
                 "socket-session",
@@ -514,6 +574,8 @@ public final class SocketSession implements Session {
         Payload.validateMaterializeMaxBytes(materializeMaxBytes);
         this.materializeMaxBytes = materializeMaxBytes;
         this.socketOptions = socketOptions == null ? SocketOptions.defaults() : socketOptions;
+        this.idleTrackingEnabled = !this.socketOptions.idleTimeout().isZero();
+        this.directDataPlane = !observationEnabled && this.timeout.call().isZero();
         this.idleHandle = new AtomicReference<>();
         this.kcpHandle = new AtomicReference<>();
         this.retransmitHandle = new AtomicReference<>();
@@ -599,6 +661,20 @@ public final class SocketSession implements Session {
     }
 
     /**
+     * Reads one message for the server-owned reader.
+     *
+     * <p>
+     * The fast case invokes the same receive core used by the public {@link Call}. Configurations that require Call
+     * observation or a Call deadline retain the complete public execution path.
+     * </p>
+     *
+     * @return received message
+     */
+    Message readDataPlane() {
+        return directDataPlane ? receiveNow(exclusiveReader) : receive().execute();
+    }
+
+    /**
      * Closes this session.
      *
      * @return true when state changed
@@ -643,22 +719,30 @@ public final class SocketSession implements Session {
     private Void sendNow(final Payload source) {
         try {
             ensureOpen();
-            final Message outgoing = filter(source, "socket-write");
-            checkGuard(outgoing);
-            final byte[] bytes = materialize(outgoing.payload(), "SocketSession.send(Payload)");
+            final Payload outgoing;
+            if (messageFilter == null && messageGuard == null) {
+                outgoing = source;
+            } else {
+                final Message message = filter(source, "socket-write");
+                checkGuard(message);
+                outgoing = message.payload();
+            }
+            final ByteString bytes = snapshot(outgoing, "SocketSession.send(Payload)");
             final Buffer encoded = new Buffer();
             synchronized (codec) {
-                codec.encode(SocketFrame.of(ByteString.of(bytes)), encoded);
+                codec.encodeOwned(bytes, encoded);
             }
             final long wireBytes = encoded.size();
-            Logger.debug(
-                    true,
-                    "Fabric",
-                    "Socket send started: scheme={}, host={}, port={}, bytes={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    wireBytes);
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        true,
+                        "Fabric",
+                        "Socket send started: scheme={}, host={}, port={}, bytes={}",
+                        address.scheme(),
+                        address.host(),
+                        address.port(),
+                        wireBytes);
+            }
             if (connection != null) {
                 writeStream(encoded, wireBytes);
             } else {
@@ -672,14 +756,16 @@ public final class SocketSession implements Session {
             }
             emit(ObservationMarker.SOCKET_WRITE, wireBytes, null);
             touch();
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "Socket send completed: scheme={}, host={}, port={}, bytes={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    wireBytes);
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "Socket send completed: scheme={}, host={}, port={}, bytes={}",
+                        address.scheme(),
+                        address.host(),
+                        address.port(),
+                        wireBytes);
+            }
             return null;
         } catch (final RuntimeException e) {
             operationFailed(e);
@@ -736,18 +822,30 @@ public final class SocketSession implements Session {
      * @return received message
      */
     private Message receiveNow() {
+        return receiveNow(false);
+    }
+
+    /**
+     * Runs the inbound pipeline, optionally returning the first decoded stream frame without queueing it.
+     *
+     * @param directFrame true only for the framework-owned exclusive server reader
+     * @return received message
+     */
+    private Message receiveNow(final boolean directFrame) {
         try {
             ensureOpen();
             PendingFrame pending = pollPending();
             if (pending == null) {
                 if (connection != null) {
-                    readStreamFrames();
+                    pending = readStreamFrames(directFrame);
                 } else if (kcp == null) {
                     readPlainDatagram();
                 } else {
                     awaitKcpFrame();
                 }
-                pending = pollPending();
+                if (pending == null) {
+                    pending = pollPending();
+                }
             }
             if (pending == null) {
                 throw new SocketException("Socket receive completed without a frame");
@@ -765,7 +863,7 @@ public final class SocketSession implements Session {
     /**
      * Reads stream chunks until the stateful codec produces at least one frame.
      */
-    private void readStreamFrames() {
+    private PendingFrame readStreamFrames(final boolean directFrame) {
         long wireBytes = Normal._0;
         while (active()) {
             final Buffer input = new Buffer();
@@ -783,10 +881,16 @@ public final class SocketSession implements Session {
                 continue;
             }
             wireBytes += read;
-            final List<SocketFrame> frames = decode(input);
+            final List<Frame> frames = decode(input);
             if (!frames.isEmpty()) {
+                if (directFrame) {
+                    if (frames.size() > Normal._1) {
+                        enqueuePending(frames.subList(Normal._1, frames.size()), null, Normal.LONG_ZERO);
+                    }
+                    return new PendingFrame(frames.getFirst().payload(), null, wireBytes);
+                }
                 enqueuePending(frames, null, wireBytes);
-                return;
+                return null;
             }
         }
         throw new StatefulException("Socket session closed while reading");
@@ -798,7 +902,7 @@ public final class SocketSession implements Session {
     private void readPlainDatagram() {
         final Message packet = datagram.receive().execute();
         final byte[] bytes = materialize(packet.payload(), "SocketSession.receive(UDP)");
-        final List<SocketFrame> frames = decode(new Buffer().write(bytes));
+        final List<Frame> frames = decode(new Buffer().write(bytes));
         if (frames.isEmpty()) {
             throw new SocketException("Socket datagram did not contain a complete frame");
         }
@@ -827,9 +931,9 @@ public final class SocketSession implements Session {
      * @param input encoded input
      * @return decoded frames
      */
-    private List<SocketFrame> decode(final Buffer input) {
+    private List<Frame> decode(final Buffer input) {
         synchronized (codec) {
-            return codec.decode(input);
+            return codec.decodeFrames(input);
         }
     }
 
@@ -841,21 +945,23 @@ public final class SocketSession implements Session {
      */
     private Message deliver(final PendingFrame pending) {
         final Object tag = pending.tag() == null ? "socket-read" : pending.tag();
-        final Message received = filter(Payload.of(pending.frame().payload()), tag);
+        final Message received = filter(Payload.owned(pending.payload()), tag);
         checkGuard(received);
         handler.message(this, received);
         if (pending.wireBytes() > Normal._0) {
             emit(ObservationMarker.SOCKET_READ, pending.wireBytes(), null);
         }
         touch();
-        Logger.debug(
-                false,
-                "Fabric",
-                "Socket receive completed: scheme={}, host={}, port={}, bytes={}",
-                address.scheme(),
-                address.host(),
-                address.port(),
-                pending.wireBytes());
+        if (DEBUG_ENABLED) {
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "Socket receive completed: scheme={}, host={}, port={}, bytes={}",
+                    address.scheme(),
+                    address.host(),
+                    address.port(),
+                    pending.wireBytes());
+        }
         return received;
     }
 
@@ -887,7 +993,7 @@ public final class SocketSession implements Session {
                 sendKcpPackets(inbound.outbound());
                 for (final Payload delivered : inbound.delivered()) {
                     final byte[] bytes = materialize(delivered, "SocketSession.kcpPump(Payload)");
-                    final List<SocketFrame> frames = decode(new Buffer().write(bytes));
+                    final List<Frame> frames = decode(new Buffer().write(bytes));
                     if (frames.isEmpty()) {
                         throw new SocketException("KCP payload did not contain a complete socket frame");
                     }
@@ -962,9 +1068,8 @@ public final class SocketSession implements Session {
      * @param message socket message to validate
      */
     private void checkGuard(final Message message) {
-        final Object value = attributes.get(Builder.ATTRIBUTE_GUARD);
-        if (value instanceof GuardRule current) {
-            current.check(message).throwIfRejected();
+        if (messageGuard != null) {
+            messageGuard.check(message).throwIfRejected();
         }
     }
 
@@ -977,8 +1082,7 @@ public final class SocketSession implements Session {
      */
     private Message filter(final Payload payload, final Object tag) {
         final Message message = message(payload, tag);
-        final Object value = attributes.get(Builder.ATTRIBUTE_FILTER);
-        return value instanceof Filter current ? FilterChain.apply(message, current) : message;
+        return messageFilter == null ? message : FilterChain.apply(message, messageFilter);
     }
 
     /**
@@ -989,6 +1093,9 @@ public final class SocketSession implements Session {
      * @param cause  failure cause
      */
     private void emit(final ObservationMarker marker, final long bytes, final Throwable cause) {
+        if (!observationEnabled) {
+            return;
+        }
         if (bytes < Normal._0) {
             scope.emit(marker, cause);
             return;
@@ -1031,6 +1138,9 @@ public final class SocketSession implements Session {
      * Records socket activity.
      */
     private void touch() {
+        if (!idleTrackingEnabled) {
+            return;
+        }
         lastActivityNanos = clock.nanos();
         scheduleIdle();
     }
@@ -1105,6 +1215,9 @@ public final class SocketSession implements Session {
     private <T> T await(final CompletableFuture<T> future, final Duration limit, final String message) {
         cancellation.throwIfCancelled();
         try {
+            if (future.isDone()) {
+                return future.join();
+            }
             return limit.isZero() ? future.get() : future.get(limit.toNanos(), TimeUnit.NANOSECONDS);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -1120,6 +1233,15 @@ public final class SocketSession implements Session {
             throw new InternalException(message, cause);
         } catch (final CancellationException e) {
             throw e;
+        } catch (final CompletionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new InternalException(message, cause);
         } catch (final java.util.concurrent.TimeoutException e) {
             throw new TimeoutException(message + ": timed out", e);
         } catch (final ArithmeticException e) {
@@ -1320,21 +1442,23 @@ public final class SocketSession implements Session {
      * @param tag       source tag
      * @param wireBytes encoded bytes consumed to produce the frames
      */
-    private void enqueuePending(final List<SocketFrame> frames, final Object tag, final long wireBytes) {
+    private void enqueuePending(final List<Frame> frames, final Object tag, final long wireBytes) {
         synchronized (pendingFrames) {
             boolean first = true;
-            for (final SocketFrame frame : frames) {
-                pendingFrames.addLast(new PendingFrame(frame, tag, first ? wireBytes : Normal.LONG_ZERO));
+            for (final Frame frame : frames) {
+                pendingFrames.addLast(new PendingFrame(frame.payload(), tag, first ? wireBytes : Normal.LONG_ZERO));
                 first = false;
             }
-            Logger.debug(
-                    false,
-                    "Fabric",
-                    "Socket pending frames queued: scheme={}, host={}, port={}, queued={}",
-                    address.scheme(),
-                    address.host(),
-                    address.port(),
-                    pendingFrames.size());
+            if (DEBUG_ENABLED) {
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "Socket pending frames queued: scheme={}, host={}, port={}, queued={}",
+                        address.scheme(),
+                        address.host(),
+                        address.port(),
+                        pendingFrames.size());
+            }
         }
     }
 
@@ -1385,6 +1509,25 @@ public final class SocketSession implements Session {
     }
 
     /**
+     * Reuses a repeatable payload owner when its declared size is within the configured limit.
+     *
+     * @param payload   payload to snapshot
+     * @param operation diagnostic operation name used when reporting limit failures
+     * @return immutable payload owner
+     */
+    private ByteString snapshot(final Payload payload, final String operation) {
+        final long length = payload.length();
+        if (payload.repeatable() && length >= Normal.LONG_ZERO && length <= materializeMaxBytes
+                && length <= Integer.MAX_VALUE) {
+            final ByteString owned = payload.ownedBytes();
+            if (owned.size() == length) {
+                return owned;
+            }
+        }
+        return ByteString.of(materialize(payload, operation));
+    }
+
+    /**
      * Converts a duration to nanoseconds while treating an overflowing positive duration as effectively unbounded.
      *
      * @param duration duration to convert
@@ -1430,21 +1573,21 @@ public final class SocketSession implements Session {
     /**
      * Decoded frame plus its original transport metadata and encoded byte count.
      *
-     * @param frame     decoded frame
+     * @param payload   decoded frame payload
      * @param tag       transport tag
      * @param wireBytes encoded bytes attributed to this frame
      */
-    private record PendingFrame(SocketFrame frame, Object tag, long wireBytes) {
+    private record PendingFrame(ByteString payload, Object tag, long wireBytes) {
 
         /**
          * Creates a validated pending frame.
          *
-         * @param frame     decoded frame
+         * @param payload   decoded frame payload
          * @param tag       transport tag
          * @param wireBytes encoded bytes attributed to this frame
          */
         private PendingFrame {
-            frame = require(frame, "Pending socket frame");
+            payload = require(payload, "Pending socket frame payload");
             if (wireBytes < Normal.LONG_ZERO) {
                 throw new ValidateException("Pending socket wire bytes must be non-negative");
             }

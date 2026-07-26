@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.codec.frame;
 import java.util.List;
 
 import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -93,6 +94,34 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
      * @param output destination buffer receiving encoded bytes
      */
     void encode(Frame frame, Buffer output);
+
+    /**
+     * Encodes an immutable payload owner without requiring callers to create an intermediate Frame.
+     *
+     * <p>
+     * The compatibility implementation preserves the existing Frame validation and snapshot behavior. Built-in codecs
+     * override this method because ByteString already provides immutable ownership.
+     * </p>
+     *
+     * @param payload immutable payload owner
+     * @param output  destination buffer
+     */
+    default void encodeOwned(final ByteString payload, final Buffer output) {
+        encode(Frame.of(payload), output);
+    }
+
+    /**
+     * Creates an independent codec for one protocol session.
+     *
+     * <p>
+     * Stateless implementations may return themselves. Implementations that retain incomplete decode input must
+     * override this method and return a fresh instance with the same immutable configuration.
+     *
+     * @return independent session codec, or this codec when stateless
+     */
+    default FrameCodec fork() {
+        return this;
+    }
 
     /**
      * Discards decoder state retained from previous input.

@@ -87,6 +87,11 @@ public final class LifecycleScope {
     private final EventObserver observer;
 
     /**
+     * Whether lifecycle events have an observable consumer.
+     */
+    private final boolean observationEnabled;
+
+    /**
      * Clock used to timestamp emitted lifecycle events.
      */
     private final Clock clock;
@@ -149,8 +154,9 @@ public final class LifecycleScope {
         this.name = Assert.notBlank(name, () -> new ValidateException("Lifecycle name must not be blank"));
         this.listener = listener == null ? noopListener() : listener;
         this.observer = EventObserver.safe(observer);
+        this.observationEnabled = this.observer != EventObserver.noop();
         this.clock = Assert.notNull(clock, () -> new ValidateException("Lifecycle clock must not be null"));
-        this.operationId = ID.objectId();
+        this.operationId = observationEnabled ? ID.objectId() : null;
         this.startMarker = startMarker;
         this.openMarker = openMarker;
         this.closeMarker = closeMarker;
@@ -452,7 +458,7 @@ public final class LifecycleScope {
      * @param cause  optional cause attached to the event
      */
     public void emit(final ObservationMarker marker, final Throwable cause) {
-        if (marker == null) {
+        if (marker == null || !observationEnabled) {
             return;
         }
         observer.emit(
@@ -588,6 +594,9 @@ public final class LifecycleScope {
      * @param cause  runtime failure thrown by the listener
      */
     private void listenerFailed(final String action, final RuntimeException cause) {
+        if (!observationEnabled) {
+            return;
+        }
         observer.emit(
                 FabricEvent.builder(ObservationMarker.LISTENER_FAILED, clock).tag(Builder.TAG_OPERATION_ID, operationId)
                         .tag(Builder.LIFECYCLE_SCOPE_NAME, name).tag(Builder.TAG_ACTION, action)

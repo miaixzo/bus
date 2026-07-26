@@ -23,6 +23,7 @@ import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -147,19 +148,43 @@ public final class LengthCodec implements FrameCodec {
     @Override
     public void encode(final Frame frame, final Buffer output) {
         final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
+        encodeOwned(checkedFrame.payload(), output);
+    }
+
+    /**
+     * Encodes immutable length-prefixed payload bytes directly.
+     *
+     * @param payload immutable payload owner
+     * @param output  destination buffer
+     */
+    @Override
+    public void encodeOwned(final ByteString payload, final Buffer output) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Frame payload must not be null"));
         final Buffer checkedOutput = Assert
                 .notNull(output, () -> new ValidateException("Frame output must not be null"));
         Assert.isTrue(
-                checkedFrame.length() <= maxPayloadLength,
+                checkedPayload.size() <= maxPayloadLength,
                 () -> new ProtocolException("Length-field payload exceeds maximum length"));
         final int headerLength = headerLength();
-        final long length = lengthIncludesHeader ? (long) headerLength + checkedFrame.length() : checkedFrame.length();
+        final long length = lengthIncludesHeader ? (long) headerLength + checkedPayload.size() : checkedPayload.size();
         validateEncodableLength(length, lengthFieldSize);
         for (int i = 0; i < lengthFieldOffset; i++) {
             checkedOutput.writeByte(0);
         }
         writeLength(checkedOutput, length, lengthFieldSize);
-        checkedOutput.write(checkedFrame.payload());
+        checkedOutput.write(checkedPayload);
+    }
+
+    /**
+     * Creates an independent decoder with the same length-field configuration.
+     *
+     * @return fresh length-field codec
+     */
+    @Override
+    public FrameCodec fork() {
+        return LengthCodec.builder().lengthFieldOffset(lengthFieldOffset).lengthFieldSize(lengthFieldSize)
+                .lengthIncludesHeader(lengthIncludesHeader).maxPayloadLength(maxPayloadLength).build();
     }
 
     /**

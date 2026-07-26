@@ -23,6 +23,7 @@ import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -97,12 +98,35 @@ public final class FixedCodec implements FrameCodec {
     @Override
     public void encode(final Frame frame, final Buffer output) {
         final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
+        encodeOwned(checkedFrame.payload(), output);
+    }
+
+    /**
+     * Encodes immutable fixed-length payload bytes directly.
+     *
+     * @param payload immutable payload owner
+     * @param output  destination buffer
+     */
+    @Override
+    public void encodeOwned(final ByteString payload, final Buffer output) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Frame payload must not be null"));
         final Buffer checkedOutput = Assert
                 .notNull(output, () -> new ValidateException("Frame output must not be null"));
         Assert.isTrue(
-                checkedFrame.length() == length,
+                checkedPayload.size() == length,
                 () -> new ProtocolException("Frame length does not match fixed length"));
-        checkedOutput.write(checkedFrame.payload());
+        checkedOutput.write(checkedPayload);
+    }
+
+    /**
+     * Creates an independent decoder with the same fixed frame length.
+     *
+     * @return fresh fixed codec
+     */
+    @Override
+    public FrameCodec fork() {
+        return new FixedCodec(length);
     }
 
     /**

@@ -136,10 +136,33 @@ public final class LineCodec implements FrameCodec {
     @Override
     public void encode(final Frame frame, final Buffer output) {
         final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Frame must not be null"));
+        encodeOwned(checkedFrame.payload(), output);
+    }
+
+    /**
+     * Encodes immutable line payload bytes directly.
+     *
+     * @param payload immutable payload owner
+     * @param output  destination buffer
+     */
+    @Override
+    public void encodeOwned(final ByteString payload, final Buffer output) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Frame payload must not be null"));
         final Buffer checkedOutput = Assert
                 .notNull(output, () -> new ValidateException("Frame output must not be null"));
-        checkedOutput.write(checkedFrame.payload());
+        checkedOutput.write(checkedPayload);
         checkedOutput.write(delimiter);
+    }
+
+    /**
+     * Creates an independent decoder with the same delimiter.
+     *
+     * @return fresh line codec
+     */
+    @Override
+    public FrameCodec fork() {
+        return new LineCodec(delimiter);
     }
 
     /**
@@ -189,7 +212,7 @@ public final class LineCodec implements FrameCodec {
      */
     private static int indexOf(final Buffer buffer, final ByteString delimiter) {
         try {
-            final long index = buffer.indexOf(delimiter);
+            final long index = delimiter.size() == 1 ? buffer.indexOf(delimiter.getByte(0)) : buffer.indexOf(delimiter);
             if (index > Integer.MAX_VALUE) {
                 throw new ProtocolException("Line frame delimiter index exceeds integer range");
             }

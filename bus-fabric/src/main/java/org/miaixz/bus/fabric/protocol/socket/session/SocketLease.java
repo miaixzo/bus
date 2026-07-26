@@ -533,7 +533,7 @@ public final class SocketLease {
         return SocketSession.create(
                 destination.address(),
                 connection,
-                SocketCodec.of(frameCodec),
+                SocketCodec.forSession(frameCodec),
                 handler,
                 attributes,
                 owner,

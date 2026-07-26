@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.socket.frame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -61,20 +62,58 @@ public final class SocketCodec {
     }
 
     /**
+     * Creates a socket codec with frame state owned by one session.
+     *
+     * @param prototype frame codec configuration prototype
+     * @return socket codec backed by an independent session codec
+     */
+    public static SocketCodec forSession(final FrameCodec prototype) {
+        final FrameCodec current = Assert
+                .notNull(prototype, () -> new ValidateException("Frame codec prototype must not be null"));
+        return new SocketCodec(
+                Assert.notNull(current.fork(), () -> new ValidateException("Frame codec fork must not be null")));
+    }
+
+    /**
      * Decodes socket frames.
      *
      * @param input non-null buffer containing newly available socket bytes
      * @return immutable list of socket frames carrying the decoded fabric-frame payloads
      */
     public List<SocketFrame> decode(final Buffer input) {
-        final Buffer checkedInput = Assert
-                .notNull(input, () -> new ValidateException("Socket codec input must not be null"));
-        final List<Frame> decoded = codec.decode(checkedInput);
+        final List<ByteString> decoded = decodeOwned(input);
         final ArrayList<SocketFrame> frames = new ArrayList<>(decoded.size());
-        for (final Frame frame : decoded) {
-            frames.add(SocketFrame.of(frame.payload()));
+        for (final ByteString payload : decoded) {
+            frames.add(SocketFrame.of(payload));
         }
         return List.copyOf(frames);
+    }
+
+    /**
+     * Decodes frame payload owners for the Socket runtime without an intermediate SocketFrame snapshot.
+     *
+     * @param input non-null buffer containing newly available socket bytes
+     * @return immutable list of decoded immutable payload owners
+     */
+    public List<ByteString> decodeOwned(final Buffer input) {
+        final List<Frame> decoded = decodeFrames(input);
+        final ArrayList<ByteString> frames = new ArrayList<>(decoded.size());
+        for (final Frame frame : decoded) {
+            frames.add(frame.payload());
+        }
+        return List.copyOf(frames);
+    }
+
+    /**
+     * Decodes shared frames for the Socket runtime without another list or payload snapshot.
+     *
+     * @param input non-null buffer containing newly available socket bytes
+     * @return immutable decoded frame list produced by the configured FrameCodec
+     */
+    public List<Frame> decodeFrames(final Buffer input) {
+        final Buffer checkedInput = Assert
+                .notNull(input, () -> new ValidateException("Socket codec input must not be null"));
+        return codec.decode(checkedInput);
     }
 
     /**
@@ -86,9 +125,21 @@ public final class SocketCodec {
     public void encode(final SocketFrame frame, final Buffer output) {
         final SocketFrame checkedFrame = Assert
                 .notNull(frame, () -> new ValidateException("Socket frame must not be null"));
+        encodeOwned(checkedFrame.payload(), output);
+    }
+
+    /**
+     * Encodes an immutable payload owner for the Socket runtime without an intermediate SocketFrame snapshot.
+     *
+     * @param payload non-null immutable payload owner
+     * @param output  non-null destination buffer receiving encoded bytes
+     */
+    public void encodeOwned(final ByteString payload, final Buffer output) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Socket frame payload must not be null"));
         final Buffer checkedOutput = Assert
                 .notNull(output, () -> new ValidateException("Socket codec output must not be null"));
-        codec.encode(Frame.of(checkedFrame.payload()), checkedOutput);
+        codec.encodeOwned(checkedPayload, checkedOutput);
     }
 
     /**
