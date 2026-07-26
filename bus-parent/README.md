@@ -356,11 +356,11 @@ one aggregated native-image configuration during packaging.
 
 ## Version Compatibility
 
-| Bus Version | Java | Spring Boot | Status |
-| :--- | :--- | :--- | :--- |
-| **8.6.x** | 25+ | 3.5.x | **Active** |
-| 8.0.x - 8.5.x | 25+ | 3.x | Maintenance |
-| 7.x | 11+ | 2.x | End of Life |
+| Bus Version   | Java | Spring Boot | Status |
+|:--------------| :--- | :--- | :--- |
+| **8.8.x**     | 25+ | 3.5.x | **Active** |
+| 8.0.x - 8.6.x | 25+ | 3.x | Maintenance |
+| 7.x           | 11+ | 2.x | End of Life |
 
 ---
 
