@@ -440,6 +440,9 @@ public class RandomKit {
      * @return A random element.
      */
     public static <T> T randomEle(final List<T> list) {
+        if (null == list) {
+            return null;
+        }
         return randomEle(list, list.size());
     }
 
@@ -452,6 +455,9 @@ public class RandomKit {
      * @return A random element.
      */
     public static <T> T randomEle(final List<T> list, int limit) {
+        if (null == list) {
+            return null;
+        }
         if (list.size() < limit) {
             limit = list.size();
         }
@@ -466,6 +472,9 @@ public class RandomKit {
      * @return A random element.
      */
     public static <T> T randomEle(final T[] array) {
+        if (null == array) {
+            return null;
+        }
         return randomEle(array, array.length);
     }
 
@@ -478,6 +487,9 @@ public class RandomKit {
      * @return A random element.
      */
     public static <T> T randomEle(final T[] array, int limit) {
+        if (null == array) {
+            return null;
+        }
         if (array.length < limit) {
             limit = array.length;
         }

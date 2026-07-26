@@ -43,7 +43,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMark>, Serializable {
+public record ByteOrderMark(String charsetName, byte... bytes)
+        implements Predicate<byte[]>, Comparable<ByteOrderMark>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852276768599L;
@@ -82,16 +83,6 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     public static final ByteOrderMark[] ALL = new ByteOrderMark[] { UTF_32BE, UTF_32LE, UTF_8, UTF_16BE, UTF_16LE };
 
     /**
-     * The character set name defined by this BOM.
-     */
-    private final String charsetName;
-
-    /**
-     * The byte sequence that makes up this BOM.
-     */
-    private final byte[] bytes;
-
-    /**
      * Constructs a new {@code ByteOrderMark} instance.
      *
      * @param charsetName The character set name defined by the BOM.
@@ -107,13 +98,18 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
         System.arraycopy(bytes, 0, this.bytes, 0, bytes.length);
     }
 
+    @Override
+    public String charsetName() {
+        return charsetName;
+    }
+
     /**
      * Gets the character set name defined by the BOM header.
      *
      * @return The character set name.
      */
     public String getCharsetName() {
-        return charsetName;
+        return charsetName();
     }
 
     /**
@@ -140,8 +136,18 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
      *
      * @return A copy of the BOM's bytes.
      */
-    public byte[] getBytes() {
+    @Override
+    public byte[] bytes() {
         return Arrays.copyOfRange(bytes, 0, bytes.length);
+    }
+
+    /**
+     * Gets a copy of the BOM's bytes.
+     *
+     * @return A copy of the BOM's bytes.
+     */
+    public byte[] getBytes() {
+        return bytes();
     }
 
     /**
@@ -175,10 +181,9 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
      */
     @Override
     public boolean equals(final Object object) {
-        if (!(object instanceof ByteOrderMark)) {
+        if (!(object instanceof final ByteOrderMark bom)) {
             return false;
         }
-        final ByteOrderMark bom = (ByteOrderMark) object;
         return Arrays.equals(this.bytes, bom.bytes);
     }
 
