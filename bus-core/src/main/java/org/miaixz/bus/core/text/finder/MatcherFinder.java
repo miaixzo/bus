@@ -20,12 +20,12 @@
 package org.miaixz.bus.core.text.finder;
 
 import java.io.Serial;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Character matcher finder. Finds the position of a character that satisfies the specified {@link Predicate}. This
+ * Character matcher finder. Finds the position of a character that satisfies the specified {@link PredicateX}. This
  * class is often used to find a certain type of character, such as digits.
  *
  * @author Kimi Liu
@@ -39,14 +39,14 @@ public class MatcherFinder extends TextFinder {
     /**
      * The character matcher predicate.
      */
-    private final Predicate<Character> matcher;
+    private final PredicateX<Character> matcher;
 
     /**
      * Constructor.
      *
      * @param matcher The character matcher predicate to be used for searching.
      */
-    public MatcherFinder(final Predicate<Character> matcher) {
+    public MatcherFinder(final PredicateX<Character> matcher) {
         this.matcher = matcher;
     }
 

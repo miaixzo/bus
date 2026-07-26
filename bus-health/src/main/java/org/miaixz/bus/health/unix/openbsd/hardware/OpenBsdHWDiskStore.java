@@ -21,9 +21,9 @@ package org.miaixz.bus.health.unix.openbsd.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -50,7 +50,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
     /**
      * The iostat value.
      */
-    private final Supplier<List<String>> iostat;
+    private final SupplierX<List<String>> iostat;
 
     /**
      * The currentQueueLength value.
@@ -101,7 +101,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
      * @param size   the size
      * @param iostat the iostat supplier
      */
-    private OpenBsdHWDiskStore(String name, String model, String serial, long size, Supplier<List<String>> iostat) {
+    private OpenBsdHWDiskStore(String name, String model, String serial, long size, SupplierX<List<String>> iostat) {
         super(name, model, serial, size);
         this.iostat = iostat;
     }
@@ -114,7 +114,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
     public static List<HWDiskStore> getDisks() {
         List<HWDiskStore> diskList = new ArrayList<>();
         List<String> dmesg = null; // Lazily fetch in loop if needed
-        Supplier<List<String>> iostat = Memoizer
+        SupplierX<List<String>> iostat = Memoizer
                 .memoize(OpenBsdHWDiskStore::querySystatIostat, Memoizer.defaultExpiration());
 
         // Get list of disks from sysctl

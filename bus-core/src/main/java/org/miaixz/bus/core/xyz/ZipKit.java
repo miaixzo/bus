@@ -25,10 +25,10 @@ import java.nio.file.FileSystem;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.jar.JarFile;
 import java.util.zip.*;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.io.compress.*;
 import org.miaixz.bus.core.io.file.FileName;
@@ -854,7 +854,7 @@ public class ZipKit {
      * @param zipFile  The `ZipFile`.
      * @param consumer The consumer for each `ZipEntry`.
      */
-    public static void read(final ZipFile zipFile, final Consumer<ZipEntry> consumer) {
+    public static void read(final ZipFile zipFile, final ConsumerX<ZipEntry> consumer) {
         try (final ZipReader reader = new ZipReader(zipFile)) {
             reader.read(consumer);
         }
@@ -866,7 +866,7 @@ public class ZipKit {
      * @param zipStream The `ZipInputStream`.
      * @param consumer  The consumer for each `ZipEntry`.
      */
-    public static void read(final ZipInputStream zipStream, final Consumer<ZipEntry> consumer) {
+    public static void read(final ZipInputStream zipStream, final ConsumerX<ZipEntry> consumer) {
         try (final ZipReader reader = new ZipReader(zipStream)) {
             reader.read(consumer);
         }

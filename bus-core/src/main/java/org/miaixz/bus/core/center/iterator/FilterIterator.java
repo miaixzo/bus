@@ -21,12 +21,12 @@ package org.miaixz.bus.core.center.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * A {@code FilterIterator} wraps another {@link Iterator} and filters its elements based on a {@link Predicate}. This
+ * A {@code FilterIterator} wraps another {@link Iterator} and filters its elements based on a {@link PredicateX}. This
  * implementation is inspired by Apache Commons Collections.
  *
  * @param <E> The type of the elements.
@@ -43,7 +43,7 @@ public class FilterIterator<E> implements Iterator<E> {
     /**
      * The predicate used to filter elements.
      */
-    private final Predicate<? super E> filter;
+    private final PredicateX<? super E> filter;
 
     /**
      * The next element that matches the predicate.
@@ -62,7 +62,7 @@ public class FilterIterator<E> implements Iterator<E> {
      * @param filter   The filter predicate. If {@code null}, no filtering is applied.
      * @throws NullPointerException if the iterator is {@code null}.
      */
-    public FilterIterator(final Iterator<? extends E> iterator, final Predicate<? super E> filter) {
+    public FilterIterator(final Iterator<? extends E> iterator, final PredicateX<? super E> filter) {
         this.iterator = Assert.notNull(iterator);
         this.filter = filter;
     }
@@ -116,7 +116,7 @@ public class FilterIterator<E> implements Iterator<E> {
      *
      * @return The filter predicate, which may be {@code null}.
      */
-    public Predicate<? super E> getFilter() {
+    public PredicateX<? super E> getFilter() {
         return filter;
     }
 

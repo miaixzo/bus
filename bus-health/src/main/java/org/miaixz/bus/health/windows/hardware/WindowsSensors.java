@@ -24,12 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 
 import com.sun.jna.platform.win32.COM.COMException;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.windows.WmiKit;
@@ -394,7 +394,7 @@ final class WindowsSensors extends AbstractSensors {
             String typeToQuery,
             String typeName,
             String sensorType,
-            BiFunction<WmiQueryHandler, WmiResult<OhmHardware.IdentifierProperty>, WmiResult<OhmSensor.ValueProperty>> querySensorFunction) {
+            BiFunctionX<WmiQueryHandler, WmiResult<OhmHardware.IdentifierProperty>, WmiResult<OhmSensor.ValueProperty>> querySensorFunction) {
         WmiQueryHandler h = Objects.requireNonNull(WmiQueryHandler.createInstance());
         boolean comInit = false;
         WmiResult<OhmSensor.ValueProperty> ohmSensors = null;
@@ -427,7 +427,7 @@ final class WindowsSensors extends AbstractSensors {
     private static double getAverageValueFromLHM(
             String hardwareType,
             String sensorType,
-            BiPredicate<String, Double> sensorValidFunction) {
+            BiPredicateX<String, Double> sensorValidFunction) {
         List<?> sensors = getLhmSensors(hardwareType, sensorType);
         if (sensors == null || sensors.isEmpty()) {
             return 0;

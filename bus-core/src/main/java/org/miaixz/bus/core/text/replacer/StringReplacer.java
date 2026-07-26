@@ -21,8 +21,8 @@ package org.miaixz.bus.core.text.replacer;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public abstract class StringReplacer implements UnaryOperator<CharSequence>, Serializable {
+public abstract class StringReplacer implements UnaryOperatorX<CharSequence>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852239827580L;
@@ -66,7 +66,7 @@ public abstract class StringReplacer implements UnaryOperator<CharSequence>, Ser
      * @return The character sequence after all replacements have been applied.
      */
     @Override
-    public CharSequence apply(final CharSequence text) {
+    public CharSequence applying(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
             return text;
         }

@@ -290,6 +290,36 @@ final class DefaultDispatcher implements Dispatcher {
      */
     @Override
     public DispatchHandle background(final String key, final Object tag, final Activity activity) {
+        return startBackground(key, tag, activity, false);
+    }
+
+    /**
+     * Starts a tagged background activity on a dedicated platform thread.
+     *
+     * @param key      ownership key recorded for the background activity
+     * @param tag      cancellation tag associated with the handle
+     * @param activity long-running activity to start
+     * @return handle
+     */
+    @Override
+    public DispatchHandle backgroundPlatform(final String key, final Object tag, final Activity activity) {
+        return startBackground(key, tag, activity, true);
+    }
+
+    /**
+     * Registers and starts one background activity on the selected executor type.
+     *
+     * @param key      ownership key recorded for the background activity
+     * @param tag      cancellation tag associated with the handle
+     * @param activity long-running activity to start
+     * @param platform true to create a dedicated platform thread
+     * @return registered dispatch handle
+     */
+    private DispatchHandle startBackground(
+            final String key,
+            final Object tag,
+            final Activity activity,
+            final boolean platform) {
         final Activity current = require(activity, "Background activity");
         final DispatchHandle handle = DispatchHandle.of(key, require(tag, "Tag"), current);
         final BackgroundDispatch task = new BackgroundDispatch(handle);
@@ -311,7 +341,17 @@ final class DefaultDispatcher implements Dispatcher {
                 background.put(handle, task);
             }
             try {
-                task.future = backgroundExecutor.submit(() -> runBackground(task));
+                if (platform) {
+                    final FutureTask<Void> nativeTask = new FutureTask<>(() -> {
+                        runBackground(task);
+                        return null;
+                    });
+                    task.future = nativeTask;
+                    Thread.ofPlatform().name("fabric-background-platform-", Normal._0)
+                            .priority(Thread.NORM_PRIORITY + Normal._2).start(nativeTask);
+                } else {
+                    task.future = backgroundExecutor.submit(() -> runBackground(task));
+                }
             } catch (final RuntimeException | Error e) {
                 task.terminated.set(true);
                 failQueued(handle, e);

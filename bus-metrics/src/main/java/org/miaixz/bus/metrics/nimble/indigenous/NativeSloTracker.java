@@ -21,8 +21,8 @@ package org.miaixz.bus.metrics.nimble.indigenous;
 
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.metrics.observe.slo.ErrorBudget;
 import org.miaixz.bus.metrics.observe.slo.SloEvent;
 import org.miaixz.bus.metrics.observe.slo.SloTracker;
@@ -51,7 +51,7 @@ public class NativeSloTracker implements SloTracker {
     /**
      * Callbacks fired when the error budget for a named SLO is exhausted.
      */
-    private final ConcurrentHashMap<String, Consumer<SloEvent>> exhaustedCallbacks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ConsumerX<SloEvent>> exhaustedCallbacks = new ConcurrentHashMap<>();
 
     /**
      * Immutable definition of a registered SLO, including its associated {@link ErrorBudget}.
@@ -158,7 +158,7 @@ public class NativeSloTracker implements SloTracker {
      * @return this (fluent)
      */
     @Override
-    public SloTracker onBudgetExhausted(String sloName, Consumer<SloEvent> callback) {
+    public SloTracker onBudgetExhausted(String sloName, ConsumerX<SloEvent> callback) {
         exhaustedCallbacks.put(sloName, callback);
         return this;
     }
@@ -189,7 +189,7 @@ public class NativeSloTracker implements SloTracker {
         }
         // Check budget exhaustion
         if (def.budget().errorBudgetRemaining() <= 0) {
-            Consumer<SloEvent> cb = exhaustedCallbacks.get(sloName);
+            ConsumerX<SloEvent> cb = exhaustedCallbacks.get(sloName);
             if (cb != null) {
                 cb.accept(
                         new SloEvent(sloName, def.target(), def.budget().compliance(), 0.0, def.budget().burnRate(),

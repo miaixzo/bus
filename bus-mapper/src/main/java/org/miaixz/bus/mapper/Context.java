@@ -19,11 +19,10 @@
 */
 package org.miaixz.bus.mapper;
 
-import java.util.function.Supplier;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
 import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
@@ -122,7 +121,7 @@ public class Context extends org.miaixz.bus.core.Context {
      * @param <T>      the return value type
      * @return the operation result
      */
-    public static <T> T runWith(MapperConfig config, Supplier<T> supplier) {
+    public static <T> T runWith(MapperConfig config, SupplierX<T> supplier) {
         MapperConfig original = getMapperConfig();
         try {
             setMapperConfig(config);

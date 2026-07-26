@@ -23,8 +23,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
@@ -64,45 +64,45 @@ public class LinuxCgroupInfo implements CgroupInfo {
     /**
      * Memoized cgroup version supplier.
      */
-    private final Supplier<Integer> versionSupplier = Memoizer.memoize(this::detectVersion);
+    private final SupplierX<Integer> versionSupplier = Memoizer.memoize(this::detectVersion);
 
     /**
      * Memoized cgroup path supplier.
      */
-    private final Supplier<String> cgroupPathSupplier = Memoizer.memoize(this::parseCgroupPath);
+    private final SupplierX<String> cgroupPathSupplier = Memoizer.memoize(this::parseCgroupPath);
 
     /**
      * Memoized container detection supplier.
      */
-    private final Supplier<Boolean> containerizedSupplier = Memoizer.memoize(this::detectContainerized);
+    private final SupplierX<Boolean> containerizedSupplier = Memoizer.memoize(this::detectContainerized);
 
     /**
      * Memoized contents of {@code /proc/self/cgroup}.
      */
-    private final Supplier<List<String>> selfCgroupSupplier = Memoizer
+    private final SupplierX<List<String>> selfCgroupSupplier = Memoizer
             .memoize(() -> Builder.readFile(ProcPath.SELF_CGROUP, false));
 
     /**
      * Memoized CPU quota supplier.
      */
-    private final Supplier<Long> cpuQuotaSupplier = Memoizer.memoize(this::readCpuQuota, Memoizer.defaultExpiration());
+    private final SupplierX<Long> cpuQuotaSupplier = Memoizer.memoize(this::readCpuQuota, Memoizer.defaultExpiration());
 
     /**
      * Memoized CPU period supplier.
      */
-    private final Supplier<Long> cpuPeriodSupplier = Memoizer
+    private final SupplierX<Long> cpuPeriodSupplier = Memoizer
             .memoize(this::readCpuPeriod, Memoizer.defaultExpiration());
 
     /**
      * Memoized memory limit supplier.
      */
-    private final Supplier<Long> memoryLimitSupplier = Memoizer
+    private final SupplierX<Long> memoryLimitSupplier = Memoizer
             .memoize(this::readMemoryLimit, Memoizer.defaultExpiration());
 
     /**
      * Memoized PID limit supplier.
      */
-    private final Supplier<Long> pidLimitSupplier = Memoizer.memoize(this::readPidLimit, Memoizer.defaultExpiration());
+    private final SupplierX<Long> pidLimitSupplier = Memoizer.memoize(this::readPidLimit, Memoizer.defaultExpiration());
 
     /**
      * Cache of resolved cgroup v1 controller paths.

@@ -20,7 +20,8 @@
 package org.miaixz.bus.setting.nimble.ini;
 
 import java.util.Optional;
-import java.util.function.Function;
+
+import org.miaixz.bus.core.center.function.FunctionX;
 
 /**
  * IniElement, like {@code sections, properties, comments}. they all can be like {@link String} .
@@ -115,7 +116,7 @@ public interface IniElement extends CharSequence, java.io.Serializable {
      * @param valueEditor function to edit old value, {@code oldValue -> { // edit ... return newValue; }}
      * @return old value
      */
-    default String setValue(Function<String, String> valueEditor) {
+    default String setValue(FunctionX<String, String> valueEditor) {
         return setValue(valueEditor.apply(value()));
     }
 

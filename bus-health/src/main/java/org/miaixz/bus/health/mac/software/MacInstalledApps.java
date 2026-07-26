@@ -85,25 +85,9 @@ public final class MacInstalledApps {
 
                 for (Map<String, String> dictValues : plistValues) {
                     try {
-                        String obtainedFrom = Parsing.getStringValueOrUnknown(dictValues.get("obtained_from"));
-                        if ("apple".equals(obtainedFrom)) {
-                            obtainedFrom = "Apple";
-                        } else if ("mac_app_store".equals(obtainedFrom)) {
-                            obtainedFrom = "App Store";
-                        }
-                        String signedBy = Parsing.getStringValueOrUnknown(dictValues.get("signed_by"));
-                        String vendor;
-                        if ("identified_developer".equals(obtainedFrom)) {
-                            if (signedBy.startsWith("Developer ID Application: ")) {
-                                vendor = signedBy.substring(26);
-                            } else {
-                                vendor = signedBy;
-                            }
-                        } else if (Normal.UNKNOWN.equals(obtainedFrom) && !Normal.UNKNOWN.equals(signedBy)) {
-                            vendor = signedBy;
-                        } else {
-                            vendor = obtainedFrom;
-                        }
+                        String vendor = resolveVendor(
+                                Parsing.getStringValueOrUnknown(dictValues.get("obtained_from")),
+                                Parsing.getStringValueOrUnknown(dictValues.get("signed_by")));
 
                         String version = dictValues.get("version");
 
@@ -158,6 +142,30 @@ public final class MacInstalledApps {
             Logger.trace(false, "Health", "Unable to read installed apps: " + e.getClass().getSimpleName(), e);
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Resolves the vendor from the application source and signer.
+     *
+     * @param obtainedFrom the obtained-from value
+     * @param signedBy     the signed-by value
+     * @return the resolved vendor
+     */
+    static String resolveVendor(String obtainedFrom, String signedBy) {
+        if ("apple".equals(obtainedFrom)) {
+            obtainedFrom = "Apple";
+        } else if ("mac_app_store".equals(obtainedFrom)) {
+            obtainedFrom = "App Store";
+        }
+        if ("identified_developer".equals(obtainedFrom)) {
+            if (signedBy.startsWith("Developer ID Application: ")) {
+                return signedBy.substring(26);
+            }
+            return signedBy;
+        } else if (Normal.UNKNOWN.equals(obtainedFrom) && !Normal.UNKNOWN.equals(signedBy)) {
+            return signedBy;
+        }
+        return obtainedFrom;
     }
 
     /**

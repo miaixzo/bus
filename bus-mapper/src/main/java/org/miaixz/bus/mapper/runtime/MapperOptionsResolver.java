@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -363,7 +363,7 @@ final class MapperOptionsResolver {
      * @param consumer   target setter
      * @param aliases    property aliases
      */
-    private static void applySet(Properties properties, Consumer<Set<String>> consumer, String... aliases) {
+    private static void applySet(Properties properties, ConsumerX<Set<String>> consumer, String... aliases) {
         Set<String> values = readValues(properties, aliases);
         if (values != null) {
             consumer.accept(values);

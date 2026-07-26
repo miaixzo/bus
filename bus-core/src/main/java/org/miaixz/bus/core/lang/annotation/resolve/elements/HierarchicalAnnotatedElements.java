@@ -24,9 +24,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
 
@@ -75,7 +75,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      * A factory method for creating {@link AnnotatedElement}s. If the factory returns {@code null}, the element will be
      * ignored.
      */
-    protected final BiFunction<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory;
+    protected final BiFunctionX<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory;
 
     /**
      * The wrapped {@link AnnotatedElement} object.
@@ -97,7 +97,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      *                       element will be ignored.
      */
     HierarchicalAnnotatedElements(final AnnotatedElement element,
-            final BiFunction<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory) {
+            final BiFunctionX<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory) {
         this.source = Objects.requireNonNull(element);
         // Lazy initialization
         this.elementMappings = null;
@@ -128,7 +128,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
      */
     public static HierarchicalAnnotatedElements of(
             final AnnotatedElement element,
-            final BiFunction<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory) {
+            final BiFunctionX<Set<AnnotatedElement>, AnnotatedElement, AnnotatedElement> elementFactory) {
         return element instanceof HierarchicalAnnotatedElements ? (HierarchicalAnnotatedElements) element
                 : new HierarchicalAnnotatedElements(element, elementFactory);
     }

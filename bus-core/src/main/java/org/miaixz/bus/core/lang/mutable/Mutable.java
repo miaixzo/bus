@@ -20,11 +20,11 @@
 package org.miaixz.bus.core.lang.mutable;
 
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
@@ -141,7 +141,7 @@ public interface Mutable<T> {
      * @param operator The operator to apply.
      * @return This mutable object.
      */
-    default Mutable<T> map(final UnaryOperator<T> operator) {
+    default Mutable<T> map(final UnaryOperatorX<T> operator) {
         set(operator.apply(get()));
         return this;
     }
@@ -152,7 +152,7 @@ public interface Mutable<T> {
      * @param consumer The action to perform.
      * @return This mutable object.
      */
-    default Mutable<T> peek(final Consumer<T> consumer) {
+    default Mutable<T> peek(final ConsumerX<T> consumer) {
         consumer.accept(get());
         return this;
     }
@@ -163,7 +163,7 @@ public interface Mutable<T> {
      * @param predicate The predicate to apply.
      * @return `true` if the value satisfies the predicate.
      */
-    default boolean test(final Predicate<T> predicate) {
+    default boolean test(final PredicateX<T> predicate) {
         return predicate.test(get());
     }
 
@@ -184,7 +184,7 @@ public interface Mutable<T> {
      * @param <R>      The target type.
      * @return The converted value.
      */
-    default <R> R to(final Function<T, R> function) {
+    default <R> R to(final FunctionX<T, R> function) {
         Objects.requireNonNull(function);
         return function.apply(get());
     }

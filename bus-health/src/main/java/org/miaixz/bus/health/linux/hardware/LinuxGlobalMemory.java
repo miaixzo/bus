@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -57,13 +57,13 @@ public final class LinuxGlobalMemory extends AbstractGlobalMemory {
     /**
      * The availTotal value.
      */
-    private final Supplier<Pair<Long, Long>> availTotal = Memoizer
+    private final SupplierX<Pair<Long, Long>> availTotal = Memoizer
             .memoize(LinuxGlobalMemory::readMemInfo, Memoizer.defaultExpiration());
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Updates instance variables from reading /proc/meminfo. While most of the information is available in the sysinfo

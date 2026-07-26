@@ -22,8 +22,8 @@ package org.miaixz.bus.core.convert.stringer;
 import java.io.Reader;
 import java.sql.Clob;
 import java.sql.SQLException;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.IoKit;
 
@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class ClobStringer implements Function<Object, String> {
+public class ClobStringer implements FunctionX<Object, String> {
 
     /**
      * Creates the shared CLOB-to-string converter.
@@ -72,7 +72,7 @@ public class ClobStringer implements Function<Object, String> {
      * @return the String value
      */
     @Override
-    public String apply(final Object o) {
+    public String applying(final Object o) {
         return toString((Clob) o);
     }
 

@@ -21,11 +21,11 @@ package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.net.NetworkInterface;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
@@ -44,57 +44,57 @@ public final class AixNetworkIF extends AbstractNetworkIF {
     /**
      * The netstats value.
      */
-    private final Supplier<perfstat_netinterface_t[]> netstats;
+    private final SupplierX<perfstat_netinterface_t[]> netstats;
 
     /**
      * The bytesRecv value.
      */
-    private long bytesRecv;
+    private volatile long bytesRecv;
 
     /**
      * The bytesSent value.
      */
-    private long bytesSent;
+    private volatile long bytesSent;
 
     /**
      * The packetsRecv value.
      */
-    private long packetsRecv;
+    private volatile long packetsRecv;
 
     /**
      * The packetsSent value.
      */
-    private long packetsSent;
+    private volatile long packetsSent;
 
     /**
      * The inErrors value.
      */
-    private long inErrors;
+    private volatile long inErrors;
 
     /**
      * The outErrors value.
      */
-    private long outErrors;
+    private volatile long outErrors;
 
     /**
      * The inDrops value.
      */
-    private long inDrops;
+    private volatile long inDrops;
 
     /**
      * The collisions value.
      */
-    private long collisions;
+    private volatile long collisions;
 
     /**
      * The speed value.
      */
-    private long speed;
+    private volatile long speed;
 
     /**
      * The timeStamp value.
      */
-    private long timeStamp;
+    private volatile long timeStamp;
 
     /**
      * Creates a new AixNetworkIF instance.
@@ -103,7 +103,7 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * @param netstats the netstats
      * @throws InstantiationException if the instantiation exception condition occurs
      */
-    public AixNetworkIF(NetworkInterface netint, Supplier<perfstat_netinterface_t[]> netstats)
+    public AixNetworkIF(NetworkInterface netint, SupplierX<perfstat_netinterface_t[]> netstats)
             throws InstantiationException {
         super(netint);
         this.netstats = netstats;
@@ -117,7 +117,7 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        Supplier<perfstat_netinterface_t[]> netstats = Memoizer
+        SupplierX<perfstat_netinterface_t[]> netstats = Memoizer
                 .memoize(PerfstatNetInterface::queryNetInterfaces, Memoizer.defaultExpiration());
         return getNetworks(includeLocalInterfaces, ni -> new AixNetworkIF(ni, netstats));
     }

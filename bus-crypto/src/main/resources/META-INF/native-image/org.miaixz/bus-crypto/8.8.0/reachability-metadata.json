@@ -4202,7 +4202,7 @@
       "glob": "**/*.pem"
     },
     {
-      "glob": "META-INF/services/**"
+      "glob": "META-INF/services/org.miaixz.bus.crypto.nimble.BouncyCastleProvider"
     }
   ]
 }

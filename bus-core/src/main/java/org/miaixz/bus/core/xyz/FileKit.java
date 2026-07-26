@@ -26,12 +26,12 @@ import java.net.URLConnection;
 import java.nio.file.*;
 import java.nio.file.FileSystem;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.BomReader;
 import org.miaixz.bus.core.io.file.*;
 import org.miaixz.bus.core.io.file.FileReader;
@@ -267,7 +267,7 @@ public class FileKit extends PathResolve {
      * @param predicate The predicate to test files and directories. Traversal continues into directories that test
      *                  true.
      */
-    public static void walkFiles(final File file, final Predicate<File> predicate) {
+    public static void walkFiles(final File file, final PredicateX<File> predicate) {
         if (predicate.test(file) && file.isDirectory()) {
             final File[] subFiles = file.listFiles();
             if (ArrayKit.isNotEmpty(subFiles)) {

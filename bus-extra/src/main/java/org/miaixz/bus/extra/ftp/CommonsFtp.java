@@ -26,13 +26,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -391,7 +391,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param predicate A filter for the files. If null, no filtering is applied (besides removing "." and "..").
      * @return A list of file or directory names.
      */
-    public List<String> ls(final String path, final Predicate<FTPFile> predicate) {
+    public List<String> ls(final String path, final PredicateX<FTPFile> predicate) {
         return CollKit.map(lsFiles(path, predicate), FTPFile::getName);
     }
 
@@ -403,7 +403,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param predicate A filter for the files. If null, no filtering is applied (besides removing "." and "..").
      * @return A list of files or directories.
      */
-    public List<FTPFile> lsFiles(final String path, final Predicate<FTPFile> predicate) {
+    public List<FTPFile> lsFiles(final String path, final PredicateX<FTPFile> predicate) {
         final FTPFile[] ftpFiles = lsFiles(path);
         if (ArrayKit.isEmpty(ftpFiles)) {
             return ListKit.empty();

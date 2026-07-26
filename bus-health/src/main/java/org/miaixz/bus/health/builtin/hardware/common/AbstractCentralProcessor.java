@@ -20,9 +20,9 @@
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -43,35 +43,35 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     /**
      * The cpuid value.
      */
-    private final Supplier<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
+    private final SupplierX<ProcessorIdentifier> cpuid = Memoizer.memoize(this::queryProcessorId);
     // Max often iterates current, intentionally making it shorter to re-memoize current
     /**
      * The currentFreq value.
      */
-    private final Supplier<long[]> currentFreq = Memoizer
+    private final SupplierX<long[]> currentFreq = Memoizer
             .memoize(this::queryCurrentFreq, Memoizer.defaultExpiration() / 2L);
 
     /**
      * The contextSwitches value.
      */
-    private final Supplier<Long> contextSwitches = Memoizer
+    private final SupplierX<Long> contextSwitches = Memoizer
             .memoize(this::queryContextSwitches, Memoizer.defaultExpiration());
 
     /**
      * The interrupts value.
      */
-    private final Supplier<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
+    private final SupplierX<Long> interrupts = Memoizer.memoize(this::queryInterrupts, Memoizer.defaultExpiration());
 
     /**
      * The systemCpuLoadTicks value.
      */
-    private final Supplier<long[]> systemCpuLoadTicks = Memoizer
+    private final SupplierX<long[]> systemCpuLoadTicks = Memoizer
             .memoize(this::querySystemCpuLoadTicks, Memoizer.defaultExpiration());
 
     /**
      * The processorCpuLoadTicks value.
      */
-    private final Supplier<long[][]> processorCpuLoadTicks = Memoizer
+    private final SupplierX<long[][]> processorCpuLoadTicks = Memoizer
             .memoize(this::queryProcessorCpuLoadTicks, Memoizer.defaultExpiration());
     // Logical and Physical Processor Counts
     /**
@@ -92,7 +92,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     /**
      * The maxFreq value.
      */
-    private final Supplier<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq, Memoizer.defaultExpiration());
+    private final SupplierX<Long> maxFreq = Memoizer.memoize(this::queryMaxFreq, Memoizer.defaultExpiration());
     // Processor info, initialized in constructor
     /**
      * The logicalProcessors value.
@@ -519,7 +519,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     @Override
     public double getSystemCpuLoadBetweenTicks(long[] oldTicks) {
         if (oldTicks.length != TickType.values().length) {
-            throw new IllegalArgumentException("Provited tick array length " + oldTicks.length + " should have "
+            throw new IllegalArgumentException("Provided tick array length " + oldTicks.length + " should have "
                     + TickType.values().length + " elements");
         }
         return getSystemCpuLoadBetweenTicks(oldTicks, getSystemCpuLoadTicks());
@@ -534,6 +534,10 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      */
     @Override
     public double getSystemCpuLoadBetweenTicks(long[] oldTicks, long[] ticks) {
+        if (oldTicks.length != TickType.values().length || ticks.length != TickType.values().length) {
+            throw new IllegalArgumentException("Tick arrays must both have " + TickType.values().length
+                    + " elements, but were " + oldTicks.length + " and " + ticks.length + ".");
+        }
         // Calculate total
         long total = 0;
         for (int i = 0; i < ticks.length; i++) {

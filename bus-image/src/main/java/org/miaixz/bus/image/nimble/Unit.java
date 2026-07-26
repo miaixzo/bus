@@ -24,8 +24,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * Measurement units used by image calibration and measurement tools.
@@ -356,7 +357,7 @@ public enum Unit {
      * @param filter the filter.
      * @return the operation result.
      */
-    private static List<Unit> filtered(Predicate<Unit> filter) {
+    private static List<Unit> filtered(PredicateX<Unit> filter) {
         return Arrays.stream(values()).filter(filter).sorted(Comparator.comparingInt(Unit::getId)).toList();
     }
 

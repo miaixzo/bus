@@ -20,12 +20,11 @@
 package org.miaixz.bus.core.center;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.*;
@@ -82,7 +81,7 @@ public class CollectionStream extends CollectionValidator {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
-        return toMap(collection, (v) -> Optional.ofNullable(v).map(key).getOrNull(), Function.identity(), isParallel);
+        return toMap(collection, (v) -> Optional.ofNullable(v).map(key).getOrNull(), FunctionX.identity(), isParallel);
     }
 
     /**
@@ -100,8 +99,8 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, K, V> Map<K, V> toMap(
             final Collection<E> collection,
-            final Function<E, K> key,
-            final Function<E, V> value) {
+            final FunctionX<E, K> key,
+            final FunctionX<E, V> value) {
         return toMap(collection, key, value, false);
     }
 
@@ -122,8 +121,8 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, K, V> Map<K, V> toMap(
             final Collection<E> collection,
-            final Function<E, K> key,
-            final Function<E, V> value,
+            final FunctionX<E, K> key,
+            final FunctionX<E, V> value,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -143,7 +142,7 @@ public class CollectionStream extends CollectionValidator {
      * @param key        A function to extract the grouping key from an element.
      * @return A map where elements are grouped by the extracted key.
      */
-    public static <E, K> Map<K, List<E>> groupByKey(final Collection<E> collection, final Function<E, K> key) {
+    public static <E, K> Map<K, List<E>> groupByKey(final Collection<E> collection, final FunctionX<E, K> key) {
         return groupByKey(collection, key, false);
     }
 
@@ -162,7 +161,7 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, K> Map<K, List<E>> groupByKey(
             final Collection<E> collection,
-            final Function<E, K> key,
+            final FunctionX<E, K> key,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -185,8 +184,8 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(
             final Collection<E> collection,
-            final Function<E, K> key1,
-            final Function<E, U> key2) {
+            final FunctionX<E, K> key1,
+            final FunctionX<E, U> key2) {
         return groupBy2Key(collection, key1, key2, false);
     }
 
@@ -207,8 +206,8 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(
             final Collection<E> collection,
-            final Function<E, K> key1,
-            final Function<E, U> key2,
+            final FunctionX<E, K> key1,
+            final FunctionX<E, U> key2,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -232,8 +231,8 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, T, U> Map<T, Map<U, E>> group2Map(
             final Collection<E> collection,
-            final Function<E, T> key1,
-            final Function<E, U> key2) {
+            final FunctionX<E, T> key1,
+            final FunctionX<E, U> key2) {
         return group2Map(collection, key1, key2, false);
     }
 
@@ -254,13 +253,13 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, T, U> Map<T, Map<U, E>> group2Map(
             final Collection<E> collection,
-            final Function<E, T> key1,
-            final Function<E, U> key2,
+            final FunctionX<E, T> key1,
+            final FunctionX<E, U> key2,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection) || key1 == null || key2 == null) {
             return MapKit.zero();
         }
-        return groupBy(collection, key1, CollectorKit.toMap(key2, Function.identity(), (l, r) -> l), isParallel);
+        return groupBy(collection, key1, CollectorKit.toMap(key2, FunctionX.identity(), (l, r) -> l), isParallel);
     }
 
     /**
@@ -326,7 +325,7 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, K, D> Map<K, D> groupBy(
             final Collection<E> collection,
-            final Function<E, K> key,
+            final FunctionX<E, K> key,
             final Collector<E, ?, D> downstream) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
@@ -346,11 +345,11 @@ public class CollectionStream extends CollectionValidator {
      * @param downstream The downstream {@link Collector} to apply to elements in each group.
      * @param isParallel If {@code true}, the grouping is performed in parallel.
      * @return The resulting grouped map.
-     * @see Collectors#groupingBy(Function, Collector)
+     * @see Collectors#groupingBy(java.util.function.Function, Collector)
      */
     public static <E, K, D> Map<K, D> groupBy(
             final Collection<E> collection,
-            final Function<E, K> key,
+            final FunctionX<E, K> key,
             final Collector<E, ?, D> downstream,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
@@ -370,7 +369,7 @@ public class CollectionStream extends CollectionValidator {
      * @param function   A function to transform elements from type E to type T.
      * @return A new list containing the transformed elements.
      */
-    public static <E, T> List<T> toList(final Collection<E> collection, final Function<E, T> function) {
+    public static <E, T> List<T> toList(final Collection<E> collection, final FunctionX<E, T> function) {
         return toList(collection, function, false);
     }
 
@@ -389,7 +388,7 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, T> List<T> toList(
             final Collection<E> collection,
-            final Function<E, T> function,
+            final FunctionX<E, T> function,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return ListKit.zero();
@@ -408,7 +407,7 @@ public class CollectionStream extends CollectionValidator {
      * @param function   A function to transform elements from type E to type T.
      * @return A new set containing the transformed elements.
      */
-    public static <E, T> Set<T> toSet(final Collection<E> collection, final Function<E, T> function) {
+    public static <E, T> Set<T> toSet(final Collection<E> collection, final FunctionX<E, T> function) {
         return toSet(collection, function, false);
     }
 
@@ -427,7 +426,7 @@ public class CollectionStream extends CollectionValidator {
      */
     public static <E, T> Set<T> toSet(
             final Collection<E> collection,
-            final Function<E, T> function,
+            final FunctionX<E, T> function,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return SetKit.zero();
@@ -444,11 +443,11 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>   The type of values in the resulting merged map.
      * @param map1  The first map to merge.
      * @param map2  The second map to merge.
-     * @param merge A {@link BiFunction} to combine values from {@code map1} and {@code map2} for a given key. Note that
-     *              values from either map might be {@code null}.
+     * @param merge A {@link BiFunctionX} to combine values from {@code map1} and {@code map2} for a given key. Note
+     *              that values from either map might be {@code null}.
      * @return The merged map.
      */
-    public static <K, X, Y, V> Map<K, V> merge(Map<K, X> map1, Map<K, Y> map2, final BiFunction<X, Y, V> merge) {
+    public static <K, X, Y, V> Map<K, V> merge(Map<K, X> map1, Map<K, Y> map2, final BiFunctionX<X, Y, V> merge) {
         if (MapKit.isEmpty(map1) && MapKit.isEmpty(map2)) {
             return MapKit.zero();
         } else if (MapKit.isEmpty(map1)) {

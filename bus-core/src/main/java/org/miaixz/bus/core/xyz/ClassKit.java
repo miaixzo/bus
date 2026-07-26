@@ -29,11 +29,11 @@ import java.net.URI;
 import java.net.URL;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.bean.NullWrapper;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -278,7 +278,7 @@ public class ClassKit {
      * @param classFilter The filter for classes.
      * @return A set of classes.
      */
-    public static Set<Class<?>> scanPackage(final String packageName, final Predicate<Class<?>> classFilter) {
+    public static Set<Class<?>> scanPackage(final String packageName, final PredicateX<Class<?>> classFilter) {
         return ClassScanner.scanPackage(packageName, classFilter);
     }
 
@@ -804,7 +804,7 @@ public class ClassKit {
      * @param root       The root class.
      * @param terminator A predicate to stop traversal.
      */
-    public static void traverseTypeHierarchyWhile(final Class<?> root, final Predicate<Class<?>> terminator) {
+    public static void traverseTypeHierarchyWhile(final Class<?> root, final PredicateX<Class<?>> terminator) {
         traverseTypeHierarchyWhile(root, t -> true, terminator);
     }
 
@@ -817,8 +817,8 @@ public class ClassKit {
      */
     public static void traverseTypeHierarchyWhile(
             final Class<?> root,
-            final Predicate<Class<?>> filter,
-            final Predicate<Class<?>> terminator) {
+            final PredicateX<Class<?>> filter,
+            final PredicateX<Class<?>> terminator) {
         EasyStream.iterateHierarchies(root, ClassKit::getNextTypeHierarchies, filter).takeWhile(terminator).exec();
     }
 
@@ -832,13 +832,13 @@ public class ClassKit {
      */
     public static void traverseTypeHierarchy(
             final Class<?> root,
-            final Predicate<Class<?>> filter,
-            final Consumer<Class<?>> consumer,
+            final PredicateX<Class<?>> filter,
+            final ConsumerX<Class<?>> consumer,
             final boolean includeRoot) {
         Objects.requireNonNull(root);
         Objects.requireNonNull(filter);
         Objects.requireNonNull(consumer);
-        final Function<Class<?>, Collection<Class<?>>> function = t -> {
+        final FunctionX<Class<?>, Collection<Class<?>>> function = t -> {
             if (includeRoot || !root.equals(t)) {
                 consumer.accept(t);
             }

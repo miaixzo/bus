@@ -24,10 +24,15 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.function.*;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaFactory;
 import org.miaixz.bus.core.center.function.LambdaX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -159,60 +164,60 @@ public class LambdaKit {
     }
 
     /**
-     * Builds a `Function` equivalent to a getter method reference (`Obj::getXxx`).
+     * Builds a `FunctionX` equivalent to a getter method reference (`Obj::getXxx`).
      *
      * @param getMethod The getter method.
      * @param <T>       The type of the object calling the getter.
      * @param <R>       The return type of the getter.
-     * @return A `Function` representing `Obj::getXxx`.
+     * @return A `FunctionX` representing `Obj::getXxx`.
      */
-    public static <T, R> Function<T, R> buildGetter(final Method getMethod) {
-        return LambdaFactory.build(Function.class, getMethod);
+    public static <T, R> FunctionX<T, R> buildGetter(final Method getMethod) {
+        return LambdaFactory.build(FunctionX.class, getMethod);
     }
 
     /**
-     * Builds a `Function` equivalent to a getter method reference (`Obj::getXxx`).
+     * Builds a `FunctionX` equivalent to a getter method reference (`Obj::getXxx`).
      *
      * @param clazz     The class of the object calling the getter.
      * @param fieldName The name of the field.
      * @param <T>       The type of the object calling the getter.
      * @param <R>       The return type of the getter.
-     * @return A `Function` representing `Obj::getXxx`.
+     * @return A `FunctionX` representing `Obj::getXxx`.
      */
-    public static <T, R> Function<T, R> buildGetter(final Class<T> clazz, final String fieldName) {
+    public static <T, R> FunctionX<T, R> buildGetter(final Class<T> clazz, final String fieldName) {
         final MethodInvoker getter = (MethodInvoker) BeanKit.getBeanDesc(clazz).getGetter(fieldName);
         return buildGetter(getter.getMethod());
     }
 
     /**
-     * Builds a `BiConsumer` equivalent to a setter method reference (`Obj::setXxx`).
+     * Builds a `BiConsumerX` equivalent to a setter method reference (`Obj::setXxx`).
      *
      * @param setMethod The setter method.
      * @param <T>       The type of the object calling the setter.
      * @param <P>       The type of the parameter of the setter.
-     * @return A `BiConsumer` representing `Obj::setXxx`.
+     * @return A `BiConsumerX` representing `Obj::setXxx`.
      */
-    public static <T, P> BiConsumer<T, P> buildSetter(final Method setMethod) {
+    public static <T, P> BiConsumerX<T, P> buildSetter(final Method setMethod) {
         final Class<?> returnType = setMethod.getReturnType();
         if (Void.TYPE == returnType) {
-            return LambdaFactory.build(BiConsumer.class, setMethod);
+            return LambdaFactory.build(BiConsumerX.class, setMethod);
         }
 
         // Handle fluent setters that return 'this'
-        final BiFunction<T, P, ?> biFunction = LambdaFactory.build(BiFunction.class, setMethod);
+        final BiFunctionX<T, P, ?> biFunction = LambdaFactory.build(BiFunctionX.class, setMethod);
         return biFunction::apply;
     }
 
     /**
-     * Builds a `BiConsumer` equivalent to a setter method reference (`Obj::setXxx`).
+     * Builds a `BiConsumerX` equivalent to a setter method reference (`Obj::setXxx`).
      *
      * @param clazz     The class of the object calling the setter.
      * @param fieldName The name of the field.
      * @param <T>       The type of the object calling the setter.
      * @param <P>       The type of the parameter of the setter.
-     * @return A `BiConsumer` representing `Obj::setXxx`.
+     * @return A `BiConsumerX` representing `Obj::setXxx`.
      */
-    public static <T, P> BiConsumer<T, P> buildSetter(final Class<T> clazz, final String fieldName) {
+    public static <T, P> BiConsumerX<T, P> buildSetter(final Class<T> clazz, final String fieldName) {
         final MethodInvoker setter = (MethodInvoker) BeanKit.getBeanDesc(clazz).getSetter(fieldName);
         return buildSetter(setter.getMethod());
     }
@@ -236,42 +241,42 @@ public class LambdaKit {
     }
 
     /**
-     * Converts a {@link BiFunction} to a {@link Function} by fixing the second parameter.
+     * Converts a {@link BiFunctionX} to a {@link FunctionX} by fixing the second parameter.
      *
-     * @param biFunction The {@link BiFunction}.
+     * @param biFunction The {@link BiFunctionX}.
      * @param param      The fixed second parameter.
      * @param <T>        The type of the first parameter.
      * @param <U>        The type of the second parameter.
      * @param <R>        The return type.
-     * @return A {@link Function}.
+     * @return A {@link FunctionX}.
      */
-    public static <T, U, R> Function<T, R> toFunction(final BiFunction<T, U, R> biFunction, final U param) {
+    public static <T, U, R> FunctionX<T, R> toFunction(final BiFunctionX<T, U, R> biFunction, final U param) {
         return (t) -> biFunction.apply(t, param);
     }
 
     /**
-     * Converts a {@link BiPredicate} to a {@link Predicate} by fixing the second parameter.
+     * Converts a {@link BiPredicateX} to a {@link PredicateX} by fixing the second parameter.
      *
-     * @param biPredicate The {@link BiPredicate}.
+     * @param biPredicate The {@link BiPredicateX}.
      * @param param       The fixed second parameter.
      * @param <T>         The type of the first parameter.
      * @param <U>         The type of the second parameter.
-     * @return A {@link Predicate}.
+     * @return A {@link PredicateX}.
      */
-    public static <T, U> Predicate<T> toPredicate(final BiPredicate<T, U> biPredicate, final U param) {
+    public static <T, U> PredicateX<T> toPredicate(final BiPredicateX<T, U> biPredicate, final U param) {
         return (t) -> biPredicate.test(t, param);
     }
 
     /**
-     * Converts a {@link BiConsumer} to a {@link Consumer} by fixing the second parameter.
+     * Converts a {@link BiConsumerX} to a {@link ConsumerX} by fixing the second parameter.
      *
-     * @param biConsumer The {@link BiConsumer}.
+     * @param biConsumer The {@link BiConsumerX}.
      * @param param      The fixed second parameter.
      * @param <T>        The type of the first parameter.
      * @param <U>        The type of the second parameter.
-     * @return A {@link Consumer}.
+     * @return A {@link ConsumerX}.
      */
-    public static <T, U> Consumer<T> toPredicate(final BiConsumer<T, U> biConsumer, final U param) {
+    public static <T, U> ConsumerX<T> toPredicate(final BiConsumerX<T, U> biConsumer, final U param) {
         return (t) -> biConsumer.accept(t, param);
     }
 

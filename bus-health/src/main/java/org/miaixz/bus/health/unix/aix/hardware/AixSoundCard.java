@@ -21,8 +21,8 @@ package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -55,7 +55,7 @@ final class AixSoundCard extends AbstractSoundCard {
      * @param lscfg a memoized lscfg object
      * @return sound cards
      */
-    public static List<SoundCard> getSoundCards(Supplier<List<String>> lscfg) {
+    public static List<SoundCard> getSoundCards(SupplierX<List<String>> lscfg) {
         List<SoundCard> soundCards = new ArrayList<>();
         for (String line : lscfg.get()) {
             String s = line.trim();

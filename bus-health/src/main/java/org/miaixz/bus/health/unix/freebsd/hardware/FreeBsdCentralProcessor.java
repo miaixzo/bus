@@ -292,7 +292,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         // Parsing dmesg.boot is apparently the only reliable source for processor
         // identification in FreeBSD
         long processorIdBits = 0L;
-        List<String> cpuInfo = Builder.readFile("/var/run/dmesg.boot");
+        List<String> cpuInfo = Builder.readFile("/var/run/dmesg.boot", false);
         for (String line : cpuInfo) {
             line = line.trim();
             // Prefer hw.model to this one
@@ -337,12 +337,12 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         }
         Map<Integer, String> dmesg = new HashMap<>();
         // cpu0: <Open Firmware CPU> on cpulist0
-        java.util.regex.Pattern normal = java.util.regex.Pattern.compile("cpu(\\\\d+): (.+) on .*");
+        java.util.regex.Pattern normal = java.util.regex.Pattern.compile("cpu(\\d+): (.+) on .*");
         // CPU 0: ARM Cortex-A53 r0p4 affinity: 0 0
-        java.util.regex.Pattern hybrid = java.util.regex.Pattern.compile("CPU\\\\s*(\\\\d+): (.+) affinity:.*");
+        java.util.regex.Pattern hybrid = java.util.regex.Pattern.compile("CPU\\s*(\\d+): (.+) affinity:.*");
         List<String> featureFlags = new ArrayList<>();
         boolean readingFlags = false;
-        for (String s : Builder.readFile("/var/run/dmesg.boot")) {
+        for (String s : Builder.readFile("/var/run/dmesg.boot", false)) {
             Matcher h = hybrid.matcher(s);
             if (h.matches()) {
                 int coreId = Parsing.parseIntOrDefault(h.group(1), 0);

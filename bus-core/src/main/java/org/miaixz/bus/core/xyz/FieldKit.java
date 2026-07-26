@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.CompositeConverter;
 import org.miaixz.bus.core.convert.Converter;
@@ -172,7 +172,7 @@ public class FieldKit {
      * @return An array of fields.
      * @throws SecurityException if a security manager denies access.
      */
-    public static Field[] getFields(final Class<?> beanClass, final Predicate<Field> filter) throws SecurityException {
+    public static Field[] getFields(final Class<?> beanClass, final PredicateX<Field> filter) throws SecurityException {
         Assert.notNull(beanClass);
         return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getAllFields(filter);
     }
@@ -185,7 +185,7 @@ public class FieldKit {
      * @return An array of fields.
      * @throws SecurityException if a security manager denies access.
      */
-    public static Field[] getDeclaredFields(final Class<?> beanClass, final Predicate<Field> filter)
+    public static Field[] getDeclaredFields(final Class<?> beanClass, final PredicateX<Field> filter)
             throws SecurityException {
         Assert.notNull(beanClass);
         return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getDeclaredFields(filter);
@@ -275,7 +275,7 @@ public class FieldKit {
      * @param filter The field filter.
      * @return An array of field values.
      */
-    public static Object[] getFieldsValue(final Object object, final Predicate<Field> filter) {
+    public static Object[] getFieldsValue(final Object object, final PredicateX<Field> filter) {
         if (null != object) {
             final Field[] fields = getFields(object instanceof Class ? (Class<?>) object : object.getClass(), filter);
             if (null != fields) {
@@ -315,7 +315,7 @@ public class FieldKit {
      * @param filter The field filter.
      * @return A map of field names to values.
      */
-    public static Object getFieldsAndValue(final Object object, final Predicate<Field> filter) {
+    public static Object getFieldsAndValue(final Object object, final PredicateX<Field> filter) {
         if (null != object) {
             final Field[] fields = getFields(object instanceof Class ? (Class<?>) object : object.getClass(), filter);
             if (null != fields) {

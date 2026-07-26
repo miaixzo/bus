@@ -26,8 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.nimble.Sample;
@@ -241,7 +241,7 @@ public class NativeTimer implements Timer {
             long threshold,
             TimeUnit unit,
             int checkEvery,
-            Consumer<ViolationEvent> callback) {
+            ConsumerX<ViolationEvent> callback) {
         violations.add(new ViolationSpec(percentile, unit.toNanos(threshold), checkEvery, callback));
         return this;
     }
@@ -308,7 +308,7 @@ public class NativeTimer implements Timer {
      * @since Java 21+
      */
     private record ViolationSpec(double percentile, long thresholdNanos, int checkEvery,
-            Consumer<ViolationEvent> callback) {
+            ConsumerX<ViolationEvent> callback) {
 
     }
 

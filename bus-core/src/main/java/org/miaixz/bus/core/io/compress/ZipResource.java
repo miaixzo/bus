@@ -21,8 +21,9 @@ package org.miaixz.bus.core.io.compress;
 
 import java.io.Closeable;
 import java.io.InputStream;
-import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
  * Represents a Zip resource, such as a Zip stream resource or a Zip file resource.
@@ -39,7 +40,7 @@ public interface ZipResource extends Closeable {
      * @param maxSizeDiff The maximum size difference multiplier for ZipBomb check. A value of -1 indicates no ZipBomb
      *                    check.
      */
-    void read(final Consumer<ZipEntry> consumer, final int maxSizeDiff);
+    void read(final ConsumerX<ZipEntry> consumer, final int maxSizeDiff);
 
     /**
      * Retrieves the input stream for a specific entry within the Zip file. If in file mode, it directly gets the stream

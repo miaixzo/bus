@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -55,19 +55,19 @@ public final class Privilege {
     /**
      * Memoized supplier for the command allowlist.
      */
-    private static final AtomicReference<Supplier<Set<String>>> COMMAND_ALLOWLIST = new AtomicReference<>(
+    private static final AtomicReference<SupplierX<Set<String>>> COMMAND_ALLOWLIST = new AtomicReference<>(
             Memoizer.memoize(Privilege::queryCommandAllowlist, Memoizer.defaultExpiration()));
 
     /**
      * Memoized supplier for the file allowlist.
      */
-    private static final AtomicReference<Supplier<Set<String>>> FILE_ALLOWLIST = new AtomicReference<>(
+    private static final AtomicReference<SupplierX<Set<String>>> FILE_ALLOWLIST = new AtomicReference<>(
             Memoizer.memoize(Privilege::queryFileAllowlist, Memoizer.defaultExpiration()));
 
     /**
      * Memoized supplier for the privilege command prefix.
      */
-    private static final AtomicReference<Supplier<String>> PREFIX = new AtomicReference<>(
+    private static final AtomicReference<SupplierX<String>> PREFIX = new AtomicReference<>(
             Memoizer.memoize(Privilege::queryPrefix, Memoizer.defaultExpiration()));
 
     /**

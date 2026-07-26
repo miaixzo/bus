@@ -20,10 +20,10 @@
 package org.miaixz.bus.core.net;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
@@ -623,7 +623,7 @@ public enum Port {
             synchronized (LOCK) {
                 if (PORT_MAP == null) {
                     PORT_MAP = Stream.of(values())
-                            .collect(Collectors.toUnmodifiableMap(Port::getPort, Function.identity()));
+                            .collect(Collectors.toUnmodifiableMap(Port::getPort, FunctionX.identity()));
                 }
             }
         }

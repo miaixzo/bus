@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.function.Predicate;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -32,6 +31,7 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -128,7 +128,7 @@ public class StreamExtractor implements Extractor {
      * @return an input stream for the matching entry, or {@code null} if no match is found
      */
     @Override
-    public InputStream getFirst(final Predicate<ArchiveEntry> predicate) {
+    public InputStream getFirst(final PredicateX<ArchiveEntry> predicate) {
         final ArchiveInputStream<?> in = this.in;
         ArchiveEntry entry;
         try {
@@ -156,10 +156,10 @@ public class StreamExtractor implements Extractor {
      *
      * @param targetDir The target directory.
      * @param predicate A filter for extracted files, used to specify which files to extract. null means no filtering.
-     *                  Extracts when {@link Predicate#test(Object)} is {@code true}.
+     *                  Extracts when {@link PredicateX#test(Object)} is {@code true}.
      */
     @Override
-    public void extract(final File targetDir, final Predicate<ArchiveEntry> predicate) {
+    public void extract(final File targetDir, final PredicateX<ArchiveEntry> predicate) {
         try {
             extractInternal(targetDir, predicate);
         } catch (final IOException e) {
@@ -174,10 +174,10 @@ public class StreamExtractor implements Extractor {
      *
      * @param targetDir The target directory.
      * @param predicate A filter for extracted files, used to specify which files to extract. null means no filtering.
-     *                  Extracts when {@link Predicate#test(Object)} is {@code true}.
+     *                  Extracts when {@link PredicateX#test(Object)} is {@code true}.
      * @throws IOException if an I/O error occurs.
      */
-    private void extractInternal(final File targetDir, final Predicate<ArchiveEntry> predicate) throws IOException {
+    private void extractInternal(final File targetDir, final PredicateX<ArchiveEntry> predicate) throws IOException {
         Assert.isTrue(null != targetDir && ((!targetDir.exists()) || targetDir.isDirectory()), "target must be dir.");
         final ArchiveInputStream<?> in = this.in;
         ArchiveEntry entry;

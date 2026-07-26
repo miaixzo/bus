@@ -23,12 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.linux.Udev;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -126,13 +126,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * The installedAppsSupplier value.
      */
-    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     /**
      * The cgroupInfoSupplier value.
      */
-    private final Supplier<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
+    private final SupplierX<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
 
     static {
         boolean hasUdev = false;
@@ -900,6 +900,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         for (String text : systemctl) {
             String[] split = Pattern.SPACES_PATTERN.split(text);
             if (split.length >= 2 && split[0].endsWith(".service") && Normal.ENABLED.equals(split[1])) {
+                systemctlFound = true;
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);
                 int index = name.lastIndexOf('.');
@@ -907,15 +908,15 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 if (!running.contains(name) && !running.contains(shortName)) {
                     OSService s = new OSService(name, 0, OSService.State.STOPPED);
                     services.add(s);
-                    systemctlFound = true;
                 }
             }
         }
         if (!systemctlFound) {
             // Get Directories for stopped services
             File dir = new File("/etc/init");
-            if (dir.exists() && dir.isDirectory()) {
-                for (File f : dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"))) {
+            File[] confFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"));
+            if (confFiles != null) {
+                for (File f : confFiles) {
                     // remove .conf extension
                     String name = f.getName().substring(0, f.getName().length() - 5);
                     int index = name.lastIndexOf('.');

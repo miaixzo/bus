@@ -20,7 +20,8 @@
 package org.miaixz.bus.setting.nimble.ini;
 
 import java.util.*;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * A builder for creating an {@link IniSetting} object programmatically. It provides a fluent API to add sections,
@@ -39,7 +40,7 @@ public class INI {
     /**
      * A queue for properties added before their corresponding section is defined.
      */
-    private final LinkedList<Supplier<IniProperty>> waitForSections = new LinkedList<>();
+    private final LinkedList<SupplierX<IniProperty>> waitForSections = new LinkedList<>();
 
     /**
      * The most recently added section.
@@ -78,7 +79,7 @@ public class INI {
      *
      * @param listSupplier A supplier that provides the list to store elements in.
      */
-    public INI(Supplier<List<IniElement>> listSupplier) {
+    public INI(SupplierX<List<IniElement>> listSupplier) {
         elements = listSupplier.get();
     }
 
@@ -336,7 +337,7 @@ public class INI {
      *
      * @param propertySupplier A supplier for creating the {@link IniProperty}.
      */
-    private void checkProps(Supplier<IniProperty> propertySupplier) {
+    private void checkProps(SupplierX<IniProperty> propertySupplier) {
         if (null == this.lastSection) {
             this.waitForSections.addFirst(propertySupplier);
         } else {

@@ -35,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -57,6 +58,10 @@ import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.network.Ingress;
+import org.miaixz.bus.fabric.network.aio.AioChannel;
+import org.miaixz.bus.fabric.network.aio.AioGroup;
+import org.miaixz.bus.fabric.network.aio.AioProvider;
+import org.miaixz.bus.fabric.network.aio.AioServer;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeaderReader;
 import org.miaixz.bus.fabric.network.tls.TlsChannel;
@@ -153,6 +158,11 @@ public final class SocketServer implements Lifecycle {
     private final Dispatcher dispatcher;
 
     /**
+     * Whether accepted sessions use the completion-driven AIO transport.
+     */
+    private final boolean completionDriven;
+
+    /**
      * Server lifecycle coordination lock.
      */
     private final Object lifecycleLock;
@@ -162,9 +172,6 @@ public final class SocketServer implements Lifecycle {
      */
     private final AtomicBoolean started;
 
-    /**
-     * Terminal shutdown guard.
-     */
     /**
      * Listening server channel.
      */
@@ -183,12 +190,27 @@ public final class SocketServer implements Lifecycle {
     /**
      * Accepted transports, including handshakes that have not produced sessions yet.
      */
-    private final Queue<AcceptedConnection> connections;
+    private final Queue<Connection> connections;
 
     /**
      * Raw channels still being inspected for an optional PROXY header.
      */
     private final Queue<SocketChannel> acceptedChannels;
+
+    /**
+     * Single blocking session eligible for the low-latency platform-thread reader.
+     */
+    private final AtomicReference<SocketSession> latencyReader;
+
+    /**
+     * Active completion-driven listener.
+     */
+    private volatile AioServer aioServer;
+
+    /**
+     * AIO group owned by the completion-driven listener.
+     */
+    private volatile AioGroup aioGroup;
 
     /**
      * Creates a socket server from a builder.
@@ -211,11 +233,13 @@ public final class SocketServer implements Lifecycle {
         this.listener = builder.listener;
         this.sessionListener = builder.sessionListener();
         this.dispatcher = context.reactor().dispatcher();
+        this.completionDriven = builder.completionDriven;
         this.runtime = ServerRuntime.create(this, "socket-server", listener, observer);
         this.lifecycleLock = new Object();
         this.started = new AtomicBoolean();
         this.connections = new ConcurrentLinkedQueue<>();
         this.acceptedChannels = new ConcurrentLinkedQueue<>();
+        this.latencyReader = new AtomicReference<>();
     }
 
     /**
@@ -245,7 +269,18 @@ public final class SocketServer implements Lifecycle {
                 throw new StatefulException("Socket server can only be started once");
             }
             ServerSocketChannel opened = null;
+            AioGroup openedGroup = null;
+            AioServer openedAsync = null;
             try {
+                if (completionDriven) {
+                    openedGroup = AioGroup.create(socketOptions.ioThreads(), dispatcher);
+                    openedAsync = AioProvider.system().openAsyncServer(address, openedGroup, null, socketOptions)
+                            .start(this::handleAccepted);
+                    aioGroup = openedGroup;
+                    aioServer = openedAsync;
+                    runtime.open(this);
+                    return this;
+                }
                 opened = ServerSocketChannel.open();
                 opened.bind(new InetSocketAddress(address.host(), address.port()), socketOptions.backlog());
                 serverChannel = opened;
@@ -258,13 +293,19 @@ public final class SocketServer implements Lifecycle {
                 return this;
             } catch (final IOException e) {
                 closeServerChannel(opened);
+                closeAsyncStartup(openedAsync, openedGroup);
                 serverChannel = null;
+                aioServer = null;
+                aioGroup = null;
                 final SocketException failure = new SocketException("Unable to start socket server", e);
                 runtime.fail(failure);
                 throw failure;
             } catch (final RuntimeException e) {
                 closeServerChannel(opened);
+                closeAsyncStartup(openedAsync, openedGroup);
                 serverChannel = null;
+                aioServer = null;
+                aioGroup = null;
                 runtime.fail(e);
                 throw e;
             }
@@ -315,6 +356,10 @@ public final class SocketServer implements Lifecycle {
      */
     @Override
     public boolean active() {
+        final AioServer async = aioServer;
+        if (async != null) {
+            return !runtime.shuttingDown() && runtime.state() == State.RUNNING && async.state() == State.RUNNING;
+        }
         final ServerSocketChannel current = serverChannel;
         return !runtime.shuttingDown() && runtime.state() == State.RUNNING && current != null && current.isOpen();
     }
@@ -424,9 +469,19 @@ public final class SocketServer implements Lifecycle {
             }
             final Filter sessionFilter = FilterChain.compose(context.filter(), filter);
             final Map<String, Object> attributes = attributes(proxy.header(), sessionFilter);
-            session = new SocketSession(peerAddress, connection, null, null, SocketCodec.of(frameCodec), Demuxer.noop(),
-                    attributes, null, registryListener(connection), context.options().materializeMaxBytes(),
-                    socketOptions, dispatcher, context.clock(), timeout, Cancellation.create());
+            session = SocketSession.createServer(
+                    peerAddress,
+                    connection,
+                    SocketCodec.forSession(frameCodec),
+                    Demuxer.noop(),
+                    attributes,
+                    registryListener(connection),
+                    context.options().materializeMaxBytes(),
+                    socketOptions,
+                    dispatcher,
+                    context.clock(),
+                    timeout,
+                    Cancellation.create());
             if (runtime.shuttingDown()) {
                 session.close();
                 return;
@@ -454,16 +509,106 @@ public final class SocketServer implements Lifecycle {
     }
 
     /**
+     * Converts an asynchronously accepted channel into the same SocketSession pipeline.
+     *
+     * @param channel accepted asynchronous channel
+     */
+    private void handleAccepted(final AioChannel channel) {
+        try {
+            ProxyHeaderReader.read(channel, (proxy, cause) -> {
+                if (cause != null) {
+                    channel.close();
+                    if (!runtime.shuttingDown()) {
+                        notifySetupFailure(cause);
+                    }
+                    return;
+                }
+                establishAccepted(channel, proxy);
+            });
+        } catch (final RuntimeException e) {
+            channel.close();
+            if (!runtime.shuttingDown()) {
+                notifySetupFailure(e);
+            }
+        }
+    }
+
+    /**
+     * Converts a probed asynchronous channel into the shared SocketSession pipeline.
+     *
+     * @param channel accepted asynchronous channel
+     * @param proxy   optional PROXY header and prefetched application bytes
+     */
+    private void establishAccepted(final AioChannel channel, final ProxyHeaderReader.Result proxy) {
+        AioAcceptedConnection connection = null;
+        SocketSession session = null;
+        boolean transferred = false;
+        try {
+            if (runtime.shuttingDown()) {
+                return;
+            }
+            final Address peerAddress = peerAddress(channel, proxy.header());
+            connection = new AioAcceptedConnection(peerAddress, channel);
+            connections.add(connection);
+            Message opening = Message
+                    .of(peerAddress.protocol(), peerAddress, Headers.empty(), Payload.empty(), SOCKET_TAG_OPEN);
+            opening = FilterChain.apply(opening, context.filter(), filter);
+            if (guard != null) {
+                guard.check(opening).throwIfRejected();
+            }
+            final Filter sessionFilter = FilterChain.compose(context.filter(), filter);
+            session = SocketSession.createServer(
+                    peerAddress,
+                    connection,
+                    SocketCodec.forSession(frameCodec),
+                    Demuxer.noop(),
+                    attributes(proxy.header(), sessionFilter),
+                    registryListener(connection),
+                    context.options().materializeMaxBytes(),
+                    socketOptions,
+                    dispatcher,
+                    context.clock(),
+                    timeout,
+                    Cancellation.create());
+            session.startDataPlane(handler, proxy.payload());
+            transferred = true;
+            connection = null;
+            session = null;
+        } catch (final RuntimeException e) {
+            if (session != null) {
+                session.cancel();
+            }
+            if (!runtime.shuttingDown()) {
+                notifySetupFailure(e);
+            }
+        } finally {
+            if (!transferred && connection != null) {
+                connections.remove(connection);
+                closeConnection(connection);
+            } else if (!transferred) {
+                channel.close();
+            }
+        }
+    }
+
+    /**
      * Starts one long-lived background reader for an accepted session.
      *
      * @param session accepted session whose receive loop is scheduled
      */
     private void startReader(final SocketSession session) {
+        final Activity activity = Activity.of(SOCKET_ACTIVITY_READ, () -> readLoop(session));
+        final boolean candidate = latencyReader.compareAndSet(null, session);
+        if (candidate) {
+            ThreadKit.sleep(5L);
+        }
+        final boolean latencyLane = candidate && runtime.sessions().size() == Normal._1;
+        if (candidate && !latencyLane) {
+            latencyReader.compareAndSet(session, null);
+        }
         track(
-                dispatcher.background(
-                        SOCKET_ACTIVITY_READ,
-                        session,
-                        Activity.of(SOCKET_ACTIVITY_READ, () -> readLoop(session))));
+                latencyLane ? dispatcher.backgroundPlatform(SOCKET_ACTIVITY_READ, session, activity)
+                        : dispatcher.background(SOCKET_ACTIVITY_READ, session, activity));
     }
 
     /**
@@ -474,7 +619,7 @@ public final class SocketServer implements Lifecycle {
     private void readLoop(final SocketSession session) {
         try {
             while (!runtime.shuttingDown() && session.active()) {
-                final Message message = session.receive().execute();
+                final Message message = session.readDataPlane();
                 handler.message(session, message);
             }
         } catch (final RuntimeException e) {
@@ -493,7 +638,7 @@ public final class SocketServer implements Lifecycle {
      * @param connection accepted connection
      * @return lifecycle listener owning the accepted connection registry entry
      */
-    private Listener<SocketSession> registryListener(final AcceptedConnection connection) {
+    private Listener<SocketSession> registryListener(final Connection connection) {
         return new Listener<>() {
 
             /**
@@ -536,6 +681,7 @@ public final class SocketServer implements Lifecycle {
              * @param source terminal session
              */
             private void remove(final SocketSession source) {
+                latencyReader.compareAndSet(source, null);
                 runtime.remove(source);
                 connections.remove(connection);
             }
@@ -597,6 +743,24 @@ public final class SocketServer implements Lifecycle {
      */
     private RuntimeException stopAccept(final RuntimeException failure) {
         RuntimeException currentFailure = failure;
+        final AioServer async = aioServer;
+        aioServer = null;
+        if (async != null) {
+            try {
+                async.close();
+            } catch (final RuntimeException e) {
+                currentFailure = append(currentFailure, e);
+            }
+        }
+        final AioGroup group = aioGroup;
+        aioGroup = null;
+        if (group != null) {
+            try {
+                group.close();
+            } catch (final RuntimeException e) {
+                currentFailure = append(currentFailure, e);
+            }
+        }
         final ServerSocketChannel current = serverChannel;
         serverChannel = null;
         if (current != null) {
@@ -674,7 +838,7 @@ public final class SocketServer implements Lifecycle {
         RuntimeException currentFailure = failure;
         cancelHandles();
         currentFailure = terminateSessions(false, currentFailure);
-        for (final AcceptedConnection connection : new ArrayList<>(connections)) {
+        for (final Connection connection : new ArrayList<>(connections)) {
             try {
                 connection.close();
             } catch (final RuntimeException e) {
@@ -734,7 +898,7 @@ public final class SocketServer implements Lifecycle {
      *
      * @param connection accepted connection
      */
-    private void closeConnection(final AcceptedConnection connection) {
+    private void closeConnection(final Connection connection) {
         try {
             connection.close();
         } catch (final RuntimeException e) {
@@ -771,6 +935,29 @@ public final class SocketServer implements Lifecycle {
             channel.close();
         } catch (final IOException ignored) {
             // The original startup failure remains authoritative.
+        }
+    }
+
+    /**
+     * Releases partially initialized AIO resources without replacing the startup failure.
+     *
+     * @param server partially started asynchronous listener
+     * @param group  partially initialized asynchronous group
+     */
+    private static void closeAsyncStartup(final AioServer server, final AioGroup group) {
+        if (server != null) {
+            try {
+                server.close();
+            } catch (final RuntimeException ignored) {
+                // The startup failure remains authoritative.
+            }
+        }
+        if (group != null) {
+            try {
+                group.close();
+            } catch (final RuntimeException ignored) {
+                // The startup failure remains authoritative.
+            }
         }
     }
 
@@ -863,6 +1050,25 @@ public final class SocketServer implements Lifecycle {
     }
 
     /**
+     * Resolves the peer address of an asynchronously accepted channel.
+     *
+     * @param channel     accepted asynchronous channel
+     * @param proxyHeader parsed PROXY header
+     * @return effective peer address
+     */
+    private Address peerAddress(final AioChannel channel, final ProxyHeader proxyHeader) {
+        if (proxyHeader != null && proxyHeader.sourceAddress() != null) {
+            return proxyHeader.sourceAddress();
+        }
+        final SocketAddress remote = channel.remote();
+        if (remote instanceof InetSocketAddress socket) {
+            return new Address(address.scheme(), socket.getHostString(), socket.getPort(), Symbol.SLASH);
+        }
+        throw new ProtocolException("Accepted AIO socket remote address must be InetSocketAddress: "
+                + (remote == null ? "null" : remote.getClass().getName()));
+    }
+
+    /**
      * Notifies the user listener after a session enters the registry.
      *
      * @param session newly registered session reported to the listener
@@ -952,6 +1158,112 @@ public final class SocketServer implements Lifecycle {
      */
     private static <T> T require(final T value, final String name) {
         return Assert.notNull(value, () -> new ValidateException(name + " must not be null"));
+    }
+
+    /**
+     * Connection adapter over the shared AIO channel implementation.
+     */
+    private static final class AioAcceptedConnection implements Connection {
+
+        /**
+         * Immutable destination metadata.
+         */
+        private final Destination destination;
+
+        /**
+         * Accepted asynchronous channel.
+         */
+        private final AioChannel channel;
+
+        /**
+         * Creates a connection view over an accepted AIO channel.
+         *
+         * @param address effective peer address
+         * @param channel accepted asynchronous channel
+         */
+        private AioAcceptedConnection(final Address address, final AioChannel channel) {
+            this.destination = Destination.of(address.protocol(), address, Options.empty());
+            this.channel = require(channel, "Accepted AIO channel");
+        }
+
+        /**
+         * Returns immutable destination metadata.
+         *
+         * @return destination metadata
+         */
+        @Override
+        public Destination destination() {
+            return destination;
+        }
+
+        /**
+         * Returns the channel as the connection conduit.
+         *
+         * @return asynchronous conduit
+         */
+        @Override
+        public Conduit conduit() {
+            return channel;
+        }
+
+        /**
+         * Returns the compatibility source view.
+         *
+         * @return channel source
+         */
+        @Override
+        public Source source() {
+            return channel.source();
+        }
+
+        /**
+         * Returns the compatibility sink view.
+         *
+         * @return channel sink
+         */
+        @Override
+        public Sink sink() {
+            return channel.sink();
+        }
+
+        /**
+         * Returns the transport lifecycle state.
+         *
+         * @return running while the channel is open, otherwise closed
+         */
+        @Override
+        public State state() {
+            return channel.opened() ? State.RUNNING : State.CLOSED;
+        }
+
+        /**
+         * Returns whether the channel is healthy.
+         *
+         * @return true while the channel is open
+         */
+        @Override
+        public boolean healthy() {
+            return channel.opened();
+        }
+
+        /**
+         * Returns whether the channel may be retained by connection abstractions.
+         *
+         * @return true while the channel is open
+         */
+        @Override
+        public boolean idle() {
+            return channel.opened();
+        }
+
+        /**
+         * Closes the accepted asynchronous channel.
+         */
+        @Override
+        public void close() {
+            channel.close();
+        }
+
     }
 
     /**
@@ -1211,6 +1523,11 @@ public final class SocketServer implements Lifecycle {
         private Consumer<Throwable> errorHandler;
 
         /**
+         * Whether this socket server uses the shared callback-driven AIO transport.
+         */
+        private boolean completionDriven;
+
+        /**
          * Creates a builder.
          *
          * @param context shared context
@@ -1359,6 +1676,16 @@ public final class SocketServer implements Lifecycle {
          */
         public Builder idleTimeout(final Duration timeout) {
             return socketOptions(copySocketOptions().idleTimeout(timeout).build());
+        }
+
+        /**
+         * Enables the completion-driven AIO transport for plain TCP Socket sessions.
+         *
+         * @return this builder
+         */
+        public Builder completionDriven() {
+            this.completionDriven = true;
+            return this;
         }
 
         /**
@@ -1578,6 +1905,9 @@ public final class SocketServer implements Lifecycle {
                 throw new ValidateException("Socket server bind address must be set");
             }
             validateTlsPair(tlsContext, tlsSettings);
+            if (completionDriven && tlsContext != null) {
+                throw new ValidateException("Completion-driven Socket server does not support TLS");
+            }
             return new SocketServer(this);
         }
 

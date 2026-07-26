@@ -1257,7 +1257,7 @@
         {
           "name": "setColorFactory",
           "parameterTypes": [
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -2031,7 +2031,7 @@
       "glob": "logback.xml"
     },
     {
-      "glob": "META-INF/services/**"
+      "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
     }
   ]
 }

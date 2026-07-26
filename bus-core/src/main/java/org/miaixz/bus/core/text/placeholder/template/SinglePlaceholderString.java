@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
@@ -65,7 +65,7 @@ public class SinglePlaceholderString extends StringTemplate {
      * @param defaultValueHandler The handler for default values.
      */
     protected SinglePlaceholderString(final String template, final int features, final String placeholder,
-            final char escape, final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
+            final char escape, final String defaultValue, final UnaryOperatorX<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
         Assert.notEmpty(placeholder);

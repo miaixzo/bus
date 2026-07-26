@@ -22,13 +22,13 @@ package org.miaixz.bus.health.unix.aix.software;
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -71,18 +71,18 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     /**
      * The config value.
      */
-    private final Supplier<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
+    private final SupplierX<perfstat_partition_config_t> config = Memoizer.memoize(PerfstatConfig::queryConfig);
 
     /**
      * The procCpu value.
      */
-    private final Supplier<perfstat_process_t[]> procCpu = Memoizer
+    private final SupplierX<perfstat_process_t[]> procCpu = Memoizer
             .memoize(PerfstatProcess::queryProcesses, Memoizer.defaultExpiration());
 
     /**
      * The installedAppsSupplier value.
      */
-    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(AixInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     /**
@@ -364,11 +364,15 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             inetd            tcpip            2752656      active
             lpd              spooler                       inoperative
                         ...
-         */
+        */
         List<String> systemServicesInfoList = Executor.runNative("lssrc -a");
         if (systemServicesInfoList.size() > 1) {
-            systemServicesInfoList.remove(0); // remove header
+            boolean header = true;
             for (String systemService : systemServicesInfoList) {
+                if (header) {
+                    header = false;
+                    continue;
+                }
                 String[] serviceSplit = Pattern.SPACES_PATTERN.split(systemService.trim());
                 if (systemService.contains("active")) {
                     if (serviceSplit.length == 4) {

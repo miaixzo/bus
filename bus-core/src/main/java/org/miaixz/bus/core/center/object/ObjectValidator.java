@@ -24,9 +24,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.text.CharsValidator;
 import org.miaixz.bus.core.xyz.*;
@@ -207,14 +207,14 @@ public class ObjectValidator {
 
     /**
      * Returns the original value if the given object is not {@code null}, otherwise returns the default value provided
-     * by {@link Supplier#get()}.
+     * by {@link SupplierX#get()}.
      *
      * @param <T>             The type of the object being checked.
      * @param source          The object to check, which may be {@code null}.
      * @param defaultSupplier The supplier for the default value when the object is {@code null}.
      * @return The object itself if it is not {@code null}, otherwise the default value from the supplier.
      */
-    public static <T> T defaultIfNull(final T source, final Supplier<? extends T> defaultSupplier) {
+    public static <T> T defaultIfNull(final T source, final SupplierX<? extends T> defaultSupplier) {
         if (isNotNull(source)) {
             return source;
         }
@@ -234,14 +234,14 @@ public class ObjectValidator {
      */
     public static <T, R> R defaultIfNull(
             final T source,
-            final Function<? super T, ? extends R> handler,
+            final FunctionX<? super T, ? extends R> handler,
             final R defaultValue) {
         return isNull(source) ? defaultValue : handler.apply(source);
     }
 
     /**
      * Returns the result of a custom handler if the given object is not {@code null}, otherwise returns the default
-     * value provided by {@link Supplier#get()}.
+     * value provided by {@link SupplierX#get()}.
      *
      * @param <R>             The return type.
      * @param <T>             The type of the object being checked.
@@ -253,8 +253,8 @@ public class ObjectValidator {
      */
     public static <T, R> R defaultIfNull(
             final T source,
-            final Function<? super T, ? extends R> handler,
-            final Supplier<? extends R> defaultSupplier) {
+            final FunctionX<? super T, ? extends R> handler,
+            final SupplierX<? extends R> defaultSupplier) {
         if (isNotNull(source)) {
             return handler.apply(source);
         }

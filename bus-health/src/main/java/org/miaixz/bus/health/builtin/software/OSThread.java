@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
-import java.util.function.Predicate;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 import org.miaixz.bus.core.lang.Normal;
 
@@ -179,7 +179,7 @@ public interface OSThread {
         /**
          * Exclude processes with {@link OSProcess.State#INVALID} process state.
          */
-        public static final Predicate<OSThread> VALID_THREAD = p -> !p.getState().equals(OSProcess.State.INVALID);
+        public static final PredicateX<OSThread> VALID_THREAD = p -> !p.getState().equals(OSProcess.State.INVALID);
 
         /**
          * Creates a new ThreadFiltering instance.

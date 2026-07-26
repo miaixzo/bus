@@ -48,7 +48,7 @@ public class AlwaysTrueMatcher implements PartMatcher {
      * @return Always {@code true}.
      */
     @Override
-    public boolean test(final Integer value) {
+    public boolean testing(final Integer value) {
         return true;
     }
 

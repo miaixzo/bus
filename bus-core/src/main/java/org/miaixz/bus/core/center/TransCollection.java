@@ -88,7 +88,7 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
      */
     @Override
     public Iterator<T> iterator() {
-        return IteratorKit.trans(from.iterator(), function);
+        return IteratorKit.trans(from.iterator(), function::apply);
     }
 
     /**

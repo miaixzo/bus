@@ -21,8 +21,8 @@ package org.miaixz.bus.core.io.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -127,13 +127,13 @@ public class StreamReader {
     }
 
     /**
-     * Reads content from the input stream until a given token satisfies the provided {@link Predicate}.
+     * Reads content from the input stream until a given token satisfies the provided {@link PredicateX}.
      *
      * @param predicate The predicate to test each read byte. Reading stops when the predicate returns {@code true}.
      * @return A {@link FastByteArrayOutputStream} containing the content read until the predicate was satisfied.
      * @throws InternalException If an I/O error occurs.
      */
-    public FastByteArrayOutputStream readTo(final Predicate<Integer> predicate) throws InternalException {
+    public FastByteArrayOutputStream readTo(final PredicateX<Integer> predicate) throws InternalException {
         final InputStream in = this.in;
         final FastByteArrayOutputStream out = FastByteArrayOutputStream.of(in, -1);
         int read;

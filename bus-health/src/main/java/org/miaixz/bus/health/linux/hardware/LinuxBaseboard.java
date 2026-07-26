@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -41,27 +41,27 @@ final class LinuxBaseboard extends AbstractBaseboard {
     /**
      * The manufacturerModelVersionSerial value.
      */
-    private final Supplier<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(CpuInfo::queryBoardInfo);
+    private final SupplierX<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(CpuInfo::queryBoardInfo);
 
     /**
      * The manufacturer value.
      */
-    private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    private final SupplierX<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
 
     /**
      * The model value.
      */
-    private final Supplier<String> model = Memoizer.memoize(this::queryModel);
+    private final SupplierX<String> model = Memoizer.memoize(this::queryModel);
 
     /**
      * The version value.
      */
-    private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+    private final SupplierX<String> version = Memoizer.memoize(this::queryVersion);
 
     /**
      * The serialNumber value.
      */
-    private final Supplier<String> serialNumber = Memoizer.memoize(this::querySerialNumber);
+    private final SupplierX<String> serialNumber = Memoizer.memoize(this::querySerialNumber);
 
     /**
      * Returns the manufacturer.

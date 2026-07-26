@@ -20,12 +20,12 @@
 package org.miaixz.bus.core.center.map;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -266,7 +266,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @param consumer  An optional consumer to perform actions on the parent and child nodes.
      */
     @Override
-    public void linkNodes(final K parentKey, final K childKey, BiConsumer<TreeEntry<K, V>, TreeEntry<K, V>> consumer) {
+    public void linkNodes(final K parentKey, final K childKey, BiConsumerX<TreeEntry<K, V>, TreeEntry<K, V>> consumer) {
         consumer = ObjectKit.defaultIfNull(consumer, (parent, child) -> {
         });
         final TreeEntryNode<K, V> parentNode = nodes.computeIfAbsent(parentKey, t -> new TreeEntryNode<>(null, t));
@@ -441,8 +441,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          */
         TreeEntryNode<K, V> traverseParentNodes(
                 final boolean includeCurrent,
-                final Consumer<TreeEntryNode<K, V>> consumer,
-                Predicate<TreeEntryNode<K, V>> breakTraverse) {
+                final ConsumerX<TreeEntryNode<K, V>> consumer,
+                PredicateX<TreeEntryNode<K, V>> breakTraverse) {
             breakTraverse = ObjectKit.defaultIfNull(breakTraverse, n -> false);
             TreeEntryNode<K, V> curr = includeCurrent ? this : this.parent;
             while (ObjectKit.isNotNull(curr)) {
@@ -503,7 +503,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * Foreachchild method.
          */
         @Override
-        public void forEachChild(final boolean includeSelf, final Consumer<TreeEntry<K, V>> nodeConsumer) {
+        public void forEachChild(final boolean includeSelf, final ConsumerX<TreeEntry<K, V>> nodeConsumer) {
             traverseChildNodes(includeSelf, (index, child) -> nodeConsumer.accept(child), null);
         }
 
@@ -527,8 +527,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          */
         TreeEntryNode<K, V> traverseChildNodes(
                 final boolean includeCurrent,
-                final BiConsumer<Integer, TreeEntryNode<K, V>> consumer,
-                BiPredicate<Integer, TreeEntryNode<K, V>> breakTraverse) {
+                final BiConsumerX<Integer, TreeEntryNode<K, V>> consumer,
+                BiPredicateX<Integer, TreeEntryNode<K, V>> breakTraverse) {
             breakTraverse = ObjectKit.defaultIfNull(breakTraverse, (i, n) -> false);
             final Deque<List<TreeEntryNode<K, V>>> keyNodeDeque = new LinkedList<>(List.of(List.of(this)));
             boolean needProcess = includeCurrent;

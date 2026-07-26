@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -46,7 +46,7 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
     /**
      * The manufModelSerialUuidVers value.
      */
-    private final Supplier<Tuple> manufModelSerialUuidVers = Memoizer.memoize(FreeBsdComputerSystem::readDmiDecode);
+    private final SupplierX<Tuple> manufModelSerialUuidVers = Memoizer.memoize(FreeBsdComputerSystem::readDmiDecode);
 
     /**
      * Reads the dmi decode.

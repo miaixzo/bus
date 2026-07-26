@@ -56,7 +56,7 @@ public class NormalDateParser implements PredicateDateParser {
      * @return always {@code true}.
      */
     @Override
-    public boolean test(final CharSequence charSequence) {
+    public boolean testing(final CharSequence charSequence) {
         return true;
     }
 

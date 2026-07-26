@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.setting.nimble.ini;
 
-import java.util.function.Function;
+import org.miaixz.bus.core.center.function.FunctionX;
 
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -142,7 +142,7 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
     /**
      * when value changed, update originalValue.
      *
-     * @param newValue when {@code value} changes, like {@link #setValue(String)} or {@link #setValue(Function)}
+     * @param newValue when {@code value} changes, like {@link #setValue(String)} or {@link #setValue(FunctionX)}
      * @return new originalValue
      */
     @Override

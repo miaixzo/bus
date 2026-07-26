@@ -21,10 +21,10 @@ package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
@@ -53,25 +53,25 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
     /**
      * The perfstatMem value.
      */
-    private final Supplier<perfstat_memory_total_t> perfstatMem = Memoizer
+    private final SupplierX<perfstat_memory_total_t> perfstatMem = Memoizer
             .memoize(AixGlobalMemory::queryPerfstat, Memoizer.defaultExpiration());
 
     /**
      * The lscfg value.
      */
-    private final Supplier<List<String>> lscfg;
+    private final SupplierX<List<String>> lscfg;
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Creates a new AixGlobalMemory instance.
      *
      * @param lscfg the lscfg
      */
-    AixGlobalMemory(Supplier<List<String>> lscfg) {
+    AixGlobalMemory(SupplierX<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 

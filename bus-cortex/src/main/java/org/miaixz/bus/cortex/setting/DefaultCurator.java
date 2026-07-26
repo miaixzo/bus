@@ -22,8 +22,8 @@ package org.miaixz.bus.cortex.setting;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Curator;
 import org.miaixz.bus.cortex.Listener;
@@ -275,7 +275,7 @@ public class DefaultCurator implements Curator {
      * @return watch identifier used to cancel the subscription
      */
     @Override
-    public String watch(String group, String data_id, Consumer<String> listener) {
+    public String watch(String group, String data_id, ConsumerX<String> listener) {
         Vector vector = new Vector();
         vector.setNamespace_id(namespace_id);
         vector.setId(settingCuratorService.watchKey(namespace_id, group, data_id, null));

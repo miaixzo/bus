@@ -23,12 +23,12 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -143,14 +143,15 @@ public class ZipReader implements Closeable {
     }
 
     /**
-     * Decompresses the Zip file to the specified output directory, filtering entries with a {@link Predicate}.
+     * Decompresses the Zip file to the specified output directory, filtering entries with a {@link PredicateX}.
      *
      * @param outFile     The directory to which the Zip file contents will be extracted.
-     * @param entryFilter A filter to retain only entries for which {@link Predicate#test(Object)} returns {@code true}.
+     * @param entryFilter A filter to retain only entries for which {@link PredicateX#test(Object)} returns
+     *                    {@code true}.
      * @return The output directory.
      * @throws InternalException If an I/O error occurs during decompression.
      */
-    public File readTo(final File outFile, final Predicate<ZipEntry> entryFilter) throws InternalException {
+    public File readTo(final File outFile, final PredicateX<ZipEntry> entryFilter) throws InternalException {
         read((zipEntry) -> {
             if (null == entryFilter || entryFilter.test(zipEntry)) {
                 readEntry(zipEntry, outFile);
@@ -166,7 +167,7 @@ public class ZipReader implements Closeable {
      * @return This ZipReader instance.
      * @throws InternalException If an I/O error occurs during reading.
      */
-    public ZipReader read(final Consumer<ZipEntry> consumer) throws InternalException {
+    public ZipReader read(final ConsumerX<ZipEntry> consumer) throws InternalException {
         resource.read(consumer, this.maxSizeDiff);
         return this;
     }

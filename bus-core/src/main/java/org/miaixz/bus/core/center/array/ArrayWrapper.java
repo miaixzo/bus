@@ -23,9 +23,9 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
@@ -201,7 +201,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param matcher The predicate to use for matching.
      * @return The first matching element, or {@code null} if no matching element is found or the array is empty.
      */
-    public E firstMatch(final Predicate<E> matcher) {
+    public E firstMatch(final PredicateX<E> matcher) {
         final int index = matchIndex(matcher);
         if (index == Normal.__1) {
             return null;
@@ -226,7 +226,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param matcher The predicate to use for matching.
      * @return The index of the first matching element, or {@link Normal#__1} if not found.
      */
-    public int matchIndex(final Predicate<E> matcher) {
+    public int matchIndex(final PredicateX<E> matcher) {
         return matchIndex(0, matcher);
     }
 
@@ -250,7 +250,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param matcher The predicate to use for matching.
      * @return The index of the first matching element, or {@link Normal#__1} if not found.
      */
-    public int matchIndex(final int offset, final Predicate<E> matcher) {
+    public int matchIndex(final int offset, final PredicateX<E> matcher) {
         if (null == matcher && offset < this.length) {
             return offset;
         }
@@ -279,7 +279,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param matcher The predicate to use for matching.
      * @return The index of the last matching element, or {@link Normal#__1} if not found.
      */
-    public int matchLastIndex(final Predicate<E> matcher) {
+    public int matchLastIndex(final PredicateX<E> matcher) {
         return matchLastIndex(length - 1, matcher);
     }
 
@@ -291,7 +291,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param matcher The predicate to use for matching.
      * @return The index of the last matching element, or {@link Normal#__1} if not found.
      */
-    public int matchLastIndex(final int offset, final Predicate<E> matcher) {
+    public int matchLastIndex(final int offset, final PredicateX<E> matcher) {
         if (null == matcher && offset >= 0) {
             return offset;
         }
@@ -520,11 +520,11 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     /**
      * Applies a specified operation to each element of the array, replacing the element with the modified result.
      *
-     * @param editor The editor interface ({@link UnaryOperator}) to apply to each element. If {@code null}, the
+     * @param editor The editor interface ({@link UnaryOperatorX}) to apply to each element. If {@code null}, the
      *               original array is returned.
      * @return This {@code ArrayWrapper} instance with edited elements.
      */
-    public ArrayWrapper<A, E> edit(final UnaryOperator<E> editor) {
+    public ArrayWrapper<A, E> edit(final UnaryOperatorX<E> editor) {
         if (null == array || null == editor) {
             return this;
         }

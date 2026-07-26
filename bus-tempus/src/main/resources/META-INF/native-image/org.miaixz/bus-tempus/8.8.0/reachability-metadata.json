@@ -4341,7 +4341,7 @@
         {
           "name": "flush",
           "parameterTypes": [
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {
@@ -4397,7 +4397,7 @@
           "parameterTypes": [
             "long",
             "int",
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {
@@ -4406,7 +4406,7 @@
             "long",
             "int",
             "long",
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {

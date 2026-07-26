@@ -270,6 +270,11 @@ public final class HkeyPerformanceDataKit {
                 ret = Advapi32.INSTANCE
                         .RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData, lpcbData);
             }
+            if (ret != WinError.ERROR_SUCCESS) {
+                Logger.error(false, "Health", "Error reading performance data from registry for {}.", objectName);
+                pPerfData.close();
+                return null;
+            }
             return pPerfData;
         }
     }

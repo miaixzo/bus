@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.starter.fabric;
 
-import java.util.function.Supplier;
-
 import jakarta.annotation.Resource;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Handler;
 import org.miaixz.bus.fabric.Message;
@@ -54,7 +53,7 @@ public class SocketQuickService {
      * Current fabric frame codec factory.
      */
     @Resource
-    private Supplier<FrameCodec> frameCodec;
+    private SupplierX<FrameCodec> frameCodec;
 
     /**
      * Running socket server.
@@ -84,7 +83,7 @@ public class SocketQuickService {
      *
      * @param frameCodec frame codec factory
      */
-    public void setFrameCodec(Supplier<FrameCodec> frameCodec) {
+    public void setFrameCodec(SupplierX<FrameCodec> frameCodec) {
         this.frameCodec = frameCodec;
     }
 
@@ -92,7 +91,7 @@ public class SocketQuickService {
      * Starts the socket server.
      */
     public synchronized void start() {
-        if (server != null && server.running()) {
+        if (server != null && server.active()) {
             return;
         }
         final FabricProperties.Socket socket = properties.getSocket();
@@ -128,7 +127,7 @@ public class SocketQuickService {
      * @return true when running
      */
     public synchronized boolean running() {
-        return server != null && server.running();
+        return server != null && server.active();
     }
 
     /**

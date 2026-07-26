@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
-import java.util.function.Predicate;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * An interface for date parsers that first test if a string matches a specific format before attempting to parse it.
@@ -28,6 +28,6 @@ import java.util.function.Predicate;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface PredicateDateParser extends DateParser, Predicate<CharSequence> {
+public interface PredicateDateParser extends DateParser, PredicateX<CharSequence> {
 
 }

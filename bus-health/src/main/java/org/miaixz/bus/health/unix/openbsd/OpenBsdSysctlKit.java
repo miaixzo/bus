@@ -91,7 +91,7 @@ public final class OpenBsdSysctlKit {
                 Logger.warn(false, "Health", SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
-            return p.getLong(0);
+            return size.longValue() == OpenBsdLibc.INT_SIZE ? Parsing.unsignedIntToLong(p.getInt(0)) : p.getLong(0);
         }
     }
 

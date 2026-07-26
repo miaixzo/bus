@@ -22,6 +22,7 @@ package org.miaixz.bus.health.mac.hardware;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.sun.jna.Pointer;
@@ -221,67 +222,88 @@ public final class MacPowerSource extends AbstractPowerSource {
         // Get the blob containing current power source state
         CFTypeRef powerSourcesInfo = IO.IOPSCopyPowerSourcesInfo();
         CFArrayRef powerSourcesList = IO.IOPSCopyPowerSourcesList(powerSourcesInfo);
-        int powerSourcesCount = powerSourcesList.getCount();
+        if (powerSourcesList == null) {
+            if (powerSourcesInfo != null) {
+                powerSourcesInfo.release();
+            }
+            return Collections.emptyList();
+        }
+        CFStringRef nameKey = null;
+        CFStringRef isPresentKey = null;
+        CFStringRef currentCapacityKey = null;
+        CFStringRef maxCapacityKey = null;
+        try {
+            int powerSourcesCount = powerSourcesList.getCount();
 
-        // Get time remaining
-        // -1 = unknown, -2 = unlimited
-        double psTimeRemainingEstimated = IO.IOPSGetTimeRemainingEstimate();
+            // Get time remaining
+            // -1 = unknown, -2 = unlimited
+            double psTimeRemainingEstimated = IO.IOPSGetTimeRemainingEstimate();
 
-        CFStringRef nameKey = CFStringRef.createCFString("Name");
-        CFStringRef isPresentKey = CFStringRef.createCFString("Is Present");
-        CFStringRef currentCapacityKey = CFStringRef.createCFString("Current Capacity");
-        CFStringRef maxCapacityKey = CFStringRef.createCFString("Max Capacity");
-        // For each power source, output various info
-        List<PowerSource> psList = new ArrayList<>(powerSourcesCount);
-        for (int ps = 0; ps < powerSourcesCount; ps++) {
-            // Get the dictionary for that Power Source
-            Pointer pwrSrcPtr = powerSourcesList.getValueAtIndex(ps);
-            CFTypeRef powerSource = new CFTypeRef();
-            powerSource.setPointer(pwrSrcPtr);
-            CFDictionaryRef dictionary = IO.IOPSGetPowerSourceDescription(powerSourcesInfo, powerSource);
+            nameKey = CFStringRef.createCFString("Name");
+            isPresentKey = CFStringRef.createCFString("Is Present");
+            currentCapacityKey = CFStringRef.createCFString("Current Capacity");
+            maxCapacityKey = CFStringRef.createCFString("Max Capacity");
+            // For each power source, output various info
+            List<PowerSource> psList = new ArrayList<>(powerSourcesCount);
+            for (int ps = 0; ps < powerSourcesCount; ps++) {
+                // Get the dictionary for that Power Source
+                Pointer pwrSrcPtr = powerSourcesList.getValueAtIndex(ps);
+                CFTypeRef powerSource = new CFTypeRef();
+                powerSource.setPointer(pwrSrcPtr);
+                CFDictionaryRef dictionary = IO.IOPSGetPowerSourceDescription(powerSourcesInfo, powerSource);
 
-            // Get values from dictionary (See IOPSKeys.h)
-            // Skip if not present
-            Pointer result = dictionary.getValue(isPresentKey);
-            if (result != null) {
-                CFBooleanRef isPresentRef = new CFBooleanRef(result);
-                if (0 != CF.CFBooleanGetValue(isPresentRef)) {
-                    // Get name
-                    result = dictionary.getValue(nameKey);
-                    String psName = CFKit.cfPointerToString(result);
-                    // Remaining Capacity = current / max
-                    double currentCapacity = 0d;
-                    if (dictionary.getValueIfPresent(currentCapacityKey, null)) {
-                        result = dictionary.getValue(currentCapacityKey);
-                        CFNumberRef cap = new CFNumberRef(result);
-                        currentCapacity = cap.intValue();
+                // Get values from dictionary (See IOPSKeys.h)
+                // Skip if not present
+                Pointer result = dictionary.getValue(isPresentKey);
+                if (result != null) {
+                    CFBooleanRef isPresentRef = new CFBooleanRef(result);
+                    if (0 != CF.CFBooleanGetValue(isPresentRef)) {
+                        // Get name
+                        result = dictionary.getValue(nameKey);
+                        String psName = CFKit.cfPointerToString(result);
+                        // Remaining Capacity = current / max
+                        double currentCapacity = 0d;
+                        if (dictionary.getValueIfPresent(currentCapacityKey, null)) {
+                            result = dictionary.getValue(currentCapacityKey);
+                            CFNumberRef cap = new CFNumberRef(result);
+                            currentCapacity = cap.intValue();
+                        }
+                        double maxCapacity = 1d;
+                        if (dictionary.getValueIfPresent(maxCapacityKey, null)) {
+                            result = dictionary.getValue(maxCapacityKey);
+                            CFNumberRef cap = new CFNumberRef(result);
+                            maxCapacity = cap.intValue();
+                        }
+                        double psRemainingCapacityPercent = Math.min(1d, currentCapacity / maxCapacity);
+                        // Add to list
+                        psList.add(
+                                new MacPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
+                                        psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage,
+                                        psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
+                                        psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
+                                        psManufactureDate, psManufacturer, psSerialNumber, psTemperature));
                     }
-                    double maxCapacity = 1d;
-                    if (dictionary.getValueIfPresent(maxCapacityKey, null)) {
-                        result = dictionary.getValue(maxCapacityKey);
-                        CFNumberRef cap = new CFNumberRef(result);
-                        maxCapacity = cap.intValue();
-                    }
-                    double psRemainingCapacityPercent = Math.min(1d, currentCapacity / maxCapacity);
-                    // Add to list
-                    psList.add(
-                            new MacPowerSource(psName, psDeviceName, psRemainingCapacityPercent,
-                                    psTimeRemainingEstimated, psTimeRemainingInstant, psPowerUsageRate, psVoltage,
-                                    psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
-                                    psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry,
-                                    psManufactureDate, psManufacturer, psSerialNumber, psTemperature));
                 }
             }
+            return psList;
+        } finally {
+            if (isPresentKey != null) {
+                isPresentKey.release();
+            }
+            if (nameKey != null) {
+                nameKey.release();
+            }
+            if (currentCapacityKey != null) {
+                currentCapacityKey.release();
+            }
+            if (maxCapacityKey != null) {
+                maxCapacityKey.release();
+            }
+            powerSourcesList.release();
+            if (powerSourcesInfo != null) {
+                powerSourcesInfo.release();
+            }
         }
-        isPresentKey.release();
-        nameKey.release();
-        currentCapacityKey.release();
-        maxCapacityKey.release();
-        // Release the blob
-        powerSourcesList.release();
-        powerSourcesInfo.release();
-
-        return psList;
     }
 
 }

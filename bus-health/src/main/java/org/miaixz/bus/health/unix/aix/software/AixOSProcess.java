@@ -27,7 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,6 +34,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.unix.Resource;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -65,7 +65,7 @@ public class AixOSProcess extends AbstractOSProcess {
     /**
      * The affinityMask value.
      */
-    private final Supplier<Long> affinityMask = Memoizer
+    private final SupplierX<Long> affinityMask = Memoizer
             .memoize(PerfstatCpu::queryCpuAffinityMask, Memoizer.defaultExpiration());
 
     /**
@@ -76,129 +76,129 @@ public class AixOSProcess extends AbstractOSProcess {
     /**
      * The bitness value.
      */
-    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
 
     /**
      * The psinfo value.
      */
-    private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer
+    private final SupplierX<AixLibc.AixPsInfo> psinfo = Memoizer
             .memoize(this::queryPsInfo, Memoizer.defaultExpiration());
 
     /**
      * The cmdEnv value.
      */
-    private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
+    private final SupplierX<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
     // Memoized copy from OperatingSystem
     /**
      * The procCpu value.
      */
-    private final Supplier<perfstat_process_t[]> procCpu;
+    private final SupplierX<perfstat_process_t[]> procCpu;
 
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The commandLineBackup value.
      */
-    private String commandLineBackup;
+    private volatile String commandLineBackup;
 
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The user value.
      */
-    private String user;
+    private volatile String user;
 
     /**
      * The userID value.
      */
-    private String userID;
+    private volatile String userID;
 
     /**
      * The group value.
      */
-    private String group;
+    private volatile String group;
 
     /**
      * The groupID value.
      */
-    private String groupID;
+    private volatile String groupID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The residentSetSize value.
      */
-    private long residentSetSize;
+    private volatile long residentSetSize;
 
     /**
      * The privateResidentMemory value.
      */
-    private long privateResidentMemory;
+    private volatile long privateResidentMemory;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The state value.
      */
-    private OSProcess.State state = INVALID;
+    private volatile OSProcess.State state = INVALID;
 
     /**
      * Creates a new AixOSProcess instance.
@@ -208,7 +208,7 @@ public class AixOSProcess extends AbstractOSProcess {
      * @param procCpu the proc cpu
      * @param os      the os
      */
-    public AixOSProcess(int pid, Tuple cpuMem, Supplier<perfstat_process_t[]> procCpu, AixOperatingSystem os) {
+    public AixOSProcess(int pid, Tuple cpuMem, SupplierX<perfstat_process_t[]> procCpu, AixOperatingSystem os) {
         super(pid);
         this.procCpu = procCpu;
         this.os = os;

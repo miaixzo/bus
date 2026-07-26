@@ -708,19 +708,19 @@
         {
           "name": "setCommentElementFormatterSupplier",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
           "name": "setPropertyElementFormatterSupplier",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
           "name": "setSectionElementFormatterSupplier",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -1447,7 +1447,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -1461,7 +1461,7 @@
         {
           "name": "checkProps",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -1930,7 +1930,7 @@
             "java.lang.String",
             "java.lang.String",
             "int",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -1949,7 +1949,7 @@
             "java.lang.String",
             "int",
             "org.miaixz.bus.setting.nimble.ini.IniComment",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -1959,7 +1959,7 @@
         {
           "name": "getList",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -2817,7 +2817,7 @@
         {
           "name": "autoLoad",
           "parameterTypes": [
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {

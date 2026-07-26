@@ -21,9 +21,9 @@ package org.miaixz.bus.core.center.date.format;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.Function;
 
 import org.miaixz.bus.core.center.date.Chrono;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -62,7 +62,7 @@ public class FormatPeriod implements Serializable {
     /**
      * The formatter function for levels.
      */
-    private Function<Chrono, String> formatter = Chrono::getName;
+    private FunctionX<Chrono, String> formatter = Chrono::getName;
 
     /**
      * Whether it is in simple mode. This flag is used to customize whether to output parts with 0 in between. If
@@ -238,7 +238,7 @@ public class FormatPeriod implements Serializable {
      * @param formatter The level formatter function.
      * @return This {@code FormatPeriod} instance.
      */
-    public FormatPeriod setFormatter(final Function<Chrono, String> formatter) {
+    public FormatPeriod setFormatter(final FunctionX<Chrono, String> formatter) {
         this.formatter = formatter;
         return this;
     }

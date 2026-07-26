@@ -20,8 +20,8 @@
 package org.miaixz.bus.logger.nimble.console;
 
 import java.io.Serial;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -58,7 +58,7 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
     /**
      * A factory function that determines the color based on the logging level.
      */
-    private static Function<Level, Ansi4BitColor> colorFactory = (level -> {
+    private static FunctionX<Level, Ansi4BitColor> colorFactory = (level -> {
         switch (level) {
             case DEBUG, INFO:
                 return Ansi4BitColor.GREEN;
@@ -100,7 +100,7 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
      *
      * @param colorFactory the function that provides the color for a given level.
      */
-    public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
+    public static void setColorFactory(final FunctionX<Level, Ansi4BitColor> colorFactory) {
         ColorLoggingProvider.colorFactory = colorFactory;
     }
 

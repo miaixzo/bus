@@ -25,12 +25,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.UnaryOperator;
 
 import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.bean.desc.PropDesc;
+import org.miaixz.bus.core.center.function.BiPredicateX;
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.Converter;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
@@ -81,7 +81,7 @@ public class CopyOptions implements Serializable {
      * An editor for field names and values, allowing for custom transformation rules (e.g., converting camelCase to
      * snake_case).
      */
-    protected UnaryOperator<MutableEntry<Object, Object>> fieldEditor;
+    protected UnaryOperatorX<MutableEntry<Object, Object>> fieldEditor;
 
     /**
      * Whether to ignore fields marked with the {@code transient} keyword or {@code @Transient} annotation.
@@ -113,7 +113,7 @@ public class CopyOptions implements Serializable {
     /**
      * A filter to determine which properties should be copied.
      */
-    private BiPredicate<Field, Object> propertiesFilter;
+    private BiPredicateX<Field, Object> propertiesFilter;
 
     /**
      * Default constructor.
@@ -188,7 +188,7 @@ public class CopyOptions implements Serializable {
      * @param propertiesFilter The property filter predicate.
      * @return This {@code CopyOptions} instance for chaining.
      */
-    public CopyOptions setPropertiesFilter(final BiPredicate<Field, Object> propertiesFilter) {
+    public CopyOptions setPropertiesFilter(final BiPredicateX<Field, Object> propertiesFilter) {
         this.propertiesFilter = propertiesFilter;
         return this;
     }
@@ -283,7 +283,7 @@ public class CopyOptions implements Serializable {
      * @param editor A function that edits a mutable entry of (key, value).
      * @return This {@code CopyOptions} instance for chaining.
      */
-    public CopyOptions setFieldEditor(final UnaryOperator<MutableEntry<Object, Object>> editor) {
+    public CopyOptions setFieldEditor(final UnaryOperatorX<MutableEntry<Object, Object>> editor) {
         this.fieldEditor = editor;
         return this;
     }

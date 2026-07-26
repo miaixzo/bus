@@ -129,6 +129,16 @@ final class PoolWaiters implements Iterable<PoolWaiters.Waiter> {
         long queuedAtNanos;
 
         /**
+         * Lease transferred directly by a releasing HTTP/1.1 owner, or {@code null}.
+         */
+        ConnectionLease handoff;
+
+        /**
+         * Whether the owning acquisition scope was cancelled.
+         */
+        boolean cancelled;
+
+        /**
          * Captures the current thread and requested destination.
          *
          * @param destination requested destination

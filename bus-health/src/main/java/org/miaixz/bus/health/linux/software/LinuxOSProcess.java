@@ -29,11 +29,11 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.platform.unix.Resource;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Regex;
@@ -84,143 +84,158 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The arguments value.
      */
-    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> arguments = Memoizer.memoize(this::queryArguments);
 
     /**
      * The environmentVariables value.
      */
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+    private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The bitness value.
      */
-    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
 
     /**
      * The userID value.
      */
-    private String userID;
+    private volatile String userID;
 
     /**
      * The user value.
      */
-    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
+    private final SupplierX<String> user = Memoizer.memoize(this::queryUser);
 
     /**
      * The groupID value.
      */
-    private String groupID;
+    private volatile String groupID;
 
     /**
      * The group value.
      */
-    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
+    private final SupplierX<String> group = Memoizer.memoize(this::queryGroup);
 
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The state value.
      */
-    private State state = State.INVALID;
+    private volatile State state = State.INVALID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The residentSetSize value.
      */
-    private long residentSetSize;
+    private volatile long residentSetSize;
 
     /**
      * The privateResidentMemory value.
      */
-    private long privateResidentMemory;
+    private volatile long privateResidentMemory;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The minorFaults value.
      */
-    private long minorFaults;
+    private volatile long minorFaults;
 
     /**
      * The majorFaults value.
      */
-    private long majorFaults;
+    private volatile long majorFaults;
 
     /**
      * The contextSwitches value.
      */
-    private long contextSwitches;
+    private volatile long contextSwitches;
 
     /**
      * The voluntaryContextSwitches value.
      */
-    private long voluntaryContextSwitches;
+    private volatile long voluntaryContextSwitches;
 
     /**
      * The involuntaryContextSwitches value.
      */
-    private long involuntaryContextSwitches;
+    private volatile long involuntaryContextSwitches;
+
+    /**
+     * Whether the native rusage counters were populated.
+     */
+    private volatile boolean rusagePopulated;
+
+    /**
+     * The cached voluntary context-switch count from native rusage.
+     */
+    private volatile long cachedVoluntaryContextSwitches;
+
+    /**
+     * The cached involuntary context-switch count from native rusage.
+     */
+    private volatile long cachedInvoluntaryContextSwitches;
 
     /**
      * Creates a new LinuxOSProcess instance.
@@ -599,7 +614,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     @Override
     public long getVoluntaryContextSwitches() {
-        return this.voluntaryContextSwitches;
+        return this.rusagePopulated ? this.cachedVoluntaryContextSwitches : this.voluntaryContextSwitches;
     }
 
     /**
@@ -609,7 +624,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     @Override
     public long getInvoluntaryContextSwitches() {
-        return this.involuntaryContextSwitches;
+        return this.rusagePopulated ? this.cachedInvoluntaryContextSwitches : this.involuntaryContextSwitches;
     }
 
     /**
@@ -738,15 +753,49 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     @Override
     public boolean updateAttributes() {
+        boolean result = updateAttributesFromProc();
+        if (result && getProcessID() == this.os.getProcessId()) {
+            long[] contextSwitches = queryContextSwitches();
+            if (contextSwitches != null) {
+                this.cachedVoluntaryContextSwitches = contextSwitches[0];
+                this.cachedInvoluntaryContextSwitches = contextSwitches[1];
+                this.rusagePopulated = true;
+            } else {
+                this.rusagePopulated = false;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Queries the current process native context-switch counts.
+     *
+     * @return the voluntary and involuntary context-switch counts, or {@code null} if unavailable
+     */
+    protected long[] queryContextSwitches() {
+        LinuxLibc.Rusage rusage = new LinuxLibc.Rusage();
+        if (0 == LinuxLibc.INSTANCE.getrusage(LinuxLibc.RUSAGE_SELF, rusage)) {
+            return new long[] { rusage.ru_nvcsw.longValue(), rusage.ru_nivcsw.longValue() };
+        }
+        return null;
+    }
+
+    /**
+     * Updates process attributes from the proc filesystem.
+     *
+     * @return {@code true} if the proc attributes were updated
+     */
+    private boolean updateAttributesFromProc() {
         String procPidExe = String.format(Locale.ROOT, ProcPath.PID_EXE, getProcessID());
         try {
             Path link = Paths.get(procPidExe);
-            this.path = Files.readSymbolicLink(link).toString();
+            String exePath = Files.readSymbolicLink(link).toString();
             // For some services the symbolic link process has terminated
-            int index = path.indexOf(" (deleted)");
+            int index = exePath.indexOf(" (deleted)");
             if (index != -1) {
-                path = path.substring(0, index);
+                exePath = exePath.substring(0, index);
             }
+            this.path = exePath;
         } catch (InvalidPathException | IOException | UnsupportedOperationException | SecurityException e) {
             Logger.debug(false, "Health", "Unable to open symbolic link {}", procPidExe);
         }
@@ -808,14 +857,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.voluntaryContextSwitches = Parsing.parseLongOrDefault(status.get("voluntary_ctxt_switches"), 0L);
         this.involuntaryContextSwitches = Parsing.parseLongOrDefault(status.get("nonvoluntary_ctxt_switches"), 0L);
         this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
-        if (getProcessID() == this.os.getProcessId()) {
-            LinuxLibc.Rusage rusage = new LinuxLibc.Rusage();
-            if (0 == LinuxLibc.INSTANCE.getrusage(LinuxLibc.RUSAGE_SELF, rusage)) {
-                this.voluntaryContextSwitches = rusage.ru_nvcsw.longValue();
-                this.involuntaryContextSwitches = rusage.ru_nivcsw.longValue();
-                this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
-            }
-        }
 
         this.upTime = now - startTime;
 

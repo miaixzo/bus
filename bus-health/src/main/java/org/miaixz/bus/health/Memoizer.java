@@ -20,8 +20,8 @@
 package org.miaixz.bus.health;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
@@ -42,9 +42,9 @@ public final class Memoizer {
     }
 
     /**
-     * Supplier for the default expiration time (in nanoseconds) for memoized values, configured via {@link Config}.
+     * SupplierX for the default expiration time (in nanoseconds) for memoized values, configured via {@link Config}.
      */
-    private static final Supplier<Long> DEFAULT_EXPIRATION_NANOS = memoize(
+    private static final SupplierX<Long> DEFAULT_EXPIRATION_NANOS = memoize(
             Memoizer::queryExpirationConfig,
             TimeUnit.MINUTES.toNanos(1));
 
@@ -91,19 +91,19 @@ public final class Memoizer {
      * (ttl) has expired.
      *
      * @param <T>      The type of object supplied.
-     * @param original The {@link java.util.function.Supplier} to memoize.
+     * @param original The {@link SupplierX} to memoize.
      * @param ttlNanos The time in nanoseconds to retain the computed value. If negative, the value is retained
      *                 indefinitely.
      * @return A memoized version of the supplier.
      */
-    public static <T> Supplier<T> memoize(Supplier<T> original, long ttlNanos) {
+    public static <T> SupplierX<T> memoize(SupplierX<T> original, long ttlNanos) {
         // Adapted from Guava's ExpiringMemoizingSupplier
-        return new Supplier<>() {
+        return new SupplierX<>() {
 
             /**
              * The original supplier.
              */
-            private final Supplier<T> delegate = original;
+            private final SupplierX<T> delegate = original;
 
             /**
              * The memoized value, which may be null.
@@ -121,7 +121,7 @@ public final class Memoizer {
              * @return the get result
              */
             @Override
-            public T get() {
+            public T getting() {
                 long nanos = expirationNanos;
                 long now = System.nanoTime();
                 if (nanos == 0 || (ttlNanos >= 0 && now - nanos >= 0)) {
@@ -144,10 +144,10 @@ public final class Memoizer {
      * Stores a supplier in a delegate function that computes only once.
      *
      * @param <T>      The type of object supplied.
-     * @param original The {@link java.util.function.Supplier} to memoize.
+     * @param original The {@link SupplierX} to memoize.
      * @return A memoized version of the supplier.
      */
-    public static <T> Supplier<T> memoize(Supplier<T> original) {
+    public static <T> SupplierX<T> memoize(SupplierX<T> original) {
         return memoize(original, -1L);
     }
 

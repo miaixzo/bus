@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.center.iterator;
 
 import java.util.Iterator;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -43,16 +43,16 @@ public class TransIterator<F, T> implements Iterator<T> {
     /**
      * The function used to transform elements from type F to type T.
      */
-    private final Function<? super F, ? extends T> func;
+    private final FunctionX<? super F, ? extends T> func;
 
     /**
      * Constructs a {@code TransIterator} with a backing iterator and a transformation function.
      *
      * @param backingIterator the source {@link Iterator}, must not be {@code null}
-     * @param func            the transformation {@link Function}, must not be {@code null}
+     * @param func            the transformation {@link FunctionX}, must not be {@code null}
      * @throws NullPointerException if {@code backingIterator} or {@code func} is {@code null}
      */
-    public TransIterator(final Iterator<? extends F> backingIterator, final Function<? super F, ? extends T> func) {
+    public TransIterator(final Iterator<? extends F> backingIterator, final FunctionX<? super F, ? extends T> func) {
         this.backingIterator = Assert.notNull(backingIterator, "Backing iterator must not be null");
         this.func = Assert.notNull(func, "Transformation function must not be null");
     }

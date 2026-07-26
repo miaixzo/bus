@@ -23,10 +23,11 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.AnnoKit;
@@ -84,11 +85,11 @@ public interface RepeatableAnnotationCollector {
      * attribute contains repeatable annotations. The collector will return all repeatable annotations found in matching
      * attributes.
      *
-     * @param predicate A {@link BiPredicate} that tests whether an annotation and its method attribute contain
+     * @param predicate A {@link BiPredicateX} that tests whether an annotation and its method attribute contain
      *                  repeatable annotations.
      * @return A {@code RepeatableAnnotationCollector} instance based on a custom condition.
      */
-    static RepeatableAnnotationCollector condition(final BiPredicate<Annotation, Method> predicate) {
+    static RepeatableAnnotationCollector condition(final BiPredicateX<Annotation, Method> predicate) {
         return new Condition(predicate);
     }
 
@@ -325,7 +326,7 @@ public interface RepeatableAnnotationCollector {
          */
         private List<Annotation> find(
                 final Annotation annotation,
-                final java.util.function.Predicate<Annotation> condition,
+                final PredicateX<Annotation> condition,
                 final boolean accumulate) {
             if (Objects.isNull(annotation)) {
                 return Collections.emptyList();
@@ -485,7 +486,7 @@ public interface RepeatableAnnotationCollector {
         /**
          * The predicate used to determine if a method contains repeatable annotations.
          */
-        private final BiPredicate<Annotation, Method> predicate;
+        private final BiPredicateX<Annotation, Method> predicate;
 
         /**
          * Constructs a new {@code Condition} collector with the given predicate.
@@ -493,7 +494,7 @@ public interface RepeatableAnnotationCollector {
          * @param predicate The predicate to use for identifying repeatable annotation methods. Must not be
          *                  {@code null}.
          */
-        Condition(final BiPredicate<Annotation, Method> predicate) {
+        Condition(final BiPredicateX<Annotation, Method> predicate) {
             this.predicate = Objects.requireNonNull(predicate);
         }
 

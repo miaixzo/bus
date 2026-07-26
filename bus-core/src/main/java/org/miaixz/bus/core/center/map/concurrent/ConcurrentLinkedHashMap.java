@@ -31,8 +31,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.queue.DiscardingQueue;
 import org.miaixz.bus.core.center.queue.Linked;
 import org.miaixz.bus.core.center.queue.LinkedDeque;
@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  * number of elements that it contains. A change to a value that modifies its weight requires that an update operation
  * is performed on the map.
  * <p>
- * An {@link BiConsumer} may be supplied for notification when an entry is evicted from the map. This listener is
+ * An {@link BiConsumerX} may be supplied for notification when an entry is evicted from the map. This listener is
  * invoked on a caller's thread and will not block other threads from operating on the map. An implementation should be
  * aware that the caller's thread will not expect long execution times or failures as a side effect of the listener
  * being notified. Execution safety and a fast turn around time can be achieved by performing the operation
@@ -202,7 +202,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
     /**
      * The listener to be notified when an entry is evicted.
      */
-    final BiConsumer<K, V> listener;
+    final BiConsumerX<K, V> listener;
 
     /**
      * A cached view of the key set.
@@ -1184,7 +1184,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      * @author Kimi Liu
      * @since Java 21+
      */
-    enum DiscardingListener implements BiConsumer<Object, Object> {
+    enum DiscardingListener implements BiConsumerX<Object, Object> {
 
         INSTANCE;
 
@@ -1198,7 +1198,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
          * @param value the value of the evicted entry
          */
         @Override
-        public void accept(final Object key, final Object value) {
+        public void accepting(final Object key, final Object value) {
         }
 
     }
@@ -1384,7 +1384,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         @Serial
         private static final long serialVersionUID = 2853159653136L;;
         final EntryWeigher<? super K, ? super V> weigher;
-        final BiConsumer<K, V> listener;
+        final BiConsumerX<K, V> listener;
         final int concurrencyLevel;
         final Map<K, V> data;
         final long capacity;
@@ -1422,7 +1422,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
      */
     public static final class Builder<K, V> {
 
-        BiConsumer<K, V> listener;
+        BiConsumerX<K, V> listener;
         EntryWeigher<? super K, ? super V> weigher;
 
         int concurrencyLevel;
@@ -1437,7 +1437,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
             weigher = Weighers.entrySingleton();
             initialCapacity = Normal._16;
             concurrencyLevel = Normal._16;
-            listener = (BiConsumer<K, V>) DiscardingListener.INSTANCE;
+            listener = (BiConsumerX<K, V>) DiscardingListener.INSTANCE;
         }
 
         /**
@@ -1488,7 +1488,7 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
          * @return this
          * @throws NullPointerException if the listener is null
          */
-        public Builder<K, V> listener(final BiConsumer<K, V> listener) {
+        public Builder<K, V> listener(final BiConsumerX<K, V> listener) {
             Assert.notNull(listener);
             this.listener = listener;
             return this;

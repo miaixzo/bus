@@ -29,9 +29,9 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.iterator.LineIterator;
 import org.miaixz.bus.core.io.BomReader;
 import org.miaixz.bus.core.io.TransferObserver;
@@ -713,14 +713,14 @@ public class IoKit {
     }
 
     /**
-     * Reads content from an {@link InputStream} until a specified condition defined by a {@link Predicate} is met.
+     * Reads content from an {@link InputStream} until a specified condition defined by a {@link PredicateX} is met.
      *
      * @param in        The input stream.
-     * @param predicate The predicate to test each character. Reading stops when {@link Predicate#test(Object)} returns
+     * @param predicate The predicate to test each character. Reading stops when {@link PredicateX#test(Object)} returns
      *                  {@code true}.
      * @return A {@link FastByteArrayOutputStream} containing the read content.
      */
-    public static FastByteArrayOutputStream readTo(final InputStream in, final Predicate<Integer> predicate) {
+    public static FastByteArrayOutputStream readTo(final InputStream in, final PredicateX<Integer> predicate) {
         return StreamReader.of(in, false).readTo(predicate);
     }
 

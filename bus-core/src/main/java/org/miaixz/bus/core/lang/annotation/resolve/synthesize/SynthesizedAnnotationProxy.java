@@ -26,10 +26,10 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttributeValueProvider;
@@ -60,7 +60,7 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
     /**
      * Map of method name to handler function for all proxied methods.
      */
-    private final Map<String, BiFunction<Method, Object[], Object>> methods;
+    private final Map<String, BiFunctionX<Method, Object[], Object>> methods;
 
     /**
      * Creates a proxy annotation instance. The generated proxy implements both {@link SynthesizedProxyAnnotation} and

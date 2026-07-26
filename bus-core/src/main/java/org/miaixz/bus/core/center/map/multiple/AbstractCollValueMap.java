@@ -21,11 +21,11 @@ package org.miaixz.bus.core.center.map.multiple;
 
 import java.io.Serial;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -60,7 +60,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      *
      * @param mapFactory A supplier that provides a {@link Map} to store the key-collection pairs.
      */
-    protected AbstractCollValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
+    protected AbstractCollValueMap(final SupplierX<Map<K, Collection<V>>> mapFactory) {
         super(mapFactory);
     }
 
@@ -150,7 +150,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      * @return A new {@code MultipleValueMap} instance with filtered values.
      */
     @Override
-    public MultipleValueMap<K, V> filterAllValues(final BiPredicate<K, V> filter) {
+    public MultipleValueMap<K, V> filterAllValues(final BiPredicateX<K, V> filter) {
         entrySet().forEach(e -> {
             final K k = e.getKey();
             final Collection<V> coll = e.getValue().stream().filter(v -> filter.test(k, v))
@@ -169,7 +169,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      * @return A new {@code MultipleValueMap} instance with replaced values.
      */
     @Override
-    public MultipleValueMap<K, V> replaceAllValues(final BiFunction<K, V, V> operate) {
+    public MultipleValueMap<K, V> replaceAllValues(final BiFunctionX<K, V, V> operate) {
         entrySet().forEach(e -> {
             final K k = e.getKey();
             final Collection<V> coll = e.getValue().stream().map(v -> operate.apply(k, v))

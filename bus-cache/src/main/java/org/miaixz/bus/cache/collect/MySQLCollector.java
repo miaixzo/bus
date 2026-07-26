@@ -22,12 +22,12 @@ package org.miaixz.bus.cache.collect;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.logger.Logger;
 
@@ -65,7 +65,7 @@ public class MySQLCollector extends AbstractCollector {
     }
 
     /**
-     * Provides a {@link Supplier} for a {@link JdbcRunner} configured for a MySQL database.
+     * Provides a {@link SupplierX} for a {@link JdbcRunner} configured for a MySQL database.
      * <p>
      * Sets up a {@link HikariDataSource} and ensures the {@code t_cache_rate} table exists.
      * </p>
@@ -75,7 +75,7 @@ public class MySQLCollector extends AbstractCollector {
      * @throws InternalException if the data source cannot be initialized.
      */
     @Override
-    protected Supplier<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
+    protected SupplierX<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
         return () -> {
             try {
                 Properties properties = new Properties();

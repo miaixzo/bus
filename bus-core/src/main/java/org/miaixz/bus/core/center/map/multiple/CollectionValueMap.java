@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 
@@ -58,7 +57,7 @@ public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
      * @param mapFactory  A factory method that supplies a {@link Map} to store the key-collection pairs.
      * @param collFactory A factory method that supplies a {@link Collection} to store the values for each key.
      */
-    public CollectionValueMap(final Supplier<Map<K, Collection<V>>> mapFactory,
+    public CollectionValueMap(final SupplierX<Map<K, Collection<V>>> mapFactory,
             final SupplierX<Collection<V>> collFactory) {
         super(mapFactory);
         this.collFactory = collFactory;

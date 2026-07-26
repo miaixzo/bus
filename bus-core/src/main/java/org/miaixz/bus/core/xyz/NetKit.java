@@ -25,12 +25,12 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.*;
-import java.util.function.Predicate;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Keys;
@@ -346,7 +346,7 @@ public class NetKit {
      * @return A {@link LinkedHashSet} of filtered {@link InetAddress} objects.
      * @throws InternalException If an error occurs while getting network interfaces.
      */
-    public static LinkedHashSet<InetAddress> localAddressList(final Predicate<InetAddress> addressPredicate) {
+    public static LinkedHashSet<InetAddress> localAddressList(final PredicateX<InetAddress> addressPredicate) {
         return localAddressList(null, addressPredicate);
     }
 
@@ -361,8 +361,8 @@ public class NetKit {
      * @throws InternalException If an error occurs while getting network interfaces.
      */
     public static LinkedHashSet<InetAddress> localAddressList(
-            final Predicate<NetworkInterface> networkInterfaceFilter,
-            final Predicate<InetAddress> addressPredicate) {
+            final PredicateX<NetworkInterface> networkInterfaceFilter,
+            final PredicateX<InetAddress> addressPredicate) {
         final Enumeration<NetworkInterface> networkInterfaces;
         try {
             networkInterfaces = NetworkInterface.getNetworkInterfaces();

@@ -22,14 +22,14 @@ package org.miaixz.bus.mapper.binding.condition;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.RowBounds;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
@@ -180,7 +180,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param orderByCondition A supplier for the sorting expression.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> orderBy(Supplier<String> orderByCondition) {
+    public ConditionWrapper<T, I> orderBy(SupplierX<String> orderByCondition) {
         this.condition.orderBy(orderByCondition);
         return this;
     }
@@ -192,7 +192,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param orderByCondition A supplier for the sorting expression.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> orderBy(boolean useOrderBy, Supplier<String> orderByCondition) {
+    public ConditionWrapper<T, I> orderBy(boolean useOrderBy, SupplierX<String> orderByCondition) {
         return useOrderBy ? this.orderBy(orderByCondition) : this;
     }
 
@@ -272,7 +272,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> set(boolean useSet, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> set(boolean useSet, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useSet ? set(fn, supplier.get()) : this;
     }
 
@@ -352,7 +352,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> eq(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> eq(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? eq(fn, supplier.get()) : this;
     }
 
@@ -376,7 +376,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> ne(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> ne(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? ne(fn, supplier.get()) : this;
     }
 
@@ -412,7 +412,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> gt(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> gt(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? gt(fn, supplier.get()) : this;
     }
 
@@ -448,7 +448,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> ge(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> ge(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? ge(fn, supplier.get()) : this;
     }
 
@@ -484,7 +484,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> lt(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> lt(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? lt(fn, supplier.get()) : this;
     }
 
@@ -532,7 +532,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> le(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> le(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? le(fn, supplier.get()) : this;
     }
 
@@ -568,7 +568,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the collection of values.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> in(boolean useCondition, Fn<T, Object> fn, Supplier<Iterable<?>> supplier) {
+    public ConditionWrapper<T, I> in(boolean useCondition, Fn<T, Object> fn, SupplierX<Iterable<?>> supplier) {
         return useCondition ? in(fn, supplier.get()) : this;
     }
 
@@ -604,7 +604,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the collection of values.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> notIn(boolean useCondition, Fn<T, Object> fn, Supplier<Iterable<?>> supplier) {
+    public ConditionWrapper<T, I> notIn(boolean useCondition, Fn<T, Object> fn, SupplierX<Iterable<?>> supplier) {
         return useCondition ? notIn(fn, supplier.get()) : this;
     }
 
@@ -645,8 +645,8 @@ public class ConditionWrapper<T, I extends Serializable> {
     public ConditionWrapper<T, I> between(
             boolean useCondition,
             Fn<T, Object> fn,
-            Supplier<Object> supplier1,
-            Supplier<Object> supplier2) {
+            SupplierX<Object> supplier1,
+            SupplierX<Object> supplier2) {
         return useCondition ? between(fn, supplier1.get(), supplier2.get()) : this;
     }
 
@@ -688,8 +688,8 @@ public class ConditionWrapper<T, I extends Serializable> {
     public ConditionWrapper<T, I> notBetween(
             boolean useCondition,
             Fn<T, Object> fn,
-            Supplier<Object> supplier1,
-            Supplier<Object> supplier2) {
+            SupplierX<Object> supplier1,
+            SupplierX<Object> supplier2) {
         return useCondition ? notBetween(fn, supplier1.get(), supplier2.get()) : this;
     }
 
@@ -726,7 +726,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> contains(boolean useCondition, Fn<T, Object> fn, Supplier<String> supplier) {
+    public ConditionWrapper<T, I> contains(boolean useCondition, Fn<T, Object> fn, SupplierX<String> supplier) {
         return useCondition ? contains(fn, supplier.get()) : this;
     }
 
@@ -762,7 +762,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> startsWith(boolean useCondition, Fn<T, Object> fn, Supplier<String> supplier) {
+    public ConditionWrapper<T, I> startsWith(boolean useCondition, Fn<T, Object> fn, SupplierX<String> supplier) {
         return useCondition ? startsWith(fn, supplier.get()) : this;
     }
 
@@ -798,7 +798,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> endsWith(boolean useCondition, Fn<T, Object> fn, Supplier<String> supplier) {
+    public ConditionWrapper<T, I> endsWith(boolean useCondition, Fn<T, Object> fn, SupplierX<String> supplier) {
         return useCondition ? endsWith(fn, supplier.get()) : this;
     }
 
@@ -834,7 +834,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> like(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> like(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? like(fn, supplier.get()) : this;
     }
 
@@ -870,7 +870,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> notLike(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> notLike(boolean useCondition, Fn<T, Object> fn, SupplierX<Object> supplier) {
         return useCondition ? notLike(fn, supplier.get()) : this;
     }
 
@@ -928,7 +928,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param supplier     A supplier for the value.
      * @return This wrapper instance for chaining.
      */
-    public ConditionWrapper<T, I> anyCondition(boolean useCondition, String condition, Supplier<Object> supplier) {
+    public ConditionWrapper<T, I> anyCondition(boolean useCondition, String condition, SupplierX<Object> supplier) {
         return useCondition ? anyCondition(condition, supplier.get()) : this;
     }
 
@@ -952,7 +952,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @return This wrapper instance for chaining.
      */
     @SafeVarargs
-    public final ConditionWrapper<T, I> or(Function<OrCriteria<T>, OrCriteria<T>>... orParts) {
+    public final ConditionWrapper<T, I> or(FunctionX<OrCriteria<T>, OrCriteria<T>>... orParts) {
         if (orParts != null && orParts.length > 0) {
             this.current.andOr(
                     Arrays.stream(orParts).map(orPart -> orPart.apply(condition.orPart()))

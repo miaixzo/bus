@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.builtin.software.common;
 
 import java.util.Locale;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -39,7 +39,7 @@ public abstract class AbstractOSThread implements OSThread {
     /**
      * The cumulativeCpuLoad value.
      */
-    private final Supplier<Double> cumulativeCpuLoad = Memoizer
+    private final SupplierX<Double> cumulativeCpuLoad = Memoizer
             .memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
 
     /**
@@ -50,62 +50,62 @@ public abstract class AbstractOSThread implements OSThread {
     /**
      * The thread id.
      */
-    protected int threadId;
+    protected volatile int threadId;
 
     /**
      * The thread name.
      */
-    protected String name = "";
+    protected volatile String name = "";
 
     /**
      * The thread state.
      */
-    protected OSProcess.State state = OSProcess.State.INVALID;
+    protected volatile OSProcess.State state = OSProcess.State.INVALID;
 
     /**
      * The minor page fault count.
      */
-    protected long minorFaults;
+    protected volatile long minorFaults;
 
     /**
      * The major page fault count.
      */
-    protected long majorFaults;
+    protected volatile long majorFaults;
 
     /**
      * The start memory address.
      */
-    protected long startMemoryAddress;
+    protected volatile long startMemoryAddress;
 
     /**
      * The context switch count.
      */
-    protected long contextSwitches;
+    protected volatile long contextSwitches;
 
     /**
      * The kernel time in milliseconds.
      */
-    protected long kernelTime;
+    protected volatile long kernelTime;
 
     /**
      * The user time in milliseconds.
      */
-    protected long userTime;
+    protected volatile long userTime;
 
     /**
      * The start time in milliseconds since the epoch.
      */
-    protected long startTime;
+    protected volatile long startTime;
 
     /**
      * The uptime in milliseconds.
      */
-    protected long upTime;
+    protected volatile long upTime;
 
     /**
      * The OS-dependent priority.
      */
-    protected int priority;
+    protected volatile int priority;
 
     /**
      * Creates a new AbstractOSThread instance.

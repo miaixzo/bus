@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -42,7 +42,7 @@ final class FreeBsdFirmware extends AbstractFirmware {
     /**
      * The manufVersRelease value.
      */
-    private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer
+    private final SupplierX<Triplet<String, String, String>> manufVersRelease = Memoizer
             .memoize(FreeBsdFirmware::readDmiDecode);
 
     /**

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.metrics.observe.slo;
 
-import java.util.function.Consumer;
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
@@ -89,7 +89,7 @@ public interface SloTracker {
      * @param callback callback invoked with the SloEvent
      * @return this (fluent)
      */
-    SloTracker onBudgetExhausted(String sloName, Consumer<SloEvent> callback);
+    SloTracker onBudgetExhausted(String sloName, ConsumerX<SloEvent> callback);
 
     /**
      * Record a single request observation for the SLO named {@code sloName}.

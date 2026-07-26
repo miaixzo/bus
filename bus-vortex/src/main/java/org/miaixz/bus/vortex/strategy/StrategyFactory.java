@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
@@ -259,7 +259,7 @@ public class StrategyFactory {
      * @param filter     route-specific strategy filter
      * @return immutable route chain
      */
-    private List<Strategy> buildChain(List<Strategy> strategies, Predicate<Strategy> filter) {
+    private List<Strategy> buildChain(List<Strategy> strategies, PredicateX<Strategy> filter) {
         return strategies.stream().filter(filter).collect(Collectors.toUnmodifiableList());
     }
 
@@ -360,7 +360,7 @@ public class StrategyFactory {
      * @author Kimi Liu
      * @since Java 21+
      */
-    private record ChainSpec(String route, Predicate<String> pathMatcher, Predicate<Strategy> strategyFilter) {
+    private record ChainSpec(String route, PredicateX<String> pathMatcher, PredicateX<Strategy> strategyFilter) {
 
     }
 

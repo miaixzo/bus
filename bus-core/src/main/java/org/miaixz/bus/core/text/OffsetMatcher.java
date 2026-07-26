@@ -21,8 +21,8 @@ package org.miaixz.bus.core.text;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.BiPredicate;
 
+import org.miaixz.bus.core.center.function.BiPredicateX;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, Serializable {
+public class OffsetMatcher implements BiPredicateX<CharSequence, CharSequence>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852233335568L;
@@ -93,7 +93,7 @@ public class OffsetMatcher implements BiPredicate<CharSequence, CharSequence>, S
      * @return {@code true} if the substring matches at the configured position, {@code false} otherwise.
      */
     @Override
-    public boolean test(final CharSequence text, final CharSequence check) {
+    public boolean testing(final CharSequence text, final CharSequence check) {
         if (null == text || null == check) {
             if (ignoreEquals) {
                 return false;

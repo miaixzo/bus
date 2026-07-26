@@ -23,12 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.SeekableByteChannel;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -126,8 +126,8 @@ public class SevenZArchiver implements Archiver {
     public SevenZArchiver add(
             final File file,
             final String path,
-            final Function<String, String> fileNameEditor,
-            final Predicate<File> filter) {
+            final FunctionX<String, String> fileNameEditor,
+            final PredicateX<File> filter) {
         try {
             addInternal(file, path, fileNameEditor, filter);
         } catch (final IOException e) {
@@ -186,14 +186,14 @@ public class SevenZArchiver implements Archiver {
      * @param path           The initial path of the file or directory. If null, it is placed at the root level.
      * @param fileNameEditor A function to edit the file name.
      * @param filter         A file filter that specifies which files or directories can be added. If
-     *                       {@link Predicate#test(Object)} is {@code true}, the file is kept. If null, all are kept.
+     *                       {@link PredicateX#test(Object)} is {@code true}, the file is kept. If null, all are kept.
      * @throws IOException if an I/O error occurs.
      */
     private void addInternal(
             final File file,
             final String path,
-            final Function<String, String> fileNameEditor,
-            final Predicate<File> filter) throws IOException {
+            final FunctionX<String, String> fileNameEditor,
+            final PredicateX<File> filter) throws IOException {
         if (null != filter && !filter.test(file)) {
             return;
         }

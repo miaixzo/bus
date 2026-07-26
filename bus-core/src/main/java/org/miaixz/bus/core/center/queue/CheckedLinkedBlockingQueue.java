@@ -23,7 +23,8 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * A custom {@link LinkedBlockingQueue} with pre-add checking. Given a check function, it checks before adding elements.
@@ -42,14 +43,14 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
     /**
      * The checker function.
      */
-    protected final Predicate<E> checker;
+    protected final PredicateX<E> checker;
 
     /**
      * Constructs a new CheckedLinkedBlockingQueue.
      *
      * @param checker the checker function
      */
-    public CheckedLinkedBlockingQueue(final Predicate<E> checker) {
+    public CheckedLinkedBlockingQueue(final PredicateX<E> checker) {
         super(Integer.MAX_VALUE);
         this.checker = checker;
     }
@@ -60,7 +61,7 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
      * @param c       the initial collection
      * @param checker the checker function
      */
-    public CheckedLinkedBlockingQueue(final Collection<? extends E> c, final Predicate<E> checker) {
+    public CheckedLinkedBlockingQueue(final Collection<? extends E> c, final PredicateX<E> checker) {
         super(c);
         this.checker = checker;
     }

@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.lang.reflect.field;
 
 import java.lang.reflect.Field;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
@@ -96,7 +96,7 @@ public class FieldReflect {
      * @return An array of declared fields that satisfy the predicate.
      * @throws SecurityException If a security manager exists and its {@code checkMemberAccess} method denies access.
      */
-    public Field[] getDeclaredFields(final Predicate<Field> predicate) {
+    public Field[] getDeclaredFields(final PredicateX<Field> predicate) {
         if (null == declaredFields) {
             synchronized (FieldReflect.class) {
                 if (null == declaredFields) {
@@ -115,7 +115,7 @@ public class FieldReflect {
      * @return An array of all fields that satisfy the predicate.
      * @throws SecurityException If a security manager exists and its {@code checkMemberAccess} method denies access.
      */
-    public Field[] getAllFields(final Predicate<Field> predicate) {
+    public Field[] getAllFields(final PredicateX<Field> predicate) {
         if (null == allFields) {
             synchronized (FieldReflect.class) {
                 if (null == allFields) {

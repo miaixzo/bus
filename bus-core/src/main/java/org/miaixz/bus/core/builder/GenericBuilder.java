@@ -22,12 +22,12 @@ package org.miaixz.bus.core.builder;
 import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.core.Builder;
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.Consumer3X;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * A generic builder that uses lambda expressions (method references) to construct objects, inspired by the builder
@@ -65,19 +65,19 @@ public class GenericBuilder<T> implements Builder<T> {
     /**
      * The supplier that provides the initial instance of the object.
      */
-    private final Supplier<T> instant;
+    private final SupplierX<T> instant;
 
     /**
      * A list of consumers that will be applied to the object to set its properties.
      */
-    private final List<Consumer<T>> modifiers = new ArrayList<>();
+    private final List<ConsumerX<T>> modifiers = new ArrayList<>();
 
     /**
      * Constructs a new {@code GenericBuilder}.
      *
      * @param instant The supplier that provides the object instance.
      */
-    public GenericBuilder(final Supplier<T> instant) {
+    public GenericBuilder(final SupplierX<T> instant) {
         this.instant = instant;
     }
 
@@ -88,7 +88,7 @@ public class GenericBuilder<T> implements Builder<T> {
      * @param <T>     The type of the target object.
      * @return A new {@code GenericBuilder} instance.
      */
-    public static <T> GenericBuilder<T> of(final Supplier<T> instant) {
+    public static <T> GenericBuilder<T> of(final SupplierX<T> instant) {
         return new GenericBuilder<>(instant);
     }
 
@@ -98,7 +98,7 @@ public class GenericBuilder<T> implements Builder<T> {
      * @param consumer A consumer representing a method with no arguments (e.g., {@code Box::initialize}).
      * @return This {@code GenericBuilder} instance for chaining.
      */
-    public GenericBuilder<T> with(final Consumer<T> consumer) {
+    public GenericBuilder<T> with(final ConsumerX<T> consumer) {
         modifiers.add(consumer);
         return this;
     }
@@ -111,7 +111,7 @@ public class GenericBuilder<T> implements Builder<T> {
      * @param <P1>     The type of the first argument.
      * @return This {@code GenericBuilder} instance for chaining.
      */
-    public <P1> GenericBuilder<T> with(final BiConsumer<T, P1> consumer, final P1 p1) {
+    public <P1> GenericBuilder<T> with(final BiConsumerX<T, P1> consumer, final P1 p1) {
         modifiers.add(instance -> consumer.accept(instance, p1));
         return this;
     }

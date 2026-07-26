@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
-import java.util.function.Predicate;
-
 import lombok.Getter;
+
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * Records the class and field name corresponding to a field, used to match entity class fields with database column
@@ -31,7 +31,7 @@ import lombok.Getter;
  * @since Java 21+
  */
 @Getter
-public class ClassField implements Predicate<ColumnMeta> {
+public class ClassField implements PredicateX<ColumnMeta> {
 
     /**
      * The entity class.
@@ -61,7 +61,7 @@ public class ClassField implements Predicate<ColumnMeta> {
      * @return {@code true} if the property names match, {@code false} otherwise.
      */
     @Override
-    public boolean test(ColumnMeta column) {
+    public boolean testing(ColumnMeta column) {
         return getField().equalsIgnoreCase(column.property());
     }
 

@@ -24,8 +24,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
@@ -305,7 +305,7 @@ public class StringJoiner implements Appendable, Serializable {
      * @param toStrFunc A function to convert each element to a string.
      * @return this instance for chaining.
      */
-    public <T> StringJoiner append(final T[] array, final Function<T, ? extends CharSequence> toStrFunc) {
+    public <T> StringJoiner append(final T[] array, final FunctionX<T, ? extends CharSequence> toStrFunc) {
         return append((Iterator<T>) new ArrayIterator<>(array), toStrFunc);
     }
 
@@ -319,7 +319,7 @@ public class StringJoiner implements Appendable, Serializable {
      */
     public <E> StringJoiner append(
             final Iterable<E> iterable,
-            final Function<? super E, ? extends CharSequence> toStrFunc) {
+            final FunctionX<? super E, ? extends CharSequence> toStrFunc) {
         return append(IteratorKit.getIter(iterable), toStrFunc);
     }
 
@@ -333,7 +333,7 @@ public class StringJoiner implements Appendable, Serializable {
      */
     public <E> StringJoiner append(
             final Iterator<E> iterator,
-            final Function<? super E, ? extends CharSequence> toStrFunc) {
+            final FunctionX<? super E, ? extends CharSequence> toStrFunc) {
         if (null != iterator) {
             while (iterator.hasNext()) {
                 append(toStrFunc.apply(iterator.next()));

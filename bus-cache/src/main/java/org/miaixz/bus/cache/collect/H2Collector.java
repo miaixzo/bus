@@ -21,11 +21,11 @@ package org.miaixz.bus.cache.collect;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jakarta.annotation.PreDestroy;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -63,7 +63,7 @@ public class H2Collector extends AbstractCollector {
     }
 
     /**
-     * Provides a {@link Supplier} for a {@link JdbcRunner} configured for an H2 database.
+     * Provides a {@link SupplierX} for a {@link JdbcRunner} configured for an H2 database.
      * <p>
      * Uses {@link JdbcRunner#forSingleConnection} to open a persistent connection so that the in-memory H2 database is
      * not destroyed when individual statements finish. The {@code t_cache_rate} table is created on startup if it does
@@ -74,7 +74,7 @@ public class H2Collector extends AbstractCollector {
      * @return A supplier that provides an initialized {@link JdbcRunner} object.
      */
     @Override
-    protected Supplier<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
+    protected SupplierX<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
         return () -> {
             JdbcRunner runner = JdbcRunner.forSingleConnection(
                     "org.h2.Driver",

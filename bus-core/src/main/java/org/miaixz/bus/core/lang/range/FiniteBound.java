@@ -84,7 +84,7 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
      * @throws NullPointerException if {@code t} is {@code null}
      */
     @Override
-    public boolean test(final T t) {
+    public boolean testing(final T t) {
         final BoundType bt = this.getType();
         final int compareValue = getValue().compareTo(t);
         // If equal to the boundary value

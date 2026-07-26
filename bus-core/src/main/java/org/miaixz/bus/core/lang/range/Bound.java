@@ -20,7 +20,8 @@
 package org.miaixz.bus.core.lang.range;
 
 import java.util.Objects;
-import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * <p>
@@ -40,7 +41,7 @@ import java.util.function.Predicate;
  * <li>{@link #lessThan}：{@code {x | x < t}} (all values strictly less than t);</li>
  * <li>{@link #atMost}：{@code {x | x <= t}} (all values less than or equal to t);</li>
  * </ul>
- * When used as a {@link Predicate}, it can determine if an input object satisfies the inequality corresponding to this
+ * When used as a {@link PredicateX}, it can determine if an input object satisfies the inequality corresponding to this
  * instance.
  *
  * <p>
@@ -62,7 +63,7 @@ import java.util.function.Predicate;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Comparable<Bound<T>> {
+public interface Bound<T extends Comparable<? super T>> extends PredicateX<T>, Comparable<Bound<T>> {
 
     /**
      * String representation for negative infinity.
@@ -171,7 +172,7 @@ public interface Bound<T extends Comparable<? super T>> extends Predicate<T>, Co
      * @throws NullPointerException if {@code t} is {@code null}
      */
     @Override
-    boolean test(T t);
+    boolean testing(T t);
 
     /**
      * <p>

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Memoizer;
@@ -46,12 +46,12 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
     /**
      * The firmware value.
      */
-    private final Supplier<Firmware> firmware = Memoizer.memoize(this::createFirmware);
+    private final SupplierX<Firmware> firmware = Memoizer.memoize(this::createFirmware);
 
     /**
      * The baseboard value.
      */
-    private final Supplier<Baseboard> baseboard = Memoizer.memoize(this::createBaseboard);
+    private final SupplierX<Baseboard> baseboard = Memoizer.memoize(this::createBaseboard);
 
     /**
      * Returns the firmware.

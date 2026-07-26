@@ -333,10 +333,7 @@ public final class HttpRunner {
     public HttpResponse run(final Cancellation cancellation) {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
-        final boolean debug = Logger.isDebugEnabled();
-        if (debug) {
-            Logger.debug(true, "Fabric", "HTTP exchange started: method={}", spec.request().method());
-        }
+        Logger.debug(true, "Fabric", "HTTP exchange started: method={}", spec.request().method());
         try {
             currentCancellation.throwIfCancelled();
             final HttpRequest current = prepareRequest();
@@ -345,15 +342,13 @@ public final class HttpRunner {
             final HttpResponse response = exchange(current, currentCancellation);
             currentCancellation.throwIfCancelled();
             emit(ObservationMarker.HTTP_RESPONSE, response, null);
-            if (debug) {
-                Logger.debug(
-                        false,
-                        "Fabric",
-                        "HTTP exchange completed: method={}, status={}, protocol={}",
-                        current.method(),
-                        response.code(),
-                        response.protocol());
-            }
+            Logger.debug(
+                    false,
+                    "Fabric",
+                    "HTTP exchange completed: method={}, status={}, protocol={}",
+                    current.method(),
+                    response.code(),
+                    response.protocol());
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);

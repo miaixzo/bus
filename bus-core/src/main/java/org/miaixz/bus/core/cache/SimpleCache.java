@@ -30,9 +30,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.iterator.TransIterator;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -139,7 +139,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * @param supplier       A callback to generate the value if it is not present or invalid.
      * @return The value.
      */
-    public V get(final K key, final Predicate<V> validPredicate, final SupplierX<V> supplier) {
+    public V get(final K key, final PredicateX<V> validPredicate, final SupplierX<V> supplier) {
         V v = get(key);
         // If a validator is provided, check if the existing value is valid.
         if ((null != validPredicate && null != v && !validPredicate.test(v))) {

@@ -22,8 +22,8 @@ package org.miaixz.bus.health.unix.aix.hardware;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -68,7 +68,7 @@ public class AixUsbDevice extends AbstractUsbDevice {
      * @param lscfg A memoized lscfg list
      * @return a list of {@link UsbDevice} objects.
      */
-    public static List<UsbDevice> getUsbDevices(boolean tree, Supplier<List<String>> lscfg) {
+    public static List<UsbDevice> getUsbDevices(boolean tree, SupplierX<List<String>> lscfg) {
         List<UsbDevice> deviceList = new ArrayList<>();
         for (String line : lscfg.get()) {
             String s = line.trim();

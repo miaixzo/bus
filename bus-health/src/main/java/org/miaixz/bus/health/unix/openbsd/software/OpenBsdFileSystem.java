@@ -90,7 +90,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
 
         // Get inode usage data
         Map<String, Long> inodeFreeMap = new HashMap<>();
-        Map<String, Long> inodeUsedlMap = new HashMap<>();
+        Map<String, Long> inodeUsedMap = new HashMap<>();
         String command = "df -i" + (localOnly ? " -l" : Normal.EMPTY);
         for (String line : Executor.runNative(command)) {
             /*- Sample Output:
@@ -100,10 +100,10 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
             /dev/wd0e      4050876        36   3848300     0%      10  285108     0%   /home
             /dev/wd0d      6082908   3343172   2435592    58%   27813  386905     7%   /usr
             */
-            if (line.startsWith("/")) {
+            if (!line.startsWith("Filesystem")) {
                 String[] split = Pattern.SPACES_PATTERN.split(line);
                 if (split.length > 6) {
-                    inodeUsedlMap.put(split[0], Parsing.parseLongOrDefault(split[5], 0L));
+                    inodeUsedMap.put(split[0], Parsing.parseLongOrDefault(split[5], 0L));
                     inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[6], 0L));
                 }
             }
@@ -175,7 +175,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 fsList.add(
                         new OpenBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, "", description, type,
                                 freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
-                                inodeUsedlMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
+                                inodeUsedMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
             }
         }
         return fsList;

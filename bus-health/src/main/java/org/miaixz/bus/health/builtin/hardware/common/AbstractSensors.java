@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import java.util.Arrays;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Sensors;
@@ -45,18 +45,18 @@ public abstract class AbstractSensors implements Sensors {
     /**
      * The cpuTemperature value.
      */
-    private final Supplier<Double> cpuTemperature = Memoizer
+    private final SupplierX<Double> cpuTemperature = Memoizer
             .memoize(this::queryCpuTemperature, Memoizer.defaultExpiration());
 
     /**
      * The fanSpeeds value.
      */
-    private final Supplier<int[]> fanSpeeds = Memoizer.memoize(this::queryFanSpeeds, Memoizer.defaultExpiration());
+    private final SupplierX<int[]> fanSpeeds = Memoizer.memoize(this::queryFanSpeeds, Memoizer.defaultExpiration());
 
     /**
      * The cpuVoltage value.
      */
-    private final Supplier<Double> cpuVoltage = Memoizer.memoize(this::queryCpuVoltage, Memoizer.defaultExpiration());
+    private final SupplierX<Double> cpuVoltage = Memoizer.memoize(this::queryCpuVoltage, Memoizer.defaultExpiration());
 
     /**
      * Returns the cpu temperature.

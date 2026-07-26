@@ -26,10 +26,14 @@ import java.nio.charset.CodingErrorAction;
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.IntConsumer;
 import java.util.regex.Matcher;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.compare.VersionCompare;
 import org.miaixz.bus.core.convert.Convert;
@@ -176,24 +180,24 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * Returns the original value if the given {@link CharSequence} is not {@code null}, otherwise returns the default
-     * value provided by the {@link Supplier}.
+     * value provided by the {@link SupplierX}.
      *
      * @param <T>             The type of the {@link CharSequence}.
      * @param source          The {@link CharSequence} to check, may be {@code null}.
      * @param defaultSupplier The supplier for the default value when the source is {@code null}.
      * @return The original {@link CharSequence} if it is not {@code null}, otherwise the default value from the
      *         supplier.
-     * @see ObjectKit#defaultIfNull(Object, Supplier)
+     * @see ObjectKit#defaultIfNull(Object, SupplierX)
      */
     public static <T extends CharSequence> T defaultIfNull(
             final T source,
-            final Supplier<? extends T> defaultSupplier) {
+            final SupplierX<? extends T> defaultSupplier) {
         return ObjectKit.defaultIfNull(source, defaultSupplier);
     }
 
     /**
      * Returns the result of a custom handler if the given {@link CharSequence} is not {@code null}, otherwise returns
-     * the default value provided by the {@link Supplier}.
+     * the default value provided by the {@link SupplierX}.
      *
      * @param <R>             The return type.
      * @param <T>             The type of the {@link CharSequence}.
@@ -202,12 +206,12 @@ public class CharsBacker extends CharsValidator {
      * @param defaultSupplier The supplier for the default value when the source is {@code null}.
      * @return The result of the handler if the source is not {@code null}, otherwise the default value from the
      *         supplier.
-     * @see ObjectKit#defaultIfNull(Object, Function, Supplier)
+     * @see ObjectKit#defaultIfNull(Object, FunctionX, SupplierX)
      */
     public static <T extends CharSequence, R> R defaultIfNull(
             final T source,
-            final Function<? super T, ? extends R> handler,
-            final Supplier<? extends R> defaultSupplier) {
+            final FunctionX<? super T, ? extends R> handler,
+            final SupplierX<? extends R> defaultSupplier) {
         return ObjectKit.defaultIfNull(source, handler, defaultSupplier);
     }
 
@@ -234,20 +238,22 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * Returns the original value if the given {@link CharSequence} is not {@code null} or empty, otherwise returns the
-     * default value provided by the {@link Supplier}.
+     * default value provided by the {@link SupplierX}.
      *
      * @param <T>             The type of the {@link CharSequence}.
      * @param text            The {@link CharSequence} to check.
      * @param defaultSupplier The supplier for the default value when the text is empty.
      * @return The original {@link CharSequence} if it is not empty, otherwise the default value from the supplier.
      */
-    public static <T extends CharSequence> T defaultIfEmpty(final T text, final Supplier<? extends T> defaultSupplier) {
+    public static <T extends CharSequence> T defaultIfEmpty(
+            final T text,
+            final SupplierX<? extends T> defaultSupplier) {
         return isEmpty(text) ? defaultSupplier.get() : text;
     }
 
     /**
      * Returns the result of a custom handler if the given {@link CharSequence} is not {@code null} or empty, otherwise
-     * returns the default value provided by the {@link Supplier}.
+     * returns the default value provided by the {@link SupplierX}.
      *
      * @param <T>             The type of the {@link CharSequence}.
      * @param <V>             The result type.
@@ -258,8 +264,8 @@ public class CharsBacker extends CharsValidator {
      */
     public static <T extends CharSequence, V> V defaultIfEmpty(
             final T text,
-            final Function<T, V> handler,
-            final Supplier<? extends V> defaultSupplier) {
+            final FunctionX<T, V> handler,
+            final SupplierX<? extends V> defaultSupplier) {
         return isEmpty(text) ? defaultSupplier.get() : handler.apply(text);
     }
 
@@ -288,7 +294,7 @@ public class CharsBacker extends CharsValidator {
 
     /**
      * Returns the result of a custom handler if the given {@link CharSequence} is not {@code null}, empty, or blank,
-     * otherwise returns the default value provided by the {@link Supplier}.
+     * otherwise returns the default value provided by the {@link SupplierX}.
      *
      * @param text            The {@link CharSequence} to check.
      * @param handler         The custom function to apply if the text is not blank.
@@ -300,8 +306,8 @@ public class CharsBacker extends CharsValidator {
      */
     public static <T extends CharSequence, V> V defaultIfBlank(
             final T text,
-            final Function<T, V> handler,
-            final Supplier<? extends V> defaultSupplier) {
+            final FunctionX<T, V> handler,
+            final SupplierX<? extends V> defaultSupplier) {
         if (isBlank(text)) {
             return defaultSupplier.get();
         }
@@ -454,7 +460,7 @@ public class CharsBacker extends CharsValidator {
     public static String trim(
             final CharSequence text,
             final StringTrimer.TrimMode mode,
-            final Predicate<Character> predicate) {
+            final PredicateX<Character> predicate) {
         return new StringTrimer(mode, predicate).apply(text);
     }
 
@@ -942,7 +948,7 @@ public class CharsBacker extends CharsValidator {
      */
     public static int indexOf(
             final CharSequence text,
-            final Predicate<Character> matcher,
+            final PredicateX<Character> matcher,
             final int start,
             final int end) {
         if (isEmpty(text)) {
@@ -3407,7 +3413,7 @@ public class CharsBacker extends CharsValidator {
      * @param operator The replacement logic, which takes the original character and returns the new character.
      * @return The string with the character replaced.
      */
-    public static String replaceAt(final CharSequence text, int index, final UnaryOperator<Character> operator) {
+    public static String replaceAt(final CharSequence text, int index, final UnaryOperatorX<Character> operator) {
         if (text == null) {
             return null;
         }
@@ -3730,11 +3736,11 @@ public class CharsBacker extends CharsValidator {
      * Filters characters in a string based on a predicate.
      *
      * @param text      The string to filter.
-     * @param predicate The filter predicate. Characters for which {@link Predicate#test(Object)} returns {@code true}
+     * @param predicate The filter predicate. Characters for which {@link PredicateX#test(Object)} returns {@code true}
      *                  are retained.
      * @return The filtered string.
      */
-    public static String filter(final CharSequence text, final Predicate<Character> predicate) {
+    public static String filter(final CharSequence text, final PredicateX<Character> predicate) {
         if (text == null || predicate == null) {
             return toStringOrNull(text);
         }
@@ -3979,7 +3985,7 @@ public class CharsBacker extends CharsValidator {
      * @param function  The function to convert each element to a string.
      * @return The joined string. Returns an empty string if the collection is empty.
      */
-    public static <T> String join(String delimiter, Collection<T> objs, Function<T, String> function) {
+    public static <T> String join(String delimiter, Collection<T> objs, FunctionX<T, String> function) {
         if (CollKit.isEmpty(objs)) {
             return Normal.EMPTY;
         } else if (objs.size() == 1) {
@@ -4315,7 +4321,7 @@ public class CharsBacker extends CharsValidator {
             final int limit,
             final boolean ignoreEmpty,
             final boolean ignoreCase,
-            final Function<String, R> mapping) {
+            final FunctionX<String, R> mapping) {
         if (null == text) {
             return ListKit.zero();
         } else if (text.isEmpty() && ignoreEmpty) {
@@ -4511,10 +4517,10 @@ public class CharsBacker extends CharsValidator {
      * Returns a function that either trims a string or returns it as is, based on the {@code isTrim} flag.
      *
      * @param isTrim Whether to trim the string.
-     * @return A {@link Function} that takes a string and returns a string.
+     * @return A {@link FunctionX} that takes a string and returns a string.
      */
-    public static Function<String, String> trimFunc(final boolean isTrim) {
-        return isTrim ? CharsBacker::trim : Function.identity();
+    public static FunctionX<String, String> trimFunc(final boolean isTrim) {
+        return isTrim ? CharsBacker::trim : FunctionX.identity();
     }
 
     /**
@@ -4582,7 +4588,7 @@ public class CharsBacker extends CharsValidator {
      * @param str      The string to iterate.
      * @param consumer The consumer to apply to each character.
      */
-    public static void forEach(final CharSequence str, final Consumer<Character> consumer) {
+    public static void forEach(final CharSequence str, final ConsumerX<Character> consumer) {
         forEach(str, false, (cInt) -> consumer.accept((char) cInt));
     }
 

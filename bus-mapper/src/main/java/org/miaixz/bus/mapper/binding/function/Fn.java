@@ -22,9 +22,9 @@ package org.miaixz.bus.mapper.binding.function;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.mapper.OGNL;
 import org.miaixz.bus.mapper.parsing.ClassField;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -39,7 +39,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface Fn<T, R> extends Function<T, R>, Serializable {
+public interface Fn<T, R> extends FunctionX<T, R>, Serializable {
 
     /**
      * Caches the mapping between method references and their corresponding column metadata.
@@ -220,7 +220,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
          * @return The result of applying the method reference.
          */
         @Override
-        public R apply(T t) {
+        public R applying(T t) {
             return fn.apply(t);
         }
 
@@ -318,7 +318,7 @@ public interface Fn<T, R> extends Function<T, R>, Serializable {
          * @return Always returns null.
          */
         @Override
-        public R apply(Object o) {
+        public R applying(Object o) {
             return null;
         }
 

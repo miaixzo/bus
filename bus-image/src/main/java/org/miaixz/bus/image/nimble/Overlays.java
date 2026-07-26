@@ -22,8 +22,8 @@ package org.miaixz.bus.image.nimble;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
 import java.util.Arrays;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -253,7 +253,7 @@ public class Overlays {
      * @return the recommended rgb pixel value.
      */
     public static int[] getRecommendedRGBPixelValue(Attributes psAttrs, int gg0000) {
-        return getRecommendedRGBPixelValue(psAttrs, gg0000, Function.identity());
+        return getRecommendedRGBPixelValue(psAttrs, gg0000, FunctionX.identity());
     }
 
     /**
@@ -279,7 +279,7 @@ public class Overlays {
     private static int[] getRecommendedRGBPixelValue(
             Attributes psAttrs,
             int gg0000,
-            Function<float[], float[]> fromRGB) {
+            FunctionX<float[], float[]> fromRGB) {
         int[] cieLabValue = getRecommendedPixelValue(Tag.RecommendedDisplayCIELabValue, psAttrs, gg0000);
         return cieLabValue != null && cieLabValue.length == 3 ? cieLab2RGB(cieLabValue, fromRGB) : null;
     }
@@ -291,7 +291,7 @@ public class Overlays {
      * @param adjustColorSpace the adjust color space.
      * @return the operation result.
      */
-    private static int[] cieLab2RGB(int[] cieLabValue, Function<float[], float[]> adjustColorSpace) {
+    private static int[] cieLab2RGB(int[] cieLabValue, FunctionX<float[], float[]> adjustColorSpace) {
         float[] colorvalue = { (cieLabValue[0] & 0xffff) / 655.35f, ((cieLabValue[1] & 0xffff) - 0x8080) / 257.0f,
                 ((cieLabValue[2] & 0xffff) - 0x8080) / 257.0f };
         float[] rgb = CIELabColorSpace.getInstance().toRGB(colorvalue);

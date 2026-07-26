@@ -21,10 +21,10 @@ package org.miaixz.bus.health.builtin.software.common;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
@@ -56,18 +56,18 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     /**
      * The manufacturer value.
      */
-    private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    private final SupplierX<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
 
     /**
      * The familyVersionInfo value.
      */
-    private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer
+    private final SupplierX<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer
             .memoize(this::queryFamilyVersionInfo);
 
     /**
      * The bitness value.
      */
-    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
+    private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
 
     /**
      * Utility method for subclasses to take a full process list as input and return the children or descendants of a
@@ -217,7 +217,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * @return the get processes result
      */
     @Override
-    public List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
+    public List<OSProcess> getProcesses(PredicateX<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
         return queryAllProcesses().stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
                 .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
                 .collect(Collectors.toList());
@@ -242,7 +242,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     @Override
     public List<OSProcess> getChildProcesses(
             int parentPid,
-            Predicate<OSProcess> filter,
+            PredicateX<OSProcess> filter,
             Comparator<OSProcess> sort,
             int limit) {
         // Get this pid and its children
@@ -278,7 +278,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     @Override
     public List<OSProcess> getDescendantProcesses(
             int parentPid,
-            Predicate<OSProcess> filter,
+            PredicateX<OSProcess> filter,
             Comparator<OSProcess> sort,
             int limit) {
         // Get this pid and its descendants

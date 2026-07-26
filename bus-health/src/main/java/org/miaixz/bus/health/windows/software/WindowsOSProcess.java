@@ -21,7 +21,7 @@ package org.miaixz.bus.health.windows.software;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -90,128 +91,128 @@ public class WindowsOSProcess extends AbstractOSProcess {
     /**
      * The groupInfo value.
      */
-    private final Supplier<Pair<String, String>> groupInfo = Memoizer.memoize(this::queryGroupInfo);
+    private final SupplierX<Pair<String, String>> groupInfo = Memoizer.memoize(this::queryGroupInfo);
 
     /**
      * The cwdCmdEnv value.
      */
-    private final Supplier<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer
+    private final SupplierX<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer
             .memoize(this::queryCwdCommandlineEnvironment);
 
     /**
      * The currentWorkingDirectory value.
      */
-    private final Supplier<String> currentWorkingDirectory = Memoizer.memoize(this::queryCwd);
+    private final SupplierX<String> currentWorkingDirectory = Memoizer.memoize(this::queryCwd);
 
     /**
      * The tcb value.
      */
-    private Map<Integer, ThreadPerformanceData.PerfCounterBlock> tcb;
+    private final AtomicReference<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> tcb = new AtomicReference<>();
 
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The userInfo value.
      */
-    private final Supplier<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
+    private final SupplierX<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The state value.
      */
-    private OSProcess.State state = OSProcess.State.INVALID;
+    private volatile OSProcess.State state = OSProcess.State.INVALID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The workingSetSize value.
      */
-    private long workingSetSize;
+    private volatile long workingSetSize;
 
     /**
      * The privateWorkingSetSize value.
      */
-    private long privateWorkingSetSize;
+    private volatile long privateWorkingSetSize;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The args value.
      */
-    private final Supplier<List<String>> args = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> args = Memoizer.memoize(this::queryArguments);
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The openFiles value.
      */
-    private long openFiles;
+    private volatile long openFiles;
 
     /**
      * The bitness value.
      */
-    private int bitness;
+    private volatile int bitness;
 
     /**
      * The pageFaults value.
      */
-    private long pageFaults;
+    private volatile long pageFaults;
 
     /**
      * Creates a new WindowsOSProcess instance.
@@ -231,7 +232,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // Initially set to match OS bitness. If 64 will check later for 32-bit process
         this.bitness = os.getBitness();
         // Initialize thread counters
-        this.tcb = threadMap;
+        this.tcb.set(threadMap);
         updateAttributes(processMap.get(pid), processWtsMap.get(pid));
     }
 
@@ -574,9 +575,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
      */
     @Override
     public List<OSThread> getThreadDetails() {
-        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = tcb == null
-                ? queryMatchingThreads(Collections.singleton(this.getProcessID()))
-                : tcb;
+        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = this.tcb.get();
+        if (threads == null) {
+            threads = queryMatchingThreads(Collections.singleton(this.getProcessID()));
+        }
         if (threads == null) {
             threads = Collections.emptyMap();
         }
@@ -606,7 +608,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
             if (perfCounterBlock != null) {
                 this.name = perfCounterBlock.getName();
             }
-            this.tcb = queryMatchingThreads(pids);
+            this.tcb.set(queryMatchingThreads(pids));
         }
         Map<Integer, WtsInfo> wts = ProcessWtsData.queryProcessWtsMap(pids);
         return updateAttributes(perfCounterBlock, wts == null ? null : wts.get(this.getProcessID()));
@@ -796,11 +798,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // UNKNOWN. Processes are considered running unless all of their threads are
         // SUSPENDED.
         this.state = OSProcess.State.RUNNING;
-        if (this.tcb != null) {
+        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threadBlocks = this.tcb.get();
+        if (threadBlocks != null) {
             // If user hasn't enabled this in properties, we ignore
             int pid = this.getProcessID();
             // If any thread is NOT suspended, set running
-            for (ThreadPerformanceData.PerfCounterBlock tpd : this.tcb.values()) {
+            for (ThreadPerformanceData.PerfCounterBlock tpd : threadBlocks.values()) {
                 if (tpd.getOwningProcessID() == pid) {
                     if (tpd.getThreadWaitReason() == 5) {
                         this.state = OSProcess.State.SUSPENDED;

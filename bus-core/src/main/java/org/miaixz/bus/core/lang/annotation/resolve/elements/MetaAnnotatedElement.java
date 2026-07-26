@@ -23,8 +23,8 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
-import java.util.function.BiFunction;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMapping;
 import org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping;
@@ -67,7 +67,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      * A factory function for creating {@link AnnotationMapping} instances. If the function returns {@code null}, the
      * annotation will be ignored.
      */
-    private final BiFunction<T, Annotation, T> mappingFactory;
+    private final BiFunctionX<T, Annotation, T> mappingFactory;
 
     /**
      * A lazy-loaded map of annotation types to their corresponding {@link AnnotationMapping} instances. This map is
@@ -82,7 +82,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      * @param mappingFactory The factory function for creating {@link AnnotationMapping} instances. Must not be
      *                       {@code null}.
      */
-    public MetaAnnotatedElement(final AnnotatedElement element, final BiFunction<T, Annotation, T> mappingFactory) {
+    public MetaAnnotatedElement(final AnnotatedElement element, final BiFunctionX<T, Annotation, T> mappingFactory) {
         this.element = Objects.requireNonNull(element);
         this.mappingFactory = Objects.requireNonNull(mappingFactory);
         // Lazy initialization
@@ -102,7 +102,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     public static <A extends AnnotationMapping<Annotation>> MetaAnnotatedElement<A> of(
             final AnnotatedElement element,
-            final BiFunction<A, Annotation, A> mappingFactory) {
+            final BiFunctionX<A, Annotation, A> mappingFactory) {
         return new MetaAnnotatedElement<>(element, mappingFactory);
     }
 
@@ -246,7 +246,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     /**
      * Compares this {@code MetaAnnotatedElement} to the specified object. The result is {@code true} if and only if the
      * argument is not {@code null} and is a {@code MetaAnnotatedElement} object that wraps the same
-     * {@link AnnotatedElement} and uses the same {@link BiFunction} for mapping.
+     * {@link AnnotatedElement} and uses the same {@link BiFunctionX} for mapping.
      *
      * @param o The object to compare this {@code MetaAnnotatedElement} against.
      * @return {@code true} if the given object represents a {@code MetaAnnotatedElement} equivalent to this

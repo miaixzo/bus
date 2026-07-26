@@ -6010,9 +6010,6 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/services/**"
-    },
-    {
       "glob": "META-INF/spring.factories"
     },
     {

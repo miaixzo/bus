@@ -38,11 +38,11 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.UnaryOperator;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -174,7 +174,7 @@ public class Format extends java.text.Format {
     /**
      * An array of string slice operators.
      */
-    private final UnaryOperator<String>[] slices;
+    private final UnaryOperatorX<String>[] slices;
 
     /**
      * An array of format types for each placeholder in the pattern.
@@ -201,7 +201,7 @@ public class Format extends java.text.Format {
         this.types = new Type[n];
         this.offsets = new int[n];
         this.dateTimeOffsets = new Object[n];
-        this.slices = new UnaryOperator[n];
+        this.slices = new UnaryOperatorX[n];
         this.format = buildMessageFormat(tokens);
     }
 
@@ -1436,7 +1436,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return attrs.getString(tag, index, "");
             }
         },
@@ -1452,7 +1452,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return attrs.getString(tag, index, "").toUpperCase();
             }
         },
@@ -1468,7 +1468,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> slice) {
+                    UnaryOperatorX<String> slice) {
                 return slice.apply(attrs.getString(tag, index));
             }
         },
@@ -1484,7 +1484,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
@@ -1500,7 +1500,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
         },
@@ -1516,7 +1516,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
                 if (!(dateTimeOffset instanceof Period dateOffset))
                     return date;
@@ -1540,7 +1540,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
                 if (!(dateTimeOffset instanceof Duration timeOffset))
                     return date;
@@ -1562,7 +1562,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
@@ -1578,7 +1578,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
@@ -1595,7 +1595,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? getMD5String(s) : null;
             }
@@ -1612,7 +1612,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? URLEncoder.encode(s, Charset.UTF_8) : null;
             }
@@ -1629,7 +1629,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
         },
@@ -1645,7 +1645,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return UUID.randomUUID();
             }
         },
@@ -1661,7 +1661,7 @@ public class Format extends java.text.Format {
                     int index,
                     int offset,
                     Object dateTimeOffset,
-                    UnaryOperator<String> splice) {
+                    UnaryOperatorX<String> splice) {
                 return UID.createUID();
             }
         };
@@ -1725,7 +1725,7 @@ public class Format extends java.text.Format {
                 int index,
                 int offset,
                 Object dateTimeOffset,
-                UnaryOperator<String> splice);
+                UnaryOperatorX<String> splice);
 
         /**
          * Computes the MD5 hash of a string and returns it in a custom base-32 format.
@@ -1751,7 +1751,7 @@ public class Format extends java.text.Format {
      * @author Kimi Liu
      * @since Java 21+
      */
-    private class Slice implements UnaryOperator<String> {
+    private class Slice implements UnaryOperatorX<String> {
 
         /**
          * The starting index of the slice.
@@ -1788,7 +1788,7 @@ public class Format extends java.text.Format {
          * @return The resulting substring, or an empty string on error.
          */
         @Override
-        public String apply(String s) {
+        public String applying(String s) {
             try {
                 int l = s.length();
                 return endIndex == 0 ? s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex)

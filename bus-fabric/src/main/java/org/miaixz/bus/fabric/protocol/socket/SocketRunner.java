@@ -433,7 +433,7 @@ final class SocketRunner {
             final Message opening,
             final AutoCloseable owner,
             final Cancellation cancellation) {
-        return new SocketSession(spec.address(), connection, datagram, kcp, SocketCodec.of(spec.frameCodec()),
+        return new SocketSession(spec.address(), connection, datagram, kcp, SocketCodec.forSession(spec.frameCodec()),
                 spec.handler(), attributes(opening), owner, spec.listener(),
                 spec.context().options().materializeMaxBytes(), spec.socketOptions(),
                 spec.context().reactor().dispatcher(), spec.context().clock(), spec.timeout(), cancellation);

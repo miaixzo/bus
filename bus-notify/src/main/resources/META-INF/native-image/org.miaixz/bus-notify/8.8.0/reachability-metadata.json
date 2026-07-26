@@ -2,12 +2,6 @@
   "reflection": [
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.Holder"
-      },
-      "type": "jakarta.servlet.Servlet"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "java.io.Serializable"
@@ -3668,12 +3662,5 @@
       "type": "org.miaixz.bus.notify.Registry"
     }
   ],
-  "resources": [
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
-      },
-      "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
-    }
-  ]
+  "resources": []
 }

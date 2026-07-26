@@ -21,7 +21,8 @@ package org.miaixz.bus.core.lang.copier;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * Abstract copier class that defines the basic structure for copying an object of type {@code T} from a source to a
@@ -59,7 +60,7 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
      * A predicate used to filter which parts of the source should be copied. If the predicate evaluates to
      * {@code false} for a given element, that element will not be copied.
      */
-    protected Predicate<T> copyPredicate;
+    protected PredicateX<T> copyPredicate;
 
     /**
      * Retrieves the source object of the copier.
@@ -104,9 +105,9 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
     /**
      * Retrieves the copy predicate (filter) used by this copier.
      *
-     * @return The {@link Predicate} used for filtering copy operations.
+     * @return The {@link PredicateX} used for filtering copy operations.
      */
-    public Predicate<T> getCopyPredicate() {
+    public PredicateX<T> getCopyPredicate() {
         return copyPredicate;
     }
 
@@ -114,10 +115,10 @@ public abstract class SrcToDestCopier<T, C extends SrcToDestCopier<T, C>> implem
      * Sets the copy predicate (filter) for this copier. This predicate can be used to selectively copy elements from
      * the source to the target.
      *
-     * @param copyPredicate The {@link Predicate} to set.
+     * @param copyPredicate The {@link PredicateX} to set.
      * @return This copier instance, allowing for method chaining.
      */
-    public C setCopyPredicate(final Predicate<T> copyPredicate) {
+    public C setCopyPredicate(final PredicateX<T> copyPredicate) {
         this.copyPredicate = copyPredicate;
         return (C) this;
     }

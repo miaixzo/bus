@@ -25,7 +25,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +32,7 @@ import jakarta.annotation.PreDestroy;
 
 import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.cache.magic.CachePair;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Builder;
@@ -170,7 +170,7 @@ public abstract class AbstractCollector implements Collector, AutoCloseable {
      * @param context A map of configuration parameters.
      * @return A supplier that provides the initialized {@link JdbcRunner} object.
      */
-    protected abstract Supplier<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context);
+    protected abstract SupplierX<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context);
 
     /**
      * Transforms a list of database query results into a stream of {@link Tally} objects.

@@ -281,6 +281,10 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 null)) {
                                                             // Only non-UPS system batteries count
                                                             bi.read();
+                                                            if (0 == (bi.Capabilities & BATTERY_SYSTEM_BATTERY)
+                                                                    || 0 != (bi.Capabilities & BATTERY_IS_SHORT_TERM)) {
+                                                                continue;
+                                                            }
                                                             int maxCapacitySafe = 1;
                                                             if (0 != (bi.Capabilities & BATTERY_SYSTEM_BATTERY)
                                                                     && 0 == (bi.Capabilities & BATTERY_IS_SHORT_TERM)) {

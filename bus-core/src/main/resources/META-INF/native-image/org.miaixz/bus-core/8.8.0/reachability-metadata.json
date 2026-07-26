@@ -2724,7 +2724,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -8729,7 +8729,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.Iterator",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -8934,7 +8934,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.Iterator",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -10242,7 +10242,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.Map",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -10268,17 +10268,17 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier",
-            "java.util.function.Function",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.SupplierX",
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "java.util.Map",
-            "java.util.function.Function",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -10752,7 +10752,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier",
+            "org.miaixz.bus.core.center.function.SupplierX",
             "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
@@ -10819,7 +10819,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -11087,7 +11087,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -11356,7 +11356,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -11504,13 +11504,13 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.Collection",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -11946,14 +11946,14 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.util.function.Function",
+            "org.miaixz.bus.core.center.function.FunctionX",
             "java.util.Collection"
           ]
         },
@@ -11962,19 +11962,19 @@
           "parameterTypes": [
             "int",
             "float",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Function",
+            "org.miaixz.bus.core.center.function.FunctionX",
             "java.util.Collection"
           ]
         },
@@ -11982,7 +11982,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.center.map.MapBuilder",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -13414,7 +13414,7 @@
           "parameterTypes": [
             "boolean",
             "boolean",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         }
       ],
@@ -19874,7 +19874,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.reflect.AnnotatedElement",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -19901,7 +19901,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.reflect.AnnotatedElement",
-            "java.util.function.BiFunction"
+            "org.miaixz.bus.core.center.function.BiFunctionX"
           ]
         }
       ],
@@ -19928,7 +19928,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.reflect.AnnotatedElement",
-            "java.util.function.BiFunction"
+            "org.miaixz.bus.core.center.function.BiFunctionX"
           ]
         }
       ],
@@ -19956,7 +19956,7 @@
           "parameterTypes": [
             "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector",
             "java.lang.reflect.AnnotatedElement",
-            "java.util.function.BiFunction"
+            "org.miaixz.bus.core.center.function.BiFunctionX"
           ]
         }
       ],
@@ -20175,7 +20175,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.BiPredicate"
+            "org.miaixz.bus.core.center.function.BiPredicateX"
           ]
         }
       ],
@@ -20330,7 +20330,7 @@
           "parameterTypes": [
             "boolean",
             "boolean",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Set"
           ]
         }
@@ -20505,7 +20505,7 @@
           "parameterTypes": [
             "boolean",
             "boolean",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Set"
           ]
         },
@@ -20513,7 +20513,7 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Set"
           ]
         }
@@ -20570,7 +20570,7 @@
           "parameterTypes": [
             "boolean",
             "boolean",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.util.Set"
           ]
         }
@@ -25842,7 +25842,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -27484,14 +27484,14 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Predicate",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "java.nio.charset.Charset"
           ]
         }
@@ -28227,7 +28227,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         }
       ],
@@ -28476,7 +28476,7 @@
           "name": "<init>",
           "parameterTypes": [
             "int",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -28503,7 +28503,7 @@
           "name": "<init>",
           "parameterTypes": [
             "int",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -28606,7 +28606,7 @@
           "name": "<init>",
           "parameterTypes": [
             "int",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -28929,7 +28929,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ],
@@ -28977,8 +28977,8 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Supplier",
-            "java.util.function.BiPredicate"
+            "org.miaixz.bus.core.center.function.SupplierX",
+            "org.miaixz.bus.core.center.function.BiPredicateX"
           ]
         }
       ],
@@ -31384,7 +31384,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -31604,7 +31604,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.UnaryOperator",
+            "org.miaixz.bus.core.center.function.UnaryOperatorX",
             "java.lang.String",
             "java.lang.String"
           ]
@@ -31612,7 +31612,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.function.UnaryOperator",
+            "org.miaixz.bus.core.center.function.UnaryOperatorX",
             "java.lang.String",
             "java.lang.String",
             "char"
@@ -31832,7 +31832,7 @@
             "java.lang.String",
             "char",
             "java.lang.String",
-            "java.util.function.UnaryOperator",
+            "org.miaixz.bus.core.center.function.UnaryOperatorX",
             "int"
           ]
         }
@@ -31915,7 +31915,7 @@
             "java.lang.String",
             "char",
             "java.lang.String",
-            "java.util.function.UnaryOperator"
+            "org.miaixz.bus.core.center.function.UnaryOperatorX"
           ]
         }
       ],
@@ -31972,7 +31972,7 @@
             "java.lang.String",
             "char",
             "java.lang.String",
-            "java.util.function.UnaryOperator"
+            "org.miaixz.bus.core.center.function.UnaryOperatorX"
           ]
         }
       ],
@@ -32610,7 +32610,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.text.StringTrimer$TrimMode",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -32713,8 +32713,8 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.Object",
-            "java.util.function.Function",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -32741,8 +32741,8 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.Object",
-            "java.util.function.Function",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -32769,8 +32769,8 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.Object",
-            "java.util.function.Function",
-            "java.util.function.Predicate"
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.PredicateX"
           ]
         }
       ],
@@ -35339,15 +35339,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
       },
       "glob": "META-INF"
-    },
-    {
-      "glob": "META-INF/services/**"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.convert.XMLGregorianCalendarConverter"
-      },
-      "glob": "META-INF/services/javax.xml.datatype.DatatypeFactory"
     },
     {
       "condition": {

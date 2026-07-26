@@ -22,9 +22,9 @@ package org.miaixz.bus.core.lang.annotation.resolve.elements;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMapping;
 import org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -68,7 +68,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     /**
      * The factory function for creating {@link AnnotationMapping} instances.
      */
-    private final BiFunction<T, Annotation, T> mappingFactory;
+    private final BiFunctionX<T, Annotation, T> mappingFactory;
 
     /**
      * A list of {@link Aggregation} objects, each representing a root annotation and its meta-annotations. This list is
@@ -91,7 +91,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      *                            {@code null}.
      */
     RepeatableMetaAnnotatedElement(final RepeatableAnnotationCollector repeatableCollector,
-            final AnnotatedElement element, final BiFunction<T, Annotation, T> mappingFactory) {
+            final AnnotatedElement element, final BiFunctionX<T, Annotation, T> mappingFactory) {
         this.element = Objects.requireNonNull(element);
         this.mappingFactory = Objects.requireNonNull(mappingFactory);
         this.repeatableCollector = repeatableCollector;
@@ -111,7 +111,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> of(
             final AnnotatedElement element,
-            final BiFunction<A, Annotation, A> mappingFactory) {
+            final BiFunctionX<A, Annotation, A> mappingFactory) {
         return of(RepeatableAnnotationCollector.standard(), element, mappingFactory);
     }
 
@@ -129,7 +129,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> of(
             final RepeatableAnnotationCollector collector,
             final AnnotatedElement element,
-            final BiFunction<A, Annotation, A> mappingFactory) {
+            final BiFunctionX<A, Annotation, A> mappingFactory) {
         return new RepeatableMetaAnnotatedElement<>(collector, element, mappingFactory);
     }
 
@@ -244,7 +244,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     /**
      * Compares this {@code RepeatableMetaAnnotatedElement} to the specified object. The result is {@code true} if and
      * only if the argument is not {@code null} and is a {@code RepeatableMetaAnnotatedElement} object that wraps the
-     * same {@link AnnotatedElement}, uses the same {@link BiFunction} for mapping, and the same
+     * same {@link AnnotatedElement}, uses the same {@link BiFunctionX} for mapping, and the same
      * {@link RepeatableAnnotationCollector}.
      *
      * @param o The object to compare this {@code RepeatableMetaAnnotatedElement} against.

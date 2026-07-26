@@ -939,6 +939,31 @@ public final class TlsChannel implements Conduit, Lifecycle {
                     return (int) read;
                 }
             }
+            final int directStart = target.position();
+            final SSLEngineResult direct = unwrapProvider(encryptedInput, target);
+            if (direct.getHandshakeStatus() == HandshakeStatus.NEED_TASK) {
+                runTasks();
+            }
+            final int directCount = target.position() - directStart;
+            if (directCount > Normal._0) {
+                return directCount;
+            }
+            if (direct.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
+                ensureEncryptedInputCapacity();
+                if (readEncryptedInput(timeout.read(), "TLS read timed out") == Normal.__1) {
+                    return Normal.__1;
+                }
+                continue;
+            }
+            if (direct.getStatus() == SSLEngineResult.Status.CLOSED) {
+                return Normal.__1;
+            }
+            if (direct.getStatus() != SSLEngineResult.Status.BUFFER_OVERFLOW) {
+                if (direct.bytesConsumed() == Normal._0) {
+                    throw new SocketException("TLS direct read made no engine progress");
+                }
+                continue;
+            }
             preparePendingPlaintextForAppend();
             final SSLEngineResult result = unwrapProvider(encryptedInput, pendingPlaintext);
             pendingPlaintext.flip();
@@ -980,10 +1005,13 @@ public final class TlsChannel implements Conduit, Lifecycle {
             return Normal._0;
         }
         final int count = Math.min(target.remaining(), pendingPlaintext.remaining());
-        final ByteBuffer view = pendingPlaintext.duplicate();
-        view.limit(view.position() + count);
-        target.put(view);
-        pendingPlaintext.position(pendingPlaintext.position() + count);
+        final int originalLimit = pendingPlaintext.limit();
+        pendingPlaintext.limit(pendingPlaintext.position() + count);
+        try {
+            target.put(pendingPlaintext);
+        } finally {
+            pendingPlaintext.limit(originalLimit);
+        }
         return count;
     }
 
@@ -1156,10 +1184,13 @@ public final class TlsChannel implements Conduit, Lifecycle {
             return Normal._0;
         }
         final int count = toIntSize(Math.min(byteCount, pendingPlaintext.remaining()));
-        final ByteBuffer view = pendingPlaintext.slice();
-        view.limit(count);
-        transfer(view, target);
-        pendingPlaintext.position(pendingPlaintext.position() + count);
+        final int originalLimit = pendingPlaintext.limit();
+        pendingPlaintext.limit(pendingPlaintext.position() + count);
+        try {
+            transfer(pendingPlaintext, target);
+        } finally {
+            pendingPlaintext.limit(originalLimit);
+        }
         return count;
     }
 

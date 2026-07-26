@@ -22,10 +22,10 @@ package org.miaixz.bus.health.windows.driver.wmi;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.GuardedBy;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -45,7 +45,7 @@ public final class Win32ProcessCached {
     /**
      * The INSTANCE constant.
      */
-    private static final Supplier<Win32ProcessCached> INSTANCE = Memoizer.memoize(Win32ProcessCached::createInstance);
+    private static final SupplierX<Win32ProcessCached> INSTANCE = Memoizer.memoize(Win32ProcessCached::createInstance);
 
     // Use a map to cache command line queries
     /**

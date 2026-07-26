@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.setting.nimble.ini;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -79,8 +81,7 @@ public abstract class AbstractElement implements IniElement {
     /**
      * If the {@code value} changed, change the originalValue
      *
-     * @param newValue when {@code value} changes, like {@link #setValue(String)} or
-     *                 {@link #setValue(java.util.function.Function)}
+     * @param newValue when {@code value} changes, like {@link #setValue(String)} or {@link #setValue(FunctionX)}
      * @return new originalValue
      */
     protected abstract String valueChanged(String newValue);

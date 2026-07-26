@@ -26,8 +26,8 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -237,7 +237,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      *
      * @param callback A consumer to be called after the file has been successfully reloaded.
      */
-    public void autoLoad(final Consumer<Setting> callback) {
+    public void autoLoad(final ConsumerX<Setting> callback) {
         Assert.notNull(this.resource, "Setting resource must be not null !");
         Logger.info(
                 true,

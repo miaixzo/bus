@@ -236,9 +236,13 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 systemFreeBytes = new WinNT.LARGE_INTEGER(0L);
 
                 volume = Native.toString(aVolume);
-                Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, 16);
+                if (!Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, 16)) {
+                    continue;
+                }
                 final int flags = pFlags.getValue();
-                Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null);
+                if (!Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null)) {
+                    continue;
+                }
 
                 strMount = Native.toString(mount);
                 if (!strMount.isEmpty() && (volumeToMatch == null || volumeToMatch.equals(volume))) {
@@ -251,7 +255,9 @@ public class WindowsFileSystem extends AbstractFileSystem {
                     if (!moreOptions.isEmpty()) {
                         options.append(Symbol.C_COMMA).append(moreOptions);
                     }
-                    Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes);
+                    if (!Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes)) {
+                        continue;
+                    }
                     // Parse uuid from volume name
                     String uuid = Parsing.parseUuidOrDefault(volume, Normal.EMPTY);
 

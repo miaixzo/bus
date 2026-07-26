@@ -22,8 +22,6 @@ package org.miaixz.bus.health.unix.freebsd.software;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
@@ -31,6 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.Resource;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -74,143 +74,143 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     /**
      * The bitness value.
      */
-    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
 
     /**
      * The arguments value.
      */
-    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> arguments = Memoizer.memoize(this::queryArguments);
 
     /**
      * The environmentVariables value.
      */
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+    private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
 
     /**
      * The path value.
      */
-    private String path = Normal.EMPTY;
+    private volatile String path = Normal.EMPTY;
 
     /**
      * The name value.
      */
-    private String name;
+    private volatile String name;
 
     /**
      * The state value.
      */
-    private State state = State.INVALID;
+    private volatile State state = State.INVALID;
 
     /**
      * The user value.
      */
-    private String user;
+    private volatile String user;
 
     /**
      * The userID value.
      */
-    private String userID;
+    private volatile String userID;
 
     /**
      * The group value.
      */
-    private String group;
+    private volatile String group;
 
     /**
      * The groupID value.
      */
-    private String groupID;
+    private volatile String groupID;
 
     /**
      * The parentProcessID value.
      */
-    private int parentProcessID;
+    private volatile int parentProcessID;
 
     /**
      * The threadCount value.
      */
-    private int threadCount;
+    private volatile int threadCount;
 
     /**
      * The priority value.
      */
-    private int priority;
+    private volatile int priority;
 
     /**
      * The virtualSize value.
      */
-    private long virtualSize;
+    private volatile long virtualSize;
 
     /**
      * The residentSetSize value.
      */
-    private long residentSetSize;
+    private volatile long residentSetSize;
 
     /**
      * The kernelTime value.
      */
-    private long kernelTime;
+    private volatile long kernelTime;
 
     /**
      * The userTime value.
      */
-    private long userTime;
+    private volatile long userTime;
 
     /**
      * The startTime value.
      */
-    private long startTime;
+    private volatile long startTime;
 
     /**
      * The upTime value.
      */
-    private long upTime;
+    private volatile long upTime;
 
     /**
      * The bytesRead value.
      */
-    private long bytesRead;
+    private volatile long bytesRead;
 
     /**
      * The bytesWritten value.
      */
-    private long bytesWritten;
+    private volatile long bytesWritten;
 
     /**
      * The minorFaults value.
      */
-    private long minorFaults;
+    private volatile long minorFaults;
 
     /**
      * The majorFaults value.
      */
-    private long majorFaults;
+    private volatile long majorFaults;
 
     /**
      * The contextSwitches value.
      */
-    private long contextSwitches;
+    private volatile long contextSwitches;
 
     /**
      * The voluntaryContextSwitches value.
      */
-    private long voluntaryContextSwitches;
+    private volatile long voluntaryContextSwitches;
 
     /**
      * The involuntaryContextSwitches value.
      */
-    private long involuntaryContextSwitches;
+    private volatile long involuntaryContextSwitches;
 
     /**
      * The commandLineBackup value.
      */
-    private String commandLineBackup;
+    private volatile String commandLineBackup;
 
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * Creates a new FreeBsdOSProcess instance.
@@ -611,7 +611,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         if (getProcessID() >= 0) {
             psCommand += " -p " + getProcessID();
         }
-        Predicate<Map<PsThreadColumns, String>> hasColumnsPri = threadMap -> threadMap.containsKey(PsThreadColumns.PRI);
+        PredicateX<Map<PsThreadColumns, String>> hasColumnsPri = threadMap -> threadMap
+                .containsKey(PsThreadColumns.PRI);
         return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), Symbol.C_SPACE))
                 .filter(hasColumnsPri).map(threadMap -> new FreeBsdOSThread(getProcessID(), threadMap))

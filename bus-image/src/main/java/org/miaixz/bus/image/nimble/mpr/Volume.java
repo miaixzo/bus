@@ -384,6 +384,58 @@ public abstract sealed class Volume<T extends Number>
     }
 
     /**
+     * Gets a trilinearly interpolated value as a sign-corrected double.
+     *
+     * @param x       the fractional x coordinate.
+     * @param y       the fractional y coordinate.
+     * @param z       the fractional z coordinate.
+     * @param channel the channel.
+     * @return the interpolated value, or {@link Double#NaN} when the coordinate is outside the volume.
+     */
+    public double getInterpolatedDouble(double x, double y, double z, int channel) {
+        if (x < 0 || x >= size.x() - 1 || y < 0 || y >= size.y() - 1 || z < 0 || z >= size.z() - 1) {
+            return Double.NaN;
+        }
+        int x0 = (int) Math.floor(x);
+        int y0 = (int) Math.floor(y);
+        int z0 = (int) Math.floor(z);
+        int x1 = Math.min(x0 + 1, size.x() - 1);
+        int y1 = Math.min(y0 + 1, size.y() - 1);
+        int z1 = Math.min(z0 + 1, size.z() - 1);
+        double fx = x - x0;
+        double fy = y - y0;
+        double fz = z - z0;
+
+        double v00 = lerp(value(x0, y0, z0, channel), value(x1, y0, z0, channel), fx);
+        double v01 = lerp(value(x0, y0, z1, channel), value(x1, y0, z1, channel), fx);
+        double v10 = lerp(value(x0, y1, z0, channel), value(x1, y1, z0, channel), fx);
+        double v11 = lerp(value(x0, y1, z1, channel), value(x1, y1, z1, channel), fx);
+
+        double v0 = v00 * (1 - fy) + v10 * fy;
+        double v1 = v01 * (1 - fy) + v11 * fy;
+        return v0 * (1 - fz) + v1 * fz;
+    }
+
+    /**
+     * Gets the nearest value as a sign-corrected double.
+     *
+     * @param x       the x coordinate.
+     * @param y       the y coordinate.
+     * @param z       the z coordinate.
+     * @param channel the channel.
+     * @return the nearest value, or {@link Double#NaN} when the coordinate is outside the volume.
+     */
+    public double getNearestDouble(double x, double y, double z, int channel) {
+        int xi = (int) Math.round(x);
+        int yi = (int) Math.round(y);
+        int zi = (int) Math.round(z);
+        if (xi < 0 || xi >= size.x() || yi < 0 || yi >= size.y() || zi < 0 || zi >= size.z()) {
+            return Double.NaN;
+        }
+        return value(xi, yi, zi, channel);
+    }
+
+    /**
      * Interpolates between two numeric values.
      *
      * @param first    the first value.
@@ -392,7 +444,49 @@ public abstract sealed class Volume<T extends Number>
      * @return the interpolated value.
      */
     private double interpolate(T first, T second, double fraction) {
-        return first.doubleValue() * (1 - fraction) + second.doubleValue() * fraction;
+        return lerp(convertToUnsigned(first), convertToUnsigned(second), fraction);
+    }
+
+    /**
+     * Gets a voxel value as a sign-corrected double.
+     *
+     * @param x       the x coordinate.
+     * @param y       the y coordinate.
+     * @param z       the z coordinate.
+     * @param channel the channel.
+     * @return the voxel value.
+     */
+    private double value(int x, int y, int z, int channel) {
+        return convertToUnsigned(getValue(x, y, z, channel));
+    }
+
+    /**
+     * Converts a sample to an unsigned value when the volume type requires it.
+     *
+     * @param number the sample value.
+     * @return the sign-corrected value.
+     */
+    private double convertToUnsigned(Number number) {
+        if (signed) {
+            return number.doubleValue();
+        }
+        return switch (number) {
+            case Short value -> Short.toUnsignedInt(value);
+            case Byte value -> Byte.toUnsignedInt(value);
+            default -> number.doubleValue();
+        };
+    }
+
+    /**
+     * Linearly interpolates between two double values.
+     *
+     * @param first    the first value.
+     * @param second   the second value.
+     * @param fraction the interpolation fraction.
+     * @return the interpolated value.
+     */
+    private static double lerp(double first, double second, double fraction) {
+        return first * (1 - fraction) + second * fraction;
     }
 
     /**

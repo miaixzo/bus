@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -188,9 +188,9 @@ public interface AnnotationScanner {
      * @param filter       annotation filter; annotations that fail this filter are skipped. May be {@code null}.
      */
     default void scan(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            Predicate<Annotation> filter) {
+            PredicateX<Annotation> filter) {
         filter = ObjectKit.defaultIfNull(filter, PredicateKit.alwaysTrue());
         for (final Annotation annotation : annotatedEle.getAnnotations()) {
             if (!AnnoKit.isMetaAnnotation(annotation.annotationType()) && filter.test(annotation)) {
@@ -200,7 +200,7 @@ public interface AnnotationScanner {
     }
 
     /**
-     * Calls {@link #scan(BiConsumer, AnnotatedElement, Predicate)} if {@link #support(AnnotatedElement)} returns
+     * Calls {@link #scan(BiConsumerX, AnnotatedElement, PredicateX)} if {@link #support(AnnotatedElement)} returns
      * {@code true}.
      *
      * @param consumer     consumer for each (index, annotation) pair
@@ -208,9 +208,9 @@ public interface AnnotationScanner {
      * @param filter       annotation filter; annotations that fail this filter are skipped. May be {@code null}.
      */
     default void scanIfSupport(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            final Predicate<Annotation> filter) {
+            final PredicateX<Annotation> filter) {
         if (support(annotatedEle)) {
             scan(consumer, annotatedEle, filter);
         }

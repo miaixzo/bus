@@ -23,8 +23,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -102,8 +102,8 @@ public class CamelCaseMap<K, V> extends FunctionKeyMap<K, V> {
      * @param emptyMapBuilder A {@link MapBuilder} that provides an empty {@link Map} instance.
      */
     public CamelCaseMap(final MapBuilder<K, V> emptyMapBuilder) {
-        // The Function is made Serializable to allow the map to be serialized.
-        super(emptyMapBuilder.build(), (Function<Object, K> & Serializable) (key) -> {
+        // The FunctionX is made Serializable to allow the map to be serialized.
+        super(emptyMapBuilder.build(), (FunctionX<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
                 key = StringKit.toCamelCase(key.toString());
             }

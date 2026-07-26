@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.*;
 
@@ -87,7 +87,7 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
     protected static Number convert(
             final Object value,
             final Class<? extends Number> targetType,
-            final Function<Object, String> toStrFunc) {
+            final FunctionX<Object, String> toStrFunc) {
         // Convert enum to number, defaulting to its ordinal
         if (value instanceof Enum) {
             return convert(((Enum<?>) value).ordinal(), targetType, toStrFunc);
@@ -216,7 +216,7 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
      * @param toStrFunc the function to convert to string
      * @return the result
      */
-    private static BigDecimal toBigDecimal(final Object value, final Function<Object, String> toStrFunc) {
+    private static BigDecimal toBigDecimal(final Object value, final FunctionX<Object, String> toStrFunc) {
         if (value instanceof Number) {
             return MathKit.toBigDecimal((Number) value);
         } else if (value instanceof Boolean) {
@@ -235,7 +235,7 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
      * @param toStrFunc the function to convert to string
      * @return the result
      */
-    private static BigInteger toBigInteger(final Object value, final Function<Object, String> toStrFunc) {
+    private static BigInteger toBigInteger(final Object value, final FunctionX<Object, String> toStrFunc) {
         if (value instanceof Long) {
             return BigInteger.valueOf((Long) value);
         } else if (value instanceof Boolean) {

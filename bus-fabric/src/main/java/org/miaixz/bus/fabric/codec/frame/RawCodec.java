@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.codec.frame;
 import java.io.EOFException;
 import java.util.List;
 
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -80,9 +81,22 @@ public final class RawCodec implements FrameCodec {
     @Override
     public void encode(final Frame frame, final Buffer output) {
         final Frame checkedFrame = Assert.notNull(frame, () -> new ValidateException("Raw frame must not be null"));
+        encodeOwned(checkedFrame.payload(), output);
+    }
+
+    /**
+     * Encodes immutable raw payload bytes directly.
+     *
+     * @param payload immutable payload owner
+     * @param output  destination buffer
+     */
+    @Override
+    public void encodeOwned(final ByteString payload, final Buffer output) {
+        final ByteString checkedPayload = Assert
+                .notNull(payload, () -> new ValidateException("Raw frame payload must not be null"));
         final Buffer checkedOutput = Assert
                 .notNull(output, () -> new ValidateException("Raw frame output must not be null"));
-        checkedOutput.write(checkedFrame.payload());
+        checkedOutput.write(checkedPayload);
     }
 
     /**

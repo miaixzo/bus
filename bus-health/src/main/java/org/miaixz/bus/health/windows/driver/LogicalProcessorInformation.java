@@ -132,24 +132,29 @@ public final class LogicalProcessorInformation {
 
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         Map<Integer, Integer> corePkgMap = new HashMap<>();
-        Map<Integer, String> pkgCpuidMap = new HashMap<>();
+        Map<Integer, String> coreCpuidMap = new HashMap<>();
         for (NUMA_NODE_RELATIONSHIP node : numaNodes) {
             int nodeNum = node.nodeNumber;
-            int group = node.groupMask.group;
-            long mask = node.groupMask.mask.longValue();
-            // Processor numbers are uniquely identified by processor group and processor
-            // number on that group, which matches the bitmask.
-            int lowBit = Long.numberOfTrailingZeros(mask);
-            int hiBit = 63 - Long.numberOfLeadingZeros(mask);
-            for (int lp = lowBit; lp <= hiBit; lp++) {
-                if ((mask & (1L << lp)) != 0) {
-                    int coreId = getMatchingCore(cores, group, lp);
-                    int pkgId = getMatchingPackage(packages, group, lp);
-                    corePkgMap.put(coreId, pkgId);
-                    pkgCpuidMap.put(coreId, processorIdMap.getOrDefault(pkgId, Normal.EMPTY));
-                    CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(lp, coreId, pkgId,
-                            nodeNum, group);
-                    logProcs.add(logProc);
+            boolean multiGroup = node.groupCount > 1 && node.groupMasks != null && node.groupMasks.length > 0;
+            int nodeGroupCount = multiGroup ? Math.min(node.groupCount, node.groupMasks.length) : 1;
+            for (int g = 0; g < nodeGroupCount; g++) {
+                GROUP_AFFINITY groupAffinity = multiGroup ? node.groupMasks[g] : node.groupMask;
+                int group = groupAffinity.group;
+                long mask = groupAffinity.mask.longValue();
+                // Processor numbers are uniquely identified by processor group and processor
+                // number on that group, which matches the bitmask.
+                int lowBit = Long.numberOfTrailingZeros(mask);
+                int hiBit = 63 - Long.numberOfLeadingZeros(mask);
+                for (int lp = lowBit; lp <= hiBit; lp++) {
+                    if ((mask & (1L << lp)) != 0) {
+                        int coreId = getMatchingCore(cores, group, lp);
+                        int pkgId = getMatchingPackage(packages, group, lp);
+                        corePkgMap.put(coreId, pkgId);
+                        coreCpuidMap.put(coreId, processorIdMap.getOrDefault(pkgId, Normal.EMPTY));
+                        CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(lp, coreId,
+                                pkgId, nodeNum, group);
+                        logProcs.add(logProc);
+                    }
                 }
             }
         }
@@ -157,7 +162,7 @@ public final class LogicalProcessorInformation {
                 cores,
                 coreEfficiencyMap,
                 corePkgMap,
-                pkgCpuidMap);
+                coreCpuidMap);
         return Triplet.of(logProcs, physProcs, AbstractCentralProcessor.orderedProcCaches(caches));
     }
 

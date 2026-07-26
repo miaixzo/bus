@@ -22,8 +22,8 @@ package org.miaixz.bus.core.xyz;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.*;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.thread.*;
 
@@ -416,7 +416,7 @@ public class ThreadKit {
      * @param supplier The supplier for the initial value.
      * @return The `ThreadLocal`.
      */
-    public static <T> ThreadLocal<T> newThreadLocal(final Supplier<? extends T> supplier) {
+    public static <T> ThreadLocal<T> newThreadLocal(final SupplierX<? extends T> supplier) {
         return ThreadLocal.withInitial(supplier);
     }
 

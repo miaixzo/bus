@@ -19,9 +19,12 @@
 */
 package org.miaixz.bus.fabric.codec.frame;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.miaixz.bus.core.codec.Decoder;
+import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -87,12 +90,68 @@ public interface FrameCodec extends Decoder<Buffer, List<Frame>> {
     List<Frame> decode(Buffer input);
 
     /**
+     * Decodes immutable payload owners without requiring protocol runtimes to retain Frame wrappers.
+     *
+     * @param input encoded input
+     * @return decoded payload owners
+     */
+    default List<ByteString> decodeOwned(final Buffer input) {
+        final List<Frame> decoded = decode(input);
+        final ArrayList<ByteString> payloads = new ArrayList<>(decoded.size());
+        for (final Frame frame : decoded) {
+            payloads.add(frame.payload());
+        }
+        return List.copyOf(payloads);
+    }
+
+    /**
+     * Decodes into caller-owned storage. Built-in codecs may override this to avoid a transient result list.
+     *
+     * @param input  encoded input
+     * @param output destination collection
+     * @return number of decoded payloads
+     */
+    default int decodeOwned(final Buffer input, final Collection<? super ByteString> output) {
+        final List<ByteString> decoded = decodeOwned(input);
+        output.addAll(decoded);
+        return decoded.size();
+    }
+
+    /**
      * Encodes a frame.
      *
      * @param frame  frame to encode according to this codec's format
      * @param output destination buffer receiving encoded bytes
      */
     void encode(Frame frame, Buffer output);
+
+    /**
+     * Encodes an immutable payload owner without requiring callers to create an intermediate Frame.
+     *
+     * <p>
+     * The compatibility implementation preserves the existing Frame validation and snapshot behavior. Built-in codecs
+     * override this method because ByteString already provides immutable ownership.
+     * </p>
+     *
+     * @param payload immutable payload owner
+     * @param output  destination buffer
+     */
+    default void encodeOwned(final ByteString payload, final Buffer output) {
+        encode(Frame.of(payload), output);
+    }
+
+    /**
+     * Creates an independent codec for one protocol session.
+     *
+     * <p>
+     * Stateless implementations may return themselves. Implementations that retain incomplete decode input must
+     * override this method and return a fresh instance with the same immutable configuration.
+     *
+     * @return independent session codec, or this codec when stateless
+     */
+    default FrameCodec fork() {
+        return this;
+    }
 
     /**
      * Discards decoder state retained from previous input.

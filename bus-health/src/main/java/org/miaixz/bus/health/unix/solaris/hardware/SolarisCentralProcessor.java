@@ -100,7 +100,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         String cpuFamily = results[2] == null ? Normal.EMPTY : results[2].toString();
         String cpuModel = results[3] == null ? Normal.EMPTY : results[3].toString();
         String cpuStepping = results[4] == null ? Normal.EMPTY : results[4].toString();
-        long cpuFreq = results[5] == null ? 0L : (long) results[5];
+        long cpuFreq = results[5] == null ? 0L : (long) results[5] * 1_000_000L;
 
         String processorID = getProcessorID(cpuStepping, cpuModel, cpuFamily);
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,

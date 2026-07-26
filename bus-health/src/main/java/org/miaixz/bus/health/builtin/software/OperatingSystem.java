@@ -20,9 +20,9 @@
 package org.miaixz.bus.health.builtin.software;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -46,9 +46,9 @@ import org.miaixz.bus.health.unix.shared.driver.Xwininfo;
 public interface OperatingSystem {
 
     /**
-     * Constants which may be used to filter Process lists in {@link #getProcesses(Predicate, Comparator, int)},
-     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
-     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
+     * Constants which may be used to filter Process lists in {@link #getProcesses(PredicateX, Comparator, int)},
+     * {@link #getChildProcesses(int, PredicateX, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -65,34 +65,34 @@ public interface OperatingSystem {
         /**
          * No filtering. Returns all processes.
          */
-        public static final Predicate<OSProcess> ALL_PROCESSES = p -> true;
+        public static final PredicateX<OSProcess> ALL_PROCESSES = p -> true;
 
         /**
          * Exclude processes with {@link OSProcess.State#INVALID} process state.
          */
-        public static final Predicate<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
+        public static final PredicateX<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
 
         /**
          * Exclude child processes. Only include processes which are their own parent.
          */
-        public static final Predicate<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
+        public static final PredicateX<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
 
         /**
          * Only include 64-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
+        public static final PredicateX<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
 
         /**
          * Only include 32-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+        public static final PredicateX<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
 
     }
 
     /**
-     * Constants which may be used to sort Process lists in {@link #getProcesses(Predicate, Comparator, int)},
-     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
-     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
+     * Constants which may be used to sort Process lists in {@link #getProcesses(PredicateX, Comparator, int)},
+     * {@link #getChildProcesses(int, PredicateX, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, PredicateX, Comparator, int)}.
      *
      * @author Kimi Liu
      * @since Java 21+
@@ -207,7 +207,7 @@ public interface OperatingSystem {
     /**
      * Gets currently running processes, optionally filtering, sorting, and limited to the top "N".
      *
-     * @param filter An optional {@link Predicate} limiting the results to the specified filter. Some common predicates
+     * @param filter An optional {@link PredicateX} limiting the results to the specified filter. Some common predicates
      *               are available in {@link ProcessSorting}. May be {@code null} for no filtering.
      * @param sort   An optional {@link Comparator} specifying the sorting order. Some common comparators are available
      *               in {@link ProcessSorting}. May be {@code null} for no sorting.
@@ -217,7 +217,7 @@ public interface OperatingSystem {
      *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
      *         during iteration.
      */
-    List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit);
+    List<OSProcess> getProcesses(PredicateX<OSProcess> filter, Comparator<OSProcess> sort, int limit);
 
     /**
      * Gets information on a {@link Collection} of currently running processes. This has potentially improved
@@ -244,7 +244,7 @@ public interface OperatingSystem {
      * top "N".
      *
      * @param parentPid The Process ID whose children to list.
-     * @param filter    An optional {@link Predicate} limiting the results to the specified filter. Some common
+     * @param filter    An optional {@link PredicateX} limiting the results to the specified filter. Some common
      *                  predicates are available in {@link ProcessSorting}. May be {@code null} for no filtering.
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
@@ -257,7 +257,7 @@ public interface OperatingSystem {
      */
     List<OSProcess> getChildProcesses(
             int parentPid,
-            Predicate<OSProcess> filter,
+            PredicateX<OSProcess> filter,
             Comparator<OSProcess> sort,
             int limit);
 
@@ -266,7 +266,7 @@ public interface OperatingSystem {
      * children, etc., optionally filtering, sorting, and limited to the top "N".
      *
      * @param parentPid The Process ID whose children to list.
-     * @param filter    An optional {@link Predicate} limiting the results to the specified filter. Some common
+     * @param filter    An optional {@link PredicateX} limiting the results to the specified filter. Some common
      *                  predicates are available in {@link ProcessSorting}. May be {@code null} for no filtering.
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
@@ -279,7 +279,7 @@ public interface OperatingSystem {
      */
     List<OSProcess> getDescendantProcesses(
             int parentPid,
-            Predicate<OSProcess> filter,
+            PredicateX<OSProcess> filter,
             Comparator<OSProcess> sort,
             int limit);
 

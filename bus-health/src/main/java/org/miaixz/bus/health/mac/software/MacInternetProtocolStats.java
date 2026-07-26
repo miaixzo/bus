@@ -21,10 +21,10 @@ package org.miaixz.bus.health.mac.software;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.sun.jna.Memory;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
@@ -53,32 +53,32 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     /**
      * The establishedv4v6 value.
      */
-    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
+    private final SupplierX<Pair<Long, Long>> establishedv4v6 = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
 
     /**
      * The tcpstat value.
      */
-    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
+    private final SupplierX<CLibrary.BsdTcpstat> tcpstat = Memoizer
             .memoize(MacInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
 
     /**
      * The udpstat value.
      */
-    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer
+    private final SupplierX<CLibrary.BsdUdpstat> udpstat = Memoizer
             .memoize(MacInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
     // With elevated permissions use tcpstat only
     // Backup estimate get ipstat and subtract off udp
     /**
      * The ipstat value.
      */
-    private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer
+    private final SupplierX<CLibrary.BsdIpstat> ipstat = Memoizer
             .memoize(MacInternetProtocolStats::queryIpstat, Memoizer.defaultExpiration());
 
     /**
      * The ip6stat value.
      */
-    private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoizer
+    private final SupplierX<CLibrary.BsdIp6stat> ip6stat = Memoizer
             .memoize(MacInternetProtocolStats::queryIp6stat, Memoizer.defaultExpiration());
 
     /**

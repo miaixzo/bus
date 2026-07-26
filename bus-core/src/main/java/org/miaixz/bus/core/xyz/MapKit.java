@@ -21,10 +21,14 @@ package org.miaixz.bus.core.xyz;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.*;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.Consumer3X;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.map.*;
 import org.miaixz.bus.core.lang.Assert;
@@ -176,7 +180,7 @@ public class MapKit extends MapGets {
      * @param defaultMap A supplier for a default map to use if reflection creation fails or the type is abstract.
      * @return A new {@link Map} instance.
      */
-    public static <K, V> Map<K, V> createMap(final Class<?> mapType, final Supplier<Map<K, V>> defaultMap) {
+    public static <K, V> Map<K, V> createMap(final Class<?> mapType, final SupplierX<Map<K, V>> defaultMap) {
         Map<K, V> result = null;
         if (null != mapType && !mapType.isAssignableFrom(AbstractMap.class)) {
             try {
@@ -608,7 +612,7 @@ public class MapKit extends MapGets {
      * @param map               The map to join. If empty, only {@code args} are joined.
      * @param separator         The separator string between entries.
      * @param keyValueSeparator The separator string between keys and values.
-     * @param predicate         A predicate to filter map entries. Entries for which {@link Predicate#test(Object)}
+     * @param predicate         A predicate to filter map entries. Entries for which {@link PredicateX#test(Object)}
      *                          returns {@code true} are included.
      * @param args              Additional parameter strings (e.g., a secret key) to append.
      * @return The joined string. Returns an empty string if both map and args are empty.
@@ -617,13 +621,13 @@ public class MapKit extends MapGets {
             final Map<K, V> map,
             final String separator,
             final String keyValueSeparator,
-            final Predicate<Entry<K, V>> predicate,
+            final PredicateX<Entry<K, V>> predicate,
             final String... args) {
         return MapJoiner.of(separator, keyValueSeparator).append(map, predicate).append(args).toString();
     }
 
     /**
-     * Edits the entries of a map using a provided {@link UnaryOperator}. The editor can filter out entries (by
+     * Edits the entries of a map using a provided {@link UnaryOperatorX}. The editor can filter out entries (by
      * returning {@code null}) or modify them.
      *
      * @param <K>    The type of keys in the map.
@@ -632,7 +636,7 @@ public class MapKit extends MapGets {
      * @param editor The editor function that transforms each entry. If it returns {@code null}, the entry is discarded.
      * @return A new map with the edited entries.
      */
-    public static <K, V> Map<K, V> edit(final Map<K, V> map, final UnaryOperator<Entry<K, V>> editor) {
+    public static <K, V> Map<K, V> edit(final Map<K, V> map, final UnaryOperatorX<Entry<K, V>> editor) {
         if (null == map || null == editor) {
             return map;
         }
@@ -653,16 +657,16 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * Filters the entries of a map using a provided {@link Predicate}.
+     * Filters the entries of a map using a provided {@link PredicateX}.
      *
      * @param <K>       The type of keys in the map.
      * @param <V>       The type of values in the map.
      * @param map       The original map.
-     * @param predicate The filter predicate. Entries for which {@link Predicate#test(Object)} returns {@code true} are
+     * @param predicate The filter predicate. Entries for which {@link PredicateX#test(Object)} returns {@code true} are
      *                  retained. If {@code null}, the original map is returned.
      * @return A new map containing only the filtered entries.
      */
-    public static <K, V> Map<K, V> filter(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
+    public static <K, V> Map<K, V> filter(final Map<K, V> map, final PredicateX<Entry<K, V>> predicate) {
         if (null == map || null == predicate) {
             return map;
         }
@@ -670,18 +674,18 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * Transforms the values of a map using a provided {@link BiFunction} to create a new map with potentially different
-     * value types.
+     * Transforms the values of a map using a provided {@link BiFunctionX} to create a new map with potentially
+     * different value types.
      *
      * @param map        The original map.
-     * @param biFunction The {@link BiFunction} that takes a key and a value from the original map and returns a new
+     * @param biFunction The {@link BiFunctionX} that takes a key and a value from the original map and returns a new
      *                   value for the resulting map.
      * @param <K>        The type of keys in the map.
      * @param <V>        The type of values in the original map.
      * @param <R>        The type of values in the resulting map.
      * @return A new map with transformed values, or an empty map if the input map or function is null.
      */
-    public static <K, V, R> Map<K, R> map(final Map<K, V> map, final BiFunction<K, V, R> biFunction) {
+    public static <K, V, R> Map<K, R> map(final Map<K, V> map, final BiFunctionX<K, V, R> biFunction) {
         if (null == map || null == biFunction) {
             return MapKit.newHashMap();
         }
@@ -995,11 +999,11 @@ public class MapKit extends MapGets {
      * @param <K>       The type of keys in the map.
      * @param <V>       The type of values in the map.
      * @param map       The map to modify.
-     * @param predicate The removal condition. Entries for which {@link Predicate#test(Object)} returns {@code true} are
-     *                  removed.
+     * @param predicate The removal condition. Entries for which {@link PredicateX#test(Object)} returns {@code true}
+     *                  are removed.
      * @return The modified map.
      */
-    public static <K, V> Map<K, V> removeIf(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
+    public static <K, V> Map<K, V> removeIf(final Map<K, V> map, final PredicateX<Entry<K, V>> predicate) {
         if (isEmpty(map)) {
             return map;
         }
@@ -1175,8 +1179,8 @@ public class MapKit extends MapGets {
     public static <K, V> Map<K, V> putAll(
             final Map<K, V> resultMap,
             final Iterable<V> iterable,
-            final Function<V, K> keyMapper) {
-        return putAll(resultMap, iterable, keyMapper, Function.identity());
+            final FunctionX<V, K> keyMapper) {
+        return putAll(resultMap, iterable, keyMapper, FunctionX.identity());
     }
 
     /**
@@ -1194,8 +1198,8 @@ public class MapKit extends MapGets {
     public static <T, K, V> Map<K, V> putAll(
             final Map<K, V> resultMap,
             final Iterable<T> iterable,
-            final Function<T, K> keyMapper,
-            final Function<T, V> valueMapper) {
+            final FunctionX<T, K> keyMapper,
+            final FunctionX<T, V> valueMapper) {
         return putAll(resultMap, IteratorKit.getIter(iterable), keyMapper, valueMapper);
     }
 
@@ -1212,8 +1216,8 @@ public class MapKit extends MapGets {
     public static <K, V> Map<K, V> putAll(
             final Map<K, V> resultMap,
             final Iterator<V> iterator,
-            final Function<V, K> keyMapper) {
-        return putAll(resultMap, iterator, keyMapper, Function.identity());
+            final FunctionX<V, K> keyMapper) {
+        return putAll(resultMap, iterator, keyMapper, FunctionX.identity());
     }
 
     /**
@@ -1231,8 +1235,8 @@ public class MapKit extends MapGets {
     public static <T, K, V> Map<K, V> putAll(
             Map<K, V> resultMap,
             final Iterator<T> iterator,
-            final Function<T, K> keyMapper,
-            final Function<T, V> valueMapper) {
+            final FunctionX<T, K> keyMapper,
+            final FunctionX<T, V> valueMapper) {
         if (null == resultMap) {
             resultMap = MapKit.newHashMap();
         }
@@ -1307,7 +1311,7 @@ public class MapKit extends MapGets {
      * @param <V>       The type of values in the map.
      * @return The value of the first matching entry, or {@code null} if no match is found or the map is empty.
      */
-    public static <K, V> V firstMatchValue(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
+    public static <K, V> V firstMatchValue(final Map<K, V> map, final PredicateX<Entry<K, V>> predicate) {
         final Entry<K, V> kvEntry = firstMatch(map, predicate);
         if (null != kvEntry) {
             return kvEntry.getValue();
@@ -1324,7 +1328,7 @@ public class MapKit extends MapGets {
      * @param <V>       The type of values in the map.
      * @return The first matching entry, or {@code null} if no match is found or the map is empty.
      */
-    public static <K, V> Entry<K, V> firstMatch(final Map<K, V> map, final Predicate<Entry<K, V>> predicate) {
+    public static <K, V> Entry<K, V> firstMatch(final Map<K, V> map, final PredicateX<Entry<K, V>> predicate) {
         if (isNotEmpty(map)) {
             for (final Entry<K, V> entry : map.entrySet()) {
                 if (predicate.test(entry)) {
@@ -1337,7 +1341,7 @@ public class MapKit extends MapGets {
 
     /**
      * Iterates over the entries of a map, providing the index, key, and value to a {@link Consumer3X}. Unlike
-     * {@link Map#forEach(BiConsumer)}, this method provides an index for each entry.
+     * {@link Map#forEach(java.util.function.BiConsumer)}, this method provides an index for each entry.
      *
      * @param <K>        The type of keys in the map.
      * @param <V>        The type of values in the map.

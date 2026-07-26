@@ -20,12 +20,12 @@
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -66,7 +66,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
     /**
      * The vmStats value.
      */
-    private final Supplier<Pair<Long, Long>> vmStats = Memoizer
+    private final SupplierX<Pair<Long, Long>> vmStats = Memoizer
             .memoize(OpenBsdCentralProcessor::queryVmStats, Memoizer.defaultExpiration());
 
     /**

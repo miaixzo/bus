@@ -132,13 +132,14 @@ final class HttpConnectionLease {
         final boolean complete = (observed & COMPLETE) != 0;
         final boolean broken = (observed & BROKEN) != 0;
         try {
-            if (complete && !broken && reusable && lease.connection().healthy()) {
+            final boolean healthy = lease.connection().healthy();
+            if (complete && !broken && reusable && healthy) {
                 Logger.debug(
                         false,
                         "Fabric",
                         "HTTP tracked lease released: complete={}, broken={}, healthy={}",
-                        complete,
-                        broken,
+                        true,
+                        false,
                         true);
                 lease.release();
             } else {
@@ -148,7 +149,7 @@ final class HttpConnectionLease {
                         "HTTP tracked lease closed: complete={}, broken={}, healthy={}",
                         complete,
                         broken,
-                        lease.connection().healthy());
+                        healthy);
                 lease.close();
             }
         } catch (final RuntimeException e) {

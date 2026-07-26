@@ -22,10 +22,10 @@ package org.miaixz.bus.extra.compress.extractor;
 import java.io.Closeable;
 import java.io.File;
 import java.io.InputStream;
-import java.util.function.Predicate;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -52,9 +52,9 @@ public interface Extractor extends Closeable {
      *
      * @param targetDir The target directory.
      * @param predicate A filter for extracted files, used to specify which files to extract. {@code null} means no
-     *                  filtering. Extracts when {@link Predicate#test(Object)} is {@code true}.
+     *                  filtering. Extracts when {@link PredicateX#test(Object)} is {@code true}.
      */
-    void extract(File targetDir, Predicate<ArchiveEntry> predicate);
+    void extract(File targetDir, PredicateX<ArchiveEntry> predicate);
 
     /**
      * Gets the input stream for a file with the specified name.
@@ -70,11 +70,11 @@ public interface Extractor extends Closeable {
      * Gets the first file stream in the compressed package that meets the specified filter requirements.
      *
      * @param predicate Used to specify the files to be extracted. null means no filtering. Returns the corresponding
-     *                  stream when {@link Predicate#test(Object)} is {@code true}.
+     *                  stream when {@link PredicateX#test(Object)} is {@code true}.
      * @return The stream of the first file that meets the filter requirements, or {@code null} if no matching file is
      *         found.
      */
-    InputStream getFirst(final Predicate<ArchiveEntry> predicate);
+    InputStream getFirst(final PredicateX<ArchiveEntry> predicate);
 
     /**
      * Closes without throwing an exception.

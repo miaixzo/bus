@@ -20,8 +20,13 @@
 package org.miaixz.bus.core.text.placeholder.template;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.IntFunction;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -78,7 +83,7 @@ public class NamedPlaceholderString extends StringTemplate {
      */
     protected NamedPlaceholderString(final String template, final int features, final String prefix,
             final String suffix, final char escape, final String defaultValue,
-            final UnaryOperator<String> defaultValueHandler) {
+            final UnaryOperatorX<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
         Assert.notEmpty(prefix);
@@ -392,7 +397,7 @@ public class NamedPlaceholderString extends StringTemplate {
      * @param valueSupplier A function that returns a value based on the placeholder variable name.
      * @return The formatted string.
      */
-    public String format(final Function<String, ?> valueSupplier) {
+    public String format(final FunctionX<String, ?> valueSupplier) {
         if (valueSupplier == null) {
             return getTemplate();
         }
@@ -407,7 +412,7 @@ public class NamedPlaceholderString extends StringTemplate {
      *                      {@code map.containsKey(data)}.
      * @return The formatted string.
      */
-    public String format(final Function<String, ?> valueSupplier, final Predicate<String> containsKey) {
+    public String format(final FunctionX<String, ?> valueSupplier, final PredicateX<String> containsKey) {
         if (valueSupplier == null || containsKey == null) {
             return getTemplate();
         }
@@ -519,7 +524,7 @@ public class NamedPlaceholderString extends StringTemplate {
      */
     public void matchesIndexed(
             final String text,
-            final BiConsumer<Integer, String> idxValueConsumer,
+            final BiConsumerX<Integer, String> idxValueConsumer,
             final IntFunction<String> missingIndexHandler) {
         if (text == null || CollKit.isEmpty(placeholderSegments) || !isMatches(text)) {
             return;
@@ -555,7 +560,7 @@ public class NamedPlaceholderString extends StringTemplate {
      * @param <T>               The type of the returned object.
      * @return A map or bean instance.
      */
-    public <T> T matches(final String text, final Supplier<T> beanOrMapSupplier) {
+    public <T> T matches(final String text, final SupplierX<T> beanOrMapSupplier) {
         Assert.notNull(beanOrMapSupplier, "beanOrMapSupplier cannot be null");
         final T object = beanOrMapSupplier.get();
         if (text == null || object == null || placeholderSegments.isEmpty() || !isMatches(text)) {

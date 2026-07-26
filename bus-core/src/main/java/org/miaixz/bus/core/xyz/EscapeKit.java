@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.util.function.Predicate;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.escape.Html4Escape;
@@ -50,10 +50,10 @@ public class EscapeKit {
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";
 
     /**
-     * Predicate that identifies characters requiring JavaScript-style escaping.
+     * PredicateX that identifies characters requiring JavaScript-style escaping.
      */
-    private static final Predicate<Character> JS_ESCAPE_FILTER = c -> !(Character.isDigit(c) || Character.isLowerCase(c)
-            || Character.isUpperCase(c) || StringKit.contains(NOT_ESCAPE_CHARS, c));
+    private static final PredicateX<Character> JS_ESCAPE_FILTER = c -> !(Character.isDigit(c)
+            || Character.isLowerCase(c) || Character.isUpperCase(c) || StringKit.contains(NOT_ESCAPE_CHARS, c));
 
     /**
      * Escapes special characters in XML.
@@ -135,7 +135,7 @@ public class EscapeKit {
      * @param filter  A predicate that returns `true` for characters that should be escaped.
      * @return The escaped string.
      */
-    public static String escape(final CharSequence content, final Predicate<Character> filter) {
+    public static String escape(final CharSequence content, final PredicateX<Character> filter) {
         if (StringKit.isEmpty(content)) {
             return StringKit.toStringOrNull(content);
         }

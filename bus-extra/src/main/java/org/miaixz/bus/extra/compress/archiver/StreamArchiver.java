@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -34,6 +32,8 @@ import org.apache.commons.compress.archivers.ar.ArArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -147,8 +147,8 @@ public class StreamArchiver implements Archiver {
     public StreamArchiver add(
             final File file,
             final String path,
-            final Function<String, String> fileNameEditor,
-            final Predicate<File> predicate) throws InternalException {
+            final FunctionX<String, String> fileNameEditor,
+            final PredicateX<File> predicate) throws InternalException {
         try {
             addInternal(file, path, fileNameEditor, predicate);
         } catch (final IOException e) {
@@ -196,14 +196,14 @@ public class StreamArchiver implements Archiver {
      * @param path           The initial path of the file or directory. If {@code null}, it is placed at the root level.
      * @param fileNameEditor A function to edit the file name.
      * @param predicate      A file filter that specifies which files or directories can be added. When
-     *                       {@link Predicate#test(Object)} is {@code true}, the file is added.
+     *                       {@link PredicateX#test(Object)} is {@code true}, the file is added.
      * @throws IOException if an I/O error occurs
      */
     private void addInternal(
             final File file,
             final String path,
-            final Function<String, String> fileNameEditor,
-            final Predicate<File> predicate) throws IOException {
+            final FunctionX<String, String> fileNameEditor,
+            final PredicateX<File> predicate) throws IOException {
         if (null != predicate && !predicate.test(file)) {
             return;
         }

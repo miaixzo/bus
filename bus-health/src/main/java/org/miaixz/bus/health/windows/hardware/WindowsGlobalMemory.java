@@ -21,13 +21,13 @@ package org.miaixz.bus.health.windows.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Psapi;
 import com.sun.jna.platform.win32.VersionHelpers;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Memoizer;
@@ -56,13 +56,13 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
     /**
      * The availTotalSize value.
      */
-    private final Supplier<Triplet<Long, Long, Long>> availTotalSize = Memoizer
+    private final SupplierX<Triplet<Long, Long, Long>> availTotalSize = Memoizer
             .memoize(WindowsGlobalMemory::readPerfInfo, Memoizer.defaultExpiration());
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Convert memory type number to a human readable string

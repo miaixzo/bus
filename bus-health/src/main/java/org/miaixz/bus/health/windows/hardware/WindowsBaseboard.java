@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -45,7 +44,7 @@ final class WindowsBaseboard extends AbstractBaseboard {
     /**
      * The manufModelVersSerial value.
      */
-    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(WindowsBaseboard::queryManufModelVersSerial);
+    private final SupplierX<Tuple> manufModelVersSerial = Memoizer.memoize(WindowsBaseboard::queryManufModelVersSerial);
 
     /**
      * Queries the manuf model vers serial.

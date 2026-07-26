@@ -21,10 +21,11 @@ package org.miaixz.bus.core.center.map;
 
 import java.io.Serial;
 import java.util.Map;
-import java.util.function.Function;
+
+import org.miaixz.bus.core.center.function.FunctionX;
 
 /**
- * A {@link CustomKeyMap} implementation that allows for custom key transformation using a {@link Function}. This class
+ * A {@link CustomKeyMap} implementation that allows for custom key transformation using a {@link FunctionX}. This class
  * provides a flexible way to define how keys are stored and retrieved in the map, while leaving the values
  * untransformed.
  *
@@ -41,7 +42,7 @@ public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
     /**
      * The function used to transform keys.
      */
-    private final Function<Object, K> keyFunc;
+    private final FunctionX<Object, K> keyFunc;
 
     /**
      * Constructs a new {@code FunctionKeyMap} with a pre-existing empty map and a custom key transformation function.
@@ -51,7 +52,7 @@ public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
      * @param emptyMap The empty map to be wrapped. Must be empty to ensure custom key transformations are effective.
      * @param keyFunc  The function to customize keys. Must not be {@code null}.
      */
-    public FunctionKeyMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc) {
+    public FunctionKeyMap(final Map<K, V> emptyMap, final FunctionX<Object, K> keyFunc) {
         super(emptyMap);
         this.keyFunc = keyFunc;
     }

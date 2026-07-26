@@ -23,7 +23,8 @@ import java.io.Serial;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * An abstract map implementation that automatically transforms keys and values. Subclasses must implement the
@@ -44,9 +45,9 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
      * Constructs a {@code TransMap} using a map factory to create the underlying map instance. The factory should
      * provide a new, empty map.
      *
-     * @param mapFactory A {@link Supplier} that creates an empty map for internal use.
+     * @param mapFactory A {@link SupplierX} that creates an empty map for internal use.
      */
-    public TransMap(final Supplier<Map<K, V>> mapFactory) {
+    public TransMap(final SupplierX<Map<K, V>> mapFactory) {
         super(mapFactory);
     }
 

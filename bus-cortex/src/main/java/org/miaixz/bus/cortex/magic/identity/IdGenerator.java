@@ -19,14 +19,14 @@
 */
 package org.miaixz.bus.cortex.magic.identity;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.data.id.ID;
 
 /**
  * Pluggable unique ID generator with a built-in {@link ID#objectId()} default.
  * <p>
- * Construct without arguments to use MongoDB-style ObjectId strings out of the box. Pass any {@code Supplier<String>}
+ * Construct without arguments to use MongoDB-style ObjectId strings out of the box. Pass any {@code SupplierX<String>}
  * to the second constructor to replace the strategy with a custom implementation (e.g. Snowflake, UUID, NanoId).
  *
  * @author Kimi Liu
@@ -37,7 +37,7 @@ public class IdGenerator {
     /**
      * ID generation strategy; defaults to {@link ID#objectId()}.
      */
-    private final Supplier<String> strategy;
+    private final SupplierX<String> strategy;
 
     /**
      * Creates an IdGenerator that produces MongoDB-style ObjectId strings via {@link ID#objectId()}.
@@ -51,7 +51,7 @@ public class IdGenerator {
      *
      * @param strategy supplier that returns a new unique string ID on each invocation
      */
-    public IdGenerator(Supplier<String> strategy) {
+    public IdGenerator(SupplierX<String> strategy) {
         this.strategy = strategy;
     }
 

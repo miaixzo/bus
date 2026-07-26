@@ -56,77 +56,77 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     /**
      * The ifType value.
      */
-    private int ifType;
+    private volatile int ifType;
 
     /**
      * The ndisPhysicalMediumType value.
      */
-    private int ndisPhysicalMediumType;
+    private volatile int ndisPhysicalMediumType;
 
     /**
      * The connectorPresent value.
      */
-    private boolean connectorPresent;
+    private volatile boolean connectorPresent;
 
     /**
      * The bytesRecv value.
      */
-    private long bytesRecv;
+    private volatile long bytesRecv;
 
     /**
      * The bytesSent value.
      */
-    private long bytesSent;
+    private volatile long bytesSent;
 
     /**
      * The packetsRecv value.
      */
-    private long packetsRecv;
+    private volatile long packetsRecv;
 
     /**
      * The packetsSent value.
      */
-    private long packetsSent;
+    private volatile long packetsSent;
 
     /**
      * The inErrors value.
      */
-    private long inErrors;
+    private volatile long inErrors;
 
     /**
      * The outErrors value.
      */
-    private long outErrors;
+    private volatile long outErrors;
 
     /**
      * The inDrops value.
      */
-    private long inDrops;
+    private volatile long inDrops;
 
     /**
      * The collisions value.
      */
-    private long collisions;
+    private volatile long collisions;
 
     /**
      * The speed value.
      */
-    private long speed;
+    private volatile long speed;
 
     /**
      * The timeStamp value.
      */
-    private long timeStamp;
+    private volatile long timeStamp;
 
     /**
      * The ifAlias value.
      */
-    private String ifAlias;
+    private volatile String ifAlias;
 
     /**
      * The ifOperStatus value.
      */
-    private NetworkIF.IfOperStatus ifOperStatus;
+    private volatile NetworkIF.IfOperStatus ifOperStatus;
 
     /**
      * Creates a new WindowsNetworkIF instance.

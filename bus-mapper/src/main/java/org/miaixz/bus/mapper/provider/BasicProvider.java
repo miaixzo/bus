@@ -19,11 +19,11 @@
 */
 package org.miaixz.bus.mapper.provider;
 
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
@@ -136,7 +136,7 @@ public abstract class BasicProvider {
      * @param sqlBuilder SQL building function
      * @return Cache key
      */
-    protected static String cacheSql(ProviderContext context, Function<TableMeta, String> sqlBuilder) {
+    protected static String cacheSql(ProviderContext context, FunctionX<TableMeta, String> sqlBuilder) {
         return SqlScript.caching(context, entity -> sqlBuilder.apply(entity));
     }
 
@@ -154,7 +154,7 @@ public abstract class BasicProvider {
      */
     protected static String cacheSqlDynamic(
             ProviderContext context,
-            Function<TableMeta, Function<Dialect, String>> sqlBuilder) {
+            FunctionX<TableMeta, FunctionX<Dialect, String>> sqlBuilder) {
         return SqlScript.cachingDynamic(context, (entity, dialect) -> sqlBuilder.apply(entity).apply(dialect));
     }
 
@@ -331,7 +331,7 @@ public abstract class BasicProvider {
      * @param entity the table metadata
      * @return a function that renders SQL for the active dialect
      */
-    protected static Function<Dialect, String> buildInsertUp(TableMeta entity) {
+    protected static FunctionX<Dialect, String> buildInsertUp(TableMeta entity) {
         return dialect -> switch (dialect.getUpsertType()) {
             case INSERT_ON_DUPLICATE -> buildInsertOnDuplicate(entity, false);
             case INSERT_ON_CONFLICT -> buildInsertOnConflict(entity, false);
@@ -351,7 +351,7 @@ public abstract class BasicProvider {
      * @param entity the table metadata
      * @return a function that renders SQL for the active dialect
      */
-    protected static Function<Dialect, String> buildInsertUpSelective(TableMeta entity) {
+    protected static FunctionX<Dialect, String> buildInsertUpSelective(TableMeta entity) {
         return dialect -> switch (dialect.getUpsertType()) {
             case INSERT_ON_DUPLICATE -> buildInsertOnDuplicate(entity, true);
             case INSERT_ON_CONFLICT -> buildInsertOnConflict(entity, true);

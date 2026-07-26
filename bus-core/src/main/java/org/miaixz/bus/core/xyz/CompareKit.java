@@ -21,8 +21,8 @@ package org.miaixz.bus.core.xyz;
 
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.compare.PinyinCompare;
 
@@ -267,7 +267,7 @@ public class CompareKit {
      * @param <T>          The type of the object.
      * @return A Pinyin-based comparator.
      */
-    public static <T> Comparator<T> comparingPinyin(final Function<T, String> keyExtractor) {
+    public static <T> Comparator<T> comparingPinyin(final FunctionX<T, String> keyExtractor) {
         return comparingPinyin(keyExtractor, false);
     }
 
@@ -279,7 +279,7 @@ public class CompareKit {
      * @param <T>          The type of the object.
      * @return A Pinyin-based comparator.
      */
-    public static <T> Comparator<T> comparingPinyin(final Function<T, String> keyExtractor, final boolean reverse) {
+    public static <T> Comparator<T> comparingPinyin(final FunctionX<T, String> keyExtractor, final boolean reverse) {
         Objects.requireNonNull(keyExtractor);
         final PinyinCompare pinyinComparator = new PinyinCompare();
         if (reverse) {
@@ -298,7 +298,7 @@ public class CompareKit {
      * @return An indexed comparator.
      */
     public static <T, U> Comparator<T> comparingIndexed(
-            final Function<? super T, ? extends U> keyExtractor,
+            final FunctionX<? super T, ? extends U> keyExtractor,
             final U[] objs) {
         return comparingIndexed(keyExtractor, false, objs);
     }
@@ -313,7 +313,7 @@ public class CompareKit {
      * @return An indexed comparator.
      */
     public static <T, U> Comparator<T> comparingIndexed(
-            final Function<? super T, ? extends U> keyExtractor,
+            final FunctionX<? super T, ? extends U> keyExtractor,
             final Iterable<U> objs) {
         return comparingIndexed(
                 keyExtractor,
@@ -333,7 +333,7 @@ public class CompareKit {
      * @return An indexed comparator.
      */
     public static <T, U> Comparator<T> comparingIndexed(
-            final Function<? super T, ? extends U> keyExtractor,
+            final FunctionX<? super T, ? extends U> keyExtractor,
             final boolean atEndIfMiss,
             final U... objs) {
         Objects.requireNonNull(keyExtractor);

@@ -23,8 +23,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * A no-op annotation scanner that does not scan any elements. Implements the null-object pattern for
@@ -66,9 +67,9 @@ public class NoOpAnnotationScanner implements AnnotationScanner {
      */
     @Override
     public void scan(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            final Predicate<Annotation> filter) {
+            final PredicateX<Annotation> filter) {
         // do nothing
     }
 

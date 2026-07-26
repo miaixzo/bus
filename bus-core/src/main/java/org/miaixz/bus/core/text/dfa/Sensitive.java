@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -129,7 +129,7 @@ public class Sensitive {
      * @param charFilter The filtering function. If {@code charFilter.test(char)} returns {@code false}, the character
      *                   is skipped.
      */
-    public static void setCharFilter(final Predicate<Character> charFilter) {
+    public static void setCharFilter(final PredicateX<Character> charFilter) {
         if (charFilter != null) {
             sensitiveTree.setCharFilter(charFilter);
         }

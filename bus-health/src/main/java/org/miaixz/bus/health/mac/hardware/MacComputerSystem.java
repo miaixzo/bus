@@ -19,12 +19,11 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -50,7 +49,7 @@ final class MacComputerSystem extends AbstractComputerSystem {
     /**
      * The manufacturerModelSerialUUID value.
      */
-    private final Supplier<Tuple> manufacturerModelSerialUUID = Memoizer.memoize(MacComputerSystem::platformExpert);
+    private final SupplierX<Tuple> manufacturerModelSerialUUID = Memoizer.memoize(MacComputerSystem::platformExpert);
 
     /**
      * Queries the I/O Registry for platform expert device information.

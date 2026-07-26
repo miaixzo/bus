@@ -24,9 +24,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.multiple.ListValueMap;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.PredicateKit;
@@ -110,9 +110,9 @@ public class CompositeAnnotationScanner implements AnnotationScanner {
      */
     @Override
     public void scan(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            Predicate<Annotation> filter) {
+            PredicateX<Annotation> filter) {
         filter = ObjectKit.defaultIfNull(filter, PredicateKit.alwaysTrue());
         if (ObjectKit.isNull(annotatedEle)) {
             return;
@@ -142,9 +142,9 @@ public class CompositeAnnotationScanner implements AnnotationScanner {
      */
     private void scanElements(
             final AnnotationScanner scanner,
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            final Predicate<Annotation> filter) {
+            final PredicateX<Annotation> filter) {
         // Scan annotations on the element
         final ListValueMap<Integer, Annotation> classAnnotations = new ListValueMap<>(new LinkedHashMap<>());
         scanner.scan((index, annotation) -> {

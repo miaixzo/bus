@@ -22,8 +22,6 @@ package org.miaixz.bus.core.lang;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -246,7 +244,7 @@ public class Optional<T> {
      * @return This {@code Optional} instance.
      * @throws NullPointerException if the action is {@code null}.
      */
-    public Optional<T> ifFail(final Consumer<? super Throwable> action) throws NullPointerException {
+    public Optional<T> ifFail(final ConsumerX<? super Throwable> action) throws NullPointerException {
         Objects.requireNonNull(action, "action is null");
 
         if (isFail()) {
@@ -270,7 +268,7 @@ public class Optional<T> {
      * @throws NullPointerException if the action is {@code null}.
      */
     @SafeVarargs
-    public final Optional<T> ifFail(final Consumer<? super Throwable> action, final Class<? extends Throwable>... exs)
+    public final Optional<T> ifFail(final ConsumerX<? super Throwable> action, final Class<? extends Throwable>... exs)
             throws NullPointerException {
         Objects.requireNonNull(action, "action is null");
 
@@ -377,7 +375,7 @@ public class Optional<T> {
      * @return The result of applying the mapping function to the value of this {@code Optional}, if a value is present,
      *         otherwise an empty {@code Optional}.
      * @throws NullPointerException if the mapping function is {@code null} or returns a {@code null} {@code Optional}.
-     * @see java.util.Optional#flatMap(Function)
+     * @see java.util.Optional#flatMap(java.util.function.Function)
      */
     public <U> Optional<U> flattedMap(final FunctionX<? super T, ? extends java.util.Optional<? extends U>> mapper) {
         Objects.requireNonNull(mapper);

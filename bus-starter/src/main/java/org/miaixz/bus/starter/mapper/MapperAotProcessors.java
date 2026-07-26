@@ -23,7 +23,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -47,6 +46,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -227,9 +227,9 @@ public final class MapperAotProcessors {
                 Method method,
                 RuntimeHints hints,
                 Class<T> annotationType,
-                Function<T, Class<?>>... providerTypeResolvers) {
+                FunctionX<T, Class<?>>... providerTypeResolvers) {
             for (T annotation : method.getAnnotationsByType(annotationType)) {
-                for (Function<T, Class<?>> providerTypeResolver : providerTypeResolvers) {
+                for (FunctionX<T, Class<?>> providerTypeResolver : providerTypeResolvers) {
                     registerReflectionTypeIfNecessary(providerTypeResolver.apply(annotation), hints);
                 }
             }

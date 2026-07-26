@@ -74,7 +74,7 @@ public class WebSocketQuickService {
      * Starts the WebSocket server.
      */
     public synchronized void start() {
-        if (server != null && server.running()) {
+        if (server != null && server.active()) {
             return;
         }
         final FabricProperties.WebSocket websocket = properties.getWebsocket();
@@ -109,7 +109,7 @@ public class WebSocketQuickService {
      * @return true when running
      */
     public synchronized boolean running() {
-        return server != null && server.running();
+        return server != null && server.active();
     }
 
     /**

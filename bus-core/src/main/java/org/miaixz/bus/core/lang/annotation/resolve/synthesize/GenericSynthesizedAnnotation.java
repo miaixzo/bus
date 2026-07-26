@@ -23,10 +23,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttribute;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.CacheableAnnotationAttribute;
@@ -152,7 +152,7 @@ public class GenericSynthesizedAnnotation<R, T extends Annotation> implements Sy
      * @param operator      the replacement operator applied to the current attribute
      */
     @Override
-    public void replaceAttribute(final String attributeName, final UnaryOperator<AnnotationAttribute> operator) {
+    public void replaceAttribute(final String attributeName, final UnaryOperatorX<AnnotationAttribute> operator) {
         final AnnotationAttribute old = attributeMethodCaches.get(attributeName);
         if (ObjectKit.isNotNull(old)) {
             attributeMethodCaches.put(attributeName, operator.apply(old));

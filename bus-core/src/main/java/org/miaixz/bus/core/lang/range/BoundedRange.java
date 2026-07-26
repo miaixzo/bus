@@ -21,7 +21,6 @@ package org.miaixz.bus.core.lang.range;
 
 import java.io.Serial;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
@@ -29,7 +28,7 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * <p>
  * Inspired by Guava's {@code Range} implementation, this class describes a range defined by two {@link Bound} instances
- * acting as lower and upper bounds. When used as a {@link Predicate}, it can check if a specified value is within the
+ * acting as lower and upper bounds. When used as a {@link PredicateX}, it can check if a specified value is within the
  * range, meaning the value satisfies both the lower and upper bound's {@link Bound#test} methods.
  *
  * <p>

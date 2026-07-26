@@ -20,12 +20,12 @@
 package org.miaixz.bus.core.text.placeholder;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -63,7 +63,7 @@ public abstract class StringTemplate {
      * Global default value handler. This is used to provide a default value for a placeholder variable when no other
      * default is specified.
      */
-    protected static UnaryOperator<String> globalDefaultValueHandler;
+    protected static UnaryOperatorX<String> globalDefaultValueHandler;
 
     /**
      * The escape character, default is '\'.
@@ -78,7 +78,7 @@ public abstract class StringTemplate {
     /**
      * The default value handler for this specific template instance.
      */
-    protected final UnaryOperator<String> defaultValueHandler;
+    protected final UnaryOperatorX<String> defaultValueHandler;
 
     /**
      * The raw template string.
@@ -115,7 +115,7 @@ public abstract class StringTemplate {
      * @param features            The feature flags.
      */
     protected StringTemplate(final String template, final char escape, final String defaultValue,
-            final UnaryOperator<String> defaultValueHandler, final int features) {
+            final UnaryOperatorX<String> defaultValueHandler, final int features) {
         Assert.notNull(template, "String template cannot be null");
         this.template = template;
         this.escape = escape;
@@ -158,7 +158,7 @@ public abstract class StringTemplate {
      *
      * @param globalDefaultValueHandler The global default value handler.
      */
-    public static void setGlobalDefaultValue(final UnaryOperator<String> globalDefaultValueHandler) {
+    public static void setGlobalDefaultValue(final UnaryOperatorX<String> globalDefaultValueHandler) {
         StringTemplate.globalDefaultValueHandler = Objects.requireNonNull(globalDefaultValueHandler);
     }
 
@@ -239,7 +239,7 @@ public abstract class StringTemplate {
      * @param valueSupplier A function that provides a string value for a given placeholder variable name.
      * @return The formatted string.
      */
-    public String formatRawByKey(final Function<String, String> valueSupplier) {
+    public String formatRawByKey(final FunctionX<String, String> valueSupplier) {
         return formatRawBySegment(segment -> valueSupplier.apply(segment.getPlaceholder()));
     }
 
@@ -250,7 +250,7 @@ public abstract class StringTemplate {
      * @param valueSupplier A function that provides a string value for a given placeholder segment.
      * @return The formatted string.
      */
-    public String formatRawBySegment(final Function<AbstractSegment, String> valueSupplier) {
+    public String formatRawBySegment(final FunctionX<AbstractSegment, String> valueSupplier) {
         final List<String> values = new ArrayList<>(placeholderSegments.size());
         int totalTextLength = this.fixedTextTotalLength;
 
@@ -296,7 +296,7 @@ public abstract class StringTemplate {
      * @param valueSupplier A function that provides a value for a given placeholder segment.
      * @return The formatted string.
      */
-    protected String formatBySegment(final Function<AbstractSegment, ?> valueSupplier) {
+    protected String formatBySegment(final FunctionX<AbstractSegment, ?> valueSupplier) {
         return formatRawBySegment(segment -> {
             final Object value = valueSupplier.apply(segment);
             return (value != null) ? StringKit.toString(value) : formatNullValue(segment);
@@ -364,7 +364,7 @@ public abstract class StringTemplate {
      * @param text             The string to parse.
      * @param keyValueConsumer A consumer for the placeholder variable name and its corresponding raw value.
      */
-    public void matchesRawByKey(final String text, final BiConsumer<String, String> keyValueConsumer) {
+    public void matchesRawByKey(final String text, final BiConsumerX<String, String> keyValueConsumer) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
             return;
         }
@@ -377,7 +377,7 @@ public abstract class StringTemplate {
      * @param text             The string to parse.
      * @param keyValueConsumer A consumer for the placeholder segment and its corresponding raw value.
      */
-    public void matchesRawBySegment(final String text, final BiConsumer<AbstractSegment, String> keyValueConsumer) {
+    public void matchesRawBySegment(final String text, final BiConsumerX<AbstractSegment, String> keyValueConsumer) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
             return;
         }
@@ -431,7 +431,7 @@ public abstract class StringTemplate {
      * @param text             The string to parse.
      * @param keyValueConsumer A consumer for the placeholder variable and its final processed value.
      */
-    public void matchesByKey(final String text, final BiConsumer<String, String> keyValueConsumer) {
+    public void matchesByKey(final String text, final BiConsumerX<String, String> keyValueConsumer) {
         if (hasDefaultValue()) {
             matchesByKey(text, keyValueConsumer, true, this::getDefaultValue);
         } else {
@@ -449,9 +449,9 @@ public abstract class StringTemplate {
      */
     protected void matchesByKey(
             final String text,
-            final BiConsumer<String, String> keyValueConsumer,
+            final BiConsumerX<String, String> keyValueConsumer,
             final boolean hasDefaultValue,
-            final Function<AbstractSegment, String> defaultValueSupplier) {
+            final FunctionX<AbstractSegment, String> defaultValueSupplier) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
             return;
         }
@@ -475,11 +475,11 @@ public abstract class StringTemplate {
      * @param defaultValueSupplier A supplier for the default value.
      */
     private void matchByKey(
-            final BiConsumer<String, String> keyValueConsumer,
+            final BiConsumerX<String, String> keyValueConsumer,
             final String key,
             final String value,
             final boolean hasDefaultValue,
-            final Supplier<String> defaultValueSupplier) {
+            final SupplierX<String> defaultValueSupplier) {
         final int features = getFeatures();
 
         if (hasDefaultValue && !Feature.MATCH_KEEP_DEFAULT_VALUE.contains(features)) {
@@ -810,7 +810,7 @@ public abstract class StringTemplate {
         /**
          * A handler for providing default values dynamically.
          */
-        protected UnaryOperator<String> defaultValueHandler;
+        protected UnaryOperatorX<String> defaultValueHandler;
 
         /**
          * Whether the escape character has been explicitly set.
@@ -907,7 +907,7 @@ public abstract class StringTemplate {
          * @param defaultValueHandler A function that takes a placeholder variable name and returns a default value.
          * @return this builder instance for chaining.
          */
-        public B defaultValue(final UnaryOperator<String> defaultValueHandler) {
+        public B defaultValue(final UnaryOperatorX<String> defaultValueHandler) {
             this.defaultValueHandler = Objects.requireNonNull(defaultValueHandler);
             return self();
         }

@@ -28,10 +28,10 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.io.resource.JarResource;
@@ -79,7 +79,7 @@ public class ClassScanner implements Serializable {
     /**
      * The class filter predicate. Only classes that satisfy this predicate will be included in the scan results.
      */
-    private final Predicate<Class<?>> classPredicate;
+    private final PredicateX<Class<?>> classPredicate;
 
     /**
      * The character set used for decoding URLs and file paths.
@@ -134,7 +134,7 @@ public class ClassScanner implements Serializable {
      * @param packageName    The package name to scan. Use {@code null} or an empty string to scan all packages.
      * @param classPredicate The class filter predicate. Can be {@code null} to accept all classes.
      */
-    public ClassScanner(final String packageName, final Predicate<Class<?>> classPredicate) {
+    public ClassScanner(final String packageName, final PredicateX<Class<?>> classPredicate) {
         this(packageName, classPredicate, Charset.UTF_8);
     }
 
@@ -145,7 +145,7 @@ public class ClassScanner implements Serializable {
      * @param classPredicate The class filter predicate. Can be {@code null} to accept all classes.
      * @param charset        The character set for decoding URLs and file paths.
      */
-    public ClassScanner(String packageName, final Predicate<Class<?>> classPredicate,
+    public ClassScanner(String packageName, final PredicateX<Class<?>> classPredicate,
             final java.nio.charset.Charset charset) {
         packageName = StringKit.toStringOrEmpty(packageName);
         this.packageName = packageName;
@@ -248,7 +248,7 @@ public class ClassScanner implements Serializable {
      * @param classFilter The class filter predicate to filter out unwanted classes. Can be {@code null}.
      * @return A set of classes that satisfy the filter conditions.
      */
-    public static Set<Class<?>> scanAllPackage(final String packageName, final Predicate<Class<?>> classFilter) {
+    public static Set<Class<?>> scanAllPackage(final String packageName, final PredicateX<Class<?>> classFilter) {
         return new ClassScanner(packageName, classFilter).scan(true);
     }
 
@@ -262,7 +262,7 @@ public class ClassScanner implements Serializable {
      * @param classFilter The class filter predicate to filter out unwanted classes. Can be {@code null}.
      * @return A set of classes that satisfy the filter conditions.
      */
-    public static Set<Class<?>> scanPackage(final String packageName, final Predicate<Class<?>> classFilter) {
+    public static Set<Class<?>> scanPackage(final String packageName, final PredicateX<Class<?>> classFilter) {
         return new ClassScanner(packageName, classFilter).scan();
     }
 
@@ -482,7 +482,7 @@ public class ClassScanner implements Serializable {
      */
     private void addIfAccept(final Class<?> clazz) {
         if (null != clazz) {
-            final Predicate<Class<?>> classFilter = this.classPredicate;
+            final PredicateX<Class<?>> classFilter = this.classPredicate;
             if (classFilter == null || classFilter.test(clazz)) {
                 this.classes.add(clazz);
             }

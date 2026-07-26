@@ -21,14 +21,14 @@ package org.miaixz.bus.core.xyz;
 
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.array.ArrayWrapper;
 import org.miaixz.bus.core.center.array.PrimitiveArray;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.set.UniqueKeySet;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
@@ -614,7 +614,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param editor The editor interface; if {@code null}, the original array is returned.
      * @return The edited array.
      */
-    public static <T> T[] edit(final T[] array, final UnaryOperator<T> editor) {
+    public static <T> T[] edit(final T[] array, final UnaryOperatorX<T> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -632,7 +632,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * Filters array elements, retaining elements for which {@link Predicate#test(Object)} returns {@code true}.
+     * Filters array elements, retaining elements for which {@link PredicateX#test(Object)} returns {@code true}.
      *
      * @param <T>       The array element type.
      * @param array     The array.
@@ -640,7 +640,7 @@ public class ArrayKit extends PrimitiveArray {
      *                  returned.
      * @return The filtered array.
      */
-    public static <T> T[] filter(final T[] array, final Predicate<T> predicate) {
+    public static <T> T[] filter(final T[] array, final PredicateX<T> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -656,7 +656,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <T> T[] removeNull(final T[] array) {
         // Return the element itself; if null, it is automatically filtered out.
-        return edit(array, UnaryOperator.identity());
+        return edit(array, UnaryOperatorX.identity());
     }
 
     /**
@@ -842,7 +842,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param <E>       The element type.
      * @return The first element that satisfies the condition, or {@code null} if not found.
      */
-    public static <E> E get(final E[] array, final Predicate<E> predicate) {
+    public static <E> E get(final E[] array, final PredicateX<E> predicate) {
         for (final E e : array) {
             if (predicate.test(e)) {
                 return e;
@@ -919,7 +919,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param editor      The editor for each element; {@code null} means no editing.
      * @return The joined string.
      */
-    public static <T> String join(final T[] array, final CharSequence conjunction, final UnaryOperator<T> editor) {
+    public static <T> String join(final T[] array, final CharSequence conjunction, final UnaryOperatorX<T> editor) {
         return StringJoiner.of(conjunction).append(edit(array, editor)).toString();
     }
 
@@ -1170,7 +1170,7 @@ public class ArrayKit extends PrimitiveArray {
      *                        the same key; otherwise, new values will be ignored.
      * @return The deduplicated array.
      */
-    public static <T, K> T[] distinct(final T[] array, final Function<T, K> uniqueGenerator, final boolean override) {
+    public static <T, K> T[] distinct(final T[] array, final FunctionX<T, K> uniqueGenerator, final boolean override) {
         if (isEmpty(array)) {
             return array;
         }
@@ -1199,7 +1199,7 @@ public class ArrayKit extends PrimitiveArray {
     public static <T, R> R[] map(
             final Object array,
             final Class<R> targetComponentType,
-            final Function<? super T, ? extends R> func) {
+            final FunctionX<? super T, ? extends R> func) {
         final int length = length(array);
         final R[] result = newArray(targetComponentType, length);
         for (int i = 0; i < length; i++) {
@@ -1218,7 +1218,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param <R>   The target list element type.
      * @return The list.
      */
-    public static <T, R> List<R> mapToList(final T[] array, final Function<? super T, ? extends R> func) {
+    public static <T, R> List<R> mapToList(final T[] array, final FunctionX<? super T, ? extends R> func) {
         return Arrays.stream(array).map(func).collect(Collectors.toList());
     }
 
@@ -1232,7 +1232,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param <R>   The target set element type.
      * @return The set.
      */
-    public static <T, R> Set<R> mapToSet(final T[] array, final Function<? super T, ? extends R> func) {
+    public static <T, R> Set<R> mapToSet(final T[] array, final FunctionX<? super T, ? extends R> func) {
         return Arrays.stream(array).map(func).collect(Collectors.toSet());
     }
 
@@ -1248,7 +1248,7 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <T, R> R[] mapToArray(
             final T[] array,
-            final Function<? super T, ? extends R> func,
+            final FunctionX<? super T, ? extends R> func,
             final IntFunction<R[]> generator) {
         return Arrays.stream(array).map(func).toArray(generator);
     }

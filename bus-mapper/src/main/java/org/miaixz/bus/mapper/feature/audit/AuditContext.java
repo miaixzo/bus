@@ -22,6 +22,8 @@ package org.miaixz.bus.mapper.feature.audit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.center.function.SupplierX;
+
 /**
  * Audit Context, uses ThreadLocal to store audit information for the current thread
  *
@@ -188,7 +190,7 @@ public class AuditContext {
      * @param <T>      Return value type
      * @return Return value of the operation
      */
-    public static <T> T callIgnore(java.util.function.Supplier<T> supplier) {
+    public static <T> T callIgnore(final SupplierX<T> supplier) {
         boolean originalIgnore = isIgnore();
         try {
             setIgnore(true);

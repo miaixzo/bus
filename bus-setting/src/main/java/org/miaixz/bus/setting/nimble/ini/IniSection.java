@@ -20,8 +20,8 @@
 package org.miaixz.bus.setting.nimble.ini;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.setting.magic.ProxyList;
 
 /**
@@ -52,7 +52,7 @@ public interface IniSection extends ProxyList<IniProperty>, IniElement {
      * @param listSupplier ini property list supplier
      * @return list.
      */
-    List<IniProperty> getList(Supplier<List<IniProperty>> listSupplier);
+    List<IniProperty> getList(SupplierX<List<IniProperty>> listSupplier);
 
     @Override
     default boolean isEmpty() {

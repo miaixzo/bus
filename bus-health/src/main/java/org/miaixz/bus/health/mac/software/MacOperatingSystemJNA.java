@@ -202,14 +202,14 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
         // Get current pids, then slightly pad in case new process starts while
         // allocating array space
         int[] pids = new int[getProcessCount() + 10];
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length)
-                / SystemB.INT_SIZE;
+        int numberOfProcesses = SystemB.INSTANCE
+                .proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE) / SystemB.INT_SIZE;
         int numberOfThreads = 0;
         try (Struct.CloseableProcTaskInfo taskInfo = new Struct.CloseableProcTaskInfo()) {
             for (int i = 0; i < numberOfProcesses; i++) {
                 int exit = SystemB.INSTANCE
                         .proc_pidinfo(pids[i], SystemB.PROC_PIDTASKINFO, 0, taskInfo, taskInfo.size());
-                if (exit != -1) {
+                if (exit > 0) {
                     numberOfThreads += taskInfo.pti_threadnum;
                 }
             }

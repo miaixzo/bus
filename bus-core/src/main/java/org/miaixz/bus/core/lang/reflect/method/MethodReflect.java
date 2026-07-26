@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.set.UniqueKeySet;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -150,7 +150,7 @@ public class MethodReflect {
      * @param predicate A method filter. If {@code null}, no filtering is applied.
      * @return An array of public methods that satisfy the predicate.
      */
-    public Method[] getPublicMethods(final Predicate<Method> predicate) {
+    public Method[] getPublicMethods(final PredicateX<Method> predicate) {
         if (null == publicMethods) {
             synchronized (MethodReflect.class) {
                 if (null == publicMethods) {
@@ -168,7 +168,7 @@ public class MethodReflect {
      * @param predicate A method filter. If {@code null}, no filtering is applied.
      * @return An array of declared methods that satisfy the predicate.
      */
-    public Method[] getDeclaredMethods(final Predicate<Method> predicate) {
+    public Method[] getDeclaredMethods(final PredicateX<Method> predicate) {
         if (null == declaredMethods) {
             synchronized (MethodReflect.class) {
                 if (null == declaredMethods) {
@@ -195,7 +195,7 @@ public class MethodReflect {
      * @param predicate A method filter. If {@code null}, no filtering is applied.
      * @return An array of all methods in the class hierarchy that satisfy the predicate.
      */
-    public Method[] getAllMethods(final Predicate<Method> predicate) {
+    public Method[] getAllMethods(final PredicateX<Method> predicate) {
         if (null == allMethods) {
             synchronized (MethodReflect.class) {
                 if (null == allMethods) {

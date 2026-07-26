@@ -19,11 +19,10 @@
 */
 package org.miaixz.bus.health.unix.aix.software;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_protocol_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -49,7 +48,7 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
     /**
      * The ipstats value.
      */
-    private final Supplier<perfstat_protocol_t[]> ipstats = Memoizer
+    private final SupplierX<perfstat_protocol_t[]> ipstats = Memoizer
             .memoize(PerfstatProtocol::queryProtocols, Memoizer.defaultExpiration());
 
     /**

@@ -21,8 +21,8 @@ package org.miaixz.bus.metrics.nimble;
 
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.observe.tag.Tag;
 
@@ -118,7 +118,7 @@ public interface Timer {
             long threshold,
             TimeUnit unit,
             int checkEvery,
-            Consumer<ViolationEvent> callback);
+            ConsumerX<ViolationEvent> callback);
 
     /**
      * Returns an atomic snapshot of histogram state for cross-instance aggregation.

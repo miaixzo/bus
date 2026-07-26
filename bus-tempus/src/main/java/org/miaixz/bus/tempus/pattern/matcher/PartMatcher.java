@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.tempus.pattern.matcher;
 
-import java.util.function.Predicate;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * A matcher for a single field (part) of a cron expression. This interface is used to determine if a given integer
@@ -28,7 +28,7 @@ import java.util.function.Predicate;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface PartMatcher extends Predicate<Integer> {
+public interface PartMatcher extends PredicateX<Integer> {
 
     /**
      * Finds the next matching value at or after the given value.

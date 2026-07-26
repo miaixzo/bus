@@ -25,10 +25,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.bean.NullWrapper;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.instance.Instances;
@@ -148,7 +148,7 @@ public class MethodKit {
      * @param predicate The condition to match.
      * @return The first matching method, or `null` if not found.
      */
-    public static Method getMethod(final Method[] methods, final Predicate<Method> predicate) {
+    public static Method getMethod(final Method[] methods, final PredicateX<Method> predicate) {
         return ArrayKit.get(methods, predicate);
     }
 
@@ -362,7 +362,7 @@ public class MethodKit {
      * @return An array of methods.
      * @throws SecurityException if access is denied.
      */
-    public static Method[] getMethods(final Class<?> clazz, final Predicate<Method> predicate)
+    public static Method[] getMethods(final Class<?> clazz, final PredicateX<Method> predicate)
             throws SecurityException {
         return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getAllMethods(predicate);
     }
@@ -384,7 +384,7 @@ public class MethodKit {
      * @param predicate A predicate to filter the methods.
      * @return An array of filtered public methods.
      */
-    public static Method[] getPublicMethods(final Class<?> clazz, final Predicate<Method> predicate) {
+    public static Method[] getPublicMethods(final Class<?> clazz, final PredicateX<Method> predicate) {
         return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getPublicMethods(predicate);
     }
 
@@ -407,7 +407,7 @@ public class MethodKit {
      * @return An array of declared methods.
      * @throws SecurityException if access is denied.
      */
-    public static Method[] getDeclaredMethods(final Class<?> clazz, final Predicate<Method> predicate)
+    public static Method[] getDeclaredMethods(final Class<?> clazz, final PredicateX<Method> predicate)
             throws SecurityException {
         return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getDeclaredMethods(predicate);
     }

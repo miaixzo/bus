@@ -21,8 +21,8 @@ package org.miaixz.bus.health.builtin.hardware.common;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
@@ -46,44 +46,44 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     /**
      * The computerSystem value.
      */
-    private final Supplier<ComputerSystem> computerSystem = Memoizer.memoize(this::createComputerSystem);
+    private final SupplierX<ComputerSystem> computerSystem = Memoizer.memoize(this::createComputerSystem);
 
     /**
      * The processor value.
      */
-    private final Supplier<CentralProcessor> processor = Memoizer.memoize(this::createProcessor);
+    private final SupplierX<CentralProcessor> processor = Memoizer.memoize(this::createProcessor);
 
     /**
      * The memory value.
      */
-    private final Supplier<GlobalMemory> memory = Memoizer.memoize(this::createMemory);
+    private final SupplierX<GlobalMemory> memory = Memoizer.memoize(this::createMemory);
 
     /**
      * The sensors value.
      */
-    private final Supplier<Sensors> sensors = Memoizer.memoize(this::createSensors);
+    private final SupplierX<Sensors> sensors = Memoizer.memoize(this::createSensors);
 
     /**
      * The display list supplier.
      */
-    private final Supplier<List<Display>> displays = Memoizer.memoize(this::createDisplays, Memoizer.slowExpiration());
+    private final SupplierX<List<Display>> displays = Memoizer.memoize(this::createDisplays, Memoizer.slowExpiration());
 
     /**
      * The sound card list supplier.
      */
-    private final Supplier<List<SoundCard>> soundCards = Memoizer
+    private final SupplierX<List<SoundCard>> soundCards = Memoizer
             .memoize(this::createSoundCards, Memoizer.slowExpiration());
 
     /**
      * The graphics card list supplier.
      */
-    private final Supplier<List<GraphicsCard>> graphicsCards = Memoizer
+    private final SupplierX<List<GraphicsCard>> graphicsCards = Memoizer
             .memoize(this::createGraphicsCards, Memoizer.slowExpiration());
 
     /**
      * The USB device tree supplier.
      */
-    private final Supplier<List<UsbDevice>> usbDevicesTree = Memoizer
+    private final SupplierX<List<UsbDevice>> usbDevicesTree = Memoizer
             .memoize(this::createUsbDevices, Memoizer.slowExpiration());
 
     /**

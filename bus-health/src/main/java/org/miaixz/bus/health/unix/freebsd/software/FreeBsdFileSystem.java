@@ -117,12 +117,15 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             Filesystem    1K-blocks   Used   Avail Capacity iused  ifree %iused  Mounted on
             /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
             */
-            if (line.startsWith("/")) {
+            if (!line.startsWith("Filesystem")) {
                 String[] split = Pattern.SPACES_PATTERN.split(line);
-                if (split.length > 7) {
-                    inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[6], 0L));
+                if (split.length > 8) {
+                    long ifree = Parsing.parseLongOrDefault(split[6], 0L);
+                    long iused = Parsing.parseLongOrDefault(split[5], 0L);
+                    // Key by mount point to match the later file-store lookup.
+                    inodeFreeMap.put(split[8], ifree);
                     // total is used + free
-                    inodeTotalMap.put(split[0], inodeFreeMap.get(split[0]) + Parsing.parseLongOrDefault(split[5], 0L));
+                    inodeTotalMap.put(split[8], iused + ifree);
                 }
             }
         }

@@ -20,12 +20,12 @@
 package org.miaixz.bus.core.lang.loader;
 
 import java.io.Serial;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * A functional lazy loader. It takes a {@link Supplier} to generate an object. The object is created only when it is
+ * A functional lazy loader. It takes a {@link SupplierX} to generate an object. The object is created only when it is
  * first needed, after which the supplier is discarded. This loader is useful for large objects that may not always be
  * used, thus reducing resource consumption at startup. It extends {@link LazyLoader}, and thread safety is handled by
  * the parent class.
@@ -43,14 +43,14 @@ public class LazyFunLoader<T> extends LazyLoader<T> {
     /**
      * The supplier function for generating the object.
      */
-    private Supplier<T> supplier;
+    private SupplierX<T> supplier;
 
     /**
      * Constructor.
      *
      * @param supplier The supplier function for generating the object.
      */
-    public LazyFunLoader(final Supplier<T> supplier) {
+    public LazyFunLoader(final SupplierX<T> supplier) {
         Assert.notNull(supplier);
         this.supplier = supplier;
     }
@@ -62,7 +62,7 @@ public class LazyFunLoader<T> extends LazyLoader<T> {
      * @param <T>      The type of the object.
      * @return a new {@code LazyFunLoader} instance.
      */
-    public static <T> LazyFunLoader<T> of(final Supplier<T> supplier) {
+    public static <T> LazyFunLoader<T> of(final SupplierX<T> supplier) {
         Assert.notNull(supplier, "supplier must be not null!");
         return new LazyFunLoader<>(supplier);
     }

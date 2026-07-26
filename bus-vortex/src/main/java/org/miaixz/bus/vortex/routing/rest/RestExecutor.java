@@ -19,23 +19,6 @@
 */
 package org.miaixz.bus.vortex.routing.rest;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -50,9 +33,27 @@ import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.routing.Coordinator;
-
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -477,38 +478,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String method,
             String path) {
         return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
-                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
-                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-                    Logger.debug(
-                            false,
-                            "Vortex",
-                            "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
-                            ip,
-                            method,
-                            path,
-                            responseEntity.getHeaders());
-
-                    responseBuilder.headers(headers -> {
-                        headers.addAll(responseEntity.getHeaders());
-                        headers.remove(HttpHeaders.HOST);
-                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                        headers.remove(HttpHeaders.CONTENT_LENGTH);
-                    });
-
-                    Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
-                            : responseEntity.getBody().doOnNext(dataBuffer -> {
-                                Logger.debug(
-                                        false,
-                                        "Vortex",
-                                        "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, {} bytes",
-                                        ip,
-                                        method,
-                                        path,
-                                        dataBuffer.readableByteCount());
-                            });
-
-                    return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
-                })
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> buildStreamingResponse(responseEntity, ip,
+                        method, path, "stream=2"))
                 .doOnSubscribe(
                         subscription -> Logger.info(
                                 true,
@@ -565,67 +536,40 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        return bodySpec.exchangeToMono(clientResponse -> {
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "Received downstream status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_BUFFERED, {}",
-                    ip,
-                    method,
-                    path,
-                    clientResponse.statusCode());
-
-            return clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
-                Logger.info(
-                        false,
-                        "Vortex",
-                        "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
-                        ip,
-                        method,
-                        path,
-                        responseEntity.getHeaders());
-
-                byte[] body = responseEntity.getBody();
-                if (body != null && body.length > 0) {
+        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     Logger.info(
                             false,
                             "Vortex",
-                            "Received buffered content: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                            "Received downstream status: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_BUFFERED, {}",
                             ip,
                             method,
                             path,
-                            body.length);
-                } else {
-                    Logger.warn(
-                            false,
-                            "Vortex",
-                            "Received buffered content is empty: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED",
-                            ip,
-                            method,
-                            path);
-                }
+                            responseEntity.getStatusCode());
 
-                ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-                responseBuilder.headers(headers -> {
-                    headers.addAll(responseEntity.getHeaders());
-                    headers.remove(HttpHeaders.HOST);
-                    headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                    headers.remove(HttpHeaders.CONTENT_LENGTH);
-                });
+                    HttpHeaders responseHeaders = responseEntity.getHeaders();
+                    String streamingReason = streamingReason(responseHeaders);
+                    if (StringKit.isNotBlank(streamingReason)) {
+                        Logger.info(
+                                true,
+                                "Vortex",
+                                "Switching buffered response to streaming: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_AUTO_STREAM, reason={}",
+                                ip,
+                                method,
+                                path,
+                                streamingReason);
+                        return buildStreamingResponse(responseEntity, ip, method, path, "auto");
+                    }
 
-                if (body != null && body.length > 0) {
-                    return responseBuilder.bodyValue(body);
-                }
-                return responseBuilder.build();
-            });
-        }).doOnSubscribe(
-                subscription -> Logger.info(
-                        true,
-                        "Vortex",
-                        "Request subscribed (Buffering).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE",
-                        ip,
-                        method,
-                        path))
+                    return buildBufferedResponse(responseEntity, ip, method, path);
+                }).doOnSubscribe(
+                        subscription -> Logger.info(
+                                true,
+                                "Vortex",
+                                "Request subscribed (Buffering).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_SUBSCRIBE",
+                                ip,
+                                method,
+                                path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,
@@ -653,6 +597,187 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 ip,
                                 method,
                                 path));
+    }
+
+    /**
+     * Builds a buffered response from a response body that has already been judged safe to materialize.
+     *
+     * @param responseEntity downstream response entity
+     * @param ip             client IP for logging
+     * @param method         incoming HTTP method
+     * @param path           incoming request path
+     * @return buffered response
+     */
+    private Mono<ServerResponse> buildBufferedResponse(
+            ResponseEntity<Flux<DataBuffer>> responseEntity,
+            String ip,
+            String method,
+            String path) {
+        Logger.info(
+                false,
+                "Vortex",
+                "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
+                ip,
+                method,
+                path,
+                responseEntity.getHeaders());
+
+        ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+        copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
+
+        Flux<DataBuffer> bodyFlux = responseEntity.getBody();
+        if (bodyFlux == null) {
+            return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
+        }
+
+        return DataBufferUtils.join(bodyFlux, Math.toIntExact(Normal.MEBI_128)).flatMap(dataBuffer -> {
+            byte[] body = new byte[dataBuffer.readableByteCount()];
+            try {
+                dataBuffer.read(body);
+            } finally {
+                DataBufferUtils.release(dataBuffer);
+            }
+            if (body.length > 0) {
+                Logger.info(
+                        false,
+                        "Vortex",
+                        "Received buffered content: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                        ip,
+                        method,
+                        path,
+                        body.length);
+                return responseBuilder.bodyValue(body);
+            }
+            return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
+        }).switchIfEmpty(Mono.defer(() -> buildEmptyBufferedResponse(responseBuilder, ip, method, path)));
+    }
+
+    /**
+     * Builds an empty buffered response.
+     *
+     * @param responseBuilder response builder
+     * @param ip              client IP for logging
+     * @param method          incoming HTTP method
+     * @param path            incoming request path
+     * @return empty response
+     */
+    private Mono<ServerResponse> buildEmptyBufferedResponse(
+            ServerResponse.BodyBuilder responseBuilder,
+            String ip,
+            String method,
+            String path) {
+        Logger.warn(
+                false,
+                "Vortex",
+                "Received buffered content is empty: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_CONTENT_BUFFERED",
+                ip,
+                method,
+                path);
+        return responseBuilder.build();
+    }
+
+    /**
+     * Builds a streaming response without materializing the downstream body.
+     *
+     * @param responseEntity downstream response entity
+     * @param ip             client IP for logging
+     * @param method         incoming HTTP method
+     * @param path           incoming request path
+     * @param mode           streaming decision source
+     * @return streaming response
+     */
+    private Mono<ServerResponse> buildStreamingResponse(
+            ResponseEntity<Flux<DataBuffer>> responseEntity,
+            String ip,
+            String method,
+            String path,
+            String mode) {
+        ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+        Logger.debug(
+                false,
+                "Vortex",
+                "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, mode={}, {}",
+                ip,
+                method,
+                path,
+                mode,
+                responseEntity.getHeaders());
+
+        copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
+
+        Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
+                : responseEntity.getBody().doOnNext(dataBuffer -> Logger.debug(
+                false,
+                "Vortex",
+                "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, mode={}, {} bytes",
+                ip,
+                method,
+                path,
+                mode,
+                dataBuffer.readableByteCount()));
+
+        return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
+    }
+
+    /**
+     * Returns why one downstream response must be streamed, or {@code null} when buffering is safe.
+     *
+     * @param headers downstream response headers
+     * @return streaming reason
+     */
+    private String streamingReason(HttpHeaders headers) {
+        long contentLength = headers.getContentLength();
+        if (contentLength > Normal.MEBI_128) {
+            return "contentLength=" + contentLength + ", limit=" + Normal.MEBI_128;
+        }
+        MediaType contentType = headers.getContentType();
+        if (isStreamingMediaType(contentType)) {
+            return "contentType=" + contentType;
+        }
+        if (contentLength < 0) {
+            return "contentLength=unknown";
+        }
+        return null;
+    }
+
+    /**
+     * Checks whether a media type should be forwarded as a stream.
+     *
+     * @param mediaType downstream content type
+     * @return {@code true} if streaming is required
+     */
+    private boolean isStreamingMediaType(MediaType mediaType) {
+        if (mediaType == null) {
+            return false;
+        }
+        if (MediaType.APPLICATION_OCTET_STREAM.isCompatibleWith(mediaType)
+                || MediaType.TEXT_EVENT_STREAM.isCompatibleWith(mediaType)) {
+            return true;
+        }
+        String type = mediaType.getType();
+        if (StringKit.equalsIgnoreCase("image", type) || StringKit.equalsIgnoreCase("audio", type)
+                || StringKit.equalsIgnoreCase("video", type)) {
+            return true;
+        }
+        String value = mediaType.toString().toLowerCase(Locale.ROOT);
+        return value.contains("pdf") || value.contains("zip") || value.contains("tar") || value.contains("gzip")
+                || value.contains("excel") || value.contains("spreadsheet") || value.contains("word")
+                || value.contains("presentation") || value.contains("download") || value.contains("stream");
+    }
+
+    /**
+     * Copies downstream response headers to the gateway response.
+     *
+     * @param responseBuilder response builder
+     * @param source          downstream response headers
+     */
+    private void copyResponseHeaders(ServerResponse.BodyBuilder responseBuilder, HttpHeaders source) {
+        responseBuilder.headers(headers -> {
+            headers.addAll(source);
+            headers.remove(HttpHeaders.HOST);
+            headers.remove(HttpHeaders.TRANSFER_ENCODING);
+            headers.remove(HttpHeaders.CONTENT_LENGTH);
+        });
     }
 
 }

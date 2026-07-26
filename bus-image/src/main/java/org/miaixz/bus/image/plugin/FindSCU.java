@@ -23,6 +23,7 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.XMLConstants;
@@ -435,7 +436,7 @@ public class FindSCU implements AutoCloseable {
     public void query(File f) throws Exception {
         Attributes attrs;
         String filePath = f.getPath();
-        String fileExt = filePath.substring(filePath.lastIndexOf(Symbol.C_DOT) + 1).toLowerCase();
+        String fileExt = filePath.substring(filePath.lastIndexOf(Symbol.C_DOT) + 1).toLowerCase(Locale.ROOT);
 
         if (fileExt.equals("xml")) {
             attrs = SAXReader.parse(filePath);

@@ -349,19 +349,28 @@ public final class ConnectionPool implements AutoCloseable {
         require(factory, "Connection factory");
         final Cancellation scope = require(cancellation, "Cancellation");
         final long deadline = deadline(policy.acquireTimeout());
-        PoolWaiters.Waiter waiter = null;
         scope.throwIfCancelled();
         final ConnectionLease immediateIdle = acquireIdle(target, null);
         if (immediateIdle != null) {
             return immediateIdle;
         }
+        final PoolWaiters.Waiter waiter = new PoolWaiters.Waiter(target);
         final Runnable unregister = scope.cancellable() ? scope.onCancel(() -> {
             synchronized (lock) {
-                signalAllWaiters();
+                waiter.cancelled = true;
+                LockSupport.unpark(waiter.thread);
             }
         }) : NOOP_UNREGISTER;
         try {
             while (true) {
+                final ConnectionLease handedOff = takeHandoff(waiter);
+                if (handedOff != null) {
+                    if (scope.cancelled()) {
+                        handedOff.release();
+                        scope.throwIfCancelled();
+                    }
+                    return handedOff;
+                }
                 scope.throwIfCancelled();
                 final ConnectionLease shared = acquireShared(target, waiter);
                 if (shared != null) {
@@ -376,14 +385,14 @@ public final class ConnectionPool implements AutoCloseable {
                 if (reserveCreate(target, waiter)) {
                     return createLease(target, factory, scope);
                 }
-                if (waiter == null) {
-                    waiter = new PoolWaiters.Waiter(target);
-                }
                 waitForAvailability(waiter, scope, deadline);
             }
         } finally {
-            removeWaiter(waiter);
             unregister.run();
+            final ConnectionLease abandoned = removeWaiter(waiter);
+            if (abandoned != null) {
+                abandoned.release();
+            }
         }
     }
 
@@ -413,6 +422,7 @@ public final class ConnectionPool implements AutoCloseable {
                 final ConnectionLease lease = new ConnectionLease(this, target, connection, clock.millis(), true);
                 leased.add(lease);
                 physicalCount++;
+                physicalCreated();
                 logicalAcquired();
                 return lease;
             }
@@ -588,6 +598,7 @@ public final class ConnectionPool implements AutoCloseable {
                 registration.close();
             }
             multiplexCapacity.registrations.clear();
+            meter.addCounter(Counter.ACTIVE_PHYSICAL_CONNECTIONS, -physicalCount);
             physicalCount = 0;
             idleIndex.count = 0;
             creatingByDestination.clear();
@@ -660,12 +671,16 @@ public final class ConnectionPool implements AutoCloseable {
                 return true;
             }
             if (!closed.get() && !lease.leaked() && lease.connection().healthy()) {
+                if (!lease.connection().multiplex() && handoff(lease.destination(), lease.connection())) {
+                    return true;
+                }
+                final long releasedAtMillis = clock.millis();
                 PooledConnection pooled = idleIndex.entries.get(lease.connection());
                 if (pooled == null) {
-                    pooled = new PooledConnection(lease.connection(), clock.millis());
+                    pooled = new PooledConnection(lease.connection(), releasedAtMillis);
                     idleIndex.entries.put(lease.connection(), pooled);
                 } else {
-                    pooled.lastUsedMillis(clock.millis());
+                    pooled.lastUsedMillis(releasedAtMillis);
                 }
                 idleIndex.buckets.computeIfAbsent(lease.destination(), ignored -> new ArrayDeque<>()).addLast(pooled);
                 idleIndex.count++;
@@ -918,6 +933,7 @@ public final class ConnectionPool implements AutoCloseable {
                 leased.add(lease);
                 active.put(connection, 1);
                 physicalCount++;
+                physicalCreated();
                 physicalByDestination.merge(destination, 1, Integer::sum);
                 if (multiplexCapable) {
                     multiplexCapacity.multiplexDestinations.add(destination);
@@ -930,14 +946,12 @@ public final class ConnectionPool implements AutoCloseable {
                 }
                 logicalAcquired();
                 signalHead();
-                if (Logger.isDebugEnabled()) {
-                    Logger.debug(
-                            false,
-                            "Fabric",
-                            "Physical connection created: multiplex={}, physicalConnections={}",
-                            multiplexCapable,
-                            physicalCount);
-                }
+                Logger.debug(
+                        false,
+                        "Fabric",
+                        "Physical connection created: multiplex={}, physicalConnections={}",
+                        multiplexCapable,
+                        physicalCount);
                 return lease;
             }
             signalHead();
@@ -996,20 +1010,21 @@ public final class ConnectionPool implements AutoCloseable {
         while (true) {
             final long remaining;
             synchronized (lock) {
+                if (waiter.handoff != null) {
+                    return;
+                }
                 if (!waiter.queued) {
                     waiter.queued = true;
                     waiter.queuedAtNanos = clock.nanos();
                     waiters.addLast(waiter);
                     meter.incrementCounter(Counter.WAITERS_ENQUEUED);
                     meter.incrementCounter(Counter.ACTIVE_WAITERS);
-                    if (Logger.isWarnEnabled()) {
-                        Logger.warn(
-                                true,
-                                "Fabric",
-                                "Connection acquisition queued: waiters={}, physicalConnections={}",
-                                waiters.size(),
-                                physicalCount);
-                    }
+                    Logger.debug(
+                            true,
+                            "Fabric",
+                            "Connection acquisition queued: waiters={}, physicalConnections={}",
+                            waiters.size(),
+                            physicalCount);
                 }
                 scope.throwIfCancelled();
                 ensureOpen();
@@ -1060,6 +1075,9 @@ public final class ConnectionPool implements AutoCloseable {
         if (waiter == null) {
             return waiters.isEmpty();
         }
+        if (!waiter.queued) {
+            return waiters.isEmpty();
+        }
         final int window = admissionWindow();
         int admitted = 0;
         for (final PoolWaiters.Waiter candidate : waiters) {
@@ -1102,14 +1120,54 @@ public final class ConnectionPool implements AutoCloseable {
      * Removes an abandoned waiter.
      *
      * @param waiter abandoned waiter or null
+     * @return transferred lease that was not consumed, or {@code null}
      */
-    private void removeWaiter(final PoolWaiters.Waiter waiter) {
+    private ConnectionLease removeWaiter(final PoolWaiters.Waiter waiter) {
         if (waiter == null) {
-            return;
+            return null;
         }
         synchronized (lock) {
             removeWaiterLocked(waiter);
+            final ConnectionLease abandoned = waiter.handoff;
+            waiter.handoff = null;
+            return abandoned;
         }
+    }
+
+    /**
+     * Consumes a lease transferred directly by a releasing HTTP/1.1 owner.
+     *
+     * @param waiter acquisition waiter
+     * @return transferred lease, or {@code null}
+     */
+    private ConnectionLease takeHandoff(final PoolWaiters.Waiter waiter) {
+        synchronized (lock) {
+            final ConnectionLease handedOff = waiter.handoff;
+            waiter.handoff = null;
+            return handedOff;
+        }
+    }
+
+    /**
+     * Transfers an available HTTP/1.1 connection directly to the compatible queue head.
+     *
+     * @param destination released connection destination
+     * @param connection  healthy physical connection
+     * @return true when ownership was transferred without entering the idle index
+     */
+    private boolean handoff(final Destination destination, final Connection connection) {
+        final PoolWaiters.Waiter waiter = waiters.peekFirst();
+        if (waiter == null || waiter.cancelled || !waiter.destination.equals(destination)) {
+            return false;
+        }
+        final ConnectionLease handedOff = new ConnectionLease(this, destination, connection, clock.millis());
+        leased.add(handedOff);
+        active.put(connection, 1);
+        logicalAcquired();
+        waiter.handoff = handedOff;
+        completeWaiter(waiter);
+        LockSupport.unpark(waiter.thread);
+        return true;
     }
 
     /**
@@ -1274,6 +1332,21 @@ public final class ConnectionPool implements AutoCloseable {
     }
 
     /**
+     * Records one physical connection creation and its active ownership.
+     */
+    private void physicalCreated() {
+        meter.incrementCounter(Counter.PHYSICAL_CONNECTIONS_CREATED);
+        meter.incrementCounter(Counter.ACTIVE_PHYSICAL_CONNECTIONS);
+    }
+
+    /**
+     * Records one physical connection leaving active pool ownership.
+     */
+    private void physicalRemoved() {
+        meter.addCounter(Counter.ACTIVE_PHYSICAL_CONNECTIONS, -1L);
+    }
+
+    /**
      * Adds a multiplex connection once to its destination candidate queue.
      *
      * @param destination destination candidate queue
@@ -1354,6 +1427,7 @@ public final class ConnectionPool implements AutoCloseable {
         }
         final Destination destination = connection.destination();
         physicalCount--;
+        physicalRemoved();
         final int remaining = physicalByDestination.getOrDefault(destination, 0) - 1;
         if (remaining <= 0) {
             physicalByDestination.remove(destination);
@@ -1376,6 +1450,7 @@ public final class ConnectionPool implements AutoCloseable {
     private void removeTransientPhysical() {
         if (physicalCount > 0) {
             physicalCount--;
+            physicalRemoved();
         }
     }
 

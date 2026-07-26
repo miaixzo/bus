@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -477,7 +477,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @param stopTag the stop tag.
      * @return the operation result.
      */
-    private static Predicate<ImageInputStream> tagEqualOrGreater(int stopTag) {
+    private static PredicateX<ImageInputStream> tagEqualOrGreater(int stopTag) {
         return stopTag != -1 ? o -> Integer.compareUnsigned(o.tag, stopTag) >= 0 : o -> false;
     }
 
@@ -1048,7 +1048,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @param stopPredicate the stop predicate.
      * @throws IOException if the operation cannot be completed.
      */
-    public void readHeader(Predicate<ImageInputStream> stopPredicate) throws IOException {
+    public void readHeader(PredicateX<ImageInputStream> stopPredicate) throws IOException {
         byte[] buf = buffer;
         tagPos = pos;
         readFully(buf, 0, 8);
@@ -1183,7 +1183,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @return the operation result.
      * @throws IOException if the operation cannot be completed.
      */
-    public Attributes readDataset(Predicate<ImageInputStream> stopPredicate) throws IOException {
+    public Attributes readDataset(PredicateX<ImageInputStream> stopPredicate) throws IOException {
         return readDataset(UNDEFINED_LENGTH, stopPredicate);
     }
 
@@ -1196,7 +1196,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @return the read dataset attributes
      * @throws IOException if the operation cannot be completed
      */
-    public Attributes readDataset(long len, Predicate<ImageInputStream> stopPredicate) throws IOException {
+    public Attributes readDataset(long len, PredicateX<ImageInputStream> stopPredicate) throws IOException {
         handler.startDataset(this);
         readFileMetaInformation();
         Attributes attrs = new Attributes(bigEndian, 64);
@@ -1265,7 +1265,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      * @param stopPredicate the stop predicate.
      * @throws IOException if the operation cannot be completed.
      */
-    public void readAttributes(Attributes attrs, long len, Predicate<ImageInputStream> stopPredicate)
+    public void readAttributes(Attributes attrs, long len, PredicateX<ImageInputStream> stopPredicate)
             throws IOException {
         boolean undeflen = len == UNDEFINED_LENGTH;
         long endPos = pos + (len & 0xffffffffL);

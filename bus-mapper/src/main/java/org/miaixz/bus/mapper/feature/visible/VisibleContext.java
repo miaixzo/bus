@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.visible;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * Visibility context for managing row visibility filtering state.
@@ -139,7 +139,7 @@ public class VisibleContext {
      * @param <T>  the return type
      * @return the result of the task execution
      */
-    public static <T> T runIgnore(Supplier<T> task) {
+    public static <T> T runIgnore(SupplierX<T> task) {
         try (Ignore ignored = ignore()) {
             return task.get();
         }

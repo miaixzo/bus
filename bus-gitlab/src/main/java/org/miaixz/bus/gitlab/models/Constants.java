@@ -23,12 +23,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 /**
@@ -2821,7 +2821,7 @@ public interface Constants {
                 .stream(
                         new SearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS,
                                 USERS, BLOBS, COMMITS, WIKI_BLOBS })
-                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, Function.identity()));
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
         private final String jsonName;
         private final Class<T> resultType;
 
@@ -3268,7 +3268,7 @@ public interface Constants {
                 .stream(
                         new GroupSearchScope[] { PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, WIKI_BLOBS, COMMITS,
                                 BLOBS, NOTES, USERS, })
-                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, Function.identity()));
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
         private final String jsonName;
         private final Class<T> resultType;
 
@@ -3389,7 +3389,7 @@ public interface Constants {
                 .stream(
                         new ProjectSearchScope[] { BLOBS, COMMITS, ISSUES, MERGE_REQUESTS, MILESTONES, NOTES,
                                 WIKI_BLOBS, USERS })
-                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, Function.identity()));
+                .collect(Collectors.toMap(searchScope -> searchScope.jsonName, FunctionX.identity()));
         private final String jsonName;
         private final Class<T> resultType;
 

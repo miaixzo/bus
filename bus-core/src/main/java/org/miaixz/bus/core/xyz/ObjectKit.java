@@ -22,9 +22,9 @@ package org.miaixz.bus.core.xyz;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.object.ObjectValidator;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
@@ -182,18 +182,18 @@ public class ObjectKit extends ObjectValidator {
      * @param <R>     The return type of the mapping function.
      * @return The result of the mapping function, or `null` if the input object is `null`.
      */
-    public static <T, R> R apply(final T source, final Function<T, R> handler) {
+    public static <T, R> R apply(final T source, final FunctionX<T, R> handler) {
         return defaultIfNull(source, handler, (R) null);
     }
 
     /**
-     * If the specified object is not `null`, executes the {@link Consumer} on it.
+     * If the specified object is not `null`, executes the {@link ConsumerX} on it.
      *
      * @param source   The object to check.
      * @param consumer The logic to execute on the source object.
      * @param <T>      The type of the input object.
      */
-    public static <T> void accept(final T source, final Consumer<T> consumer) {
+    public static <T> void accept(final T source, final ConsumerX<T> consumer) {
         if (null != source) {
             consumer.accept(source);
         }

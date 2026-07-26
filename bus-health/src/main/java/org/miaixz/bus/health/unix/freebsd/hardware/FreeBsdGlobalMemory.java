@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
@@ -41,22 +41,22 @@ final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
     /**
      * The total value.
      */
-    private final Supplier<Long> total = Memoizer.memoize(FreeBsdGlobalMemory::queryPhysMem);
+    private final SupplierX<Long> total = Memoizer.memoize(FreeBsdGlobalMemory::queryPhysMem);
 
     /**
      * The pageSize value.
      */
-    private final Supplier<Long> pageSize = Memoizer.memoize(FreeBsdGlobalMemory::queryPageSize);
+    private final SupplierX<Long> pageSize = Memoizer.memoize(FreeBsdGlobalMemory::queryPageSize);
 
     /**
      * The available value.
      */
-    private final Supplier<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
+    private final SupplierX<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Queries the phys mem.

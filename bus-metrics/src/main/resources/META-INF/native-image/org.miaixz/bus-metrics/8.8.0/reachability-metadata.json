@@ -1634,7 +1634,7 @@
           "name": "onBudgetExhausted",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {
@@ -1799,7 +1799,7 @@
             "long",
             "java.util.concurrent.TimeUnit",
             "int",
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {
@@ -1878,7 +1878,7 @@
             "double",
             "long",
             "int",
-            "java.util.function.Consumer"
+            "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
         {
@@ -2803,7 +2803,7 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/services/**"
+      "glob": "META-INF/services/org.miaixz.bus.metrics.Provider"
     }
   ]
 }
