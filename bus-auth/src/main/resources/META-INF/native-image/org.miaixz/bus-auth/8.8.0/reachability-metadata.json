@@ -2,12 +2,6 @@
   "reflection": [
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingProvider"
-      },
-      "type": "jakarta.servlet.Servlet"
-    },
-    {
-      "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
       "type": "java.io.Serializable"
@@ -8411,12 +8405,5 @@
       "type": "org.miaixz.bus.auth.Registry"
     }
   ],
-  "resources": [
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
-      },
-      "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
-    }
-  ]
+  "resources": []
 }

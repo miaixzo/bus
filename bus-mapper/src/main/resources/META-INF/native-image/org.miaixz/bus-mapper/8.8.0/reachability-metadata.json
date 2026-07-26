@@ -13055,7 +13055,22 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/services/**"
+      "glob": "META-INF/services/org.miaixz.bus.mapper.Registry"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.mapper.builder.ClassMetaResolver"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.mapper.builder.ColumnSchemaBuilder"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.mapper.builder.TableSchemaBuilder"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.mapper.parsing.SqlScriptWrapper"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.mapper.parsing.SqlSourceEnhancer"
     }
   ]
 }

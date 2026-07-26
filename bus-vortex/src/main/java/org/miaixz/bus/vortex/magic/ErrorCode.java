@@ -119,4 +119,13 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
     public static final Errors _116008 = ErrorRegistry.builder().key("116008").value("MCP tool execution failed")
             .build();
 
+    /**
+     * Error code: 116009 - Response body is too large.
+     * <p>
+     * Indicates that the downstream response exceeded the gateway's in-memory buffering limit.
+     * </p>
+     */
+    public static final Errors _116009 = ErrorRegistry.builder().key("116009").value("Response body is too large")
+            .build();
+
 }

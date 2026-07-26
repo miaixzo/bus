@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.*;
 
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -178,6 +179,19 @@ public class ErrorsHandler implements WebExceptionHandler {
                     path,
                     outOfMemoryError.getClass().getSimpleName());
             return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
+        }
+
+        DataBufferLimitException dataBufferLimitException = findCause(ex, DataBufferLimitException.class);
+        if (dataBufferLimitException != null) {
+            Logger.error(
+                    false,
+                    "Vortex",
+                    dataBufferLimitException,
+                    "Response buffer limit exceeded: clientIp=N/A, method={}, path={}, event=ERROR_RESPONSE_TOO_LARGE, exception={}",
+                    method,
+                    path,
+                    dataBufferLimitException.getClass().getSimpleName());
+            return Message.builder().errcode(ErrorCode._116009.getKey()).errmsg(ErrorCode._116009.getValue()).build();
         }
 
         ResponseStatusException rse = findCause(ex, ResponseStatusException.class);

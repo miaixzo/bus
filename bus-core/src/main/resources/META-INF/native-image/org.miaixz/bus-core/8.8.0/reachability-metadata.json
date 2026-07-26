@@ -35341,15 +35341,6 @@
       "glob": "META-INF"
     },
     {
-      "glob": "META-INF/services/**"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.convert.XMLGregorianCalendarConverter"
-      },
-      "glob": "META-INF/services/javax.xml.datatype.DatatypeFactory"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.loader.NatLoader"
       },

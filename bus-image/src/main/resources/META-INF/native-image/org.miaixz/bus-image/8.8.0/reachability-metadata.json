@@ -90981,7 +90981,16 @@
       "glob": "ldap.properties"
     },
     {
-      "glob": "META-INF/services/**"
+      "glob": "META-INF/services/java.nio.file.spi.FileTypeDetector"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageReaderSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageWriterSpi"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.image.galaxy.data.ElementDictionary"
     },
     {
       "glob": "org/miaixz/bus/image/**"

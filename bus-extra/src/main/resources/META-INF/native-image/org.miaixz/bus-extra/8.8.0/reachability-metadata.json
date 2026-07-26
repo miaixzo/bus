@@ -8032,13 +8032,19 @@
       "glob": "META-INF/extra/**"
     },
     {
-      "glob": "META-INF/services/**"
+      "glob": "META-INF/services/org.miaixz.bus.extra.json.JsonProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.convert.XMLGregorianCalendarConverter"
-      },
-      "glob": "META-INF/services/javax.xml.datatype.DatatypeFactory"
+      "glob": "META-INF/services/org.miaixz.bus.extra.mq.MQProvider"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.extra.nlp.NLPProvider"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.extra.pinyin.PinyinProvider"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.extra.template.TemplateProvider"
     }
   ]
 }
