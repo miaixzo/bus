@@ -6516,5 +6516,13 @@
       },
       "type": "org.miaixz.bus.office.word.WordTable"
     }
+  ],
+  "serialization": [
+    {
+      "type": "org.miaixz.bus.office.Archive$Manifest"
+    },
+    {
+      "type": "org.miaixz.bus.office.Archive$Segment"
+    }
   ]
 }

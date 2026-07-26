@@ -72,6 +72,29 @@ public class Archive {
     public record Segment(int segmentIndex, String segmentName, long totalRecords, String dataFileName,
             String indexFileName, Map<String, String> attributes) implements Serializable {
 
+        /**
+         * Creates archive segment metadata with a stable serializable attribute implementation.
+         *
+         * <p>
+         * The persisted record must not retain JDK private collection wrappers such as
+         * {@code Collections$UnmodifiableMap}, because Java serialization resolves their {@code serialVersionUID}
+         * reflectively and therefore requires implementation-specific Native Image metadata.
+         * </p>
+         */
+        public Segment {
+            attributes = new LinkedHashMap<>(null == attributes ? Map.of() : attributes);
+        }
+
+        /**
+         * Returns an immutable view of the segment attributes.
+         *
+         * @return immutable segment attributes
+         */
+        @Override
+        public Map<String, String> attributes() {
+            return Collections.unmodifiableMap(attributes);
+        }
+
     }
 
     /**
@@ -393,8 +416,7 @@ public class Archive {
             final File indexFile = new File(this.rootDir, baseName + ".idx");
             state = new SegmentState(segmentIndex, null == segmentName ? "" : segmentName, dataFile, indexFile,
                     new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dataFile))), new ArrayList<>(),
-                    Collections.unmodifiableMap(new LinkedHashMap<>(null == attributes ? Map.of() : attributes)), 0L,
-                    0L);
+                    new LinkedHashMap<>(null == attributes ? Map.of() : attributes), 0L, 0L);
             this.states.put(segmentIndex, state);
             return state;
         }
