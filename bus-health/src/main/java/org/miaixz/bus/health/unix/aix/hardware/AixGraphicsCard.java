@@ -22,8 +22,8 @@ package org.miaixz.bus.health.unix.aix.hardware;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -60,7 +60,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
      * @param lscfg A memoized lscfg list
      * @return List of graphics cards
      */
-    public static List<GraphicsCard> getGraphicsCards(Supplier<List<String>> lscfg) {
+    public static List<GraphicsCard> getGraphicsCards(SupplierX<List<String>> lscfg) {
         List<GraphicsCard> cardList = new ArrayList<>();
         boolean display = false;
         String name = null;

@@ -21,8 +21,8 @@ package org.miaixz.bus.core.xyz;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.center.list.AvgPartition;
 import org.miaixz.bus.core.center.list.Partition;
@@ -505,7 +505,7 @@ public class ListKit {
      * @param matcher The predicate to match.
      * @return The index of the last match, or -1 if not found.
      */
-    public static <T> int lastIndexOf(final List<T> list, final Predicate<? super T> matcher) {
+    public static <T> int lastIndexOf(final List<T> list, final PredicateX<? super T> matcher) {
         if (null != list) {
             final int size = list.size();
             if (size > 0) {

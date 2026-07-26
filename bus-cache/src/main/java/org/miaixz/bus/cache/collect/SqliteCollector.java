@@ -21,8 +21,9 @@ package org.miaixz.bus.cache.collect;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * SQLite database implementation for cache hit rate statistics.
@@ -58,7 +59,7 @@ public class SqliteCollector extends AbstractCollector {
     }
 
     /**
-     * Provides a {@link Supplier} for a {@link JdbcRunner} configured for an SQLite database.
+     * Provides a {@link SupplierX} for a {@link JdbcRunner} configured for an SQLite database.
      * <p>
      * Uses {@link JdbcRunner#forSingleConnection} so the file-based or in-memory SQLite connection is not closed
      * between statement executions.
@@ -68,7 +69,7 @@ public class SqliteCollector extends AbstractCollector {
      * @return A supplier that provides an initialized {@link JdbcRunner} object.
      */
     @Override
-    protected Supplier<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
+    protected SupplierX<JdbcRunner> jdbcRunnerSupplier(Map<String, Object> context) {
         return () -> {
             JdbcRunner runner = JdbcRunner
                     .forSingleConnection("org.sqlite.JDBC", (String) context.get("url"), null, null);

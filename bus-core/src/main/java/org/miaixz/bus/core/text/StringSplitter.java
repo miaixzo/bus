@@ -23,8 +23,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.text.finder.TextFinder;
@@ -177,7 +177,7 @@ public class StringSplitter extends ComputeIterator<String> implements Serializa
      * @return A list containing the split strings.
      */
     public List<String> toList(final boolean trim) {
-        return toList(trim ? StringKit::trim : Function.identity());
+        return toList(trim ? StringKit::trim : FunctionX.identity());
     }
 
     /**
@@ -187,7 +187,7 @@ public class StringSplitter extends ComputeIterator<String> implements Serializa
      * @param mapping The function to map each split string to an object of type {@code T}.
      * @return A list of mapped objects.
      */
-    public <T> List<T> toList(final Function<String, T> mapping) {
+    public <T> List<T> toList(final FunctionX<String, T> mapping) {
         final List<T> result = new ArrayList<>();
         while (this.hasNext()) {
             final T apply = mapping.apply(this.next());

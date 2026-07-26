@@ -20,10 +20,10 @@
 package org.miaixz.bus.core.xyz;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.center.regex.RegexValidator;
@@ -184,7 +184,7 @@ public class PatternKit extends RegexValidator {
     public static void get(
             final java.util.regex.Pattern pattern,
             final CharSequence content,
-            final Consumer<Matcher> consumer) {
+            final ConsumerX<Matcher> consumer) {
         if (null == content || null == pattern || null == consumer) {
             return;
         }
@@ -648,7 +648,7 @@ public class PatternKit extends RegexValidator {
     public static void findAll(
             final java.util.regex.Pattern pattern,
             final CharSequence content,
-            final Consumer<Matcher> consumer) {
+            final ConsumerX<Matcher> consumer) {
         if (null == pattern || null == content) {
             return;
         }

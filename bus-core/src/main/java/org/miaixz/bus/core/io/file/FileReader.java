@@ -24,10 +24,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -129,7 +129,7 @@ public class FileReader extends FileWrapper {
      * @return The collection containing each line of the file that satisfied the predicate.
      * @throws InternalException if an I/O error occurs during reading.
      */
-    public <T extends Collection<String>> T readLines(final T collection, final Predicate<String> predicate)
+    public <T extends Collection<String>> T readLines(final T collection, final PredicateX<String> predicate)
             throws InternalException {
         readLines((ConsumerX<String>) s -> {
             if (null == predicate || predicate.test(s)) {

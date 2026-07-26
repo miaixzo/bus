@@ -22,8 +22,8 @@ package org.miaixz.bus.core.center.map.multiple;
 import java.io.Serial;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
@@ -146,7 +146,7 @@ public class Graph<T> extends SetValueMap<T, T> {
      * @param breaker A predicate that, if it returns {@code true}, stops the traversal.
      * @return A set of all visited nodes.
      */
-    private Set<T> visitAssociatedPoints(final T key, final Predicate<T> breaker) {
+    private Set<T> visitAssociatedPoints(final T key, final PredicateX<T> breaker) {
         if (!this.containsKey(key)) {
             return Collections.emptySet();
         }

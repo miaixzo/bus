@@ -21,13 +21,14 @@ package org.miaixz.bus.core.center.map;
 
 import java.io.Serial;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
- * A concrete implementation of {@link TransMap} that uses provided {@link Function}s to transform keys and values. This
- * class is useful for creating maps with specific, consistent transformation rules, such as case-insensitive keys or
- * trimmed string values.
+ * A concrete implementation of {@link TransMap} that uses provided {@link FunctionX}s to transform keys and values.
+ * This class is useful for creating maps with specific, consistent transformation rules, such as case-insensitive keys
+ * or trimmed string values.
  * <p>
  * Example: Creating a case-insensitive map for keys.
  *
@@ -52,12 +53,12 @@ public class FunctionMap<K, V> extends TransMap<K, V> {
     /**
      * The function used to transform keys.
      */
-    private final Function<Object, K> keyFunc;
+    private final FunctionX<Object, K> keyFunc;
 
     /**
      * The function used to transform values.
      */
-    private final Function<Object, V> valueFunc;
+    private final FunctionX<Object, V> valueFunc;
 
     /**
      * Constructs a new {@code FunctionMap} with a map factory and transformation functions. The factory should supply a
@@ -68,8 +69,8 @@ public class FunctionMap<K, V> extends TransMap<K, V> {
      * @param keyFunc    The function to apply to keys; if {@code null}, no transformation is applied.
      * @param valueFunc  The function to apply to values; if {@code null}, no transformation is applied.
      */
-    public FunctionMap(final Supplier<Map<K, V>> mapFactory, final Function<Object, K> keyFunc,
-            final Function<Object, V> valueFunc) {
+    public FunctionMap(final SupplierX<Map<K, V>> mapFactory, final FunctionX<Object, K> keyFunc,
+            final FunctionX<Object, V> valueFunc) {
         this(mapFactory.get(), keyFunc, valueFunc);
     }
 
@@ -81,8 +82,8 @@ public class FunctionMap<K, V> extends TransMap<K, V> {
      * @param keyFunc   The function to apply to keys; if {@code null}, no transformation is applied.
      * @param valueFunc The function to apply to values; if {@code null}, no transformation is applied.
      */
-    public FunctionMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc,
-            final Function<Object, V> valueFunc) {
+    public FunctionMap(final Map<K, V> emptyMap, final FunctionX<Object, K> keyFunc,
+            final FunctionX<Object, V> valueFunc) {
         super(emptyMap);
         this.keyFunc = keyFunc;
         this.valueFunc = valueFunc;

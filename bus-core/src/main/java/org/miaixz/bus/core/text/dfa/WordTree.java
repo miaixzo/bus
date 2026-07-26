@@ -21,8 +21,8 @@ package org.miaixz.bus.core.text.dfa;
 
 import java.io.Serial;
 import java.util.*;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -49,7 +49,7 @@ public class WordTree extends HashMap<Character, WordTree> {
     /**
      * A filter for characters, allowing certain characters to be ignored during matching.
      */
-    private Predicate<Character> charFilter = StopChar::isNotStopChar;
+    private PredicateX<Character> charFilter = StopChar::isNotStopChar;
 
     /**
      * Default constructor.
@@ -87,7 +87,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @param charFilter The filter function.
      * @return this instance for chaining.
      */
-    public WordTree setCharFilter(final Predicate<Character> charFilter) {
+    public WordTree setCharFilter(final PredicateX<Character> charFilter) {
         this.charFilter = charFilter;
         return this;
     }
@@ -131,7 +131,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         if (null == word) {
             return this;
         }
-        final Predicate<Character> charFilter = this.charFilter;
+        final PredicateX<Character> charFilter = this.charFilter;
         WordTree parent = null;
         WordTree current = this;
         WordTree child;
@@ -269,7 +269,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         final List<FoundWord> foundWords = limit > 0 ? new ArrayList<>(limit) : new ArrayList<>();
         WordTree current;
         final int length = text.length();
-        final Predicate<Character> charFilter = this.charFilter;
+        final PredicateX<Character> charFilter = this.charFilter;
         final StringBuilder wordBuffer = StringKit.builder();
         final StringBuilder keyBuffer = StringKit.builder();
         char currentChar;

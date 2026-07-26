@@ -20,10 +20,10 @@
 package org.miaixz.bus.core.center;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.core.center.array.ArrayValidator;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -132,8 +132,8 @@ public class CollectionValidator {
      */
     public static <T extends Collection<E>, E> T defaultIfEmpty(
             final T collection,
-            final Function<T, T> handler,
-            final Supplier<? extends T> defaultSupplier) {
+            final FunctionX<T, T> handler,
+            final SupplierX<? extends T> defaultSupplier) {
         return isEmpty(collection) ? defaultSupplier.get() : handler.apply(collection);
     }
 

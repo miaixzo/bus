@@ -24,8 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.LineReader;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Assert;
@@ -89,17 +89,17 @@ public class Loader {
     /**
      * A supplier for the comment formatter.
      */
-    private Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier = CommentFormatter::new;
+    private SupplierX<ElementFormatter<IniComment>> commentElementFormatterSupplier = CommentFormatter::new;
 
     /**
      * A supplier for the section formatter.
      */
-    private Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier = SectionFormatter::new;
+    private SupplierX<ElementFormatter<IniSection>> sectionElementFormatterSupplier = SectionFormatter::new;
 
     /**
      * A supplier for the property formatter.
      */
-    private Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier = PropertyFormatter::new;
+    private SupplierX<ElementFormatter<IniProperty>> propertyElementFormatterSupplier = PropertyFormatter::new;
 
     /**
      * Constructs a new Loader with a default formatter factory.
@@ -538,7 +538,7 @@ public class Loader {
      *
      * @return The supplier for the comment formatter.
      */
-    public Supplier<ElementFormatter<IniComment>> getCommentElementFormatterSupplier() {
+    public SupplierX<ElementFormatter<IniComment>> getCommentElementFormatterSupplier() {
         return commentElementFormatterSupplier;
     }
 
@@ -548,7 +548,7 @@ public class Loader {
      * @param commentElementFormatterSupplier The new supplier.
      */
     public void setCommentElementFormatterSupplier(
-            Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier) {
+            SupplierX<ElementFormatter<IniComment>> commentElementFormatterSupplier) {
         this.commentElementFormatterSupplier = commentElementFormatterSupplier;
     }
 
@@ -557,7 +557,7 @@ public class Loader {
      *
      * @return The supplier for the section formatter.
      */
-    public Supplier<ElementFormatter<IniSection>> getSectionElementFormatterSupplier() {
+    public SupplierX<ElementFormatter<IniSection>> getSectionElementFormatterSupplier() {
         return sectionElementFormatterSupplier;
     }
 
@@ -567,7 +567,7 @@ public class Loader {
      * @param sectionElementFormatterSupplier The new supplier.
      */
     public void setSectionElementFormatterSupplier(
-            Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier) {
+            SupplierX<ElementFormatter<IniSection>> sectionElementFormatterSupplier) {
         this.sectionElementFormatterSupplier = sectionElementFormatterSupplier;
     }
 
@@ -576,7 +576,7 @@ public class Loader {
      *
      * @return The supplier for the property formatter.
      */
-    public Supplier<ElementFormatter<IniProperty>> getPropertyElementFormatterSupplier() {
+    public SupplierX<ElementFormatter<IniProperty>> getPropertyElementFormatterSupplier() {
         return propertyElementFormatterSupplier;
     }
 
@@ -586,7 +586,7 @@ public class Loader {
      * @param propertyElementFormatterSupplier The new supplier.
      */
     public void setPropertyElementFormatterSupplier(
-            Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier) {
+            SupplierX<ElementFormatter<IniProperty>> propertyElementFormatterSupplier) {
         this.propertyElementFormatterSupplier = propertyElementFormatterSupplier;
     }
 

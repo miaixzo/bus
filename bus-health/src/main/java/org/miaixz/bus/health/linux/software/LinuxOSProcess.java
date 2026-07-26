@@ -29,11 +29,11 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.platform.unix.Resource;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Regex;
@@ -84,17 +84,17 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The arguments value.
      */
-    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> arguments = Memoizer.memoize(this::queryArguments);
 
     /**
      * The environmentVariables value.
      */
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+    private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
 
     /**
@@ -105,7 +105,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * The bitness value.
      */
-    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
 
     /**
      * The userID value.
@@ -115,7 +115,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * The user value.
      */
-    private final Supplier<String> user = Memoizer.memoize(this::queryUser);
+    private final SupplierX<String> user = Memoizer.memoize(this::queryUser);
 
     /**
      * The groupID value.
@@ -125,7 +125,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * The group value.
      */
-    private final Supplier<String> group = Memoizer.memoize(this::queryGroup);
+    private final SupplierX<String> group = Memoizer.memoize(this::queryGroup);
 
     /**
      * The name value.

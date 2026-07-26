@@ -20,8 +20,6 @@
 package org.miaixz.bus.health.unix.openbsd.software;
 
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
@@ -30,6 +28,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.Resource;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -87,7 +87,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     /**
      * The arguments value.
      */
-    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> arguments = Memoizer.memoize(this::queryArguments);
 
     /**
      * The os value.
@@ -97,7 +97,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     /**
      * The environmentVariables value.
      */
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+    private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
 
     /**
@@ -148,7 +148,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The parentProcessID value.
@@ -650,7 +650,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         if (getProcessID() >= 0) {
             psCommand += " -p " + getProcessID();
         }
-        Predicate<Map<PsThreadColumns, String>> hasColumnsArgs = threadMap -> threadMap
+        PredicateX<Map<PsThreadColumns, String>> hasColumnsArgs = threadMap -> threadMap
                 .containsKey(PsThreadColumns.ARGS);
         return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), Symbol.C_SPACE))

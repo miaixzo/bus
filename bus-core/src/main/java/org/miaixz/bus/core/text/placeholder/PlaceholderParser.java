@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.text.placeholder;
 
 import java.util.Objects;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,13 +36,13 @@ import org.miaixz.bus.core.text.CharsValidator;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class PlaceholderParser implements UnaryOperator<String> {
+public class PlaceholderParser implements UnaryOperatorX<String> {
 
     /**
      * The processor function that handles the extracted placeholder expression. This function takes the content within
      * the placeholder (e.g., "name" from "${name}") and returns the replacement string.
      */
-    private final UnaryOperator<String> processor;
+    private final UnaryOperatorX<String> processor;
 
     /**
      * The opening symbol of the placeholder (e.g., "${").
@@ -78,7 +78,7 @@ public class PlaceholderParser implements UnaryOperator<String> {
      * @throws IllegalArgumentException if prefix or suffix is empty.
      * @throws NullPointerException     if processor is null.
      */
-    public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix) {
+    public PlaceholderParser(final UnaryOperatorX<String> processor, final String prefix, final String suffix) {
         this(processor, prefix, suffix, Symbol.C_BACKSLASH);
     }
 
@@ -92,7 +92,7 @@ public class PlaceholderParser implements UnaryOperator<String> {
      * @throws IllegalArgumentException if prefix or suffix is empty.
      * @throws NullPointerException     if processor is null.
      */
-    public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix,
+    public PlaceholderParser(final UnaryOperatorX<String> processor, final String prefix, final String suffix,
             final char escape) {
         Assert.isFalse(CharsValidator.isEmpty(prefix), "Prefix symbol cannot be empty");
         Assert.isFalse(CharsValidator.isEmpty(suffix), "Suffix symbol cannot be empty");
@@ -114,7 +114,7 @@ public class PlaceholderParser implements UnaryOperator<String> {
      * @throws InternalException if an opening placeholder symbol is found without a corresponding closing symbol.
      */
     @Override
-    public String apply(final String text) {
+    public String applying(final String text) {
         if (CharsValidator.isEmpty(text)) {
             return Normal.EMPTY;
         }

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -45,13 +45,13 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
     /**
      * The usedTotalPgin value.
      */
-    private final Supplier<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer
+    private final SupplierX<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer
             .memoize(OpenBsdVirtualMemory::queryVmstat, Memoizer.defaultExpiration());
 
     /**
      * The pgout value.
      */
-    private final Supplier<Integer> pgout = Memoizer
+    private final SupplierX<Integer> pgout = Memoizer
             .memoize(OpenBsdVirtualMemory::queryUvm, Memoizer.defaultExpiration());
 
     /**

@@ -20,8 +20,8 @@
 package org.miaixz.bus.office.excel.sax.handler;
 
 import java.util.List;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -45,9 +45,9 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
     protected final int endRowIndex;
 
     /**
-     * Function to convert raw row data to type T.
+     * FunctionX to convert raw row data to type T.
      */
-    protected Function<List<Object>, T> convertFunc;
+    protected FunctionX<List<Object>, T> convertFunc;
 
     /**
      * Constructs a new {@code AbstractRowHandler}.

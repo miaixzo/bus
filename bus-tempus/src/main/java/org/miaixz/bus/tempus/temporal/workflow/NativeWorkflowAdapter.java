@@ -32,8 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
@@ -118,7 +119,7 @@ public final class NativeWorkflowAdapter {
             Worker worker,
             String workflowType,
             Class<R> requestType,
-            Supplier<? extends Function<R, ?>> factory) {
+            SupplierX<? extends FunctionX<R, ?>> factory) {
         Objects.requireNonNull(worker, "worker must not be null");
         Objects.requireNonNull(workflowType, "workflowType must not be null");
         Objects.requireNonNull(requestType, "requestType must not be null");

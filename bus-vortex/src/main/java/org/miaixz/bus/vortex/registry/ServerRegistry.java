@@ -90,8 +90,7 @@ public class ServerRegistry {
      * @return A {@code Mono} emitting the consolidated {@link Transmit}.
      */
     private Mono<Transmit> buildServerStatusView(Assets assets) {
-        Mono<Lifecycle.State> statusMono = processProvider.getStatus(assets)
-                .defaultIfEmpty(Lifecycle.State.UNKNOWN);
+        Mono<Lifecycle.State> statusMono = processProvider.getStatus(assets).defaultIfEmpty(Lifecycle.State.UNKNOWN);
         Mono<Metrics> metricsMono = metricsProvider.getMetrics(assets.getId())
                 .defaultIfEmpty(Metrics.builder().cpu(0).memory(0).build());
 

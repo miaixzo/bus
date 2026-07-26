@@ -23,9 +23,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.*;
 
 /**
@@ -61,7 +61,7 @@ public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<Metho
      * @param filter                  The filter predicate
      * @param excludeTypes            Types to exclude from scanning
      */
-    public MethodAnnotationScanner(final boolean scanSameSignatureMethod, final Predicate<Class<?>> filter,
+    public MethodAnnotationScanner(final boolean scanSameSignatureMethod, final PredicateX<Class<?>> filter,
             final Set<Class<?>> excludeTypes) {
         super(scanSameSignatureMethod, scanSameSignatureMethod, filter, excludeTypes);
     }
@@ -75,7 +75,7 @@ public class MethodAnnotationScanner extends AbstractTypeAnnotationScanner<Metho
      * @param excludeTypes      Types to exclude from scanning
      */
     public MethodAnnotationScanner(final boolean includeSuperClass, final boolean includeInterfaces,
-            final Predicate<Class<?>> filter, final Set<Class<?>> excludeTypes) {
+            final PredicateX<Class<?>> filter, final Set<Class<?>> excludeTypes) {
         super(includeSuperClass, includeInterfaces, filter, excludeTypes);
     }
 

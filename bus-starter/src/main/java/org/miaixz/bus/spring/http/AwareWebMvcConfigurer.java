@@ -22,7 +22,6 @@ package org.miaixz.bus.spring.http;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.MediaType;
@@ -34,6 +33,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.SpringBuilder;
@@ -230,7 +230,7 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
      */
     protected void configureConverter(
             List<org.springframework.http.converter.HttpMessageConverter<?>> converters,
-            Consumer<List<org.springframework.http.converter.HttpMessageConverter<?>>> configurer,
+            ConsumerX<List<org.springframework.http.converter.HttpMessageConverter<?>>> configurer,
             String name) {
         try {
             configurer.accept(converters);

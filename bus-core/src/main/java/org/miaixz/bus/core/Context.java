@@ -23,10 +23,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
@@ -183,10 +183,10 @@ public class Context extends Keys {
      * property-dependent logic.
      *
      * @param key      The property key to check.
-     * @param consumer The {@link Consumer} to execute with the property value if it is not blank.
+     * @param consumer The {@link ConsumerX} to execute with the property value if it is not blank.
      * @return The current {@code Context} instance for chaining.
      */
-    public Context whenNotBlank(String key, Consumer<String> consumer) {
+    public Context whenNotBlank(String key, ConsumerX<String> consumer) {
         String value = delegate.getProperty(key);
         if (StringKit.isNotBlank(value)) {
             consumer.accept(value);
@@ -199,12 +199,12 @@ public class Context extends Keys {
      * transforming the property value before it is consumed.
      *
      * @param key      The property key to check.
-     * @param function A {@link Function} to transform the property value.
-     * @param consumer The {@link Consumer} to execute with the transformed value.
+     * @param function A {@link FunctionX} to transform the property value.
+     * @param consumer The {@link ConsumerX} to execute with the transformed value.
      * @param <T>      The type of the transformed value.
      * @return The current {@code Context} instance for chaining.
      */
-    public <T> Context whenNotBlank(String key, Function<String, T> function, Consumer<T> consumer) {
+    public <T> Context whenNotBlank(String key, FunctionX<String, T> function, ConsumerX<T> consumer) {
         String value = delegate.getProperty(key);
         if (StringKit.isNotBlank(value)) {
             consumer.accept(function.apply(value));

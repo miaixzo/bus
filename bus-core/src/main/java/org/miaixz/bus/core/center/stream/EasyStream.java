@@ -23,7 +23,14 @@ import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -234,7 +241,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
             final UnaryOperator<T> next) {
         Objects.requireNonNull(next);
         Objects.requireNonNull(hasNext);
-        return new EasyStream<>(StreamKit.iterate(seed, hasNext, next));
+        return new EasyStream<>(StreamKit.iterate(seed, hasNext::test, next::apply));
     }
 
     /**
@@ -263,7 +270,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
             final T root,
             final Function<T, Collection<T>> discoverer,
             final Predicate<T> filter) {
-        return of(StreamKit.iterateHierarchies(root, discoverer, filter));
+        return of(StreamKit.iterateHierarchies(root, discoverer::apply, filter::test));
     }
 
     /**
@@ -288,7 +295,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
      * @return a stream consisting of all nodes in the hierarchical structure, including the root node
      */
     public static <T> EasyStream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer) {
-        return of(StreamKit.iterateHierarchies(root, discoverer));
+        return of(StreamKit.iterateHierarchies(root, discoverer::apply));
     }
 
     /**

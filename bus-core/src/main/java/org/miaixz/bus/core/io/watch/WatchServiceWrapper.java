@@ -24,9 +24,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.nio.file.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * class simplifies the process of monitoring file system changes. Key functionalities include:
  * <ul>
  * <li>Registration: {@link #registerPath(Path, int)} to register paths for monitoring.</li>
- * <li>Monitoring: {@link #watch(Watcher, Predicate)} to start monitoring and define actions upon event triggers.</li>
+ * <li>Monitoring: {@link #watch(Watcher, PredicateX)} to start monitoring and define actions upon event triggers.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -275,11 +275,11 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
      * {@link WatchKey#watchable()} provides the {@link Path} that is being monitored.
      *
      * @param watcher     The {@link Watcher} instance to which events are dispatched.
-     * @param watchFilter An optional {@link Predicate} to filter watch events. Only events for which
-     *                    {@link Predicate#test(Object)} returns {@code true} will be processed. If {@code null}, no
+     * @param watchFilter An optional {@link PredicateX} to filter watch events. Only events for which
+     *                    {@link PredicateX#test(Object)} returns {@code true} will be processed. If {@code null}, no
      *                    filtering is applied.
      */
-    public void watch(final Watcher watcher, final Predicate<WatchEvent<?>> watchFilter) {
+    public void watch(final Watcher watcher, final PredicateX<WatchEvent<?>> watchFilter) {
         watch((event, watchKey) -> {
             final WatchEvent.Kind<?> kind = event.kind();
 
@@ -297,32 +297,32 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
 
     /**
      * Executes the event retrieval and processing loop. This method blocks the current thread until a watch event is
-     * available. Events are then processed by the provided {@link BiConsumer}.
+     * available. Events are then processed by the provided {@link BiConsumerX}.
      * <p>
      * {@link WatchEvent#context()} provides the relative path of the affected file or directory to the monitored path.
      * {@link WatchKey#watchable()} provides the {@link Path} that is being monitored.
      *
-     * @param action The {@link BiConsumer} functional interface to handle the {@link WatchEvent} and {@link WatchKey}.
+     * @param action The {@link BiConsumerX} functional interface to handle the {@link WatchEvent} and {@link WatchKey}.
      */
-    public void watch(final BiConsumer<WatchEvent<?>, WatchKey> action) {
+    public void watch(final BiConsumerX<WatchEvent<?>, WatchKey> action) {
         watch(action, null);
     }
 
     /**
      * Executes the event retrieval and processing loop. This method blocks the current thread until a watch event is
-     * available. Events are then processed by the provided {@link BiConsumer}, optionally filtered by a
-     * {@link Predicate}.
+     * available. Events are then processed by the provided {@link BiConsumerX}, optionally filtered by a
+     * {@link PredicateX}.
      * <p>
      * {@link WatchEvent#context()} provides the relative path of the affected file or directory to the monitored path.
      * {@link WatchKey#watchable()} provides the {@link Path} that is being monitored.
      *
-     * @param action      The {@link BiConsumer} functional interface to handle the {@link WatchEvent} and
+     * @param action      The {@link BiConsumerX} functional interface to handle the {@link WatchEvent} and
      *                    {@link WatchKey}.
-     * @param watchFilter An optional {@link Predicate} to filter watch events. Only events for which
-     *                    {@link Predicate#test(Object)} returns {@code true} will be processed. If {@code null}, no
+     * @param watchFilter An optional {@link PredicateX} to filter watch events. Only events for which
+     *                    {@link PredicateX#test(Object)} returns {@code true} will be processed. If {@code null}, no
      *                    filtering is applied.
      */
-    public void watch(final BiConsumer<WatchEvent<?>, WatchKey> action, final Predicate<WatchEvent<?>> watchFilter) {
+    public void watch(final BiConsumerX<WatchEvent<?>, WatchKey> action, final PredicateX<WatchEvent<?>> watchFilter) {
         final WatchKey wk;
         try {
             wk = raw.take();

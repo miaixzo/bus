@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.tempus.timings;
 
-import java.util.function.Consumer;
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.TimerCrontab;
@@ -57,7 +57,7 @@ public class TimingWheel {
     /**
      * The handler for processing expired task lists.
      */
-    private final Consumer<TimerTaskList> consumer;
+    private final ConsumerX<TimerTaskList> consumer;
 
     /**
      * The current time of the wheel, aligned to the nearest {@code tickMs}.
@@ -76,7 +76,7 @@ public class TimingWheel {
      * @param wheelSize The number of slots in the wheel.
      * @param consumer  The handler for processing expired task lists.
      */
-    public TimingWheel(final long tickMs, final int wheelSize, final Consumer<TimerTaskList> consumer) {
+    public TimingWheel(final long tickMs, final int wheelSize, final ConsumerX<TimerTaskList> consumer) {
         this(tickMs, wheelSize, System.currentTimeMillis(), consumer);
     }
 
@@ -89,7 +89,7 @@ public class TimingWheel {
      * @param consumer    The handler for processing expired task lists.
      */
     public TimingWheel(final long tickMs, final int wheelSize, final long currentTime,
-            final Consumer<TimerTaskList> consumer) {
+            final ConsumerX<TimerTaskList> consumer) {
         this.tickMs = tickMs;
         this.wheelSize = wheelSize;
         this.interval = tickMs * wheelSize;

@@ -22,12 +22,12 @@ package org.miaixz.bus.core.xyz;
 import java.lang.annotation.*;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
@@ -139,7 +139,7 @@ public class AnnoKit {
      * @return An array of annotations.
      */
     public static Annotation[] getAnnotations(final AnnotatedElement annotationEle, final boolean isToCombination) {
-        return getAnnotations(annotationEle, isToCombination, (Predicate<Annotation>) null);
+        return getAnnotations(annotationEle, isToCombination, (PredicateX<Annotation>) null);
     }
 
     /**
@@ -192,7 +192,7 @@ public class AnnoKit {
     public static Annotation[] getAnnotations(
             final AnnotatedElement annotationEle,
             final boolean isToCombination,
-            final Predicate<Annotation> predicate) {
+            final PredicateX<Annotation> predicate) {
         if (null == annotationEle) {
             return null;
         }

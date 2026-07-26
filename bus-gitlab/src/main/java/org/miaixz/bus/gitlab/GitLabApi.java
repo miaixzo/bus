@@ -20,12 +20,12 @@
 package org.miaixz.bus.gitlab;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
 import org.miaixz.bus.gitlab.models.User;
@@ -2014,7 +2014,7 @@ public class GitLabApi implements AutoCloseable {
      *
      * @param authTokenSupplier - supplier which provide actual auth token
      */
-    public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
+    public void setAuthTokenSupplier(SupplierX<String> authTokenSupplier) {
         apiClient.setAuthTokenSupplier(authTokenSupplier);
     }
 

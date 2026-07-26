@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.net.MediaType;
 
@@ -124,7 +124,7 @@ public final class MultipartBody {
      * @param streamSupplier the stream supplier.
      * @return the operation result.
      */
-    public HttpRequest.BodyPublisher createBodyPublisher(Supplier<? extends InputStream> streamSupplier) {
+    public HttpRequest.BodyPublisher createBodyPublisher(SupplierX<? extends InputStream> streamSupplier) {
         return HttpRequest.BodyPublishers.ofInputStream(Objects.requireNonNull(streamSupplier));
     }
 

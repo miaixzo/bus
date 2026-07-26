@@ -21,8 +21,9 @@ package org.miaixz.bus.extra.compress.archiver;
 
 import java.io.Closeable;
 import java.io.File;
-import java.util.function.Function;
-import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 /**
  * Data archiving wrapper, which archives several files or directories into a compressed package.
@@ -47,10 +48,10 @@ public interface Archiver extends Closeable {
      *
      * @param file   The file or directory.
      * @param filter A file filter that specifies which files or directories can be added. If
-     *               {@link Predicate#test(Object)} is {@code true}, the file is added. If null, all are added.
+     *               {@link PredicateX#test(Object)} is {@code true}, the file is added. If null, all are added.
      * @return this
      */
-    default Archiver add(final File file, final Predicate<File> filter) {
+    default Archiver add(final File file, final PredicateX<File> filter) {
         return add(file, null, filter);
     }
 
@@ -60,11 +61,11 @@ public interface Archiver extends Closeable {
      * @param file   The file or directory.
      * @param path   The initial path of the file or directory. If null, it is placed at the root level.
      * @param filter A file filter that specifies which files or directories can be added. If
-     *               {@link Predicate#test(Object)} is {@code true}, the file is kept. If null, all are added.
+     *               {@link PredicateX#test(Object)} is {@code true}, the file is kept. If null, all are added.
      * @return this
      */
-    default Archiver add(final File file, final String path, final Predicate<File> filter) {
-        return add(file, path, Function.identity(), filter);
+    default Archiver add(final File file, final String path, final PredicateX<File> filter) {
+        return add(file, path, FunctionX.identity(), filter);
     }
 
     /**
@@ -74,10 +75,10 @@ public interface Archiver extends Closeable {
      * @param path           The initial path of the file or directory. If null, it is placed at the root level.
      * @param fileNameEditor A function to edit the file name.
      * @param filter         A file filter that specifies which files or directories can be added. If
-     *                       {@link Predicate#test(Object)} is {@code true}, the file is kept. If null, all are added.
+     *                       {@link PredicateX#test(Object)} is {@code true}, the file is kept. If null, all are added.
      * @return this
      */
-    Archiver add(File file, String path, Function<String, String> fileNameEditor, Predicate<File> filter);
+    Archiver add(File file, String path, FunctionX<String, String> fileNameEditor, PredicateX<File> filter);
 
     /**
      * Finishes archiving the added files. This method does not close the archive stream, allowing more files to be

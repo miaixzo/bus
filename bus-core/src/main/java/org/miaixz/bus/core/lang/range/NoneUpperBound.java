@@ -69,7 +69,7 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
      * @return {@code true} always
      */
     @Override
-    public boolean test(final T t) {
+    public boolean testing(final T t) {
         return true;
     }
 

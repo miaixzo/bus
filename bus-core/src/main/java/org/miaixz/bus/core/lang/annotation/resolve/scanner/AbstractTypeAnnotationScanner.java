@@ -23,10 +23,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Proxy;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.*;
 
@@ -53,7 +53,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
     /**
      * Filter predicate; types that fail this filter (along with their tree structures) are not scanned.
      */
-    private Predicate<Class<?>> filter;
+    private PredicateX<Class<?>> filter;
 
     /**
      * Excluded types; these types and their tree structures are not scanned.
@@ -63,7 +63,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
     /**
      * Type converters applied to each class before processing.
      */
-    private final List<UnaryOperator<Class<?>>> converters;
+    private final List<UnaryOperatorX<Class<?>>> converters;
 
     /**
      * Whether any converters have been registered.
@@ -84,7 +84,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      * @param excludeTypes      Types to exclude from scanning
      */
     protected AbstractTypeAnnotationScanner(final boolean includeSuperClass, final boolean includeInterfaces,
-            final Predicate<Class<?>> filter, final Set<Class<?>> excludeTypes) {
+            final PredicateX<Class<?>> filter, final Set<Class<?>> excludeTypes) {
         Assert.notNull(filter, "filter must not null");
         Assert.notNull(excludeTypes, "excludeTypes must not null");
         this.includeSuperClass = includeSuperClass;
@@ -119,7 +119,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      * @param filter The filter predicate
      * @return This scanner instance
      */
-    public T setFilter(final Predicate<Class<?>> filter) {
+    public T setFilter(final PredicateX<Class<?>> filter) {
         Assert.notNull(filter, "filter must not null");
         this.filter = filter;
         return typedThis;
@@ -143,7 +143,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      * @return This scanner instance
      * @see JdkProxyClassConverter
      */
-    public T addConverters(final UnaryOperator<Class<?>> converter) {
+    public T addConverters(final UnaryOperatorX<Class<?>> converter) {
         Assert.notNull(converter, "converter must not null");
         this.converters.add(converter);
         if (!this.hasConverters) {
@@ -184,9 +184,9 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      */
     @Override
     public void scan(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            Predicate<Annotation> filter) {
+            PredicateX<Annotation> filter) {
         filter = ObjectKit.defaultIfNull(filter, PredicateKit.alwaysTrue());
         final Class<?> sourceClass = getClassFormAnnotatedElement(annotatedEle);
         final Deque<List<Class<?>>> classDeque = ListKit.ofLinked(ListKit.of(sourceClass));
@@ -292,7 +292,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      */
     protected Class<?> convert(Class<?> target) {
         if (hasConverters) {
-            for (final UnaryOperator<Class<?>> converter : converters) {
+            for (final UnaryOperatorX<Class<?>> converter : converters) {
                 target = converter.apply(target);
             }
         }
@@ -305,7 +305,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class JdkProxyClassConverter implements UnaryOperator<Class<?>> {
+    public static class JdkProxyClassConverter implements UnaryOperatorX<Class<?>> {
 
         /**
          * If {@code sourceClass} is a JDK proxy class, recursively returns the superclass until a non-proxy class is
@@ -315,7 +315,7 @@ public abstract class AbstractTypeAnnotationScanner<T extends AbstractTypeAnnota
          * @return the original non-proxy class
          */
         @Override
-        public Class<?> apply(final Class<?> sourceClass) {
+        public Class<?> applying(final Class<?> sourceClass) {
             return Proxy.isProxyClass(sourceClass) ? apply(sourceClass.getSuperclass()) : sourceClass;
         }
 

@@ -22,7 +22,8 @@ package org.miaixz.bus.image.galaxy.data;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
+
+import org.miaixz.bus.core.center.function.FunctionX;
 
 /**
  * Base wrapper for DICOM module-like structures backed by {@link Attributes}.
@@ -177,7 +178,7 @@ public class DicomModule {
      * @param <T>      the mapped value type.
      * @return the operation result.
      */
-    protected static <T> List<T> mapSequence(Sequence sequence, Function<Attributes, T> mapper) {
+    protected static <T> List<T> mapSequence(Sequence sequence, FunctionX<Attributes, T> mapper) {
         if (sequence == null || sequence.isEmpty()) {
             return List.of();
         }

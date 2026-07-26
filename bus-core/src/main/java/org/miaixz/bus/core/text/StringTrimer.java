@@ -21,9 +21,9 @@ package org.miaixz.bus.core.text;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
+public class StringTrimer implements UnaryOperatorX<CharSequence>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852235152928L;
@@ -63,7 +63,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
      * The predicate used to determine if a character should be trimmed. Returns {@code true} if the character should be
      * filtered out, {@code false} otherwise.
      */
-    private final Predicate<Character> predicate;
+    private final PredicateX<Character> predicate;
 
     /**
      * Constructs a new {@code StringTrimer} with the specified trimming mode and predicate.
@@ -72,7 +72,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
      * @param predicate The predicate to determine if a character should be trimmed. Returns {@code true} if the
      *                  character should be filtered out, {@code false} otherwise.
      */
-    public StringTrimer(final TrimMode mode, final Predicate<Character> predicate) {
+    public StringTrimer(final TrimMode mode, final PredicateX<Character> predicate) {
         this.mode = mode;
         this.predicate = predicate;
     }
@@ -83,7 +83,7 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
      * @return the String value
      */
     @Override
-    public String apply(final CharSequence text) {
+    public String applying(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
             return StringKit.toStringOrNull(text);
         }
@@ -113,6 +113,17 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
         }
 
         return result;
+    }
+
+    /**
+     * Applies this trimmer while preserving the concrete {@link String} return type.
+     *
+     * @param text The text to trim.
+     * @return The trimmed string.
+     */
+    @Override
+    public String apply(final CharSequence text) {
+        return applying(text);
     }
 
     /**

@@ -21,7 +21,8 @@ package org.miaixz.bus.core.center.map.multiple;
 
 import java.io.Serial;
 import java.util.*;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * A {@link MultipleValueMap} implementation where the values associated with each key are stored in a {@link Set}.
@@ -47,7 +48,7 @@ public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
      *
      * @param mapFactory A factory method that supplies a {@link Map} to store the key-set pairs.
      */
-    public SetValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
+    public SetValueMap(final SupplierX<Map<K, Collection<V>>> mapFactory) {
         super(mapFactory);
     }
 

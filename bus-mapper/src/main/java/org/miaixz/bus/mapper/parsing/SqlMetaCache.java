@@ -19,13 +19,12 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import lombok.Getter;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.mapper.dialect.Dialect;
 
 /**
@@ -55,7 +54,7 @@ public class SqlMetaCache {
     /**
      * The SQL script supplier.
      */
-    private final Supplier<String> sqlScriptSupplier;
+    private final SupplierX<String> sqlScriptSupplier;
 
     /**
      * The dynamic SQL script function that accepts Dialect parameter.
@@ -64,7 +63,7 @@ public class SqlMetaCache {
      * multi-datasource scenarios where different databases may require different SQL syntax.
      * </p>
      */
-    private final Function<Dialect, String> dynamicSqlScriptFunction;
+    private final FunctionX<Dialect, String> dynamicSqlScriptFunction;
 
     /**
      * Constructor to initialize the SQL cache (static SQL).
@@ -73,7 +72,7 @@ public class SqlMetaCache {
      * @param tableMeta         The entity class metadata.
      * @param sqlScriptSupplier The SQL script supplier.
      */
-    public SqlMetaCache(ProviderContext context, TableMeta tableMeta, Supplier<String> sqlScriptSupplier) {
+    public SqlMetaCache(ProviderContext context, TableMeta tableMeta, SupplierX<String> sqlScriptSupplier) {
         this(context, tableMeta, sqlScriptSupplier, null);
     }
 
@@ -85,8 +84,8 @@ public class SqlMetaCache {
      * @param sqlScriptSupplier        The SQL script supplier (used if dynamicSqlScriptFunction is null).
      * @param dynamicSqlScriptFunction The dynamic SQL function that accepts Dialect (optional).
      */
-    public SqlMetaCache(ProviderContext context, TableMeta tableMeta, Supplier<String> sqlScriptSupplier,
-            Function<Dialect, String> dynamicSqlScriptFunction) {
+    public SqlMetaCache(ProviderContext context, TableMeta tableMeta, SupplierX<String> sqlScriptSupplier,
+            FunctionX<Dialect, String> dynamicSqlScriptFunction) {
         this.context = context;
         this.tableMeta = tableMeta;
         this.sqlScriptSupplier = sqlScriptSupplier;

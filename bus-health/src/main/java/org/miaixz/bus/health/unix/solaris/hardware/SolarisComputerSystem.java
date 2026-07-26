@@ -22,8 +22,8 @@ package org.miaixz.bus.health.unix.solaris.hardware;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -47,7 +47,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
     /**
      * The smbiosStrings value.
      */
-    private final Supplier<SmbiosStrings> smbiosStrings = Memoizer.memoize(SolarisComputerSystem::readSmbios);
+    private final SupplierX<SmbiosStrings> smbiosStrings = Memoizer.memoize(SolarisComputerSystem::readSmbios);
 
     /**
      * Reads the smbios.

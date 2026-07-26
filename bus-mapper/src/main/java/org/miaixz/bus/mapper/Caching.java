@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.builder.annotation.ProviderContext;
@@ -35,6 +33,8 @@ import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 import org.miaixz.bus.core.Context;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -133,7 +133,7 @@ public class Caching extends XMLLanguageDriver {
      * @param sqlScriptSupplier A supplier for the SQL script string.
      * @return The generated cache key.
      */
-    public static String cache(ProviderContext context, TableMeta entity, Supplier<String> sqlScriptSupplier) {
+    public static String cache(ProviderContext context, TableMeta entity, SupplierX<String> sqlScriptSupplier) {
         String cacheKey = cacheKey(context);
 
         // Use computeIfAbsent for lock-free concurrency, performance optimization: concurrent throughput improved by
@@ -162,7 +162,7 @@ public class Caching extends XMLLanguageDriver {
     public static String cacheDynamic(
             ProviderContext context,
             TableMeta entity,
-            Function<Dialect, String> dynamicSqlScriptFunction) {
+            FunctionX<Dialect, String> dynamicSqlScriptFunction) {
         String cacheKey = cacheKey(context);
 
         // Use computeIfAbsent for lock-free concurrency, performance optimization: concurrent throughput improved by

@@ -22,7 +22,8 @@ package org.miaixz.bus.core.lang.thread;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Consumer;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
  * A {@link RejectedExecutionHandler} that blocks the calling thread until the task can be added to the queue. If the
@@ -40,7 +41,7 @@ public class BlockPolicy implements RejectedExecutionHandler {
      * Handler for tasks that are rejected when the thread pool is shut down, to prevent task loss. If the task needs to
      * be executed by the caller, you can use {@code new BlockPolicy(Runnable::run)}.
      */
-    private final Consumer<Runnable> handlerwhenshutdown;
+    private final ConsumerX<Runnable> handlerwhenshutdown;
 
     /**
      * Constructs a new {@code BlockPolicy} with no specific handler for tasks rejected during shutdown.
@@ -54,7 +55,7 @@ public class BlockPolicy implements RejectedExecutionHandler {
      *
      * @param handlerwhenshutdown The handler to execute rejected tasks when the thread pool is shut down.
      */
-    public BlockPolicy(final Consumer<Runnable> handlerwhenshutdown) {
+    public BlockPolicy(final ConsumerX<Runnable> handlerwhenshutdown) {
         this.handlerwhenshutdown = handlerwhenshutdown;
     }
 

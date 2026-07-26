@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -57,7 +57,7 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
      * A map of method names to functions that handle their invocation, including special methods like {@code equals},
      * {@code hashCode}, and {@code toString}.
      */
-    private final Map<String, BiFunction<Method, Object[], Object>> methods;
+    private final Map<String, BiFunctionX<Method, Object[], Object>> methods;
 
     /**
      * A cache for resolved attribute values to avoid redundant computations.

@@ -21,10 +21,10 @@ package org.miaixz.bus.health.mac.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -52,22 +52,22 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     /**
      * The total value.
      */
-    private final Supplier<Long> total = Memoizer.memoize(MacGlobalMemory::queryPhysMem);
+    private final SupplierX<Long> total = Memoizer.memoize(MacGlobalMemory::queryPhysMem);
 
     /**
      * The pageSize value.
      */
-    private final Supplier<Long> pageSize = Memoizer.memoize(MacGlobalMemory::queryPageSize);
+    private final SupplierX<Long> pageSize = Memoizer.memoize(MacGlobalMemory::queryPageSize);
 
     /**
      * The available value.
      */
-    private final Supplier<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
+    private final SupplierX<Long> available = Memoizer.memoize(this::queryVmStats, Memoizer.defaultExpiration());
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Queries the phys mem.

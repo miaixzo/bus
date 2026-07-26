@@ -20,7 +20,8 @@
 package org.miaixz.bus.tempus.temporal.workflow;
 
 import java.util.Objects;
-import java.util.function.Function;
+
+import org.miaixz.bus.core.center.function.FunctionX;
 
 import io.temporal.common.converter.EncodedValues;
 import io.temporal.workflow.DynamicSignalHandler;
@@ -53,7 +54,7 @@ public class DynamicWorkflowHandler<R> implements DynamicWorkflow, DynamicSignal
     /**
      * Workflow invocation function created inside Temporal workflow context.
      */
-    private final Function<R, ?> invocation;
+    private final FunctionX<R, ?> invocation;
 
     /**
      * Creates a dynamic workflow handler for one workflow type.
@@ -63,7 +64,7 @@ public class DynamicWorkflowHandler<R> implements DynamicWorkflow, DynamicSignal
      * @param invocation   workflow invocation function
      * @throws NullPointerException if {@code invocation} is {@code null}
      */
-    DynamicWorkflowHandler(String workflowType, Class<R> requestType, Function<R, ?> invocation) {
+    DynamicWorkflowHandler(String workflowType, Class<R> requestType, FunctionX<R, ?> invocation) {
         this.workflowType = workflowType;
         this.requestType = requestType;
         this.invocation = Objects.requireNonNull(invocation, "invocation must not be null");

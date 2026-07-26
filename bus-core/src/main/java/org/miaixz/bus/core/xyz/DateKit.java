@@ -28,8 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -41,6 +39,8 @@ import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.center.date.printer.FormatPrinter;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
@@ -1428,7 +1428,7 @@ public class DateKit extends Calendar {
             final Date start,
             final Date end,
             final Various unit,
-            final Function<Date, T> func) {
+            final FunctionX<Date, T> func) {
         if (start == null || end == null || start.after(end)) {
             return Collections.emptyList();
         }
@@ -1451,7 +1451,7 @@ public class DateKit extends Calendar {
             final Date start,
             final Date end,
             final Various unit,
-            final Consumer<Date> consumer) {
+            final ConsumerX<Date> consumer) {
         if (start == null || end == null || start.after(end)) {
             return;
         }

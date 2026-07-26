@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.mac.software;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
@@ -33,6 +32,7 @@ import com.sun.jna.platform.mac.SystemB.Passwd;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.Resource;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -145,13 +145,13 @@ public class MacOSProcess extends AbstractOSProcess {
     /**
      * The argsEnviron value.
      */
-    private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer
+    private final SupplierX<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer
             .memoize(this::queryArgsAndEnvironment);
 
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The majorVersion value.

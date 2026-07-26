@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.compare;
 
 import java.io.Serial;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CompareKit;
 
@@ -47,7 +47,7 @@ public class FunctionCompare<T> extends NullCompare<T> {
      * @param func        the function to extract the {@link Comparable} value from the object.
      */
     public FunctionCompare(final boolean nullGreater, final boolean compareSelf,
-            final Function<T, Comparable<?>> func) {
+            final FunctionX<T, Comparable<?>> func) {
         super(nullGreater, (a, b) -> {
             // Extract comparable values using the provided function
             final Comparable<?> v1;

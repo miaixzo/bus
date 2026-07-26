@@ -29,7 +29,6 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import javax.net.ssl.*;
@@ -44,6 +43,7 @@ import org.glassfish.jersey.media.multipart.*;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -85,7 +85,7 @@ public class GitLabApiClient implements AutoCloseable {
     private String baseUrl;
     private String hostUrl;
     private TokenType tokenType = TokenType.PRIVATE;
-    private Supplier<String> authToken;
+    private SupplierX<String> authToken;
     private String secretToken;
     private boolean ignoreCertificateErrors;
     private SSLContext openSslContext;
@@ -1502,7 +1502,7 @@ public class GitLabApiClient implements AutoCloseable {
      *
      * @param authTokenSupplier - supplier which provide actual auth token
      */
-    public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
+    public void setAuthTokenSupplier(SupplierX<String> authTokenSupplier) {
         this.authToken = authTokenSupplier;
         Logger.info(
                 false,

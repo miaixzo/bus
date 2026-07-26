@@ -22,9 +22,9 @@ package org.miaixz.bus.setting.nimble.ini;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -73,7 +73,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
      * @param listSupplier  property-list supplier
      */
     public IniSectionService(String value, String originalValue, int lineNumber,
-            Supplier<List<IniProperty>> listSupplier) {
+            SupplierX<List<IniProperty>> listSupplier) {
         super(value, originalValue, lineNumber);
         properties = listSupplier.get();
     }
@@ -113,7 +113,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
      * @param listSupplier  property-list supplier
      */
     public IniSectionService(String value, String originalValue, int lineNumber, IniComment comment,
-            Supplier<List<IniProperty>> listSupplier) {
+            SupplierX<List<IniProperty>> listSupplier) {
         super(value, originalValue, lineNumber, comment);
         properties = listSupplier.get();
     }
@@ -121,7 +121,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
     /**
      * If the {@code value} changed, change the originalValue
      *
-     * @param newValue when {@code value} changes, like {@link #setValue(String)} or {@link #setValue(Function)}
+     * @param newValue when {@code value} changes, like {@link #setValue(String)} or {@link #setValue(FunctionX)}
      * @return new originalValue
      */
     @Override
@@ -160,14 +160,14 @@ public class IniSectionService extends AbstractElement implements IniSection {
      * @return list.
      */
     @Override
-    public List<IniProperty> getList(Supplier<List<IniProperty>> listSupplier) {
+    public List<IniProperty> getList(SupplierX<List<IniProperty>> listSupplier) {
         List<IniProperty> list = listSupplier.get();
         list.addAll(properties);
         return list;
     }
 
     /**
-     * if you want to get the {@code IniProperty} list, use {@link #getList()} or {@link #getList(Supplier)}.
+     * if you want to get the {@code IniProperty} list, use {@link #getList()} or {@link #getList(SupplierX)}.
      *
      * @return the real list.
      */

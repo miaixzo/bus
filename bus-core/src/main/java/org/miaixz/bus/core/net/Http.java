@@ -24,10 +24,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
@@ -2019,13 +2019,13 @@ public final class Http {
          * Lookup table keyed by registry verb code.
          */
         private static final Map<Integer, Method> BY_VERB = Stream.of(values())
-                .collect(Collectors.toUnmodifiableMap(Method::verb, Function.identity()));
+                .collect(Collectors.toUnmodifiableMap(Method::verb, FunctionX.identity()));
 
         /**
          * Lookup table keyed by upper-cased method token.
          */
         private static final Map<String, Method> BY_VALUE = Stream.of(values())
-                .collect(Collectors.toUnmodifiableMap(Method::value, Function.identity()));
+                .collect(Collectors.toUnmodifiableMap(Method::value, FunctionX.identity()));
 
         /**
          * Registry verb code used by stored assets.

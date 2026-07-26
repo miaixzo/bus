@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.unix.solaris.software;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.Pointer;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -49,13 +48,13 @@ public class SolarisOSThread extends AbstractOSThread {
     /**
      * The lwpsinfo value.
      */
-    private final Supplier<SolarisLibc.SolarisLwpsInfo> lwpsinfo = Memoizer
+    private final SupplierX<SolarisLibc.SolarisLwpsInfo> lwpsinfo = Memoizer
             .memoize(this::queryLwpsInfo, Memoizer.defaultExpiration());
 
     /**
      * The prusage value.
      */
-    private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer
+    private final SupplierX<SolarisLibc.SolarisPrUsage> prusage = Memoizer
             .memoize(this::queryPrUsage, Memoizer.defaultExpiration());
 
     /**

@@ -20,10 +20,10 @@
 package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
@@ -53,12 +53,13 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
     /**
      * The lscfg value.
      */
-    private final Supplier<List<String>> lscfg = Memoizer.memoize(Lscfg::queryAllDevices, Memoizer.defaultExpiration());
+    private final SupplierX<List<String>> lscfg = Memoizer
+            .memoize(Lscfg::queryAllDevices, Memoizer.defaultExpiration());
     // Memoized disk stats to pass to disk object(s)
     /**
      * The diskStats value.
      */
-    private final Supplier<perfstat_disk_t[]> diskStats = Memoizer
+    private final SupplierX<perfstat_disk_t[]> diskStats = Memoizer
             .memoize(PerfstatDisk::queryDiskStats, Memoizer.defaultExpiration());
 
     /**

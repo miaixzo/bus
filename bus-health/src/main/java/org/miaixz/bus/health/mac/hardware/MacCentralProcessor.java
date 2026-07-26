@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,6 +31,7 @@ import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -112,7 +112,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     /**
      * The vendor value.
      */
-    private final Supplier<String> vendor = Memoizer.memoize(MacCentralProcessor::platformExpert);
+    private final SupplierX<String> vendor = Memoizer.memoize(MacCentralProcessor::platformExpert);
 
     /**
      * The isArmCpu value.

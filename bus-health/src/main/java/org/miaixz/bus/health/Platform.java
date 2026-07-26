@@ -23,8 +23,8 @@ import java.lang.management.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
@@ -76,12 +76,12 @@ public class Platform {
     /**
      * Caches the OperatingSystem instance using Memoizer to avoid repeated creation and improve performance.
      */
-    private final Supplier<OperatingSystem> os = Memoizer.memoize(this::createOperatingSystem);
+    private final SupplierX<OperatingSystem> os = Memoizer.memoize(this::createOperatingSystem);
 
     /**
      * Caches the HardwareAbstractionLayer instance using Memoizer to avoid repeated creation and improve performance.
      */
-    private final Supplier<HardwareAbstractionLayer> hardware = Memoizer.memoize(this::createHardware);
+    private final SupplierX<HardwareAbstractionLayer> hardware = Memoizer.memoize(this::createHardware);
 
     /**
      * Private constructor to prevent external instantiation.

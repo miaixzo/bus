@@ -23,9 +23,9 @@ import java.io.Serial;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.core.Builder;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
@@ -144,14 +144,14 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 
     /**
      * Adds a key-value pair to the map only if the given condition is {@code true}, with the value provided by a
-     * {@link Supplier}. The supplier is only invoked if the condition is met.
+     * {@link SupplierX}. The supplier is only invoked if the condition is met.
      *
      * @param condition The boolean condition to evaluate.
      * @param k         The key to add if the condition is true.
-     * @param supplier  A {@link Supplier} that provides the value.
+     * @param supplier  A {@link SupplierX} that provides the value.
      * @return This {@code MapBuilder} instance for method chaining.
      */
-    public MapBuilder<K, V> put(final boolean condition, final K k, final Supplier<V> supplier) {
+    public MapBuilder<K, V> put(final boolean condition, final K k, final SupplierX<V> supplier) {
         if (condition) {
             put(k, supplier.get());
         }

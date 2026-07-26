@@ -19,11 +19,10 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
@@ -54,13 +53,13 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     /**
      * The usedTotal value.
      */
-    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer
+    private final SupplierX<Pair<Long, Long>> usedTotal = Memoizer
             .memoize(MacVirtualMemory::querySwapUsage, Memoizer.defaultExpiration());
 
     /**
      * The inOut value.
      */
-    private final Supplier<Pair<Long, Long>> inOut = Memoizer
+    private final SupplierX<Pair<Long, Long>> inOut = Memoizer
             .memoize(MacVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 
     /**

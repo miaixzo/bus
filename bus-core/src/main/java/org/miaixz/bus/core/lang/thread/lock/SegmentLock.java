@@ -34,8 +34,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.*;
 import java.util.concurrent.locks.Lock;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
@@ -88,11 +88,11 @@ public abstract class SegmentLock<L> {
      * Creates a segment lock with strong references, where all segments are initialized upon creation.
      *
      * @param stripes  The number of segments.
-     * @param supplier A {@link Supplier} that provides new instances of the lock type {@code L}.
+     * @param supplier A {@link SupplierX} that provides new instances of the lock type {@code L}.
      * @param <L>      The type of the lock or synchronization primitive.
      * @return A {@link SegmentLock} instance with strong references.
      */
-    public static <L> SegmentLock<L> custom(final int stripes, final Supplier<L> supplier) {
+    public static <L> SegmentLock<L> custom(final int stripes, final SupplierX<L> supplier) {
         return new CompactSegmentLock<>(stripes, supplier);
     }
 
@@ -121,11 +121,11 @@ public abstract class SegmentLock<L> {
      * Creates a segment lock with weak references and lazy loading, using a custom supplier for the lock type.
      *
      * @param stripes  The number of segments.
-     * @param supplier A {@link Supplier} that provides new instances of the lock type {@code L}.
+     * @param supplier A {@link SupplierX} that provides new instances of the lock type {@code L}.
      * @param <L>      The type of the lock or synchronization primitive.
      * @return A {@link SegmentLock} instance with weak references and lazy loading.
      */
-    private static <L> SegmentLock<L> lazyWeakCustom(final int stripes, final Supplier<L> supplier) {
+    private static <L> SegmentLock<L> lazyWeakCustom(final int stripes, final SupplierX<L> supplier) {
         return stripes < LARGE_LAZY_CUTOFF ? new SmallLazySegmentLock<>(stripes, supplier)
                 : new LargeLazySegmentLock<>(stripes, supplier);
     }
@@ -555,9 +555,9 @@ public abstract class SegmentLock<L> {
          * Constructs a new {@code CompactSegmentLock}.
          *
          * @param stripes  The number of segments.
-         * @param supplier A {@link Supplier} that provides new instances of the lock type {@code L}.
+         * @param supplier A {@link SupplierX} that provides new instances of the lock type {@code L}.
          */
-        CompactSegmentLock(final int stripes, final Supplier<L> supplier) {
+        CompactSegmentLock(final int stripes, final SupplierX<L> supplier) {
             super(stripes);
             Assert.isTrue(stripes <= Integer.MAX_VALUE / 2, "Segment count must be <= 2^30");
             this.array = new Object[mask + 1];
@@ -604,7 +604,7 @@ public abstract class SegmentLock<L> {
     private static class SmallLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
         final AtomicReferenceArray<ArrayReference<? extends L>> locks;
-        final Supplier<L> supplier;
+        final SupplierX<L> supplier;
         final int size;
         final ReferenceQueue<L> queue = new ReferenceQueue<>();
 
@@ -612,9 +612,9 @@ public abstract class SegmentLock<L> {
          * Constructs a new {@code SmallLazySegmentLock}.
          *
          * @param stripes  The number of segments.
-         * @param supplier A {@link Supplier} that provides new instances of the lock type {@code L}.
+         * @param supplier A {@link SupplierX} that provides new instances of the lock type {@code L}.
          */
-        SmallLazySegmentLock(final int stripes, final Supplier<L> supplier) {
+        SmallLazySegmentLock(final int stripes, final SupplierX<L> supplier) {
             super(stripes);
             this.size = (mask == ALL_SET) ? Integer.MAX_VALUE : mask + 1;
             this.locks = new AtomicReferenceArray<>(size);
@@ -712,16 +712,16 @@ public abstract class SegmentLock<L> {
     private static class LargeLazySegmentLock<L> extends PowerOfTwoSegmentLock<L> {
 
         final ConcurrentMap<Integer, L> locks;
-        final Supplier<L> supplier;
+        final SupplierX<L> supplier;
         final int size;
 
         /**
          * Constructs a new {@code LargeLazySegmentLock}.
          *
          * @param stripes  The number of segments.
-         * @param supplier A {@link Supplier} that provides new instances of the lock type {@code L}.
+         * @param supplier A {@link SupplierX} that provides new instances of the lock type {@code L}.
          */
-        LargeLazySegmentLock(final int stripes, final Supplier<L> supplier) {
+        LargeLazySegmentLock(final int stripes, final SupplierX<L> supplier) {
             super(stripes);
             this.size = (mask == ALL_SET) ? Integer.MAX_VALUE : mask + 1;
             this.locks = new ConcurrentHashMap<>();

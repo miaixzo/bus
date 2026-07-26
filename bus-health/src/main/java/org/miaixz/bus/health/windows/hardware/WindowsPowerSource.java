@@ -278,7 +278,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 bi.getPointer(),
                                                                 bi.size(),
                                                                 dwOut,
-                                                        null)) {
+                                                                null)) {
                                                             // Only non-UPS system batteries count
                                                             bi.read();
                                                             if (0 == (bi.Capabilities & BATTERY_SYSTEM_BATTERY)

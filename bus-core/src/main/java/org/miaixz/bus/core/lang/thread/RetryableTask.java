@@ -19,16 +19,16 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.ThreadKit;
-
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
  * A utility class for executing tasks with retry logic. It allows specifying retry conditions based on exceptions or
@@ -43,13 +43,13 @@ public class RetryableTask<T> {
     /**
      * The supplier representing the task to be executed.
      */
-    private final Supplier<T> supplier;
+    private final SupplierX<T> supplier;
 
     /**
-     * The retry strategy, a {@link BiPredicate} that returns {@code true} if a retry should occur. The predicate
+     * The retry strategy, a {@link BiPredicateX} that returns {@code true} if a retry should occur. The predicate
      * receives the task result and any thrown {@link Throwable}.
      */
-    private final BiPredicate<T, Throwable> predicate;
+    private final BiPredicateX<T, Throwable> predicate;
 
     /**
      * The result of the task execution.
@@ -78,14 +78,14 @@ public class RetryableTask<T> {
 
     /**
      * Private constructor for {@code RetryableTask}. Use static factory methods like
-     * {@link #retryForExceptions(Runnable, Class[])} or {@link #retryForPredicate(Supplier, BiPredicate)} to create
+     * {@link #retryForExceptions(Runnable, Class[])} or {@link #retryForPredicate(SupplierX, BiPredicateX)} to create
      * instances.
      *
-     * @param supplier  The {@link Supplier} representing the task to be executed.
-     * @param predicate The {@link BiPredicate} defining the retry strategy. Returns {@code true} to retry.
+     * @param supplier  The {@link SupplierX} representing the task to be executed.
+     * @param predicate The {@link BiPredicateX} defining the retry strategy. Returns {@code true} to retry.
      * @throws IllegalArgumentException if {@code supplier} or {@code predicate} is {@code null}.
      */
-    private RetryableTask(final Supplier<T> supplier, final BiPredicate<T, Throwable> predicate) {
+    private RetryableTask(final SupplierX<T> supplier, final BiPredicateX<T, Throwable> predicate) {
         Assert.notNull(supplier, "task parameter cannot be null");
         Assert.notNull(predicate, "predicate parameter cannot be null");
 
@@ -118,18 +118,18 @@ public class RetryableTask<T> {
      * for tasks that return a value.
      *
      * @param <T>            The type of the task result.
-     * @param supplier       The {@link Supplier} representing the task to execute.
+     * @param supplier       The {@link SupplierX} representing the task to execute.
      * @param retryableTypes The {@link Throwable} types that trigger a retry.
      * @return A new {@code RetryableTask} instance configured for exception-based retries.
      * @throws IllegalArgumentException if {@code retryableTypes} is empty.
      */
     @SafeVarargs
     public static <T> RetryableTask<T> retryForExceptions(
-            final Supplier<T> supplier,
+            final SupplierX<T> supplier,
             final Class<? extends Throwable>... retryableTypes) {
         Assert.isTrue(retryableTypes.length != 0, "retryableTypes cannot be empty");
 
-        final BiPredicate<T, Throwable> retryPredicate = (ignoredResult, failure) -> {
+        final BiPredicateX<T, Throwable> retryPredicate = (ignoredResult, failure) -> {
             if (ObjectKit.isNotNull(failure)) {
                 return Arrays.stream(retryableTypes).anyMatch(type -> type.isAssignableFrom(failure.getClass()));
             }
@@ -140,17 +140,17 @@ public class RetryableTask<T> {
     }
 
     /**
-     * Creates a {@code RetryableTask} that retries execution based on a custom {@link BiPredicate}. This method is for
+     * Creates a {@code RetryableTask} that retries execution based on a custom {@link BiPredicateX}. This method is for
      * tasks that do not return a value.
      *
      * @param <T>       The type of the task result (will be {@code Void} for {@link Runnable} tasks).
      * @param runnable  The {@link Runnable} task to execute.
-     * @param predicate The {@link BiPredicate} defining the retry strategy. Returns {@code true} to retry.
+     * @param predicate The {@link BiPredicateX} defining the retry strategy. Returns {@code true} to retry.
      * @return A new {@code RetryableTask} instance configured for predicate-based retries.
      */
     public static <T> RetryableTask<T> retryForPredicate(
             final Runnable runnable,
-            final BiPredicate<T, Throwable> predicate) {
+            final BiPredicateX<T, Throwable> predicate) {
         return retryForPredicate(() -> {
             runnable.run();
             return null;
@@ -158,17 +158,17 @@ public class RetryableTask<T> {
     }
 
     /**
-     * Creates a {@code RetryableTask} that retries execution based on a custom {@link BiPredicate}. This method is for
+     * Creates a {@code RetryableTask} that retries execution based on a custom {@link BiPredicateX}. This method is for
      * tasks that return a value.
      *
      * @param <T>       The type of the task result.
-     * @param supplier  The {@link Supplier} representing the task to execute.
-     * @param predicate The {@link BiPredicate} defining the retry strategy. Returns {@code true} to retry.
+     * @param supplier  The {@link SupplierX} representing the task to execute.
+     * @param predicate The {@link BiPredicateX} defining the retry strategy. Returns {@code true} to retry.
      * @return A new {@code RetryableTask} instance configured for predicate-based retries.
      */
     public static <T> RetryableTask<T> retryForPredicate(
-            final Supplier<T> supplier,
-            final BiPredicate<T, Throwable> predicate) {
+            final SupplierX<T> supplier,
+            final BiPredicateX<T, Throwable> predicate) {
         return new RetryableTask<>(supplier, predicate);
     }
 
@@ -225,7 +225,7 @@ public class RetryableTask<T> {
      * Returns an {@link Optional} containing the last {@link Throwable} encountered during task execution, if any.
      *
      * @return An {@link Optional} describing the {@link Throwable}, or an empty {@link Optional} if no exception
-     * occurred.
+     *         occurred.
      */
     public Optional<Throwable> throwable() {
         return Optional.ofNullable(this.throwable);
@@ -235,7 +235,7 @@ public class RetryableTask<T> {
      * Returns an {@link Optional} containing the result of the task execution, if successful.
      *
      * @return An {@link Optional} describing the result, or an empty {@link Optional} if the task failed or returned
-     * {@code null}.
+     *         {@code null}.
      */
     public Optional<T> get() {
         return Optional.ofNullable(this.result);

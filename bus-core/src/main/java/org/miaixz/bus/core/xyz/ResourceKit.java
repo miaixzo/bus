@@ -27,8 +27,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.io.resource.*;
 import org.miaixz.bus.core.lang.Assert;
@@ -157,7 +157,7 @@ public class ResourceKit {
      * @param filter   A predicate to filter the resources.
      * @return A list of resource URLs.
      */
-    public static List<URL> getResourceUrls(final String resource, final Predicate<URL> filter) {
+    public static List<URL> getResourceUrls(final String resource, final PredicateX<URL> filter) {
         return IteratorKit.filterToList(getResourceUrlIter(resource), filter);
     }
 

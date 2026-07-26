@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -89,8 +89,8 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      */
     default <C extends Collection<V>> void putAllNode(
             final C values,
-            final Function<V, K> keyGenerator,
-            final Function<V, K> parentKeyGenerator,
+            final FunctionX<V, K> keyGenerator,
+            final FunctionX<V, K> parentKeyGenerator,
             final boolean ignoreNullNode) {
         if (CollKit.isEmpty(values)) {
             return;
@@ -170,9 +170,9 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      *
      * @param parentKey The key of the parent node.
      * @param childKey  The key of the child node.
-     * @param consumer  An optional {@link BiConsumer} to process the parent and child nodes after linking.
+     * @param consumer  An optional {@link BiConsumerX} to process the parent and child nodes after linking.
      */
-    void linkNodes(K parentKey, K childKey, BiConsumer<TreeEntry<K, V>, TreeEntry<K, V>> consumer);
+    void linkNodes(K parentKey, K childKey, BiConsumerX<TreeEntry<K, V>, TreeEntry<K, V>> consumer);
 
     /**
      * Removes the direct link between a parent and its immediate child node.

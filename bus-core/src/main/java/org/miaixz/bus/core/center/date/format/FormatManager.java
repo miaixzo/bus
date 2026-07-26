@@ -23,8 +23,8 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -41,12 +41,12 @@ public class FormatManager {
     /**
      * Map of date formatting rules.
      */
-    private final Map<CharSequence, Function<Date, String>> formatterMap;
+    private final Map<CharSequence, FunctionX<Date, String>> formatterMap;
 
     /**
      * Map of date parsing rules.
      */
-    private final Map<CharSequence, Function<CharSequence, Date>> parserMap;
+    private final Map<CharSequence, FunctionX<CharSequence, Date>> parserMap;
 
     /**
      * Constructs a {@code FormatManager} instance, initializing preset formatting and parsing rules.
@@ -83,9 +83,9 @@ public class FormatManager {
      * @return The current {@code FormatManager} instance.
      * @throws IllegalArgumentException if {@code format} or {@code func} is {@code null}.
      */
-    public FormatManager registerFormatter(final String format, final Function<Date, String> func) {
+    public FormatManager registerFormatter(final String format, final FunctionX<Date, String> func) {
         Assert.notNull(format, "Format must be not null !");
-        Assert.notNull(func, "Function must be not null !");
+        Assert.notNull(func, "Function must not be null!");
         formatterMap.put(format, func);
         return this;
     }
@@ -98,9 +98,9 @@ public class FormatManager {
      * @return The current {@code FormatManager} instance.
      * @throws IllegalArgumentException if {@code format} or {@code func} is {@code null}.
      */
-    public FormatManager registerParser(final String format, final Function<CharSequence, Date> func) {
+    public FormatManager registerParser(final String format, final FunctionX<CharSequence, Date> func) {
         Assert.notNull(format, "Format must be not null !");
-        Assert.notNull(func, "Function must be not null !");
+        Assert.notNull(func, "Function must not be null!");
         parserMap.put(format, func);
         return this;
     }
@@ -134,7 +134,7 @@ public class FormatManager {
      */
     public String format(final Date date, final CharSequence format) {
         if (formatterMap != null) {
-            final Function<Date, String> func = formatterMap.get(format);
+            final FunctionX<Date, String> func = formatterMap.get(format);
             if (func != null) {
                 return func.apply(date);
             }
@@ -162,7 +162,7 @@ public class FormatManager {
      */
     public Date parse(final CharSequence date, final String format) {
         if (parserMap != null) {
-            final Function<CharSequence, Date> func = parserMap.get(format);
+            final FunctionX<CharSequence, Date> func = parserMap.get(format);
             if (func != null) {
                 return func.apply(date);
             }

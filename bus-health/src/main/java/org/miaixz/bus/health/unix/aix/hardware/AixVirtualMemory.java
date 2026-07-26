@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.unix.aix.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
 
@@ -45,14 +44,14 @@ final class AixVirtualMemory extends AbstractVirtualMemory {
     /**
      * The perfstatMem value.
      */
-    private final Supplier<perfstat_memory_total_t> perfstatMem;
+    private final SupplierX<perfstat_memory_total_t> perfstatMem;
 
     /**
      * Constructor for SolarisVirtualMemory.
      *
      * @param perfstatMem The memoized perfstat data from the global memory class
      */
-    AixVirtualMemory(Supplier<perfstat_memory_total_t> perfstatMem) {
+    AixVirtualMemory(SupplierX<perfstat_memory_total_t> perfstatMem) {
         this.perfstatMem = perfstatMem;
     }
 

@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -42,22 +42,22 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     /**
      * The manufacturer value.
      */
-    private final Supplier<String> manufacturer = Memoizer.memoize(LinuxComputerSystem::queryManufacturer);
+    private final SupplierX<String> manufacturer = Memoizer.memoize(LinuxComputerSystem::queryManufacturer);
 
     /**
      * The model value.
      */
-    private final Supplier<String> model = Memoizer.memoize(LinuxComputerSystem::queryModel);
+    private final SupplierX<String> model = Memoizer.memoize(LinuxComputerSystem::queryModel);
 
     /**
      * The serialNumber value.
      */
-    private final Supplier<String> serialNumber = Memoizer.memoize(LinuxComputerSystem::querySerialNumber);
+    private final SupplierX<String> serialNumber = Memoizer.memoize(LinuxComputerSystem::querySerialNumber);
 
     /**
      * The uuid value.
      */
-    private final Supplier<String> uuid = Memoizer.memoize(LinuxComputerSystem::queryUUID);
+    private final SupplierX<String> uuid = Memoizer.memoize(LinuxComputerSystem::queryUUID);
 
     /**
      * Queries the model.

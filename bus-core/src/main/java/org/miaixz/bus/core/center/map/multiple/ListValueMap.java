@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * A {@code Map} implementation where each key can be associated with a {@link List} of values. This allows for storing
@@ -46,7 +47,7 @@ public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
      *
      * @param mapFactory A supplier that provides the map to be used.
      */
-    public ListValueMap(final Supplier<Map<K, Collection<V>>> mapFactory) {
+    public ListValueMap(final SupplierX<Map<K, Collection<V>>> mapFactory) {
         super(mapFactory);
     }
 

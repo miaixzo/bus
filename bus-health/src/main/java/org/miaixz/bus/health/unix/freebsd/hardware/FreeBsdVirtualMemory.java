@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
@@ -47,25 +47,25 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
     /**
      * The used value.
      */
-    private final Supplier<Long> used = Memoizer
+    private final SupplierX<Long> used = Memoizer
             .memoize(FreeBsdVirtualMemory::querySwapUsed, Memoizer.defaultExpiration());
 
     /**
      * The total value.
      */
-    private final Supplier<Long> total = Memoizer
+    private final SupplierX<Long> total = Memoizer
             .memoize(FreeBsdVirtualMemory::querySwapTotal, Memoizer.defaultExpiration());
 
     /**
      * The pagesIn value.
      */
-    private final Supplier<Long> pagesIn = Memoizer
+    private final SupplierX<Long> pagesIn = Memoizer
             .memoize(FreeBsdVirtualMemory::queryPagesIn, Memoizer.defaultExpiration());
 
     /**
      * The pagesOut value.
      */
-    private final Supplier<Long> pagesOut = Memoizer
+    private final SupplierX<Long> pagesOut = Memoizer
             .memoize(FreeBsdVirtualMemory::queryPagesOut, Memoizer.defaultExpiration());
 
     /**

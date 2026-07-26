@@ -20,13 +20,13 @@
 package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_total_t;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -63,13 +63,13 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     /**
      * The cpuTotal value.
      */
-    private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer
+    private final SupplierX<perfstat_cpu_total_t> cpuTotal = Memoizer
             .memoize(PerfstatCpu::queryCpuTotal, Memoizer.defaultExpiration());
 
     /**
      * The cpuProc value.
      */
-    private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer
+    private final SupplierX<perfstat_cpu_t[]> cpuProc = Memoizer
             .memoize(PerfstatCpu::queryCpu, Memoizer.defaultExpiration());
 
     /**

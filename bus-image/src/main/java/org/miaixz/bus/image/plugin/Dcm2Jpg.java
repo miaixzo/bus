@@ -25,13 +25,13 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
 import javax.imageio.*;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.FileImageOutputStream;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -153,8 +153,8 @@ public class Dcm2Jpg {
      * @param clazz The class name to match. Can be a fully qualified name or end with '*' for prefix matching.
      * @return A predicate that tests if an object's class name matches the given name.
      */
-    private static Predicate<Object> matchClassName(String clazz) {
-        Predicate<String> predicate = clazz.endsWith("*") ? startsWith(clazz.substring(0, clazz.length() - 1))
+    private static PredicateX<Object> matchClassName(String clazz) {
+        PredicateX<String> predicate = clazz.endsWith("*") ? startsWith(clazz.substring(0, clazz.length() - 1))
                 : clazz::equals;
         return w -> predicate.test(w.getClass().getName());
     }
@@ -165,7 +165,7 @@ public class Dcm2Jpg {
      * @param prefix The prefix to check for.
      * @return A predicate for the startsWith check.
      */
-    private static Predicate<String> startsWith(String prefix) {
+    private static PredicateX<String> startsWith(String prefix) {
         return s -> s.startsWith(prefix);
     }
 

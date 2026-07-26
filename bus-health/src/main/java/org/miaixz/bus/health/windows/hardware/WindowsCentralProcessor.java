@@ -22,7 +22,6 @@ package org.miaixz.bus.health.windows.hardware;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
@@ -30,6 +29,7 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -99,7 +99,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     /**
      * The processorUtilityCounters value.
      */
-    private final Supplier<Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
+    private final SupplierX<Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
             ? Memoizer.memoize(
                     WindowsCentralProcessor::queryProcessorUtilityCounters,
                     TimeUnit.MILLISECONDS.toNanos(300L))

@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.health.unix.solaris.hardware;
 
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
@@ -54,26 +54,26 @@ final class SolarisVirtualMemory extends AbstractVirtualMemory {
     /**
      * The availTotal value.
      */
-    private final Supplier<Pair<Long, Long>> availTotal = Memoizer
+    private final SupplierX<Pair<Long, Long>> availTotal = Memoizer
             .memoize(SystemPages::queryAvailableTotal, Memoizer.defaultExpiration());
 
     // Swap
     /**
      * The usedTotal value.
      */
-    private final Supplier<Pair<Long, Long>> usedTotal = Memoizer
+    private final SupplierX<Pair<Long, Long>> usedTotal = Memoizer
             .memoize(SolarisVirtualMemory::querySwapInfo, Memoizer.defaultExpiration());
 
     /**
      * The pagesIn value.
      */
-    private final Supplier<Long> pagesIn = Memoizer
+    private final SupplierX<Long> pagesIn = Memoizer
             .memoize(SolarisVirtualMemory::queryPagesIn, Memoizer.defaultExpiration());
 
     /**
      * The pagesOut value.
      */
-    private final Supplier<Long> pagesOut = Memoizer
+    private final SupplierX<Long> pagesOut = Memoizer
             .memoize(SolarisVirtualMemory::queryPagesOut, Memoizer.defaultExpiration());
 
     /**

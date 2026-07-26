@@ -22,11 +22,11 @@ package org.miaixz.bus.core.lang.annotation.resolve.scanner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.*;
 
 /**
@@ -100,9 +100,9 @@ public class MetaAnnotationScanner implements AnnotationScanner {
      */
     @Override
     public void scan(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            Predicate<Annotation> filter) {
+            PredicateX<Annotation> filter) {
         filter = ObjectKit.defaultIfNull(filter, PredicateKit.alwaysTrue());
         final Set<Class<? extends Annotation>> accessed = new HashSet<>();
         final Deque<List<Class<? extends Annotation>>> deque = ListKit

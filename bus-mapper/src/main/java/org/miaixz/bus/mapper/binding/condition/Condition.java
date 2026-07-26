@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -33,6 +32,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.binding.function.Fn;
@@ -343,7 +343,7 @@ public class Condition<T> {
      * @param orderByCondition A supplier for the sorting expression (e.g., FIELD(id,3,1,2)).
      * @return The current {@link Condition} object.
      */
-    public Condition<T> orderBy(Supplier<String> orderByCondition) {
+    public Condition<T> orderBy(SupplierX<String> orderByCondition) {
         return orderBy(orderByCondition.get());
     }
 

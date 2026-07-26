@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -212,8 +209,8 @@ public class BeanTree<T, R extends Comparable<R>> {
      * @return The flattened list of all nodes in the tree.
      */
     public List<T> flat(final List<T> tree) {
-        final AtomicReference<Function<T, EasyStream<T>>> recursiveRef = new AtomicReference<>();
-        final Function<T, EasyStream<T>> recursive = e -> EasyStream.of(childrenGetter.apply(e))
+        final AtomicReference<FunctionX<T, EasyStream<T>>> recursiveRef = new AtomicReference<>();
+        final FunctionX<T, EasyStream<T>> recursive = e -> EasyStream.of(childrenGetter.apply(e))
                 .flat(recursiveRef.get()).unshift(e);
         recursiveRef.set(recursive);
         return EasyStream.of(tree).flat(recursive).peek(e -> childrenSetter.accept(e, null)).toList();
@@ -230,8 +227,8 @@ public class BeanTree<T, R extends Comparable<R>> {
      */
     public List<T> filter(final List<T> tree, final PredicateX<T> condition) {
         Objects.requireNonNull(condition, "filter condition must be not null");
-        final AtomicReference<Predicate<T>> recursiveRef = new AtomicReference<>();
-        final Predicate<T> recursive = PredicateX.multiOr(
+        final AtomicReference<PredicateX<T>> recursiveRef = new AtomicReference<>();
+        final PredicateX<T> recursive = PredicateX.multiOr(
                 condition::test,
                 e -> Optional.ofEmptyAble(childrenGetter.apply(e))
                         .map(children -> EasyStream.of(children).filter(recursiveRef.get()).toList())
@@ -250,8 +247,8 @@ public class BeanTree<T, R extends Comparable<R>> {
      */
     public List<T> forEach(final List<T> tree, final ConsumerX<T> action) {
         Objects.requireNonNull(action, "action must be not null");
-        final AtomicReference<Consumer<T>> recursiveRef = new AtomicReference<>();
-        final Consumer<T> recursive = ConsumerX.multi(
+        final AtomicReference<ConsumerX<T>> recursiveRef = new AtomicReference<>();
+        final ConsumerX<T> recursive = ConsumerX.multi(
                 action::accept,
                 e -> Optional.ofEmptyAble(childrenGetter.apply(e))
                         .ifPresent(children -> EasyStream.of(children).forEach(recursiveRef.get())));

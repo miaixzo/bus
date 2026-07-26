@@ -24,10 +24,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 import org.miaixz.bus.core.xyz.*;
@@ -55,7 +55,7 @@ public class MethodMatcher {
      * @see Stream#noneMatch
      */
     @SafeVarargs
-    public static Predicate<Method> noneMatch(final Predicate<Method>... matchers) {
+    public static PredicateX<Method> noneMatch(final PredicateX<Method>... matchers) {
         return PredicateKit.none(matchers);
     }
 
@@ -67,7 +67,7 @@ public class MethodMatcher {
      * @see Stream#anyMatch
      */
     @SafeVarargs
-    public static Predicate<Method> anyMatch(final Predicate<Method>... matchers) {
+    public static PredicateX<Method> anyMatch(final PredicateX<Method>... matchers) {
         return PredicateKit.or(matchers);
     }
 
@@ -79,7 +79,7 @@ public class MethodMatcher {
      * @see Stream#allMatch
      */
     @SafeVarargs
-    public static Predicate<Method> allMatch(final Predicate<Method>... matchers) {
+    public static PredicateX<Method> allMatch(final PredicateX<Method>... matchers) {
         return PredicateKit.and(matchers);
     }
 
@@ -88,7 +88,7 @@ public class MethodMatcher {
      *
      * @return A method predicate that returns {@code true} for public methods.
      */
-    public static Predicate<Method> isPublic() {
+    public static PredicateX<Method> isPublic() {
         return forModifiers(Modifier.PUBLIC);
     }
 
@@ -97,7 +97,7 @@ public class MethodMatcher {
      *
      * @return A method predicate that returns {@code true} for static methods.
      */
-    public static Predicate<Method> isStatic() {
+    public static PredicateX<Method> isStatic() {
         return forModifiers(Modifier.STATIC);
     }
 
@@ -106,7 +106,7 @@ public class MethodMatcher {
      *
      * @return A method predicate that returns {@code true} for public static methods.
      */
-    public static Predicate<Method> isPublicStatic() {
+    public static PredicateX<Method> isPublicStatic() {
         return forModifiers(Modifier.PUBLIC, Modifier.STATIC);
     }
 
@@ -116,7 +116,7 @@ public class MethodMatcher {
      * @param modifiers An array of modifiers to match (e.g., {@code Modifier.PUBLIC}, {@code Modifier.STATIC}).
      * @return A method predicate that returns {@code true} for methods having all specified modifiers.
      */
-    public static Predicate<Method> forModifiers(final int... modifiers) {
+    public static PredicateX<Method> forModifiers(final int... modifiers) {
         return method -> ModifierKit.hasAll(method.getModifiers(), modifiers);
     }
 
@@ -126,7 +126,7 @@ public class MethodMatcher {
      * @param annotationType The annotation type to search for.
      * @return A method predicate that returns {@code true} for methods directly annotated with the specified type.
      */
-    public static Predicate<Method> hasDeclaredAnnotation(final Class<? extends Annotation> annotationType) {
+    public static PredicateX<Method> hasDeclaredAnnotation(final Class<? extends Annotation> annotationType) {
         return method -> method.isAnnotationPresent(annotationType);
     }
 
@@ -143,7 +143,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods having the specified annotation.
      * @see AnnotatedElements#isAnnotationPresent
      */
-    public static Predicate<Method> hasAnnotation(final Class<? extends Annotation> annotationType) {
+    public static PredicateX<Method> hasAnnotation(final Class<? extends Annotation> annotationType) {
         return method -> AnnotatedElements.isAnnotationPresent(method, annotationType);
     }
 
@@ -162,7 +162,7 @@ public class MethodMatcher {
      *         annotation.
      * @see AnnotatedElements#isAnnotationPresent
      */
-    public static Predicate<Method> hasAnnotationOnDeclaringClass(final Class<? extends Annotation> annotationType) {
+    public static PredicateX<Method> hasAnnotationOnDeclaringClass(final Class<? extends Annotation> annotationType) {
         return method -> AnnotatedElements.isAnnotationPresent(method.getDeclaringClass(), annotationType);
     }
 
@@ -182,7 +182,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} if the method or its declaring class has the specified
      *         annotation.
      */
-    public static Predicate<Method> hasAnnotationOnMethodOrDeclaringClass(
+    public static PredicateX<Method> hasAnnotationOnMethodOrDeclaringClass(
             final Class<? extends Annotation> annotationType) {
         return method -> AnnotatedElements.isAnnotationPresent(method, annotationType)
                 || AnnotatedElements.isAnnotationPresent(method.getDeclaringClass(), annotationType);
@@ -202,11 +202,11 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for getter methods of the specified field.
      * @throws NullPointerException if {@code fieldName} or {@code fieldType} is {@code null}.
      */
-    public static Predicate<Method> forGetterMethod(final String fieldName, final Class<?> fieldType) {
+    public static PredicateX<Method> forGetterMethod(final String fieldName, final Class<?> fieldType) {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
         // Match methods named get + capitalized field name
-        Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.GET));
+        PredicateX<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.GET));
         // Also match methods named after the field name
         nameMatcher = nameMatcher.or(forName(fieldName));
         if (Objects.equals(boolean.class, fieldType) || Objects.equals(Boolean.class, fieldType)) {
@@ -229,7 +229,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for getter methods of the specified field.
      * @throws NullPointerException if {@code field} is {@code null}.
      */
-    public static Predicate<Method> forGetterMethod(final Field field) {
+    public static PredicateX<Method> forGetterMethod(final Field field) {
         Objects.requireNonNull(field);
         return forGetterMethod(field.getName(), field.getType());
     }
@@ -247,10 +247,10 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for setter methods of the specified field.
      * @throws NullPointerException if {@code fieldName} or {@code fieldType} is {@code null}.
      */
-    public static Predicate<Method> forSetterMethod(final String fieldName, final Class<?> fieldType) {
+    public static PredicateX<Method> forSetterMethod(final String fieldName, final Class<?> fieldType) {
         Objects.requireNonNull(fieldName);
         Objects.requireNonNull(fieldType);
-        final Predicate<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.SET))
+        final PredicateX<Method> nameMatcher = forName(StringKit.upperFirstAndAddPre(fieldName, Normal.SET))
                 .or(forName(fieldName));
         return allMatch(nameMatcher, forParameterTypes(fieldType));
     }
@@ -267,7 +267,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for setter methods of the specified field.
      * @throws NullPointerException if {@code field} is {@code null}.
      */
-    public static Predicate<Method> forSetterMethod(final Field field) {
+    public static PredicateX<Method> forSetterMethod(final Field field) {
         Objects.requireNonNull(field);
         return forSetterMethod(field.getName(), field.getType());
     }
@@ -282,7 +282,7 @@ public class MethodMatcher {
      *         types.
      * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
-    public static Predicate<Method> forNameAndParameterTypes(
+    public static PredicateX<Method> forNameAndParameterTypes(
             final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
@@ -300,7 +300,7 @@ public class MethodMatcher {
      *         parameter types.
      * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
-    public static Predicate<Method> forNameAndStrictParameterTypes(
+    public static PredicateX<Method> forNameAndStrictParameterTypes(
             final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
@@ -318,7 +318,7 @@ public class MethodMatcher {
      *         assignable parameter types.
      * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
-    public static Predicate<Method> forNameIgnoreCaseAndParameterTypes(
+    public static PredicateX<Method> forNameIgnoreCaseAndParameterTypes(
             final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
@@ -336,7 +336,7 @@ public class MethodMatcher {
      *         strictly matching parameter types.
      * @throws NullPointerException if {@code methodName} or {@code parameterTypes} is {@code null}.
      */
-    public static Predicate<Method> forNameIgnoreCaseAndStrictParameterTypes(
+    public static PredicateX<Method> forNameIgnoreCaseAndStrictParameterTypes(
             final String methodName,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
@@ -357,7 +357,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods matching the given method's signature.
      * @throws NullPointerException if {@code method} is {@code null}.
      */
-    public static Predicate<Method> forMethodSignature(final Method method) {
+    public static PredicateX<Method> forMethodSignature(final Method method) {
         Objects.requireNonNull(method);
         return forMethodSignature(method.getName(), method.getReturnType(), method.getParameterTypes());
     }
@@ -378,14 +378,14 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods matching the given signature.
      * @throws NullPointerException if {@code methodName} is {@code null}.
      */
-    public static Predicate<Method> forMethodSignature(
+    public static PredicateX<Method> forMethodSignature(
             final String methodName,
             final Class<?> returnType,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
-        final Predicate<Method> resultMatcher = Objects.isNull(returnType) ? forNoneReturnType()
+        final PredicateX<Method> resultMatcher = Objects.isNull(returnType) ? forNoneReturnType()
                 : forReturnType(returnType);
-        final Predicate<Method> parameterMatcher = Objects.isNull(parameterTypes) ? forNoneParameter()
+        final PredicateX<Method> parameterMatcher = Objects.isNull(parameterTypes) ? forNoneParameter()
                 : forParameterTypes(parameterTypes);
         return allMatch(forName(methodName), resultMatcher, parameterMatcher);
     }
@@ -406,14 +406,14 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods strictly matching the given signature.
      * @throws NullPointerException if {@code methodName} is {@code null}.
      */
-    public static Predicate<Method> forStrictMethodSignature(
+    public static PredicateX<Method> forStrictMethodSignature(
             final String methodName,
             final Class<?> returnType,
             final Class<?>... parameterTypes) {
         Objects.requireNonNull(methodName);
-        final Predicate<Method> resultMatcher = Objects.isNull(returnType) ? forNoneReturnType()
+        final PredicateX<Method> resultMatcher = Objects.isNull(returnType) ? forNoneReturnType()
                 : forReturnType(returnType);
-        final Predicate<Method> parameterMatcher = Objects.isNull(parameterTypes) ? forNoneParameter()
+        final PredicateX<Method> parameterMatcher = Objects.isNull(parameterTypes) ? forNoneParameter()
                 : forStrictParameterTypes(parameterTypes);
         return allMatch(forName(methodName), resultMatcher, parameterMatcher);
     }
@@ -431,7 +431,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods strictly matching the given method's signature.
      * @throws NullPointerException if {@code method} is {@code null}.
      */
-    public static Predicate<Method> forStrictMethodSignature(final Method method) {
+    public static PredicateX<Method> forStrictMethodSignature(final Method method) {
         Objects.requireNonNull(method);
         return forMethodSignature(method.getName(), method.getReturnType(), method.getParameterTypes());
     }
@@ -443,7 +443,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods with the specified name.
      * @throws NullPointerException if {@code methodName} is {@code null}.
      */
-    public static Predicate<Method> forName(final String methodName) {
+    public static PredicateX<Method> forName(final String methodName) {
         return method -> Objects.equals(method.getName(), methodName);
     }
 
@@ -454,7 +454,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods with the specified name (case-insensitive).
      * @throws NullPointerException if {@code methodName} is {@code null}.
      */
-    public static Predicate<Method> forNameIgnoreCase(final String methodName) {
+    public static PredicateX<Method> forNameIgnoreCase(final String methodName) {
         return method -> StringKit.endWithIgnoreCase(method.getName(), methodName);
     }
 
@@ -463,7 +463,7 @@ public class MethodMatcher {
      *
      * @return A method predicate that returns {@code true} for methods with a {@code void} return type.
      */
-    public static Predicate<Method> forNoneReturnType() {
+    public static PredicateX<Method> forNoneReturnType() {
         return method -> Objects.equals(method.getReturnType(), Void.TYPE);
     }
 
@@ -475,7 +475,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods whose return type is assignable from the
      *         specified type.
      */
-    public static Predicate<Method> forReturnType(final Class<?> returnType) {
+    public static PredicateX<Method> forReturnType(final Class<?> returnType) {
         return method -> ClassKit.isAssignable(returnType, method.getReturnType());
     }
 
@@ -487,7 +487,7 @@ public class MethodMatcher {
      * @return A method predicate that returns {@code true} for methods whose return type exactly matches the specified
      *         type.
      */
-    public static Predicate<Method> forStrictReturnType(final Class<?> returnType) {
+    public static PredicateX<Method> forStrictReturnType(final Class<?> returnType) {
         return method -> Objects.equals(method.getReturnType(), returnType);
     }
 
@@ -496,7 +496,7 @@ public class MethodMatcher {
      *
      * @return A method predicate that returns {@code true} for methods with no parameters.
      */
-    public static Predicate<Method> forNoneParameter() {
+    public static PredicateX<Method> forNoneParameter() {
         return method -> method.getParameterCount() == 0;
     }
 
@@ -506,7 +506,7 @@ public class MethodMatcher {
      * @param count The expected number of parameters.
      * @return A method predicate that returns {@code true} for methods with the specified parameter count.
      */
-    public static Predicate<Method> forParameterCount(final int count) {
+    public static PredicateX<Method> forParameterCount(final int count) {
         return method -> method.getParameterCount() == count;
     }
 
@@ -521,7 +521,7 @@ public class MethodMatcher {
      *         specified types.
      * @throws NullPointerException if {@code parameterTypes} is {@code null}.
      */
-    public static Predicate<Method> forParameterTypes(final Class<?>... parameterTypes) {
+    public static PredicateX<Method> forParameterTypes(final Class<?>... parameterTypes) {
         Objects.requireNonNull(parameterTypes);
         return method -> ClassKit.isAllAssignableFrom(parameterTypes, method.getParameterTypes());
     }
@@ -556,7 +556,7 @@ public class MethodMatcher {
      * @param parameterTypes An array of parameter types to match. Can contain {@code null} for any type.
      * @return A method predicate that returns {@code true} for the most specific matching methods.
      */
-    public static Predicate<Method> forMostSpecificParameterTypes(final Class<?>... parameterTypes) {
+    public static PredicateX<Method> forMostSpecificParameterTypes(final Class<?>... parameterTypes) {
         return mostSpecificStrictParameterTypesMatcher(parameterTypes, ClassKit::isAssignable);
     }
 
@@ -589,7 +589,7 @@ public class MethodMatcher {
      * @param parameterTypes An array of parameter types to match. Can contain {@code null} for any type.
      * @return A method predicate that returns {@code true} for the most specific strictly matching methods.
      */
-    public static Predicate<Method> forMostSpecificStrictParameterTypes(final Class<?>... parameterTypes) {
+    public static PredicateX<Method> forMostSpecificStrictParameterTypes(final Class<?>... parameterTypes) {
         return mostSpecificStrictParameterTypesMatcher(parameterTypes, Objects::equals);
     }
 
@@ -602,7 +602,7 @@ public class MethodMatcher {
      *         specified types.
      * @throws NullPointerException if {@code parameterTypes} is {@code null}.
      */
-    public static Predicate<Method> forStrictParameterTypes(final Class<?>... parameterTypes) {
+    public static PredicateX<Method> forStrictParameterTypes(final Class<?>... parameterTypes) {
         Objects.requireNonNull(parameterTypes);
         return method -> ArrayKit.equals(method.getParameterTypes(), parameterTypes);
     }
@@ -611,13 +611,13 @@ public class MethodMatcher {
      * Internal helper method for creating most specific parameter type matchers.
      *
      * @param parameterTypes The array of parameter types to match against.
-     * @param typeMatcher    A {@link BiPredicate} to compare individual parameter types (e.g.,
+     * @param typeMatcher    A {@link BiPredicateX} to compare individual parameter types (e.g.,
      *                       {@code ClassKit::isAssignable} or {@code Objects::equals}).
      * @return A method predicate.
      */
-    private static Predicate<Method> mostSpecificStrictParameterTypesMatcher(
+    private static PredicateX<Method> mostSpecificStrictParameterTypesMatcher(
             final Class<?>[] parameterTypes,
-            final BiPredicate<Class<?>, Class<?>> typeMatcher) {
+            final BiPredicateX<Class<?>, Class<?>> typeMatcher) {
         Objects.requireNonNull(parameterTypes);
         // If parameters are empty, match methods with no parameters.
         if (parameterTypes.length == 0) {

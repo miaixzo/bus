@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -49,22 +49,22 @@ public class OpenBsdComputerSystem extends AbstractComputerSystem {
     /**
      * The manufacturer value.
      */
-    private final Supplier<String> manufacturer = Memoizer.memoize(OpenBsdComputerSystem::queryManufacturer);
+    private final SupplierX<String> manufacturer = Memoizer.memoize(OpenBsdComputerSystem::queryManufacturer);
 
     /**
      * The model value.
      */
-    private final Supplier<String> model = Memoizer.memoize(OpenBsdComputerSystem::queryModel);
+    private final SupplierX<String> model = Memoizer.memoize(OpenBsdComputerSystem::queryModel);
 
     /**
      * The serialNumber value.
      */
-    private final Supplier<String> serialNumber = Memoizer.memoize(OpenBsdComputerSystem::querySerialNumber);
+    private final SupplierX<String> serialNumber = Memoizer.memoize(OpenBsdComputerSystem::querySerialNumber);
 
     /**
      * The uuid value.
      */
-    private final Supplier<String> uuid = Memoizer.memoize(OpenBsdComputerSystem::queryUUID);
+    private final SupplierX<String> uuid = Memoizer.memoize(OpenBsdComputerSystem::queryUUID);
 
     /**
      * Queries the manufacturer.

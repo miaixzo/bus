@@ -25,8 +25,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.AnnoKit;
@@ -49,7 +49,7 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
      * The predicate used to filter annotations. Only annotations for which the predicate returns {@code true} are
      * retained.
      */
-    private final Predicate<Annotation> predicate;
+    private final PredicateX<Annotation> predicate;
 
     /**
      * A map storing all annotations found on the element and its meta-annotations, keyed by annotation type.
@@ -78,10 +78,10 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
      * @param element   The element to parse annotations from. This can be a {@link Class},
      *                  {@link java.lang.reflect.Method}, {@link java.lang.reflect.Field},
      *                  {@link java.lang.reflect.Constructor}.
-     * @param predicate The predicate to filter annotations. Annotations for which {@link Predicate#test(Object)}
+     * @param predicate The predicate to filter annotations. Annotations for which {@link PredicateX#test(Object)}
      *                  returns {@code true} are retained.
      */
-    public CombinationAnnotatedElement(final AnnotatedElement element, final Predicate<Annotation> predicate) {
+    public CombinationAnnotatedElement(final AnnotatedElement element, final PredicateX<Annotation> predicate) {
         this.predicate = predicate;
         init(element);
     }
@@ -92,13 +92,13 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
      * @param element   The element to parse annotations from. This can be a {@link Class},
      *                  {@link java.lang.reflect.Method}, {@link java.lang.reflect.Field},
      *                  {@link java.lang.reflect.Constructor}.
-     * @param predicate The predicate to filter annotations. Annotations for which {@link Predicate#test(Object)}
+     * @param predicate The predicate to filter annotations. Annotations for which {@link PredicateX#test(Object)}
      *                  returns {@code true} are retained.
      * @return A new {@code CombinationAnnotatedElement} instance.
      */
     public static CombinationAnnotatedElement of(
             final AnnotatedElement element,
-            final Predicate<Annotation> predicate) {
+            final PredicateX<Annotation> predicate) {
         return new CombinationAnnotatedElement(element, predicate);
     }
 

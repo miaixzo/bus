@@ -20,11 +20,11 @@
 package org.miaixz.bus.health.windows.hardware;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Psapi;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -54,19 +54,19 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
     /**
      * The used value.
      */
-    private final Supplier<Long> used = Memoizer
+    private final SupplierX<Long> used = Memoizer
             .memoize(WindowsVirtualMemory::querySwapUsed, Memoizer.defaultExpiration());
 
     /**
      * The totalVmaxVused value.
      */
-    private final Supplier<Triplet<Long, Long, Long>> totalVmaxVused = Memoizer
+    private final SupplierX<Triplet<Long, Long, Long>> totalVmaxVused = Memoizer
             .memoize(WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, Memoizer.defaultExpiration());
 
     /**
      * The swapInOut value.
      */
-    private final Supplier<Pair<Long, Long>> swapInOut = Memoizer
+    private final SupplierX<Pair<Long, Long>> swapInOut = Memoizer
             .memoize(WindowsVirtualMemory::queryPageSwaps, Memoizer.defaultExpiration());
 
     /**

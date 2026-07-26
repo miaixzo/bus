@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 
@@ -37,14 +37,14 @@ final class AixSensors extends AbstractSensors {
     /**
      * The lscfg value.
      */
-    private final Supplier<List<String>> lscfg;
+    private final SupplierX<List<String>> lscfg;
 
     /**
      * Creates a new AixSensors instance.
      *
      * @param lscfg the lscfg
      */
-    AixSensors(Supplier<List<String>> lscfg) {
+    AixSensors(SupplierX<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 

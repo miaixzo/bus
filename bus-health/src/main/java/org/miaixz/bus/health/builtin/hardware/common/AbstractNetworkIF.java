@@ -24,9 +24,9 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -49,7 +49,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     /**
      * The vmMacAddrProps value.
      */
-    private final Supplier<Properties> vmMacAddrProps = Memoizer.memoize(AbstractNetworkIF::queryVmMacAddrProps);
+    private final SupplierX<Properties> vmMacAddrProps = Memoizer.memoize(AbstractNetworkIF::queryVmMacAddrProps);
 
     /**
      * The networkInterface value.

@@ -20,9 +20,13 @@
 package org.miaixz.bus.core.center.map.multiple;
 
 import java.util.*;
-import java.util.function.*;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 
@@ -200,7 +204,7 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      *               retained.
      * @return A new {@code MultipleValueMap} instance with filtered values.
      */
-    default MultipleValueMap<K, V> filterAllValues(final Predicate<V> filter) {
+    default MultipleValueMap<K, V> filterAllValues(final PredicateX<V> filter) {
         return filterAllValues((k, v) -> filter.test(v));
     }
 
@@ -213,7 +217,7 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      *               are retained.
      * @return A new {@code MultipleValueMap} instance with filtered values.
      */
-    MultipleValueMap<K, V> filterAllValues(BiPredicate<K, V> filter);
+    MultipleValueMap<K, V> filterAllValues(BiPredicateX<K, V> filter);
 
     /**
      * Replaces all values in the map by applying a given unary operator to each value. Returns a new
@@ -223,7 +227,7 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      * @param operate The unary operator to apply to each value to produce a new value.
      * @return A new {@code MultipleValueMap} instance with replaced values.
      */
-    default MultipleValueMap<K, V> replaceAllValues(final UnaryOperator<V> operate) {
+    default MultipleValueMap<K, V> replaceAllValues(final UnaryOperatorX<V> operate) {
         return replaceAllValues((k, v) -> operate.apply(v));
     }
 
@@ -235,7 +239,7 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      * @param operate The binary operator to apply to each key-value pair to produce a new value.
      * @return A new {@code MultipleValueMap} instance with replaced values.
      */
-    MultipleValueMap<K, V> replaceAllValues(BiFunction<K, V, V> operate);
+    MultipleValueMap<K, V> replaceAllValues(BiFunctionX<K, V, V> operate);
 
     /**
      * Retrieves a specific value from the collection associated with the given key by its index. If the key does not
@@ -286,9 +290,9 @@ public interface MultipleValueMap<K, V> extends Map<K, Collection<V>> {
      * }
      * }</pre>
      *
-     * @param consumer The {@link BiConsumer} to apply to each key-value pair.
+     * @param consumer The {@link BiConsumerX} to apply to each key-value pair.
      */
-    default void allForEach(final BiConsumer<K, V> consumer) {
+    default void allForEach(final BiConsumerX<K, V> consumer) {
         forEach((k, coll) -> coll.forEach(v -> consumer.accept(k, v)));
     }
 

@@ -24,8 +24,8 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritePendingException;
 import java.util.concurrent.Semaphore;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.source.Source;
 
@@ -48,9 +48,9 @@ public final class WriteBuffer extends OutputStream {
     private final SlabBuffer slabBuffer;
 
     /**
-     * Consumer that starts a physical write.
+     * ConsumerX that starts a physical write.
      */
-    private final Consumer<SliceBuffer> writeConsumer;
+    private final ConsumerX<SliceBuffer> writeConsumer;
 
     /**
      * Default chunk size.
@@ -95,7 +95,7 @@ public final class WriteBuffer extends OutputStream {
     /**
      * Completion callback for asynchronous write calls.
      */
-    private Consumer<WriteBuffer> completionConsumer;
+    private ConsumerX<WriteBuffer> completionConsumer;
 
     /**
      * Creates a write buffer.
@@ -105,7 +105,7 @@ public final class WriteBuffer extends OutputStream {
      * @param chunkSize     the default chunk size
      * @param capacity      the queue capacity
      */
-    public WriteBuffer(SlabBuffer slabBuffer, Consumer<SliceBuffer> writeConsumer, int chunkSize, int capacity) {
+    public WriteBuffer(SlabBuffer slabBuffer, ConsumerX<SliceBuffer> writeConsumer, int chunkSize, int capacity) {
         this.slabBuffer = slabBuffer;
         this.writeConsumer = writeConsumer;
         this.pendingSlices = new SliceBuffer[capacity];
@@ -275,7 +275,7 @@ public final class WriteBuffer extends OutputStream {
      * @param consumer   the completion callback
      * @throws IOException if writing fails
      */
-    public synchronized void write(final ByteString byteString, final Consumer<WriteBuffer> consumer)
+    public synchronized void write(final ByteString byteString, final ConsumerX<WriteBuffer> consumer)
             throws IOException {
         if (byteString == null) {
             throw new IllegalArgumentException("byteString == null");
@@ -311,7 +311,7 @@ public final class WriteBuffer extends OutputStream {
      * @param consumer the completion callback
      * @throws IOException if writing fails
      */
-    public synchronized void write(final Buffer source, final Consumer<WriteBuffer> consumer) throws IOException {
+    public synchronized void write(final Buffer source, final ConsumerX<WriteBuffer> consumer) throws IOException {
         if (source == null) {
             throw new IllegalArgumentException("source == null");
         }
@@ -401,7 +401,7 @@ public final class WriteBuffer extends OutputStream {
      * @param consumer the completion callback
      * @throws IOException if writing fails
      */
-    public synchronized void write(byte[] bytes, int offset, int length, Consumer<WriteBuffer> consumer)
+    public synchronized void write(byte[] bytes, int offset, int length, ConsumerX<WriteBuffer> consumer)
             throws IOException {
         if (completionConsumer != null) {
             throw new WritePendingException();
@@ -418,7 +418,7 @@ public final class WriteBuffer extends OutputStream {
      * @param consumer the completion callback
      * @throws IOException if writing fails
      */
-    public synchronized void write(byte[] bytes, Consumer<WriteBuffer> consumer) throws IOException {
+    public synchronized void write(byte[] bytes, ConsumerX<WriteBuffer> consumer) throws IOException {
         write(bytes, 0, bytes.length, consumer);
     }
 
@@ -429,7 +429,7 @@ public final class WriteBuffer extends OutputStream {
      * @param consumer   the completion callback
      * @throws IOException if writing fails
      */
-    public synchronized void transferFrom(ByteBuffer byteBuffer, Consumer<WriteBuffer> consumer) throws IOException {
+    public synchronized void transferFrom(ByteBuffer byteBuffer, ConsumerX<WriteBuffer> consumer) throws IOException {
         if (!byteBuffer.hasRemaining()) {
             throw new IllegalStateException("none remaining in byteBuffer");
         }
@@ -539,7 +539,7 @@ public final class WriteBuffer extends OutputStream {
     private SliceBuffer pollItem() {
         if (count == 0) {
             if (completionConsumer != null) {
-                Consumer<WriteBuffer> consumer = completionConsumer;
+                ConsumerX<WriteBuffer> consumer = completionConsumer;
                 completionConsumer = null;
                 consumer.accept(this);
             }

@@ -26,12 +26,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.stream.spliterators.DropWhileSpliterator;
 import org.miaixz.bus.core.center.stream.spliterators.IterateSpliterator;
 import org.miaixz.bus.core.center.stream.spliterators.TakeWhileSpliterator;
@@ -181,7 +181,7 @@ public class StreamKit {
      * @param <T>            The element type.
      * @return A {@link Stream}.
      */
-    public static <T> Stream<T> of(final T seed, final UnaryOperator<T> elementCreator, final int limit) {
+    public static <T> Stream<T> of(final T seed, final UnaryOperatorX<T> elementCreator, final int limit) {
         return Stream.iterate(seed, elementCreator).limit(limit);
     }
 
@@ -212,7 +212,7 @@ public class StreamKit {
     public static <T> String join(
             final Stream<T> stream,
             final CharSequence delimiter,
-            final Function<T, ? extends CharSequence> toStringFunc) {
+            final FunctionX<T, ? extends CharSequence> toStringFunc) {
         if (null == stream) {
             return null;
         }
@@ -229,7 +229,10 @@ public class StreamKit {
      * @param next    A function to be applied to the previous element to produce a new element.
      * @return An infinite ordered stream.
      */
-    public static <T> Stream<T> iterate(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
+    public static <T> Stream<T> iterate(
+            final T seed,
+            final PredicateX<? super T> hasNext,
+            final UnaryOperatorX<T> next) {
         Objects.requireNonNull(next);
         Objects.requireNonNull(hasNext);
         return StreamSupport.stream(IterateSpliterator.of(seed, hasNext, next), false);
@@ -248,8 +251,8 @@ public class StreamKit {
      */
     public static <T> Stream<T> iterateHierarchies(
             final T root,
-            final Function<T, Collection<T>> discoverer,
-            final Predicate<T> filter) {
+            final FunctionX<T, Collection<T>> discoverer,
+            final PredicateX<T> filter) {
         return ofIter(HierarchyIterator.breadthFirst(root, discoverer, filter));
     }
 
@@ -263,7 +266,7 @@ public class StreamKit {
      * @return A stream of all nodes in the hierarchy.
      * @see HierarchyIterator
      */
-    public static <T> Stream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer) {
+    public static <T> Stream<T> iterateHierarchies(final T root, final FunctionX<T, Collection<T>> discoverer) {
         return ofIter(HierarchyIterator.breadthFirst(root, discoverer));
     }
 
@@ -276,7 +279,7 @@ public class StreamKit {
      * @param predicate The predicate.
      * @return The new stream.
      */
-    public static <T> Stream<T> takeWhile(final Stream<T> source, final Predicate<? super T> predicate) {
+    public static <T> Stream<T> takeWhile(final Stream<T> source, final PredicateX<? super T> predicate) {
         if (null == source) {
             return Stream.empty();
         }
@@ -293,7 +296,7 @@ public class StreamKit {
      * @param predicate The predicate.
      * @return The new stream.
      */
-    public static <T> Stream<T> dropWhile(final Stream<T> source, final Predicate<? super T> predicate) {
+    public static <T> Stream<T> dropWhile(final Stream<T> source, final PredicateX<? super T> predicate) {
         if (null == source) {
             return Stream.empty();
         }

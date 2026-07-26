@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -60,7 +60,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
     /**
      * The fileDesc value.
      */
-    private final Supplier<Pair<Long, Long>> fileDesc = Memoizer
+    private final SupplierX<Pair<Long, Long>> fileDesc = Memoizer
             .memoize(SolarisFileSystem::queryFileDescriptors, Memoizer.defaultExpiration());
 
     /**

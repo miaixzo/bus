@@ -20,15 +20,15 @@
 package org.miaixz.bus.core.xyz;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.iterator.*;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.text.StringJoiner;
@@ -173,7 +173,7 @@ public class IteratorKit extends IteratorValidator {
     public static <T> String join(
             final Iterator<T> iterator,
             final CharSequence conjunction,
-            final Function<T, ? extends CharSequence> func) {
+            final FunctionX<T, ? extends CharSequence> func) {
         if (null == iterator) {
             return null;
         }
@@ -258,7 +258,7 @@ public class IteratorKit extends IteratorValidator {
      * @param keyMapper the function to map a value to a key
      * @return a {@link HashMap}
      */
-    public static <K, V> Map<K, List<V>> toListMap(final Iterable<V> iterable, final Function<V, K> keyMapper) {
+    public static <K, V> Map<K, List<V>> toListMap(final Iterable<V> iterable, final FunctionX<V, K> keyMapper) {
         return toListMap(iterable, keyMapper, v -> v);
     }
 
@@ -275,8 +275,8 @@ public class IteratorKit extends IteratorValidator {
      */
     public static <T, K, V> Map<K, List<V>> toListMap(
             final Iterable<T> iterable,
-            final Function<T, K> keyMapper,
-            final Function<T, V> valueMapper) {
+            final FunctionX<T, K> keyMapper,
+            final FunctionX<T, V> valueMapper) {
         return toListMap(MapKit.newHashMap(), iterable, keyMapper, valueMapper);
     }
 
@@ -295,8 +295,8 @@ public class IteratorKit extends IteratorValidator {
     public static <T, K, V> Map<K, List<V>> toListMap(
             Map<K, List<V>> resultMap,
             final Iterable<T> iterable,
-            final Function<T, K> keyMapper,
-            final Function<T, V> valueMapper) {
+            final FunctionX<T, K> keyMapper,
+            final FunctionX<T, V> valueMapper) {
         if (null == resultMap) {
             resultMap = MapKit.newHashMap();
         }
@@ -320,8 +320,8 @@ public class IteratorKit extends IteratorValidator {
      * @param keyMapper the function to map a value to a key
      * @return a {@link HashMap}
      */
-    public static <K, V> Map<K, V> toMap(final Iterable<V> iterable, final Function<V, K> keyMapper) {
-        return toMap(iterable, keyMapper, Function.identity());
+    public static <K, V> Map<K, V> toMap(final Iterable<V> iterable, final FunctionX<V, K> keyMapper) {
+        return toMap(iterable, keyMapper, FunctionX.identity());
     }
 
     /**
@@ -337,8 +337,8 @@ public class IteratorKit extends IteratorValidator {
      */
     public static <T, K, V> Map<K, V> toMap(
             final Iterable<T> iterable,
-            final Function<T, K> keyMapper,
-            final Function<T, V> valueMapper) {
+            final FunctionX<T, K> keyMapper,
+            final FunctionX<T, V> valueMapper) {
         return MapKit.putAll(MapKit.newHashMap(), iterable, keyMapper, valueMapper);
     }
 
@@ -407,7 +407,7 @@ public class IteratorKit extends IteratorValidator {
      * @param editor the editor interface (if {@code null}, no editing is performed)
      * @return the filtered and/or modified list
      */
-    public static <T> List<T> edit(final Iterator<T> iter, final UnaryOperator<T> editor) {
+    public static <T> List<T> edit(final Iterator<T> iter, final UnaryOperatorX<T> editor) {
         final List<T> result = new ArrayList<>();
         if (null == iter) {
             return result;
@@ -425,21 +425,21 @@ public class IteratorKit extends IteratorValidator {
 
     /**
      * Removes all elements from the iterator that satisfy the given predicate. This method modifies the underlying
-     * collection directly. The removal is done by implementing the {@link Predicate} interface:
+     * collection directly. The removal is done by implementing the {@link PredicateX} interface:
      *
      * <pre>
-     * 1. Remove specific objects: objects for which {@link Predicate#test(Object)} returns {@code
+     * 1. Remove specific objects: objects for which {@link PredicateX#test(Object)} returns {@code
      * true
      * } will be removed using {@link Iterator#remove()}.
      * </pre>
      *
      * @param <E>       the element type
      * @param iter      the iterator
-     * @param predicate the filter interface; elements for which {@link Predicate#test(Object)} is {@code true} will be
+     * @param predicate the filter interface; elements for which {@link PredicateX#test(Object)} is {@code true} will be
      *                  removed
      * @return the modified iterator
      */
-    public static <E> Iterator<E> remove(final Iterator<E> iter, final Predicate<E> predicate) {
+    public static <E> Iterator<E> remove(final Iterator<E> iter, final PredicateX<E> predicate) {
         if (null == iter || null == predicate) {
             return iter;
         }
@@ -457,10 +457,10 @@ public class IteratorKit extends IteratorValidator {
      *
      * @param <E>       the element type
      * @param iter      the {@link Iterator}
-     * @param predicate the filter; elements for which {@link Predicate#test(Object)} is {@code true} are retained
+     * @param predicate the filter; elements for which {@link PredicateX#test(Object)} is {@code true} are retained
      * @return an {@link ArrayList} containing the filtered elements
      */
-    public static <E> List<E> filterToList(final Iterator<E> iter, final Predicate<E> predicate) {
+    public static <E> List<E> filterToList(final Iterator<E> iter, final PredicateX<E> predicate) {
         return ListKit.of(filtered(iter, predicate));
     }
 
@@ -469,13 +469,13 @@ public class IteratorKit extends IteratorValidator {
      *
      * @param <E>       the element type
      * @param iterator  the iterator to wrap
-     * @param predicate the predicate to apply; elements for which {@link Predicate#test(Object)} is {@code true} are
+     * @param predicate the predicate to apply; elements for which {@link PredicateX#test(Object)} is {@code true} are
      *                  retained
      * @return a new {@link FilterIterator}
      */
     public static <E> FilterIterator<E> filtered(
             final Iterator<? extends E> iterator,
-            final Predicate<? super E> predicate) {
+            final PredicateX<? super E> predicate) {
         return new FilterIterator<>(iterator, predicate);
     }
 
@@ -501,7 +501,7 @@ public class IteratorKit extends IteratorValidator {
      */
     public static <F, T> Iterator<T> trans(
             final Iterator<F> iterator,
-            final Function<? super F, ? extends T> function) {
+            final FunctionX<? super F, ? extends T> function) {
         return new TransIterator<>(iterator, function);
     }
 
@@ -562,7 +562,7 @@ public class IteratorKit extends IteratorValidator {
      * @param iterator the {@link Iterator}
      * @param consumer the consumer for each element; if {@code null}, no action is taken
      */
-    public static <E> void forEach(final Iterator<E> iterator, final Consumer<? super E> consumer) {
+    public static <E> void forEach(final Iterator<E> iterator, final ConsumerX<? super E> consumer) {
         if (iterator != null) {
             while (iterator.hasNext()) {
                 final E element = iterator.next();
@@ -610,7 +610,7 @@ public class IteratorKit extends IteratorValidator {
      * @param transFunc the function to convert each element to a string
      * @return a string representation of the iterator's elements
      */
-    public static <E> String toString(final Iterator<E> iterator, final Function<? super E, String> transFunc) {
+    public static <E> String toString(final Iterator<E> iterator, final FunctionX<? super E, String> transFunc) {
         return toString(iterator, transFunc, ", ", "[", "]");
     }
 
@@ -627,7 +627,7 @@ public class IteratorKit extends IteratorValidator {
      */
     public static <E> String toString(
             final Iterator<E> iterator,
-            final Function<? super E, String> transFunc,
+            final FunctionX<? super E, String> transFunc,
             final String delimiter,
             final String prefix,
             final String suffix) {

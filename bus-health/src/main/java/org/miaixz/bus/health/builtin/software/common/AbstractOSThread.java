@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.builtin.software.common;
 
 import java.util.Locale;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -39,7 +39,7 @@ public abstract class AbstractOSThread implements OSThread {
     /**
      * The cumulativeCpuLoad value.
      */
-    private final Supplier<Double> cumulativeCpuLoad = Memoizer
+    private final SupplierX<Double> cumulativeCpuLoad = Memoizer
             .memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
 
     /**

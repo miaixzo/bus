@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -45,19 +45,19 @@ final class AixComputerSystem extends AbstractComputerSystem {
     /**
      * The lsattrStrings value.
      */
-    private final Supplier<LsattrStrings> lsattrStrings = Memoizer.memoize(AixComputerSystem::readLsattr);
+    private final SupplierX<LsattrStrings> lsattrStrings = Memoizer.memoize(AixComputerSystem::readLsattr);
 
     /**
      * The lscfg value.
      */
-    private final Supplier<List<String>> lscfg;
+    private final SupplierX<List<String>> lscfg;
 
     /**
      * Creates a new AixComputerSystem instance.
      *
      * @param lscfg the lscfg
      */
-    AixComputerSystem(Supplier<List<String>> lscfg) {
+    AixComputerSystem(SupplierX<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 

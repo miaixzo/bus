@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.unix.aix.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -63,7 +63,7 @@ final class AixBaseboard extends AbstractBaseboard {
      *
      * @param lscfg the lscfg
      */
-    AixBaseboard(Supplier<List<String>> lscfg) {
+    AixBaseboard(SupplierX<List<String>> lscfg) {
         Triplet<String, String, String> msv = Lscfg.queryBackplaneModelSerialVersion(lscfg.get());
         this.model = StringKit.isBlank(msv.getLeft()) ? Normal.UNKNOWN : msv.getLeft();
         this.serialNumber = StringKit.isBlank(msv.getMiddle()) ? Normal.UNKNOWN : msv.getMiddle();

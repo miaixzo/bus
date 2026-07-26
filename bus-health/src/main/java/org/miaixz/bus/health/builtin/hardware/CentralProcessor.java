@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -950,7 +950,7 @@ public interface CentralProcessor {
         /**
          * The microArchictecture value.
          */
-        private final Supplier<String> microArchictecture = Memoizer.memoize(this::queryMicroarchitecture);
+        private final SupplierX<String> microArchictecture = Memoizer.memoize(this::queryMicroarchitecture);
 
         /**
          * Creates a new ProcessorIdentifier instance.

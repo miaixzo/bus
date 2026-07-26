@@ -26,12 +26,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.function.Predicate;
 
 import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -345,12 +345,12 @@ public class JschSftp extends AbstractFtp {
      * filters out "." and ".." directories.
      *
      * @param path      The path to list files or directories from.
-     * @param predicate A file or directory filter. {@link Predicate#test(Object)} returning {@code true} keeps the
+     * @param predicate A file or directory filter. {@link PredicateX#test(Object)} returning {@code true} keeps the
      *                  entry.
      * @return A list of directory or file names.
      * @throws InternalException if an SftpException occurs other than "No such file".
      */
-    public List<String> ls(final String path, final Predicate<LsEntry> predicate) {
+    public List<String> ls(final String path, final PredicateX<LsEntry> predicate) {
         final List<LsEntry> entries = lsEntries(path, predicate);
         if (CollKit.isEmpty(entries)) {
             return ListKit.empty();
@@ -374,12 +374,12 @@ public class JschSftp extends AbstractFtp {
      * applying a filter. This method automatically filters out "." and ".." directories.
      *
      * @param path      The path to list files or directories from.
-     * @param predicate A file or directory filter. {@link Predicate#test(Object)} returning {@code true} keeps the
+     * @param predicate A file or directory filter. {@link PredicateX#test(Object)} returning {@code true} keeps the
      *                  entry.
      * @return A list of {@link LsEntry} objects.
      * @throws InternalException if an SftpException occurs other than "No such file".
      */
-    public List<LsEntry> lsEntries(final String path, final Predicate<LsEntry> predicate) {
+    public List<LsEntry> lsEntries(final String path, final PredicateX<LsEntry> predicate) {
         final List<LsEntry> entryList = new ArrayList<>();
         try {
             getClient().ls(path, entry -> {

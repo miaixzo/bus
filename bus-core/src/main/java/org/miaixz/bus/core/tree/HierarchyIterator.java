@@ -20,10 +20,10 @@
 package org.miaixz.bus.core.tree;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StreamKit;
@@ -56,14 +56,14 @@ import org.miaixz.bus.core.xyz.TreeKit;
 public abstract class HierarchyIterator<T> implements Iterator<T> {
 
     /**
-     * Function to discover the next level of nodes.
+     * FunctionX to discover the next level of nodes.
      */
-    protected final Function<T, Collection<T>> elementDiscoverer;
+    protected final FunctionX<T, Collection<T>> elementDiscoverer;
 
     /**
      * A filter for nodes. Nodes that do not match (and their subtrees) will be ignored.
      */
-    protected final Predicate<T> filter;
+    protected final PredicateX<T> filter;
 
     /**
      * A set of nodes that have already been visited to prevent cycles.
@@ -83,7 +83,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param filter            A predicate to filter elements. Non-matching elements and their children will be
      *                          skipped.
      */
-    HierarchyIterator(final T root, final Function<T, Collection<T>> elementDiscoverer, final Predicate<T> filter) {
+    HierarchyIterator(final T root, final FunctionX<T, Collection<T>> elementDiscoverer, final PredicateX<T> filter) {
         // The root node cannot be filtered out.
         Assert.isTrue(filter.test(root), "root node cannot be filtered!");
         queue.add(root);
@@ -102,8 +102,8 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      */
     public static <T> HierarchyIterator<T> breadthFirst(
             final T root,
-            final Function<T, Collection<T>> nextDiscoverer,
-            final Predicate<T> filter) {
+            final FunctionX<T, Collection<T>> nextDiscoverer,
+            final PredicateX<T> filter) {
         return new BreadthFirst<>(root, nextDiscoverer, filter);
     }
 
@@ -115,7 +115,9 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param nextDiscoverer A function to get the children of an element.
      * @return A new breadth-first iterator.
      */
-    public static <T> HierarchyIterator<T> breadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer) {
+    public static <T> HierarchyIterator<T> breadthFirst(
+            final T root,
+            final FunctionX<T, Collection<T>> nextDiscoverer) {
         return breadthFirst(root, nextDiscoverer, t -> true);
     }
 
@@ -130,8 +132,8 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      */
     public static <T> HierarchyIterator<T> depthFirst(
             final T root,
-            final Function<T, Collection<T>> nextDiscoverer,
-            final Predicate<T> filter) {
+            final FunctionX<T, Collection<T>> nextDiscoverer,
+            final PredicateX<T> filter) {
         return new DepthFirst<>(root, nextDiscoverer, filter);
     }
 
@@ -143,7 +145,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param nextDiscoverer A function to get the children of an element.
      * @return A new depth-first iterator.
      */
-    public static <T> HierarchyIterator<T> depthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer) {
+    public static <T> HierarchyIterator<T> depthFirst(final T root, final FunctionX<T, Collection<T>> nextDiscoverer) {
         return depthFirst(root, nextDiscoverer, t -> true);
     }
 
@@ -203,7 +205,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
          * @param nextDiscoverer A function to get the children of an element.
          * @param filter         A predicate to filter elements.
          */
-        DepthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer, final Predicate<T> filter) {
+        DepthFirst(final T root, final FunctionX<T, Collection<T>> nextDiscoverer, final PredicateX<T> filter) {
             super(root, nextDiscoverer, filter);
         }
 
@@ -241,7 +243,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
          * @param nextDiscoverer A function to get the children of an element.
          * @param filter         A predicate to filter elements.
          */
-        BreadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer, final Predicate<T> filter) {
+        BreadthFirst(final T root, final FunctionX<T, Collection<T>> nextDiscoverer, final PredicateX<T> filter) {
             super(root, nextDiscoverer, filter);
         }
 

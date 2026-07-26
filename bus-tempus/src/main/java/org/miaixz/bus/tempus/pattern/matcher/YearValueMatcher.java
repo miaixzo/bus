@@ -63,7 +63,7 @@ public class YearValueMatcher implements PartMatcher {
      * @throws NullPointerException if the argument t is null.
      */
     @Override
-    public boolean test(final Integer t) {
+    public boolean testing(final Integer t) {
         if (t == null) {
             throw new NullPointerException("Year value to test cannot be null");
         }

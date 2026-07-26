@@ -22,8 +22,8 @@ package org.miaixz.bus.core.io;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * @since Java 21+
  */
 public record ByteOrderMark(String charsetName, byte... bytes)
-        implements Predicate<byte[]>, Comparable<ByteOrderMark>, Serializable {
+        implements PredicateX<byte[]>, Comparable<ByteOrderMark>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852276768599L;
@@ -158,7 +158,7 @@ public record ByteOrderMark(String charsetName, byte... bytes)
      * @return {@code true} if the head bytes match the BOM, {@code false} otherwise.
      */
     @Override
-    public boolean test(final byte[] headBytes) {
+    public boolean testing(final byte[] headBytes) {
         if (headBytes.length < bytes.length) {
             return false;
         }

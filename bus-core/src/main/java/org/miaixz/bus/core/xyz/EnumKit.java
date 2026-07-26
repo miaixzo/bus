@@ -23,10 +23,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
@@ -316,7 +315,7 @@ public class EnumKit {
      * @param <E>       The enum type.
      * @return The corresponding enum constant, or `null` if not found.
      */
-    public static <E extends Enum<E>> E getBy(final Class<E> enumClass, final Predicate<? super E> predicate) {
+    public static <E extends Enum<E>> E getBy(final Class<E> enumClass, final PredicateX<? super E> predicate) {
         return getBy(enumClass, predicate, null);
     }
 
@@ -331,7 +330,7 @@ public class EnumKit {
      */
     public static <E extends Enum<E>> E getBy(
             final Class<E> enumClass,
-            final Predicate<? super E> predicate,
+            final PredicateX<? super E> predicate,
             final E defaultEnum) {
         if (null == enumClass || null == predicate) {
             return null;
@@ -352,7 +351,7 @@ public class EnumKit {
      */
     public static <E extends Enum<E>, F, C> F getFieldBy(
             final FunctionX<E, F> field,
-            final Function<E, C> condition,
+            final FunctionX<E, C> condition,
             final C value) {
         if (null == field || null == condition) {
             return null;

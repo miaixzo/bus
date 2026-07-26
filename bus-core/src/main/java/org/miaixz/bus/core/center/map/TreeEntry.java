@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.center.map;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
@@ -95,9 +95,9 @@ public interface TreeEntry<K, V> extends Map.Entry<K, V> {
      *
      * @param includeSelf  If {@code true}, the current node is included in the traversal; otherwise, traversal starts
      *                     from its children.
-     * @param nodeConsumer A {@link Consumer} to apply to each traversed {@link TreeEntry}.
+     * @param nodeConsumer A {@link ConsumerX} to apply to each traversed {@link TreeEntry}.
      */
-    void forEachChild(boolean includeSelf, Consumer<TreeEntry<K, V>> nodeConsumer);
+    void forEachChild(boolean includeSelf, ConsumerX<TreeEntry<K, V>> nodeConsumer);
 
     /**
      * Retrieves a map of the direct children of this node, where keys are the children's keys.

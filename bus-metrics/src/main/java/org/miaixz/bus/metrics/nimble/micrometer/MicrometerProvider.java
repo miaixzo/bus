@@ -21,9 +21,9 @@ package org.miaixz.bus.metrics.nimble.micrometer;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -442,7 +442,7 @@ public class MicrometerProvider implements Provider {
                     long threshold,
                     TimeUnit unit,
                     int checkEvery,
-                    Consumer<ViolationEvent> callback) {
+                    ConsumerX<ViolationEvent> callback) {
                 // Micrometer has no callback mechanism; implement locally with a counter
                 // We register a gauge that fires the callback when percentile exceeds threshold
                 // This is a best-effort check on each read — callers using onViolation

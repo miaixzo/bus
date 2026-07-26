@@ -24,8 +24,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.stringer.BlobStringer;
 import org.miaixz.bus.core.convert.stringer.ClobStringer;
 import org.miaixz.bus.core.lang.Wrapper;
@@ -53,7 +53,7 @@ public class StringConverter extends AbstractConverter {
     /**
      * Custom string conversion rules keyed by the target source type.
      */
-    private Map<Class<?>, Function<Object, String>> stringer;
+    private Map<Class<?>, FunctionX<Object, String>> stringer;
 
     /**
      * Adds custom toString rules for object types.
@@ -62,7 +62,7 @@ public class StringConverter extends AbstractConverter {
      * @param stringFunction the serialization function
      * @return this
      */
-    public StringConverter putStringer(final Class<?> clazz, final Function<Object, String> stringFunction) {
+    public StringConverter putStringer(final Class<?> clazz, final FunctionX<Object, String> stringFunction) {
         if (null == stringer) {
             stringer = new HashMap<>();
         }
@@ -79,7 +79,7 @@ public class StringConverter extends AbstractConverter {
     protected String convertInternal(final Class<?> targetClass, Object value) {
         // Custom toString
         if (MapKit.isNotEmpty(stringer)) {
-            final Function<Object, String> stringFunction = stringer.get(targetClass);
+            final FunctionX<Object, String> stringFunction = stringer.get(targetClass);
             if (null != stringFunction) {
                 return stringFunction.apply(value);
             }

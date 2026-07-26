@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.unix.freebsd.software;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.Memory;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
@@ -52,19 +51,19 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     /**
      * The establishedv4v6 value.
      */
-    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer
+    private final SupplierX<Pair<Long, Long>> establishedv4v6 = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
 
     /**
      * The tcpstat value.
      */
-    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer
+    private final SupplierX<CLibrary.BsdTcpstat> tcpstat = Memoizer
             .memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
 
     /**
      * The udpstat value.
      */
-    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer
+    private final SupplierX<CLibrary.BsdUdpstat> udpstat = Memoizer
             .memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
 
     /**

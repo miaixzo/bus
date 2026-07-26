@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -39,7 +39,7 @@ final class OpenBsdSensors extends AbstractSensors {
     /**
      * The tempFanVolts value.
      */
-    private final Supplier<Triplet<Double, int[], Double>> tempFanVolts = Memoizer
+    private final SupplierX<Triplet<Double, int[], Double>> tempFanVolts = Memoizer
             .memoize(Systat::querySensors, Memoizer.defaultExpiration());
 
     /**

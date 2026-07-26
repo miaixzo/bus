@@ -20,7 +20,8 @@
 package org.miaixz.bus.core;
 
 import java.io.Serializable;
-import java.util.function.Consumer;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
  * An abstract interface for object loading. By implementing this interface, you can define custom loading strategies,
@@ -54,7 +55,7 @@ public interface Loader<T> extends Serializable {
      *
      * @param consumer The consumer to execute. If {@code null}, no action is performed.
      */
-    default void ifInitialized(final Consumer<T> consumer) {
+    default void ifInitialized(final ConsumerX<T> consumer) {
         if (null != consumer && this.isInitialized()) {
             consumer.accept(get());
         }

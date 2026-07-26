@@ -22,7 +22,8 @@ package org.miaixz.bus.cortex;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
  * Curator contract.
@@ -163,12 +164,12 @@ public interface Curator {
      * @param listener listener invoked with updated content
      * @return watch identifier used to cancel the subscription
      */
-    String watch(String group, String data_id, Consumer<String> listener);
+    String watch(String group, String data_id, ConsumerX<String> listener);
 
     /**
      * Cancels a previously registered setting watch.
      *
-     * @param watch_id watch identifier returned by {@link #watch(String, String, Consumer)}
+     * @param watch_id watch identifier returned by {@link #watch(String, String, ConsumerX)}
      */
     void unwatch(String watch_id);
 

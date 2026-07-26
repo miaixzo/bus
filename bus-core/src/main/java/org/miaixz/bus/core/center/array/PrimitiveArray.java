@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -1629,7 +1629,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static char[] edit(final char[] array, final UnaryOperator<Character> editor) {
+    public static char[] edit(final char[] array, final UnaryOperatorX<Character> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1665,7 +1665,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static byte[] edit(final byte[] array, final UnaryOperator<Byte> editor) {
+    public static byte[] edit(final byte[] array, final UnaryOperatorX<Byte> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1701,7 +1701,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static short[] edit(final short[] array, final UnaryOperator<Short> editor) {
+    public static short[] edit(final short[] array, final UnaryOperatorX<Short> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1737,7 +1737,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static int[] edit(final int[] array, final UnaryOperator<Integer> editor) {
+    public static int[] edit(final int[] array, final UnaryOperatorX<Integer> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1773,7 +1773,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static long[] edit(final long[] array, final UnaryOperator<Long> editor) {
+    public static long[] edit(final long[] array, final UnaryOperatorX<Long> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1809,7 +1809,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static float[] edit(final float[] array, final UnaryOperator<Float> editor) {
+    public static float[] edit(final float[] array, final UnaryOperatorX<Float> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1845,7 +1845,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static double[] edit(final double[] array, final UnaryOperator<Double> editor) {
+    public static double[] edit(final double[] array, final UnaryOperatorX<Double> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1881,7 +1881,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param editor The editor interface, returns the original array if {@code null}
      * @return The edited array
      */
-    public static boolean[] edit(final boolean[] array, final UnaryOperator<Boolean> editor) {
+    public static boolean[] edit(final boolean[] array, final UnaryOperatorX<Boolean> editor) {
         if (null == array || null == editor) {
             return array;
         }
@@ -1907,13 +1907,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static char[] filter(final char[] array, final Predicate<Character> predicate) {
+    public static char[] filter(final char[] array, final PredicateX<Character> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -1922,13 +1922,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters byte array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static byte[] filter(final byte[] array, final Predicate<Byte> predicate) {
+    public static byte[] filter(final byte[] array, final PredicateX<Byte> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -1937,13 +1937,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters short array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static short[] filter(final short[] array, final Predicate<Short> predicate) {
+    public static short[] filter(final short[] array, final PredicateX<Short> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -1952,13 +1952,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters int array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static int[] filter(final int[] array, final Predicate<Integer> predicate) {
+    public static int[] filter(final int[] array, final PredicateX<Integer> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -1967,13 +1967,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters long array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static long[] filter(final long[] array, final Predicate<Long> predicate) {
+    public static long[] filter(final long[] array, final PredicateX<Long> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -1982,13 +1982,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters float array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static float[] filter(final float[] array, final Predicate<Float> predicate) {
+    public static float[] filter(final float[] array, final PredicateX<Float> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -1997,13 +1997,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters double array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static double[] filter(final double[] array, final Predicate<Double> predicate) {
+    public static double[] filter(final double[] array, final PredicateX<Double> predicate) {
         if (null == array || null == predicate) {
             return array;
         }
@@ -2012,13 +2012,13 @@ public class PrimitiveArray extends ArrayValidator {
 
     /**
      * Filters boolean array elements<br>
-     * Keeps elements where {@link Predicate#test(Object)} returns {@code true}
+     * Keeps elements where {@link PredicateX#test(Object)} returns {@code true}
      *
      * @param array     The array
      * @param predicate The filter interface for defining filter rules, returns the original array if {@code null}
      * @return The filtered array
      */
-    public static boolean[] filter(final boolean[] array, final Predicate<Boolean> predicate) {
+    public static boolean[] filter(final boolean[] array, final PredicateX<Boolean> predicate) {
         if (null == array || null == predicate) {
             return array;
         }

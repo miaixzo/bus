@@ -20,9 +20,9 @@
 package org.miaixz.bus.core.xyz;
 
 import java.time.Duration;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.thread.RetryableTask;
 
 /**
@@ -61,9 +61,7 @@ public class RetryKit {
             retryableTypes = ArrayKit.append(retryableTypes, RuntimeException.class);
         }
         final RetryableTask<?> task = RetryableTask.retryForExceptions(runnable, retryableTypes)
-                .maxAttempts(maxAttempts)
-                .delay(delay)
-                .execute();
+                .maxAttempts(maxAttempts).delay(delay).execute();
         if (!task.success()) {
             recovery.run();
         }
@@ -82,18 +80,16 @@ public class RetryKit {
      */
     @SafeVarargs
     public static <T> T ofException(
-            final Supplier<T> supplier,
+            final SupplierX<T> supplier,
             final long maxAttempts,
             final Duration delay,
-            final Supplier<T> recovery,
+            final SupplierX<T> recovery,
             Class<? extends Throwable>... retryableTypes) {
         if (ArrayKit.isEmpty(retryableTypes)) {
             retryableTypes = ArrayKit.append(retryableTypes, RuntimeException.class);
         }
         final RetryableTask<T> task = RetryableTask.retryForExceptions(supplier, retryableTypes)
-                .maxAttempts(maxAttempts)
-                .delay(delay)
-                .execute();
+                .maxAttempts(maxAttempts).delay(delay).execute();
         return task.success() ? task.get().orElse(null) : recovery.get();
     }
 
@@ -110,12 +106,10 @@ public class RetryKit {
             final Runnable runnable,
             final long maxAttempts,
             final Duration delay,
-            final Supplier<Void> recovery,
-            final BiPredicate<Void, Throwable> predicate) {
-        final RetryableTask<?> task = RetryableTask.retryForPredicate(runnable, predicate)
-                .delay(delay)
-                .maxAttempts(maxAttempts)
-                .execute();
+            final SupplierX<Void> recovery,
+            final BiPredicateX<Void, Throwable> predicate) {
+        final RetryableTask<?> task = RetryableTask.retryForPredicate(runnable, predicate).delay(delay)
+                .maxAttempts(maxAttempts).execute();
         if (!task.success()) {
             recovery.get();
         }
@@ -133,15 +127,13 @@ public class RetryKit {
      * @return The result of the execution.
      */
     public static <T> T ofPredicate(
-            final Supplier<T> supplier,
+            final SupplierX<T> supplier,
             final long maxAttempts,
             final Duration delay,
-            final Supplier<T> recovery,
-            final BiPredicate<T, Throwable> predicate) {
-        final RetryableTask<T> task = RetryableTask.retryForPredicate(supplier, predicate)
-                .delay(delay)
-                .maxAttempts(maxAttempts)
-                .execute();
+            final SupplierX<T> recovery,
+            final BiPredicateX<T, Throwable> predicate) {
+        final RetryableTask<T> task = RetryableTask.retryForPredicate(supplier, predicate).delay(delay)
+                .maxAttempts(maxAttempts).execute();
         return task.success() ? task.get().orElse(null) : recovery.get();
     }
 

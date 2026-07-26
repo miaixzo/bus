@@ -22,9 +22,9 @@ package org.miaixz.bus.metrics.nimble.opentelemetry;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -490,7 +490,7 @@ public class OpenTelemetryProvider implements Provider {
                     long threshold,
                     TimeUnit unit,
                     int checkEvery,
-                    Consumer<ViolationEvent> callback) {
+                    ConsumerX<ViolationEvent> callback) {
                 return this;
             }
 

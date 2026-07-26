@@ -20,12 +20,12 @@
 package org.miaixz.bus.mapper.provider;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
@@ -254,7 +254,7 @@ public class BatchProvider extends BasicProvider {
      * @param entity the table metadata
      * @return a function that renders SQL for the active dialect
      */
-    protected static Function<Dialect, String> insertUpBatch(TableMeta entity) {
+    protected static FunctionX<Dialect, String> insertUpBatch(TableMeta entity) {
         return dialect -> {
             Behavior upsertType = dialect.getUpsertType();
             if (upsertType == Behavior.NONE) {
@@ -280,13 +280,13 @@ public class BatchProvider extends BasicProvider {
      *
      * <p>
      * This method returns a function that generates INSERT SQL. Although INSERT syntax is standard across databases, we
-     * use {@code Function<Dialect, String>} for consistency with other selective batch methods.
+     * use {@code FunctionX<Dialect, String>} for consistency with other selective batch methods.
      * </p>
      *
      * @param entity Table metadata
-     * @return Function that accepts Dialect and returns INSERT SQL
+     * @return FunctionX that accepts Dialect and returns INSERT SQL
      */
-    protected static Function<Dialect, String> insertSelectiveBatch(TableMeta entity) {
+    protected static FunctionX<Dialect, String> insertSelectiveBatch(TableMeta entity) {
         return dialect -> "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0")
                 + "\nVALUES\n" + buildBatchDynamicRows(entity);
     }
@@ -303,7 +303,7 @@ public class BatchProvider extends BasicProvider {
      * @param entity the table metadata
      * @return a function that renders SQL for the active dialect
      */
-    protected static Function<Dialect, String> insertUpSelectiveBatch(TableMeta entity) {
+    protected static FunctionX<Dialect, String> insertUpSelectiveBatch(TableMeta entity) {
         return dialect -> {
             Behavior upsertType = dialect.getUpsertType();
             if (upsertType == Behavior.NONE) {

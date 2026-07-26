@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.CollectionValidator;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -331,15 +331,15 @@ public class IteratorValidator {
     }
 
     /**
-     * Returns the first element from the {@link Iterator} that satisfies the given {@link Predicate}.
+     * Returns the first element from the {@link Iterator} that satisfies the given {@link PredicateX}.
      *
      * @param <T>       the type of elements in the iterator
      * @param iterator  the {@link Iterator} to search through
-     * @param predicate the {@link Predicate} to test elements against, must not be {@code null}
+     * @param predicate the {@link PredicateX} to test elements against, must not be {@code null}
      * @return the first matching element, or {@code null} if no element matches or the iterator is {@code null}
      * @throws IllegalArgumentException if the {@code predicate} is {@code null}
      */
-    public static <T> T getFirst(final Iterator<T> iterator, final Predicate<T> predicate) {
+    public static <T> T getFirst(final Iterator<T> iterator, final PredicateX<T> predicate) {
         Assert.notNull(predicate, "Matcher must be not null !");
         if (null != iterator) {
             while (iterator.hasNext()) {

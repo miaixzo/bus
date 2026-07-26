@@ -22,7 +22,6 @@ package org.miaixz.bus.health.windows.software;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
@@ -32,6 +31,7 @@ import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -91,18 +91,18 @@ public class WindowsOSProcess extends AbstractOSProcess {
     /**
      * The groupInfo value.
      */
-    private final Supplier<Pair<String, String>> groupInfo = Memoizer.memoize(this::queryGroupInfo);
+    private final SupplierX<Pair<String, String>> groupInfo = Memoizer.memoize(this::queryGroupInfo);
 
     /**
      * The cwdCmdEnv value.
      */
-    private final Supplier<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer
+    private final SupplierX<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer
             .memoize(this::queryCwdCommandlineEnvironment);
 
     /**
      * The currentWorkingDirectory value.
      */
-    private final Supplier<String> currentWorkingDirectory = Memoizer.memoize(this::queryCwd);
+    private final SupplierX<String> currentWorkingDirectory = Memoizer.memoize(this::queryCwd);
 
     /**
      * The tcb value.
@@ -117,7 +117,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
     /**
      * The userInfo value.
      */
-    private final Supplier<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
+    private final SupplierX<Pair<String, String>> userInfo = Memoizer.memoize(this::queryUserInfo);
 
     /**
      * The path value.
@@ -177,12 +177,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * The args value.
      */
-    private final Supplier<List<String>> args = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> args = Memoizer.memoize(this::queryArguments);
 
     /**
      * The upTime value.

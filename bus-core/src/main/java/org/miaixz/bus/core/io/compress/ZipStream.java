@@ -21,10 +21,10 @@ package org.miaixz.bus.core.io.compress;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
@@ -54,7 +54,7 @@ public class ZipStream implements ZipResource {
      * Read method.
      */
     @Override
-    public void read(final Consumer<ZipEntry> consumer, final int maxSizeDiff) {
+    public void read(final ConsumerX<ZipEntry> consumer, final int maxSizeDiff) {
         try {
             ZipEntry zipEntry;
             while (null != (zipEntry = in.getNextEntry())) {

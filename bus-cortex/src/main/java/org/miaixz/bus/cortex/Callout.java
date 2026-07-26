@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.MediaType;
@@ -39,7 +39,6 @@ import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.fabric.Call;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.codec.DataCodec;
@@ -239,7 +238,7 @@ public final class Callout {
         private Client(long timeoutMs) {
             Logger.debug(true, "Cortex", "Callout HTTP client creation started: timeoutMs={}", timeoutMs);
             final Timeout timeout = Timeout.of(Duration.ofMillis(timeoutMs));
-            this.context = Context.builder().options(timeout.from(Options.empty())).build();
+            this.context = Context.builder().timeout(timeout).build();
             this.calls = ConcurrentHashMap.newKeySet();
             Logger.debug(false, "Cortex", "Callout HTTP client created: timeoutMs={}", timeoutMs);
         }
@@ -271,7 +270,7 @@ public final class Callout {
          * @param supplier call supplier
          * @return local result snapshot
          */
-        private Result execute(Supplier<Call<HttpResponse>> supplier) {
+        private Result execute(SupplierX<Call<HttpResponse>> supplier) {
             Call<HttpResponse> call = null;
             try {
                 call = supplier.get();

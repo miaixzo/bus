@@ -22,8 +22,8 @@ package org.miaixz.bus.core.convert.stringer;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class BlobStringer implements Function<Object, String> {
+public class BlobStringer implements FunctionX<Object, String> {
 
     /**
      * Creates the shared BLOB-to-string converter.
@@ -73,7 +73,7 @@ public class BlobStringer implements Function<Object, String> {
      * @return the String value
      */
     @Override
-    public String apply(final Object o) {
+    public String applying(final Object o) {
         return toString((Blob) o);
     }
 

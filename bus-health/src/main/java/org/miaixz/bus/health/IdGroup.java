@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -47,15 +47,15 @@ public final class IdGroup {
     }
 
     /**
-     * Supplier for a map of user IDs to usernames, with the cache fully refreshed after 5 minutes.
+     * SupplierX for a map of user IDs to usernames, with the cache fully refreshed after 5 minutes.
      */
-    private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoizer
+    private static final SupplierX<Map<String, String>> USERS_ID_MAP = Memoizer
             .memoize(IdGroup::getUserMap, TimeUnit.MINUTES.toNanos(5));
 
     /**
-     * Supplier for a map of group IDs to group names, with the cache fully refreshed after 5 minutes.
+     * SupplierX for a map of group IDs to group names, with the cache fully refreshed after 5 minutes.
      */
-    private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoizer
+    private static final SupplierX<Map<String, String>> GROUPS_ID_MAP = Memoizer
             .memoize(IdGroup::getGroupMap, TimeUnit.MINUTES.toNanos(5));
 
     /**

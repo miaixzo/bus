@@ -21,8 +21,8 @@ package org.miaixz.bus.core.lang.annotation.resolve.synthesize;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttribute;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttributeValueProvider;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -107,7 +107,7 @@ public interface SynthesizedAnnotation extends Annotation, Hierarchical, Annotat
      * @param attributeName the attribute name
      * @param operator      the replacement operator applied to the current attribute
      */
-    void replaceAttribute(String attributeName, UnaryOperator<AnnotationAttribute> operator);
+    void replaceAttribute(String attributeName, UnaryOperatorX<AnnotationAttribute> operator);
 
     /**
      * Returns the value of the attribute with the given name.

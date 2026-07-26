@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.tree.MapTree;
 import org.miaixz.bus.core.tree.NodeConfig;
 import org.miaixz.bus.core.tree.TreeBuilder;
@@ -261,7 +261,7 @@ public class TreeKit {
     public static <T, E> List<E> getParents(
             final MapTree<T> node,
             final boolean includeCurrentNode,
-            final Function<MapTree<T>, E> fieldFunc) {
+            final FunctionX<MapTree<T>, E> fieldFunc) {
         final List<E> result = new ArrayList<>();
         if (null == node) {
             return result;

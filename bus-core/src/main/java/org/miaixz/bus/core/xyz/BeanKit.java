@@ -23,10 +23,6 @@ import java.beans.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.bean.BeanCache;
@@ -38,6 +34,10 @@ import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.bean.desc.BeanDescFactory;
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.bean.path.BeanPath;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.map.BeanMap;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.Dictionary;
@@ -102,7 +102,7 @@ public class BeanKit {
      * @param clazz  The Bean class.
      * @param action The consumer to process each property description.
      */
-    public static void descForEach(final Class<?> clazz, final Consumer<? super PropDesc> action) {
+    public static void descForEach(final Class<?> clazz, final ConsumerX<? super PropDesc> action) {
         getBeanDesc(clazz).getProps().forEach(action);
     }
 
@@ -304,7 +304,7 @@ public class BeanKit {
      * @param options        Property copy options.
      * @return The Bean object.
      */
-    public static <T> T toBean(final Object source, final Supplier<T> targetSupplier, final CopyOptions options) {
+    public static <T> T toBean(final Object source, final SupplierX<T> targetSupplier, final CopyOptions options) {
         if (null == source || null == targetSupplier) {
             return null;
         }
@@ -369,7 +369,7 @@ public class BeanKit {
      */
     public static Map<String, Object> beanToMap(final Object bean, final String... properties) {
         int mapSize = 16;
-        UnaryOperator<MutableEntry<Object, Object>> editor = null;
+        UnaryOperatorX<MutableEntry<Object, Object>> editor = null;
         if (ArrayKit.isNotEmpty(properties)) {
             mapSize = properties.length;
             final Set<String> propertiesSet = SetKit.of(properties);
@@ -428,7 +428,7 @@ public class BeanKit {
     }
 
     /**
-     * Converts an object to a Map. By implementing {@link UnaryOperator}, custom field values can be defined. If the
+     * Converts an object to a Map. By implementing {@link UnaryOperatorX}, custom field values can be defined. If the
      * editor returns {@code null}, the field is ignored, allowing for:
      *
      * <pre>
@@ -449,7 +449,7 @@ public class BeanKit {
             final Object bean,
             final Map<String, V> targetMap,
             final boolean ignoreNullValue,
-            final UnaryOperator<MutableEntry<Object, Object>> keyEditor) {
+            final UnaryOperatorX<MutableEntry<Object, Object>> keyEditor) {
         if (null == bean) {
             return null;
         }
@@ -631,7 +631,7 @@ public class BeanKit {
      * @param <T>    The type of the Bean being edited.
      * @return The edited Bean.
      */
-    public static <T> T edit(final T bean, final UnaryOperator<Field> editor) {
+    public static <T> T edit(final T bean, final UnaryOperatorX<Field> editor) {
         if (bean == null) {
             return null;
         }
@@ -874,7 +874,7 @@ public class BeanKit {
      * @param predicate The predicate to apply to each field.
      * @return {@code true} if any field triggers the predicate to be true, {@code false} otherwise.
      */
-    public static boolean checkBean(final Object bean, final Predicate<Field> predicate) {
+    public static boolean checkBean(final Object bean, final PredicateX<Field> predicate) {
         if (null == bean) {
             return true;
         }

@@ -23,11 +23,11 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferUShort;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageAnalyzer;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
@@ -347,7 +347,7 @@ public class ImageAdapter {
      */
     private double getRescaleValue(
             PresentationLutObject dcm,
-            Function<ModalityLutModule, OptionalDouble> extractor,
+            FunctionX<ModalityLutModule, OptionalDouble> extractor,
             OptionalDouble descriptorValue,
             double defaultValue) {
         if (dcm != null) {

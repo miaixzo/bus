@@ -22,8 +22,8 @@ package org.miaixz.bus.core.center.queue;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.thread.SimpleScheduler;
 import org.miaixz.bus.core.xyz.RuntimeKit;
 
@@ -84,13 +84,13 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
     }
 
     /**
-     * A `Predicate` that checks if there is sufficient free memory.
+     * A `PredicateX` that checks if there is sufficient free memory.
      *
      * @param <E> The element type.
      * @author Kimi Liu
      * @since Java 21+
      */
-    private static class MemoryChecker<E> implements Predicate<E> {
+    private static class MemoryChecker<E> implements PredicateX<E> {
 
         /**
          * The minimum amount of free memory required before accepting a new element.
@@ -113,7 +113,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
          * @return `true` if there is enough memory, `false` otherwise.
          */
         @Override
-        public boolean test(final E e) {
+        public boolean testing(final E e) {
             return FreeMemoryCalculator.INSTANCE.getResult() > maxFreeMemory;
         }
 

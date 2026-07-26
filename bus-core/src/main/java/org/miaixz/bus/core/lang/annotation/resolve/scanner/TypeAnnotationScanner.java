@@ -23,9 +23,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Proxy;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
@@ -46,7 +46,7 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
      * @param excludeTypes       Types to exclude from scanning
      */
     public TypeAnnotationScanner(final boolean includeSupperClass, final boolean includeInterfaces,
-            final Predicate<Class<?>> filter, final Set<Class<?>> excludeTypes) {
+            final PredicateX<Class<?>> filter, final Set<Class<?>> excludeTypes) {
         super(includeSupperClass, includeInterfaces, filter, excludeTypes);
     }
 
@@ -123,7 +123,7 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
      * @author Kimi Liu
      * @since Java 21+
      */
-    public static class JdkProxyClassConverter implements UnaryOperator<Class<?>> {
+    public static class JdkProxyClassConverter implements UnaryOperatorX<Class<?>> {
 
         /**
          * If {@code sourceClass} is a JDK proxy class, recursively returns the superclass until a non-proxy class is
@@ -133,7 +133,7 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
          * @return the original non-proxy class
          */
         @Override
-        public Class<?> apply(final Class<?> sourceClass) {
+        public Class<?> applying(final Class<?> sourceClass) {
             return Proxy.isProxyClass(sourceClass) ? apply(sourceClass.getSuperclass()) : sourceClass;
         }
 

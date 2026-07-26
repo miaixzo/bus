@@ -21,8 +21,8 @@ package org.miaixz.bus.cortex.registry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
@@ -203,7 +203,7 @@ public class RegistryRefreshService {
      * @param <T>      resolved value type
      * @return first non-null result or {@code null}
      */
-    private <T> T firstAcrossTypes(Vector criteria, Function<Vector, T> resolver) {
+    private <T> T firstAcrossTypes(Vector criteria, FunctionX<Vector, T> resolver) {
         for (Type type : supportedTypes()) {
             T resolved = resolver.apply(typeScope(criteria, type));
             if (resolved != null) {

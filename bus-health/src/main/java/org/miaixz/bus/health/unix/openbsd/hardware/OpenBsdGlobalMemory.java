@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.unix.openbsd.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.Memory;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -44,23 +43,23 @@ final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
     /**
      * The available value.
      */
-    private final Supplier<Long> available = Memoizer
+    private final SupplierX<Long> available = Memoizer
             .memoize(OpenBsdGlobalMemory::queryAvailable, Memoizer.defaultExpiration());
 
     /**
      * The total value.
      */
-    private final Supplier<Long> total = Memoizer.memoize(OpenBsdGlobalMemory::queryPhysMem);
+    private final SupplierX<Long> total = Memoizer.memoize(OpenBsdGlobalMemory::queryPhysMem);
 
     /**
      * The pageSize value.
      */
-    private final Supplier<Long> pageSize = Memoizer.memoize(OpenBsdGlobalMemory::queryPageSize);
+    private final SupplierX<Long> pageSize = Memoizer.memoize(OpenBsdGlobalMemory::queryPageSize);
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Queries the available.

@@ -23,10 +23,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * A recyclable batch thread pool executor designed for efficient parallel processing of tasks.
@@ -41,7 +42,7 @@ import java.util.stream.Stream;
  * Applicable Scenarios:
  * <ul>
  * <li>Synchronous batch processing of data to improve throughput and prevent task accumulation (see
- * {@link #process(List, int, Function)}).</li>
+ * {@link #process(List, int, FunctionX)}).</li>
  * <li>Accelerating general query interface calls (see {@link #processByWarp(Warp[])}).</li>
  * </ul>
  *
@@ -149,7 +150,7 @@ public class RecyclableBatchThreadPoolExecutor {
      * @param processor The function to apply to each element in the batch.
      * @return A list of processed results for the batch, with nulls filtered out.
      */
-    private static <T, R> List<R> processBatch(final List<T> batch, final Function<T, R> processor) {
+    private static <T, R> List<R> processBatch(final List<T> batch, final FunctionX<T, R> processor) {
         return batch.stream().map(processor).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
@@ -176,7 +177,7 @@ public class RecyclableBatchThreadPoolExecutor {
      * <ul>
      * <li>After all batches are completed, null values are filtered out. The order of input data is maintained. A
      * processor returning {@code null} for an item will cause that item's result to be ignored.</li>
-     * <li>The provided {@link Function} must handle its own exceptions and ensure thread safety.</li>
+     * <li>The provided {@link FunctionX} must handle its own exceptions and ensure thread safety.</li>
      * <li>Data may be modified externally after being split into batches; copy data beforehand if necessary.</li>
      * <li>The main thread participates in batch processing. For asynchronous tasks, a regular thread pool is
      * recommended.</li>
@@ -191,7 +192,7 @@ public class RecyclableBatchThreadPoolExecutor {
      * @throws IllegalArgumentException If {@code batchSize} is less than 1.
      * @throws RuntimeException         If any task execution encounters an exception.
      */
-    public <T, R> List<R> process(final List<T> data, final int batchSize, final Function<T, R> processor) {
+    public <T, R> List<R> process(final List<T> data, final int batchSize, final FunctionX<T, R> processor) {
         if (batchSize < 1) {
             throw new IllegalArgumentException("batchSize must be greater than or equal to 1");
         }
@@ -380,7 +381,7 @@ public class RecyclableBatchThreadPoolExecutor {
     }
 
     /**
-     * A wrapper class for encapsulating a processing logic ({@link Supplier}) and its result. This allows for deferred
+     * A wrapper class for encapsulating a processing logic ({@link SupplierX}) and its result. This allows for deferred
      * execution and retrieval of results.
      *
      * @param <R> The type of the result produced by the encapsulated logic.
@@ -390,9 +391,9 @@ public class RecyclableBatchThreadPoolExecutor {
     public static class Warp<R> {
 
         /**
-         * The {@link Supplier} that provides the processing logic.
+         * The {@link SupplierX} that provides the processing logic.
          */
-        private final Supplier<R> supplier;
+        private final SupplierX<R> supplier;
 
         /**
          * The result of the execution of the supplier.
@@ -400,24 +401,24 @@ public class RecyclableBatchThreadPoolExecutor {
         private R result;
 
         /**
-         * Constructs a {@code Warp} with the given {@link Supplier}.
+         * Constructs a {@code Warp} with the given {@link SupplierX}.
          *
          * @param supplier The execution logic to be wrapped. Must not be {@code null}.
          * @throws NullPointerException If {@code supplier} is {@code null}.
          */
-        private Warp(final Supplier<R> supplier) {
+        private Warp(final SupplierX<R> supplier) {
             Objects.requireNonNull(supplier);
             this.supplier = supplier;
         }
 
         /**
-         * Creates a new {@code Warp} instance with the specified {@link Supplier}.
+         * Creates a new {@code Warp} instance with the specified {@link SupplierX}.
          *
          * @param <R>      The type of the result.
          * @param supplier The execution logic.
          * @return A new {@code Warp} instance.
          */
-        public static <R> Warp<R> of(final Supplier<R> supplier) {
+        public static <R> Warp<R> of(final SupplierX<R> supplier) {
             return new Warp<>(supplier);
         }
 
@@ -432,7 +433,7 @@ public class RecyclableBatchThreadPoolExecutor {
         }
 
         /**
-         * Executes the encapsulated processing logic (the {@link Supplier}) and stores its result.
+         * Executes the encapsulated processing logic (the {@link SupplierX}) and stores its result.
          *
          * @return This {@code Warp} instance for method chaining.
          */

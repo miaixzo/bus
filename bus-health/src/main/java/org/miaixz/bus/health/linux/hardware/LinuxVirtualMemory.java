@@ -20,8 +20,8 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.util.List;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -49,13 +49,13 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
     /**
      * The usedTotalCommitLim value.
      */
-    private final Supplier<Triplet<Long, Long, Long>> usedTotalCommitLim = Memoizer
+    private final SupplierX<Triplet<Long, Long, Long>> usedTotalCommitLim = Memoizer
             .memoize(LinuxVirtualMemory::queryMemInfo, Memoizer.defaultExpiration());
 
     /**
      * The inOut value.
      */
-    private final Supplier<Pair<Long, Long>> inOut = Memoizer
+    private final SupplierX<Pair<Long, Long>> inOut = Memoizer
             .memoize(LinuxVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
 
     /**

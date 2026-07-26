@@ -66,7 +66,7 @@ public class TimeParser implements PredicateDateParser, Serializable {
      * @return {@code true} if the string matches a time format, {@code false} otherwise.
      */
     @Override
-    public boolean test(final CharSequence date) {
+    public boolean testing(final CharSequence date) {
         return PatternKit.isMatch(Pattern.TIME_PATTERN, date);
     }
 

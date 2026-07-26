@@ -20,8 +20,8 @@
 package org.miaixz.bus.core.lang;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.xyz.*;
 
 /**
@@ -58,7 +58,7 @@ public class Assert {
      * @param supplier   A supplier for the exception to throw if the expression is {@code false}.
      * @throws X if expression is {@code false}
      */
-    public static <X extends Throwable> void isTrue(final boolean expression, final Supplier<? extends X> supplier)
+    public static <X extends Throwable> void isTrue(final boolean expression, final SupplierX<? extends X> supplier)
             throws X {
         if (!expression) {
             throw supplier.get();
@@ -114,7 +114,7 @@ public class Assert {
      * @param errorSupplier A supplier for the exception to throw if the expression is {@code true}.
      * @throws X if expression is {@code true}
      */
-    public static <X extends Throwable> void isFalse(final boolean expression, final Supplier<X> errorSupplier)
+    public static <X extends Throwable> void isFalse(final boolean expression, final SupplierX<X> errorSupplier)
             throws X {
         if (expression) {
             throw errorSupplier.get();
@@ -170,7 +170,7 @@ public class Assert {
      * @param errorSupplier A supplier for the exception to throw if the object is not {@code null}.
      * @throws X if the object is not {@code null}
      */
-    public static <X extends Throwable> void isNull(final Object object, final Supplier<X> errorSupplier) throws X {
+    public static <X extends Throwable> void isNull(final Object object, final SupplierX<X> errorSupplier) throws X {
         if (null != object) {
             throw errorSupplier.get();
         }
@@ -227,7 +227,7 @@ public class Assert {
      * @return The non-{@code null} object.
      * @throws X if the object is {@code null}
      */
-    public static <T, X extends Throwable> T notNull(final T object, final Supplier<X> errorSupplier) throws X {
+    public static <T, X extends Throwable> T notNull(final T object, final SupplierX<X> errorSupplier) throws X {
         if (null == object) {
             throw errorSupplier.get();
         }
@@ -296,7 +296,7 @@ public class Assert {
      * @throws X if the object array is {@code null} or has no elements
      * @see ArrayKit#isNotEmpty(Object[])
      */
-    public static <T, X extends Throwable> T[] notEmpty(final T[] array, final Supplier<X> errorSupplier) throws X {
+    public static <T, X extends Throwable> T[] notEmpty(final T[] array, final SupplierX<X> errorSupplier) throws X {
         if (ArrayKit.isEmpty(array)) {
             throw errorSupplier.get();
         }
@@ -362,7 +362,7 @@ public class Assert {
      */
     public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(
             final T collection,
-            final Supplier<X> errorSupplier) throws X {
+            final SupplierX<X> errorSupplier) throws X {
         if (CollKit.isEmpty(collection)) {
             throw errorSupplier.get();
         }
@@ -433,7 +433,7 @@ public class Assert {
      */
     public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(
             final T map,
-            final Supplier<X> errorSupplier) throws X {
+            final SupplierX<X> errorSupplier) throws X {
         if (MapKit.isEmpty(map)) {
             throw errorSupplier.get();
         }
@@ -502,7 +502,7 @@ public class Assert {
      */
     public static <T extends CharSequence, X extends Throwable> T notEmpty(
             final T text,
-            final Supplier<X> errorSupplier) throws X {
+            final SupplierX<X> errorSupplier) throws X {
         if (StringKit.isEmpty(text)) {
             throw errorSupplier.get();
         }
@@ -573,7 +573,7 @@ public class Assert {
      */
     public static <T extends CharSequence, X extends Throwable> T notBlank(
             final T text,
-            final Supplier<X> errorMsgSupplier) throws X {
+            final SupplierX<X> errorMsgSupplier) throws X {
         if (StringKit.isBlank(text)) {
             throw errorMsgSupplier.get();
         }
@@ -646,7 +646,7 @@ public class Assert {
     public static <T extends CharSequence, X extends Throwable> T notContain(
             final CharSequence textToSearch,
             final T substring,
-            final Supplier<X> errorSupplier) throws X {
+            final SupplierX<X> errorSupplier) throws X {
         if (StringKit.contains(textToSearch, substring)) {
             throw errorSupplier.get();
         }
@@ -716,7 +716,7 @@ public class Assert {
      * @throws X if the object array contains a {@code null} element
      * @see ArrayKit#hasNull(Object[])
      */
-    public static <T, X extends Throwable> T[] noNullElements(final T[] array, final Supplier<X> errorSupplier)
+    public static <T, X extends Throwable> T[] noNullElements(final T[] array, final SupplierX<X> errorSupplier)
             throws X {
         if (ArrayKit.hasNull(array)) {
             throw errorSupplier.get();
@@ -909,7 +909,7 @@ public class Assert {
      * @param errorMsgSupplier A supplier for the error message to use if the expression is {@code false}.
      * @throws IllegalStateException if the expression is {@code false}
      */
-    public static void state(final boolean expression, final Supplier<String> errorMsgSupplier)
+    public static void state(final boolean expression, final SupplierX<String> errorMsgSupplier)
             throws IllegalStateException {
         if (!expression) {
             throw new IllegalStateException(errorMsgSupplier.get());
@@ -1050,7 +1050,7 @@ public class Assert {
             final int value,
             final int min,
             final int max,
-            final Supplier<? extends X> errorSupplier) throws X {
+            final SupplierX<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
         }
@@ -1107,7 +1107,7 @@ public class Assert {
             final long value,
             final long min,
             final long max,
-            final Supplier<? extends X> errorSupplier) throws X {
+            final SupplierX<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
         }
@@ -1164,7 +1164,7 @@ public class Assert {
             final double value,
             final double min,
             final double max,
-            final Supplier<? extends X> errorSupplier) throws X {
+            final SupplierX<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
         }
@@ -1275,7 +1275,7 @@ public class Assert {
     public static <X extends Throwable> void notEquals(
             final Object obj1,
             final Object obj2,
-            final Supplier<X> errorSupplier) throws X {
+            final SupplierX<X> errorSupplier) throws X {
         if (ObjectKit.equals(obj1, obj2)) {
             throw errorSupplier.get();
         }
@@ -1328,7 +1328,7 @@ public class Assert {
     public static <X extends Throwable> void equals(
             final Object obj1,
             final Object obj2,
-            final Supplier<X> errorSupplier) throws X {
+            final SupplierX<X> errorSupplier) throws X {
         if (ObjectKit.notEquals(obj1, obj2)) {
             throw errorSupplier.get();
         }

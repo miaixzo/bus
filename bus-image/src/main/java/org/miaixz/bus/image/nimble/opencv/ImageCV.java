@@ -22,7 +22,6 @@ package org.miaixz.bus.image.nimble.opencv;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BinaryOperator;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -33,6 +32,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
+import org.miaixz.bus.core.center.function.BinaryOperatorX;
 import org.miaixz.bus.image.nimble.KernelData;
 
 /**
@@ -342,7 +342,7 @@ public final class ImageCV extends Mat implements PlanarImage {
      * @param operation the operation.
      * @return the operation result.
      */
-    private static ImageCV processStackOperation(List<PlanarImage> sources, BinaryOperator<Mat> operation) {
+    private static ImageCV processStackOperation(List<PlanarImage> sources, BinaryOperatorX<Mat> operation) {
         if (isInvalidStackSize(sources)) {
             return null;
         }

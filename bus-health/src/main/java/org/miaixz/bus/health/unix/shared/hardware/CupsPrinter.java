@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -231,7 +231,7 @@ public final class CupsPrinter extends AbstractPrinter {
             String defaultPrinter,
             Map<String, String> portMap,
             Map<String, String> descriptionMap,
-            UnaryOperator<String> driverLookup,
+            UnaryOperatorX<String> driverLookup,
             PrinterFactory factory) {
         List<Printer> printers = new ArrayList<>();
         for (String line : lpstatLines) {

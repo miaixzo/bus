@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -51,13 +50,13 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
     /**
      * The manufacturerModel value.
      */
-    private final Supplier<Pair<String, String>> manufacturerModel = Memoizer
+    private final SupplierX<Pair<String, String>> manufacturerModel = Memoizer
             .memoize(WindowsComputerSystem::queryManufacturerModel);
 
     /**
      * The serialNumberUUID value.
      */
-    private final Supplier<Pair<String, String>> serialNumberUUID = Memoizer
+    private final SupplierX<Pair<String, String>> serialNumberUUID = Memoizer
             .memoize(WindowsComputerSystem::querySystemSerialNumberUUID);
 
     /**

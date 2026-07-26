@@ -24,8 +24,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -815,7 +815,7 @@ public class RegistryControlService {
      * @param <T>      resolved value type
      * @return first non-null result or {@code null}
      */
-    private <T> T firstAcrossTypes(Vector criteria, Function<Vector, T> resolver) {
+    private <T> T firstAcrossTypes(Vector criteria, FunctionX<Vector, T> resolver) {
         for (Type type : supportedTypes()) {
             T resolved = resolver.apply(sourceScope(criteria, type));
             if (resolved != null) {

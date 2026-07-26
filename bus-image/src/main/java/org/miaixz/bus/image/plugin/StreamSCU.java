@@ -19,6 +19,11 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.ImageProgress;
@@ -34,11 +39,6 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.image.nimble.ImageOutputData;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The {@code StreamSCU} class provides a flexible Service Class User (SCU) for DICOM C-STORE operations, designed for
@@ -546,10 +546,7 @@ public class StreamSCU {
                     "DICOM stream association idle close deferred: activeTransferCount={}",
                     instanceUidsCurrentlyProcessed.size());
             countdown.set(true);
-            scheduledFuture = closeAssociationExecutor.schedule(
-                    closeAssociationTask,
-                    Normal._15,
-                    TimeUnit.SECONDS);
+            scheduledFuture = closeAssociationExecutor.schedule(closeAssociationTask, Normal._15, TimeUnit.SECONDS);
             return;
         }
         closeAssociation(false);
@@ -598,15 +595,13 @@ public class StreamSCU {
      * @param association the association.
      */
     private void drainOutstandingResponses(Association association) {
-        Thread waiter = new Thread(
-                () -> {
-                    try {
-                        association.waitForOutstandingRSP();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                },
-                "streamscu-drain-rsp");
+        Thread waiter = new Thread(() -> {
+            try {
+                association.waitForOutstandingRSP();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }, "streamscu-drain-rsp");
         waiter.setDaemon(true);
         waiter.start();
         try {
@@ -665,10 +660,7 @@ public class StreamSCU {
     public synchronized void triggerCloseExecutor() {
         cancelScheduledClose();
         countdown.set(true);
-        scheduledFuture = closeAssociationExecutor.schedule(
-                closeAssociationTask,
-                Normal._20,
-                TimeUnit.SECONDS);
+        scheduledFuture = closeAssociationExecutor.schedule(closeAssociationTask, Normal._20, TimeUnit.SECONDS);
     }
 
     /**
@@ -760,11 +752,7 @@ public class StreamSCU {
                 TimeUnit.MILLISECONDS.sleep(Normal._20);
                 loop++;
             } catch (InterruptedException e) {
-                Logger.error(
-                        false,
-                        "Image",
-                        "prepareTransfer: InterruptedException {}",
-                        e.getClass().getSimpleName());
+                Logger.error(false, "Image", "prepareTransfer: InterruptedException {}", e.getClass().getSimpleName());
                 Thread.currentThread().interrupt();
                 break;
             }

@@ -19,9 +19,14 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.util.function.*;
-
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
 import org.miaixz.bus.core.center.function.Consumer3X;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 
 /**
  * Functional operations.
@@ -44,11 +49,11 @@ public class FunctionKit {
      * Returns {@code null} when the supplier is {@code null}.
      * </p>
      *
-     * @param supplier Supplier function.
+     * @param supplier SupplierX function.
      * @param <T>      Value type.
      * @return The supplied value, or {@code null}.
      */
-    public static <T> T get(final Supplier<T> supplier) {
+    public static <T> T get(final SupplierX<T> supplier) {
         return supplier == null ? null : supplier.get();
     }
 
@@ -63,7 +68,7 @@ public class FunctionKit {
      * @param <T>      Value type.
      * @return The result value, or {@code null}.
      */
-    public static <T> T apply(final UnaryOperator<T> operator, final T t) {
+    public static <T> T apply(final UnaryOperatorX<T> operator, final T t) {
         return operator == null ? null : operator.apply(t);
     }
 
@@ -73,13 +78,13 @@ public class FunctionKit {
      * Returns {@code null} when the function is {@code null}.
      * </p>
      *
-     * @param function Function.
+     * @param function FunctionX.
      * @param t        Input argument.
      * @param <T>      Input type.
      * @param <R>      Result type.
      * @return The result value, or {@code null}.
      */
-    public static <T, R> R apply(final Function<T, R> function, final T t) {
+    public static <T, R> R apply(final FunctionX<T, R> function, final T t) {
         return function == null ? null : function.apply(t);
     }
 
@@ -89,11 +94,11 @@ public class FunctionKit {
      * Does nothing when the consumer is {@code null}.
      * </p>
      *
-     * @param consumer Consumer.
+     * @param consumer ConsumerX.
      * @param t        Input argument.
      * @param <T>      Value type.
      */
-    public static <T> void accept(final Consumer<T> consumer, final T t) {
+    public static <T> void accept(final ConsumerX<T> consumer, final T t) {
         if (consumer != null) {
             consumer.accept(t);
         }
@@ -111,7 +116,7 @@ public class FunctionKit {
      * @param <T>      First value type.
      * @param <U>      Second value type.
      */
-    public static <T, U> void accept(final BiConsumer<T, U> consumer, final T t, final U u) {
+    public static <T, U> void accept(final BiConsumerX<T, U> consumer, final T t, final U u) {
         if (consumer != null) {
             consumer.accept(t, u);
         }
@@ -147,12 +152,12 @@ public class FunctionKit {
      * Returns {@code false} when the predicate is {@code null}.
      * </p>
      *
-     * @param predicate Predicate.
+     * @param predicate PredicateX.
      * @param t         Input argument.
      * @param <T>       Value type.
      * @return {@code true} if matched, otherwise {@code false}.
      */
-    public static <T> boolean test(final Predicate<T> predicate, final T t) {
+    public static <T> boolean test(final PredicateX<T> predicate, final T t) {
         return predicate != null && predicate.test(t);
     }
 
@@ -169,7 +174,7 @@ public class FunctionKit {
      * @param <U>       Second value type.
      * @return {@code true} if matched, otherwise {@code false}.
      */
-    public static <T, U> boolean test(final BiPredicate<T, U> predicate, final T t, final U u) {
+    public static <T, U> boolean test(final BiPredicateX<T, U> predicate, final T t, final U u) {
         return predicate != null && predicate.test(t, u);
     }
 

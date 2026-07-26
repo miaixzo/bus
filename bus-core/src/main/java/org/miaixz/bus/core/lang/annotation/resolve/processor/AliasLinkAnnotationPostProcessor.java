@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve.processor;
 
-import java.util.function.BinaryOperator;
+import org.miaixz.bus.core.center.function.BinaryOperatorX;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
@@ -119,7 +119,7 @@ public class AliasLinkAnnotationPostProcessor extends AbstractLinkAnnotationPost
             final AnnotationSynthesizer synthesizer,
             final AnnotationAttribute originalAttribute,
             final AnnotationAttribute aliasAttribute,
-            final BinaryOperator<AnnotationAttribute> wrapping) {
+            final BinaryOperatorX<AnnotationAttribute> wrapping) {
         // Not a wrapped attribute: wrap directly
         if (!aliasAttribute.isWrapped()) {
             processAttribute(synthesizer, originalAttribute, aliasAttribute, wrapping);
@@ -143,7 +143,7 @@ public class AliasLinkAnnotationPostProcessor extends AbstractLinkAnnotationPost
             final AnnotationSynthesizer synthesizer,
             final AnnotationAttribute originalAttribute,
             final AnnotationAttribute target,
-            final BinaryOperator<AnnotationAttribute> wrapping) {
+            final BinaryOperatorX<AnnotationAttribute> wrapping) {
         Optional.ofNullable(target.getAnnotationType()).map(synthesizer::getSynthesizedAnnotation).ifPresent(
                 t -> t.replaceAttribute(target.getAttributeName(), old -> wrapping.apply(old, originalAttribute)));
     }

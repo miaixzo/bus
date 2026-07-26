@@ -31,8 +31,8 @@ import java.nio.file.attribute.FileAttribute;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
@@ -795,10 +795,10 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     /**
      * Lists all files and directories directly within the directory denoted by this path (non-recursive).
      *
-     * @param filter A {@link Predicate} to filter the files. If {@code null}, all files are returned.
+     * @param filter A {@link PredicateX} to filter the files. If {@code null}, all files are returned.
      * @return An array of {@link Path} objects representing the files and directories that match the filter.
      */
-    public Path[] listFiles(final Predicate<? super Path> filter) {
+    public Path[] listFiles(final PredicateX<? super Path> filter) {
         return PathResolve.listFiles(this, filter);
     }
 

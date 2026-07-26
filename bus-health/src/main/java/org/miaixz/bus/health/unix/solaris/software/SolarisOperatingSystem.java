@@ -23,12 +23,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.platform.unix.solaris.Kstat2;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -91,7 +91,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     /**
      * The uptimeSupplier value.
      */
-    private final Supplier<Long> uptimeSupplier = Memoizer
+    private final SupplierX<Long> uptimeSupplier = Memoizer
             .memoize(SolarisOperatingSystem::queryUptime, Memoizer.defaultExpiration());
 
     static {

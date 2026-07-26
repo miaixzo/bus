@@ -23,8 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -54,37 +54,37 @@ final class LinuxFirmware extends AbstractFirmware {
     /**
      * The vcGenCmd value.
      */
-    private final Supplier<VcGenCmdStrings> vcGenCmd = Memoizer.memoize(LinuxFirmware::queryVcGenCmd);
+    private final SupplierX<VcGenCmdStrings> vcGenCmd = Memoizer.memoize(LinuxFirmware::queryVcGenCmd);
 
     /**
      * The manufacturer value.
      */
-    private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
+    private final SupplierX<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
 
     /**
      * The description value.
      */
-    private final Supplier<String> description = Memoizer.memoize(this::queryDescription);
+    private final SupplierX<String> description = Memoizer.memoize(this::queryDescription);
 
     /**
      * The releaseDate value.
      */
-    private final Supplier<String> releaseDate = Memoizer.memoize(this::queryReleaseDate);
+    private final SupplierX<String> releaseDate = Memoizer.memoize(this::queryReleaseDate);
 
     /**
      * The biosNameRev value.
      */
-    private final Supplier<Pair<String, String>> biosNameRev = Memoizer.memoize(Dmidecode::queryBiosNameRev);
+    private final SupplierX<Pair<String, String>> biosNameRev = Memoizer.memoize(Dmidecode::queryBiosNameRev);
 
     /**
      * The version value.
      */
-    private final Supplier<String> version = Memoizer.memoize(this::queryVersion);
+    private final SupplierX<String> version = Memoizer.memoize(this::queryVersion);
 
     /**
      * The name value.
      */
-    private final Supplier<String> name = Memoizer.memoize(this::queryName);
+    private final SupplierX<String> name = Memoizer.memoize(this::queryName);
 
     /**
      * Queries the vc gen cmd.

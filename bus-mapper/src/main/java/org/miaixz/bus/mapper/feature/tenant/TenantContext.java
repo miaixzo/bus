@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.tenant;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.Assert;
 
@@ -168,7 +168,7 @@ public class TenantContext {
      * @param <T>      the return value type
      * @return the operation result
      */
-    public static <T> T callWith(String tenantId, Supplier<T> supplier) {
+    public static <T> T callWith(String tenantId, SupplierX<T> supplier) {
         String originalTenantId = getTenantId();
         try {
             setTenantId(tenantId);
@@ -212,7 +212,7 @@ public class TenantContext {
      * @param <T>      the return value type
      * @return the operation result
      */
-    public static <T> T callIgnore(Supplier<T> supplier) {
+    public static <T> T callIgnore(SupplierX<T> supplier) {
         boolean originalIgnore = isIgnore();
         try {
             setIgnore(true);

@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -51,7 +51,7 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
     /**
      * The diskStats value.
      */
-    private final Supplier<perfstat_disk_t[]> diskStats;
+    private final SupplierX<perfstat_disk_t[]> diskStats;
 
     /**
      * The reads value.
@@ -102,7 +102,8 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
      * @param size      the size
      * @param diskStats the disk stats
      */
-    private AixHWDiskStore(String name, String model, String serial, long size, Supplier<perfstat_disk_t[]> diskStats) {
+    private AixHWDiskStore(String name, String model, String serial, long size,
+            SupplierX<perfstat_disk_t[]> diskStats) {
         super(name, model, serial, size);
         this.diskStats = diskStats;
     }
@@ -113,7 +114,7 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
      * @param diskStats Memoized supplier of disk statistics
      * @return a list of {@link HWDiskStore} objects representing the disks
      */
-    public static List<HWDiskStore> getDisks(Supplier<perfstat_disk_t[]> diskStats) {
+    public static List<HWDiskStore> getDisks(SupplierX<perfstat_disk_t[]> diskStats) {
         Map<String, Pair<Integer, Integer>> majMinMap = Ls.queryDeviceMajorMinor();
         List<AixHWDiskStore> storeList = new ArrayList<>();
         for (perfstat_disk_t disk : diskStats.get()) {
@@ -145,7 +146,7 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
             String model,
             String serial,
             long size,
-            Supplier<perfstat_disk_t[]> diskStats,
+            SupplierX<perfstat_disk_t[]> diskStats,
             Map<String, Pair<Integer, Integer>> majMinMap) {
         AixHWDiskStore store = new AixHWDiskStore(diskName, model.isEmpty() ? Normal.UNKNOWN : model, serial, size,
                 diskStats);

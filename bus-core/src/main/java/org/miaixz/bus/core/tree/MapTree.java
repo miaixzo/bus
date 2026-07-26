@@ -23,9 +23,9 @@ import java.io.PrintWriter;
 import java.io.Serial;
 import java.io.StringWriter;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
@@ -272,7 +272,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      *
      * @param consumer The consumer to process each node.
      */
-    public void walk(final Consumer<MapTree<T>> consumer) {
+    public void walk(final ConsumerX<MapTree<T>> consumer) {
         walk(consumer, false);
     }
 
@@ -282,7 +282,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @param consumer   The consumer to process each node.
      * @param broadFirst If {@code true}, uses breadth-first traversal; otherwise, uses depth-first traversal.
      */
-    public void walk(final Consumer<MapTree<T>> consumer, final boolean broadFirst) {
+    public void walk(final ConsumerX<MapTree<T>> consumer, final boolean broadFirst) {
         if (broadFirst) { // Breadth-first traversal
             final Queue<MapTree<T>> queue = new LinkedList<>();
             queue.offer(this);
@@ -314,11 +314,11 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * Recursively filters the tree and creates a new tree. If a node or any of its children satisfy the predicate, the
      * node is kept. Otherwise, the node and its children are discarded.
      *
-     * @param predicate The filtering logic. A node is kept if {@link Predicate#test(Object)} returns {@code true}.
+     * @param predicate The filtering logic. A node is kept if {@link PredicateX#test(Object)} returns {@code true}.
      * @return The filtered new tree, or {@code null} if the root node does not match.
-     * @see #filter(Predicate)
+     * @see #filter(PredicateX)
      */
-    public MapTree<T> filterNew(final Predicate<MapTree<T>> predicate) {
+    public MapTree<T> filterNew(final PredicateX<MapTree<T>> predicate) {
         return cloneTree().filter(predicate);
     }
 
@@ -326,11 +326,11 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * Recursively filters this tree in-place. If a node or any of its children satisfy the predicate, the node is kept.
      * Otherwise, the node and its children are discarded. This method modifies the current tree.
      *
-     * @param predicate The filtering logic. A node is kept if {@link Predicate#test(Object)} returns {@code true}.
+     * @param predicate The filtering logic. A node is kept if {@link PredicateX#test(Object)} returns {@code true}.
      * @return The filtered node, or {@code null} if the node does not match.
-     * @see #filterNew(Predicate)
+     * @see #filterNew(PredicateX)
      */
-    public MapTree<T> filter(final Predicate<MapTree<T>> predicate) {
+    public MapTree<T> filter(final PredicateX<MapTree<T>> predicate) {
         if (null == predicate || predicate.test(this)) {
             // If this node matches, all its children are kept.
             return this;

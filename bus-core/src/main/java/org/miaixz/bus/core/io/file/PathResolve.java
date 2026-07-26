@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.resource.FileResource;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Assert;
@@ -114,7 +114,7 @@ public class PathResolve {
      * @param filter  A filter to apply to the files. If {@code null}, all files are accepted.
      * @return An array of matching paths.
      */
-    public static Path[] listFiles(final Path dirPath, Predicate<? super Path> filter) {
+    public static Path[] listFiles(final Path dirPath, PredicateX<? super Path> filter) {
         if (null == filter) {
             filter = PredicateKit.alwaysTrue();
         }

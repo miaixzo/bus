@@ -22,7 +22,8 @@ package org.miaixz.bus.core.center.map;
 import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
  * A fixed-size {@link LinkedHashMap} that implements a Least Recently Used (LRU) cache policy. When the map's size
@@ -49,7 +50,7 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
     /**
      * An optional listener that is called when an entry is removed due to the capacity being exceeded.
      */
-    private Consumer<java.util.Map.Entry<K, V>> removeListener;
+    private ConsumerX<java.util.Map.Entry<K, V>> removeListener;
 
     /**
      * Constructs a {@code FixedLinkedHashMap} with the specified capacity.
@@ -84,7 +85,7 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
      *
      * @param removeListener The consumer to be called with the removed entry.
      */
-    public void setRemoveListener(final Consumer<Map.Entry<K, V>> removeListener) {
+    public void setRemoveListener(final ConsumerX<Map.Entry<K, V>> removeListener) {
         this.removeListener = removeListener;
     }
 

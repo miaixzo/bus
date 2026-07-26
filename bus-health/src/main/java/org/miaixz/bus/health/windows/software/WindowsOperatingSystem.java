@@ -21,7 +21,6 @@ package org.miaixz.bus.health.windows.software;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
@@ -33,6 +32,7 @@ import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.LUID;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -85,7 +85,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * Windows event log name
      */
-    private static final Supplier<String> SYSTEM_LOG = Memoizer
+    private static final SupplierX<String> SYSTEM_LOG = Memoizer
             .memoize(WindowsOperatingSystem::querySystemLog, TimeUnit.HOURS.toNanos(1));
 
     /**
@@ -101,7 +101,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * The installedAppsSupplier value.
      */
-    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(WindowsInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     static {
@@ -114,13 +114,13 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * The processMapFromRegistry value.
      */
-    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoizer
+    private final SupplierX<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoizer
             .memoize(WindowsOperatingSystem::queryProcessMapFromRegistry, Memoizer.defaultExpiration());
 
     /**
      * The processMapFromPerfCounters value.
      */
-    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoizer
+    private final SupplierX<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoizer
             .memoize(WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoizer.defaultExpiration());
     /*
      * Cache full thread stats queries. Second query will only populate if first one returns null. Only used if
@@ -129,13 +129,13 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * The threadMapFromRegistry value.
      */
-    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoizer
+    private final SupplierX<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoizer
             .memoize(WindowsOperatingSystem::queryThreadMapFromRegistry, Memoizer.defaultExpiration());
 
     /**
      * The threadMapFromPerfCounters value.
      */
-    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoizer
+    private final SupplierX<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoizer
             .memoize(WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoizer.defaultExpiration());
 
     /**

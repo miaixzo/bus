@@ -21,8 +21,8 @@ package org.miaixz.bus.core.text;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class StringStripper implements UnaryOperator<CharSequence>, Serializable {
+public class StringStripper implements UnaryOperatorX<CharSequence>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 2852233890053L;
@@ -80,7 +80,7 @@ public class StringStripper implements UnaryOperator<CharSequence>, Serializable
      * @return the String value
      */
     @Override
-    public String apply(final CharSequence charSequence) {
+    public String applying(final CharSequence charSequence) {
         return this.stripAll ? stripAll(charSequence) : stripOnce(charSequence);
     }
 

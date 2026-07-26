@@ -20,11 +20,11 @@
 package org.miaixz.bus.auth;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -103,7 +103,7 @@ public class Authorizer {
      * @param context a function that generates the context configuration based on the source
      * @return the current Authorizer instance
      */
-    public Authorizer context(Function<String, Context> context) {
+    public Authorizer context(FunctionX<String, Context> context) {
         this.context = context.apply(this.source);
         return this;
     }

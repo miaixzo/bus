@@ -21,8 +21,8 @@ package org.miaixz.bus.notify;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -143,7 +143,7 @@ public abstract class FabricX {
      * @param consumer value consumer
      * @param values   values
      */
-    private static void apply(final BiConsumer<String, Object> consumer, final Map<String, ?> values) {
+    private static void apply(final BiConsumerX<String, Object> consumer, final Map<String, ?> values) {
         if (values != null && !values.isEmpty()) {
             values.forEach((name, value) -> {
                 if (name != null && value != null) {

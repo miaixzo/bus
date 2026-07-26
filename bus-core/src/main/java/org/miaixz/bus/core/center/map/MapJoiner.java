@@ -21,8 +21,8 @@ package org.miaixz.bus.core.center.map;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.text.StringJoiner;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -85,11 +85,11 @@ public class MapJoiner {
      * @param <K>       The type of keys in the map.
      * @param <V>       The type of values in the map.
      * @param map       The map whose entries are to be appended.
-     * @param predicate A {@link Predicate} to filter which entries are included. If {@code null}, all entries are
+     * @param predicate A {@link PredicateX} to filter which entries are included. If {@code null}, all entries are
      *                  appended.
      * @return This {@code MapJoiner} instance for method chaining.
      */
-    public <K, V> MapJoiner append(final Map<K, V> map, final Predicate<Map.Entry<K, V>> predicate) {
+    public <K, V> MapJoiner append(final Map<K, V> map, final PredicateX<Map.Entry<K, V>> predicate) {
         if (map == null) {
             return this;
         }
@@ -102,13 +102,13 @@ public class MapJoiner {
      * @param <K>       The type of keys in the entries.
      * @param <V>       The type of values in the entries.
      * @param parts     An iterator over the {@link Map.Entry} objects to append.
-     * @param predicate A {@link Predicate} to filter which entries are included. If {@code null}, all entries are
+     * @param predicate A {@link PredicateX} to filter which entries are included. If {@code null}, all entries are
      *                  appended.
      * @return This {@code MapJoiner} instance for method chaining.
      */
     public <K, V> MapJoiner append(
             final Iterator<? extends Map.Entry<K, V>> parts,
-            final Predicate<Map.Entry<K, V>> predicate) {
+            final PredicateX<Map.Entry<K, V>> predicate) {
         if (null == parts) {
             return this;
         }

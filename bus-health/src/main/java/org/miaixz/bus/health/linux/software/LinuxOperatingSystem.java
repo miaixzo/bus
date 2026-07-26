@@ -23,12 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.linux.Udev;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -126,13 +126,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * The installedAppsSupplier value.
      */
-    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     /**
      * The cgroupInfoSupplier value.
      */
-    private final Supplier<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
+    private final SupplierX<CgroupInfo> cgroupInfoSupplier = Memoizer.memoize(LinuxCgroupInfo::new);
 
     static {
         boolean hasUdev = false;

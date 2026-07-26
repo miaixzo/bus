@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import java.util.function.Supplier;
-
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -45,7 +44,7 @@ final class WindowsFirmware extends AbstractFirmware {
     /**
      * The manufNameDescVersRelease value.
      */
-    private final Supplier<Tuple> manufNameDescVersRelease = Memoizer
+    private final SupplierX<Tuple> manufNameDescVersRelease = Memoizer
             .memoize(WindowsFirmware::queryManufNameDescVersRelease);
 
     /**

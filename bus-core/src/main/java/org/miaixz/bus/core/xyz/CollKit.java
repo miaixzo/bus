@@ -28,14 +28,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.*;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.CollectionOperation;
 import org.miaixz.bus.core.center.CollectionStream;
 import org.miaixz.bus.core.center.TransCollection;
 import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.Consumer3X;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.iterator.IteratorEnumeration;
 import org.miaixz.bus.core.center.set.UniqueKeySet;
@@ -65,13 +68,13 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * Returns a `Predicate` that maintains state for filtering distinct elements based on a key extractor.
+     * Returns a `PredicateX` that maintains state for filtering distinct elements based on a key extractor.
      *
      * @param <T> The type of the elements.
      * @param key The key extractor function.
-     * @return A {@link Predicate} for distinct filtering.
+     * @return A {@link PredicateX} for distinct filtering.
      */
-    public static <T> Predicate<T> distinct(final Function<? super T, ?> key) {
+    public static <T> PredicateX<T> distinct(final FunctionX<? super T, ?> key) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(key.apply(t), Boolean.TRUE) == null;
     }
@@ -107,7 +110,7 @@ public class CollKit extends CollectionStream {
      */
     public static <T, K> List<T> distinct(
             final Collection<T> collection,
-            final Function<T, K> key,
+            final FunctionX<T, K> key,
             final boolean override) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
@@ -302,7 +305,7 @@ public class CollKit extends CollectionStream {
      * @param <T>         The type of the elements.
      * @return {@code true} if any element matches.
      */
-    public static <T> boolean contains(final Collection<T> collection, final Predicate<? super T> containFunc) {
+    public static <T> boolean contains(final Collection<T> collection, final PredicateX<? super T> containFunc) {
         if (isEmpty(collection)) {
             return false;
         }
@@ -398,12 +401,12 @@ public class CollKit extends CollectionStream {
      * @param conjunction The separator.
      * @param func        The function to convert elements to strings.
      * @return The joined string.
-     * @see IteratorKit#join(Iterator, CharSequence, Function)
+     * @see IteratorKit#join(Iterator, CharSequence, FunctionX)
      */
     public static <T> String join(
             final Iterable<T> iterable,
             final CharSequence conjunction,
-            final Function<T, ? extends CharSequence> func) {
+            final FunctionX<T, ? extends CharSequence> func) {
         return IteratorKit.join(IteratorKit.getIter(iterable), conjunction, func);
     }
 
@@ -687,7 +690,7 @@ public class CollKit extends CollectionStream {
      * @param editor     The editor function.
      * @return A new, edited collection.
      */
-    public static <T extends Collection<E>, E> T edit(final T collection, final UnaryOperator<E> editor) {
+    public static <T extends Collection<E>, E> T edit(final T collection, final UnaryOperatorX<E> editor) {
         if (null == collection || null == editor) {
             return collection;
         }
@@ -714,7 +717,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The filter predicate.
      * @return A new, filtered collection.
      */
-    public static <T extends Collection<E>, E> T filter(final T collection, final Predicate<E> predicate) {
+    public static <T extends Collection<E>, E> T filter(final T collection, final PredicateX<E> predicate) {
         if (null == collection || null == predicate) {
             return collection;
         }
@@ -744,7 +747,7 @@ public class CollKit extends CollectionStream {
      * @param predicate The predicate.
      * @return The modified iterable.
      */
-    public static <T extends Iterable<E>, E> T remove(final T iter, final Predicate<E> predicate) {
+    public static <T extends Iterable<E>, E> T remove(final T iter, final PredicateX<E> predicate) {
         if (null == iter) {
             return null;
         }
@@ -801,7 +804,7 @@ public class CollKit extends CollectionStream {
     public static <T extends Collection<E>, E> T removeWithAddIf(
             final T targetCollection,
             final T resultCollection,
-            final Predicate<? super E> predicate) {
+            final PredicateX<? super E> predicate) {
         Objects.requireNonNull(predicate);
         final Iterator<E> each = targetCollection.iterator();
         while (each.hasNext()) {
@@ -825,7 +828,7 @@ public class CollKit extends CollectionStream {
      */
     public static <T extends Collection<E>, E> List<E> removeWithAddIf(
             final T targetCollection,
-            final Predicate<? super E> predicate) {
+            final PredicateX<? super E> predicate) {
         final List<E> removed = new ArrayList<>();
         removeWithAddIf(targetCollection, removed, predicate);
         return removed;
@@ -841,7 +844,7 @@ public class CollKit extends CollectionStream {
      * @param func       The mapping function.
      * @return A new `List` of mapped elements.
      */
-    public static <T, R> List<R> map(final Iterable<T> collection, final Function<? super T, ? extends R> func) {
+    public static <T, R> List<R> map(final Iterable<T> collection, final FunctionX<? super T, ? extends R> func) {
         return map(collection, func, true);
     }
 
@@ -857,7 +860,7 @@ public class CollKit extends CollectionStream {
      */
     public static <T, R> List<R> map(
             final Iterable<T> collection,
-            final Function<? super T, ? extends R> mapper,
+            final FunctionX<? super T, ? extends R> mapper,
             final boolean ignoreNull) {
         if (ignoreNull) {
             return StreamKit.of(collection).filter(Objects::nonNull).map(mapper).filter(Objects::nonNull)
@@ -981,7 +984,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate to match.
      * @return The first matching element.
      */
-    public static <T> T getFirst(final Iterable<T> collection, final Predicate<T> predicate) {
+    public static <T> T getFirst(final Iterable<T> collection, final PredicateX<T> predicate) {
         return IteratorKit.getFirst(IteratorKit.getIter(collection), predicate);
     }
 
@@ -1013,7 +1016,7 @@ public class CollKit extends CollectionStream {
      * @param predicate The predicate to match.
      * @return The count of matching elements.
      */
-    public static <T> int count(final Iterable<T> iterable, final Predicate<T> predicate) {
+    public static <T> int count(final Iterable<T> iterable, final PredicateX<T> predicate) {
         int count = 0;
         if (null != iterable) {
             for (final T t : iterable) {
@@ -1033,7 +1036,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate to match.
      * @return The index of the first match, or -1 if not found.
      */
-    public static <T> int indexOf(final Collection<T> collection, final Predicate<T> predicate) {
+    public static <T> int indexOf(final Collection<T> collection, final PredicateX<T> predicate) {
         if (isNotEmpty(collection)) {
             int index = 0;
             for (final T t : collection) {
@@ -1054,7 +1057,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate to match.
      * @return The index of the last match, or -1 if not found.
      */
-    public static <T> int lastIndexOf(final Collection<T> collection, final Predicate<? super T> predicate) {
+    public static <T> int lastIndexOf(final Collection<T> collection, final PredicateX<? super T> predicate) {
         if (collection instanceof List) {
             return ListKit.lastIndexOf((List<T>) collection, predicate);
         }
@@ -1079,7 +1082,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate to match.
      * @return An array of matching indices.
      */
-    public static <T> int[] indexOfAll(final Collection<T> collection, final Predicate<T> predicate) {
+    public static <T> int[] indexOfAll(final Collection<T> collection, final PredicateX<T> predicate) {
         return Convert.convert(int[].class, indexListOfAll(collection, predicate));
     }
 
@@ -1091,7 +1094,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate to match.
      * @return A list of matching indices.
      */
-    public static <T> List<Integer> indexListOfAll(final Collection<T> collection, final Predicate<T> predicate) {
+    public static <T> List<Integer> indexListOfAll(final Collection<T> collection, final PredicateX<T> predicate) {
         final List<Integer> indexList = new ArrayList<>();
         if (null != collection) {
             int index = 0;
@@ -1177,7 +1180,7 @@ public class CollKit extends CollectionStream {
     public static <A, B, R> List<R> zip(
             Collection<A> collectionA,
             Collection<B> collectionB,
-            BiFunction<A, B, R> zipper) {
+            BiFunctionX<A, B, R> zipper) {
         if (isEmpty(collectionA) || isEmpty(collectionB)) {
             return new ArrayList<>();
         }
@@ -1713,7 +1716,7 @@ public class CollKit extends CollectionStream {
      * @param getter     The getter function.
      * @return A list of lists representing the groups.
      */
-    public static <T> List<List<T>> groupByFunc(final Collection<T> collection, final Function<T, ?> getter) {
+    public static <T> List<List<T>> groupByFunc(final Collection<T> collection, final FunctionX<T, ?> getter) {
         return group(collection, new Hash32<>() {
 
             private final List<Object> hashValList = new ArrayList<>();
@@ -1899,7 +1902,7 @@ public class CollKit extends CollectionStream {
      */
     public static <F, T> Collection<T> trans(
             final Collection<F> collection,
-            final Function<? super F, ? extends T> function) {
+            final FunctionX<? super F, ? extends T> function) {
         return new TransCollection<>(collection, function);
     }
 
@@ -1917,8 +1920,8 @@ public class CollKit extends CollectionStream {
     public static <E, K, V> void setValueByMap(
             final Iterable<E> iterable,
             final Map<K, V> map,
-            final Function<E, K> keyGenerate,
-            final BiConsumer<E, V> biConsumer) {
+            final FunctionX<E, K> keyGenerate,
+            final BiConsumerX<E, V> biConsumer) {
         iterable.forEach(
                 x -> Optional.ofNullable(map.get(keyGenerate.apply(x))).ifPresent(y -> biConsumer.accept(x, y)));
     }
@@ -1947,7 +1950,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate.
      * @return {@code true} if any element matches.
      */
-    public static <T> boolean anyMatch(final Collection<T> collection, final Predicate<T> predicate) {
+    public static <T> boolean anyMatch(final Collection<T> collection, final PredicateX<T> predicate) {
         if (isEmpty(collection)) {
             return Boolean.FALSE;
         }
@@ -1962,7 +1965,7 @@ public class CollKit extends CollectionStream {
      * @param predicate  The predicate.
      * @return {@code true} if all elements match.
      */
-    public static <T> boolean allMatch(final Collection<T> collection, final Predicate<T> predicate) {
+    public static <T> boolean allMatch(final Collection<T> collection, final PredicateX<T> predicate) {
         if (isEmpty(collection)) {
             return Boolean.FALSE;
         }

@@ -21,9 +21,9 @@ package org.miaixz.bus.health.mac.software;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Config;
@@ -80,7 +80,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
     /**
      * The installedAppsSupplier value.
      */
-    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+    private final SupplierX<List<ApplicationInfo>> installedAppsSupplier = Memoizer
             .memoize(MacInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     /**

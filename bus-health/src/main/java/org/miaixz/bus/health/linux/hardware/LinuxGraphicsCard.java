@@ -22,9 +22,9 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -286,9 +286,9 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      */
     static List<GraphicsCard> getGraphicsCardsFromLspci(
             List<String> lspci,
-            Function<Attrs, GraphicsCard> factory,
+            FunctionX<Attrs, GraphicsCard> factory,
             ToLongFunction<String> vramLookup,
-            Function<String, Triplet<String, String, String>> drmLookup) {
+            FunctionX<String, Triplet<String, String, String>> drmLookup) {
         List<GraphicsCard> cardList = new ArrayList<>();
         String name = Normal.UNKNOWN;
         String deviceId = Normal.UNKNOWN;

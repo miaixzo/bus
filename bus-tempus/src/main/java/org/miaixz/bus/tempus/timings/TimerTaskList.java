@@ -22,8 +22,8 @@ package org.miaixz.bus.tempus.timings;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.crontab.TimerCrontab;
 
@@ -130,7 +130,7 @@ public class TimerTaskList implements Delayed {
      *
      * @param flush The consumer function to handle each task.
      */
-    public synchronized void flush(final Consumer<TimerCrontab> flush) {
+    public synchronized void flush(final ConsumerX<TimerCrontab> flush) {
         TimerCrontab timerCrontab = root.next;
         int flushedCount = 0;
         Logger.debug(true, "Tempus", "Timer task list flush started: expireMs={}", expire.get());

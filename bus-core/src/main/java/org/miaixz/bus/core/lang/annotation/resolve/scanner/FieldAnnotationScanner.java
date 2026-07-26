@@ -22,9 +22,9 @@ package org.miaixz.bus.core.lang.annotation.resolve.scanner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.PredicateKit;
@@ -58,9 +58,9 @@ public class FieldAnnotationScanner implements AnnotationScanner {
      */
     @Override
     public void scan(
-            final BiConsumer<Integer, Annotation> consumer,
+            final BiConsumerX<Integer, Annotation> consumer,
             final AnnotatedElement annotatedEle,
-            Predicate<Annotation> filter) {
+            PredicateX<Annotation> filter) {
         filter = ObjectKit.defaultIfNull(filter, PredicateKit.alwaysTrue());
         for (final Annotation annotation : annotatedEle.getAnnotations()) {
             if (!AnnoKit.isMetaAnnotation(annotation.annotationType()) && filter.test(annotation)) {

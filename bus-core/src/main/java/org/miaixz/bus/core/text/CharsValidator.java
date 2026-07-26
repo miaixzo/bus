@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.core.text;
 
-import java.util.function.Predicate;
+import org.miaixz.bus.core.center.function.PredicateX;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -447,13 +447,13 @@ public class CharsValidator {
     }
 
     /**
-     * Checks if every character in the given string matches the provided {@link Predicate}.
+     * Checks if every character in the given string matches the provided {@link PredicateX}.
      *
      * @param value   The {@link CharSequence} to check.
-     * @param matcher The {@link Predicate} to test each character against.
+     * @param matcher The {@link PredicateX} to test each character against.
      * @return {@code true} if all characters match the predicate, {@code false} otherwise.
      */
-    public static boolean isAllCharMatch(final CharSequence value, final Predicate<Character> matcher) {
+    public static boolean isAllCharMatch(final CharSequence value, final PredicateX<Character> matcher) {
         if (isBlank(value)) {
             return false;
         }

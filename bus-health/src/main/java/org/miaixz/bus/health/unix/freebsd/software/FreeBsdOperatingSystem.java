@@ -21,11 +21,11 @@ package org.miaixz.bus.health.unix.freebsd.software;
 
 import java.io.File;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.sun.jna.ptr.NativeLongByReference;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -226,7 +226,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             psCommand += " -p " + pid;
         }
 
-        Predicate<Map<PsKeywords, String>> hasKeywordArgs = psMap -> psMap.containsKey(PsKeywords.ARGS);
+        PredicateX<Map<PsKeywords, String>> hasKeywordArgs = psMap -> psMap.containsKey(PsKeywords.ARGS);
         return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(proc -> Parsing.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE))
                 .filter(hasKeywordArgs)

@@ -33,10 +33,10 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.function.Function;
 
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatManager;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
@@ -502,7 +502,7 @@ public class Formatter {
      * @param dateTimeFormatter The {@link DateTimeFormatter} to use for formatting.
      * @return A function that formats a {@link TemporalAccessor} to a string.
      */
-    public static Function<TemporalAccessor, String> format(final DateTimeFormatter dateTimeFormatter) {
+    public static FunctionX<TemporalAccessor, String> format(final DateTimeFormatter dateTimeFormatter) {
         return LambdaKit.toFunction(Formatter::format, dateTimeFormatter);
     }
 

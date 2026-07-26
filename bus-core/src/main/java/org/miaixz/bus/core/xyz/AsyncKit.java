@@ -24,10 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
@@ -128,7 +128,7 @@ public class AsyncKit {
      * @param eHandler The exception handler method.
      * @return A list of task results.
      */
-    public static <T> List<T> allOfGet(final CompletableFuture<T>[] tasks, final Function<Exception, T> eHandler) {
+    public static <T> List<T> allOfGet(final CompletableFuture<T>[] tasks, final FunctionX<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
         return allOfGet(Arrays.asList(tasks), eHandler);
@@ -142,7 +142,7 @@ public class AsyncKit {
      * @param eHandler The exception handler method.
      * @return A list of task results.
      */
-    public static <T> List<T> allOfGet(final List<CompletableFuture<T>> tasks, final Function<Exception, T> eHandler) {
+    public static <T> List<T> allOfGet(final List<CompletableFuture<T>> tasks, final FunctionX<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
         return execute(tasks, eHandler, false);
@@ -186,7 +186,7 @@ public class AsyncKit {
      */
     public static <T> List<T> parallelAllOfGet(
             final CompletableFuture<T>[] tasks,
-            final Function<Exception, T> eHandler) {
+            final FunctionX<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
         return parallelAllOfGet(Arrays.asList(tasks), eHandler);
@@ -203,7 +203,7 @@ public class AsyncKit {
      */
     public static <T> List<T> parallelAllOfGet(
             final List<CompletableFuture<T>> tasks,
-            final Function<Exception, T> eHandler) {
+            final FunctionX<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
         return execute(tasks, eHandler, true);
@@ -220,7 +220,7 @@ public class AsyncKit {
      */
     private static <T> List<T> execute(
             final List<CompletableFuture<T>> tasks,
-            final Function<Exception, T> eHandler,
+            final FunctionX<Exception, T> eHandler,
             final boolean isParallel) {
         return StreamKit.of(tasks, isParallel).map(e -> {
             try {

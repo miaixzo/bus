@@ -21,7 +21,8 @@ package org.miaixz.bus.core.text;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
  * Thread-local StringBuilder pool for high-performance string building.
@@ -282,7 +283,7 @@ public final class StringBuilderPool {
      * @param builder      a consumer that appends content to the {@code StringBuilder}
      * @return the built string
      */
-    public static String build(int expectedSize, Consumer<StringBuilder> builder) {
+    public static String build(int expectedSize, ConsumerX<StringBuilder> builder) {
         long startTime = System.nanoTime();
 
         StringBuilder sb = acquireInternal(expectedSize);

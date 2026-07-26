@@ -23,8 +23,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.function.Predicate;
 
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -1112,7 +1112,7 @@ public class ArrayValidator {
      * @param array   The array to search.
      * @return The first matching element, or {@code null} if no matching element is found or the array is empty.
      */
-    public static <T> T firstMatch(final Predicate<T> matcher, final T... array) {
+    public static <T> T firstMatch(final PredicateX<T> matcher, final T... array) {
         final int index = matchIndex(matcher, array);
         if (index == Normal.__1) {
             return null;
@@ -1129,7 +1129,7 @@ public class ArrayValidator {
      * @param array   The array to search.
      * @return The index of the first matching element, or {@link Normal#__1} if no matching element is found.
      */
-    public static <T> int matchIndex(final Predicate<T> matcher, final T... array) {
+    public static <T> int matchIndex(final PredicateX<T> matcher, final T... array) {
         return matchIndex(0, matcher, array);
     }
 
@@ -1143,7 +1143,7 @@ public class ArrayValidator {
      * @param array             The array to search.
      * @return The index of the first matching element, or {@link Normal#__1} if no matching element is found.
      */
-    public static <E> int matchIndex(final int beginIndexInclude, final Predicate<E> matcher, final E... array) {
+    public static <E> int matchIndex(final int beginIndexInclude, final PredicateX<E> matcher, final E... array) {
         if (isEmpty(array)) {
             return Normal.__1;
         }

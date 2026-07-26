@@ -22,13 +22,13 @@ package org.miaixz.bus.core.lang;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.Supplier;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
@@ -351,7 +351,7 @@ public class Keys {
      * @see System#getProperty(String)
      * @see System#getenv(String)
      */
-    public static String get(final String name, final Supplier<String> defaultIfAbsent) {
+    public static String get(final String name, final SupplierX<String> defaultIfAbsent) {
         if (StringKit.isEmpty(name)) {
             return FunctionKit.get(defaultIfAbsent);
         }

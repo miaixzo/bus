@@ -19,7 +19,7 @@
 */
 package org.miaixz.bus.health.unix.solaris.hardware;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.core.center.function.SupplierX;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -42,18 +42,18 @@ final class SolarisGlobalMemory extends AbstractGlobalMemory {
     /**
      * The availTotal value.
      */
-    private final Supplier<Pair<Long, Long>> availTotal = Memoizer
+    private final SupplierX<Pair<Long, Long>> availTotal = Memoizer
             .memoize(SystemPages::queryAvailableTotal, Memoizer.defaultExpiration());
 
     /**
      * The pageSize value.
      */
-    private final Supplier<Long> pageSize = Memoizer.memoize(SolarisGlobalMemory::queryPageSize);
+    private final SupplierX<Long> pageSize = Memoizer.memoize(SolarisGlobalMemory::queryPageSize);
 
     /**
      * The vm value.
      */
-    private final Supplier<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
+    private final SupplierX<VirtualMemory> vm = Memoizer.memoize(this::createVirtualMemory);
 
     /**
      * Queries the page size.

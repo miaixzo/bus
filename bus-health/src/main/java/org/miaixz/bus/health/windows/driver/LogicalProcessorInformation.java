@@ -151,12 +151,8 @@ public final class LogicalProcessorInformation {
                         int pkgId = getMatchingPackage(packages, group, lp);
                         corePkgMap.put(coreId, pkgId);
                         coreCpuidMap.put(coreId, processorIdMap.getOrDefault(pkgId, Normal.EMPTY));
-                        CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(
-                                lp,
-                                coreId,
-                                pkgId,
-                                nodeNum,
-                                group);
+                        CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(lp, coreId,
+                                pkgId, nodeNum, group);
                         logProcs.add(logProc);
                     }
                 }

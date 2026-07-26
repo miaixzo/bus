@@ -22,8 +22,6 @@ package org.miaixz.bus.health.unix.freebsd.software;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Memory;
@@ -31,6 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.Resource;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -74,17 +74,17 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     /**
      * The bitness value.
      */
-    private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
+    private final SupplierX<Integer> bitness = Memoizer.memoize(this::queryBitness);
 
     /**
      * The arguments value.
      */
-    private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
+    private final SupplierX<List<String>> arguments = Memoizer.memoize(this::queryArguments);
 
     /**
      * The environmentVariables value.
      */
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+    private final SupplierX<Map<String, String>> environmentVariables = Memoizer
             .memoize(this::queryEnvironmentVariables);
 
     /**
@@ -210,7 +210,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     /**
      * The commandLine value.
      */
-    private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
+    private final SupplierX<String> commandLine = Memoizer.memoize(this::queryCommandLine);
 
     /**
      * Creates a new FreeBsdOSProcess instance.
@@ -611,7 +611,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         if (getProcessID() >= 0) {
             psCommand += " -p " + getProcessID();
         }
-        Predicate<Map<PsThreadColumns, String>> hasColumnsPri = threadMap -> threadMap.containsKey(PsThreadColumns.PRI);
+        PredicateX<Map<PsThreadColumns, String>> hasColumnsPri = threadMap -> threadMap
+                .containsKey(PsThreadColumns.PRI);
         return Executor.runNative(psCommand).stream().skip(1).parallel()
                 .map(thread -> Parsing.stringToEnumMap(PsThreadColumns.class, thread.trim(), Symbol.C_SPACE))
                 .filter(hasColumnsPri).map(threadMap -> new FreeBsdOSThread(getProcessID(), threadMap))

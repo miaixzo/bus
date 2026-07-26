@@ -19,11 +19,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+
 /**
- * Utility class for {@link Predicate}.
+ * Utility class for {@link PredicateX}.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -43,19 +44,19 @@ public class PredicateKit {
      * @param <T> The parameter type.
      * @return A predicate that matches everything.
      */
-    public static <T> Predicate<T> alwaysTrue() {
+    public static <T> PredicateX<T> alwaysTrue() {
         return method -> true;
     }
 
     /**
-     * Coerces a {@code Predicate<? super T>} to {@code Predicate<T>}.
+     * Coerces a {@code PredicateX<? super T>} to {@code PredicateX<T>}.
      *
      * @param <T>       The parameter type.
-     * @param predicate The {@link Predicate}.
-     * @return The coerced {@link Predicate}.
+     * @param predicate The {@link PredicateX}.
+     * @return The coerced {@link PredicateX}.
      */
-    static <T> Predicate<T> coerce(final Predicate<? super T> predicate) {
-        return (Predicate<T>) predicate;
+    static <T> PredicateX<T> coerce(final PredicateX<? super T> predicate) {
+        return (PredicateX<T>) predicate;
     }
 
     /**
@@ -63,9 +64,9 @@ public class PredicateKit {
      *
      * @param predicate The predicate.
      * @param <T>       The parameter type.
-     * @return The negated {@link Predicate}.
+     * @return The negated {@link PredicateX}.
      */
-    public static <T> Predicate<T> negate(final Predicate<T> predicate) {
+    public static <T> PredicateX<T> negate(final PredicateX<T> predicate) {
         return predicate.negate();
     }
 
@@ -76,8 +77,8 @@ public class PredicateKit {
      * @param components The predicates to combine.
      * @return The composite predicate.
      */
-    public static <T> Predicate<T> and(final Iterable<Predicate<T>> components) {
-        return StreamKit.of(components, false).reduce(Predicate::and).orElseGet(() -> o -> true);
+    public static <T> PredicateX<T> and(final Iterable<PredicateX<T>> components) {
+        return StreamKit.of(components, false).reduce(PredicateX::and).orElseGet(() -> o -> true);
     }
 
     /**
@@ -88,8 +89,8 @@ public class PredicateKit {
      * @return The composite predicate.
      */
     @SafeVarargs
-    public static <T> Predicate<T> and(final Predicate<T>... components) {
-        return StreamKit.of(components).reduce(Predicate::and).orElseGet(() -> o -> true);
+    public static <T> PredicateX<T> and(final PredicateX<T>... components) {
+        return StreamKit.of(components).reduce(PredicateX::and).orElseGet(() -> o -> true);
     }
 
     /**
@@ -99,8 +100,8 @@ public class PredicateKit {
      * @param components The predicates to combine.
      * @return The composite predicate.
      */
-    public static <T> Predicate<T> or(final Iterable<Predicate<T>> components) {
-        return StreamKit.of(components, false).reduce(Predicate::or).orElseGet(() -> o -> false);
+    public static <T> PredicateX<T> or(final Iterable<PredicateX<T>> components) {
+        return StreamKit.of(components, false).reduce(PredicateX::or).orElseGet(() -> o -> false);
     }
 
     /**
@@ -111,8 +112,8 @@ public class PredicateKit {
      * @return The composite predicate.
      */
     @SafeVarargs
-    public static <T> Predicate<T> or(final Predicate<T>... components) {
-        return StreamKit.of(components).reduce(Predicate::or).orElseGet(() -> o -> false);
+    public static <T> PredicateX<T> or(final PredicateX<T>... components) {
+        return StreamKit.of(components).reduce(PredicateX::or).orElseGet(() -> o -> false);
     }
 
     /**
@@ -123,7 +124,7 @@ public class PredicateKit {
      * @return The composite predicate.
      */
     @SafeVarargs
-    public static <T> Predicate<T> none(final Predicate<T>... components) {
+    public static <T> PredicateX<T> none(final PredicateX<T>... components) {
         return t -> Stream.of(components).noneMatch(matcher -> matcher.test(t));
     }
 

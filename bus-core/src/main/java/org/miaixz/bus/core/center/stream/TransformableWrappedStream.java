@@ -23,7 +23,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -202,7 +207,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      */
     default S takeWhile(final Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        return wrap(StreamKit.takeWhile(unwrap(), predicate));
+        return wrap(StreamKit.takeWhile(unwrap(), predicate::test));
     }
 
     /**
@@ -237,7 +242,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      */
     default S dropWhile(final Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        return wrap(StreamKit.dropWhile(unwrap(), predicate));
+        return wrap(StreamKit.dropWhile(unwrap(), predicate::test));
     }
 
     /**

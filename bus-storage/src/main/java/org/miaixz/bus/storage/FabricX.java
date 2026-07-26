@@ -34,7 +34,6 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Fabric;
-import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
@@ -299,9 +298,8 @@ public abstract class FabricX {
                 .connect(seconds(context == null ? 10 : context.getConnectTimeout(), 10))
                 .read(seconds(context == null ? 30 : context.getReadTimeout(), 30))
                 .write(seconds(context == null ? 30 : context.getWriteTimeout(), 30)).build();
-        return FABRIC_CONTEXTS.computeIfAbsent(
-                timeout,
-                policy -> org.miaixz.bus.fabric.Context.builder().options(policy.from(Options.empty())).build());
+        return FABRIC_CONTEXTS
+                .computeIfAbsent(timeout, policy -> org.miaixz.bus.fabric.Context.builder().timeout(policy).build());
     }
 
     /**
