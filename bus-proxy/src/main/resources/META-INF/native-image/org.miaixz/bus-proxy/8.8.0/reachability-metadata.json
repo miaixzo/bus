@@ -408,15 +408,77 @@
       "type": "org.miaixz.bus.proxy.Provider"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.proxy.spring.SpringCglibInterceptor"
+      "type": "org.miaixz.bus.proxy.spring.SpringCglibInterceptor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.proxy.Aspect"
+          ]
+        },
+        {
+          "name": "intercept",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]",
+            "org.springframework.cglib.proxy.MethodProxy"
+          ]
+        },
+        {
+          "name": "getTarget",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        }
+      ]
     },
     {
       "condition": {

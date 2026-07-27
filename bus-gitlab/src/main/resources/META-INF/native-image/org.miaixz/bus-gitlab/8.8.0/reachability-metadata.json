@@ -406,26 +406,225 @@
       "type": "org.miaixz.bus.gitlab.GitLabApi"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.GitLabApi$1Oauth2Api"
+      "type": "org.miaixz.bus.gitlab.GitLabApi$1Oauth2Api",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.GitLabApi"
+          ]
+        },
+        {
+          "name": "getProjectIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getGroupIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getLabelIdOrName",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getUserIdOrUsername",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getNamespaceIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "TOTAL_HEADER"
+        },
+        {
+          "name": "TOTAL_PAGES_HEADER"
+        },
+        {
+          "name": "PER_PAGE"
+        },
+        {
+          "name": "PAGE_HEADER"
+        },
+        {
+          "name": "NEXT_PAGE_HEADER"
+        },
+        {
+          "name": "PREV_PAGE_HEADER"
+        },
+        {
+          "name": "PER_PAGE_PARAM"
+        },
+        {
+          "name": "PAGE_PARAM"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.GitLabApi$1VersionApi"
+      "type": "org.miaixz.bus.gitlab.GitLabApi$1VersionApi",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.GitLabApi",
+            "org.miaixz.bus.gitlab.GitLabApi"
+          ]
+        },
+        {
+          "name": "getProjectIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getGroupIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getLabelIdOrName",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getUserIdOrUsername",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getNamespaceIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "TOTAL_HEADER"
+        },
+        {
+          "name": "TOTAL_PAGES_HEADER"
+        },
+        {
+          "name": "PER_PAGE"
+        },
+        {
+          "name": "PAGE_HEADER"
+        },
+        {
+          "name": "NEXT_PAGE_HEADER"
+        },
+        {
+          "name": "PREV_PAGE_HEADER"
+        },
+        {
+          "name": "PER_PAGE_PARAM"
+        },
+        {
+          "name": "PAGE_PARAM"
+        }
+      ]
     },
     {
       "condition": {
@@ -505,15 +704,166 @@
       "type": "org.miaixz.bus.gitlab.GitLabApiException"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.GitLabApiForm"
+      "type": "org.miaixz.bus.gitlab.GitLabApiForm",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "jakarta.ws.rs.core.MultivaluedHashMap"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.GitLabForm"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Date",
+            "boolean"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List",
+            "boolean"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.gitlab.models.AccessLevel",
+            "boolean"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.gitlab.models.AccessLevel"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "boolean"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "boolean"
+          ]
+        },
+        {
+          "name": "withParam",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "lambda$withParam$0",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.Variable"
+          ]
+        },
+        {
+          "name": "asMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "param",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -20187,15 +20537,178 @@
       "type": "org.miaixz.bus.gitlab.models.HealthCheckInfo"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.models.HealthCheckInfo$HealthCheckItemDeserializer"
+      "type": "org.miaixz.bus.gitlab.models.HealthCheckInfo$HealthCheckItemDeserializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getNullValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "logicalType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCachable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAbsentValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getEmptyValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getObjectIdReader",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "findBackReference",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "supportsUpdate",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationConfig"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueDeserializer"
+          ]
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "unwrappingDeserializer",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "getKnownPropertyNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNullAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEmptyAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -35171,15 +35684,178 @@
       "type": "org.miaixz.bus.gitlab.models.Todo"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.models.Todo$TargetDeserializer"
+      "type": "org.miaixz.bus.gitlab.models.Todo$TargetDeserializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getNullValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "logicalType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCachable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAbsentValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getEmptyValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getObjectIdReader",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "findBackReference",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "supportsUpdate",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationConfig"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueDeserializer"
+          ]
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "unwrappingDeserializer",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "getKnownPropertyNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNullAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEmptyAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -36776,15 +37452,68 @@
       "type": "org.miaixz.bus.gitlab.PipelineApi"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.PipelineApi$1CreatePipelineForm"
+      "type": "org.miaixz.bus.gitlab.PipelineApi$1CreatePipelineForm",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.PipelineApi",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "ref"
+        },
+        {
+          "name": "variables"
+        }
+      ]
     },
     {
       "condition": {
@@ -39094,81 +39823,1044 @@
       "type": "org.miaixz.bus.gitlab.support.ISO8601$SafeDateFormatter"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "tools.jackson.databind.PropertyNamingStrategy",
+            "com.fasterxml.jackson.annotation.JsonInclude$Include"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "toJsonString",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "readTree",
+          "parameterTypes": [
+            "java.io.Reader"
+          ]
+        },
+        {
+          "name": "readTree",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "createObjectMapper",
+          "parameterTypes": [
+            "tools.jackson.databind.PropertyNamingStrategy",
+            "com.fasterxml.jackson.annotation.JsonInclude$Include"
+          ]
+        },
+        {
+          "name": "marshal",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toJsonNode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unmarshal",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unmarshal",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.io.Reader"
+          ]
+        },
+        {
+          "name": "unmarshal",
+          "parameterTypes": [
+            "java.lang.Class",
+            "tools.jackson.databind.JsonNode"
+          ]
+        },
+        {
+          "name": "unmarshalList",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.io.Reader"
+          ]
+        },
+        {
+          "name": "unmarshalList",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unmarshalMap",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unmarshalMap",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.io.Reader"
+          ]
+        },
+        {
+          "name": "getObjectMapper",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$createObjectMapper$0",
+          "parameterTypes": [
+            "com.fasterxml.jackson.annotation.JsonInclude$Include",
+            "com.fasterxml.jackson.annotation.JsonInclude$Value"
+          ]
+        },
+        {
+          "name": "getContext",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "iso8601UtcFormat"
+        },
+        {
+          "name": "objectMapper"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$DateOnlySerializer"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$DateOnlySerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.util.Date",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.lang.Object",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueSerializer"
+          ]
+        },
+        {
+          "name": "withFilterId",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "serializeWithType",
+          "parameterTypes": [
+            "java.lang.Object",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext",
+            "tools.jackson.databind.jsontype.TypeSerializer"
+          ]
+        },
+        {
+          "name": "usesObjectId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "unwrappingSerializer",
+          "parameterTypes": [
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "withIgnoredProperties",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "withFormatOverrides",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationConfig",
+            "com.fasterxml.jackson.annotation.JsonFormat$Value"
+          ]
+        },
+        {
+          "name": "isUnwrappingSerializer",
+          "parameterTypes": []
+        },
+        {
+          "name": "acceptJsonFormatVisitor",
+          "parameterTypes": [
+            "tools.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper",
+            "tools.jackson.databind.JavaType"
+          ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "properties",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JacksonJsonSingletonHelper"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JacksonJsonSingletonHelper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "JACKSON_JSON"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JsonDateDeserializer"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JsonDateDeserializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getNullValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "logicalType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCachable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAbsentValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getEmptyValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getObjectIdReader",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "findBackReference",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "supportsUpdate",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationConfig"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueDeserializer"
+          ]
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "unwrappingDeserializer",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "getKnownPropertyNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNullAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEmptyAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JsonDateSerializer"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$JsonDateSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.util.Date",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.lang.Object",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueSerializer"
+          ]
+        },
+        {
+          "name": "withFilterId",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "serializeWithType",
+          "parameterTypes": [
+            "java.lang.Object",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext",
+            "tools.jackson.databind.jsontype.TypeSerializer"
+          ]
+        },
+        {
+          "name": "usesObjectId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "unwrappingSerializer",
+          "parameterTypes": [
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "withIgnoredProperties",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "withFormatOverrides",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationConfig",
+            "com.fasterxml.jackson.annotation.JsonFormat$Value"
+          ]
+        },
+        {
+          "name": "isUnwrappingSerializer",
+          "parameterTypes": []
+        },
+        {
+          "name": "acceptJsonFormatVisitor",
+          "parameterTypes": [
+            "tools.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper",
+            "tools.jackson.databind.JavaType"
+          ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "properties",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$UserListDeserializer"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$UserListDeserializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getNullValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "logicalType",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCachable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAbsentValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getEmptyValue",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "getObjectIdReader",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "findBackReference",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "supportsUpdate",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationConfig"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueDeserializer"
+          ]
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "deserialize",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer"
+          ]
+        },
+        {
+          "name": "deserializeWithType",
+          "parameterTypes": [
+            "tools.jackson.core.JsonParser",
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.jsontype.TypeDeserializer",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "unwrappingDeserializer",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext",
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "getKnownPropertyNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNullAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEmptyAccessPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.DeserializationContext"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.JacksonJson$UserListSerializer"
+      "type": "org.miaixz.bus.gitlab.support.JacksonJson$UserListSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.util.List",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "serialize",
+          "parameterTypes": [
+            "java.lang.Object",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "handledType",
+          "parameterTypes": []
+        },
+        {
+          "name": "createContextual",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext",
+            "tools.jackson.databind.BeanProperty"
+          ]
+        },
+        {
+          "name": "replaceDelegatee",
+          "parameterTypes": [
+            "tools.jackson.databind.ValueSerializer"
+          ]
+        },
+        {
+          "name": "withFilterId",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "serializeWithType",
+          "parameterTypes": [
+            "java.lang.Object",
+            "tools.jackson.core.JsonGenerator",
+            "tools.jackson.databind.SerializationContext",
+            "tools.jackson.databind.jsontype.TypeSerializer"
+          ]
+        },
+        {
+          "name": "usesObjectId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelegatee",
+          "parameterTypes": []
+        },
+        {
+          "name": "unwrappingSerializer",
+          "parameterTypes": [
+            "tools.jackson.databind.util.NameTransformer"
+          ]
+        },
+        {
+          "name": "withIgnoredProperties",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "withFormatOverrides",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationConfig",
+            "com.fasterxml.jackson.annotation.JsonFormat$Value"
+          ]
+        },
+        {
+          "name": "isUnwrappingSerializer",
+          "parameterTypes": []
+        },
+        {
+          "name": "acceptJsonFormatVisitor",
+          "parameterTypes": [
+            "tools.jackson.databind.jsonFormatVisitors.JsonFormatVisitorWrapper",
+            "tools.jackson.databind.JavaType"
+          ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "tools.jackson.databind.SerializationContext"
+          ]
+        },
+        {
+          "name": "properties",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -39240,37 +40932,431 @@
       "type": "org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.MaskingLoggingFilter"
+      "type": "org.miaixz.bus.gitlab.support.MaskingLoggingFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.logging.Logger",
+            "java.util.logging.Level",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.logging.Logger",
+            "java.util.logging.Level",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.logging.Logger",
+            "java.util.logging.Level",
+            "int",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.logging.Logger",
+            "java.util.logging.Level"
+          ]
+        },
+        {
+          "name": "appendId",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "long"
+          ]
+        },
+        {
+          "name": "getSortedHeaders",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "printRequestLine",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "java.net.URI"
+          ]
+        },
+        {
+          "name": "printHeaders",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "long",
+            "java.lang.String",
+            "jakarta.ws.rs.core.MultivaluedMap"
+          ]
+        },
+        {
+          "name": "printResponseLine",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "java.lang.String",
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "logResponseEntity",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "java.io.InputStream",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "aroundWriteTo",
+          "parameterTypes": [
+            "jakarta.ws.rs.ext.WriterInterceptorContext"
+          ]
+        },
+        {
+          "name": "buildEntityLogString",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "byte[]",
+            "int",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "addMaskedHeaderName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setMaskedHeaderNames",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "lambda$printHeaders$0",
+          "parameterTypes": [
+            "java.lang.StringBuilder",
+            "long",
+            "java.lang.String",
+            "java.util.Map$Entry"
+          ]
+        },
+        {
+          "name": "lambda$getSortedHeaders$0",
+          "parameterTypes": [
+            "java.util.Map$Entry",
+            "java.util.Map$Entry"
+          ]
+        },
+        {
+          "name": "lambda$setMaskedHeaderNames$0",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "log",
+          "parameterTypes": [
+            "java.lang.StringBuilder"
+          ]
+        },
+        {
+          "name": "filter",
+          "parameterTypes": [
+            "jakarta.ws.rs.client.ClientRequestContext"
+          ]
+        },
+        {
+          "name": "filter",
+          "parameterTypes": [
+            "jakarta.ws.rs.client.ClientRequestContext",
+            "jakarta.ws.rs.client.ClientResponseContext"
+          ]
+        },
+        {
+          "name": "lambda$new$0",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "DEFAULT_MASKED_HEADER_NAMES"
+        },
+        {
+          "name": "REQUEST_PREFIX"
+        },
+        {
+          "name": "RESPONSE_PREFIX"
+        },
+        {
+          "name": "SECTION_PREFIX"
+        },
+        {
+          "name": "ENTITY_STREAM_PROPERTY"
+        },
+        {
+          "name": "LOGGING_ID_PROPERTY"
+        },
+        {
+          "name": "logger"
+        },
+        {
+          "name": "level"
+        },
+        {
+          "name": "maxEntitySize"
+        },
+        {
+          "name": "_id"
+        },
+        {
+          "name": "maskedHeaderNames"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.MaskingLoggingFilter$LoggingStream"
+      "type": "org.miaixz.bus.gitlab.support.MaskingLoggingFilter$LoggingStream",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.support.MaskingLoggingFilter",
+            "java.lang.StringBuilder",
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getStringBuilder",
+          "parameterTypes": [
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "nullOutputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "sb"
+        },
+        {
+          "name": "outputStream"
+        },
+        {
+          "name": "this$0"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.gitlab.support.Oauth2LoginStreamingOutput"
+      "type": "org.miaixz.bus.gitlab.support.Oauth2LoginStreamingOutput",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "char[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "clearPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "username"
+        },
+        {
+          "name": "password"
+        }
+      ]
     },
     {
       "condition": {

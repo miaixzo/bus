@@ -76751,15 +76751,897 @@
       "type": "org.miaixz.bus.image.nimble.opencv.ImageConversion"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageCV"
+      "type": "org.miaixz.bus.image.nimble.opencv.ImageCV",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int",
+            "org.opencv.core.Scalar"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "org.opencv.core.Scalar"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Range",
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Rect"
+          ]
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "isInvalidStackSize",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "hasSameDimensions",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "physicalBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "isReleased",
+          "parameterTypes": []
+        },
+        {
+          "name": "fromMat",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "meanStack",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "minStack",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "accumulateFloatStack",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "processStackOperation",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.core.center.function.BinaryOperatorX"
+          ]
+        },
+        {
+          "name": "lambda$minStack$c5817d62$1",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "lambda$maxStack$c5817d62$1",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "isReleasedAfterProcessing",
+          "parameterTypes": []
+        },
+        {
+          "name": "setReleasedAfterProcessing",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "runGarbageCollectorAndWait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "filter",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.miaixz.bus.image.nimble.KernelData"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "release",
+          "parameterTypes": []
+        },
+        {
+          "name": "$deserializeLambda$",
+          "parameterTypes": [
+            "java.lang.invoke.SerializedLambda"
+          ]
+        },
+        {
+          "name": "maxStack",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "height",
+          "parameterTypes": []
+        },
+        {
+          "name": "rows",
+          "parameterTypes": []
+        },
+        {
+          "name": "row",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "channels",
+          "parameterTypes": []
+        },
+        {
+          "name": "assignTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "assignTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "cols",
+          "parameterTypes": []
+        },
+        {
+          "name": "rowRange",
+          "parameterTypes": [
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "rowRange",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "colRange",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "colRange",
+          "parameterTypes": [
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "elemSize1",
+          "parameterTypes": []
+        },
+        {
+          "name": "isContinuous",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSubmatrix",
+          "parameterTypes": []
+        },
+        {
+          "name": "dataAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "adjustROI",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "checkVector",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "checkVector",
+          "parameterTypes": [
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "checkVector",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "col",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "copySize",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "cross",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "diag",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "diag",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "diag",
+          "parameterTypes": []
+        },
+        {
+          "name": "eye",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "eye",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "locateROI",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "org.opencv.core.Point"
+          ]
+        },
+        {
+          "name": "matMul",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "push_back",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "reshape",
+          "parameterTypes": [
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "reshape",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "reshape",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Scalar",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Scalar"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "step1",
+          "parameterTypes": []
+        },
+        {
+          "name": "step1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "org.opencv.core.Range",
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "org.opencv.core.Range[]"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "org.opencv.core.Rect"
+          ]
+        },
+        {
+          "name": "getNativeObjAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "ones",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "ones",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "ones",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "float[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "float[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "short[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "short[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "double[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "double[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "short[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "short[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "float[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "double[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "float[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "double[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "clone",
+          "parameterTypes": []
+        },
+        {
+          "name": "empty",
+          "parameterTypes": []
+        },
+        {
+          "name": "dot",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "depth",
+          "parameterTypes": []
+        },
+        {
+          "name": "t",
+          "parameterTypes": []
+        },
+        {
+          "name": "dump",
+          "parameterTypes": []
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "at",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "at",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int[]"
+          ]
+        },
+        {
+          "name": "inv",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "inv",
+          "parameterTypes": []
+        },
+        {
+          "name": "total",
+          "parameterTypes": []
+        },
+        {
+          "name": "elemSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "width",
+          "parameterTypes": []
+        },
+        {
+          "name": "dims",
+          "parameterTypes": []
+        },
+        {
+          "name": "copyTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "copyTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "zeros",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "zeros",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "zeros",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "mul",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "double"
+          ]
+        },
+        {
+          "name": "mul",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "toMat",
+          "parameterTypes": []
+        },
+        {
+          "name": "toImageCV",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "MIN_STACK_SIZE"
+        },
+        {
+          "name": "DEFAULT_DEPTH"
+        },
+        {
+          "name": "releasedAfterProcessing"
+        },
+        {
+          "name": "released"
+        },
+        {
+          "name": "cleaner"
+        },
+        {
+          "name": "nativeObj"
+        }
+      ]
     },
     {
       "condition": {
@@ -79176,15 +80058,64 @@
       "type": "org.miaixz.bus.image.nimble.opencv.op.MaskArea"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader"
+      "type": "org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "loader",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "condition": {
@@ -84749,15 +85680,125 @@
       "type": "org.miaixz.bus.image.plugin.CGetForward"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.image.plugin.CGetForward$1$AbortException"
+      "type": "org.miaixz.bus.image.plugin.CGetForward$1$AbortException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.plugin.CGetForward$1",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "printStackTrace",
+          "parameterTypes": []
+        },
+        {
+          "name": "printStackTrace",
+          "parameterTypes": [
+            "java.io.PrintWriter"
+          ]
+        },
+        {
+          "name": "printStackTrace",
+          "parameterTypes": [
+            "java.io.PrintStream"
+          ]
+        },
+        {
+          "name": "getStackTrace",
+          "parameterTypes": []
+        },
+        {
+          "name": "fillInStackTrace",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCause",
+          "parameterTypes": []
+        },
+        {
+          "name": "initCause",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMessage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSuppressed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalizedMessage",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStackTrace",
+          "parameterTypes": [
+            "java.lang.StackTraceElement[]"
+          ]
+        },
+        {
+          "name": "addSuppressed",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "this$1"
+        }
+      ]
     },
     {
       "condition": {

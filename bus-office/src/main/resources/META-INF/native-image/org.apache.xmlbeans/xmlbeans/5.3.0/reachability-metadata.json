@@ -1,58 +1,2922 @@
 {
   "reflection": [
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "type": "org.apache.xmlbeans.impl.inst2xsd.util.TypeSystemHolder"
+      "type": "org.apache.xmlbeans.impl.inst2xsd.util.TypeSystemHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Element"
+          ]
+        },
+        {
+          "name": "addGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Attribute"
+          ]
+        },
+        {
+          "name": "addGlobalType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type"
+          ]
+        },
+        {
+          "name": "getGlobalElement",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "getGlobalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGlobalAttribute",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "getGlobalType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "getGlobalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSchemaDocuments",
+          "parameterTypes": []
+        },
+        {
+          "name": "fillUpLocalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Element",
+            "org.apache.xmlbeans.impl.xb.xsdschema.LocalElement",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpEnumeration",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type",
+            "org.apache.xmlbeans.impl.xb.xsdschema.Element"
+          ]
+        },
+        {
+          "name": "fillUpGlobalType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type",
+            "org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpAttributesInComplexTypesSimpleContent",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type",
+            "org.apache.xmlbeans.impl.xb.xsdschema.SimpleExtensionType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpAttributesInComplexTypesComplexContent",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type",
+            "org.apache.xmlbeans.impl.xb.xsdschema.ComplexType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getGlobalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSchemaDocumentForTNS",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTopLevelSchemaElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Element",
+            "org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpTypeOnElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type",
+            "org.apache.xmlbeans.impl.xb.xsdschema.Element",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpLocalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Attribute",
+            "org.apache.xmlbeans.impl.xb.xsdschema.Attribute",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpContentForComplexType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Type",
+            "org.apache.xmlbeans.impl.xb.xsdschema.ComplexType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.inst2xsd.util.Attribute",
+            "org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fillUpElementDocumentation",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.xb.xsdschema.Element",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "_globalElements"
+        },
+        {
+          "name": "_globalAttributes"
+        },
+        {
+          "name": "_globalTypes"
+        },
+        {
+          "name": "$assertionsDisabled"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "type": "org.apache.xmlbeans.impl.schema.TypeSystemHolder"
+      "type": "org.apache.xmlbeans.impl.schema.TypeSystemHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadFromStscState",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.schema.StscState"
+          ]
+        },
+        {
+          "name": "isIncomplete",
+          "parameterTypes": []
+        },
+        {
+          "name": "saveGlobalElements",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement[]"
+          ]
+        },
+        {
+          "name": "saveModelGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup[]"
+          ]
+        },
+        {
+          "name": "saveGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement"
+          ]
+        },
+        {
+          "name": "saveModelGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup"
+          ]
+        },
+        {
+          "name": "saveAttributeGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup"
+          ]
+        },
+        {
+          "name": "crackPointer",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "handleForType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        },
+        {
+          "name": "getMetadataPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "documentTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "modelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "typeForHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "saveToDirectory",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "isNamespaceDefined",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElementRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForClassname",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDocumentTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findIdentityConstraintRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "saveGlobalAttributes",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute[]"
+          ]
+        },
+        {
+          "name": "saveAttributeGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup[]"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraints",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint[]"
+          ]
+        },
+        {
+          "name": "saveGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraint",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint"
+          ]
+        },
+        {
+          "name": "redefinedGlobalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedModelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedAttributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "identityConstraints",
+          "parameterTypes": []
+        },
+        {
+          "name": "annotations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "forName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "getClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": []
+        },
+        {
+          "name": "save",
+          "parameterTypes": [
+            "org.apache.xmlbeans.Filer"
+          ]
+        },
+        {
+          "name": "findType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findDocumentType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElement",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForSignature",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newXmlSaxHandler",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newDomImplementation",
+          "parameterTypes": [
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "javax.xml.stream.XMLStreamReader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.File",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.Reader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "org.w3c.dom.Node",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.net.URL",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "findAttribute",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "typeSystem"
+        },
+        {
+          "name": "DATA_BABE"
+        },
+        {
+          "name": "MAJOR_VERSION"
+        },
+        {
+          "name": "MINOR_VERSION"
+        },
+        {
+          "name": "RELEASE_NUMBER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAINDEX"
+        },
+        {
+          "name": "FILETYPE_SCHEMATYPE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAELEMENT"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAPOINTER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAMODELGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTEGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAIDENTITYCONSTRAINT"
+        },
+        {
+          "name": "FLAG_PART_SKIPPABLE"
+        },
+        {
+          "name": "FLAG_PART_FIXED"
+        },
+        {
+          "name": "FLAG_PART_NILLABLE"
+        },
+        {
+          "name": "FLAG_PART_BLOCKEXT"
+        },
+        {
+          "name": "FLAG_PART_BLOCKREST"
+        },
+        {
+          "name": "FLAG_PART_BLOCKSUBST"
+        },
+        {
+          "name": "FLAG_PART_ABSTRACT"
+        },
+        {
+          "name": "FLAG_PART_FINALEXT"
+        },
+        {
+          "name": "FLAG_PART_FINALREST"
+        },
+        {
+          "name": "FLAG_PROP_ISATTR"
+        },
+        {
+          "name": "FLAG_PROP_JAVASINGLETON"
+        },
+        {
+          "name": "FLAG_PROP_JAVAOPTIONAL"
+        },
+        {
+          "name": "FLAG_PROP_JAVAARRAY"
+        },
+        {
+          "name": "FIELD_NONE"
+        },
+        {
+          "name": "FIELD_GLOBAL"
+        },
+        {
+          "name": "FIELD_LOCALATTR"
+        },
+        {
+          "name": "FIELD_LOCALELT"
+        },
+        {
+          "name": "METADATA_PACKAGE_GEN"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "type": "org.apache.xmlbeans.metadata.system.sXMLCONFIG.TypeSystemHolder"
+      "type": "org.apache.xmlbeans.metadata.system.sXMLCONFIG.TypeSystemHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadFromStscState",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.schema.StscState"
+          ]
+        },
+        {
+          "name": "isIncomplete",
+          "parameterTypes": []
+        },
+        {
+          "name": "saveGlobalElements",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement[]"
+          ]
+        },
+        {
+          "name": "saveModelGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup[]"
+          ]
+        },
+        {
+          "name": "saveGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement"
+          ]
+        },
+        {
+          "name": "saveModelGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup"
+          ]
+        },
+        {
+          "name": "saveAttributeGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup"
+          ]
+        },
+        {
+          "name": "crackPointer",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "handleForType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        },
+        {
+          "name": "getMetadataPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "documentTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "modelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "typeForHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "saveToDirectory",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "isNamespaceDefined",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElementRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForClassname",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDocumentTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findIdentityConstraintRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "saveGlobalAttributes",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute[]"
+          ]
+        },
+        {
+          "name": "saveAttributeGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup[]"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraints",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint[]"
+          ]
+        },
+        {
+          "name": "saveGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraint",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint"
+          ]
+        },
+        {
+          "name": "redefinedGlobalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedModelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedAttributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "identityConstraints",
+          "parameterTypes": []
+        },
+        {
+          "name": "annotations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "forName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "getClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": []
+        },
+        {
+          "name": "save",
+          "parameterTypes": [
+            "org.apache.xmlbeans.Filer"
+          ]
+        },
+        {
+          "name": "findType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findDocumentType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElement",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForSignature",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newXmlSaxHandler",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newDomImplementation",
+          "parameterTypes": [
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "javax.xml.stream.XMLStreamReader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.File",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.Reader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "org.w3c.dom.Node",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.net.URL",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "findAttribute",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "typeSystem"
+        },
+        {
+          "name": "DATA_BABE"
+        },
+        {
+          "name": "MAJOR_VERSION"
+        },
+        {
+          "name": "MINOR_VERSION"
+        },
+        {
+          "name": "RELEASE_NUMBER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAINDEX"
+        },
+        {
+          "name": "FILETYPE_SCHEMATYPE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAELEMENT"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAPOINTER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAMODELGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTEGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAIDENTITYCONSTRAINT"
+        },
+        {
+          "name": "FLAG_PART_SKIPPABLE"
+        },
+        {
+          "name": "FLAG_PART_FIXED"
+        },
+        {
+          "name": "FLAG_PART_NILLABLE"
+        },
+        {
+          "name": "FLAG_PART_BLOCKEXT"
+        },
+        {
+          "name": "FLAG_PART_BLOCKREST"
+        },
+        {
+          "name": "FLAG_PART_BLOCKSUBST"
+        },
+        {
+          "name": "FLAG_PART_ABSTRACT"
+        },
+        {
+          "name": "FLAG_PART_FINALEXT"
+        },
+        {
+          "name": "FLAG_PART_FINALREST"
+        },
+        {
+          "name": "FLAG_PROP_ISATTR"
+        },
+        {
+          "name": "FLAG_PROP_JAVASINGLETON"
+        },
+        {
+          "name": "FLAG_PROP_JAVAOPTIONAL"
+        },
+        {
+          "name": "FLAG_PROP_JAVAARRAY"
+        },
+        {
+          "name": "FIELD_NONE"
+        },
+        {
+          "name": "FIELD_GLOBAL"
+        },
+        {
+          "name": "FIELD_LOCALATTR"
+        },
+        {
+          "name": "FIELD_LOCALELT"
+        },
+        {
+          "name": "METADATA_PACKAGE_GEN"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "type": "org.apache.xmlbeans.metadata.system.sXMLLANG.TypeSystemHolder"
+      "type": "org.apache.xmlbeans.metadata.system.sXMLLANG.TypeSystemHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadFromStscState",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.schema.StscState"
+          ]
+        },
+        {
+          "name": "isIncomplete",
+          "parameterTypes": []
+        },
+        {
+          "name": "saveGlobalElements",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement[]"
+          ]
+        },
+        {
+          "name": "saveModelGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup[]"
+          ]
+        },
+        {
+          "name": "saveGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement"
+          ]
+        },
+        {
+          "name": "saveModelGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup"
+          ]
+        },
+        {
+          "name": "saveAttributeGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup"
+          ]
+        },
+        {
+          "name": "crackPointer",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "handleForType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        },
+        {
+          "name": "getMetadataPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "documentTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "modelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "typeForHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "saveToDirectory",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "isNamespaceDefined",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElementRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForClassname",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDocumentTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findIdentityConstraintRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "saveGlobalAttributes",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute[]"
+          ]
+        },
+        {
+          "name": "saveAttributeGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup[]"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraints",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint[]"
+          ]
+        },
+        {
+          "name": "saveGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraint",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint"
+          ]
+        },
+        {
+          "name": "redefinedGlobalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedModelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedAttributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "identityConstraints",
+          "parameterTypes": []
+        },
+        {
+          "name": "annotations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "forName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "getClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": []
+        },
+        {
+          "name": "save",
+          "parameterTypes": [
+            "org.apache.xmlbeans.Filer"
+          ]
+        },
+        {
+          "name": "findType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findDocumentType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElement",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForSignature",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newXmlSaxHandler",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newDomImplementation",
+          "parameterTypes": [
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "javax.xml.stream.XMLStreamReader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.File",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.Reader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "org.w3c.dom.Node",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.net.URL",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "findAttribute",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "typeSystem"
+        },
+        {
+          "name": "DATA_BABE"
+        },
+        {
+          "name": "MAJOR_VERSION"
+        },
+        {
+          "name": "MINOR_VERSION"
+        },
+        {
+          "name": "RELEASE_NUMBER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAINDEX"
+        },
+        {
+          "name": "FILETYPE_SCHEMATYPE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAELEMENT"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAPOINTER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAMODELGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTEGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAIDENTITYCONSTRAINT"
+        },
+        {
+          "name": "FLAG_PART_SKIPPABLE"
+        },
+        {
+          "name": "FLAG_PART_FIXED"
+        },
+        {
+          "name": "FLAG_PART_NILLABLE"
+        },
+        {
+          "name": "FLAG_PART_BLOCKEXT"
+        },
+        {
+          "name": "FLAG_PART_BLOCKREST"
+        },
+        {
+          "name": "FLAG_PART_BLOCKSUBST"
+        },
+        {
+          "name": "FLAG_PART_ABSTRACT"
+        },
+        {
+          "name": "FLAG_PART_FINALEXT"
+        },
+        {
+          "name": "FLAG_PART_FINALREST"
+        },
+        {
+          "name": "FLAG_PROP_ISATTR"
+        },
+        {
+          "name": "FLAG_PROP_JAVASINGLETON"
+        },
+        {
+          "name": "FLAG_PROP_JAVAOPTIONAL"
+        },
+        {
+          "name": "FLAG_PROP_JAVAARRAY"
+        },
+        {
+          "name": "FIELD_NONE"
+        },
+        {
+          "name": "FIELD_GLOBAL"
+        },
+        {
+          "name": "FIELD_LOCALATTR"
+        },
+        {
+          "name": "FIELD_LOCALELT"
+        },
+        {
+          "name": "METADATA_PACKAGE_GEN"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "type": "org.apache.xmlbeans.metadata.system.sXMLSCHEMA.TypeSystemHolder"
+      "type": "org.apache.xmlbeans.metadata.system.sXMLSCHEMA.TypeSystemHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadFromStscState",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.schema.StscState"
+          ]
+        },
+        {
+          "name": "isIncomplete",
+          "parameterTypes": []
+        },
+        {
+          "name": "saveGlobalElements",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement[]"
+          ]
+        },
+        {
+          "name": "saveModelGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup[]"
+          ]
+        },
+        {
+          "name": "saveGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement"
+          ]
+        },
+        {
+          "name": "saveModelGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup"
+          ]
+        },
+        {
+          "name": "saveAttributeGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup"
+          ]
+        },
+        {
+          "name": "crackPointer",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "handleForType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        },
+        {
+          "name": "getMetadataPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "documentTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "modelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "typeForHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "saveToDirectory",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "isNamespaceDefined",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElementRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForClassname",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDocumentTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findIdentityConstraintRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "saveGlobalAttributes",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute[]"
+          ]
+        },
+        {
+          "name": "saveAttributeGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup[]"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraints",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint[]"
+          ]
+        },
+        {
+          "name": "saveGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraint",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint"
+          ]
+        },
+        {
+          "name": "redefinedGlobalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedModelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedAttributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "identityConstraints",
+          "parameterTypes": []
+        },
+        {
+          "name": "annotations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "forName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "getClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": []
+        },
+        {
+          "name": "save",
+          "parameterTypes": [
+            "org.apache.xmlbeans.Filer"
+          ]
+        },
+        {
+          "name": "findType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findDocumentType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElement",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForSignature",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newXmlSaxHandler",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newDomImplementation",
+          "parameterTypes": [
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "javax.xml.stream.XMLStreamReader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.File",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.Reader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "org.w3c.dom.Node",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.net.URL",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "findAttribute",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "typeSystem"
+        },
+        {
+          "name": "DATA_BABE"
+        },
+        {
+          "name": "MAJOR_VERSION"
+        },
+        {
+          "name": "MINOR_VERSION"
+        },
+        {
+          "name": "RELEASE_NUMBER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAINDEX"
+        },
+        {
+          "name": "FILETYPE_SCHEMATYPE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAELEMENT"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAPOINTER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAMODELGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTEGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAIDENTITYCONSTRAINT"
+        },
+        {
+          "name": "FLAG_PART_SKIPPABLE"
+        },
+        {
+          "name": "FLAG_PART_FIXED"
+        },
+        {
+          "name": "FLAG_PART_NILLABLE"
+        },
+        {
+          "name": "FLAG_PART_BLOCKEXT"
+        },
+        {
+          "name": "FLAG_PART_BLOCKREST"
+        },
+        {
+          "name": "FLAG_PART_BLOCKSUBST"
+        },
+        {
+          "name": "FLAG_PART_ABSTRACT"
+        },
+        {
+          "name": "FLAG_PART_FINALEXT"
+        },
+        {
+          "name": "FLAG_PART_FINALREST"
+        },
+        {
+          "name": "FLAG_PROP_ISATTR"
+        },
+        {
+          "name": "FLAG_PROP_JAVASINGLETON"
+        },
+        {
+          "name": "FLAG_PROP_JAVAOPTIONAL"
+        },
+        {
+          "name": "FLAG_PROP_JAVAARRAY"
+        },
+        {
+          "name": "FIELD_NONE"
+        },
+        {
+          "name": "FIELD_GLOBAL"
+        },
+        {
+          "name": "FIELD_LOCALATTR"
+        },
+        {
+          "name": "FIELD_LOCALELT"
+        },
+        {
+          "name": "METADATA_PACKAGE_GEN"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "type": "org.apache.xmlbeans.metadata.system.sXMLTOOLS.TypeSystemHolder"
+      "type": "org.apache.xmlbeans.metadata.system.sXMLTOOLS.TypeSystemHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadFromStscState",
+          "parameterTypes": [
+            "org.apache.xmlbeans.impl.schema.StscState"
+          ]
+        },
+        {
+          "name": "isIncomplete",
+          "parameterTypes": []
+        },
+        {
+          "name": "saveGlobalElements",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement[]"
+          ]
+        },
+        {
+          "name": "saveModelGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup[]"
+          ]
+        },
+        {
+          "name": "saveGlobalElement",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalElement"
+          ]
+        },
+        {
+          "name": "saveModelGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaModelGroup"
+          ]
+        },
+        {
+          "name": "saveAttributeGroup",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup"
+          ]
+        },
+        {
+          "name": "crackPointer",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "handleForType",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        },
+        {
+          "name": "getMetadataPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "documentTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "globalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "modelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "attributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "typeForHandle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "saveToDirectory",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "isNamespaceDefined",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElementRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForClassname",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findDocumentTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeTypeRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroupRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findIdentityConstraintRef",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "saveGlobalAttributes",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute[]"
+          ]
+        },
+        {
+          "name": "saveAttributeGroups",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaAttributeGroup[]"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraints",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint[]"
+          ]
+        },
+        {
+          "name": "saveGlobalAttribute",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaGlobalAttribute"
+          ]
+        },
+        {
+          "name": "saveIdentityConstraint",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaIdentityConstraint"
+          ]
+        },
+        {
+          "name": "redefinedGlobalTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedModelGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "redefinedAttributeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "identityConstraints",
+          "parameterTypes": []
+        },
+        {
+          "name": "annotations",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "forName",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "getClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": []
+        },
+        {
+          "name": "save",
+          "parameterTypes": [
+            "org.apache.xmlbeans.Filer"
+          ]
+        },
+        {
+          "name": "findType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findDocumentType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeType",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findElement",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findModelGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "findAttributeGroup",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "typeForSignature",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "compilePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compileQuery",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newXmlSaxHandler",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newDomImplementation",
+          "parameterTypes": [
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "javax.xml.stream.XMLStreamReader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.File",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.Reader",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "org.w3c.dom.Node",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.net.URL",
+            "org.apache.xmlbeans.SchemaType",
+            "org.apache.xmlbeans.XmlOptions"
+          ]
+        },
+        {
+          "name": "findAttribute",
+          "parameterTypes": [
+            "javax.xml.namespace.QName"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "typeSystem"
+        },
+        {
+          "name": "DATA_BABE"
+        },
+        {
+          "name": "MAJOR_VERSION"
+        },
+        {
+          "name": "MINOR_VERSION"
+        },
+        {
+          "name": "RELEASE_NUMBER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAINDEX"
+        },
+        {
+          "name": "FILETYPE_SCHEMATYPE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAELEMENT"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTE"
+        },
+        {
+          "name": "FILETYPE_SCHEMAPOINTER"
+        },
+        {
+          "name": "FILETYPE_SCHEMAMODELGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAATTRIBUTEGROUP"
+        },
+        {
+          "name": "FILETYPE_SCHEMAIDENTITYCONSTRAINT"
+        },
+        {
+          "name": "FLAG_PART_SKIPPABLE"
+        },
+        {
+          "name": "FLAG_PART_FIXED"
+        },
+        {
+          "name": "FLAG_PART_NILLABLE"
+        },
+        {
+          "name": "FLAG_PART_BLOCKEXT"
+        },
+        {
+          "name": "FLAG_PART_BLOCKREST"
+        },
+        {
+          "name": "FLAG_PART_BLOCKSUBST"
+        },
+        {
+          "name": "FLAG_PART_ABSTRACT"
+        },
+        {
+          "name": "FLAG_PART_FINALEXT"
+        },
+        {
+          "name": "FLAG_PART_FINALREST"
+        },
+        {
+          "name": "FLAG_PROP_ISATTR"
+        },
+        {
+          "name": "FLAG_PROP_JAVASINGLETON"
+        },
+        {
+          "name": "FLAG_PROP_JAVAOPTIONAL"
+        },
+        {
+          "name": "FLAG_PROP_JAVAARRAY"
+        },
+        {
+          "name": "FIELD_NONE"
+        },
+        {
+          "name": "FIELD_GLOBAL"
+        },
+        {
+          "name": "FIELD_LOCALATTR"
+        },
+        {
+          "name": "FIELD_LOCALELT"
+        },
+        {
+          "name": "METADATA_PACKAGE_GEN"
+        }
+      ]
     }
   ],
   "resources": [

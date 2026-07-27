@@ -827,14 +827,432 @@
       "type": "org.miaixz.bus.core.basic.advice.ErrorAdvice"
     },
     {
-      "allDeclaredFields": true,
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilder"
+          ]
+        },
+        {
+          "name": "getX_namespace_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_namespace_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_tenant_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_tenant_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_namespace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_email",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_code",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_nick",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_avatar",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_role_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_duty_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_device_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_app_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_api_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_raw_data",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_tenant_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_tenant_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_namespace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_email",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_code",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_nick",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_avatar",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_role_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_duty_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_device_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_app_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_api_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_raw_data",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNonce",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrderBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "setNonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setOrderBy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.core.basic.entity.Authorize"
+      "type": "org.miaixz.bus.core.basic.entity.Authorize",
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "x_tenant_id"
+        },
+        {
+          "name": "x_tenant_name"
+        },
+        {
+          "name": "x_namespace_id"
+        },
+        {
+          "name": "x_namespace_name"
+        },
+        {
+          "name": "x_user_id"
+        },
+        {
+          "name": "x_user_email"
+        },
+        {
+          "name": "x_user_code"
+        },
+        {
+          "name": "x_user_nick"
+        },
+        {
+          "name": "x_user_name"
+        },
+        {
+          "name": "x_user_avatar"
+        },
+        {
+          "name": "x_role_id"
+        },
+        {
+          "name": "x_duty_id"
+        },
+        {
+          "name": "x_device_id"
+        },
+        {
+          "name": "x_app_id"
+        },
+        {
+          "name": "x_api_id"
+        },
+        {
+          "name": "x_raw_data"
+        }
+      ]
     },
     {
       "condition": {
@@ -923,8 +1341,112 @@
       "type": "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Entity"
+      "type": "org.miaixz.bus.core.basic.entity.Entity",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder"
+          ]
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "id"
+        }
+      ]
     },
     {
       "condition": {
@@ -1023,8 +1545,178 @@
       "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Audit"
+      "type": "org.miaixz.bus.core.basic.entity.Audit",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Integer",
+            "java.lang.String",
+            "java.lang.Long",
+            "java.lang.String",
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder"
+          ]
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "creator"
+        },
+        {
+          "name": "created"
+        },
+        {
+          "name": "modifier"
+        },
+        {
+          "name": "modified"
+        }
+      ]
     },
     {
       "condition": {
@@ -1123,8 +1815,144 @@
       "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Message"
+      "type": "org.miaixz.bus.core.basic.entity.Message",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Message$MessageBuilder"
+          ]
+        },
+        {
+          "name": "success",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "success",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.normal.Errors",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "failure",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "failure",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.normal.Errors"
+          ]
+        },
+        {
+          "name": "getErrcode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getErrmsg",
+          "parameterTypes": []
+        },
+        {
+          "name": "setErrcode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setErrmsg",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setData",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getData",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "errcode"
+        },
+        {
+          "name": "errmsg"
+        },
+        {
+          "name": "data"
+        }
+      ]
     },
     {
       "methods": [
@@ -1226,8 +2054,485 @@
       "type": "org.miaixz.bus.core.basic.entity.Message$MessageBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Namespace"
+      "type": "org.miaixz.bus.core.basic.entity.Namespace",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Namespace$NamespaceBuilder"
+          ]
+        },
+        {
+          "name": "getNamespace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "inNamespace",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNamespace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_domain",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_channel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_terminal",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_request_domain",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_channel",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_terminal",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_request_ip",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_trace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_span_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_child_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_ipv6",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_ipv4",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_request_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_trace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_span_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_child_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ip",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ipv6",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ipv4",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_namespace_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_namespace_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_tenant_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_tenant_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_namespace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_email",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_code",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_nick",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_avatar",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_role_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_duty_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_device_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_app_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_api_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_raw_data",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_tenant_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_tenant_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_namespace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_email",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_code",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_nick",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_avatar",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_role_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_duty_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_device_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_app_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_api_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_raw_data",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getNonce",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrderBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "setNonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setOrderBy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "namespace_id"
+        }
+      ]
     },
     {
       "condition": {
@@ -1326,8 +2631,228 @@
       "type": "org.miaixz.bus.core.basic.entity.Namespace$NamespaceBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Query"
+      "type": "org.miaixz.bus.core.basic.entity.Query",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Query$QueryBuilder"
+          ]
+        },
+        {
+          "name": "getNonce",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrderBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "setNonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setOrderBy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "nonce"
+        },
+        {
+          "name": "keyword"
+        },
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "orderBy"
+        }
+      ]
     },
     {
       "condition": {
@@ -1416,8 +2941,145 @@
       "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Result"
+      "type": "org.miaixz.bus.core.basic.entity.Result",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Result$ResultBuilder"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "java.util.List",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "getTotal",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRows",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTotal",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setRows",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.util.List",
+            "long"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "total"
+        },
+        {
+          "name": "rows"
+        },
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        }
+      ]
     },
     {
       "condition": {
@@ -1507,8 +3169,479 @@
       "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Tenant"
+      "type": "org.miaixz.bus.core.basic.entity.Tenant",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Tenant$TenantBuilder"
+          ]
+        },
+        {
+          "name": "getTenant_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTenant_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_domain",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_channel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_terminal",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_request_domain",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_channel",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_terminal",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_request_ip",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_trace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_span_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_child_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_ipv6",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_ipv4",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_request_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_trace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_span_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_child_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ip",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ipv6",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ipv4",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_namespace_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_namespace_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_tenant_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_tenant_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_namespace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_email",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_code",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_nick",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_avatar",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_role_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_duty_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_device_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_app_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_api_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_raw_data",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_tenant_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_tenant_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_namespace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_email",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_code",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_nick",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_avatar",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_role_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_duty_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_device_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_app_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_api_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_raw_data",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getNonce",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrderBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "setNonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setOrderBy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "tenant_id"
+        }
+      ]
     },
     {
       "condition": {
@@ -1585,8 +3718,508 @@
       "type": "org.miaixz.bus.core.basic.entity.Tenant$TenantBuilderImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.miaixz.bus.core.basic.entity.Tracer"
+      "type": "org.miaixz.bus.core.basic.entity.Tracer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Tracer$TracerBuilder"
+          ]
+        },
+        {
+          "name": "getX_request_domain",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_channel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_terminal",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_request_domain",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_channel",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_terminal",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_request_ip",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_trace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_span_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_child_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_ipv6",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_request_ipv4",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_request_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_trace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_span_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_child_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ip",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ipv6",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_request_ipv4",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_namespace_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_namespace_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getX_tenant_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_tenant_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_namespace_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_email",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_code",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_nick",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_name",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_user_avatar",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_role_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_duty_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_device_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_app_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_api_id",
+          "parameterTypes": []
+        },
+        {
+          "name": "getX_raw_data",
+          "parameterTypes": []
+        },
+        {
+          "name": "setX_tenant_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_tenant_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_namespace_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_email",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_code",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_nick",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_user_avatar",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_role_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_duty_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_device_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_app_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_api_id",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setX_raw_data",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getNonce",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeyword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrderBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "setNonce",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeyword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPageNo",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setPageSize",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setOrderBy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreator",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifier",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModified",
+          "parameterTypes": []
+        },
+        {
+          "name": "setStatus",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setCreator",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCreated",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setModifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModified",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "isPKNotNull",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String[]",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        },
+        {
+          "name": "x_request_id"
+        },
+        {
+          "name": "x_trace_id"
+        },
+        {
+          "name": "x_span_id"
+        },
+        {
+          "name": "x_child_id"
+        },
+        {
+          "name": "x_request_ip"
+        },
+        {
+          "name": "x_request_ipv6"
+        },
+        {
+          "name": "x_request_ipv4"
+        },
+        {
+          "name": "x_request_domain"
+        },
+        {
+          "name": "x_request_channel"
+        },
+        {
+          "name": "x_request_terminal"
+        }
+      ]
     },
     {
       "condition": {
@@ -15650,13 +18283,13 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
       },
-      "type": "org.miaixz.bus.core.instance.InstanceFactory$SingletonHolder"
+      "type": "org.miaixz.bus.core.instance.InstanceFactory$Holder"
     },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
       },
-      "type": "org.miaixz.bus.core.instance.InstanceFactory$SingletonHolder"
+      "type": "org.miaixz.bus.core.instance.InstanceFactory$Holder"
     },
     {
       "condition": {
@@ -15668,7 +18301,7 @@
           "parameterTypes": []
         }
       ],
-      "type": "org.miaixz.bus.core.instance.InstanceFactory$SingletonHolder"
+      "type": "org.miaixz.bus.core.instance.InstanceFactory$Holder"
     },
     {
       "condition": {

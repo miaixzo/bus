@@ -1511,32 +1511,297 @@
       "type": "org.miaixz.bus.shade.safety.boot.Boot"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
       "condition": {
         "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
       },
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader"
+      "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.net.URL[]",
+            "java.lang.ClassLoader",
+            "org.miaixz.bus.shade.safety.provider.DecryptorProvider",
+            "org.miaixz.bus.shade.safety.provider.EncryptorProvider",
+            "org.miaixz.bus.shade.safety.algorithm.Key"
+          ]
+        },
+        {
+          "name": "findResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findClass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]"
+          ]
+        },
+        {
+          "name": "getResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getURLs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadClass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPlatformClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSystemClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSystemResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDefinedPackage",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isRegisteredAsParallelCapable",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSystemResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getParent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUnnamedModule",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefinedPackages",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDefaultAssertionStatus",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPackageAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setClassAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "clearAssertionStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "bootURLHandler"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
       "condition": {
         "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
       },
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader$XBootEnumeration"
+      "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader$XBootEnumeration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.shade.safety.boot.BootClassLoader",
+            "java.util.Enumeration"
+          ]
+        },
+        {
+          "name": "hasMoreElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "nextElement",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "asIterator",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "enumeration"
+        },
+        {
+          "name": "this$0"
+        }
+      ]
     },
     {
       "condition": {
@@ -1575,37 +1840,684 @@
       "type": "org.miaixz.bus.shade.safety.boot.BootEncryptorProvider"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootJarArchiveEntry"
+      "type": "org.miaixz.bus.shade.safety.boot.BootJarArchiveEntry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry"
+          ]
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManifestAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCertificates",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAlignment",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "isStreamContiguous",
+          "parameterTypes": []
+        },
+        {
+          "name": "setUnixMode",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getUnixMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUnixSymlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlatform",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExtraFields",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField[]"
+          ]
+        },
+        {
+          "name": "getExtraFields",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getExtraFields",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtraFields",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ExtraFieldParsingBehavior"
+          ]
+        },
+        {
+          "name": "addExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField"
+          ]
+        },
+        {
+          "name": "removeExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipShort"
+          ]
+        },
+        {
+          "name": "getExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipShort"
+          ]
+        },
+        {
+          "name": "getRawName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataOffset",
+          "parameterTypes": []
+        },
+        {
+          "name": "setVersionMadeBy",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setVersionRequired",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getVersionRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersionMadeBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawFlag",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRawFlag",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getNameSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "setNameSource",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$NameSource"
+          ]
+        },
+        {
+          "name": "getCommentSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCommentSource",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$CommentSource"
+          ]
+        },
+        {
+          "name": "getInternalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "setInternalAttributes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getExternalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExternalAttributes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "addAsFirstExtraField",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField"
+          ]
+        },
+        {
+          "name": "removeUnparseableExtraFieldData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUnparseableExtraFieldData",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCentralDirectoryExtra",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getLocalFileDataExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCentralDirectoryExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGeneralPurposeBit",
+          "parameterTypes": []
+        },
+        {
+          "name": "setGeneralPurposeBit",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.GeneralPurposeBit"
+          ]
+        },
+        {
+          "name": "getLastModifiedDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "clone",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMethod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDirectory",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setMethod",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setExtra",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastModifiedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLastModifiedTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTimeLocal",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "getTimeLocal",
+          "parameterTypes": []
+        },
+        {
+          "name": "setLastAccessTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "getLastAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCreationTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "getCreationTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCompressedSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCompressedSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setCrc",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "getCrc",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "setComment",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "PLATFORM_UNIX"
+        },
+        {
+          "name": "PLATFORM_FAT"
+        },
+        {
+          "name": "CRC_UNKNOWN"
+        },
+        {
+          "name": "SIZE_UNKNOWN"
+        },
+        {
+          "name": "OFFSET_UNKNOWN"
+        },
+        {
+          "name": "STORED"
+        },
+        {
+          "name": "DEFLATED"
+        },
+        {
+          "name": "LOCSIG"
+        },
+        {
+          "name": "EXTSIG"
+        },
+        {
+          "name": "CENSIG"
+        },
+        {
+          "name": "ENDSIG"
+        },
+        {
+          "name": "LOCHDR"
+        },
+        {
+          "name": "EXTHDR"
+        },
+        {
+          "name": "CENHDR"
+        },
+        {
+          "name": "ENDHDR"
+        },
+        {
+          "name": "LOCVER"
+        },
+        {
+          "name": "LOCFLG"
+        },
+        {
+          "name": "LOCHOW"
+        },
+        {
+          "name": "LOCTIM"
+        },
+        {
+          "name": "LOCCRC"
+        },
+        {
+          "name": "LOCSIZ"
+        },
+        {
+          "name": "LOCLEN"
+        },
+        {
+          "name": "LOCNAM"
+        },
+        {
+          "name": "LOCEXT"
+        },
+        {
+          "name": "EXTCRC"
+        },
+        {
+          "name": "EXTSIZ"
+        },
+        {
+          "name": "EXTLEN"
+        },
+        {
+          "name": "CENVEM"
+        },
+        {
+          "name": "CENVER"
+        },
+        {
+          "name": "CENFLG"
+        },
+        {
+          "name": "CENHOW"
+        },
+        {
+          "name": "CENTIM"
+        },
+        {
+          "name": "CENCRC"
+        },
+        {
+          "name": "CENSIZ"
+        },
+        {
+          "name": "CENLEN"
+        },
+        {
+          "name": "CENNAM"
+        },
+        {
+          "name": "CENEXT"
+        },
+        {
+          "name": "CENCOM"
+        },
+        {
+          "name": "CENDSK"
+        },
+        {
+          "name": "CENATT"
+        },
+        {
+          "name": "CENATX"
+        },
+        {
+          "name": "CENOFF"
+        },
+        {
+          "name": "ENDSUB"
+        },
+        {
+          "name": "ENDTOT"
+        },
+        {
+          "name": "ENDSIZ"
+        },
+        {
+          "name": "ENDOFF"
+        },
+        {
+          "name": "ENDCOM"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootJarLauncher"
+      "type": "org.miaixz.bus.shade.safety.boot.BootJarLauncher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "launch",
+          "parameterTypes": []
+        },
+        {
+          "name": "main",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "launcher"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher"
+      "type": "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "launch",
+          "parameterTypes": []
+        },
+        {
+          "name": "main",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "toCamelCase",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "launcher"
+        },
+        {
+          "name": "MAIN"
+        },
+        {
+          "name": "PATH"
+        },
+        {
+          "name": "HOME"
+        },
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "CONFIG_NAME"
+        },
+        {
+          "name": "CONFIG_LOCATION"
+        },
+        {
+          "name": "SET_SYSTEM_PROPERTIES"
+        }
+      ]
     },
     {
       "condition": {
@@ -1884,26 +2796,154 @@
       "type": "org.miaixz.bus.shade.safety.boot.BootURLConnection"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootURLHandler"
+      "type": "org.miaixz.bus.shade.safety.boot.BootURLHandler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.shade.safety.provider.DecryptorProvider",
+            "org.miaixz.bus.shade.safety.provider.EncryptorProvider",
+            "org.miaixz.bus.shade.safety.algorithm.Key",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "openConnection",
+          "parameterTypes": [
+            "java.net.URL"
+          ]
+        },
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "decryptorProvider"
+        },
+        {
+          "name": "encryptorProvider"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "indexes"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.shade.safety.boot.BootWarLauncher"
+      "type": "org.miaixz.bus.shade.safety.boot.BootWarLauncher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "launch",
+          "parameterTypes": []
+        },
+        {
+          "name": "main",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "launcher"
+        }
+      ]
     },
     {
       "condition": {

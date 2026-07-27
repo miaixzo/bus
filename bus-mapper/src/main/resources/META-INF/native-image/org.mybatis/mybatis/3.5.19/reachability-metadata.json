@@ -58,18 +58,50 @@
       }
     },
     {
-      "allDeclaredFields": true,
       "methods": [
         {
           "name": "getBoundSql",
           "parameterTypes": []
         }
       ],
-      "type": "org.apache.ibatis.executor.statement.BaseStatementHandler"
+      "type": "org.apache.ibatis.executor.statement.BaseStatementHandler",
+      "fields": [
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "objectFactory"
+        },
+        {
+          "name": "typeHandlerRegistry"
+        },
+        {
+          "name": "resultSetHandler"
+        },
+        {
+          "name": "parameterHandler"
+        },
+        {
+          "name": "executor"
+        },
+        {
+          "name": "mappedStatement"
+        },
+        {
+          "name": "rowBounds"
+        },
+        {
+          "name": "boundSql"
+        }
+      ]
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.apache.ibatis.executor.statement.RoutingStatementHandler"
+      "type": "org.apache.ibatis.executor.statement.RoutingStatementHandler",
+      "fields": [
+        {
+          "name": "delegate"
+        }
+      ]
     },
     {
       "methods": [
@@ -212,8 +244,24 @@
       "type": "org.apache.ibatis.logging.stdout.StdOutImpl"
     },
     {
-      "allDeclaredFields": true,
-      "type": "org.apache.ibatis.mapping.BoundSql"
+      "type": "org.apache.ibatis.mapping.BoundSql",
+      "fields": [
+        {
+          "name": "sql"
+        },
+        {
+          "name": "parameterMappings"
+        },
+        {
+          "name": "parameterObject"
+        },
+        {
+          "name": "additionalParameters"
+        },
+        {
+          "name": "metaParameters"
+        }
+      ]
     },
     {
       "methods": [

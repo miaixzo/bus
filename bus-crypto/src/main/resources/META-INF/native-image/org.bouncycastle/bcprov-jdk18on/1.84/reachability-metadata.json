@@ -1,299 +1,1166 @@
 {
   "reflection": [
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.ASN1EncodableVector"
+      "type": "org.bouncycastle.asn1.ASN1EncodableVector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.ASN1InputStream"
+      "type": "org.bouncycastle.asn1.ASN1InputStream",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int",
+            "boolean",
+            "byte[][]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int",
+            "boolean",
+            "byte[][]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.ASN1ObjectIdentifier"
+      "type": "org.bouncycastle.asn1.ASN1ObjectIdentifier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.ASN1OutputStream"
+      "type": "org.bouncycastle.asn1.ASN1OutputStream",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.DERBitString"
+      "type": "org.bouncycastle.asn1.DERBitString",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.DERObjectIdentifier"
+      "type": "org.bouncycastle.asn1.DERSequence",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Encodable[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1EncodableVector"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Encodable[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.DERSequence"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.asn1.gm.GMObjectIdentifiers"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.pkcs.PrivateKeyInfo"
+      "type": "org.bouncycastle.asn1.pkcs.PrivateKeyInfo",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]",
+            "org.bouncycastle.asn1.ASN1Set"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]",
+            "org.bouncycastle.asn1.ASN1Set",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1Set",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1Set"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.sec.ECPrivateKey"
+      "type": "org.bouncycastle.asn1.sec.ECPrivateKey",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1OctetString",
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1BitString"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.math.BigInteger",
+            "org.bouncycastle.asn1.ASN1BitString",
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.math.BigInteger",
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.asn1.sec.SECObjectIdentifiers"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.util.ASN1Dump"
+      "type": "org.bouncycastle.asn1.util.ASN1Dump",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x500.style.BCStyle"
+      "type": "org.bouncycastle.asn1.x500.style.BCStyle",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x500.X500Name"
+      "type": "org.bouncycastle.asn1.x500.X500Name",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500NameStyle",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500NameStyle",
+            "org.bouncycastle.asn1.x500.X500Name"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500NameStyle",
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.RDN[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500NameStyle",
+            "org.bouncycastle.asn1.x500.RDN[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x500.X500NameBuilder"
+      "type": "org.bouncycastle.asn1.x500.X500NameBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500NameStyle"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
+      "type": "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x509.Extension"
+      "type": "org.bouncycastle.asn1.x509.Extension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier",
+            "org.bouncycastle.asn1.ASN1Boolean",
+            "org.bouncycastle.asn1.ASN1OctetString"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier",
+            "boolean",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier",
+            "boolean",
+            "org.bouncycastle.asn1.ASN1OctetString"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x509.Extensions"
+      "type": "org.bouncycastle.asn1.x509.Extensions",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.Extension"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.Extension[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
+      "type": "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1BitString"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.asn1.x9.X9ECParameters"
+      "type": "org.bouncycastle.asn1.x9.X9ECParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.asn1.x9.X9ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.asn1.x9.X9ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.asn1.x9.X9ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.asn1.x9.X9ObjectIdentifiers"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.cert.CertIOException"
+      "type": "org.bouncycastle.cert.CertIOException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.cert.jcajce.JcaX509CertificateConverter"
+      "type": "org.bouncycastle.cert.jcajce.JcaX509CertificateConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder"
+      "type": "org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "org.bouncycastle.asn1.x509.Time",
+            "org.bouncycastle.asn1.x509.Time",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.security.auth.x500.X500Principal",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "javax.security.auth.x500.X500Principal",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "javax.security.auth.x500.X500Principal",
+            "java.security.PublicKey"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.cert.X509v3CertificateBuilder"
+      "type": "org.bouncycastle.cert.X509v3CertificateBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "java.util.Locale",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "org.bouncycastle.asn1.x509.Time",
+            "org.bouncycastle.asn1.x509.Time",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.cert.X509CertificateHolder"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.crypto.AlphabetMapper"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.DefaultBufferedBlockCipher"
+      "type": "org.bouncycastle.crypto.DefaultBufferedBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.digests.SHA256Digest"
+      "type": "org.bouncycastle.crypto.digests.SHA256Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.digests.SHA256Digest"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CryptoServicePurpose"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.digests.SHA512Digest"
+      "type": "org.bouncycastle.crypto.digests.SHA512Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CryptoServicePurpose"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.digests.SHA512Digest"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.digests.SM3Digest"
+      "type": "org.bouncycastle.crypto.digests.SM3Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CryptoServicePurpose"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.digests.SM3Digest"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.engines.SM2Engine"
+      "type": "org.bouncycastle.crypto.engines.SM2Engine",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.engines.SM2Engine$Mode"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.Digest",
+            "org.bouncycastle.crypto.engines.SM2Engine$Mode"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.Digest"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.engines.SM4Engine"
+      "type": "org.bouncycastle.crypto.engines.SM4Engine",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.generators.Argon2BytesGenerator"
+      "type": "org.bouncycastle.crypto.generators.Argon2BytesGenerator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.macs.CBCBlockCipherMac"
+      "type": "org.bouncycastle.crypto.macs.CBCBlockCipherMac",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher",
+            "int",
+            "org.bouncycastle.crypto.paddings.BlockCipherPadding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher",
+            "org.bouncycastle.crypto.paddings.BlockCipherPadding"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.modes.CBCBlockCipher"
+      "type": "org.bouncycastle.crypto.modes.CBCBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.modes.CFBBlockCipher"
+      "type": "org.bouncycastle.crypto.modes.CFBBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher",
+            "int"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.modes.CTSBlockCipher"
+      "type": "org.bouncycastle.crypto.modes.CTSBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.modes.OFBBlockCipher"
+      "type": "org.bouncycastle.crypto.modes.OFBBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher",
+            "int"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.modes.SICBlockCipher"
+      "type": "org.bouncycastle.crypto.modes.SICBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.paddings.ISO10126d2Padding"
+      "type": "org.bouncycastle.crypto.paddings.ISO10126d2Padding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher"
+      "type": "org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher",
+            "org.bouncycastle.crypto.paddings.BlockCipherPadding"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.paddings.ZeroBytePadding"
+      "type": "org.bouncycastle.crypto.paddings.ZeroBytePadding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.Argon2Parameters"
+      "type": "org.bouncycastle.crypto.params.Argon2Parameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]",
+            "byte[]",
+            "byte[]",
+            "int",
+            "int",
+            "int",
+            "int",
+            "org.bouncycastle.crypto.CharToByteConverter",
+            "org.bouncycastle.crypto.params.Argon2Parameters$1"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]",
+            "byte[]",
+            "byte[]",
+            "int",
+            "int",
+            "int",
+            "int",
+            "org.bouncycastle.crypto.CharToByteConverter"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.AsymmetricKeyParameter"
+      "type": "org.bouncycastle.crypto.params.AsymmetricKeyParameter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.ECDomainParameters"
+      "type": "org.bouncycastle.crypto.params.ECDomainParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x9.X9ECParameters"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger",
+            "byte[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.ECPrivateKeyParameters"
+      "type": "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.math.BigInteger",
+            "org.bouncycastle.crypto.params.ECDomainParameters"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.ECPublicKeyParameters"
+      "type": "org.bouncycastle.crypto.params.ECPublicKeyParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECPoint",
+            "org.bouncycastle.crypto.params.ECDomainParameters"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.ParametersWithID"
+      "type": "org.bouncycastle.crypto.params.ParametersWithID",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CipherParameters",
+            "byte[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.params.ParametersWithRandom"
+      "type": "org.bouncycastle.crypto.params.ParametersWithRandom",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CipherParameters",
+            "java.security.SecureRandom"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CipherParameters"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.parsers.ECIESPublicKeyParser"
+      "type": "org.bouncycastle.crypto.parsers.ECIESPublicKeyParser",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.params.ECDomainParameters"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.parsers.Ed25519PublicKeyParser"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.parsers.PublicKeyParser"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.parsers.X25519PublicKeyParser"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.crypto.signers.DSAEncoding"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.signers.PlainDSAEncoding"
+      "type": "org.bouncycastle.crypto.signers.PlainDSAEncoding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.signers.SM2Signer"
+      "type": "org.bouncycastle.crypto.signers.SM2Signer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.signers.DSAEncoding",
+            "org.bouncycastle.crypto.Digest"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.signers.DSAEncoding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.Digest"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.signers.StandardDSAEncoding"
+      "type": "org.bouncycastle.crypto.signers.StandardDSAEncoding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.util.OpenSSHPublicKeyUtil"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.crypto.util.SSHUtil"
+      "type": "org.bouncycastle.crypto.util.OpenSSHPublicKeyUtil",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "methods": [
@@ -305,14 +1172,148 @@
       "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.AlgorithmParametersSpi"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey"
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
+            "org.bouncycastle.jce.spec.ECParameterSpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
+            "java.security.spec.ECParameterSpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.interfaces.ECPrivateKey",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.jce.spec.ECPrivateKeySpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.ECPrivateKeySpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.asn1.pkcs.PrivateKeyInfo",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey"
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.jce.spec.ECPublicKeySpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.interfaces.ECPublicKey",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPublicKeyParameters",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPublicKeyParameters",
+            "org.bouncycastle.jce.spec.ECParameterSpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPublicKeyParameters",
+            "java.security.spec.ECParameterSpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.ECPublicKeySpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        }
+      ]
     },
     {
       "methods": [
@@ -351,28 +1352,24 @@
       "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyPairGeneratorSpi$EC"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util"
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil"
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.provider.BouncyCastleProvider"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
     },
     {
@@ -439,124 +1436,378 @@
       "type": "org.bouncycastle.jcajce.provider.digest.SM3$Digest"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.spec.FPEParameterSpec"
+      "type": "org.bouncycastle.jcajce.spec.FPEParameterSpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.util.RadixConverter",
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.spec.OpenSSHPrivateKeySpec"
+      "type": "org.bouncycastle.jcajce.spec.OpenSSHPrivateKeySpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jcajce.spec.OpenSSHPublicKeySpec"
+      "type": "org.bouncycastle.jcajce.spec.OpenSSHPublicKeySpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jce.ECNamedCurveTable"
+      "type": "org.bouncycastle.jce.ECNamedCurveTable",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.jce.interfaces.ECPrivateKey"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+      "type": "org.bouncycastle.jce.provider.BouncyCastleProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jce.spec.ECNamedCurveParameterSpec"
+      "type": "org.bouncycastle.jce.spec.ECNamedCurveParameterSpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jce.spec.ECNamedCurveSpec"
+      "type": "org.bouncycastle.jce.spec.ECNamedCurveSpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.EllipticCurve",
+            "java.security.spec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.EllipticCurve",
+            "java.security.spec.ECPoint",
+            "java.math.BigInteger"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jce.spec.ECPrivateKeySpec"
+      "type": "org.bouncycastle.jce.spec.ECPrivateKeySpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.math.BigInteger",
+            "org.bouncycastle.jce.spec.ECParameterSpec"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.jce.spec.ECPublicKeySpec"
+      "type": "org.bouncycastle.jce.spec.ECPublicKeySpec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECPoint",
+            "org.bouncycastle.jce.spec.ECParameterSpec"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.math.ec.ECCurve"
+      "type": "org.bouncycastle.math.ec.ECCurve",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.field.FiniteField"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.math.ec.ECPoint"
+      "type": "org.bouncycastle.math.ec.ECPoint",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECFieldElement",
+            "org.bouncycastle.math.ec.ECFieldElement"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECFieldElement",
+            "org.bouncycastle.math.ec.ECFieldElement",
+            "org.bouncycastle.math.ec.ECFieldElement[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.math.ec.FixedPointCombMultiplier"
+      "type": "org.bouncycastle.math.ec.FixedPointCombMultiplier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.operator.jcajce.JcaContentSignerBuilder"
+      "type": "org.bouncycastle.operator.jcajce.JcaContentSignerBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.AlgorithmParameterSpec",
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.operator.OperatorCreationException"
+      "type": "org.bouncycastle.operator.OperatorCreationException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.Arrays"
+      "type": "org.bouncycastle.util.Arrays",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.BigIntegers"
+      "type": "org.bouncycastle.util.BigIntegers",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.encoders.Base64"
+      "type": "org.bouncycastle.util.encoders.Base64",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.encoders.Hex"
+      "type": "org.bouncycastle.util.encoders.Hex",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.io.pem.PemObject"
+      "type": "org.bouncycastle.util.io.pem.PemObject",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List",
+            "byte[]"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
       "type": "org.bouncycastle.util.io.pem.PemObjectGenerator"
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.io.pem.PemReader"
+      "type": "org.bouncycastle.util.io.pem.PemReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.Reader"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.io.pem.PemWriter"
+      "type": "org.bouncycastle.util.io.pem.PemWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.Writer"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allPublicConstructors": true,
-      "type": "org.bouncycastle.util.Strings"
+      "type": "org.bouncycastle.util.Strings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     }
   ],
   "resources": [

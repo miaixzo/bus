@@ -508,15 +508,89 @@
       "type": "org.miaixz.bus.metrics.builtin.CacheMetricsAdapter"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.metrics.builtin.HttpMetrics"
+      "type": "org.miaixz.bus.metrics.builtin.HttpMetrics",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "doFilter",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "jakarta.servlet.ServletResponse",
+            "jakarta.servlet.FilterChain"
+          ]
+        },
+        {
+          "name": "record",
+          "parameterTypes": [
+            "org.miaixz.bus.metrics.nimble.Sample",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "jakarta.servlet.FilterConfig"
+          ]
+        },
+        {
+          "name": "destroy",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "ATTR_SAMPLE"
+        }
+      ]
     },
     {
       "condition": {

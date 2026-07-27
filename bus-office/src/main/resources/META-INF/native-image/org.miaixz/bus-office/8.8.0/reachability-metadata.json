@@ -2764,15 +2764,251 @@
       "type": "org.miaixz.bus.office.excel.cell.MergedCell"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.office.excel.cell.NullCell"
+      "type": "org.miaixz.bus.office.excel.cell.NullCell",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Row",
+            "int"
+          ]
+        },
+        {
+          "name": "getRow",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHyperlink",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Hyperlink"
+          ]
+        },
+        {
+          "name": "getSheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBlank",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellStyle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.RichTextString"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "getColumnIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRowIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDateCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellErrorValue",
+          "parameterTypes": [
+            "byte"
+          ]
+        },
+        {
+          "name": "getErrorCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellStyle",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellStyle"
+          ]
+        },
+        {
+          "name": "setAsActiveCell",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellComment",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Comment"
+          ]
+        },
+        {
+          "name": "removeCellComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellType",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellType"
+          ]
+        },
+        {
+          "name": "setCellFormula",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCachedFormulaResultType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumericCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalDateTimeCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRichStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBooleanCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getArrayFormulaRange",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPartOfArrayFormulaGroup",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.time.LocalDate"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "row"
+        },
+        {
+          "name": "columnIndex"
+        }
+      ]
     },
     {
       "condition": {
@@ -3272,15 +3508,346 @@
       "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.office.excel.cell.VirtualCell"
+      "type": "org.miaixz.bus.office.excel.cell.VirtualCell",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Cell",
+            "int",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Cell",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Row",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getRow",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHyperlink",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Hyperlink"
+          ]
+        },
+        {
+          "name": "getSheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellStyle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setCellTypeImpl",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellType"
+          ]
+        },
+        {
+          "name": "setCellFormulaImpl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "removeFormulaImpl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.RichTextString"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getColumnIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRowIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDateCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellErrorValue",
+          "parameterTypes": [
+            "byte"
+          ]
+        },
+        {
+          "name": "getErrorCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellStyle",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellStyle"
+          ]
+        },
+        {
+          "name": "setAsActiveCell",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellComment",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Comment"
+          ]
+        },
+        {
+          "name": "removeCellComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCachedFormulaResultType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumericCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalDateTimeCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRichStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBooleanCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getArrayFormulaRange",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPartOfArrayFormulaGroup",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpreadsheetVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBlank",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.RichTextString"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setCellType",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellType"
+          ]
+        },
+        {
+          "name": "setCellFormula",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "tryToDeleteArrayFormula",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.time.LocalDate"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "row"
+        },
+        {
+          "name": "columnIndex"
+        },
+        {
+          "name": "rowIndex"
+        },
+        {
+          "name": "cellType"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "style"
+        },
+        {
+          "name": "comment"
+        }
+      ]
     },
     {
       "condition": {
@@ -5118,15 +5685,231 @@
       "type": "org.miaixz.bus.office.excel.sax.ElementName"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.office.excel.sax.Excel03SaxReader"
+      "type": "org.miaixz.bus.office.excel.sax.Excel03SaxReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.office.excel.sax.handler.RowHandler"
+          ]
+        },
+        {
+          "name": "addToRowCellList",
+          "parameterTypes": [
+            "org.apache.poi.hssf.record.CellValueRecordInterface",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "addToRowCellList",
+          "parameterTypes": [
+            "int",
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "addToRowCellList",
+          "parameterTypes": [
+            "org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord"
+          ]
+        },
+        {
+          "name": "processLastCell",
+          "parameterTypes": []
+        },
+        {
+          "name": "processCellValue",
+          "parameterTypes": [
+            "org.apache.poi.hssf.record.Record"
+          ]
+        },
+        {
+          "name": "getSheetIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSheetName",
+          "parameterTypes": []
+        },
+        {
+          "name": "processRecord",
+          "parameterTypes": [
+            "org.apache.poi.hssf.record.Record"
+          ]
+        },
+        {
+          "name": "initSheetIndexOrSheetName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isProcessCurrentSheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "processLastCellSheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "org.apache.poi.poifs.filesystem.POIFSFileSystem",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File",
+            "int"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "isOutputFormulaValues"
+        },
+        {
+          "name": "boundSheetRecords"
+        },
+        {
+          "name": "rowHandler"
+        },
+        {
+          "name": "workbookBuildingListener"
+        },
+        {
+          "name": "stubWorkbook"
+        },
+        {
+          "name": "sstRecord"
+        },
+        {
+          "name": "formatListener"
+        },
+        {
+          "name": "isOutputNextStringRecord"
+        },
+        {
+          "name": "rowCellList"
+        },
+        {
+          "name": "rowIndex"
+        },
+        {
+          "name": "sheetIndex"
+        },
+        {
+          "name": "sheetName"
+        },
+        {
+          "name": "curRid"
+        },
+        {
+          "name": "RID_PREFIX"
+        },
+        {
+          "name": "SHEET_NAME_PREFIX"
+        }
+      ]
     },
     {
       "condition": {
@@ -5441,15 +6224,199 @@
       "type": "org.miaixz.bus.office.excel.SheetKit"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.office.excel.SimpleAnchor"
+      "type": "org.miaixz.bus.office.excel.SimpleAnchor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setDx1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDy1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDx2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDy2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setCol1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRow1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setCol2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRow2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setAnchorType",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.ClientAnchor$AnchorType"
+          ]
+        },
+        {
+          "name": "getDx1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDy1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDx2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDy2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCol1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCol2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAnchorType",
+          "parameterTypes": []
+        },
+        {
+          "name": "copyTo",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.ClientAnchor"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "dx1"
+        },
+        {
+          "name": "dy1"
+        },
+        {
+          "name": "dy2"
+        },
+        {
+          "name": "dx2"
+        },
+        {
+          "name": "col1"
+        },
+        {
+          "name": "row1"
+        },
+        {
+          "name": "col2"
+        },
+        {
+          "name": "row2"
+        },
+        {
+          "name": "anchorType"
+        }
+      ]
     },
     {
       "condition": {

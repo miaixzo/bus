@@ -1841,15 +1841,57 @@
       "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher$1"
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher$1",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
+        }
+      ]
     },
     {
       "condition": {
@@ -1982,15 +2024,57 @@
       "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser$1"
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser$1",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
+        }
+      ]
     },
     {
       "condition": {
@@ -2571,59 +2655,428 @@
       "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter"
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "preferredAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "candidateAdapters",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveDefaultAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "tryCreateGsonAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "tryCreateJacksonAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "tryCreateFastjsonAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "invokeNoArgIfPresent",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEncodingType",
+          "parameterTypes": []
+        },
+        {
+          "name": "toData",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "fromData",
+          "parameterTypes": [
+            "io.temporal.api.common.v1.Payload",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "withContext",
+          "parameterTypes": [
+            "io.temporal.payload.context.SerializationContext"
+          ]
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$1"
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$1",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "fromBytes",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "toBytes",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "val$toJsonBytes"
+        },
+        {
+          "name": "val$parseObject"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$2"
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$2",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "fromBytes",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "toBytes",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "val$objectMapper"
+        },
+        {
+          "name": "val$writeValueAsBytes"
+        },
+        {
+          "name": "val$constructType"
+        },
+        {
+          "name": "val$readValue"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$3"
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$3",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "fromBytes",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "toBytes",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "val$gson"
+        },
+        {
+          "name": "val$toJson"
+        },
+        {
+          "name": "val$fromJson"
+        }
+      ]
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$DefaultPayloadAdapterHolder"
+      "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$DefaultPayloadAdapterHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "ADAPTER"
+        }
+      ]
     },
     {
       "condition": {
@@ -2638,15 +3091,33 @@
       "type": "org.miaixz.bus.tempus.temporal.payload.PayloadAdapter"
     },
     {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter"
+      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter",
+      "methods": [
+        {
+          "name": "getEncodingType",
+          "parameterTypes": []
+        },
+        {
+          "name": "toData",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "fromData",
+          "parameterTypes": [
+            "io.temporal.api.common.v1.Payload",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "withContext",
+          "parameterTypes": [
+            "io.temporal.payload.context.SerializationContext"
+          ]
+        }
+      ]
     },
     {
       "condition": {
