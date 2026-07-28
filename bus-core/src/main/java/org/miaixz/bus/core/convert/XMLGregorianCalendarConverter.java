@@ -24,12 +24,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -58,11 +56,7 @@ public class XMLGregorianCalendarConverter extends AbstractConverter {
      * Constructs a new XMLGregorianCalendarConverter
      */
     public XMLGregorianCalendarConverter() {
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (final DatatypeConfigurationException e) {
-            throw new DateException(e);
-        }
+        datatypeFactory = DatatypeFactory.newDefaultInstance();
     }
 
     /**

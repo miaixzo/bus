@@ -1,168 +1,7 @@
 {
   "reflection": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Closeable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Flushable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.InputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.OutputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Serializable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.ClassLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Comparable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.constant.Constable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Enum"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
-      },
-      "methods": [
-        {
-          "name": "privateLookupIn",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.invoke.MethodHandles$Lookup"
-          ]
-        }
-      ],
-      "type": "java.lang.invoke.MethodHandles"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Method[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.net.JarURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.net.URLClassLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.net.URLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.net.URLStreamHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.security.SecureClassLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.security.SecureRandom"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.Enumeration"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.Random"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.random.RandomGenerator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.beans.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.Builder",
       "methods": [
         {
           "name": "<init>",
@@ -233,37 +72,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.Builder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.beans.ColumnType"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.ColumnType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.DateType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.DateType",
       "methods": [
         {
           "name": "<init>",
@@ -282,25 +97,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.DateType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.DateType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.MySQLColumnType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.MySQLColumnType",
       "methods": [
         {
           "name": "<init>",
@@ -329,31 +129,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.MySQLColumnType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.MySQLColumnType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.beans.MySQLTypeConvert"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.MySQLTypeConvert"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.MySQLTypeConvert",
       "methods": [
         {
           "name": "<init>",
@@ -366,31 +145,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.MySQLTypeConvert"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.MySQLTypeConvert"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.beans.NamingRules"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.NamingRules"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.NamingRules",
       "methods": [
         {
           "name": "<init>",
@@ -415,31 +173,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.NamingRules"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.NamingRules"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.beans.PropertyInfo"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.PropertyInfo"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.PropertyInfo",
       "methods": [
         {
           "name": "<init>",
@@ -495,31 +232,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.PropertyInfo"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.PropertyInfo"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.beans.TableEntity"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.beans.TableEntity"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.beans.TableEntity",
       "methods": [
         {
           "name": "<init>",
@@ -800,55 +516,16 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.beans.TableEntity"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.TableEntity"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.beans.TypeConvert"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.beans.TypeConvert"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricKey"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricSecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricSecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricSecureKey",
       "methods": [
         {
           "name": "<init>",
@@ -881,43 +558,13 @@
           "name": "getPublicKey",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricSecureKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricSecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.algorithm.Key"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.Key"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.algorithm.SecureKey",
       "methods": [
         {
           "name": "<init>",
@@ -944,31 +591,10 @@
           "name": "getPassword",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureRandom"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureRandom"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.algorithm.SecureRandom",
       "methods": [
         {
           "name": "<init>",
@@ -1024,43 +650,13 @@
           "name": "nextValue",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureRandom"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SecureRandom"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricKey"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey",
       "methods": [
         {
           "name": "<init>",
@@ -1089,31 +685,10 @@
           "name": "getSecretKey",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.archive.DirAntComplex",
       "methods": [
         {
           "name": "<init>",
@@ -1127,31 +702,10 @@
             "java.io.File"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.archive.DirAntComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.archive.DirDecryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -1174,31 +728,10 @@
             "java.io.File"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.archive.DirDecryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.archive.DirEncryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -1221,31 +754,10 @@
             "java.io.File"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.archive.DirEncryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.archive.DirRegexComplex",
       "methods": [
         {
           "name": "<init>",
@@ -1265,31 +777,10 @@
             "java.io.File"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.archive.DirRegexComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.DirRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.archive.ZipAntComplex",
       "methods": [
         {
           "name": "<init>",
@@ -1297,67 +788,16 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.archive.ZipAntComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.archive.ZipDecryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.archive.ZipEncryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.archive.ZipRegexComplex",
       "methods": [
         {
           "name": "<init>",
@@ -1371,31 +811,10 @@
             "java.util.regex.Pattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.archive.ZipRegexComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.archive.ZipRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.Boot"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.Boot"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.Boot",
       "methods": [
         {
           "name": "<init>",
@@ -1501,20 +920,15 @@
             "org.miaixz.bus.shade.safety.algorithm.Key"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.Boot"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.Boot"
-    },
-    {
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
       "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader",
+      "fields": [
+        {
+          "name": "bootURLHandler"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1527,13 +941,31 @@
           ]
         },
         {
-          "name": "findResource",
+          "name": "clearAssertionStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "findClass",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "findClass",
+          "name": "findResource",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1545,34 +977,17 @@
           ]
         },
         {
-          "name": "close",
+          "name": "getClass",
           "parameterTypes": []
         },
         {
-          "name": "clearCache",
-          "parameterTypes": []
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": [
-            "java.net.URL[]",
-            "java.lang.ClassLoader"
-          ]
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": [
-            "java.net.URL[]"
-          ]
-        },
-        {
-          "name": "getResourceAsStream",
+          "name": "getDefinedPackage",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "getURLs",
+          "name": "getDefinedPackages",
           "parameterTypes": []
         },
         {
@@ -1580,33 +995,21 @@
           "parameterTypes": []
         },
         {
-          "name": "loadClass",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "getParent",
+          "parameterTypes": []
         },
         {
           "name": "getPlatformClassLoader",
           "parameterTypes": []
         },
         {
-          "name": "getSystemClassLoader",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSystemResourceAsStream",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemResource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "getResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getResourceAsStream",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1618,20 +1021,20 @@
           ]
         },
         {
-          "name": "getDefinedPackage",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "resources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isRegisteredAsParallelCapable",
+          "name": "getSystemClassLoader",
           "parameterTypes": []
+        },
+        {
+          "name": "getSystemResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
           "name": "getSystemResources",
@@ -1640,16 +1043,60 @@
           ]
         },
         {
-          "name": "getParent",
-          "parameterTypes": []
-        },
-        {
           "name": "getUnnamedModule",
           "parameterTypes": []
         },
         {
-          "name": "getDefinedPackages",
+          "name": "getURLs",
           "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRegisteredAsParallelCapable",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadClass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "resources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setClassAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
         },
         {
           "name": "setDefaultAssertionStatus",
@@ -1665,40 +1112,11 @@
           ]
         },
         {
-          "name": "setClassAssertionStatus",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "clearAssertionStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -1713,23 +1131,19 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "bootURLHandler"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
       "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader$XBootEnumeration",
+      "fields": [
+        {
+          "name": "enumeration"
+        },
+        {
+          "name": "this$0"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1737,6 +1151,24 @@
             "org.miaixz.bus.shade.safety.boot.BootClassLoader",
             "java.util.Enumeration"
           ]
+        },
+        {
+          "name": "asIterator",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
         },
         {
           "name": "hasMoreElements",
@@ -1747,29 +1179,19 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
         },
         {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -1784,226 +1206,165 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "asIterator",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "enumeration"
-        },
-        {
-          "name": "this$0"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.boot.BootDecryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
       "type": "org.miaixz.bus.shade.safety.boot.BootEncryptorProvider"
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootJarArchiveEntry",
+      "fields": [
+        {
+          "name": "CENATT"
+        },
+        {
+          "name": "CENATX"
+        },
+        {
+          "name": "CENCOM"
+        },
+        {
+          "name": "CENCRC"
+        },
+        {
+          "name": "CENDSK"
+        },
+        {
+          "name": "CENEXT"
+        },
+        {
+          "name": "CENFLG"
+        },
+        {
+          "name": "CENHDR"
+        },
+        {
+          "name": "CENHOW"
+        },
+        {
+          "name": "CENLEN"
+        },
+        {
+          "name": "CENNAM"
+        },
+        {
+          "name": "CENOFF"
+        },
+        {
+          "name": "CENSIG"
+        },
+        {
+          "name": "CENSIZ"
+        },
+        {
+          "name": "CENTIM"
+        },
+        {
+          "name": "CENVEM"
+        },
+        {
+          "name": "CENVER"
+        },
+        {
+          "name": "CRC_UNKNOWN"
+        },
+        {
+          "name": "DEFLATED"
+        },
+        {
+          "name": "ENDCOM"
+        },
+        {
+          "name": "ENDHDR"
+        },
+        {
+          "name": "ENDOFF"
+        },
+        {
+          "name": "ENDSIG"
+        },
+        {
+          "name": "ENDSIZ"
+        },
+        {
+          "name": "ENDSUB"
+        },
+        {
+          "name": "ENDTOT"
+        },
+        {
+          "name": "EXTCRC"
+        },
+        {
+          "name": "EXTHDR"
+        },
+        {
+          "name": "EXTLEN"
+        },
+        {
+          "name": "EXTSIG"
+        },
+        {
+          "name": "EXTSIZ"
+        },
+        {
+          "name": "LOCCRC"
+        },
+        {
+          "name": "LOCEXT"
+        },
+        {
+          "name": "LOCFLG"
+        },
+        {
+          "name": "LOCHDR"
+        },
+        {
+          "name": "LOCHOW"
+        },
+        {
+          "name": "LOCLEN"
+        },
+        {
+          "name": "LOCNAM"
+        },
+        {
+          "name": "LOCSIG"
+        },
+        {
+          "name": "LOCSIZ"
+        },
+        {
+          "name": "LOCTIM"
+        },
+        {
+          "name": "LOCVER"
+        },
+        {
+          "name": "OFFSET_UNKNOWN"
+        },
+        {
+          "name": "PLATFORM_FAT"
+        },
+        {
+          "name": "PLATFORM_UNIX"
+        },
+        {
+          "name": "SIZE_UNKNOWN"
+        },
+        {
+          "name": "STORED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.apache.commons.compress.archivers.zip.ZipArchiveEntry"
-          ]
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getManifestAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCertificates",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAlignment",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "isStreamContiguous",
-          "parameterTypes": []
-        },
-        {
-          "name": "setUnixMode",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getUnixMode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isUnixSymlink",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPlatform",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExtraFields",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipExtraField[]"
-          ]
-        },
-        {
-          "name": "getExtraFields",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "getExtraFields",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtraFields",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ExtraFieldParsingBehavior"
-          ]
-        },
-        {
-          "name": "addExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipExtraField"
-          ]
-        },
-        {
-          "name": "removeExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipShort"
-          ]
-        },
-        {
-          "name": "getExtraField",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipShort"
-          ]
-        },
-        {
-          "name": "getRawName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataOffset",
-          "parameterTypes": []
-        },
-        {
-          "name": "setVersionMadeBy",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setVersionRequired",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getVersionRequired",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVersionMadeBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawFlag",
-          "parameterTypes": []
-        },
-        {
-          "name": "setRawFlag",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getNameSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "setNameSource",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$NameSource"
-          ]
-        },
-        {
-          "name": "getCommentSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCommentSource",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$CommentSource"
-          ]
-        },
-        {
-          "name": "getInternalAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "setInternalAttributes",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getExternalAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExternalAttributes",
-          "parameterTypes": [
-            "long"
           ]
         },
         {
@@ -2013,39 +1374,13 @@
           ]
         },
         {
-          "name": "removeUnparseableExtraFieldData",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUnparseableExtraFieldData",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCentralDirectoryExtra",
+          "name": "addExtraField",
           "parameterTypes": [
-            "byte[]"
+            "org.apache.commons.compress.archivers.zip.ZipExtraField"
           ]
         },
         {
-          "name": "getLocalFileDataExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCentralDirectoryExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "getGeneralPurposeBit",
-          "parameterTypes": []
-        },
-        {
-          "name": "setGeneralPurposeBit",
-          "parameterTypes": [
-            "org.apache.commons.compress.archivers.zip.GeneralPurposeBit"
-          ]
-        },
-        {
-          "name": "getLastModifiedDate",
+          "name": "clone",
           "parameterTypes": []
         },
         {
@@ -2055,45 +1390,85 @@
           ]
         },
         {
-          "name": "hashCode",
+          "name": "getCentralDirectoryExtra",
           "parameterTypes": []
         },
         {
-          "name": "clone",
+          "name": "getCertificates",
           "parameterTypes": []
         },
         {
-          "name": "getMethod",
+          "name": "getClass",
           "parameterTypes": []
         },
         {
-          "name": "getSize",
+          "name": "getComment",
           "parameterTypes": []
         },
         {
-          "name": "isDirectory",
+          "name": "getCommentSource",
           "parameterTypes": []
         },
         {
-          "name": "setSize",
+          "name": "getCompressedSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCrc",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreationTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataOffset",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExternalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtraField",
           "parameterTypes": [
-            "long"
+            "org.apache.commons.compress.archivers.zip.ZipShort"
           ]
         },
         {
-          "name": "setMethod",
+          "name": "getExtraFields",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtraFields",
           "parameterTypes": [
-            "int"
+            "boolean"
           ]
         },
         {
-          "name": "setExtra",
+          "name": "getExtraFields",
           "parameterTypes": [
-            "byte[]"
+            "org.apache.commons.compress.archivers.zip.ExtraFieldParsingBehavior"
           ]
         },
         {
-          "name": "toString",
+          "name": "getGeneralPurposeBit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInternalAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastModifiedDate",
           "parameterTypes": []
         },
         {
@@ -2101,54 +1476,122 @@
           "parameterTypes": []
         },
         {
-          "name": "setLastModifiedTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
+          "name": "getLocalFileDataExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getManifestAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMethod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNameSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlatform",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawFlag",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
         },
         {
           "name": "getTime",
           "parameterTypes": []
         },
         {
-          "name": "setTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setTimeLocal",
-          "parameterTypes": [
-            "java.time.LocalDateTime"
-          ]
-        },
-        {
           "name": "getTimeLocal",
           "parameterTypes": []
         },
         {
-          "name": "setLastAccessTime",
+          "name": "getUnixMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUnparseableExtraFieldData",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersionMadeBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersionRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDirectory",
+          "parameterTypes": []
+        },
+        {
+          "name": "isStreamContiguous",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUnixSymlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeExtraField",
           "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
+            "org.apache.commons.compress.archivers.zip.ZipShort"
           ]
         },
         {
-          "name": "getLastAccessTime",
+          "name": "removeUnparseableExtraFieldData",
           "parameterTypes": []
         },
         {
-          "name": "setCreationTime",
+          "name": "setAlignment",
           "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
+            "int"
           ]
         },
         {
-          "name": "getCreationTime",
-          "parameterTypes": []
+          "name": "setCentralDirectoryExtra",
+          "parameterTypes": [
+            "byte[]"
+          ]
         },
         {
-          "name": "getCompressedSize",
-          "parameterTypes": []
+          "name": "setComment",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCommentSource",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$CommentSource"
+          ]
         },
         {
           "name": "setCompressedSize",
@@ -2163,33 +1606,113 @@
           ]
         },
         {
-          "name": "getCrc",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "setComment",
+          "name": "setCreationTime",
           "parameterTypes": [
-            "java.lang.String"
+            "java.nio.file.attribute.FileTime"
           ]
         },
         {
-          "name": "getComment",
+          "name": "setExternalAttributes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setExtra",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setExtraFields",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipExtraField[]"
+          ]
+        },
+        {
+          "name": "setGeneralPurposeBit",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.GeneralPurposeBit"
+          ]
+        },
+        {
+          "name": "setInternalAttributes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setLastAccessTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setLastModifiedTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setMethod",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setNameSource",
+          "parameterTypes": [
+            "org.apache.commons.compress.archivers.zip.ZipArchiveEntry$NameSource"
+          ]
+        },
+        {
+          "name": "setRawFlag",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTimeLocal",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "setUnixMode",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setVersionMadeBy",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setVersionRequired",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2204,164 +1727,36 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "PLATFORM_UNIX"
-        },
-        {
-          "name": "PLATFORM_FAT"
-        },
-        {
-          "name": "CRC_UNKNOWN"
-        },
-        {
-          "name": "SIZE_UNKNOWN"
-        },
-        {
-          "name": "OFFSET_UNKNOWN"
-        },
-        {
-          "name": "STORED"
-        },
-        {
-          "name": "DEFLATED"
-        },
-        {
-          "name": "LOCSIG"
-        },
-        {
-          "name": "EXTSIG"
-        },
-        {
-          "name": "CENSIG"
-        },
-        {
-          "name": "ENDSIG"
-        },
-        {
-          "name": "LOCHDR"
-        },
-        {
-          "name": "EXTHDR"
-        },
-        {
-          "name": "CENHDR"
-        },
-        {
-          "name": "ENDHDR"
-        },
-        {
-          "name": "LOCVER"
-        },
-        {
-          "name": "LOCFLG"
-        },
-        {
-          "name": "LOCHOW"
-        },
-        {
-          "name": "LOCTIM"
-        },
-        {
-          "name": "LOCCRC"
-        },
-        {
-          "name": "LOCSIZ"
-        },
-        {
-          "name": "LOCLEN"
-        },
-        {
-          "name": "LOCNAM"
-        },
-        {
-          "name": "LOCEXT"
-        },
-        {
-          "name": "EXTCRC"
-        },
-        {
-          "name": "EXTSIZ"
-        },
-        {
-          "name": "EXTLEN"
-        },
-        {
-          "name": "CENVEM"
-        },
-        {
-          "name": "CENVER"
-        },
-        {
-          "name": "CENFLG"
-        },
-        {
-          "name": "CENHOW"
-        },
-        {
-          "name": "CENTIM"
-        },
-        {
-          "name": "CENCRC"
-        },
-        {
-          "name": "CENSIZ"
-        },
-        {
-          "name": "CENLEN"
-        },
-        {
-          "name": "CENNAM"
-        },
-        {
-          "name": "CENEXT"
-        },
-        {
-          "name": "CENCOM"
-        },
-        {
-          "name": "CENDSK"
-        },
-        {
-          "name": "CENATT"
-        },
-        {
-          "name": "CENATX"
-        },
-        {
-          "name": "CENOFF"
-        },
-        {
-          "name": "ENDSUB"
-        },
-        {
-          "name": "ENDTOT"
-        },
-        {
-          "name": "ENDSIZ"
-        },
-        {
-          "name": "ENDOFF"
-        },
-        {
-          "name": "ENDCOM"
         }
       ]
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootJarLauncher",
+      "fields": [
+        {
+          "name": "launcher"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String[]"
           ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
         },
         {
           "name": "launch",
@@ -2374,29 +1769,19 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
         },
         {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2411,88 +1796,24 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "launcher"
         }
       ]
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "launch",
-          "parameterTypes": []
-        },
-        {
-          "name": "main",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "toCamelCase",
-          "parameterTypes": [
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
       "fields": [
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "CONFIG_LOCATION"
+        },
+        {
+          "name": "CONFIG_NAME"
+        },
+        {
+          "name": "HOME"
+        },
         {
           "name": "launcher"
         },
@@ -2503,38 +1824,79 @@
           "name": "PATH"
         },
         {
-          "name": "HOME"
-        },
-        {
-          "name": "ARGS"
-        },
-        {
-          "name": "CONFIG_NAME"
-        },
-        {
-          "name": "CONFIG_LOCATION"
-        },
-        {
           "name": "SET_SYSTEM_PROPERTIES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "launch",
+          "parameterTypes": []
+        },
+        {
+          "name": "main",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toCamelCase",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.BootURLConnection",
       "methods": [
         {
           "name": "<init>",
@@ -2786,17 +2148,24 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.BootURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.BootURLConnection"
+      ]
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootURLHandler",
+      "fields": [
+        {
+          "name": "decryptorProvider"
+        },
+        {
+          "name": "encryptorProvider"
+        },
+        {
+          "name": "indexes"
+        },
+        {
+          "name": "key"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2805,12 +2174,6 @@
             "org.miaixz.bus.shade.safety.provider.EncryptorProvider",
             "org.miaixz.bus.shade.safety.algorithm.Key",
             "java.lang.ClassLoader"
-          ]
-        },
-        {
-          "name": "openConnection",
-          "parameterTypes": [
-            "java.net.URL"
           ]
         },
         {
@@ -2824,15 +2187,11 @@
           ]
         },
         {
-          "name": "toString",
+          "name": "getClass",
           "parameterTypes": []
         },
         {
           "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
           "parameterTypes": []
         },
         {
@@ -2841,6 +2200,20 @@
         },
         {
           "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "openConnection",
+          "parameterTypes": [
+            "java.net.URL"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2855,35 +2228,36 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "decryptorProvider"
-        },
-        {
-          "name": "encryptorProvider"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "indexes"
         }
       ]
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootWarLauncher",
+      "fields": [
+        {
+          "name": "launcher"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String[]"
           ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
         },
         {
           "name": "launch",
@@ -2896,29 +2270,19 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
         },
         {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2933,34 +2297,11 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "launcher"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.Jar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.Jar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.Jar",
       "methods": [
         {
           "name": "<init>",
@@ -3066,61 +2407,19 @@
             "org.miaixz.bus.shade.safety.algorithm.Key"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.Jar"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.Jar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAllComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAllComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAllComplex",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAllComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAllComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAntComplex",
       "methods": [
         {
           "name": "<init>",
@@ -3128,31 +2427,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAntComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarAntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader",
       "methods": [
         {
           "name": "<init>",
@@ -3182,31 +2460,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader$XJarEnumeration"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader$XJarEnumeration"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader$XJarEnumeration",
       "methods": [
         {
           "name": "<init>",
@@ -3223,67 +2480,16 @@
           "name": "nextElement",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader$XJarEnumeration"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarClassLoader$XJarEnumeration"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.boot.jar.JarDecryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.boot.jar.JarEncryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarLauncher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarLauncher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarLauncher",
       "methods": [
         {
           "name": "<init>",
@@ -3301,31 +2507,10 @@
             "java.lang.String[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarLauncher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarLauncher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarRegexComplex",
       "methods": [
         {
           "name": "<init>",
@@ -3339,31 +2524,10 @@
             "java.util.regex.Pattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarRegexComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarRegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLConnection",
       "methods": [
         {
           "name": "<init>",
@@ -3615,31 +2779,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLConnection"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLConnection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLHandler",
       "methods": [
         {
           "name": "<init>",
@@ -3656,31 +2799,10 @@
             "java.net.URL"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLHandler"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarURLHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.Builder",
       "methods": [
         {
           "name": "<init>",
@@ -3866,43 +2988,13 @@
             "byte[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.Builder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.Complex"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.Complex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AllComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AllComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.complex.AllComplex",
       "methods": [
         {
           "name": "<init>",
@@ -3926,31 +3018,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.complex.AllComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AllComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.complex.AntComplex",
       "methods": [
         {
           "name": "<init>",
@@ -3964,31 +3035,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.complex.AntComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AntComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AnyComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AnyComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.complex.AnyComplex",
       "methods": [
         {
           "name": "<init>",
@@ -4012,31 +3062,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.complex.AnyComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.AnyComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.MixComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.MixComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.complex.MixComplex",
       "methods": [
         {
           "name": "<init>",
@@ -4054,31 +3083,10 @@
             "org.miaixz.bus.shade.safety.Complex"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.complex.MixComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.MixComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.NotComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.NotComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.complex.NotComplex",
       "methods": [
         {
           "name": "<init>",
@@ -4092,31 +3100,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.complex.NotComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.NotComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.RegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.RegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.complex.RegexComplex",
       "methods": [
         {
           "name": "<init>",
@@ -4130,49 +3117,13 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.complex.RegexComplex"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.complex.RegexComplex"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.Injector"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.Injector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.Injector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.Launcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.Launcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.Launcher",
       "methods": [
         {
           "name": "<init>",
@@ -4180,55 +3131,16 @@
             "java.lang.String[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.Launcher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.Launcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.provider.DecryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.DecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.safety.provider.EncryptorProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4242,31 +3154,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4280,31 +3171,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4342,31 +3212,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4404,31 +3253,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.NopDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.NopDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.NopDecryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4464,31 +3292,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.NopDecryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.NopDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.NopEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.NopEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.NopEncryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4524,31 +3331,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.NopEncryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.NopEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.WrappedDecryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4586,31 +3372,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedDecryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedDecryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.provider.WrappedEncryptorProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4648,31 +3413,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedEncryptorProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.provider.WrappedEncryptorProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysInputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysInputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.streams.AlwaysInputStream",
       "methods": [
         {
           "name": "<init>",
@@ -4726,31 +3470,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysInputStream"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysInputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysOutputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysOutputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.safety.streams.AlwaysOutputStream",
       "methods": [
         {
           "name": "<init>",
@@ -4786,31 +3509,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysOutputStream"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.safety.streams.AlwaysOutputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.Builder",
       "methods": [
         {
           "name": "<init>",
@@ -4822,31 +3524,10 @@
             "org.miaixz.bus.shade.screw.Config"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.Builder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.Config"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.Config"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.Config",
       "methods": [
         {
           "name": "<init>",
@@ -4949,31 +3630,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.Config"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.Config"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.Config$ConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.Config$ConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.Config$ConfigBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -5035,31 +3695,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.Config$ConfigBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.Config$ConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -5130,31 +3769,10 @@
             "javax.sql.DataSource"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn",
       "methods": [
         {
           "name": "<init>",
@@ -5430,31 +4048,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase",
       "methods": [
         {
           "name": "<init>",
@@ -5470,31 +4067,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -5530,31 +4106,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey",
       "methods": [
         {
           "name": "<init>",
@@ -5620,31 +4175,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable",
       "methods": [
         {
           "name": "<init>",
@@ -5750,43 +4284,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQuery"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory",
       "methods": [
         {
           "name": "<init>",
@@ -5812,25 +4316,10 @@
             "javax.sql.DataSource"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType",
       "methods": [
         {
           "name": "<init>",
@@ -5876,31 +4365,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -5932,31 +4400,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -5988,31 +4435,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn",
       "methods": [
         {
           "name": "<init>",
@@ -6288,31 +4714,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase",
       "methods": [
         {
           "name": "<init>",
@@ -6328,31 +4733,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -6388,31 +4772,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbPrimaryKey",
       "methods": [
         {
           "name": "<init>",
@@ -6478,31 +4841,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbPrimaryKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbTable",
       "methods": [
         {
           "name": "<init>",
@@ -6608,31 +4950,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbTable"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlColumn",
       "methods": [
         {
           "name": "<init>",
@@ -6908,31 +5229,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlColumn"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase",
       "methods": [
         {
           "name": "<init>",
@@ -6948,31 +5248,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -7008,31 +5287,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlPrimaryKey",
       "methods": [
         {
           "name": "<init>",
@@ -7098,31 +5356,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlPrimaryKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlTable",
       "methods": [
         {
           "name": "<init>",
@@ -7228,31 +5465,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlTable"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleColumn",
       "methods": [
         {
           "name": "<init>",
@@ -7528,31 +5744,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleColumn"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase",
       "methods": [
         {
           "name": "<init>",
@@ -7568,31 +5763,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -7632,31 +5806,10 @@
           "name": "isDda",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OraclePrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OraclePrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OraclePrimaryKey",
       "methods": [
         {
           "name": "<init>",
@@ -7712,31 +5865,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OraclePrimaryKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OraclePrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleTable",
       "methods": [
         {
           "name": "<init>",
@@ -7792,31 +5924,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleTable"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -7848,31 +5959,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn",
       "methods": [
         {
           "name": "<init>",
@@ -8148,31 +6238,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
       "methods": [
         {
           "name": "<init>",
@@ -8188,31 +6257,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -8248,31 +6296,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlPrimaryKey",
       "methods": [
         {
           "name": "<init>",
@@ -8338,31 +6365,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlPrimaryKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlTable",
       "methods": [
         {
           "name": "<init>",
@@ -8468,31 +6474,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlTable"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerColumn",
       "methods": [
         {
           "name": "<init>",
@@ -8768,31 +6753,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerColumn"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerColumn"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase",
       "methods": [
         {
           "name": "<init>",
@@ -8808,31 +6772,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery",
       "methods": [
         {
           "name": "<init>",
@@ -8868,31 +6811,10 @@
           "name": "getTables",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerPrimaryKey",
       "methods": [
         {
           "name": "<init>",
@@ -8948,31 +6870,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerPrimaryKey"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerPrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerTable",
       "methods": [
         {
           "name": "<init>",
@@ -9028,31 +6929,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerTable"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.AbstractEngine"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.AbstractEngine"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.engine.AbstractEngine",
       "methods": [
         {
           "name": "<init>",
@@ -9084,31 +6964,10 @@
             "org.miaixz.bus.shade.screw.engine.EngineConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.engine.AbstractEngine"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.AbstractEngine"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig",
       "methods": [
         {
           "name": "<init>",
@@ -9189,31 +7048,10 @@
             "org.miaixz.bus.shade.screw.engine.TemplateType"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -9263,31 +7101,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineConfig$EngineConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.engine.EngineFactory",
       "methods": [
         {
           "name": "<init>",
@@ -9307,25 +7124,10 @@
             "org.miaixz.bus.shade.screw.engine.EngineConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFileType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.engine.EngineFileType",
       "methods": [
         {
           "name": "<init>",
@@ -9377,55 +7179,16 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFileType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.EngineFileType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.engine.FreemarkerEngine"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.FreemarkerEngine"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.FreemarkerEngine"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.engine.TemplateEngine"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.TemplateEngine"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.TemplateType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.engine.TemplateType",
       "methods": [
         {
           "name": "<init>",
@@ -9477,31 +7240,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.engine.TemplateType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.engine.TemplateType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.AbstractExecute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.AbstractExecute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.execute.AbstractExecute",
       "methods": [
         {
           "name": "<init>",
@@ -9515,43 +7257,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.execute.AbstractExecute"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.AbstractExecute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.execute.Execute"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.Execute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.ProduceExecute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.ProduceExecute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.execute.ProduceExecute",
       "methods": [
         {
           "name": "<init>",
@@ -9563,31 +7275,10 @@
           "name": "execute",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.execute.ProduceExecute"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.execute.ProduceExecute"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.FieldMethod"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.FieldMethod"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.mapping.FieldMethod",
       "methods": [
         {
           "name": "<init>",
@@ -9613,31 +7304,10 @@
             "java.lang.reflect.Method"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.mapping.FieldMethod"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.FieldMethod"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.Mapping"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.Mapping"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.mapping.Mapping",
       "methods": [
         {
           "name": "<init>",
@@ -9671,79 +7341,22 @@
             "java.util.Map"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.mapping.Mapping"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.Mapping"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.mapping.MappingField"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.MappingField"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.mapping.MappingListField"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.mapping.MappingListField"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.metadata.Column"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.Column"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.metadata.ColumnLength"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.ColumnLength"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.ColumnSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.ColumnSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.metadata.ColumnSchema",
       "methods": [
         {
           "name": "<init>",
@@ -9859,43 +7472,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.metadata.ColumnSchema"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.ColumnSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.metadata.Database"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.Database"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema",
       "methods": [
         {
           "name": "<init>",
@@ -9921,31 +7504,10 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.DataSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.DataSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.metadata.DataSchema",
       "methods": [
         {
           "name": "<init>",
@@ -10017,55 +7579,16 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.metadata.DataSchema"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.DataSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.metadata.PrimaryKey"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.PrimaryKey"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.metadata.Table"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.Table"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.TableSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.TableSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.metadata.TableSchema",
       "methods": [
         {
           "name": "<init>",
@@ -10101,31 +7624,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.metadata.TableSchema"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.metadata.TableSchema"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.AbstractProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.AbstractProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.process.AbstractProcess",
       "methods": [
         {
           "name": "<init>",
@@ -10157,31 +7659,10 @@
             "org.miaixz.bus.shade.screw.metadata.DataSchema"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.process.AbstractProcess"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.AbstractProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.DataModelProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.DataModelProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.process.DataModelProcess",
       "methods": [
         {
           "name": "<init>",
@@ -10201,43 +7682,13 @@
           "name": "process",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.process.DataModelProcess"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.DataModelProcess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.shade.screw.process.Process"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.Process"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig",
       "methods": [
         {
           "name": "<init>",
@@ -10318,31 +7769,10 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -10392,14 +7822,7 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.shade.screw.process.ProcessConfig$ProcessConfigBuilder"
+      ]
     }
   ],
   "resources": [

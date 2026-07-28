@@ -1,120 +1,7 @@
 {
   "reflection": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Serializable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Cloneable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Comparable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.constant.Constable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Enum"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
-      },
-      "methods": [
-        {
-          "name": "privateLookupIn",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.invoke.MethodHandles$Lookup"
-          ]
-        }
-      ],
-      "type": "java.lang.invoke.MethodHandles"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Record"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.reflect.Method[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Runnable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Thread"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.concurrent.Delayed"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Builder",
       "methods": [
         {
           "name": "<init>",
@@ -200,31 +87,10 @@
             "org.miaixz.bus.tempus.pattern.CronPattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Builder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Configure"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Configure"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Configure",
       "methods": [
         {
           "name": "<init>",
@@ -274,31 +140,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Configure"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Configure"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.CronCrontab",
       "methods": [
         {
           "name": "<init>",
@@ -330,43 +175,13 @@
             "org.miaixz.bus.tempus.pattern.CronPattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.CronCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.crontab.Crontab"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.Crontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory",
       "methods": [
         {
           "name": "<init>",
@@ -378,31 +193,10 @@
             "org.miaixz.bus.tempus.Configure"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab",
       "methods": [
         {
           "name": "<init>",
@@ -414,31 +208,10 @@
           "name": "execute",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab",
       "methods": [
         {
           "name": "<init>",
@@ -464,31 +237,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab",
       "methods": [
         {
           "name": "<init>",
@@ -500,31 +252,10 @@
           "name": "execute",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab",
       "methods": [
         {
           "name": "<init>",
@@ -545,31 +276,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab",
       "methods": [
         {
           "name": "<init>",
@@ -622,31 +332,10 @@
             "org.miaixz.bus.tempus.pattern.CronPattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime",
       "methods": [
         {
           "name": "<init>",
@@ -683,31 +372,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.CronTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.CronTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.CronTimer",
       "methods": [
         {
           "name": "<init>",
@@ -736,31 +404,10 @@
           "name": "stopTimer",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.CronTimer"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.CronTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Executor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Executor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Executor",
       "methods": [
         {
           "name": "<init>",
@@ -795,31 +442,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Executor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Executor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Expression"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Expression"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Expression",
       "methods": [
         {
           "name": "<init>",
@@ -1020,31 +646,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Expression"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Expression"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Expression$ValueSet",
       "methods": [
         {
           "name": "<init>",
@@ -1052,31 +657,10 @@
             "org.miaixz.bus.tempus.Expression"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Expression$ValueSet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Launcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Launcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Launcher",
       "methods": [
         {
           "name": "<init>",
@@ -1111,31 +695,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Launcher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Launcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener",
       "methods": [
         {
           "name": "<init>",
@@ -1160,43 +723,13 @@
             "org.miaixz.bus.tempus.Executor"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.listener.TaskListener"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.listener.TaskListener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager",
       "methods": [
         {
           "name": "<init>",
@@ -1233,31 +766,10 @@
             "org.miaixz.bus.tempus.listener.TaskListener"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.listener.TaskListenerManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Manager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Manager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Manager",
       "methods": [
         {
           "name": "<init>",
@@ -1297,31 +809,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Manager"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Manager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPattern",
       "methods": [
         {
           "name": "<init>",
@@ -1469,31 +960,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.CronPattern"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -1529,31 +999,10 @@
             "int[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.CronPatternBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher",
       "methods": [
         {
           "name": "<init>",
@@ -1575,31 +1024,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.AlwaysTrueMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher",
       "methods": [
         {
           "name": "<init>",
@@ -1627,31 +1055,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher",
       "methods": [
         {
           "name": "<init>",
@@ -1696,43 +1103,13 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.DayOfMonthMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.pattern.matcher.PartMatcher"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PartMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher",
       "methods": [
         {
           "name": "<init>",
@@ -1831,17 +1208,15 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher"
+      ]
     },
     {
       "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher$1",
+      "fields": [
+        {
+          "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
+        }
+      ],
       "methods": [
         {
           "name": "equals",
@@ -1850,15 +1225,11 @@
           ]
         },
         {
-          "name": "toString",
+          "name": "getClass",
           "parameterTypes": []
         },
         {
           "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
           "parameterTypes": []
         },
         {
@@ -1867,6 +1238,14 @@
         },
         {
           "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -1881,34 +1260,11 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher",
       "methods": [
         {
           "name": "<init>",
@@ -1932,31 +1288,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.matcher.YearValueMatcher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser",
       "methods": [
         {
           "name": "<init>",
@@ -2014,17 +1349,15 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.parser.PartParser"
+      ]
     },
     {
       "type": "org.miaixz.bus.tempus.pattern.parser.PartParser$1",
+      "fields": [
+        {
+          "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
+        }
+      ],
       "methods": [
         {
           "name": "equals",
@@ -2033,15 +1366,11 @@
           ]
         },
         {
-          "name": "toString",
+          "name": "getClass",
           "parameterTypes": []
         },
         {
           "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
           "parameterTypes": []
         },
         {
@@ -2050,6 +1379,14 @@
         },
         {
           "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2064,34 +1401,11 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "$SwitchMap$org$miaixz$bus$tempus$pattern$Part"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser",
       "methods": [
         {
           "name": "<init>",
@@ -2115,25 +1429,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.parser.PatternParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.Part"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.pattern.Part",
       "methods": [
         {
           "name": "<init>",
@@ -2179,31 +1478,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.pattern.Part"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.pattern.Part"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Repertoire"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Repertoire"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Repertoire",
       "methods": [
         {
           "name": "<init>",
@@ -2284,31 +1562,10 @@
             "org.miaixz.bus.tempus.pattern.CronPattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Repertoire"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Repertoire"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Scheduler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Scheduler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Scheduler",
       "methods": [
         {
           "name": "<init>",
@@ -2462,31 +1719,10 @@
             "org.miaixz.bus.tempus.pattern.CronPattern"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Scheduler"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Scheduler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.Supervisor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.Supervisor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.Supervisor",
       "methods": [
         {
           "name": "<init>",
@@ -2506,127 +1742,34 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.Supervisor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.Supervisor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.activity.ActivityCallable"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityCallable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.activity.ActivityContextFactory"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityContextFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutor"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutorResolver"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutorResolver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.activity.ActivityResultSerializer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityResultSerializer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.Binding"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.Binding"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode",
       "methods": [
         {
           "name": "<init>",
@@ -2645,14 +1788,7 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode"
+      ]
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter",
@@ -2662,31 +1798,33 @@
           "parameterTypes": []
         },
         {
-          "name": "preferredAdapter",
-          "parameterTypes": []
-        },
-        {
           "name": "candidateAdapters",
           "parameterTypes": []
         },
         {
-          "name": "resolveAdapter",
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "fromData",
+          "parameterTypes": [
+            "io.temporal.api.common.v1.Payload",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "getClass",
           "parameterTypes": []
         },
         {
-          "name": "resolveDefaultAdapter",
+          "name": "getEncodingType",
           "parameterTypes": []
         },
         {
-          "name": "tryCreateGsonAdapter",
-          "parameterTypes": []
-        },
-        {
-          "name": "tryCreateJacksonAdapter",
-          "parameterTypes": []
-        },
-        {
-          "name": "tryCreateFastjsonAdapter",
+          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -2698,7 +1836,27 @@
           ]
         },
         {
-          "name": "equals",
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "preferredAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveDefaultAdapter",
+          "parameterTypes": []
+        },
+        {
+          "name": "toData",
           "parameterTypes": [
             "java.lang.Object"
           ]
@@ -2708,19 +1866,19 @@
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
+          "name": "tryCreateFastjsonAdapter",
           "parameterTypes": []
         },
         {
-          "name": "getClass",
+          "name": "tryCreateGsonAdapter",
           "parameterTypes": []
         },
         {
-          "name": "notify",
+          "name": "tryCreateJacksonAdapter",
           "parameterTypes": []
         },
         {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2734,28 +1892,6 @@
           "parameterTypes": [
             "long",
             "int"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEncodingType",
-          "parameterTypes": []
-        },
-        {
-          "name": "toData",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "fromData",
-          "parameterTypes": [
-            "io.temporal.api.common.v1.Payload",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
           ]
         },
         {
@@ -2768,12 +1904,26 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$1",
+      "fields": [
+        {
+          "name": "val$parseObject"
+        },
+        {
+          "name": "val$toJsonBytes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.reflect.Method",
             "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
           ]
         },
         {
@@ -2785,7 +1935,23 @@
           ]
         },
         {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
           "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -2795,29 +1961,11 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2832,23 +1980,25 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "val$toJsonBytes"
-        },
-        {
-          "name": "val$parseObject"
         }
       ]
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$2",
+      "fields": [
+        {
+          "name": "val$constructType"
+        },
+        {
+          "name": "val$objectMapper"
+        },
+        {
+          "name": "val$readValue"
+        },
+        {
+          "name": "val$writeValueAsBytes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2860,6 +2010,12 @@
           ]
         },
         {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
           "name": "fromBytes",
           "parameterTypes": [
             "byte[]",
@@ -2868,7 +2024,23 @@
           ]
         },
         {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
           "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -2878,29 +2050,11 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2915,29 +2069,22 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "val$objectMapper"
-        },
-        {
-          "name": "val$writeValueAsBytes"
-        },
-        {
-          "name": "val$constructType"
-        },
-        {
-          "name": "val$readValue"
         }
       ]
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$3",
+      "fields": [
+        {
+          "name": "val$fromJson"
+        },
+        {
+          "name": "val$gson"
+        },
+        {
+          "name": "val$toJson"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2945,6 +2092,12 @@
             "java.lang.Object",
             "java.lang.reflect.Method",
             "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
           ]
         },
         {
@@ -2956,7 +2109,23 @@
           ]
         },
         {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
           "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -2966,29 +2135,11 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -3003,26 +2154,16 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "val$gson"
-        },
-        {
-          "name": "val$toJson"
-        },
-        {
-          "name": "val$fromJson"
         }
       ]
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$DefaultPayloadAdapterHolder",
+      "fields": [
+        {
+          "name": "ADAPTER"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3035,15 +2176,11 @@
           ]
         },
         {
-          "name": "toString",
+          "name": "getClass",
           "parameterTypes": []
         },
         {
           "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
           "parameterTypes": []
         },
         {
@@ -3052,6 +2189,14 @@
         },
         {
           "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -3066,33 +2211,23 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "ADAPTER"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadAdapter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
       "type": "org.miaixz.bus.tempus.temporal.payload.PayloadAdapter"
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter",
       "methods": [
+        {
+          "name": "fromData",
+          "parameterTypes": [
+            "io.temporal.api.common.v1.Payload",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
         {
           "name": "getEncodingType",
           "parameterTypes": []
@@ -3104,14 +2239,6 @@
           ]
         },
         {
-          "name": "fromData",
-          "parameterTypes": [
-            "io.temporal.api.common.v1.Payload",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
           "name": "withContext",
           "parameterTypes": [
             "io.temporal.payload.context.SerializationContext"
@@ -3120,45 +2247,13 @@
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.Publisher"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.Publisher"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.Subscriber"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.Subscriber"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector",
       "methods": [
         {
           "name": "<init>",
@@ -3166,73 +2261,22 @@
             "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser",
       "methods": [
         {
           "name": "<init>",
@@ -3310,31 +2354,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint",
       "methods": [
         {
           "name": "<init>",
@@ -3385,31 +2408,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Endpoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target",
       "methods": [
         {
           "name": "<init>",
@@ -3445,37 +2447,13 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser$Target"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState",
       "methods": [
         {
           "name": "<init>",
@@ -3511,31 +2489,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler",
       "methods": [
         {
           "name": "<init>",
@@ -3567,91 +2524,25 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultRetryOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager",
       "methods": [
         {
           "name": "<init>",
@@ -3700,64 +2591,16 @@
             "java.lang.Object[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.workflow.RetryOptionsFactory"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.RetryOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding"
-    },
-    {
-      "methods": [
-        {
-          "name": "shutdown",
-          "parameterTypes": []
-        }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager",
       "methods": [
         {
           "name": "<init>",
@@ -3767,62 +2610,24 @@
             "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
             "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
           ]
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
       "methods": [
         {
           "name": "<init>",
@@ -4055,31 +2860,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity",
       "methods": [
         {
           "name": "<init>",
@@ -4115,31 +2899,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding",
       "methods": [
         {
           "name": "<init>",
@@ -4185,31 +2948,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection",
       "methods": [
         {
           "name": "<init>",
@@ -4245,31 +2987,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery",
       "methods": [
         {
           "name": "<init>",
@@ -4345,31 +3066,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry",
       "methods": [
         {
           "name": "<init>",
@@ -4415,31 +3115,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime",
       "methods": [
         {
           "name": "<init>",
@@ -4499,31 +3178,10 @@
             "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker",
       "methods": [
         {
           "name": "<init>",
@@ -4599,31 +3257,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow",
       "methods": [
         {
           "name": "<init>",
@@ -4659,37 +3296,13 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowCallable"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowCallable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator",
       "methods": [
         {
           "name": "normalizeComponent",
@@ -4697,43 +3310,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.timings.SystemTimer",
       "methods": [
         {
           "name": "<init>",
@@ -4767,31 +3350,10 @@
           "name": "stop",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.timings.SystemTimer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.timings.TimerTaskList",
       "methods": [
         {
           "name": "<init>",
@@ -4837,37 +3399,17 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.timings.TimerTaskList"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.tempus.timings.TimingWheel",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "long",
             "int",
+            "long",
             "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
@@ -4876,7 +3418,6 @@
           "parameterTypes": [
             "long",
             "int",
-            "long",
             "org.miaixz.bus.core.center.function.ConsumerX"
           ]
         },
@@ -4896,14 +3437,7 @@
           "name": "getOverflowWheel",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.tempus.timings.TimingWheel"
+      ]
     }
   ],
   "resources": [

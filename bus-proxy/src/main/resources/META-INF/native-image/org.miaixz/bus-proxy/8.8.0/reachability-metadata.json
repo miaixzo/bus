@@ -1,84 +1,10 @@
 {
   "reflection": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Serializable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
-      },
-      "methods": [
-        {
-          "name": "privateLookupIn",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.invoke.MethodHandles$Lookup"
-          ]
-        }
-      ],
-      "type": "java.lang.invoke.MethodHandles"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.reflect.InvocationHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.reflect.Method[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.proxy.Aspect"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.Aspect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.proxy.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.proxy.Builder",
       "methods": [
         {
           "name": "<init>",
@@ -135,31 +61,10 @@
             "org.miaixz.bus.proxy.Aspect"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.proxy.Builder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.proxy.Factory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.Factory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.proxy.Factory",
       "methods": [
         {
           "name": "<init>",
@@ -173,31 +78,10 @@
           "name": "getEngine",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.proxy.Factory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.Factory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.Interceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.Interceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.proxy.invoker.Interceptor",
       "methods": [
         {
           "name": "<init>",
@@ -210,43 +94,13 @@
           "name": "getTarget",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.proxy.invoker.Interceptor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.Interceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.proxy.invoker.Invocation"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.Invocation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.InvocationInvoker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.InvocationInvoker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.proxy.invoker.InvocationInvoker",
       "methods": [
         {
           "name": "getArguments",
@@ -274,31 +128,10 @@
             "java.lang.Object[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.proxy.invoker.InvocationInvoker"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.InvocationInvoker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.JoinPointInvoker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.JoinPointInvoker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.proxy.invoker.JoinPointInvoker",
       "methods": [
         {
           "name": "<init>",
@@ -333,43 +166,13 @@
             "java.lang.Object[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.proxy.invoker.JoinPointInvoker"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.JoinPointInvoker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.proxy.invoker.ProxyChain"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.invoker.ProxyChain"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.proxy.jdk.JdkInterceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.jdk.JdkInterceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.proxy.jdk.JdkInterceptor",
       "methods": [
         {
           "name": "<init>",
@@ -386,29 +189,18 @@
             "java.lang.Object[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.proxy.jdk.JdkInterceptor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.proxy.jdk.JdkInterceptor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.Provider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
       "type": "org.miaixz.bus.proxy.Provider"
     },
     {
       "type": "org.miaixz.bus.proxy.spring.SpringCglibInterceptor",
+      "fields": [
+        {
+          "name": "serialVersionUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -416,6 +208,24 @@
             "java.lang.Object",
             "org.miaixz.bus.proxy.Aspect"
           ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTarget",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
         },
         {
           "name": "intercept",
@@ -427,33 +237,19 @@
           ]
         },
         {
-          "name": "getTarget",
+          "name": "notify",
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
+          "name": "notifyAll",
+          "parameterTypes": []
         },
         {
           "name": "toString",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -468,34 +264,10 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "serialVersionUID"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.proxy.spring.SpringCglibProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.proxy.spring.SpringCglibProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
       "type": "org.miaixz.bus.proxy.spring.SpringCglibProvider"
     }
   ],

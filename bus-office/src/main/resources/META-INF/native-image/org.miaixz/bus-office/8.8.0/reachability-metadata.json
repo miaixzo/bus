@@ -1,180 +1,16 @@
 {
   "reflection": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Closeable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Flushable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Serializable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.AutoCloseable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Comparable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.constant.Constable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Enum"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Exception"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
-      },
-      "methods": [
-        {
-          "name": "privateLookupIn",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.invoke.MethodHandles$Lookup"
-          ]
-        }
-      ],
-      "type": "java.lang.invoke.MethodHandles"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Iterable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Record"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.reflect.Method[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.RuntimeException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Throwable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.Iterator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.List"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Manifest"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Manifest"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Manifest",
       "methods": [
         {
           "name": "<init>",
@@ -220,31 +56,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Manifest"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Manifest"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Reader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Reader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Reader",
       "methods": [
         {
           "name": "<init>",
@@ -271,31 +86,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Reader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Reader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Record"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Record"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Record",
       "methods": [
         {
           "name": "<init>",
@@ -326,31 +120,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Record"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Record"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Segment",
       "methods": [
         {
           "name": "<init>",
@@ -401,31 +174,10 @@
           "name": "totalRecords",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Segment"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Slice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Slice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Slice",
       "methods": [
         {
           "name": "<init>",
@@ -481,31 +233,10 @@
           "name": "totalRecords",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Slice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Slice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Writer",
       "methods": [
         {
           "name": "<init>",
@@ -612,31 +343,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Writer"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState",
       "methods": [
         {
           "name": "<init>",
@@ -652,43 +362,13 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Archive$Writer$SegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.Broker"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Broker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Broker$FileBroker",
       "methods": [
         {
           "name": "<init>",
@@ -799,31 +479,10 @@
             "java.util.Map"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker$Session"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker$Session"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Broker$FileBroker$Session",
       "methods": [
         {
           "name": "<init>",
@@ -886,31 +545,10 @@
           "name": "writtenItems",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Broker$FileBroker$Session"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker$Session"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker$SessionSegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker$SessionSegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Broker$FileBroker$SessionSegmentState",
       "methods": [
         {
           "name": "<init>",
@@ -931,121 +569,37 @@
           "name": "totalItems",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Broker$FileBroker$SessionSegmentState"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Broker$FileBroker$SessionSegmentState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Builder",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Builder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.builtin.AbstractOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.builtin.AbstractOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.builtin.AbstractOffice",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.builtin.AbstractOffice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.AbstractOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.builtin.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.builtin.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.builtin.AbstractProvider",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.builtin.AbstractProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.builtin.LocalMadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.builtin.LocalMadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.builtin.LocalMadeInOffice",
       "methods": [
         {
           "name": "<init>",
@@ -1057,31 +611,10 @@
             "org.miaixz.bus.office.Context"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.builtin.LocalMadeInOffice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.LocalMadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.builtin.LocalOfficeProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.builtin.LocalOfficeProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.builtin.LocalOfficeProvider",
       "methods": [
         {
           "name": "<init>",
@@ -1106,43 +639,13 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.builtin.LocalOfficeProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.LocalOfficeProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.builtin.MadeInOffice"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.MadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.builtin.OnlineMadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.builtin.OnlineMadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.builtin.OnlineMadeInOffice",
       "methods": [
         {
           "name": "<init>",
@@ -1154,31 +657,10 @@
             "org.miaixz.bus.office.Context"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.builtin.OnlineMadeInOffice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.OnlineMadeInOffice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.builtin.OnlineOfficeProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.builtin.OnlineOfficeProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.builtin.OnlineOfficeProvider",
       "methods": [
         {
           "name": "<init>",
@@ -1203,73 +685,22 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.builtin.OnlineOfficeProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.builtin.OnlineOfficeProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Bundle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Bundle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Bundle",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Bundle"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.Bundle$Codec"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Codec"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Bundle$Paged",
       "methods": [
         {
           "name": "<init>",
@@ -1420,31 +851,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Bundle$Paged"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -1530,31 +940,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Paged$PagedBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Bundle$Segment",
       "methods": [
         {
           "name": "<init>",
@@ -1595,31 +984,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Bundle$Segment"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Bundle$Segment"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Context"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Context"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Context",
       "methods": [
         {
           "name": "<init>",
@@ -1643,31 +1011,10 @@
             "double"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Context"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Context"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvBaseReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvBaseReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvBaseReader",
       "methods": [
         {
           "name": "<init>",
@@ -1799,31 +1146,10 @@
             "char"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvBaseReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvBaseReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvConfig",
       "methods": [
         {
           "name": "<init>",
@@ -1870,31 +1196,10 @@
             "char"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvData",
       "methods": [
         {
           "name": "<init>",
@@ -1929,31 +1234,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvData"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvData"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvKit",
       "methods": [
         {
           "name": "<init>",
@@ -2034,31 +1318,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvParser",
       "methods": [
         {
           "name": "<init>",
@@ -2113,31 +1376,10 @@
           "name": "readLine",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvParser"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvParser"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvReadConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvReadConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvReadConfig",
       "methods": [
         {
           "name": "<init>",
@@ -2189,31 +1431,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvReadConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvReadConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvReader",
       "methods": [
         {
           "name": "<init>",
@@ -2284,31 +1505,10 @@
           "name": "stream",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvRow"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvRow"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvRow",
       "methods": [
         {
           "name": "<init>",
@@ -2354,31 +1554,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvRow"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvRow"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvTokener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvTokener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvTokener",
       "methods": [
         {
           "name": "<init>",
@@ -2402,31 +1581,10 @@
           "name": "next",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvTokener"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvTokener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvWriteConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvWriteConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvWriteConfig",
       "methods": [
         {
           "name": "<init>",
@@ -2460,31 +1618,10 @@
             "char[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvWriteConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvWriteConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.csv.CsvWriter",
       "methods": [
         {
           "name": "<init>",
@@ -2664,107 +1801,42 @@
             "java.lang.String[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.csv.CsvWriter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.csv.CsvWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.editors.CellEditor"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.CellEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.NumericToIntEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.NumericToIntEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.editors.NumericToIntEditor",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.editors.NumericToIntEditor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.NumericToIntEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.TrimEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.TrimEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.editors.TrimEditor",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.editors.TrimEditor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.editors.TrimEditor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.MergedCell"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.MergedCell"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
       "type": "org.miaixz.bus.office.excel.cell.MergedCell"
     },
     {
       "type": "org.miaixz.bus.office.excel.cell.NullCell",
+      "fields": [
+        {
+          "name": "columnIndex"
+        },
+        {
+          "name": "row"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2774,41 +1846,25 @@
           ]
         },
         {
-          "name": "getRow",
-          "parameterTypes": []
-        },
-        {
-          "name": "removeHyperlink",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHyperlink",
-          "parameterTypes": []
-        },
-        {
-          "name": "setHyperlink",
+          "name": "equals",
           "parameterTypes": [
-            "org.apache.poi.ss.usermodel.Hyperlink"
+            "java.lang.Object"
           ]
         },
         {
-          "name": "getSheet",
+          "name": "getAddress",
           "parameterTypes": []
         },
         {
-          "name": "setBlank",
+          "name": "getArrayFormulaRange",
           "parameterTypes": []
         },
         {
-          "name": "removeFormula",
+          "name": "getBooleanCellValue",
           "parameterTypes": []
         },
         {
-          "name": "getCellType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCellStyle",
+          "name": "getCachedFormulaResultType",
           "parameterTypes": []
         },
         {
@@ -2816,15 +1872,129 @@
           "parameterTypes": []
         },
         {
-          "name": "setCellValue",
+          "name": "getCellFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellStyle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCellType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getColumnIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDateCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getErrorCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalDateTimeCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumericCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRichStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRowIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPartOfArrayFormulaGroup",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeCellComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAsActiveCell",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBlank",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCellComment",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Comment"
+          ]
+        },
+        {
+          "name": "setCellErrorValue",
+          "parameterTypes": [
+            "byte"
+          ]
+        },
+        {
+          "name": "setCellFormula",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setCellValue",
+          "name": "setCellStyle",
           "parameterTypes": [
-            "org.apache.poi.ss.usermodel.RichTextString"
+            "org.apache.poi.ss.usermodel.CellStyle"
+          ]
+        },
+        {
+          "name": "setCellType",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellType"
           ]
         },
         {
@@ -2842,7 +2012,13 @@
         {
           "name": "setCellValue",
           "parameterTypes": [
-            "java.util.Date"
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "java.time.LocalDate"
           ]
         },
         {
@@ -2858,103 +2034,21 @@
           ]
         },
         {
-          "name": "getColumnIndex",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRowIndex",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCellFormula",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDateCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStringCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellErrorValue",
+          "name": "setCellValue",
           "parameterTypes": [
-            "byte"
+            "java.util.Date"
           ]
         },
         {
-          "name": "getErrorCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellStyle",
+          "name": "setCellValue",
           "parameterTypes": [
-            "org.apache.poi.ss.usermodel.CellStyle"
+            "org.apache.poi.ss.usermodel.RichTextString"
           ]
         },
         {
-          "name": "setAsActiveCell",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellComment",
+          "name": "setHyperlink",
           "parameterTypes": [
-            "org.apache.poi.ss.usermodel.Comment"
-          ]
-        },
-        {
-          "name": "removeCellComment",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellType",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.CellType"
-          ]
-        },
-        {
-          "name": "setCellFormula",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCachedFormulaResultType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNumericCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLocalDateTimeCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRichStringCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBooleanCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getArrayFormulaRange",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPartOfArrayFormulaGroup",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAddress",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
+            "org.apache.poi.ss.usermodel.Hyperlink"
           ]
         },
         {
@@ -2962,19 +2056,7 @@
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -2989,43 +2071,11 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.time.LocalDate"
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "name": "row"
-        },
-        {
-          "name": "columnIndex"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.BooleanCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.BooleanCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.BooleanCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3033,31 +2083,10 @@
             "java.lang.Boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.BooleanCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.BooleanCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CalendarCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CalendarCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.CalendarCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3065,43 +2094,13 @@
             "java.util.Calendar"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.CalendarCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CalendarCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory",
       "methods": [
         {
           "name": "<init>",
@@ -3113,31 +2112,10 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CharSequenceCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CharSequenceCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.CharSequenceCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3145,31 +2123,10 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.CharSequenceCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.CharSequenceCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.DateCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.DateCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.DateCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3177,31 +2134,10 @@
             "java.util.Date"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.DateCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.DateCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.EscapeStrCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.EscapeStrCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.EscapeStrCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3215,79 +2151,22 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.EscapeStrCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.EscapeStrCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.setters.HyperlinkCellSetter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.HyperlinkCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.HyperlinkCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.NullCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.NullCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.NullCellSetter",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.NullCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.NullCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.NumberCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.NumberCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.NumberCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3295,31 +2174,10 @@
             "java.lang.Number"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.NumberCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.NumberCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.PictureCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.PictureCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.PictureCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3340,49 +2198,13 @@
             "java.io.File"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.PictureCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.PictureCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.setters.RichTextCellSetter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.RichTextCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.RichTextCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.TemporalAccessorCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.TemporalAccessorCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.setters.TemporalAccessorCellSetter",
       "methods": [
         {
           "name": "<init>",
@@ -3390,133 +2212,67 @@
             "java.time.temporal.TemporalAccessor"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.setters.TemporalAccessorCellSetter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.setters.TemporalAccessorCellSetter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.values.CellValue"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.CellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.values.CompositeCellValue"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.CompositeCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.CompositeCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.ErrorCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.ErrorCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.values.ErrorCellValue",
       "methods": [
         {
           "name": "getValue",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.values.ErrorCellValue"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.ErrorCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.cell.values.FormulaCellValue"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.FormulaCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.FormulaCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue",
       "methods": [
         {
           "name": "getValue",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue"
+      ]
     },
     {
       "type": "org.miaixz.bus.office.excel.cell.VirtualCell",
+      "fields": [
+        {
+          "name": "cellType"
+        },
+        {
+          "name": "columnIndex"
+        },
+        {
+          "name": "comment"
+        },
+        {
+          "name": "row"
+        },
+        {
+          "name": "rowIndex"
+        },
+        {
+          "name": "style"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.apache.poi.ss.usermodel.Cell",
             "int",
-            "int",
-            "java.lang.Object"
+            "int"
           ]
         },
         {
@@ -3524,7 +2280,8 @@
           "parameterTypes": [
             "org.apache.poi.ss.usermodel.Cell",
             "int",
-            "int"
+            "int",
+            "java.lang.Object"
           ]
         },
         {
@@ -3536,33 +2293,25 @@
           ]
         },
         {
-          "name": "getRow",
-          "parameterTypes": []
-        },
-        {
-          "name": "removeHyperlink",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHyperlink",
-          "parameterTypes": []
-        },
-        {
-          "name": "setHyperlink",
+          "name": "equals",
           "parameterTypes": [
-            "org.apache.poi.ss.usermodel.Hyperlink"
+            "java.lang.Object"
           ]
         },
         {
-          "name": "getSheet",
+          "name": "getAddress",
           "parameterTypes": []
         },
         {
-          "name": "getCellType",
+          "name": "getArrayFormulaRange",
           "parameterTypes": []
         },
         {
-          "name": "getCellStyle",
+          "name": "getBooleanCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCachedFormulaResultType",
           "parameterTypes": []
         },
         {
@@ -3570,73 +2319,23 @@
           "parameterTypes": []
         },
         {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setCellTypeImpl",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.CellType"
-          ]
-        },
-        {
-          "name": "setCellFormulaImpl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "removeFormulaImpl",
+          "name": "getCellFormula",
           "parameterTypes": []
         },
         {
-          "name": "setCellValueImpl",
-          "parameterTypes": [
-            "java.util.Calendar"
-          ]
+          "name": "getCellStyle",
+          "parameterTypes": []
         },
         {
-          "name": "setCellValueImpl",
-          "parameterTypes": [
-            "java.time.LocalDateTime"
-          ]
+          "name": "getCellType",
+          "parameterTypes": []
         },
         {
-          "name": "setCellValueImpl",
-          "parameterTypes": [
-            "java.util.Date"
-          ]
-        },
-        {
-          "name": "setCellValueImpl",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.RichTextString"
-          ]
-        },
-        {
-          "name": "setCellValueImpl",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "setCellValueImpl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "getClass",
+          "parameterTypes": []
         },
         {
           "name": "getColumnIndex",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRowIndex",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCellFormula",
           "parameterTypes": []
         },
         {
@@ -3644,27 +2343,83 @@
           "parameterTypes": []
         },
         {
-          "name": "getStringCellValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellErrorValue",
-          "parameterTypes": [
-            "byte"
-          ]
-        },
-        {
           "name": "getErrorCellValue",
           "parameterTypes": []
         },
         {
-          "name": "setCellStyle",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.CellStyle"
-          ]
+          "name": "getHyperlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalDateTimeCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumericCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRichStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRowIndex",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSheet",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSpreadsheetVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStringCellValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isPartOfArrayFormulaGroup",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeCellComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeFormula",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeFormulaImpl",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeHyperlink",
+          "parameterTypes": []
         },
         {
           "name": "setAsActiveCell",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBlank",
           "parameterTypes": []
         },
         {
@@ -3674,48 +2429,52 @@
           ]
         },
         {
-          "name": "removeCellComment",
-          "parameterTypes": []
+          "name": "setCellErrorValue",
+          "parameterTypes": [
+            "byte"
+          ]
         },
         {
-          "name": "getCachedFormulaResultType",
-          "parameterTypes": []
+          "name": "setCellFormula",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
-          "name": "getNumericCellValue",
-          "parameterTypes": []
+          "name": "setCellFormulaImpl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
-          "name": "getLocalDateTimeCellValue",
-          "parameterTypes": []
+          "name": "setCellStyle",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellStyle"
+          ]
         },
         {
-          "name": "getRichStringCellValue",
-          "parameterTypes": []
+          "name": "setCellType",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellType"
+          ]
         },
         {
-          "name": "getBooleanCellValue",
-          "parameterTypes": []
+          "name": "setCellTypeImpl",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.CellType"
+          ]
         },
         {
-          "name": "getArrayFormulaRange",
-          "parameterTypes": []
+          "name": "setCellValue",
+          "parameterTypes": [
+            "boolean"
+          ]
         },
         {
-          "name": "isPartOfArrayFormulaGroup",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSpreadsheetVersion",
-          "parameterTypes": []
-        },
-        {
-          "name": "setBlank",
-          "parameterTypes": []
-        },
-        {
-          "name": "removeFormula",
-          "parameterTypes": []
+          "name": "setCellValue",
+          "parameterTypes": [
+            "double"
+          ]
         },
         {
           "name": "setCellValue",
@@ -3726,13 +2485,7 @@
         {
           "name": "setCellValue",
           "parameterTypes": [
-            "org.apache.poi.ss.usermodel.RichTextString"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.util.Date"
+            "java.time.LocalDate"
           ]
         },
         {
@@ -3750,20 +2503,60 @@
         {
           "name": "setCellValue",
           "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setCellValue",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.RichTextString"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
             "double"
           ]
         },
         {
-          "name": "setCellType",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.CellType"
-          ]
-        },
-        {
-          "name": "setCellFormula",
+          "name": "setCellValueImpl",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setCellValueImpl",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.RichTextString"
+          ]
+        },
+        {
+          "name": "setHyperlink",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.Hyperlink"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
         },
         {
           "name": "tryToDeleteArrayFormula",
@@ -3772,33 +2565,7 @@
           ]
         },
         {
-          "name": "getAddress",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -3813,94 +2580,17 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.time.LocalDate"
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "name": "row"
-        },
-        {
-          "name": "columnIndex"
-        },
-        {
-          "name": "rowIndex"
-        },
-        {
-          "name": "cellType"
-        },
-        {
-          "name": "value"
-        },
-        {
-          "name": "style"
-        },
-        {
-          "name": "comment"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.CellKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.CellKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.CellKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.ExcelBase"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.ExcelConfig",
       "methods": [
         {
           "name": "<init>",
@@ -3956,49 +2646,13 @@
             "java.util.Map"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.ExcelConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.ExcelExtractor"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.ExcelKit",
       "methods": [
         {
           "name": "<init>",
@@ -4430,61 +3084,19 @@
             "org.miaixz.bus.office.excel.writer.ExcelWriteConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.ExcelKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelSaxKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelSaxKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.ExcelSaxKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.ExcelSaxKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.ExcelSaxKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.AbstractSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.AbstractSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.AbstractSheetReader",
       "methods": [
         {
           "name": "setExcelConfig",
@@ -4492,31 +3104,10 @@
             "org.miaixz.bus.office.excel.reader.ExcelReadConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.AbstractSheetReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.AbstractSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BeanSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BeanSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.BeanSheetReader",
       "methods": [
         {
           "name": "<init>",
@@ -4527,31 +3118,10 @@
             "java.lang.Class"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.BeanSheetReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BeanSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader",
       "methods": [
         {
           "name": "<init>",
@@ -4765,55 +3335,16 @@
             "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException",
       "methods": [
         {
           "name": "<init>",
@@ -4823,31 +3354,10 @@
           "name": "fillInStackTrace",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch",
       "methods": [
         {
           "name": "<init>",
@@ -4888,31 +3398,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader",
       "methods": [
         {
           "name": "<init>",
@@ -4922,31 +3411,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ColumnSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
       "methods": [
         {
           "name": "<init>",
@@ -5082,25 +3550,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode",
       "methods": [
         {
           "name": "<init>",
@@ -5119,91 +3572,25 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.reader.ExcelReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.reader.ExcelReadListener"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadListener"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$Progress"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$Progress"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$Progress",
       "methods": [
         {
           "name": "<init>",
@@ -5254,31 +3641,10 @@
           "name": "workbook",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$Progress"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$Progress"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext",
       "methods": [
         {
           "name": "<init>",
@@ -5309,31 +3675,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$SheetContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$WorkbookContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$WorkbookContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$WorkbookContext",
       "methods": [
         {
           "name": "<init>",
@@ -5369,31 +3714,10 @@
           "name": "xlsx",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$WorkbookContext"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadState$WorkbookContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ListSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ListSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.ListSheetReader",
       "methods": [
         {
           "name": "<init>",
@@ -5403,31 +3727,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.ListSheetReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.ListSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.MapSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.MapSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.reader.MapSheetReader",
       "methods": [
         {
           "name": "<init>",
@@ -5437,61 +3740,16 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.reader.MapSheetReader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.MapSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.reader.SheetReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.SheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.reader.WalkSheetReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.WalkSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.reader.WalkSheetReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.RowGroup"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.RowGroup"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.RowGroup",
       "methods": [
         {
           "name": "<init>",
@@ -5499,55 +3757,19 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.RowGroup"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.RowGroup"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.RowKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.RowKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.RowKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.RowKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.RowKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.AttributeName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.sax.AttributeName",
       "methods": [
         {
           "name": "<init>",
@@ -5578,25 +3800,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.sax.AttributeName"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.AttributeName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.CellDataType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.sax.CellDataType",
       "methods": [
         {
           "name": "<init>",
@@ -5626,25 +3833,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.sax.CellDataType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.CellDataType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.ElementName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.sax.ElementName",
       "methods": [
         {
           "name": "<init>",
@@ -5675,29 +3867,62 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.sax.ElementName"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.ElementName"
+      ]
     },
     {
       "type": "org.miaixz.bus.office.excel.sax.Excel03SaxReader",
+      "fields": [
+        {
+          "name": "boundSheetRecords"
+        },
+        {
+          "name": "curRid"
+        },
+        {
+          "name": "formatListener"
+        },
+        {
+          "name": "isOutputFormulaValues"
+        },
+        {
+          "name": "isOutputNextStringRecord"
+        },
+        {
+          "name": "RID_PREFIX"
+        },
+        {
+          "name": "rowCellList"
+        },
+        {
+          "name": "rowHandler"
+        },
+        {
+          "name": "rowIndex"
+        },
+        {
+          "name": "SHEET_NAME_PREFIX"
+        },
+        {
+          "name": "sheetIndex"
+        },
+        {
+          "name": "sheetName"
+        },
+        {
+          "name": "sstRecord"
+        },
+        {
+          "name": "stubWorkbook"
+        },
+        {
+          "name": "workbookBuildingListener"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-          ]
-        },
-        {
-          "name": "addToRowCellList",
-          "parameterTypes": [
-            "org.apache.poi.hssf.record.CellValueRecordInterface",
-            "java.lang.Object"
           ]
         },
         {
@@ -5715,14 +3940,21 @@
           ]
         },
         {
-          "name": "processLastCell",
-          "parameterTypes": []
+          "name": "addToRowCellList",
+          "parameterTypes": [
+            "org.apache.poi.hssf.record.CellValueRecordInterface",
+            "java.lang.Object"
+          ]
         },
         {
-          "name": "processCellValue",
+          "name": "equals",
           "parameterTypes": [
-            "org.apache.poi.hssf.record.Record"
+            "java.lang.Object"
           ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
         },
         {
           "name": "getSheetIndex",
@@ -5733,10 +3965,8 @@
           "parameterTypes": []
         },
         {
-          "name": "processRecord",
-          "parameterTypes": [
-            "org.apache.poi.hssf.record.Record"
-          ]
+          "name": "hashCode",
+          "parameterTypes": []
         },
         {
           "name": "initSheetIndexOrSheetName",
@@ -5749,14 +3979,64 @@
           "parameterTypes": []
         },
         {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "processCellValue",
+          "parameterTypes": [
+            "org.apache.poi.hssf.record.Record"
+          ]
+        },
+        {
+          "name": "processLastCell",
+          "parameterTypes": []
+        },
+        {
           "name": "processLastCellSheet",
           "parameterTypes": []
+        },
+        {
+          "name": "processRecord",
+          "parameterTypes": [
+            "org.apache.poi.hssf.record.Record"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.File",
+            "int"
+          ]
         },
         {
           "name": "read",
           "parameterTypes": [
             "java.io.File",
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int"
           ]
         },
         {
@@ -5769,14 +4049,28 @@
         {
           "name": "read",
           "parameterTypes": [
-            "org.apache.poi.poifs.filesystem.POIFSFileSystem",
             "java.lang.String"
           ]
         },
         {
-          "name": "equals",
+          "name": "read",
           "parameterTypes": [
-            "java.lang.Object"
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "org.apache.poi.poifs.filesystem.POIFSFileSystem",
+            "java.lang.String"
           ]
         },
         {
@@ -5784,19 +4078,7 @@
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -5811,152 +4093,17 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.File",
-            "int"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "int"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "name": "isOutputFormulaValues"
-        },
-        {
-          "name": "boundSheetRecords"
-        },
-        {
-          "name": "rowHandler"
-        },
-        {
-          "name": "workbookBuildingListener"
-        },
-        {
-          "name": "stubWorkbook"
-        },
-        {
-          "name": "sstRecord"
-        },
-        {
-          "name": "formatListener"
-        },
-        {
-          "name": "isOutputNextStringRecord"
-        },
-        {
-          "name": "rowCellList"
-        },
-        {
-          "name": "rowIndex"
-        },
-        {
-          "name": "sheetIndex"
-        },
-        {
-          "name": "sheetName"
-        },
-        {
-          "name": "curRid"
-        },
-        {
-          "name": "RID_PREFIX"
-        },
-        {
-          "name": "SHEET_NAME_PREFIX"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.sax.Excel07SaxReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.Excel07SaxReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.Excel07SaxReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.sax.ExcelSaxReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.ExcelSaxReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.AbstractRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.AbstractRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.sax.handler.AbstractRowHandler",
       "methods": [
         {
           "name": "<init>",
@@ -5973,31 +4120,10 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.sax.handler.AbstractRowHandler"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.AbstractRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.BeanRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.BeanRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.sax.handler.BeanRowHandler",
       "methods": [
         {
           "name": "<init>",
@@ -6016,31 +4142,10 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.sax.handler.BeanRowHandler"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.BeanRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.MapRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.MapRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.sax.handler.MapRowHandler",
       "methods": [
         {
           "name": "<init>",
@@ -6058,73 +4163,19 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.sax.handler.MapRowHandler"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.MapRowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.sax.handler.RowHandler"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.sax.SheetDataSaxHandler"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.SheetDataSaxHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.SheetDataSaxHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.sax.SheetRidReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.SheetRidReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.sax.SheetRidReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.shape.ExcelPictureType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.shape.ExcelPictureType",
       "methods": [
         {
           "name": "<init>",
@@ -6154,77 +4205,57 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.shape.ExcelPictureType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.shape.ExcelPictureType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.shape.ExcelShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.shape.ExcelShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.shape.ExcelShape",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.shape.ExcelShape"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.shape.ExcelShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.SheetKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.SheetKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.SheetKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.SheetKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.SheetKit"
+      ]
     },
     {
       "type": "org.miaixz.bus.office.excel.SimpleAnchor",
+      "fields": [
+        {
+          "name": "anchorType"
+        },
+        {
+          "name": "col1"
+        },
+        {
+          "name": "col2"
+        },
+        {
+          "name": "dx1"
+        },
+        {
+          "name": "dx2"
+        },
+        {
+          "name": "dy1"
+        },
+        {
+          "name": "dy2"
+        },
+        {
+          "name": "row1"
+        },
+        {
+          "name": "row2"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6247,96 +4278,6 @@
             "int",
             "int"
           ]
-        },
-        {
-          "name": "setDx1",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setDy1",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setDx2",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setDy2",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setCol1",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setRow1",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setCol2",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setRow2",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setAnchorType",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.ClientAnchor$AnchorType"
-          ]
-        },
-        {
-          "name": "getDx1",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDy1",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDx2",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDy2",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCol1",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRow1",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCol2",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRow2",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAnchorType",
-          "parameterTypes": []
         },
         {
           "name": "copyTo",
@@ -6351,15 +4292,47 @@
           ]
         },
         {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
+          "name": "getAnchorType",
           "parameterTypes": []
         },
         {
           "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCol1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCol2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDx1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDx2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDy1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDy2",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow1",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow2",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -6368,6 +4341,68 @@
         },
         {
           "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAnchorType",
+          "parameterTypes": [
+            "org.apache.poi.ss.usermodel.ClientAnchor$AnchorType"
+          ]
+        },
+        {
+          "name": "setCol1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setCol2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDx1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDx2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDy1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDy2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRow1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRow2",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         },
         {
@@ -6382,100 +4417,23 @@
             "long",
             "int"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "dx1"
-        },
-        {
-          "name": "dy1"
-        },
-        {
-          "name": "dy2"
-        },
-        {
-          "name": "dx2"
-        },
-        {
-          "name": "col1"
-        },
-        {
-          "name": "row1"
-        },
-        {
-          "name": "col2"
-        },
-        {
-          "name": "row2"
-        },
-        {
-          "name": "anchorType"
         }
       ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.style.CellBorderStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.style.CellBorderStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.style.CellBorderStyle",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.style.CellBorderStyle"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.style.CellBorderStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.style.DefaultStyleSet"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.style.DefaultStyleSet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.style.DefaultStyleSet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.style.LineStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.style.LineStyle",
       "methods": [
         {
           "name": "<init>",
@@ -6499,169 +4457,46 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.style.LineStyle"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.style.LineStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.style.ShapeConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.style.ShapeConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.style.ShapeConfig",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.style.ShapeConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.style.ShapeConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.excel.style.StyleSet"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.style.StyleSet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.StyleKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.StyleKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.StyleKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.WorkbookKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.WorkbookKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.WorkbookKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.WorkbookKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.WorkbookKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.writer.BigExcelWriter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.BigExcelWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.BigExcelWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelDrawing"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelDrawing"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.writer.ExcelDrawing",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.writer.ExcelDrawing"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelDrawing"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriteConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriteConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.writer.ExcelWriteConfig",
       "methods": [
         {
           "name": "<init>",
@@ -6788,49 +4623,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriteConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriteConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.excel.writer.ExcelWriter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.SheetDataWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.SheetDataWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.writer.SheetDataWriter",
       "methods": [
         {
           "name": "getColumnIndex",
@@ -6909,31 +4708,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.writer.SheetDataWriter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.SheetDataWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.SheetTemplateWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.SheetTemplateWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.excel.writer.SheetTemplateWriter",
       "methods": [
         {
           "name": "fillOnce",
@@ -6947,49 +4725,13 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.excel.writer.SheetTemplateWriter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.SheetTemplateWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.office.excel.writer.TemplateContext"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.TemplateContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.excel.writer.TemplateContext"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Expense"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Expense"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Expense",
       "methods": [
         {
           "name": "<init>",
@@ -7001,121 +4743,25 @@
           "name": "getProcess",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.Expense"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Expense"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ofd.OfdConverter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ofd.OfdConverter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ofd.OfdConverter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ofd.OfdWriter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ofd.OfdWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ofd.OfdWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ppt.PptKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ppt.PptReader"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptReader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ppt.PptShape"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape$Data"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape$Data"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.ppt.PptShape$Data",
       "methods": [
         {
           "name": "<init>",
@@ -7191,25 +4837,10 @@
             "org.miaixz.bus.office.ppt.PptShape$Type"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.ppt.PptShape$Data"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape$Data"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.ppt.PptShape$Type",
       "methods": [
         {
           "name": "<init>",
@@ -7228,97 +4859,22 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.ppt.PptShape$Type"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptShape$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ppt.PptSlide"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptSlide"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptSlide"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ppt.PptStyle"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.ppt.PptWriter"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.ppt.PptWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.office.Provider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Provider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.Registry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.Registry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.Registry",
       "methods": [
         {
           "name": "<init>",
@@ -7358,31 +4914,10 @@
             "java.lang.Class"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.Registry"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.Registry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.word.FontStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.word.FontStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.word.FontStyle",
       "methods": [
         {
           "name": "<init>",
@@ -7408,80 +4943,22 @@
             "java.awt.Color"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.office.word.FontStyle"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.word.FontStyle"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.word.Word07Writer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.word.Word07Writer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.word.Word07Writer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.office.word.WordKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.word.WordKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.word.WordKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.office.word.WordTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.office.word.WordTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.office.word.WordTable",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.office.word.WordTable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.office.word.WordTable"
+      ]
     }
   ],
   "serialization": [

@@ -1,96 +1,10 @@
 {
   "reflection": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Serializable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Comparable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.constant.Constable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Enum"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
-      },
-      "methods": [
-        {
-          "name": "privateLookupIn",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.invoke.MethodHandles$Lookup"
-          ]
-        }
-      ],
-      "type": "java.lang.invoke.MethodHandles"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.reflect.Method[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Holder"
-      },
-      "type": "javax.servlet.Servlet"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
       "type": "org.miaixz.bus.notify.Builder"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Builder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Builder$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.Builder$Type",
       "methods": [
         {
           "name": "toString",
@@ -106,19 +20,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.Builder$Type"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.cache.NotifyCache"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.cache.NotifyCache",
       "methods": [
         {
           "name": "clear",
@@ -173,25 +78,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.cache.NotifyCache"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.Context"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Context"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.Context",
       "methods": [
         {
           "name": "builder",
@@ -257,25 +147,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.Context"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.Context$ContextBuilder",
       "methods": [
         {
           "name": "appKey",
@@ -317,25 +192,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.Context$ContextBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -345,37 +205,13 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.Context$ContextBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
       "type": "org.miaixz.bus.notify.magic.ErrorCode"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.ErrorCode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.magic.Notice",
       "methods": [
         {
           "name": "builder",
@@ -491,19 +327,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$Mode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.magic.Notice$Mode",
       "methods": [
         {
           "name": "valueOf",
@@ -515,25 +342,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice$Mode"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder",
       "methods": [
         {
           "name": "content",
@@ -605,25 +417,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -633,19 +430,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice$NoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.magic.Notice$Type"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.magic.Notice$Type",
       "methods": [
         {
           "name": "valueOf",
@@ -657,25 +445,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.magic.Notice$Type"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.AbstractProvider",
       "methods": [
         {
           "name": "getUrl",
@@ -703,25 +476,10 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.AbstractProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider",
       "methods": [
         {
           "name": "send",
@@ -729,25 +487,10 @@
             "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunEmailProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice",
       "methods": [
         {
           "name": "builder",
@@ -767,25 +510,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder",
       "methods": [
         {
           "name": "playTimes",
@@ -797,25 +525,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -825,25 +538,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice$AliyunNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider",
       "methods": [
         {
           "name": "checkResponse",
@@ -869,25 +567,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -895,25 +578,10 @@
             "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider",
       "methods": [
         {
           "name": "send",
@@ -921,25 +589,10 @@
             "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunVmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice",
       "methods": [
         {
           "name": "builder",
@@ -949,49 +602,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -1001,25 +624,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduNotice$BaiduNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -1027,25 +635,10 @@
             "org.miaixz.bus.notify.nimble.baidu.BaiduNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.baidu.BaiduSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice",
       "methods": [
         {
           "name": "builder",
@@ -1055,49 +648,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -1107,25 +670,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice$CloopenNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -1133,25 +681,10 @@
             "org.miaixz.bus.notify.nimble.cloopen.CloopenNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.cloopen.CloopenSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice",
       "methods": [
         {
           "name": "$default$action",
@@ -1185,25 +718,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder",
       "methods": [
         {
           "name": "action",
@@ -1221,25 +739,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -1249,25 +752,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice$CtyunNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -1283,25 +771,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice",
       "methods": [
         {
           "name": "builder",
@@ -1377,25 +850,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder",
       "methods": [
         {
           "name": "agentId",
@@ -1443,25 +901,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -1471,25 +914,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice$DingTalkNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider",
       "methods": [
         {
           "name": "getToken",
@@ -1527,25 +955,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice",
       "methods": [
         {
           "name": "builder",
@@ -1561,25 +974,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder",
       "methods": [
         {
           "name": "requestUrl",
@@ -1591,25 +989,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -1619,25 +1002,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice$EmayNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider",
       "methods": [
         {
           "name": "getParamsMap",
@@ -1654,37 +1022,13 @@
             "org.miaixz.bus.notify.nimble.emay.EmayNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.emay.EmaySmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.notify.nimble.generic.GenericEmailProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericEmailProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice",
       "methods": [
         {
           "name": "$default$socketFactoryClass",
@@ -1916,25 +1260,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder",
       "methods": [
         {
           "name": "attachments",
@@ -2066,25 +1395,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2094,25 +1408,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice$GenericNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice",
       "methods": [
         {
           "name": "builder",
@@ -2122,49 +1421,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2174,25 +1443,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice$HuaweiNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider",
       "methods": [
         {
           "name": "buildWsseHeader",
@@ -2210,25 +1464,10 @@
             "org.miaixz.bus.notify.nimble.huawei.HuaweiNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.huawei.HuaweiSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice",
       "methods": [
         {
           "name": "builder",
@@ -2238,49 +1477,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2290,25 +1499,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice$JdcloudNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -2316,25 +1510,10 @@
             "org.miaixz.bus.notify.nimble.jdcloud.JdcloudNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jdcloud.JdcloudSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice",
       "methods": [
         {
           "name": "builder",
@@ -2344,49 +1523,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2396,25 +1545,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushNotice$JpushNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider",
       "methods": [
         {
           "name": "getSign",
@@ -2426,25 +1560,10 @@
             "org.miaixz.bus.notify.nimble.jpush.JpushNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.jpush.JpushSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice",
       "methods": [
         {
           "name": "builder",
@@ -2454,49 +1573,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2506,25 +1595,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseNotice$NeteaseNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider",
       "methods": [
         {
           "name": "encode",
@@ -2555,25 +1629,10 @@
             "java.util.Map"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -2581,25 +1640,10 @@
             "org.miaixz.bus.notify.nimble.netease.NeteaseNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.netease.NeteaseSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice",
       "methods": [
         {
           "name": "builder",
@@ -2609,49 +1653,19 @@
           "name": "getUrl",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2661,25 +1675,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice$QiniuNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -2687,25 +1686,10 @@
             "org.miaixz.bus.notify.nimble.qiniu.QiniuNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.qiniu.QiniuSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice",
       "methods": [
         {
           "name": "builder",
@@ -2725,25 +1709,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder",
       "methods": [
         {
           "name": "smsAppId",
@@ -2755,25 +1724,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2783,25 +1737,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice$TencentNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -2809,25 +1748,10 @@
             "org.miaixz.bus.notify.nimble.tencent.TencentNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.tencent.TencentSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice",
       "methods": [
         {
           "name": "$default$simple",
@@ -2881,25 +1805,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder",
       "methods": [
         {
           "name": "maxRetries",
@@ -2929,25 +1838,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -2957,25 +1851,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice$UniNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider",
       "methods": [
         {
           "name": "request",
@@ -2991,25 +1870,10 @@
             "org.miaixz.bus.notify.nimble.unisms.UniNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.unisms.UniSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice",
       "methods": [
         {
           "name": "builder",
@@ -3029,25 +1893,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId",
       "methods": [
         {
           "name": "getError_code",
@@ -3093,25 +1942,10 @@
           "name": "succeed",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder",
       "methods": [
         {
           "name": "token",
@@ -3123,25 +1957,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -3151,25 +1970,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$UpyunNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -3184,25 +1988,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.upyun.UpyunSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider",
       "methods": [
         {
           "name": "send",
@@ -3210,25 +1999,10 @@
             "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatCpProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider",
       "methods": [
         {
           "name": "send",
@@ -3236,25 +2010,10 @@
             "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatKfProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider",
       "methods": [
         {
           "name": "send",
@@ -3262,25 +2021,10 @@
             "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMiniProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider",
       "methods": [
         {
           "name": "send",
@@ -3288,73 +2032,28 @@
             "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatMpProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice",
       "methods": [
         {
           "name": "builder",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder",
       "methods": [
         {
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -3364,25 +2063,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.wechat.WechatNotice$WechatNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice",
       "methods": [
         {
           "name": "builder",
@@ -3402,25 +2086,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder",
       "methods": [
         {
           "name": "apikey",
@@ -3432,25 +2101,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -3460,25 +2114,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice$YunpianNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -3486,25 +2125,10 @@
             "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice",
       "methods": [
         {
           "name": "builder",
@@ -3524,25 +2148,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder",
       "methods": [
         {
           "name": "templateName",
@@ -3554,25 +2163,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl",
       "methods": [
         {
           "name": "build",
@@ -3582,25 +2176,10 @@
           "name": "self",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice$ZhutongNoticeBuilderImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider",
       "methods": [
         {
           "name": "send",
@@ -3628,25 +2207,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongSmsProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.notify.Provider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.notify.Registry"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.notify.Registry",
       "methods": [
         {
           "name": "valueOf",
@@ -3658,8 +2225,7 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.notify.Registry"
+      ]
     }
   ],
   "resources": []

@@ -1,6 +1,7 @@
 {
   "reflection": [
     {
+      "type": "org.apache.ibatis.executor.Executor",
       "methods": [
         {
           "name": "query",
@@ -29,8 +30,7 @@
             "java.lang.Object"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.executor.Executor"
+      ]
     },
     {
       "type": {
@@ -40,6 +40,7 @@
       }
     },
     {
+      "type": "org.apache.ibatis.executor.resultset.ResultSetHandler",
       "methods": [
         {
           "name": "handleResultSets",
@@ -47,8 +48,7 @@
             "java.sql.Statement"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.executor.resultset.ResultSetHandler"
+      ]
     },
     {
       "type": {
@@ -58,28 +58,13 @@
       }
     },
     {
-      "methods": [
-        {
-          "name": "getBoundSql",
-          "parameterTypes": []
-        }
-      ],
       "type": "org.apache.ibatis.executor.statement.BaseStatementHandler",
       "fields": [
         {
+          "name": "boundSql"
+        },
+        {
           "name": "configuration"
-        },
-        {
-          "name": "objectFactory"
-        },
-        {
-          "name": "typeHandlerRegistry"
-        },
-        {
-          "name": "resultSetHandler"
-        },
-        {
-          "name": "parameterHandler"
         },
         {
           "name": "executor"
@@ -88,10 +73,25 @@
           "name": "mappedStatement"
         },
         {
+          "name": "objectFactory"
+        },
+        {
+          "name": "parameterHandler"
+        },
+        {
+          "name": "resultSetHandler"
+        },
+        {
           "name": "rowBounds"
         },
         {
-          "name": "boundSql"
+          "name": "typeHandlerRegistry"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBoundSql",
+          "parameterTypes": []
         }
       ]
     },
@@ -104,6 +104,7 @@
       ]
     },
     {
+      "type": "org.apache.ibatis.executor.statement.StatementHandler",
       "methods": [
         {
           "name": "getBoundSql",
@@ -116,8 +117,7 @@
             "java.lang.Integer"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.executor.statement.StatementHandler"
+      ]
     },
     {
       "type": {
@@ -136,6 +136,7 @@
       "type": "org.apache.ibatis.javassist.util.proxy.Proxy"
     },
     {
+      "type": "org.apache.ibatis.javassist.util.proxy.ProxyFactory",
       "methods": [
         {
           "name": "<init>",
@@ -160,13 +161,13 @@
             "java.lang.Class"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.javassist.util.proxy.ProxyFactory"
+      ]
     },
     {
       "type": "org.apache.ibatis.javassist.util.proxy.ProxyObject"
     },
     {
+      "type": "org.apache.ibatis.logging.commons.JakartaCommonsLoggingImpl",
       "methods": [
         {
           "name": "<init>",
@@ -174,10 +175,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.commons.JakartaCommonsLoggingImpl"
+      ]
     },
     {
+      "type": "org.apache.ibatis.logging.jdk14.Jdk14LoggingImpl",
       "methods": [
         {
           "name": "<init>",
@@ -185,10 +186,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.jdk14.Jdk14LoggingImpl"
+      ]
     },
     {
+      "type": "org.apache.ibatis.logging.log4j.Log4jImpl",
       "methods": [
         {
           "name": "<init>",
@@ -196,10 +197,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.log4j.Log4jImpl"
+      ]
     },
     {
+      "type": "org.apache.ibatis.logging.log4j2.Log4j2Impl",
       "methods": [
         {
           "name": "<init>",
@@ -207,10 +208,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.log4j2.Log4j2Impl"
+      ]
     },
     {
+      "type": "org.apache.ibatis.logging.nologging.NoLoggingImpl",
       "methods": [
         {
           "name": "<init>",
@@ -218,10 +219,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.nologging.NoLoggingImpl"
+      ]
     },
     {
+      "type": "org.apache.ibatis.logging.slf4j.Slf4jImpl",
       "methods": [
         {
           "name": "<init>",
@@ -229,10 +230,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.slf4j.Slf4jImpl"
+      ]
     },
     {
+      "type": "org.apache.ibatis.logging.stdout.StdOutImpl",
       "methods": [
         {
           "name": "<init>",
@@ -240,14 +241,16 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.apache.ibatis.logging.stdout.StdOutImpl"
+      ]
     },
     {
       "type": "org.apache.ibatis.mapping.BoundSql",
       "fields": [
         {
-          "name": "sql"
+          "name": "additionalParameters"
+        },
+        {
+          "name": "metaParameters"
         },
         {
           "name": "parameterMappings"
@@ -256,45 +259,30 @@
           "name": "parameterObject"
         },
         {
-          "name": "additionalParameters"
-        },
-        {
-          "name": "metaParameters"
+          "name": "sql"
         }
       ]
     },
     {
+      "type": "org.apache.ibatis.scripting.defaults.RawLanguageDriver",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.apache.ibatis.scripting.defaults.RawLanguageDriver"
+      ]
     },
     {
+      "type": "org.apache.ibatis.scripting.xmltags.XMLLanguageDriver",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.apache.ibatis.scripting.xmltags.XMLLanguageDriver"
+      ]
     }
   ],
   "resources": [
-    {
-      "glob": "**/*mapper*.properties"
-    },
-    {
-      "glob": "**/*mapper*.xml"
-    },
-    {
-      "glob": "**/*Mapper.xml"
-    },
-    {
-      "glob": "**/*mybatis-config.xml"
-    },
     {
       "glob": "mapper/**/*.xml"
     },

@@ -21,6 +21,19 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "java.io.InputStream"
           ]
         },
@@ -34,21 +47,8 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "java.io.InputStream",
             "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "boolean"
           ]
         },
         {
@@ -57,6 +57,15 @@
             "java.io.InputStream",
             "int",
             "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "int",
+            "boolean",
+            "byte[][]"
           ]
         },
         {
@@ -69,15 +78,6 @@
             "int",
             "int"
           ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "int",
-            "boolean",
-            "byte[][]"
-          ]
         }
       ]
     },
@@ -87,13 +87,13 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "byte[]",
             "java.lang.String"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "byte[]",
             "java.lang.String"
           ]
         }
@@ -116,13 +116,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "byte[]",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "byte",
             "int"
           ]
@@ -131,6 +124,13 @@
           "name": "<init>",
           "parameterTypes": [
             "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
           ]
         },
         {
@@ -159,19 +159,12 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Encodable"
-          ]
-        },
-        {
-          "name": "<init>",
           "parameterTypes": []
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Encodable[]",
-            "boolean"
+            "org.bouncycastle.asn1.ASN1Encodable"
           ]
         },
         {
@@ -184,13 +177,20 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1EncodableVector"
+            "org.bouncycastle.asn1.ASN1Encodable[]"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Encodable[]"
+            "org.bouncycastle.asn1.ASN1Encodable[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1EncodableVector"
           ]
         }
       ]
@@ -204,47 +204,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
-            "byte[]",
-            "org.bouncycastle.asn1.ASN1Set"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
-            "byte[]",
-            "org.bouncycastle.asn1.ASN1Set",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
-            "org.bouncycastle.asn1.ASN1Encodable",
-            "org.bouncycastle.asn1.ASN1Set",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
-            "org.bouncycastle.asn1.ASN1Encodable",
-            "org.bouncycastle.asn1.ASN1Set"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.bouncycastle.asn1.ASN1Sequence"
           ]
         },
@@ -252,7 +211,48 @@
           "name": "<init>",
           "parameterTypes": [
             "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]",
+            "org.bouncycastle.asn1.ASN1Set"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "byte[]",
+            "org.bouncycastle.asn1.ASN1Set",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
             "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1Set"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1Set",
+            "byte[]"
           ]
         }
       ]
@@ -263,9 +263,8 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1OctetString",
-            "org.bouncycastle.asn1.ASN1Encodable",
-            "org.bouncycastle.asn1.ASN1BitString"
+            "int",
+            "java.math.BigInteger"
           ]
         },
         {
@@ -280,22 +279,23 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Sequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "java.math.BigInteger"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "int",
             "java.math.BigInteger",
             "org.bouncycastle.asn1.ASN1Encodable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1OctetString",
+            "org.bouncycastle.asn1.ASN1Encodable",
+            "org.bouncycastle.asn1.ASN1BitString"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
           ]
         }
       ]
@@ -327,6 +327,24 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.RDN[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "org.bouncycastle.asn1.x500.X500NameStyle",
             "java.lang.String"
           ]
@@ -334,7 +352,15 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
+            "org.bouncycastle.asn1.x500.X500NameStyle",
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500NameStyle",
+            "org.bouncycastle.asn1.x500.RDN[]"
           ]
         },
         {
@@ -342,32 +368,6 @@
           "parameterTypes": [
             "org.bouncycastle.asn1.x500.X500NameStyle",
             "org.bouncycastle.asn1.x500.X500Name"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Sequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x500.X500NameStyle",
-            "org.bouncycastle.asn1.ASN1Sequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x500.RDN[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x500.X500NameStyle",
-            "org.bouncycastle.asn1.x500.RDN[]"
           ]
         }
       ]
@@ -393,7 +393,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Sequence"
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier"
           ]
         },
         {
@@ -406,7 +406,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1ObjectIdentifier"
+            "org.bouncycastle.asn1.ASN1Sequence"
           ]
         }
       ]
@@ -418,14 +418,6 @@
           "name": "<init>",
           "parameterTypes": [
             "org.bouncycastle.asn1.ASN1ObjectIdentifier",
-            "org.bouncycastle.asn1.ASN1Boolean",
-            "org.bouncycastle.asn1.ASN1OctetString"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1ObjectIdentifier",
             "boolean",
             "byte[]"
           ]
@@ -433,15 +425,23 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Sequence"
+            "org.bouncycastle.asn1.ASN1ObjectIdentifier",
+            "boolean",
+            "org.bouncycastle.asn1.ASN1OctetString"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "org.bouncycastle.asn1.ASN1ObjectIdentifier",
-            "boolean",
+            "org.bouncycastle.asn1.ASN1Boolean",
             "org.bouncycastle.asn1.ASN1OctetString"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
           ]
         }
       ]
@@ -475,6 +475,12 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
             "byte[]"
           ]
@@ -484,12 +490,6 @@
           "parameterTypes": [
             "org.bouncycastle.asn1.x509.AlgorithmIdentifier",
             "org.bouncycastle.asn1.ASN1BitString"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Sequence"
           ]
         },
         {
@@ -507,8 +507,23 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "org.bouncycastle.asn1.ASN1Sequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "org.bouncycastle.math.ec.ECCurve",
             "org.bouncycastle.asn1.x9.X9ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.asn1.x9.X9ECPoint",
+            "java.math.BigInteger",
             "java.math.BigInteger"
           ]
         },
@@ -520,21 +535,6 @@
             "java.math.BigInteger",
             "java.math.BigInteger",
             "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.ASN1Sequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.math.ec.ECCurve",
-            "org.bouncycastle.asn1.x9.X9ECPoint",
-            "java.math.BigInteger",
-            "java.math.BigInteger"
           ]
         }
       ]
@@ -548,14 +548,14 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Throwable"
+            "java.lang.String"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
+            "java.lang.String",
+            "java.lang.Throwable"
           ]
         }
       ]
@@ -575,6 +575,56 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "java.security.cert.X509Certificate"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "javax.security.auth.x500.X500Principal",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.security.auth.x500.X500Principal",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "javax.security.auth.x500.X500Principal",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.math.BigInteger",
+            "java.util.Date",
+            "java.util.Date",
+            "org.bouncycastle.asn1.x500.X500Name",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "org.bouncycastle.asn1.x500.X500Name",
             "java.math.BigInteger",
             "java.util.Date",
@@ -586,61 +636,11 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.security.cert.X509Certificate"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.security.cert.X509Certificate",
-            "java.math.BigInteger",
-            "java.util.Date",
-            "java.util.Date",
-            "org.bouncycastle.asn1.x500.X500Name",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.asn1.x500.X500Name",
-            "java.math.BigInteger",
-            "java.util.Date",
-            "java.util.Date",
-            "org.bouncycastle.asn1.x500.X500Name",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "org.bouncycastle.asn1.x500.X500Name",
             "java.math.BigInteger",
             "org.bouncycastle.asn1.x509.Time",
             "org.bouncycastle.asn1.x509.Time",
             "org.bouncycastle.asn1.x500.X500Name",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "javax.security.auth.x500.X500Principal",
-            "java.math.BigInteger",
-            "java.util.Date",
-            "java.util.Date",
-            "javax.security.auth.x500.X500Principal",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.security.cert.X509Certificate",
-            "java.math.BigInteger",
-            "java.util.Date",
-            "java.util.Date",
-            "javax.security.auth.x500.X500Principal",
             "java.security.PublicKey"
           ]
         }
@@ -656,6 +656,7 @@
             "java.math.BigInteger",
             "java.util.Date",
             "java.util.Date",
+            "java.util.Locale",
             "org.bouncycastle.asn1.x500.X500Name",
             "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
           ]
@@ -667,7 +668,6 @@
             "java.math.BigInteger",
             "java.util.Date",
             "java.util.Date",
-            "java.util.Locale",
             "org.bouncycastle.asn1.x500.X500Name",
             "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo"
           ]
@@ -699,13 +699,13 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.crypto.BlockCipher"
-          ]
+          "parameterTypes": []
         },
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.bouncycastle.crypto.BlockCipher"
+          ]
         }
       ]
     },
@@ -714,8 +714,12 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.crypto.digests.SHA256Digest"
+            "byte[]"
           ]
         },
         {
@@ -727,12 +731,8 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "byte[]"
+            "org.bouncycastle.crypto.digests.SHA256Digest"
           ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -741,18 +741,18 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.crypto.CryptoServicePurpose"
-          ]
-        },
-        {
-          "name": "<init>",
           "parameterTypes": []
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.bouncycastle.crypto.CryptoServicePurpose"
           ]
         },
         {
@@ -768,6 +768,10 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
           "parameterTypes": [
             "org.bouncycastle.crypto.CryptoServicePurpose"
           ]
@@ -777,10 +781,6 @@
           "parameterTypes": [
             "org.bouncycastle.crypto.digests.SM3Digest"
           ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -789,13 +789,13 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "org.bouncycastle.crypto.engines.SM2Engine$Mode"
-          ]
+          "parameterTypes": []
         },
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.bouncycastle.crypto.Digest"
+          ]
         },
         {
           "name": "<init>",
@@ -807,7 +807,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.crypto.Digest"
+            "org.bouncycastle.crypto.engines.SM2Engine$Mode"
           ]
         }
       ]
@@ -843,15 +843,15 @@
           "name": "<init>",
           "parameterTypes": [
             "org.bouncycastle.crypto.BlockCipher",
-            "int",
-            "org.bouncycastle.crypto.paddings.BlockCipherPadding"
+            "int"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "org.bouncycastle.crypto.BlockCipher",
-            "int"
+            "int",
+            "org.bouncycastle.crypto.paddings.BlockCipherPadding"
           ]
         },
         {
@@ -970,8 +970,7 @@
             "int",
             "int",
             "int",
-            "org.bouncycastle.crypto.CharToByteConverter",
-            "org.bouncycastle.crypto.params.Argon2Parameters$1"
+            "org.bouncycastle.crypto.CharToByteConverter"
           ]
         },
         {
@@ -985,7 +984,8 @@
             "int",
             "int",
             "int",
-            "org.bouncycastle.crypto.CharToByteConverter"
+            "org.bouncycastle.crypto.CharToByteConverter",
+            "org.bouncycastle.crypto.params.Argon2Parameters$1"
           ]
         }
       ]
@@ -1007,15 +1007,15 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.math.ec.ECCurve",
-            "org.bouncycastle.math.ec.ECPoint",
-            "java.math.BigInteger"
+            "org.bouncycastle.asn1.x9.X9ECParameters"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.asn1.x9.X9ECParameters"
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger"
           ]
         },
         {
@@ -1081,14 +1081,14 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.crypto.CipherParameters",
-            "java.security.SecureRandom"
+            "org.bouncycastle.crypto.CipherParameters"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.crypto.CipherParameters"
+            "org.bouncycastle.crypto.CipherParameters",
+            "java.security.SecureRandom"
           ]
         }
       ]
@@ -1121,8 +1121,11 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
           "parameterTypes": [
-            "org.bouncycastle.crypto.signers.DSAEncoding",
             "org.bouncycastle.crypto.Digest"
           ]
         },
@@ -1135,12 +1138,9 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "org.bouncycastle.crypto.signers.DSAEncoding",
             "org.bouncycastle.crypto.Digest"
           ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -1163,13 +1163,85 @@
       ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.COMPOSITE$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.AlgorithmParametersSpi"
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.CompositeSignatures$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.CONTEXT$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.Dilithium$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSTU4145$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.EC$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.AlgorithmParametersSpi",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey",
@@ -1177,48 +1249,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
-            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
-            "org.bouncycastle.jce.spec.ECParameterSpec",
-            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
-            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
-            "java.security.spec.ECParameterSpec",
-            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.security.interfaces.ECPrivateKey",
-            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.jce.spec.ECPrivateKeySpec",
-            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
-          ]
         },
         {
           "name": "<init>",
@@ -1241,6 +1271,48 @@
           "parameterTypes": [
             "java.lang.String",
             "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
+            "java.security.spec.ECParameterSpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey",
+            "org.bouncycastle.jce.spec.ECParameterSpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPrivateKeyParameters",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.jce.spec.ECPrivateKeySpec",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.interfaces.ECPrivateKey",
             "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
           ]
         }
@@ -1253,21 +1325,24 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.jce.spec.ECPublicKeySpec",
+            "java.security.spec.ECPublicKeySpec",
             "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.security.interfaces.ECPublicKey",
+            "java.lang.String",
+            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo",
+            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.crypto.params.ECPublicKeyParameters",
+            "java.security.spec.ECParameterSpec",
             "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
           ]
         },
@@ -1292,64 +1367,205 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "org.bouncycastle.crypto.params.ECPublicKeyParameters",
-            "java.security.spec.ECParameterSpec",
-            "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
+            "org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "org.bouncycastle.asn1.x509.SubjectPublicKeyInfo",
+            "org.bouncycastle.jce.spec.ECPublicKeySpec",
             "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.security.spec.ECPublicKeySpec",
+            "java.security.interfaces.ECPublicKey",
             "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
           ]
         }
       ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.GMSignatureSpi$sha256WithSM2",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.GMSignatureSpi$sha256WithSM2"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.GMSignatureSpi$sm3WithSM2",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.GMSignatureSpi$sm3WithSM2"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi$EC",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi$EC"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyPairGeneratorSpi$EC",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyPairGeneratorSpi$EC"
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ECGOST$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.EdEC$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.ElGamal$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.EXTERNAL$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.Falcon$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.GM$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.GOST$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.IES$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.LMS$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.MLDSA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.MLKEM$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.NoSig$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.NTRU$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.RSA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.SLHDSA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.SPHINCSPlus$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util",
@@ -1370,70 +1586,799 @@
       ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.asymmetric.X509$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Digest"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.Blake2s$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Digest"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.Blake3$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Digest"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.DSTU7564$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Digest"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.GOST3411$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Digest"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.Haraka$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Digest"
+      ]
     },
     {
+      "type": "org.bouncycastle.jcajce.provider.digest.Keccak$Mappings",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Digest"
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.MD2$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.MD4$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD128$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD160$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD256$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD320$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA3$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.Skein$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Digest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.Tiger$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.digest.Whirlpool$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Default",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$NonceAndIV",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.kdf.HKDF$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.kdf.PBKDF2$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.kdf.SCRYPT$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.keystore.BC$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.keystore.BCFKS$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.keystore.PKCS12$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.ARC4$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.ARIA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Blowfish$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Camellia$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST5$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST6$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.ChaCha$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.DES$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.DESede$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.DSTU7624$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST28147$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST3412_2015$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Grain128$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Grainv1$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.HC128$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.HC256$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.HKDF$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.IDEA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Noekeon$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.OpenSSLPBKDF$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF1$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF2$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPKCS12$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Poly1305$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.RC2$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.RC5$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.RC6$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Rijndael$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Salsa20$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.SCRYPT$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.SEED$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Serpent$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Shacal2$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash128$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Skipjack$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.SM4$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.TEA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Threefish$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.TLSKDF$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Twofish$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPC$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPCKSA3$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.XSalsa20$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.XTEA$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.bouncycastle.jcajce.provider.symmetric.Zuc$Mappings",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.bouncycastle.jcajce.spec.FPEParameterSpec",
@@ -1441,24 +2386,24 @@
         {
           "name": "<init>",
           "parameterTypes": [
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "org.bouncycastle.crypto.util.RadixConverter",
             "byte[]",
             "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "byte[]",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "byte[]"
           ]
         }
       ]
@@ -1525,8 +2470,7 @@
             "org.bouncycastle.math.ec.ECCurve",
             "org.bouncycastle.math.ec.ECPoint",
             "java.math.BigInteger",
-            "java.math.BigInteger",
-            "byte[]"
+            "java.math.BigInteger"
           ]
         },
         {
@@ -1536,7 +2480,8 @@
             "org.bouncycastle.math.ec.ECCurve",
             "org.bouncycastle.math.ec.ECPoint",
             "java.math.BigInteger",
-            "java.math.BigInteger"
+            "java.math.BigInteger",
+            "byte[]"
           ]
         }
       ]
@@ -1548,6 +2493,34 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
+            "java.security.spec.EllipticCurve",
+            "java.security.spec.ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.spec.EllipticCurve",
+            "java.security.spec.ECPoint",
+            "java.math.BigInteger",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.bouncycastle.math.ec.ECCurve",
+            "org.bouncycastle.math.ec.ECPoint",
+            "java.math.BigInteger"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
             "org.bouncycastle.math.ec.ECCurve",
             "org.bouncycastle.math.ec.ECPoint",
             "java.math.BigInteger",
@@ -1563,34 +2536,6 @@
             "java.math.BigInteger",
             "java.math.BigInteger",
             "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.security.spec.EllipticCurve",
-            "java.security.spec.ECPoint",
-            "java.math.BigInteger",
-            "java.math.BigInteger"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.math.ec.ECCurve",
-            "org.bouncycastle.math.ec.ECPoint",
-            "java.math.BigInteger"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.security.spec.EllipticCurve",
-            "java.security.spec.ECPoint",
-            "java.math.BigInteger"
           ]
         }
       ]
@@ -1667,8 +2612,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
+            "java.lang.String"
           ]
         },
         {
@@ -1682,6 +2626,13 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
             "java.security.spec.AlgorithmParameterSpec",
             "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
           ]
@@ -1689,14 +2640,8 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "java.lang.String",
-            "java.security.spec.AlgorithmParameterSpec"
+            "org.bouncycastle.asn1.x509.AlgorithmIdentifier"
           ]
         }
       ]
@@ -1707,14 +2652,14 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Throwable"
+            "java.lang.String"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
+            "java.lang.String",
+            "java.lang.Throwable"
           ]
         }
       ]
@@ -1811,24 +2756,6 @@
     }
   ],
   "resources": [
-    {
-      "glob": "**/*.bks"
-    },
-    {
-      "glob": "**/*.crt"
-    },
-    {
-      "glob": "**/*.jks"
-    },
-    {
-      "glob": "**/*.key"
-    },
-    {
-      "glob": "**/*.p12"
-    },
-    {
-      "glob": "**/*.pem"
-    },
     {
       "glob": "META-INF/services/**"
     },

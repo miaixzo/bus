@@ -1,27 +1,7 @@
 {
   "reflection": [
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Algorithm"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Algorithm"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Algorithm"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Algorithm",
       "methods": [
         {
           "name": "<init>",
@@ -88,37 +68,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.opencv.core.Algorithm"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Algorithm"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.CleanableMat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.CleanableMat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.CleanableMat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.CleanableMat",
       "methods": [
         {
           "name": "<init>",
@@ -132,37 +85,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.core.CleanableMat"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.CleanableMat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Core"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Core"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Core"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Core",
       "methods": [
         {
           "name": "<init>",
@@ -3668,73 +3594,19 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.core.Core"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Core"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Core$MinMaxLocResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Core$MinMaxLocResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Core$MinMaxLocResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Core$MinMaxLocResult",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Core$MinMaxLocResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Core$MinMaxLocResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.CvException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.CvException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.CvException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.CvException",
       "methods": [
         {
           "name": "<init>",
@@ -3746,37 +3618,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.CvException"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.CvException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.CvType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.CvType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.CvType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.CvType",
       "methods": [
         {
           "name": "<init>",
@@ -3867,37 +3712,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.opencv.core.CvType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.CvType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.DMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.DMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.DMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.DMatch",
       "methods": [
         {
           "name": "<init>",
@@ -3930,37 +3748,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.DMatch"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.DMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.KeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.KeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.KeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.KeyPoint",
       "methods": [
         {
           "name": "<init>",
@@ -4020,37 +3811,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.KeyPoint"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.KeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat",
       "methods": [
         {
           "name": "<init>",
@@ -5652,55 +5416,13 @@
             "int"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.opencv.core.Mat$Atable"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$Atable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$Atable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$AtableBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$AtableBase",
       "methods": [
         {
           "name": "<init>",
@@ -5709,37 +5431,10 @@
             "int[]"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat$AtableBase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$AtableBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$AtableByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$AtableByte",
       "methods": [
         {
           "name": "<init>",
@@ -5788,37 +5483,10 @@
             "org.opencv.core.Mat$Tuple4"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat$AtableByte"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$AtableByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$AtableDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$AtableDouble",
       "methods": [
         {
           "name": "<init>",
@@ -5867,37 +5535,10 @@
             "org.opencv.core.Mat$Tuple4"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat$AtableDouble"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$AtableDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$AtableFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$AtableFloat",
       "methods": [
         {
           "name": "<init>",
@@ -5946,37 +5587,10 @@
             "org.opencv.core.Mat$Tuple4"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat$AtableFloat"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$AtableFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$AtableInteger"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableInteger"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableInteger"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$AtableInteger",
       "methods": [
         {
           "name": "<init>",
@@ -6025,37 +5639,10 @@
             "org.opencv.core.Mat$Tuple4"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat$AtableInteger"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$AtableInteger"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$AtableShort"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableShort"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$AtableShort"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$AtableShort",
       "methods": [
         {
           "name": "<init>",
@@ -6104,37 +5691,10 @@
             "org.opencv.core.Mat$Tuple4"
           ]
         }
-      ],
-      "type": "org.opencv.core.Mat$AtableShort"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$AtableShort"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$Tuple2"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$Tuple2"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$Tuple2"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$Tuple2",
       "methods": [
         {
           "name": "<init>",
@@ -6151,37 +5711,10 @@
           "name": "get_1",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Mat$Tuple2"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$Tuple2"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$Tuple3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$Tuple3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$Tuple3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$Tuple3",
       "methods": [
         {
           "name": "<init>",
@@ -6203,37 +5736,10 @@
           "name": "get_2",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Mat$Tuple3"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$Tuple3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Mat$Tuple4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Mat$Tuple4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Mat$Tuple4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Mat$Tuple4",
       "methods": [
         {
           "name": "<init>",
@@ -6260,37 +5766,10 @@
           "name": "get_3",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Mat$Tuple4"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Mat$Tuple4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfByte",
       "methods": [
         {
           "name": "<init>",
@@ -6342,37 +5821,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfByte"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfByte"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfDMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfDMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfDMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfDMatch",
       "methods": [
         {
           "name": "<init>",
@@ -6416,37 +5868,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfDMatch"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfDMatch"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfDouble",
       "methods": [
         {
           "name": "<init>",
@@ -6490,37 +5915,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfDouble"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfDouble"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfFloat",
       "methods": [
         {
           "name": "<init>",
@@ -6564,37 +5962,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfFloat"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfFloat"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfFloat4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfFloat4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfFloat4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfFloat4",
       "methods": [
         {
           "name": "<init>",
@@ -6638,37 +6009,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfFloat4"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfFloat4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfFloat6"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfFloat6"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfFloat6"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfFloat6",
       "methods": [
         {
           "name": "<init>",
@@ -6712,37 +6056,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfFloat6"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfFloat6"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfInt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfInt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfInt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfInt",
       "methods": [
         {
           "name": "<init>",
@@ -6786,37 +6103,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfInt"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfInt"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfInt4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfInt4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfInt4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfInt4",
       "methods": [
         {
           "name": "<init>",
@@ -6860,37 +6150,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfInt4"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfInt4"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfKeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfKeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfKeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfKeyPoint",
       "methods": [
         {
           "name": "<init>",
@@ -6934,37 +6197,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfKeyPoint"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfKeyPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfPoint",
       "methods": [
         {
           "name": "<init>",
@@ -7008,37 +6244,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfPoint"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfPoint"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfPoint2f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint2f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint2f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfPoint2f",
       "methods": [
         {
           "name": "<init>",
@@ -7082,37 +6291,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfPoint2f"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfPoint2f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfPoint3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfPoint3",
       "methods": [
         {
           "name": "<init>",
@@ -7156,37 +6338,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfPoint3"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfPoint3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfPoint3f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint3f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfPoint3f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfPoint3f",
       "methods": [
         {
           "name": "<init>",
@@ -7230,37 +6385,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfPoint3f"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfPoint3f"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfRect",
       "methods": [
         {
           "name": "<init>",
@@ -7304,37 +6432,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfRect"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfRect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfRect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfRect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfRect2d",
       "methods": [
         {
           "name": "<init>",
@@ -7378,37 +6479,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfRect2d"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfRect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.MatOfRotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.MatOfRotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.MatOfRotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.MatOfRotatedRect",
       "methods": [
         {
           "name": "<init>",
@@ -7452,37 +6526,10 @@
           "name": "toList",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.MatOfRotatedRect"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.MatOfRotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Point"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Point"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Point"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Point",
       "methods": [
         {
           "name": "<init>",
@@ -7537,37 +6584,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Point"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Point"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Point3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Point3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Point3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Point3",
       "methods": [
         {
           "name": "<init>",
@@ -7629,37 +6649,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Point3"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Point3"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Range"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Range"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Range"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Range",
       "methods": [
         {
           "name": "<init>",
@@ -7726,37 +6719,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Range"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Range"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Rect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Rect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Rect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Rect",
       "methods": [
         {
           "name": "<init>",
@@ -7841,37 +6807,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Rect"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Rect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Rect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Rect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Rect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Rect2d",
       "methods": [
         {
           "name": "<init>",
@@ -7956,37 +6895,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Rect2d"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Rect2d"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.RotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.RotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.RotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.RotatedRect",
       "methods": [
         {
           "name": "<init>",
@@ -8040,37 +6952,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.RotatedRect"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.RotatedRect"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Scalar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Scalar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Scalar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Scalar",
       "methods": [
         {
           "name": "<init>",
@@ -8159,37 +7044,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Scalar"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Scalar"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.Size"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.Size"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.Size"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.Size",
       "methods": [
         {
           "name": "<init>",
@@ -8246,37 +7104,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.Size"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.Size"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.TermCriteria"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.TermCriteria"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.TermCriteria"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.TermCriteria",
       "methods": [
         {
           "name": "<init>",
@@ -8320,37 +7151,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.TermCriteria"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.TermCriteria"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.core.TickMeter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.core.TickMeter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.core.TickMeter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.core.TickMeter",
       "methods": [
         {
           "name": "<init>",
@@ -8528,37 +7332,10 @@
           "name": "TickMeter_0",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.core.TickMeter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.core.TickMeter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.AverageHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.AverageHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.AverageHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.AverageHash",
       "methods": [
         {
           "name": "<init>",
@@ -8586,37 +7363,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.AverageHash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.AverageHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.BlockMeanHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.BlockMeanHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.BlockMeanHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.BlockMeanHash",
       "methods": [
         {
           "name": "<init>",
@@ -8679,37 +7429,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.BlockMeanHash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.BlockMeanHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.ColorMomentHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.ColorMomentHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.ColorMomentHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.ColorMomentHash",
       "methods": [
         {
           "name": "<init>",
@@ -8737,37 +7460,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.ColorMomentHash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.ColorMomentHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.Img_hash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.Img_hash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.Img_hash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.Img_hash",
       "methods": [
         {
           "name": "<init>",
@@ -8941,37 +7637,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.Img_hash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.Img_hash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.ImgHashBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.ImgHashBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.ImgHashBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.ImgHashBase",
       "methods": [
         {
           "name": "<init>",
@@ -9021,37 +7690,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.ImgHashBase"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.ImgHashBase"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.MarrHildrethHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.MarrHildrethHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.MarrHildrethHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.MarrHildrethHash",
       "methods": [
         {
           "name": "<init>",
@@ -9140,37 +7782,10 @@
             "float"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.MarrHildrethHash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.MarrHildrethHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.PHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.PHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.PHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.PHash",
       "methods": [
         {
           "name": "<init>",
@@ -9198,37 +7813,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.PHash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.PHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.img_hash.RadialVarianceHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.img_hash.RadialVarianceHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.img_hash.RadialVarianceHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.img_hash.RadialVarianceHash",
       "methods": [
         {
           "name": "<init>",
@@ -9328,37 +7916,10 @@
             "double"
           ]
         }
-      ],
-      "type": "org.opencv.img_hash.RadialVarianceHash"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.img_hash.RadialVarianceHash"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgcodecs.Animation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgcodecs.Animation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgcodecs.Animation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgcodecs.Animation",
       "methods": [
         {
           "name": "<init>",
@@ -9520,37 +8081,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.imgcodecs.Animation"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgcodecs.Animation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgcodecs.Imgcodecs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgcodecs.Imgcodecs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgcodecs.Imgcodecs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgcodecs.Imgcodecs",
       "methods": [
         {
           "name": "<init>",
@@ -10333,37 +8867,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.imgcodecs.Imgcodecs"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgcodecs.Imgcodecs"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.CLAHE"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.CLAHE"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.CLAHE"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.CLAHE",
       "methods": [
         {
           "name": "<init>",
@@ -10478,37 +8985,10 @@
             "double"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.CLAHE"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.CLAHE"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHough"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHough"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHough"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.GeneralizedHough",
       "methods": [
         {
           "name": "<init>",
@@ -10781,37 +9261,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.GeneralizedHough"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHough"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughBallard"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughBallard"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughBallard"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.GeneralizedHoughBallard",
       "methods": [
         {
           "name": "<init>",
@@ -10877,37 +9330,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.GeneralizedHoughBallard"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughBallard"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughGuil"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughGuil"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughGuil"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.GeneralizedHoughGuil",
       "methods": [
         {
           "name": "<init>",
@@ -11203,37 +9629,10 @@
             "double"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.GeneralizedHoughGuil"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.GeneralizedHoughGuil"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.Imgproc"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.Imgproc"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.Imgproc"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.Imgproc",
       "methods": [
         {
           "name": "<init>",
@@ -18260,37 +16659,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.Imgproc"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.Imgproc"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.IntelligentScissorsMB"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.IntelligentScissorsMB"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.IntelligentScissorsMB"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.IntelligentScissorsMB",
       "methods": [
         {
           "name": "<init>",
@@ -18529,37 +16901,10 @@
             "float"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.IntelligentScissorsMB"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.IntelligentScissorsMB"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.LineSegmentDetector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.LineSegmentDetector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.LineSegmentDetector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.LineSegmentDetector",
       "methods": [
         {
           "name": "<init>",
@@ -18704,37 +17049,10 @@
             "long"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.LineSegmentDetector"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.LineSegmentDetector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.Moments"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.Moments"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.Moments"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.Moments",
       "methods": [
         {
           "name": "<init>",
@@ -19015,37 +17333,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.imgproc.Moments"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.Moments"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.opencv.imgproc.Subdiv2D"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.imgproc.Subdiv2D"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.imgproc.Subdiv2D"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.imgproc.Subdiv2D",
       "methods": [
         {
           "name": "<init>",
@@ -19369,55 +17660,13 @@
             "int"
           ]
         }
-      ],
-      "type": "org.opencv.imgproc.Subdiv2D"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.imgproc.Subdiv2D"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.opencv.osgi.OpenCVInterface"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.osgi.OpenCVInterface"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.osgi.OpenCVInterface"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.opencv.osgi.OpenCVNativeLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.osgi.OpenCVNativeLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.osgi.OpenCVNativeLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.osgi.OpenCVNativeLoader",
       "methods": [
         {
           "name": "<init>",
@@ -19427,37 +17676,10 @@
           "name": "init",
           "parameterTypes": []
         }
-      ],
-      "type": "org.opencv.osgi.OpenCVNativeLoader"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.osgi.OpenCVNativeLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.opencv.utils.Converters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.opencv.utils.Converters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.opencv.utils.Converters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.opencv.utils.Converters",
       "methods": [
         {
           "name": "<init>",
@@ -19830,14 +18052,7 @@
             "java.util.List"
           ]
         }
-      ],
-      "type": "org.opencv.utils.Converters"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.opencv.utils.Converters"
+      ]
     }
   ],
   "resources": [
