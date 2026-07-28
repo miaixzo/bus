@@ -146,7 +146,10 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
     /**
      * Updates an asset by replacing any existing registration associated with the supplied key.
      * <p>
-     * MCP assets follow the same route-key update path as other protocols.
+     * When the canonical key and complete alias chain remain unchanged, only the runtime asset value is replaced. This
+     * keeps route lookup continuously available and avoids rebuilding unchanged aliases. A routing-identity change
+     * still uses the complete removal and registration path so every index is rebuilt consistently. MCP assets follow
+     * the same route-key update path as other protocols.
      *
      * @param key  canonical or compatibility key
      * @param item updated asset
@@ -163,6 +166,13 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
         Keying.RegistrySpec spec = Keying.RegistrySpec.route(item);
         String primary = keying.key(spec);
         if (!accept(primary, spec, resolvedPrimary)) {
+            return;
+        }
+        List<String> incomingKeys = keying.keys(spec);
+        List<String> existingKeys = keysByPrimary.get(resolvedPrimary);
+        // Keep stable route indexes intact while replacing timeout, retry, policy, target, and other runtime values.
+        if (resolvedPrimary.equals(primary) && Objects.equals(existingKeys, incomingKeys)) {
+            super.register(resolvedPrimary, item);
             return;
         }
         destroy(resolvedPrimary);
