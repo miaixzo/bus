@@ -19,6 +19,26 @@
 */
 package org.miaixz.bus.vortex.routing.rest;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -33,27 +53,9 @@ import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.routing.Coordinator;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * The core executor for executing RESTful HTTP requests to downstream services.
@@ -478,8 +480,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String method,
             String path) {
         return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
-                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> buildStreamingResponse(responseEntity, ip,
-                        method, path, "stream=2"))
+                .toEntityFlux(DataBuffer.class)
+                .flatMap(responseEntity -> buildStreamingResponse(responseEntity, ip, method, path, "stream=2"))
                 .doOnSubscribe(
                         subscription -> Logger.info(
                                 true,
@@ -562,7 +564,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     }
 
                     return buildBufferedResponse(responseEntity, ip, method, path);
-                }).doOnSubscribe(
+                })
+                .doOnSubscribe(
                         subscription -> Logger.info(
                                 true,
                                 "Vortex",
@@ -706,15 +709,16 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
 
         Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
-                : responseEntity.getBody().doOnNext(dataBuffer -> Logger.debug(
-                false,
-                "Vortex",
-                "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, mode={}, {} bytes",
-                ip,
-                method,
-                path,
-                mode,
-                dataBuffer.readableByteCount()));
+                : responseEntity.getBody().doOnNext(
+                        dataBuffer -> Logger.debug(
+                                false,
+                                "Vortex",
+                                "Received data chunk, size: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_STREAM_CHUNK, mode={}, {} bytes",
+                                ip,
+                                method,
+                                path,
+                                mode,
+                                dataBuffer.readableByteCount()));
 
         return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
     }

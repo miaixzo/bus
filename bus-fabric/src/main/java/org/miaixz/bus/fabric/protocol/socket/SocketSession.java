@@ -19,6 +19,13 @@
 */
 package org.miaixz.bus.fabric.protocol.socket;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -51,13 +58,6 @@ import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.lifecycle.SessionLifecycle;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Open socket session.
@@ -306,7 +306,7 @@ public final class SocketSession implements Session {
      * @param owner      resource closed when the session terminates, or {@code null}
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-                  final Map<String, Object> attributes, final AutoCloseable owner) {
+            final Map<String, Object> attributes, final AutoCloseable owner) {
         this(address, connection, codec, handler, attributes, owner, null);
     }
 
@@ -322,8 +322,8 @@ public final class SocketSession implements Session {
      * @param listener   lifecycle listener
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-                  final Map<String, Object> attributes, final AutoCloseable owner,
-                  final Listener<? super SocketSession> listener) {
+            final Map<String, Object> attributes, final AutoCloseable owner,
+            final Listener<? super SocketSession> listener) {
         this(address, connection, codec, handler, attributes, owner, listener, Normal.MEBI_64);
     }
 
@@ -340,8 +340,8 @@ public final class SocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-                  final Map<String, Object> attributes, final AutoCloseable owner,
-                  final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
+            final Map<String, Object> attributes, final AutoCloseable owner,
+            final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
         this(address, connection, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 SocketOptions.defaults());
     }
@@ -360,9 +360,9 @@ public final class SocketSession implements Session {
      * @param socketOptions       socket options
      */
     SocketSession(final Address address, final Connection connection, final SocketCodec codec, final Handler handler,
-                  final Map<String, Object> attributes, final AutoCloseable owner,
-                  final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-                  final SocketOptions socketOptions) {
+            final Map<String, Object> attributes, final AutoCloseable owner,
+            final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions) {
         this(address, connection, null, null, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions);
     }
@@ -379,7 +379,7 @@ public final class SocketSession implements Session {
      * @param owner      resource closed when the session terminates, or {@code null}
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
+            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner) {
         this(address, datagram, kcp, codec, handler, attributes, owner, null);
     }
 
@@ -396,8 +396,8 @@ public final class SocketSession implements Session {
      * @param listener   lifecycle listener
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
-                  final Listener<? super SocketSession> listener) {
+            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
+            final Listener<? super SocketSession> listener) {
         this(address, datagram, kcp, codec, handler, attributes, owner, listener, Normal.MEBI_64);
     }
 
@@ -415,8 +415,8 @@ public final class SocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
-                  final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
+            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
+            final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
         this(address, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 SocketOptions.defaults());
     }
@@ -436,9 +436,9 @@ public final class SocketSession implements Session {
      * @param socketOptions       socket options
      */
     SocketSession(final Address address, final UdpSession datagram, final KcpNetwork kcp, final SocketCodec codec,
-                  final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
-                  final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-                  final SocketOptions socketOptions) {
+            final Handler handler, final Map<String, Object> attributes, final AutoCloseable owner,
+            final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions) {
         this(address, null, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions);
     }
@@ -457,8 +457,8 @@ public final class SocketSession implements Session {
      * @param listener   lifecycle listener
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-                          final AutoCloseable owner, final Listener<? super SocketSession> listener) {
+            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, Normal.MEBI_64);
     }
 
@@ -477,8 +477,8 @@ public final class SocketSession implements Session {
      * @param materializeMaxBytes materialize byte threshold
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-                          final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
+            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 SocketOptions.defaults());
     }
@@ -499,9 +499,9 @@ public final class SocketSession implements Session {
      * @param socketOptions       socket options
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-                          final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-                          final SocketOptions socketOptions) {
+            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions, Dispatcher.create(), Clock.system(), Timeout.defaults(), Cancellation.create(), true,
                 false);
@@ -527,10 +527,10 @@ public final class SocketSession implements Session {
      * @param cancellation        shared cancellation
      */
     SocketSession(final Address address, final Connection connection, final UdpSession datagram, final KcpNetwork kcp,
-                  final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-                  final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-                  final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
-                  final Cancellation cancellation) {
+            final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
+            final Cancellation cancellation) {
         this(address, connection, datagram, kcp, codec, handler, attributes, owner, listener, materializeMaxBytes,
                 socketOptions, dispatcher, clock, timeout, cancellation, false, false);
     }
@@ -557,10 +557,10 @@ public final class SocketSession implements Session {
      * @param exclusiveReader     true when one server reader owns stream receives
      */
     private SocketSession(final Address address, final Connection connection, final UdpSession datagram,
-                          final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
-                          final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
-                          final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
-                          final Cancellation cancellation, final boolean ownsDispatcher, final boolean exclusiveReader) {
+            final KcpNetwork kcp, final SocketCodec codec, final Handler handler, final Map<String, Object> attributes,
+            final AutoCloseable owner, final Listener<? super SocketSession> listener, final long materializeMaxBytes,
+            final SocketOptions socketOptions, final Dispatcher dispatcher, final Clock clock, final Timeout timeout,
+            final Cancellation cancellation, final boolean ownsDispatcher, final boolean exclusiveReader) {
         this.address = require(address, "Socket address");
         if (connection == null && datagram == null) {
             throw new ValidateException("Socket transport must not be null");

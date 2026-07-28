@@ -84,6 +84,7 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
         </dependency>
+
         <dependency>
             <groupId>jakarta.xml.soap</groupId>
             <artifactId>jakarta.xml.soap-api</artifactId>

@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.spring.http;
 
-import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -31,12 +29,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+
 /**
  * Normalizes {@link Message} response bodies before serialization.
  * <p>
  * Failed messages have their {@code data} cleared before serialization, even when callers manually populated that
- * field. This keeps the rule framework-level without adding serialization annotations or JSON dependencies to
- * bus-core.
+ * field. This keeps the rule framework-level without adding serialization annotations or JSON dependencies to bus-core.
  * </p>
  *
  * @author Kimi Liu
