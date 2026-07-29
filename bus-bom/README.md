@@ -34,7 +34,7 @@ Import the BOM in your project's `pom.xml`:
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-bom</artifactId>
-            <version>x.x.x</version>
+            <version>8.x.x</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>

@@ -249,11 +249,11 @@ Then declare only the modules you need — no version tags required:
 ### Key Managed Versions
 
 | Component | Version |
-| :--- | :--- |
-| Java baseline | 25+ |
-| Spring Boot | 3.5.13 |
-| MyBatis | 3.5.19 |
-| MyBatis-Spring | 3.0.5 |
+| :--- |:--------|
+| Java baseline | 25+     |
+| Spring Boot | 4.1.0   |
+| MyBatis | 3.5.19  |
+| MyBatis-Spring | 3.0.5   |
 
 ### Managed and Preconfigured Plugins
 

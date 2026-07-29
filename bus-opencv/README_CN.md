@@ -47,7 +47,7 @@
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-opencv</artifactId>
-    <version>x.x.x</version>
+    <version>8.x.x</version>
 </dependency>
 ```
 

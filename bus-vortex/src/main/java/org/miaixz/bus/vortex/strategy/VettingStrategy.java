@@ -32,6 +32,7 @@ import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -51,19 +52,20 @@ import reactor.core.publisher.Mono;
 public class VettingStrategy extends AbstractStrategy {
 
     /**
-     * Hop-by-hop request headers that must not be forwarded to downstream services.
+     * Request headers that must not be forwarded to downstream services.
      */
-    private static final List<String> HOP_BY_HOP_HEADERS = List.of(
-            HttpHeaders.HOST,
-            HttpHeaders.CONNECTION,
-            "Keep-Alive",
-            "Proxy-Authenticate",
-            "Proxy-Authorization",
-            "TE",
-            "Trailer",
-            HttpHeaders.TRANSFER_ENCODING,
-            "Upgrade",
-            HttpHeaders.CONTENT_LENGTH);
+    private static final List<String> FORWARD_EXCLUDED_HEADERS = List.of(
+            Http.Header.ACCEPT_ENCODING,
+            Http.Header.HOST,
+            Http.Header.CONNECTION,
+            Http.Header.KEEP_ALIVE,
+            Http.Header.PROXY_AUTHENTICATE,
+            Http.Header.PROXY_AUTHORIZATION,
+            Http.Header.TE,
+            Http.Header.TRAILER,
+            Http.Header.TRANSFER_ENCODING,
+            Http.Header.UPGRADE,
+            Http.Header.CONTENT_LENGTH);
 
     /**
      * Proxy headers consumed by Vortex before routing and replaced by normalized request context fields.
@@ -178,7 +180,7 @@ public class VettingStrategy extends AbstractStrategy {
                 }
             }
         }
-        HOP_BY_HOP_HEADERS.forEach(headers::remove);
+        FORWARD_EXCLUDED_HEADERS.forEach(headers::remove);
         PROXY_HEADERS.forEach(headers::remove);
     }
 
