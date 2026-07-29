@@ -678,7 +678,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.tempus.Expression$ValueSet",
@@ -1054,7 +1055,7 @@
         {
           "name": "test",
           "parameterTypes": [
-            "java.lang.Integer"
+            "java.lang.Object"
           ]
         },
         {
@@ -1090,7 +1091,7 @@
         {
           "name": "test",
           "parameterTypes": [
-            "java.lang.Integer"
+            "java.lang.Object"
           ]
         },
         {
@@ -1320,7 +1321,7 @@
         {
           "name": "test",
           "parameterTypes": [
-            "java.lang.Integer"
+            "java.lang.Object"
           ]
         },
         {

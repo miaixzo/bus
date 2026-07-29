@@ -1,6 +1,27 @@
 {
   "reflection": [
     {
+      "type": "java.lang.String",
+      "condition": {
+        "typeReached": "org.miaixz.bus.office.Archive$Manifest"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.ArrayList",
+      "condition": {
+        "typeReached": "org.miaixz.bus.office.Archive$Manifest"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.LinkedHashMap",
+      "condition": {
+        "typeReached": "org.miaixz.bus.office.Archive$Segment"
+      },
+      "serializable": true
+    },
+    {
       "type": "org.miaixz.bus.office.Archive",
       "methods": [
         {
@@ -56,7 +77,8 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.office.Archive$Reader",
@@ -174,7 +196,8 @@
           "name": "totalRecords",
           "parameterTypes": []
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.office.Archive$Slice",
@@ -5216,14 +5239,6 @@
           "parameterTypes": []
         }
       ]
-    }
-  ],
-  "serialization": [
-    {
-      "type": "org.miaixz.bus.office.Archive$Manifest"
-    },
-    {
-      "type": "org.miaixz.bus.office.Archive$Segment"
     }
   ]
 }

@@ -806,14 +806,6 @@
           ]
         },
         {
-          "name": "getKeyManager",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.InputStream"
-          ]
-        },
-        {
           "name": "getScopes",
           "parameterTypes": [
             "java.lang.String",
@@ -825,23 +817,6 @@
           "name": "getScopes",
           "parameterTypes": [
             "org.miaixz.bus.pay.nimble.PayScope[]"
-          ]
-        },
-        {
-          "name": "getSslSocketFactory",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
           ]
         },
         {
@@ -904,22 +879,6 @@
           ]
         },
         {
-          "name": "postTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "put",
           "parameterTypes": [
             "java.lang.String",
@@ -929,22 +888,6 @@
         },
         {
           "name": "put",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "putTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "putTo",
           "parameterTypes": [
             "java.lang.String",
             "java.util.Map",
@@ -25806,6 +25749,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

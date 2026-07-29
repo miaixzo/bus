@@ -74,6 +74,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.activity.ActivityExecutionContext"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.activity.ActivityInterface",
       "methods": [
         {
@@ -126,6 +133,20 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.ActivityCompletionClient"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.schedules.ScheduleClient"
+        ]
+      }
     },
     {
       "type": "io.temporal.client.WorkflowClient",
@@ -1244,6 +1265,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.client.WorkflowClient"
+        ]
+      }
     },
     {
       "type": "io.temporal.client.WorkflowClientInternalImpl",
@@ -2955,6 +2983,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.client.WorkflowStub"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.client.WorkflowStubImpl",
       "fields": [
         {
@@ -3403,6 +3438,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.common.converter.DataConverter"
+        ]
+      }
     },
     {
       "type": "io.temporal.common.converter.DefaultDataConverter",
@@ -4929,6 +4971,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.internal.sync.AsyncInternal$AsyncMarker"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.internal.worker.SyncActivityWorker",
       "fields": [
         {
@@ -5184,6 +5233,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.internal.WorkflowThreadMarker"
+        ]
+      }
     },
     {
       "type": "io.temporal.serviceclient.ChannelManager",
@@ -5476,6 +5532,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.CloudServiceStubs"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.serviceclient.CloudServiceStubsImpl",
       "fields": [
         {
@@ -5673,6 +5736,13 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.OperatorServiceStubs"
+        ]
+      }
     },
     {
       "type": "io.temporal.serviceclient.OperatorServiceStubsImpl",
@@ -5904,6 +5974,13 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.WorkflowServiceStubs"
+        ]
+      }
     },
     {
       "type": "io.temporal.serviceclient.WorkflowServiceStubsImpl",
@@ -6974,6 +7051,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.worker.WorkerFactory"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.worker.WorkerOptions",
       "fields": [
         {
@@ -7486,6 +7570,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.workflow.WorkflowInfo"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.workflow.WorkflowInterface",
       "methods": [
         {
@@ -7534,97 +7625,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.activity.ActivityExecutionContext"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.client.ActivityCompletionClient"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.client.schedules.ScheduleClient"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.client.WorkflowClient"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.client.WorkflowStub"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.common.converter.DataConverter"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.internal.sync.AsyncInternal$AsyncMarker"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.internal.WorkflowThreadMarker"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.serviceclient.CloudServiceStubs"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.serviceclient.OperatorServiceStubs"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.serviceclient.WorkflowServiceStubs"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.worker.WorkerFactory"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.workflow.WorkflowInfo"
-        ]
-      }
     }
   ]
 }

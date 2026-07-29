@@ -1012,6 +1012,173 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.ftp.FtpEntry",
+      "fields": [
+        {
+          "name": "accessTime"
+        },
+        {
+          "name": "directory"
+        },
+        {
+          "name": "gid"
+        },
+        {
+          "name": "link"
+        },
+        {
+          "name": "modifiedTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "permissions"
+        },
+        {
+          "name": "permissionsText"
+        },
+        {
+          "name": "regularFile"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "uid"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifiedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPermissions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPermissionsText",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUid",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDirectory",
+          "parameterTypes": []
+        },
+        {
+          "name": "isLink",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRegularFile",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAccessTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setDirectory",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setGid",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setLink",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setModifiedTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPermissions",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setPermissionsText",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRegularFile",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setUid",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
       "fields": [
         {

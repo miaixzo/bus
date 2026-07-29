@@ -1208,10 +1208,6 @@
           "parameterTypes": []
         },
         {
-          "name": "getEdid",
-          "parameterTypes": []
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         }
@@ -13707,20 +13703,6 @@
             "java.lang.String",
             "java.lang.String",
             "java.util.List"
-          ]
-        },
-        {
-          "name": "getDeviceAndChildren",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map"
           ]
         },
         {
@@ -26484,20 +26466,6 @@
           ]
         },
         {
-          "name": "getDeviceAndChildren",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "getUsbDevices",
           "parameterTypes": []
         },
@@ -27277,7 +27245,8 @@
             "java.lang.String",
             "java.lang.String",
             "java.lang.String",
-            "long"
+            "long",
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -27423,20 +27392,6 @@
             "java.lang.String",
             "java.lang.String",
             "java.util.List"
-          ]
-        },
-        {
-          "name": "getDeviceAndChildren",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map"
           ]
         },
         {
@@ -35348,18 +35303,6 @@
           ]
         },
         {
-          "name": "getDeviceAndChildren",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "getUsbDevices",
           "parameterTypes": []
         },
@@ -35591,10 +35534,6 @@
           ]
         },
         {
-          "name": "queryBootAndUptime",
-          "parameterTypes": []
-        },
-        {
           "name": "queryChildProcesses",
           "parameterTypes": [
             "int"
@@ -35616,10 +35555,6 @@
         },
         {
           "name": "querySystemBootTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "querySystemUptime",
           "parameterTypes": []
         }
       ]

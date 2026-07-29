@@ -5406,12 +5406,6 @@
           ]
         },
         {
-          "name": "defaultRouteKey",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Keying"
-          ]
-        },
-        {
           "name": "equals",
           "parameterTypes": [
             "java.lang.Object"

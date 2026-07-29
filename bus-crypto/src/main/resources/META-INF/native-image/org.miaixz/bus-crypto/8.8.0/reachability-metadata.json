@@ -308,6 +308,199 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.crypto.builtin.Certificate",
+      "fields": [
+        {
+          "name": "fileName"
+        },
+        {
+          "name": "issuer"
+        },
+        {
+          "name": "issuerCN"
+        },
+        {
+          "name": "issuerO"
+        },
+        {
+          "name": "notAfter"
+        },
+        {
+          "name": "notBefore"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "publicKey"
+        },
+        {
+          "name": "self"
+        },
+        {
+          "name": "serial"
+        },
+        {
+          "name": "subject"
+        },
+        {
+          "name": "subjectCN"
+        },
+        {
+          "name": "subjectO"
+        },
+        {
+          "name": "version"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssuer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssuerCN",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssuerO",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNotAfter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNotBefore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSelf",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSerial",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubject",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubjectCN",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubjectO",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFileName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIssuer",
+          "parameterTypes": [
+            "java.security.Principal"
+          ]
+        },
+        {
+          "name": "setIssuerCN",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIssuerO",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNotAfter",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setNotBefore",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPublicKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSelf",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate"
+          ]
+        },
+        {
+          "name": "setSerial",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSubject",
+          "parameterTypes": [
+            "java.security.Principal"
+          ]
+        },
+        {
+          "name": "setSubjectCN",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSubjectO",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilder",
       "methods": [
         {

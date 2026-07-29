@@ -10,6 +10,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.basic.ClassMapper"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.binding.basic.ClassMapper$CachingEntityClass",
       "methods": [
         {
@@ -23,6 +30,27 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.basic.EntityMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.BasicMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.batch.BatchMapper"
+        ]
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.binding.condition.Condition",
@@ -328,6 +356,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.binding.condition.ConditionWrapper",
       "methods": [
         {
@@ -338,6 +373,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
+        ]
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.binding.function.Fn",
@@ -454,6 +496,27 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.function.FunctionMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.list.ListMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
+        ]
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.builder.CachingTableSchemaBuilder",
@@ -4222,6 +4285,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.audit.AuditProvider"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.audit.AuditRecord",
       "fields": [
         {
@@ -5537,6 +5607,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixBuilder",
       "methods": [
         {
@@ -5649,6 +5726,13 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
+        ]
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot",
@@ -6588,6 +6672,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport",
       "methods": [
         {
@@ -7221,6 +7312,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.visible.VisibleBuilder",
       "methods": [
         {
@@ -7503,6 +7601,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
+        ]
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.handler.ConditionHandler$DerivedConfigKey",
@@ -7939,6 +8044,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.Mapper"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.OGNL",
       "methods": [
         {
@@ -8155,7 +8267,7 @@
         {
           "name": "test",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.parsing.ColumnMeta"
+            "java.lang.Object"
           ]
         }
       ]
@@ -10710,118 +10822,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.basic.ClassMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.basic.EntityMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.BasicMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.batch.BatchMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.function.FunctionMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.list.ListMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.audit.AuditProvider"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.Mapper"
-        ]
-      }
     }
   ],
   "resources": [

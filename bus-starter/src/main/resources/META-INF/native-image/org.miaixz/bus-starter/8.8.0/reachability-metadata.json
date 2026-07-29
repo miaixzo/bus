@@ -1136,15 +1136,6 @@
           ]
         },
         {
-          "name": "postProcessPropertyValues",
-          "parameterTypes": [
-            "org.springframework.beans.PropertyValues",
-            "java.beans.PropertyDescriptor[]",
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "predictBeanType",
           "parameterTypes": [
             "java.lang.Class",
@@ -1644,7 +1635,7 @@
         {
           "name": "addBootstrapRegistryInitializer",
           "parameterTypes": [
-            "org.springframework.boot.BootstrapRegistryInitializer"
+            "org.springframework.boot.bootstrap.BootstrapRegistryInitializer"
           ]
         },
         {
@@ -2002,7 +1993,7 @@
         {
           "name": "environmentPrepared",
           "parameterTypes": [
-            "org.springframework.boot.ConfigurableBootstrapContext",
+            "org.springframework.boot.bootstrap.ConfigurableBootstrapContext",
             "org.springframework.core.env.ConfigurableEnvironment"
           ]
         },
@@ -2072,15 +2063,10 @@
           ]
         },
         {
-          "name": "running",
-          "parameterTypes": [
-            "org.springframework.context.ConfigurableApplicationContext"
-          ]
-        },
-        {
           "name": "started",
           "parameterTypes": [
-            "org.springframework.context.ConfigurableApplicationContext"
+            "org.springframework.context.ConfigurableApplicationContext",
+            "java.time.Duration"
           ]
         },
         {
@@ -2099,7 +2085,7 @@
         {
           "name": "starting",
           "parameterTypes": [
-            "org.springframework.boot.ConfigurableBootstrapContext"
+            "org.springframework.boot.bootstrap.ConfigurableBootstrapContext"
           ]
         },
         {
@@ -2436,7 +2422,7 @@
         {
           "name": "clearErrorRequestAttributes",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest"
+            "jakarta.servlet.http.HttpServletRequest"
           ]
         },
         {
@@ -2448,7 +2434,7 @@
         {
           "name": "exposeErrorRequestAttributes",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletRequest",
             "java.lang.Throwable",
             "java.lang.String"
           ]
@@ -2463,14 +2449,14 @@
         {
           "name": "findParameterValue",
           "parameterTypes": [
-            "java.util.Map",
+            "jakarta.servlet.ServletRequest",
             "java.lang.String"
           ]
         },
         {
           "name": "findParameterValue",
           "parameterTypes": [
-            "javax.servlet.ServletRequest",
+            "java.util.Map",
             "java.lang.String"
           ]
         },
@@ -2509,7 +2495,7 @@
         {
           "name": "getCookie",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletRequest",
             "java.lang.String"
           ]
         },
@@ -2526,7 +2512,7 @@
         {
           "name": "getDefaultHtmlEscape",
           "parameterTypes": [
-            "javax.servlet.ServletContext"
+            "jakarta.servlet.ServletContext"
           ]
         },
         {
@@ -2586,14 +2572,14 @@
         {
           "name": "getNativeRequest",
           "parameterTypes": [
-            "javax.servlet.ServletRequest",
+            "jakarta.servlet.ServletRequest",
             "java.lang.Class"
           ]
         },
         {
           "name": "getNativeResponse",
           "parameterTypes": [
-            "javax.servlet.ServletResponse",
+            "jakarta.servlet.ServletResponse",
             "java.lang.Class"
           ]
         },
@@ -2608,7 +2594,7 @@
         {
           "name": "getParametersStartingWith",
           "parameterTypes": [
-            "javax.servlet.ServletRequest",
+            "jakarta.servlet.ServletRequest",
             "java.lang.String"
           ]
         },
@@ -2627,7 +2613,7 @@
         {
           "name": "getRealPath",
           "parameterTypes": [
-            "javax.servlet.ServletContext",
+            "jakarta.servlet.ServletContext",
             "java.lang.String"
           ]
         },
@@ -2642,39 +2628,39 @@
         {
           "name": "getRequiredSessionAttribute",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletRequest",
             "java.lang.String"
           ]
         },
         {
           "name": "getResponseEncodedHtmlEscape",
           "parameterTypes": [
-            "javax.servlet.ServletContext"
+            "jakarta.servlet.ServletContext"
           ]
         },
         {
           "name": "getSessionAttribute",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletRequest",
             "java.lang.String"
           ]
         },
         {
           "name": "getSessionId",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest"
+            "jakarta.servlet.http.HttpServletRequest"
           ]
         },
         {
           "name": "getSessionMutex",
           "parameterTypes": [
-            "javax.servlet.http.HttpSession"
+            "jakarta.servlet.http.HttpSession"
           ]
         },
         {
           "name": "getTempDir",
           "parameterTypes": [
-            "javax.servlet.ServletContext"
+            "jakarta.servlet.ServletContext"
           ]
         },
         {
@@ -2712,7 +2698,7 @@
         {
           "name": "hasSubmitParameter",
           "parameterTypes": [
-            "javax.servlet.ServletRequest",
+            "jakarta.servlet.ServletRequest",
             "java.lang.String"
           ]
         },
@@ -2723,7 +2709,7 @@
         {
           "name": "isIncludeRequest",
           "parameterTypes": [
-            "javax.servlet.ServletRequest"
+            "jakarta.servlet.ServletRequest"
           ]
         },
         {
@@ -2800,7 +2786,7 @@
         {
           "name": "removeWebAppRootSystemProperty",
           "parameterTypes": [
-            "javax.servlet.ServletContext"
+            "jakarta.servlet.ServletContext"
           ]
         },
         {
@@ -2844,7 +2830,7 @@
         {
           "name": "setSessionAttribute",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletRequest",
             "java.lang.String",
             "java.lang.Object"
           ]
@@ -2852,7 +2838,7 @@
         {
           "name": "setWebAppRootSystemProperty",
           "parameterTypes": [
-            "javax.servlet.ServletContext"
+            "jakarta.servlet.ServletContext"
           ]
         },
         {
@@ -4009,6 +3995,21 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.spring.http.GsonMessageConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "autoType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.spring.http.GsonMessageConverter$AutoTypeAdapterFactory",
       "fields": [
         {
@@ -4070,6 +4071,21 @@
           "parameterTypes": [
             "long",
             "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "autoType",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         }
       ]
@@ -5799,8 +5815,8 @@
         {
           "name": "afterCompletion",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
-            "javax.servlet.http.HttpServletResponse",
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
             "java.lang.Object",
             "java.lang.Exception"
           ]
@@ -5853,8 +5869,8 @@
         {
           "name": "postHandle",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
-            "javax.servlet.http.HttpServletResponse",
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
             "java.lang.Object",
             "org.springframework.web.servlet.ModelAndView"
           ]
@@ -5870,8 +5886,8 @@
         {
           "name": "preHandle",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
-            "javax.servlet.http.HttpServletResponse",
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
             "java.lang.Object"
           ]
         },
@@ -9502,15 +9518,6 @@
           "name": "postProcessProperties",
           "parameterTypes": [
             "org.springframework.beans.PropertyValues",
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessPropertyValues",
-          "parameterTypes": [
-            "org.springframework.beans.PropertyValues",
-            "java.beans.PropertyDescriptor[]",
             "java.lang.Object",
             "java.lang.String"
           ]
@@ -13260,13 +13267,9 @@
           "parameterTypes": []
         },
         {
-          "name": "getFileExtensions",
-          "parameterTypes": []
-        },
-        {
           "name": "getHandler",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest"
+            "jakarta.servlet.http.HttpServletRequest"
           ]
         },
         {
@@ -13323,7 +13326,7 @@
         {
           "name": "match",
           "parameterTypes": [
-            "javax.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletRequest",
             "java.lang.String"
           ]
         },
@@ -13456,7 +13459,7 @@
         {
           "name": "setServletContext",
           "parameterTypes": [
-            "javax.servlet.ServletContext"
+            "jakarta.servlet.ServletContext"
           ]
         },
         {
@@ -13472,24 +13475,6 @@
           ]
         },
         {
-          "name": "setUseRegisteredSuffixPatternMatch",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setUseSuffixPatternMatch",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setUseTrailingSlashMatch",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         },
@@ -13500,19 +13485,7 @@
           ]
         },
         {
-          "name": "useRegisteredSuffixPatternMatch",
-          "parameterTypes": []
-        },
-        {
           "name": "usesPathPatterns",
-          "parameterTypes": []
-        },
-        {
-          "name": "useSuffixPatternMatch",
-          "parameterTypes": []
-        },
-        {
-          "name": "useTrailingSlashMatch",
           "parameterTypes": []
         },
         {

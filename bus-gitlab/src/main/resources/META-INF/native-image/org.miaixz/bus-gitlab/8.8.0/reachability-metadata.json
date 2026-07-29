@@ -8409,6 +8409,515 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.AbstractIssue",
+      "fields": [
+        {
+          "name": "actualId"
+        },
+        {
+          "name": "assignee"
+        },
+        {
+          "name": "assignees"
+        },
+        {
+          "name": "author"
+        },
+        {
+          "name": "closedAt"
+        },
+        {
+          "name": "closedBy"
+        },
+        {
+          "name": "confidential"
+        },
+        {
+          "name": "createdAt"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "discussionLocked"
+        },
+        {
+          "name": "downvotes"
+        },
+        {
+          "name": "dueDate"
+        },
+        {
+          "name": "epic"
+        },
+        {
+          "name": "externalId"
+        },
+        {
+          "name": "hasTasks"
+        },
+        {
+          "name": "healthStatus"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "iid"
+        },
+        {
+          "name": "imported"
+        },
+        {
+          "name": "importedFrom"
+        },
+        {
+          "name": "issueType"
+        },
+        {
+          "name": "iteration"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "mergeRequestsCount"
+        },
+        {
+          "name": "milestone"
+        },
+        {
+          "name": "projectId"
+        },
+        {
+          "name": "references"
+        },
+        {
+          "name": "severity"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "taskCompletionStatus"
+        },
+        {
+          "name": "taskStatus"
+        },
+        {
+          "name": "timeStats"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "updatedAt"
+        },
+        {
+          "name": "upvotes"
+        },
+        {
+          "name": "userNotesCount"
+        },
+        {
+          "name": "webUrl"
+        },
+        {
+          "name": "weight"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getActualId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAssignee",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAssignees",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAuthor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClosedAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClosedBy",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConfidential",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreatedAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDiscussionLocked",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDownvotes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDueDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEpic",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExternalId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHasTasks",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHealthStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImported",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImportedFrom",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssueType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIteration",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLabels",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMergeRequestsCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMilestone",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProjectId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReferences",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSeverity",
+          "parameterTypes": []
+        },
+        {
+          "name": "getState",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskCompletionStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTaskStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUpdatedAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUpvotes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUserNotesCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWebUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "setActualId",
+          "parameterTypes": [
+            "tools.jackson.databind.node.ValueNode"
+          ]
+        },
+        {
+          "name": "setAssignee",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.Assignee"
+          ]
+        },
+        {
+          "name": "setAssignees",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setAuthor",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.Author"
+          ]
+        },
+        {
+          "name": "setClosedAt",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setClosedBy",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.User"
+          ]
+        },
+        {
+          "name": "setConfidential",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setCreatedAt",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDiscussionLocked",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setDownvotes",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setDueDate",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setEpic",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.IssueEpic"
+          ]
+        },
+        {
+          "name": "setExternalId",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHasTasks",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setHealthStatus",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setIid",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setImported",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setImportedFrom",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIssueType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIteration",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.Iteration"
+          ]
+        },
+        {
+          "name": "setLabels",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setMergeRequestsCount",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setMilestone",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.Milestone"
+          ]
+        },
+        {
+          "name": "setProjectId",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setReferences",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.References"
+          ]
+        },
+        {
+          "name": "setSeverity",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setState",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.Constants$IssueState"
+          ]
+        },
+        {
+          "name": "setTaskCompletionStatus",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.AbstractIssue$TaskCompletionStatus"
+          ]
+        },
+        {
+          "name": "setTaskStatus",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTimeStats",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.TimeStats"
+          ]
+        },
+        {
+          "name": "setTitle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUpdatedAt",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setUpvotes",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setUserNotesCount",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setWebUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWeight",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.AbstractIssue$TaskCompletionStatus",
       "fields": [
         {
@@ -17961,6 +18470,66 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.EpicIssue",
+      "fields": [
+        {
+          "name": "epicIssueId"
+        },
+        {
+          "name": "links"
+        },
+        {
+          "name": "relativePosition"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEpicIssueId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLinkByName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLinks",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRelativePosition",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEpicIssueId",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setLinks",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setRelativePosition",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.EpicIssueLink",
       "fields": [
         {
@@ -21841,6 +22410,34 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.Issue",
+      "fields": [
+        {
+          "name": "subscribed"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubscribed",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSubscribed",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.IssueEpic",
       "methods": [
         {
@@ -24736,6 +25333,73 @@
           "name": "setUrl",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.models.LinkedIssue",
+      "fields": [
+        {
+          "name": "issueLinkId"
+        },
+        {
+          "name": "linkCreatedAt"
+        },
+        {
+          "name": "linkType"
+        },
+        {
+          "name": "linkUpdatedAt"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssueLinkId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLinkCreatedAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLinkType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLinkUpdatedAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "setIssueLinkId",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setLinkCreatedAt",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setLinkType",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.models.LinkType"
+          ]
+        },
+        {
+          "name": "setLinkUpdatedAt",
+          "parameterTypes": [
+            "java.util.Date"
           ]
         },
         {
@@ -44132,6 +44796,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

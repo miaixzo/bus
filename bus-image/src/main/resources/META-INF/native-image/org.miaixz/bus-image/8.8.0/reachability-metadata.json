@@ -6483,7 +6483,7 @@
         {
           "name": "apply",
           "parameterTypes": [
-            "java.lang.String"
+            "java.lang.Object"
           ]
         }
       ]
@@ -9230,7 +9230,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.AttributeSelector",
@@ -9883,7 +9884,8 @@
             "org.miaixz.bus.image.galaxy.data.VR"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.BulkDataWithPrefix",
@@ -44169,7 +44171,8 @@
             "float[]"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.image.nimble.CIELabColorSpace$LazyHolder",
@@ -60967,14 +60970,14 @@
           "parameterTypes": []
         },
         {
-          "name": "createMpps",
-          "parameterTypes": []
-        },
-        {
           "name": "createMPPS",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
+        },
+        {
+          "name": "createMpps",
+          "parameterTypes": []
         },
         {
           "name": "createMpps",
@@ -61113,15 +61116,15 @@
           ]
         },
         {
-          "name": "updateMpps",
-          "parameterTypes": []
-        },
-        {
           "name": "updateMPPS",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes",
             "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
+        },
+        {
+          "name": "updateMpps",
+          "parameterTypes": []
         }
       ]
     },
@@ -64975,24 +64978,6 @@
   ],
   "resources": [
     {
-      "glob": "ldap.properties"
-    },
-    {
-      "glob": "META-INF/services/java.nio.file.spi.FileTypeDetector"
-    },
-    {
-      "glob": "META-INF/services/javax.imageio.spi.ImageReaderSpi"
-    },
-    {
-      "glob": "META-INF/services/javax.imageio.spi.ImageWriterSpi"
-    },
-    {
-      "glob": "META-INF/services/org.miaixz.bus.image.galaxy.data.ElementDictionary"
-    },
-    {
-      "glob": "org/miaixz/bus/image/**"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
       },
@@ -65009,6 +64994,24 @@
         "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
       },
       "glob": "org/miaixz/bus/image/nimble/sRGB.icc"
+    },
+    {
+      "glob": "ldap.properties"
+    },
+    {
+      "glob": "META-INF/services/java.nio.file.spi.FileTypeDetector"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageReaderSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageWriterSpi"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.image.galaxy.data.ElementDictionary"
+    },
+    {
+      "glob": "org/miaixz/bus/image/**"
     }
   ]
 }

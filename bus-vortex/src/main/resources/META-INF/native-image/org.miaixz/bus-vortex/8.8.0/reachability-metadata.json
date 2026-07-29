@@ -2322,7 +2322,7 @@
         {
           "name": "setLifecycle",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Lifecycle"
+            "org.miaixz.bus.core.Lifecycle$State"
           ]
         },
         {
@@ -2349,7 +2349,7 @@
         {
           "name": "lifecycle",
           "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Lifecycle"
+            "org.miaixz.bus.core.Lifecycle$State"
           ]
         },
         {
@@ -4069,6 +4069,7 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
+            "org.miaixz.bus.core.center.function.PredicateX",
             "org.miaixz.bus.core.center.function.PredicateX"
           ]
         },
@@ -4194,6 +4195,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

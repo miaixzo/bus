@@ -46,6 +46,27 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.mapper.BaseMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.mapper.Mapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.mapper.SharedMapper"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.base.service.AbstractService",
       "methods": [
         {
@@ -324,6 +345,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.service.BaseService"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.base.service.DefaultService",
       "methods": [
         {
@@ -331,6 +359,13 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.base.service.SharedService"
+        ]
+      }
     },
     {
       "type": "org.miaixz.bus.base.spring.BaseController",
@@ -382,42 +417,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.mapper.BaseMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.mapper.Mapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.mapper.SharedMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.service.BaseService"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.base.service.SharedService"
-        ]
-      }
     }
-  ],
-  "resources": []
+  ]
 }

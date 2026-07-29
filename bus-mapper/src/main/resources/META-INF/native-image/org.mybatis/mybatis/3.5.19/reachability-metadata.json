@@ -33,6 +33,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.Executor"
+        ]
+      }
+    },
+    {
       "type": "org.apache.ibatis.executor.resultset.ResultSetHandler",
       "methods": [
         {
@@ -42,6 +49,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.resultset.ResultSetHandler"
+        ]
+      }
     },
     {
       "type": "org.apache.ibatis.executor.statement.BaseStatementHandler",
@@ -104,6 +118,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.statement.StatementHandler"
+        ]
+      }
     },
     {
       "type": "org.apache.ibatis.javassist.util.proxy.ProxyFactory",
@@ -247,27 +268,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.Executor"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.resultset.ResultSetHandler"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.statement.StatementHandler"
-        ]
-      }
     }
   ],
   "resources": [

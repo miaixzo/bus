@@ -371,7 +371,8 @@
           "name": "readResolve",
           "parameterTypes": []
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.cache.builtin.SpelCalculator",

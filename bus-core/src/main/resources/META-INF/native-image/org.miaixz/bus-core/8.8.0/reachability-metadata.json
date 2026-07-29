@@ -5700,7 +5700,8 @@
             "java.util.Date"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.date.format.parser.FastDateParser$CaseInsensitiveTextStrategy",
@@ -6534,7 +6535,8 @@
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Builder"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$AddTask",
@@ -6558,7 +6560,8 @@
             "org.miaixz.bus.core.center.map.concurrent.EntryWeigher"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Builder",
@@ -6579,7 +6582,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$DrainStatus",
@@ -6670,7 +6674,8 @@
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$UpdateTask",
@@ -6729,7 +6734,8 @@
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers",
@@ -6750,7 +6756,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$CollectionWeigher",
@@ -6762,7 +6769,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$EntryWeigherView",
@@ -6773,7 +6781,8 @@
             "org.miaixz.bus.core.center.map.concurrent.Weigher"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$IterableWeigher",
@@ -6785,7 +6794,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$ListWeigher",
@@ -6797,7 +6807,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$MapWeigher",
@@ -6809,7 +6820,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$SetWeigher",
@@ -6821,7 +6833,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$SingletonEntryWeigher",
@@ -6833,7 +6846,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.concurrent.Weighers$SingletonWeigher",
@@ -6845,7 +6859,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.CustomKeyMap",
@@ -6964,7 +6979,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.LinkedForestMap",
@@ -7075,7 +7091,8 @@
             "java.util.Map"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.multiple.AbstractCollValueMap",
@@ -7706,7 +7723,8 @@
             "java.util.Map"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.set.SetValidator",
@@ -9429,7 +9447,8 @@
             "int"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.io.ByteOrderMark",
@@ -9457,7 +9476,8 @@
             "byte[]"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.io.CharSequenceReader",
@@ -19255,31 +19275,37 @@
   ],
   "resources": [
     {
+      "bundle": "messages"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.iterator.EnumerationIterator"
+      },
+      "glob": "org/miaixz/bus/core/xyz"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+      },
+      "glob": "org/miaixz/bus/core/io/resource/ClassPathResource.class"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.JarResource"
+      },
+      "glob": "org/miaixz/bus/core/xyz"
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator"
       },
       "glob": ""
     },
     {
-      "bundle": "messages"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator"
       },
       "glob": "META-INF"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
-      },
-      "glob": "META-INF"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.loader.NatLoader"
-      },
-      "glob": "missing-native-image-resource.so"
     },
     {
       "condition": {
@@ -19295,9 +19321,9 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
       },
-      "glob": "org/miaixz/bus/core/io/resource/ClassPathResource.class"
+      "glob": "META-INF"
     },
     {
       "condition": {
@@ -19310,18 +19336,6 @@
         "typeReached": "org.miaixz.bus.core.xyz.UrlKit"
       },
       "glob": "org/miaixz/bus/core/io/resource/ClassPathResource.class"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.iterator.EnumerationIterator"
-      },
-      "glob": "org/miaixz/bus/core/xyz"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.io.resource.JarResource"
-      },
-      "glob": "org/miaixz/bus/core/xyz"
     },
     {
       "glob": "org/miaixz/bus/core/xyz"
