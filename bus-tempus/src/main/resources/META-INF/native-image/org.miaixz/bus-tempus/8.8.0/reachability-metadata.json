@@ -91,6 +91,17 @@
     },
     {
       "type": "org.miaixz.bus.tempus.Configure",
+      "fields": [
+        {
+          "name": "daemon"
+        },
+        {
+          "name": "matchSecond"
+        },
+        {
+          "name": "useTriggerQueue"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -144,6 +155,14 @@
     },
     {
       "type": "org.miaixz.bus.tempus.crontab.CronCrontab",
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "pattern"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -176,9 +195,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.Crontab"
     },
     {
       "type": "org.miaixz.bus.tempus.crontab.CrontabFactory",
@@ -256,6 +272,14 @@
     },
     {
       "type": "org.miaixz.bus.tempus.crontab.TimerCrontab",
+      "fields": [
+        {
+          "name": "delayMs"
+        },
+        {
+          "name": "task"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -446,6 +470,14 @@
     },
     {
       "type": "org.miaixz.bus.tempus.Expression",
+      "fields": [
+        {
+          "name": "cronExpression"
+        },
+        {
+          "name": "timeZone"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -726,9 +758,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.listener.TaskListener"
-    },
-    {
       "type": "org.miaixz.bus.tempus.listener.TaskListenerManager",
       "methods": [
         {
@@ -770,6 +799,14 @@
     },
     {
       "type": "org.miaixz.bus.tempus.Manager",
+      "fields": [
+        {
+          "name": "executors"
+        },
+        {
+          "name": "launchers"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1028,6 +1065,11 @@
     },
     {
       "type": "org.miaixz.bus.tempus.pattern.matcher.BoolArrayMatcher",
+      "fields": [
+        {
+          "name": "minValue"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1104,9 +1146,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.pattern.matcher.PartMatcher"
     },
     {
       "type": "org.miaixz.bus.tempus.pattern.matcher.PatternMatcher",
@@ -1433,6 +1472,38 @@
     },
     {
       "type": "org.miaixz.bus.tempus.pattern.Part",
+      "fields": [
+        {
+          "name": "calendarField"
+        },
+        {
+          "name": "DAY_OF_MONTH"
+        },
+        {
+          "name": "DAY_OF_WEEK"
+        },
+        {
+          "name": "HOUR"
+        },
+        {
+          "name": "max"
+        },
+        {
+          "name": "min"
+        },
+        {
+          "name": "MINUTE"
+        },
+        {
+          "name": "MONTH"
+        },
+        {
+          "name": "SECOND"
+        },
+        {
+          "name": "YEAR"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1566,6 +1637,17 @@
     },
     {
       "type": "org.miaixz.bus.tempus.Scheduler",
+      "fields": [
+        {
+          "name": "repertoire"
+        },
+        {
+          "name": "started"
+        },
+        {
+          "name": "threadExecutor"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1745,31 +1827,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.activity.AbstractActivityHandler"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityCallable"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityContextFactory"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutor"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityExecutorResolver"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.activity.ActivityResultSerializer"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.Binding"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier"
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.notifier.NotificationMode",
+      "fields": [
+        {
+          "name": "AFTER_COMPLETE"
+        },
+        {
+          "name": "DISABLED"
+        },
+        {
+          "name": "INLINE_BEFORE_COMPLETE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2215,9 +2284,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.payload.PayloadAdapter"
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.payload.PayloadConverter",
       "methods": [
         {
@@ -2247,12 +2313,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.Publisher"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.Subscriber"
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector",
       "methods": [
         {
@@ -2271,9 +2331,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector"
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowEndpointParser",
@@ -2450,10 +2507,27 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport"
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.worker.WorkflowTransportState",
+      "fields": [
+        {
+          "name": "CONNECTING"
+        },
+        {
+          "name": "IDLE"
+        },
+        {
+          "name": "READY"
+        },
+        {
+          "name": "SHUTDOWN"
+        },
+        {
+          "name": "TRANSIENT_FAILURE"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2493,6 +2567,11 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.AbstractWorkflowHandler",
+      "fields": [
+        {
+          "name": "activityClass"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2534,12 +2613,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.DefaultWorkflowOptionsFactory"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager",
@@ -2594,12 +2667,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.RetryOptionsFactory"
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding"
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager",
       "methods": [
         {
@@ -2628,6 +2695,17 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
+      "fields": [
+        {
+          "name": "binding"
+        },
+        {
+          "name": "connection"
+        },
+        {
+          "name": "runtime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2864,6 +2942,17 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Activity",
+      "fields": [
+        {
+          "name": "heartbeatTimeoutSeconds"
+        },
+        {
+          "name": "scheduleToStartMinutes"
+        },
+        {
+          "name": "startToCloseHours"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2903,6 +2992,20 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding",
+      "fields": [
+        {
+          "name": "stableKey"
+        },
+        {
+          "name": "taskQueue"
+        },
+        {
+          "name": "workflowId"
+        },
+        {
+          "name": "workflowType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2952,6 +3055,17 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection",
+      "fields": [
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "identity"
+        },
+        {
+          "name": "namespace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2991,6 +3105,29 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Recovery",
+      "fields": [
+        {
+          "name": "healthFailureThreshold"
+        },
+        {
+          "name": "healthIntervalSeconds"
+        },
+        {
+          "name": "healthProbeTimeoutSeconds"
+        },
+        {
+          "name": "reconnectEnabled"
+        },
+        {
+          "name": "reconnectInitialBackoffSeconds"
+        },
+        {
+          "name": "reconnectMaxBackoffSeconds"
+        },
+        {
+          "name": "shutdownAwaitSeconds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3070,6 +3207,20 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Retry",
+      "fields": [
+        {
+          "name": "backoffCoefficient"
+        },
+        {
+          "name": "initialIntervalSeconds"
+        },
+        {
+          "name": "maxAttempts"
+        },
+        {
+          "name": "maxIntervalSeconds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3119,6 +3270,23 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime",
+      "fields": [
+        {
+          "name": "activity"
+        },
+        {
+          "name": "recovery"
+        },
+        {
+          "name": "retry"
+        },
+        {
+          "name": "worker"
+        },
+        {
+          "name": "workflow"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3182,6 +3350,29 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Worker",
+      "fields": [
+        {
+          "name": "maxActivityTaskPollers"
+        },
+        {
+          "name": "maxConcurrent"
+        },
+        {
+          "name": "maxTaskQueueActivitiesPerSecond"
+        },
+        {
+          "name": "maxWorkerActivitiesPerSecond"
+        },
+        {
+          "name": "maxWorkflowTaskPollers"
+        },
+        {
+          "name": "maxWorkflowThreadCount"
+        },
+        {
+          "name": "workflowCacheSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3261,6 +3452,17 @@
     },
     {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Workflow",
+      "fields": [
+        {
+          "name": "executionTimeoutDays"
+        },
+        {
+          "name": "runTimeoutHours"
+        },
+        {
+          "name": "taskTimeoutMinutes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3299,9 +3501,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowCallable"
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowIdGenerator",
       "methods": [
         {
@@ -3313,10 +3512,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory"
-    },
-    {
       "type": "org.miaixz.bus.tempus.timings.SystemTimer",
+      "fields": [
+        {
+          "name": "delayQueueTimeout"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3354,6 +3555,11 @@
     },
     {
       "type": "org.miaixz.bus.tempus.timings.TimerTaskList",
+      "fields": [
+        {
+          "name": "expire"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3403,6 +3609,11 @@
     },
     {
       "type": "org.miaixz.bus.tempus.timings.TimingWheel",
+      "fields": [
+        {
+          "name": "overflowWheel"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",

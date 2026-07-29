@@ -11,6 +11,26 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.Cpu",
+      "fields": [
+        {
+          "name": "ioWait"
+        },
+        {
+          "name": "logicalCores"
+        },
+        {
+          "name": "physicalCores"
+        },
+        {
+          "name": "systemUsage"
+        },
+        {
+          "name": "totalUsage"
+        },
+        {
+          "name": "userUsage"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -148,6 +168,47 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.Disk",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "filesystemType"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "logicalVolumeName"
+        },
+        {
+          "name": "mountOptions"
+        },
+        {
+          "name": "mountPoint"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usagePercent"
+        },
+        {
+          "name": "usedSpace"
+        },
+        {
+          "name": "uuid"
+        },
+        {
+          "name": "volumeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -439,16 +500,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.Baseboard"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.BluetoothDevice"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$LogicalProcessor",
+      "fields": [
+        {
+          "name": "numaNode"
+        },
+        {
+          "name": "physicalPackageNumber"
+        },
+        {
+          "name": "physicalProcessorNumber"
+        },
+        {
+          "name": "processorGroup"
+        },
+        {
+          "name": "processorNumber"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -505,6 +574,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$PhysicalProcessor",
+      "fields": [
+        {
+          "name": "efficiency"
+        },
+        {
+          "name": "idString"
+        },
+        {
+          "name": "physicalPackageNumber"
+        },
+        {
+          "name": "physicalProcessorNumber"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -546,6 +629,23 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache",
+      "fields": [
+        {
+          "name": "associativity"
+        },
+        {
+          "name": "cacheSize"
+        },
+        {
+          "name": "level"
+        },
+        {
+          "name": "lineSize"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -605,6 +705,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorCache$Type",
+      "fields": [
+        {
+          "name": "DATA"
+        },
+        {
+          "name": "INSTRUCTION"
+        },
+        {
+          "name": "TRACE"
+        },
+        {
+          "name": "UNIFIED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -631,6 +745,14 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$ProcessorIdentifier",
+      "fields": [
+        {
+          "name": "cpu64bit"
+        },
+        {
+          "name": "processorID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -715,6 +837,35 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.CentralProcessor$TickType",
+      "fields": [
+        {
+          "name": "IDLE"
+        },
+        {
+          "name": "index"
+        },
+        {
+          "name": "IOWAIT"
+        },
+        {
+          "name": "IRQ"
+        },
+        {
+          "name": "NICE"
+        },
+        {
+          "name": "SOFTIRQ"
+        },
+        {
+          "name": "STEAL"
+        },
+        {
+          "name": "SYSTEM"
+        },
+        {
+          "name": "USER"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -755,6 +906,29 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractBluetoothDevice",
+      "fields": [
+        {
+          "name": "adapterName"
+        },
+        {
+          "name": "address"
+        },
+        {
+          "name": "batteryLevel"
+        },
+        {
+          "name": "connected"
+        },
+        {
+          "name": "majorDeviceClass"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "paired"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -810,6 +984,47 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "currentFreq"
+        },
+        {
+          "name": "featureFlags"
+        },
+        {
+          "name": "interrupts"
+        },
+        {
+          "name": "logicalProcessorCount"
+        },
+        {
+          "name": "logicalProcessors"
+        },
+        {
+          "name": "maxFreq"
+        },
+        {
+          "name": "physicalPackageCount"
+        },
+        {
+          "name": "physicalProcessorCount"
+        },
+        {
+          "name": "physicalProcessors"
+        },
+        {
+          "name": "processorCaches"
+        },
+        {
+          "name": "processorCpuLoadTicks"
+        },
+        {
+          "name": "systemCpuLoadTicks"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -941,6 +1156,14 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem",
+      "fields": [
+        {
+          "name": "baseboard"
+        },
+        {
+          "name": "firmware"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -962,6 +1185,11 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay",
+      "fields": [
+        {
+          "name": "displayInfo"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1039,6 +1267,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard",
+      "fields": [
+        {
+          "name": "deviceId"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "vendor"
+        },
+        {
+          "name": "versionInfo"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1082,6 +1324,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer",
+      "fields": [
+        {
+          "name": "computerSystem"
+        },
+        {
+          "name": "memory"
+        },
+        {
+          "name": "processor"
+        },
+        {
+          "name": "sensors"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1111,6 +1367,23 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore",
+      "fields": [
+        {
+          "name": "diskType"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "serial"
+        },
+        {
+          "name": "size"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1149,6 +1422,11 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup",
+      "fields": [
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1178,6 +1456,23 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF",
+      "fields": [
+        {
+          "name": "displayName"
+        },
+        {
+          "name": "index"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "prefixLengths"
+        },
+        {
+          "name": "subnetMasks"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1257,6 +1552,71 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource",
+      "fields": [
+        {
+          "name": "amperage"
+        },
+        {
+          "name": "capacityUnits"
+        },
+        {
+          "name": "charging"
+        },
+        {
+          "name": "chemistry"
+        },
+        {
+          "name": "currentCapacity"
+        },
+        {
+          "name": "cycleCount"
+        },
+        {
+          "name": "designCapacity"
+        },
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "discharging"
+        },
+        {
+          "name": "manufactureDate"
+        },
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "maxCapacity"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "powerOnLine"
+        },
+        {
+          "name": "powerUsageRate"
+        },
+        {
+          "name": "remainingCapacityPercent"
+        },
+        {
+          "name": "serialNumber"
+        },
+        {
+          "name": "temperature"
+        },
+        {
+          "name": "timeRemainingEstimated"
+        },
+        {
+          "name": "timeRemainingInstant"
+        },
+        {
+          "name": "voltage"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1386,6 +1746,26 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractPrinter",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "driverName"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "portName"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "statusReason"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1446,6 +1826,17 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractSensors",
+      "fields": [
+        {
+          "name": "cpuTemperature"
+        },
+        {
+          "name": "cpuVoltage"
+        },
+        {
+          "name": "fanSpeeds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1471,6 +1862,14 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard",
+      "fields": [
+        {
+          "name": "codec"
+        },
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1500,6 +1899,29 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice",
+      "fields": [
+        {
+          "name": "connectedDevices"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "productId"
+        },
+        {
+          "name": "serialNumber"
+        },
+        {
+          "name": "uniqueDeviceId"
+        },
+        {
+          "name": "vendor"
+        },
+        {
+          "name": "vendorId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1582,6 +2004,11 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.common.NoOpGpuStats",
+      "fields": [
+        {
+          "name": "closed"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1638,16 +2065,48 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.ComputerSystem"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.Display"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfo"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.hardware.DisplayInfoImpl",
+      "fields": [
+        {
+          "name": "digital"
+        },
+        {
+          "name": "edid"
+        },
+        {
+          "name": "hcm"
+        },
+        {
+          "name": "manufacturerID"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "preferredResolution"
+        },
+        {
+          "name": "productID"
+        },
+        {
+          "name": "productSerialNumber"
+        },
+        {
+          "name": "serialNo"
+        },
+        {
+          "name": "vcm"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "week"
+        },
+        {
+          "name": "year"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1735,16 +2194,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.Firmware"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.GlobalMemory"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.GpuStats"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.hardware.GpuTicks",
+      "fields": [
+        {
+          "name": "activeTicks"
+        },
+        {
+          "name": "idleTicks"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1768,16 +2226,36 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.GraphicsCard"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.HWDiskStore"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.hardware.HWPartition",
+      "fields": [
+        {
+          "name": "identification"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "major"
+        },
+        {
+          "name": "minor"
+        },
+        {
+          "name": "mountPoint"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1849,13 +2327,33 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.hardware.NetworkIF$IfOperStatus",
+      "fields": [
+        {
+          "name": "DORMANT"
+        },
+        {
+          "name": "DOWN"
+        },
+        {
+          "name": "LOWER_LAYER_DOWN"
+        },
+        {
+          "name": "NOT_PRESENT"
+        },
+        {
+          "name": "TESTING"
+        },
+        {
+          "name": "UNKNOWN"
+        },
+        {
+          "name": "UP"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1889,6 +2387,29 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.PhysicalMemory",
+      "fields": [
+        {
+          "name": "bankLabel"
+        },
+        {
+          "name": "capacity"
+        },
+        {
+          "name": "clockSpeed"
+        },
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "memoryType"
+        },
+        {
+          "name": "partNumber"
+        },
+        {
+          "name": "serialNumber"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1937,10 +2458,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.PowerSource"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.hardware.PowerSource$CapacityUnits",
+      "fields": [
+        {
+          "name": "MAH"
+        },
+        {
+          "name": "MWH"
+        },
+        {
+          "name": "RELATIVE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1960,12 +2489,26 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.Printer"
     },
     {
       "type": "org.miaixz.bus.health.builtin.hardware.Printer$PrinterStatus",
+      "fields": [
+        {
+          "name": "ERROR"
+        },
+        {
+          "name": "IDLE"
+        },
+        {
+          "name": "OFFLINE"
+        },
+        {
+          "name": "PRINTING"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1987,19 +2530,36 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.hardware.Sensors"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.SoundCard"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.UsbDevice"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.hardware.VirtualMemory"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.Host",
+      "fields": [
+        {
+          "name": "ip"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "os"
+        },
+        {
+          "name": "osArch"
+        },
+        {
+          "name": "rxBytesPerSecond"
+        },
+        {
+          "name": "rxPacketsPerSecond"
+        },
+        {
+          "name": "txBytesPerSecond"
+        },
+        {
+          "name": "txPacketsPerSecond"
+        },
+        {
+          "name": "userDir"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2185,9 +2745,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.jna.Adl"
     },
     {
       "type": "org.miaixz.bus.health.builtin.jna.Adl$AdapterInfo",
@@ -3103,9 +3660,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.jna.ByRef"
     },
     {
       "type": "org.miaixz.bus.health.builtin.jna.ByRef$CloseableHANDLEByReference",
@@ -4125,9 +4679,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.jna.Nvml"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.jna.Nvml$NvmlLibrary",
       "fields": [
         {
@@ -4942,9 +5493,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.jna.Struct"
     },
     {
       "type": "org.miaixz.bus.health.builtin.jna.Struct$CloseableHostCpuLoadInfo",
@@ -9595,6 +10143,38 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.Jvm",
+      "fields": [
+        {
+          "name": "freeMemory"
+        },
+        {
+          "name": "jdkHome"
+        },
+        {
+          "name": "jdkName"
+        },
+        {
+          "name": "jdkVersion"
+        },
+        {
+          "name": "maxMemory"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "totalMemory"
+        },
+        {
+          "name": "uptime"
+        },
+        {
+          "name": "usagePercent"
+        },
+        {
+          "name": "usedMemory"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9800,6 +10380,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.Memory",
+      "fields": [
+        {
+          "name": "free"
+        },
+        {
+          "name": "total"
+        },
+        {
+          "name": "usage"
+        },
+        {
+          "name": "used"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9903,6 +10497,23 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.ApplicationInfo",
+      "fields": [
+        {
+          "name": "additionalInfo"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "timestamp"
+        },
+        {
+          "name": "vendor"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9949,9 +10560,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.software.CgroupInfo"
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.common.AbstractFileSystem",
@@ -10020,6 +10628,14 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem",
+      "fields": [
+        {
+          "name": "bitness"
+        },
+        {
+          "name": "manufacturer"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10102,6 +10718,26 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.common.AbstractOSFileStore",
+      "fields": [
+        {
+          "name": "label"
+        },
+        {
+          "name": "local"
+        },
+        {
+          "name": "mount"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "options"
+        },
+        {
+          "name": "volume"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10143,6 +10779,11 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.common.AbstractOSProcess",
+      "fields": [
+        {
+          "name": "processID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10176,6 +10817,11 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.common.AbstractOSThread",
+      "fields": [
+        {
+          "name": "owningProcessId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10208,13 +10854,36 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.software.FileSystem"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats$IPConnection",
+      "fields": [
+        {
+          "name": "foreignAddress"
+        },
+        {
+          "name": "foreignPort"
+        },
+        {
+          "name": "localAddress"
+        },
+        {
+          "name": "localPort"
+        },
+        {
+          "name": "owningProcessId"
+        },
+        {
+          "name": "receiveQueue"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "transmitQueue"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10274,6 +10943,47 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats$TcpState",
+      "fields": [
+        {
+          "name": "CLOSE_WAIT"
+        },
+        {
+          "name": "CLOSED"
+        },
+        {
+          "name": "CLOSING"
+        },
+        {
+          "name": "ESTABLISHED"
+        },
+        {
+          "name": "FIN_WAIT_1"
+        },
+        {
+          "name": "FIN_WAIT_2"
+        },
+        {
+          "name": "LAST_ACK"
+        },
+        {
+          "name": "LISTEN"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "SYN_RECV"
+        },
+        {
+          "name": "SYN_SENT"
+        },
+        {
+          "name": "TIME_WAIT"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10296,6 +11006,38 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats$TcpStats",
+      "fields": [
+        {
+          "name": "connectionFailures"
+        },
+        {
+          "name": "connectionsActive"
+        },
+        {
+          "name": "connectionsEstablished"
+        },
+        {
+          "name": "connectionsPassive"
+        },
+        {
+          "name": "connectionsReset"
+        },
+        {
+          "name": "inErrors"
+        },
+        {
+          "name": "outResets"
+        },
+        {
+          "name": "segmentsReceived"
+        },
+        {
+          "name": "segmentsRetransmitted"
+        },
+        {
+          "name": "segmentsSent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10360,6 +11102,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.InternetProtocolStats$UdpStats",
+      "fields": [
+        {
+          "name": "datagramsNoPort"
+        },
+        {
+          "name": "datagramsReceived"
+        },
+        {
+          "name": "datagramsReceivedErrors"
+        },
+        {
+          "name": "datagramsSent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10393,13 +11149,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.software.NetworkParams"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.software.OperatingSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.software.OperatingSystem$OSVersionInfo",
+      "fields": [
+        {
+          "name": "buildNumber"
+        },
+        {
+          "name": "codeName"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10447,6 +11208,29 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.OSDesktopWindow",
+      "fields": [
+        {
+          "name": "command"
+        },
+        {
+          "name": "locAndSize"
+        },
+        {
+          "name": "order"
+        },
+        {
+          "name": "owningProcessId"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "visible"
+        },
+        {
+          "name": "windowId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10495,13 +11279,36 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.builtin.software.OSFileStore"
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.software.OSProcess"
-    },
-    {
       "type": "org.miaixz.bus.health.builtin.software.OSProcess$State",
+      "fields": [
+        {
+          "name": "INVALID"
+        },
+        {
+          "name": "NEW"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "RUNNING"
+        },
+        {
+          "name": "SLEEPING"
+        },
+        {
+          "name": "STOPPED"
+        },
+        {
+          "name": "SUSPENDED"
+        },
+        {
+          "name": "WAITING"
+        },
+        {
+          "name": "ZOMBIE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10524,6 +11331,17 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.OSService",
+      "fields": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "processID"
+        },
+        {
+          "name": "state"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10549,6 +11367,17 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.OSService$State",
+      "fields": [
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "RUNNING"
+        },
+        {
+          "name": "STOPPED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10571,6 +11400,20 @@
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.OSSession",
+      "fields": [
+        {
+          "name": "host"
+        },
+        {
+          "name": "loginTime"
+        },
+        {
+          "name": "terminalDevice"
+        },
+        {
+          "name": "userName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10602,9 +11445,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.builtin.software.OSThread"
     },
     {
       "type": "org.miaixz.bus.health.builtin.software.OSThread$ThreadFiltering",
@@ -11195,6 +12035,68 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.driver.proc.DiskStats$IoStat",
+      "fields": [
+        {
+          "name": "DISCARDS"
+        },
+        {
+          "name": "DISCARDS_MERGED"
+        },
+        {
+          "name": "DISCARDS_MS"
+        },
+        {
+          "name": "DISCARDS_SECTOR"
+        },
+        {
+          "name": "FLUSHES"
+        },
+        {
+          "name": "FLUSHES_MS"
+        },
+        {
+          "name": "IO_MS"
+        },
+        {
+          "name": "IO_MS_WEIGHTED"
+        },
+        {
+          "name": "IO_QUEUE_LENGTH"
+        },
+        {
+          "name": "MAJOR"
+        },
+        {
+          "name": "MINOR"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "READS"
+        },
+        {
+          "name": "READS_MERGED"
+        },
+        {
+          "name": "READS_MS"
+        },
+        {
+          "name": "READS_SECTOR"
+        },
+        {
+          "name": "WRITES"
+        },
+        {
+          "name": "WRITES_MERGED"
+        },
+        {
+          "name": "WRITES_MS"
+        },
+        {
+          "name": "WRITES_SECTOR"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11270,6 +12172,164 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStat",
+      "fields": [
+        {
+          "name": "ARG_END"
+        },
+        {
+          "name": "ARG_START"
+        },
+        {
+          "name": "BLOCKED"
+        },
+        {
+          "name": "CGUEST_TIME"
+        },
+        {
+          "name": "CMAJFLT"
+        },
+        {
+          "name": "CMINFLT"
+        },
+        {
+          "name": "CNSWAP"
+        },
+        {
+          "name": "COMM"
+        },
+        {
+          "name": "CSTIME"
+        },
+        {
+          "name": "CUTIME"
+        },
+        {
+          "name": "DELAYACCT_BLKIO_TICKS"
+        },
+        {
+          "name": "END_DATA"
+        },
+        {
+          "name": "ENDCODE"
+        },
+        {
+          "name": "ENV_END"
+        },
+        {
+          "name": "ENV_START"
+        },
+        {
+          "name": "EXIT_CODE"
+        },
+        {
+          "name": "EXIT_SIGNAL"
+        },
+        {
+          "name": "FLAGS"
+        },
+        {
+          "name": "GUEST_TIME"
+        },
+        {
+          "name": "ITREALVALUE"
+        },
+        {
+          "name": "KSTKEIP"
+        },
+        {
+          "name": "KSTKESP"
+        },
+        {
+          "name": "MAJFLT"
+        },
+        {
+          "name": "MINFLT"
+        },
+        {
+          "name": "NICE"
+        },
+        {
+          "name": "NSWAP"
+        },
+        {
+          "name": "NUM_THREADS"
+        },
+        {
+          "name": "PGRP"
+        },
+        {
+          "name": "PID"
+        },
+        {
+          "name": "POLICY"
+        },
+        {
+          "name": "PPID"
+        },
+        {
+          "name": "PRIORITY"
+        },
+        {
+          "name": "PROCESSOR"
+        },
+        {
+          "name": "PTGID"
+        },
+        {
+          "name": "RSS"
+        },
+        {
+          "name": "RSSLIM"
+        },
+        {
+          "name": "RT_PRIORITY"
+        },
+        {
+          "name": "SESSION"
+        },
+        {
+          "name": "SIGCATCH"
+        },
+        {
+          "name": "SIGIGNORE"
+        },
+        {
+          "name": "SIGNAL"
+        },
+        {
+          "name": "START_BRK"
+        },
+        {
+          "name": "START_DATA"
+        },
+        {
+          "name": "STARTCODE"
+        },
+        {
+          "name": "STARTSTACK"
+        },
+        {
+          "name": "STARTTIME"
+        },
+        {
+          "name": "STATE"
+        },
+        {
+          "name": "STIME"
+        },
+        {
+          "name": "TTY_NR"
+        },
+        {
+          "name": "UTIME"
+        },
+        {
+          "name": "VSIZE"
+        },
+        {
+          "name": "WCHAN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11292,6 +12352,29 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.driver.proc.ProcessStat$PidStatM",
+      "fields": [
+        {
+          "name": "DATA"
+        },
+        {
+          "name": "DT"
+        },
+        {
+          "name": "LIB"
+        },
+        {
+          "name": "RESIDENT"
+        },
+        {
+          "name": "SHARED"
+        },
+        {
+          "name": "SIZE"
+        },
+        {
+          "name": "TEXT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11385,10 +12468,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.linux.driver.Who"
-    },
-    {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxBaseboard",
+      "fields": [
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "serialNumber"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11606,6 +12700,17 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxComputerSystem",
+      "fields": [
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "serialNumber"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11655,6 +12760,23 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "releaseDate"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11714,6 +12836,23 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxFirmware$VcGenCmdStrings",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "releaseDate"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11782,6 +12921,11 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxGpuStats",
+      "fields": [
+        {
+          "name": "closed"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11935,6 +13079,32 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs",
+      "fields": [
+        {
+          "name": "deviceId"
+        },
+        {
+          "name": "driverName"
+        },
+        {
+          "name": "drmDevicePath"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "pciBusId"
+        },
+        {
+          "name": "vendor"
+        },
+        {
+          "name": "versionInfo"
+        },
+        {
+          "name": "vram"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12069,6 +13239,29 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxHWDiskStore$UdevStat",
+      "fields": [
+        {
+          "name": "ACTIVE_MS"
+        },
+        {
+          "name": "order"
+        },
+        {
+          "name": "QUEUE_LENGTH"
+        },
+        {
+          "name": "READ_BYTES"
+        },
+        {
+          "name": "READS"
+        },
+        {
+          "name": "WRITE_BYTES"
+        },
+        {
+          "name": "WRITES"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12113,6 +13306,50 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxNetworkIF",
+      "fields": [
+        {
+          "name": "bytesRecv"
+        },
+        {
+          "name": "bytesSent"
+        },
+        {
+          "name": "collisions"
+        },
+        {
+          "name": "connectorPresent"
+        },
+        {
+          "name": "ifAlias"
+        },
+        {
+          "name": "ifOperStatus"
+        },
+        {
+          "name": "ifType"
+        },
+        {
+          "name": "inDrops"
+        },
+        {
+          "name": "inErrors"
+        },
+        {
+          "name": "outErrors"
+        },
+        {
+          "name": "packetsRecv"
+        },
+        {
+          "name": "packetsSent"
+        },
+        {
+          "name": "speed"
+        },
+        {
+          "name": "timeStamp"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12260,6 +13497,83 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.hardware.LinuxPowerSource$Prop",
+      "fields": [
+        {
+          "name": "POWER_SUPPLY_CAPACITY"
+        },
+        {
+          "name": "POWER_SUPPLY_CHARGE_FULL"
+        },
+        {
+          "name": "POWER_SUPPLY_CHARGE_FULL_DESIGN"
+        },
+        {
+          "name": "POWER_SUPPLY_CHARGE_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_CURRENT_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_CYCLE_COUNT"
+        },
+        {
+          "name": "POWER_SUPPLY_ENERGY_FULL"
+        },
+        {
+          "name": "POWER_SUPPLY_ENERGY_FULL_DESIGN"
+        },
+        {
+          "name": "POWER_SUPPLY_ENERGY_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_MANUFACTURE_DAY"
+        },
+        {
+          "name": "POWER_SUPPLY_MANUFACTURE_MONTH"
+        },
+        {
+          "name": "POWER_SUPPLY_MANUFACTURE_YEAR"
+        },
+        {
+          "name": "POWER_SUPPLY_MANUFACTURER"
+        },
+        {
+          "name": "POWER_SUPPLY_MODEL_NAME"
+        },
+        {
+          "name": "POWER_SUPPLY_NAME"
+        },
+        {
+          "name": "POWER_SUPPLY_ONLINE"
+        },
+        {
+          "name": "POWER_SUPPLY_POWER_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_PRESENT"
+        },
+        {
+          "name": "POWER_SUPPLY_SERIAL_NUMBER"
+        },
+        {
+          "name": "POWER_SUPPLY_STATUS"
+        },
+        {
+          "name": "POWER_SUPPLY_TECHNOLOGY"
+        },
+        {
+          "name": "POWER_SUPPLY_TEMP"
+        },
+        {
+          "name": "POWER_SUPPLY_TIME_TO_EMPTY_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_TIME_TO_FULL_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_VOLTAGE_NOW"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14301,6 +15615,53 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$TcpStat",
+      "fields": [
+        {
+          "name": "ActiveOpens"
+        },
+        {
+          "name": "AttemptFails"
+        },
+        {
+          "name": "CurrEstab"
+        },
+        {
+          "name": "EstabResets"
+        },
+        {
+          "name": "InCsumErrors"
+        },
+        {
+          "name": "InErrs"
+        },
+        {
+          "name": "InSegs"
+        },
+        {
+          "name": "MaxConn"
+        },
+        {
+          "name": "OutRsts"
+        },
+        {
+          "name": "OutSegs"
+        },
+        {
+          "name": "PassiveOpens"
+        },
+        {
+          "name": "RetransSegs"
+        },
+        {
+          "name": "RtoAlgorithm"
+        },
+        {
+          "name": "RtoMax"
+        },
+        {
+          "name": "RtoMin"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14323,6 +15684,35 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat",
+      "fields": [
+        {
+          "name": "IgnoredMulti"
+        },
+        {
+          "name": "InCsumErrors"
+        },
+        {
+          "name": "InDatagrams"
+        },
+        {
+          "name": "InErrors"
+        },
+        {
+          "name": "MemErrors"
+        },
+        {
+          "name": "NoPorts"
+        },
+        {
+          "name": "OutDatagrams"
+        },
+        {
+          "name": "RcvbufErrors"
+        },
+        {
+          "name": "SndbufErrors"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14344,13 +15734,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.linux.software.LinuxNetworkParams"
-    },
-    {
-      "type": "org.miaixz.bus.health.linux.software.LinuxOperatingSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.linux.software.LinuxOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14412,6 +15819,89 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess",
+      "fields": [
+        {
+          "name": "arguments"
+        },
+        {
+          "name": "bitness"
+        },
+        {
+          "name": "bytesRead"
+        },
+        {
+          "name": "bytesWritten"
+        },
+        {
+          "name": "commandLine"
+        },
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "environmentVariables"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "groupID"
+        },
+        {
+          "name": "involuntaryContextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "majorFaults"
+        },
+        {
+          "name": "minorFaults"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "parentProcessID"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "privateResidentMemory"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadCount"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "userID"
+        },
+        {
+          "name": "userTime"
+        },
+        {
+          "name": "virtualSize"
+        },
+        {
+          "name": "voluntaryContextSwitches"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14608,6 +16098,41 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.software.LinuxOSProcess$ProcPidStat",
+      "fields": [
+        {
+          "name": "KERNEL_TIME"
+        },
+        {
+          "name": "MAJOR_FAULTS"
+        },
+        {
+          "name": "MINOR_FAULTS"
+        },
+        {
+          "name": "order"
+        },
+        {
+          "name": "PPID"
+        },
+        {
+          "name": "PRIORITY"
+        },
+        {
+          "name": "RSS"
+        },
+        {
+          "name": "START_TIME"
+        },
+        {
+          "name": "THREAD_COUNT"
+        },
+        {
+          "name": "USER_TIME"
+        },
+        {
+          "name": "VSZ"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14635,6 +16160,44 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.software.LinuxOSThread",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "majorFaults"
+        },
+        {
+          "name": "minorFaults"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startMemoryAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14699,6 +16262,44 @@
     },
     {
       "type": "org.miaixz.bus.health.linux.software.LinuxOSThread$ThreadPidStat",
+      "fields": [
+        {
+          "name": "KERNEL_TIME"
+        },
+        {
+          "name": "MAJOR_FAULT"
+        },
+        {
+          "name": "MINOR_FAULTS"
+        },
+        {
+          "name": "order"
+        },
+        {
+          "name": "PPID"
+        },
+        {
+          "name": "PRIORITY"
+        },
+        {
+          "name": "RSS"
+        },
+        {
+          "name": "START_CODE"
+        },
+        {
+          "name": "START_TIME"
+        },
+        {
+          "name": "THREAD_COUNT"
+        },
+        {
+          "name": "USER_TIME"
+        },
+        {
+          "name": "VSZ"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14756,10 +16357,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.driver.IOReportClient"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.driver.IOReportClient$ChannelStates",
+      "fields": [
+        {
+          "name": "states"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14774,10 +16377,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.driver.net.NetStat"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.driver.net.NetStat$IFdata",
+      "fields": [
+        {
+          "name": "collisions"
+        },
+        {
+          "name": "ifType"
+        },
+        {
+          "name": "speed"
+        },
+        {
+          "name": "timeStamp"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14858,6 +16472,26 @@
     },
     {
       "type": "org.miaixz.bus.health.mac.driver.ThreadInfo$ThreadStats",
+      "fields": [
+        {
+          "name": "priority"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "systemTime"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14910,12 +16544,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.driver.WindowInfo"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacBaseboard"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.hardware.MacBluetoothDevice",
       "methods": [
         {
@@ -14943,12 +16571,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.hardware.MacCentralProcessor"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacComputerSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.hardware.MacDisplay",
       "methods": [
         {
@@ -14970,15 +16592,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacFirmware"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacGlobalMemory"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacGpuStats"
     },
     {
       "type": "org.miaixz.bus.health.mac.hardware.MacGraphicsCard",
@@ -15086,10 +16699,60 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.hardware.MacHWDiskStore$CFKey",
+      "fields": [
+        {
+          "name": "BSD_UNIT"
+        },
+        {
+          "name": "DA_DEVICE_MODEL"
+        },
+        {
+          "name": "DA_MEDIA_NAME"
+        },
+        {
+          "name": "DA_MEDIA_SIZE"
+        },
+        {
+          "name": "DA_VOLUME_NAME"
+        },
+        {
+          "name": "IO_PROPERTY_MATCH"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "LEAF"
+        },
+        {
+          "name": "MODEL"
+        },
+        {
+          "name": "READ_BYTES"
+        },
+        {
+          "name": "READ_OPS"
+        },
+        {
+          "name": "READ_TIME"
+        },
+        {
+          "name": "STATISTICS"
+        },
+        {
+          "name": "WHOLE"
+        },
+        {
+          "name": "WRITE_BYTES"
+        },
+        {
+          "name": "WRITE_OPS"
+        },
+        {
+          "name": "WRITE_TIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -15140,6 +16803,41 @@
     },
     {
       "type": "org.miaixz.bus.health.mac.hardware.MacNetworkIF",
+      "fields": [
+        {
+          "name": "bytesRecv"
+        },
+        {
+          "name": "bytesSent"
+        },
+        {
+          "name": "collisions"
+        },
+        {
+          "name": "ifType"
+        },
+        {
+          "name": "inDrops"
+        },
+        {
+          "name": "inErrors"
+        },
+        {
+          "name": "outErrors"
+        },
+        {
+          "name": "packetsRecv"
+        },
+        {
+          "name": "packetsSent"
+        },
+        {
+          "name": "speed"
+        },
+        {
+          "name": "timeStamp"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -15217,9 +16915,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.hardware.MacPowerSource"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.hardware.MacSensors",
       "methods": [
         {
@@ -15256,12 +16951,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacUsbDevice"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.hardware.MacVirtualMemory"
     },
     {
       "type": "org.miaixz.bus.health.mac.jna.CoreFoundation",
@@ -21509,12 +23198,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.SmcKit"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.software.MacFileSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.software.MacInstalledApps",
       "methods": [
         {
@@ -21599,12 +23282,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.software.MacInternetProtocolStats"
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.software.MacNetworkParams"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.software.MacOperatingSystem",
       "methods": [
         {
@@ -21669,10 +23346,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.software.MacOperatingSystemJNA"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.software.MacOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -21733,10 +23430,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.mac.software.MacOSProcess"
-    },
-    {
       "type": "org.miaixz.bus.health.mac.software.MacOSThread",
+      "fields": [
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -21786,9 +23503,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.mac.SysctlKit"
     },
     {
       "type": "org.miaixz.bus.health.Memoizer",
@@ -22255,6 +23969,11 @@
     },
     {
       "type": "org.miaixz.bus.health.Platform",
+      "fields": [
+        {
+          "name": "hardware"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -22469,6 +24188,53 @@
     },
     {
       "type": "org.miaixz.bus.health.Platform$OS",
+      "fields": [
+        {
+          "name": "AIX"
+        },
+        {
+          "name": "ANDROID"
+        },
+        {
+          "name": "DRAGONFLYBSD"
+        },
+        {
+          "name": "FREEBSD"
+        },
+        {
+          "name": "GNU"
+        },
+        {
+          "name": "KFREEBSD"
+        },
+        {
+          "name": "LINUX"
+        },
+        {
+          "name": "MACOS"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "NETBSD"
+        },
+        {
+          "name": "OPENBSD"
+        },
+        {
+          "name": "SOLARIS"
+        },
+        {
+          "name": "UNKNOWN"
+        },
+        {
+          "name": "WINDOWS"
+        },
+        {
+          "name": "WINDOWSCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -23078,9 +24844,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.aix.driver.PsInfo"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.aix.driver.Uptime",
       "methods": [
         {
@@ -23108,6 +24871,17 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.aix.hardware.AixBaseboard",
+      "fields": [
+        {
+          "name": "model"
+        },
+        {
+          "name": "serialNumber"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -23248,6 +25022,17 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.aix.hardware.AixFirmware",
+      "fields": [
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -23365,10 +25150,39 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.aix.hardware.AixHWDiskStore"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.aix.hardware.AixNetworkIF",
+      "fields": [
+        {
+          "name": "bytesRecv"
+        },
+        {
+          "name": "bytesSent"
+        },
+        {
+          "name": "collisions"
+        },
+        {
+          "name": "inDrops"
+        },
+        {
+          "name": "inErrors"
+        },
+        {
+          "name": "outErrors"
+        },
+        {
+          "name": "packetsRecv"
+        },
+        {
+          "name": "packetsSent"
+        },
+        {
+          "name": "speed"
+        },
+        {
+          "name": "timeStamp"
+        }
+      ],
       "methods": [
         {
           "name": "getBytesRecv",
@@ -23764,6 +25578,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.aix.software.AixOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -23825,6 +25662,71 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.aix.software.AixOSProcess",
+      "fields": [
+        {
+          "name": "affinityMask"
+        },
+        {
+          "name": "bitness"
+        },
+        {
+          "name": "bytesRead"
+        },
+        {
+          "name": "bytesWritten"
+        },
+        {
+          "name": "commandLine"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "groupID"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "parentProcessID"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "privateResidentMemory"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadCount"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "userID"
+        },
+        {
+          "name": "userTime"
+        },
+        {
+          "name": "virtualSize"
+        }
+      ],
       "methods": [
         {
           "name": "getAffinityMask",
@@ -23978,6 +25880,35 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.aix.software.AixOSThread",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startMemoryAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24082,6 +26013,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.bsd.Systat$BatteryFields",
+      "fields": [
+        {
+          "name": "amperage"
+        },
+        {
+          "name": "capacityUnits"
+        },
+        {
+          "name": "currentCapacity"
+        },
+        {
+          "name": "designCapacity"
+        },
+        {
+          "name": "maxCapacity"
+        },
+        {
+          "name": "temperature"
+        },
+        {
+          "name": "voltage"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24124,9 +26078,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.unix.freebsd.BsdSysctlKit"
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.driver.disk.GeomDiskList",
@@ -24179,9 +26130,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdCentralProcessor"
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdComputerSystem",
@@ -24251,6 +26199,17 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdGlobalMemory",
+      "fields": [
+        {
+          "name": "available"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "total"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24372,6 +26331,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdHWDiskStore",
+      "fields": [
+        {
+          "name": "currentQueueLength"
+        },
+        {
+          "name": "readBytes"
+        },
+        {
+          "name": "reads"
+        },
+        {
+          "name": "timeStamp"
+        },
+        {
+          "name": "transferTime"
+        },
+        {
+          "name": "writeBytes"
+        },
+        {
+          "name": "writes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24468,9 +26450,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdSensors"
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.hardware.FreeBsdSoundCard",
@@ -24695,13 +26674,69 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdNetworkParams"
-    },
-    {
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOperatingSystem$PsKeywords",
+      "fields": [
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "COMM"
+        },
+        {
+          "name": "ETIMES"
+        },
+        {
+          "name": "GID"
+        },
+        {
+          "name": "GROUP"
+        },
+        {
+          "name": "MAJFLT"
+        },
+        {
+          "name": "MINFLT"
+        },
+        {
+          "name": "NIVCSW"
+        },
+        {
+          "name": "NLWP"
+        },
+        {
+          "name": "NVCSW"
+        },
+        {
+          "name": "PID"
+        },
+        {
+          "name": "PPID"
+        },
+        {
+          "name": "PRI"
+        },
+        {
+          "name": "RSS"
+        },
+        {
+          "name": "STATE"
+        },
+        {
+          "name": "SYSTIME"
+        },
+        {
+          "name": "TIME"
+        },
+        {
+          "name": "UID"
+        },
+        {
+          "name": "USER"
+        },
+        {
+          "name": "VSZ"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24724,6 +26759,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24784,10 +26842,45 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSProcess$PsThreadColumns",
+      "fields": [
+        {
+          "name": "ETIMES"
+        },
+        {
+          "name": "LWP"
+        },
+        {
+          "name": "MAJFLT"
+        },
+        {
+          "name": "MINFLT"
+        },
+        {
+          "name": "NIVCSW"
+        },
+        {
+          "name": "NVCSW"
+        },
+        {
+          "name": "PRI"
+        },
+        {
+          "name": "STATE"
+        },
+        {
+          "name": "SYSTIME"
+        },
+        {
+          "name": "TDADDR"
+        },
+        {
+          "name": "TDNAME"
+        },
+        {
+          "name": "TIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24810,6 +26903,44 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.freebsd.software.FreeBsdOSThread",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "majorFaults"
+        },
+        {
+          "name": "minorFaults"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startMemoryAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -24951,6 +27082,17 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdComputerSystem",
+      "fields": [
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "serialNumber"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -25022,9 +27164,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdGlobalMemory"
     },
     {
       "type": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdGraphicsCard",
@@ -25108,6 +27247,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.openbsd.hardware.OpenBsdHWDiskStore",
+      "fields": [
+        {
+          "name": "currentQueueLength"
+        },
+        {
+          "name": "readBytes"
+        },
+        {
+          "name": "reads"
+        },
+        {
+          "name": "timeStamp"
+        },
+        {
+          "name": "transferTime"
+        },
+        {
+          "name": "writeBytes"
+        },
+        {
+          "name": "writes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -25333,9 +27495,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.openbsd.OpenBsdSysctlKit"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdFileSystem",
       "methods": [
         {
@@ -25510,6 +27669,62 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOperatingSystem$PsKeywords",
+      "fields": [
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "COMM"
+        },
+        {
+          "name": "CPUTIME"
+        },
+        {
+          "name": "ETIME"
+        },
+        {
+          "name": "GID"
+        },
+        {
+          "name": "GROUP"
+        },
+        {
+          "name": "MAJFLT"
+        },
+        {
+          "name": "MINFLT"
+        },
+        {
+          "name": "NIVCSW"
+        },
+        {
+          "name": "NVCSW"
+        },
+        {
+          "name": "PID"
+        },
+        {
+          "name": "PPID"
+        },
+        {
+          "name": "PRI"
+        },
+        {
+          "name": "RSS"
+        },
+        {
+          "name": "STATE"
+        },
+        {
+          "name": "UID"
+        },
+        {
+          "name": "USER"
+        },
+        {
+          "name": "VSZ"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -25532,6 +27747,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -25592,10 +27830,39 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSProcess$PsThreadColumns",
+      "fields": [
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "CPUTIME"
+        },
+        {
+          "name": "ETIME"
+        },
+        {
+          "name": "MAJFLT"
+        },
+        {
+          "name": "MINFLT"
+        },
+        {
+          "name": "NIVCSW"
+        },
+        {
+          "name": "NVCSW"
+        },
+        {
+          "name": "PRI"
+        },
+        {
+          "name": "STATE"
+        },
+        {
+          "name": "TID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -25618,6 +27885,44 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.openbsd.software.OpenBsdOSThread",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "majorFaults"
+        },
+        {
+          "name": "minorFaults"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startMemoryAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -25944,6 +28249,35 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.shared.hardware.BsdNetworkIF",
+      "fields": [
+        {
+          "name": "bytesRecv"
+        },
+        {
+          "name": "bytesSent"
+        },
+        {
+          "name": "collisions"
+        },
+        {
+          "name": "inDrops"
+        },
+        {
+          "name": "inErrors"
+        },
+        {
+          "name": "outErrors"
+        },
+        {
+          "name": "packetsRecv"
+        },
+        {
+          "name": "packetsSent"
+        },
+        {
+          "name": "timeStamp"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -26022,10 +28356,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.shared.hardware.CupsPrinter$PrinterFactory"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard",
+      "fields": [
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "serialNumber"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32359,9 +34704,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.solaris.driver.PsInfo"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.solaris.driver.Who",
       "methods": [
         {
@@ -32531,6 +34873,17 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisComputerSystem$SmbType",
+      "fields": [
+        {
+          "name": "SMB_TYPE_BASEBOARD"
+        },
+        {
+          "name": "SMB_TYPE_BIOS"
+        },
+        {
+          "name": "SMB_TYPE_SYSTEM"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32553,6 +34906,17 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisFirmware",
+      "fields": [
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "releaseDate"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32578,6 +34942,11 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisGlobalMemory",
+      "fields": [
+        {
+          "name": "pageSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32691,6 +35060,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisHWDiskStore",
+      "fields": [
+        {
+          "name": "currentQueueLength"
+        },
+        {
+          "name": "readBytes"
+        },
+        {
+          "name": "reads"
+        },
+        {
+          "name": "timeStamp"
+        },
+        {
+          "name": "transferTime"
+        },
+        {
+          "name": "writeBytes"
+        },
+        {
+          "name": "writes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32762,6 +35154,38 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.hardware.SolarisNetworkIF",
+      "fields": [
+        {
+          "name": "bytesRecv"
+        },
+        {
+          "name": "bytesSent"
+        },
+        {
+          "name": "collisions"
+        },
+        {
+          "name": "inDrops"
+        },
+        {
+          "name": "inErrors"
+        },
+        {
+          "name": "outErrors"
+        },
+        {
+          "name": "packetsRecv"
+        },
+        {
+          "name": "packetsSent"
+        },
+        {
+          "name": "speed"
+        },
+        {
+          "name": "timeStamp"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32995,12 +35419,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit"
-    },
-    {
-      "type": "org.miaixz.bus.health.unix.solaris.KstatKit$KstatChain"
-    },
-    {
       "type": "org.miaixz.bus.health.unix.solaris.software.SolarisFileSystem",
       "methods": [
         {
@@ -33208,6 +35626,29 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.software.SolarisOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33269,6 +35710,80 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.software.SolarisOSProcess",
+      "fields": [
+        {
+          "name": "bitness"
+        },
+        {
+          "name": "bytesRead"
+        },
+        {
+          "name": "bytesWritten"
+        },
+        {
+          "name": "commandLine"
+        },
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "groupID"
+        },
+        {
+          "name": "involuntaryContextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "majorFaults"
+        },
+        {
+          "name": "minorFaults"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "parentProcessID"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadCount"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "userID"
+        },
+        {
+          "name": "userTime"
+        },
+        {
+          "name": "virtualSize"
+        },
+        {
+          "name": "voluntaryContextSwitches"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33454,6 +35969,38 @@
     },
     {
       "type": "org.miaixz.bus.health.unix.solaris.software.SolarisOSThread",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startMemoryAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33517,10 +36064,27 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.driver.DeviceTree"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.driver.DxgiAdapterInfo",
+      "fields": [
+        {
+          "name": "dedicatedVideoMemory"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "deviceId"
+        },
+        {
+          "name": "luidHighPart"
+        },
+        {
+          "name": "luidLowPart"
+        },
+        {
+          "name": "vendorId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33564,9 +36128,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.driver.EnumWindows"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.driver.LogicalProcessorInformation",
       "methods": [
         {
@@ -33594,6 +36155,20 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuAdapterMemoryProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "DEDICATED_USAGE"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "SHARED_USAGE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33621,6 +36196,20 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.GpuInformation$GpuEngineProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "RUNNING_TIME"
+        },
+        {
+          "name": "RUNNING_TIME_BASE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33688,6 +36277,20 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.MemoryInformation$PageSwapProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "PAGESINPUTPERSEC"
+        },
+        {
+          "name": "PAGESOUTPUTPERSEC"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33733,6 +36336,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.PagingFile$PagingPercentProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "PERCENTUSAGE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33803,6 +36417,32 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.PhysicalDisk$PhysicalDiskProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "CURRENTDISKQUEUELENGTH"
+        },
+        {
+          "name": "DISKREADBYTESPERSEC"
+        },
+        {
+          "name": "DISKREADSPERSEC"
+        },
+        {
+          "name": "DISKWRITEBYTESPERSEC"
+        },
+        {
+          "name": "DISKWRITESPERSEC"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTDISKTIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33851,6 +36491,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$HandleCountProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "HANDLECOUNT"
+        },
+        {
+          "name": "instance"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33883,6 +36534,20 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$IdleProcessorTimeProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "ELAPSEDTIME"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTPROCESSORTIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33910,6 +36575,41 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation$ProcessPerformanceProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "CREATINGPROCESSID"
+        },
+        {
+          "name": "ELAPSEDTIME"
+        },
+        {
+          "name": "IDPROCESS"
+        },
+        {
+          "name": "IOREADBYTESPERSEC"
+        },
+        {
+          "name": "IOWRITEBYTESPERSEC"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PAGEFAULTSPERSEC"
+        },
+        {
+          "name": "PRIORITYBASE"
+        },
+        {
+          "name": "WORKINGSET"
+        },
+        {
+          "name": "WORKINGSETPRIVATE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33970,6 +36670,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$InterruptsProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "INTERRUPTSPERSEC"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34002,6 +36713,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorFrequencyProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTOFMAXIMUMFREQUENCY"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34029,6 +36751,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorPerformanceProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTPROCESSORPERFORMANCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34056,6 +36789,29 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorTickCountProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTDPCTIME"
+        },
+        {
+          "name": "PERCENTINTERRUPTTIME"
+        },
+        {
+          "name": "PERCENTPRIVILEGEDTIME"
+        },
+        {
+          "name": "PERCENTPROCESSORTIME"
+        },
+        {
+          "name": "PERCENTUSERTIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34083,6 +36839,41 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$ProcessorUtilityTickCountProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTDPCTIME"
+        },
+        {
+          "name": "PERCENTINTERRUPTTIME"
+        },
+        {
+          "name": "PERCENTPRIVILEGEDTIME"
+        },
+        {
+          "name": "PERCENTPRIVILEGEDUTILITY"
+        },
+        {
+          "name": "PERCENTPROCESSORTIME"
+        },
+        {
+          "name": "PERCENTPROCESSORUTILITY"
+        },
+        {
+          "name": "PERCENTPROCESSORUTILITY_BASE"
+        },
+        {
+          "name": "PERCENTUSERTIME"
+        },
+        {
+          "name": "TIMESTAMP_SYS100NS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34110,6 +36901,20 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ProcessorInformation$SystemTickCountProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "PERCENTDPCTIME"
+        },
+        {
+          "name": "PERCENTINTERRUPTTIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34159,6 +36964,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ContextSwitchProperty",
+      "fields": [
+        {
+          "name": "CONTEXTSWITCHESPERSEC"
+        },
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34191,6 +37007,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.SystemInformation$ProcessorQueueLengthProperty",
+      "fields": [
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "PROCESSORQUEUELENGTH"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34243,6 +37070,44 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation$ThreadPerformanceProperty",
+      "fields": [
+        {
+          "name": "CONTEXTSWITCHESPERSEC"
+        },
+        {
+          "name": "counter"
+        },
+        {
+          "name": "ELAPSEDTIME"
+        },
+        {
+          "name": "IDPROCESS"
+        },
+        {
+          "name": "IDTHREAD"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PERCENTPRIVILEGEDTIME"
+        },
+        {
+          "name": "PERCENTUSERTIME"
+        },
+        {
+          "name": "PRIORITYCURRENT"
+        },
+        {
+          "name": "STARTADDRESS"
+        },
+        {
+          "name": "THREADSTATE"
+        },
+        {
+          "name": "THREADWAITREASON"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34267,18 +37132,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.driver.registry.HkeyPerformanceDataKit"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.driver.registry.HkeyUserData"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.driver.registry.InstalledAppsData"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.driver.registry.NetSessionData"
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData",
@@ -34310,6 +37163,38 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.registry.ProcessPerformanceData$PerfCounterBlock",
+      "fields": [
+        {
+          "name": "bytesRead"
+        },
+        {
+          "name": "bytesWritten"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "pageFaults"
+        },
+        {
+          "name": "parentProcessID"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "privateWorkingSetSize"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "workingSetSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34369,10 +37254,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.driver.registry.ProcessWtsData$WtsInfo",
+      "fields": [
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "openFiles"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "threadCount"
+        },
+        {
+          "name": "userTime"
+        },
+        {
+          "name": "virtualSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34417,9 +37322,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.driver.registry.SessionWtsData"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData",
       "methods": [
         {
@@ -34450,6 +37352,41 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData$PerfCounterBlock",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "owningProcessID"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "threadID"
+        },
+        {
+          "name": "threadState"
+        },
+        {
+          "name": "threadWaitReason"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34524,6 +37461,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor$LhmHardwareProperty",
+      "fields": [
+        {
+          "name": "IDENTIFIER"
+        },
+        {
+          "name": "NAME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34546,6 +37491,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.LhmSensor$LhmSensorProperty",
+      "fields": [
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PARENT"
+        },
+        {
+          "name": "VALUE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34577,6 +37533,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSAcpiThermalZoneTemperature$TemperatureProperty",
+      "fields": [
+        {
+          "name": "CURRENTTEMPERATURE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34608,6 +37569,17 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$PhysicalDiskProperty",
+      "fields": [
+        {
+          "name": "FRIENDLYNAME"
+        },
+        {
+          "name": "OBJECTID"
+        },
+        {
+          "name": "PHYSICALLOCATION"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34630,6 +37602,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$StoragePoolProperty",
+      "fields": [
+        {
+          "name": "FRIENDLYNAME"
+        },
+        {
+          "name": "OBJECTID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34652,6 +37632,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$StoragePoolToPhysicalDiskProperty",
+      "fields": [
+        {
+          "name": "PHYSICALDISK"
+        },
+        {
+          "name": "STORAGEPOOL"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34674,6 +37662,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$VirtualDiskProperty",
+      "fields": [
+        {
+          "name": "FRIENDLYNAME"
+        },
+        {
+          "name": "OBJECTID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34705,6 +37701,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.OhmHardware$IdentifierProperty",
+      "fields": [
+        {
+          "name": "IDENTIFIER"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34736,6 +37737,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.OhmSensor$ValueProperty",
+      "fields": [
+        {
+          "name": "VALUE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34767,6 +37773,23 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard$BaseBoardProperty",
+      "fields": [
+        {
+          "name": "MANUFACTURER"
+        },
+        {
+          "name": "MODEL"
+        },
+        {
+          "name": "PRODUCT"
+        },
+        {
+          "name": "SERIALNUMBER"
+        },
+        {
+          "name": "VERSION"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34798,6 +37821,23 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios$BiosProperty",
+      "fields": [
+        {
+          "name": "DESCRIPTION"
+        },
+        {
+          "name": "MANUFACTURER"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "RELEASEDATE"
+        },
+        {
+          "name": "VERSION"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34820,6 +37860,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Bios$BiosSerialProperty",
+      "fields": [
+        {
+          "name": "SERIALNUMBER"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34851,6 +37896,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystem$ComputerSystemProperty",
+      "fields": [
+        {
+          "name": "MANUFACTURER"
+        },
+        {
+          "name": "MODEL"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34882,6 +37935,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32ComputerSystemProduct$ComputerSystemProductProperty",
+      "fields": [
+        {
+          "name": "IDENTIFYINGNUMBER"
+        },
+        {
+          "name": "UUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34913,6 +37974,29 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDrive$DiskDriveProperty",
+      "fields": [
+        {
+          "name": "INDEX"
+        },
+        {
+          "name": "MANUFACTURER"
+        },
+        {
+          "name": "MEDIATYPE"
+        },
+        {
+          "name": "MODEL"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "SERIALNUMBER"
+        },
+        {
+          "name": "SIZE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34944,6 +38028,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskDriveToDiskPartition$DriveToPartitionProperty",
+      "fields": [
+        {
+          "name": "ANTECEDENT"
+        },
+        {
+          "name": "DEPENDENT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34975,6 +38067,29 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32DiskPartition$DiskPartitionProperty",
+      "fields": [
+        {
+          "name": "DESCRIPTION"
+        },
+        {
+          "name": "DEVICEID"
+        },
+        {
+          "name": "DISKINDEX"
+        },
+        {
+          "name": "INDEX"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "SIZE"
+        },
+        {
+          "name": "TYPE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35006,6 +38121,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Fan$SpeedProperty",
+      "fields": [
+        {
+          "name": "DESIREDSPEED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35037,6 +38157,35 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk$LogicalDiskProperty",
+      "fields": [
+        {
+          "name": "ACCESS"
+        },
+        {
+          "name": "DESCRIPTION"
+        },
+        {
+          "name": "DRIVETYPE"
+        },
+        {
+          "name": "FILESYSTEM"
+        },
+        {
+          "name": "FREESPACE"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PROVIDERNAME"
+        },
+        {
+          "name": "SIZE"
+        },
+        {
+          "name": "VOLUMENAME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35068,6 +38217,20 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition$DiskToPartitionProperty",
+      "fields": [
+        {
+          "name": "ANTECEDENT"
+        },
+        {
+          "name": "DEPENDENT"
+        },
+        {
+          "name": "ENDINGADDRESS"
+        },
+        {
+          "name": "STARTINGADDRESS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35099,6 +38262,23 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem$OSVersionProperty",
+      "fields": [
+        {
+          "name": "BUILDNUMBER"
+        },
+        {
+          "name": "CSDVERSION"
+        },
+        {
+          "name": "PRODUCTTYPE"
+        },
+        {
+          "name": "SUITEMASK"
+        },
+        {
+          "name": "VERSION"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35130,6 +38310,29 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory$PhysicalMemoryProperty",
+      "fields": [
+        {
+          "name": "BANKLABEL"
+        },
+        {
+          "name": "CAPACITY"
+        },
+        {
+          "name": "MANUFACTURER"
+        },
+        {
+          "name": "PARTNUMBER"
+        },
+        {
+          "name": "SERIALNUMBER"
+        },
+        {
+          "name": "SMBIOSMEMORYTYPE"
+        },
+        {
+          "name": "SPEED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35152,6 +38355,29 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory$PhysicalMemoryPropertyWin8",
+      "fields": [
+        {
+          "name": "BANKLABEL"
+        },
+        {
+          "name": "CAPACITY"
+        },
+        {
+          "name": "MANUFACTURER"
+        },
+        {
+          "name": "MEMORYTYPE"
+        },
+        {
+          "name": "PARTNUMBER"
+        },
+        {
+          "name": "SERIALNUMBER"
+        },
+        {
+          "name": "SPEED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35183,6 +38409,32 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Printer$PrinterProperty",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "DESCRIPTION"
+        },
+        {
+          "name": "DETECTEDERRORSTATE"
+        },
+        {
+          "name": "DRIVERNAME"
+        },
+        {
+          "name": "LOCAL"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PORTNAME"
+        },
+        {
+          "name": "PRINTERSTATUS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35214,6 +38466,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process$CommandLineProperty",
+      "fields": [
+        {
+          "name": "COMMANDLINE"
+        },
+        {
+          "name": "PROCESSID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35236,6 +38496,32 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Process$ProcessXPProperty",
+      "fields": [
+        {
+          "name": "EXECUTABLEPATH"
+        },
+        {
+          "name": "HANDLECOUNT"
+        },
+        {
+          "name": "KERNELMODETIME"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PAGEFILEUSAGE"
+        },
+        {
+          "name": "PROCESSID"
+        },
+        {
+          "name": "THREADCOUNT"
+        },
+        {
+          "name": "USERMODETIME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35291,6 +38577,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor$BitnessProperty",
+      "fields": [
+        {
+          "name": "ADDRESSWIDTH"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35313,6 +38604,11 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor$ProcessorIdProperty",
+      "fields": [
+        {
+          "name": "PROCESSORID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35335,6 +38631,14 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32Processor$VoltProperty",
+      "fields": [
+        {
+          "name": "CURRENTVOLTAGE"
+        },
+        {
+          "name": "VOLTAGECAPS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35366,6 +38670,26 @@
     },
     {
       "type": "org.miaixz.bus.health.windows.driver.wmi.Win32VideoController$VideoControllerProperty",
+      "fields": [
+        {
+          "name": "ADAPTERCOMPATIBILITY"
+        },
+        {
+          "name": "ADAPTERRAM"
+        },
+        {
+          "name": "CONFIGMANAGERERRORCODE"
+        },
+        {
+          "name": "DRIVERVERSION"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "PNPDEVICEID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35416,9 +38740,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsCentralProcessor"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsComputerSystem",
       "methods": [
         {
@@ -35464,9 +38785,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsDisplay"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsFirmware",
       "methods": [
         {
@@ -35500,10 +38818,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsGlobalMemory"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsGpuStats",
+      "fields": [
+        {
+          "name": "closed"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35587,9 +38907,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsGraphicsCard"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsHardwareAbstractionLayer",
       "methods": [
         {
@@ -35655,9 +38972,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$DiskStats",
       "methods": [
         {
@@ -35676,15 +38990,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsLogicalVolumeGroup"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsNetworkIF"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsPowerSource"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsPrinter",
       "methods": [
         {
@@ -35701,12 +39006,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsSensors"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsSoundCard"
     },
     {
       "type": "org.miaixz.bus.health.windows.hardware.WindowsUsbDevice",
@@ -35747,9 +39046,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.hardware.WindowsVirtualMemory"
     },
     {
       "type": "org.miaixz.bus.health.windows.jna.Kernel32",
@@ -57526,25 +60822,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.PerfCounterQuery"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.PerfCounterQuery$PdhCounterProperty"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.PerfCounterQueryHandler"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.PerfCounterWildcardQuery$PdhCounterWildcardProperty"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.PerfDataKit"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.PerfDataKit$PerfCounter",
+      "fields": [
+        {
+          "name": "baseCounter"
+        },
+        {
+          "name": "counter"
+        },
+        {
+          "name": "instance"
+        },
+        {
+          "name": "object"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57599,12 +60891,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.RegistryKit"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.software.WindowsFileSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.software.WindowsInstalledApps",
       "methods": [
         {
@@ -57618,16 +60904,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.software.WindowsInternetProtocolStats"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.software.WindowsNetworkParams"
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.software.WindowsOperatingSystem"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.software.WindowsOSFileStore",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "freeInodes"
+        },
+        {
+          "name": "freeSpace"
+        },
+        {
+          "name": "logicalVolume"
+        },
+        {
+          "name": "totalInodes"
+        },
+        {
+          "name": "totalSpace"
+        },
+        {
+          "name": "usableSpace"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57688,10 +60988,39 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.windows.software.WindowsOSProcess"
-    },
-    {
       "type": "org.miaixz.bus.health.windows.software.WindowsOSThread",
+      "fields": [
+        {
+          "name": "contextSwitches"
+        },
+        {
+          "name": "kernelTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "startMemoryAddress"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "threadId"
+        },
+        {
+          "name": "upTime"
+        },
+        {
+          "name": "userTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57763,9 +61092,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.health.windows.WmiQueryHandler"
     }
   ],
   "resources": [

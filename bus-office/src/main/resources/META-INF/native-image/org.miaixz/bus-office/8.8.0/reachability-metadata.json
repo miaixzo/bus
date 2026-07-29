@@ -365,9 +365,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.Broker"
-    },
-    {
       "type": "org.miaixz.bus.office.Broker$FileBroker",
       "methods": [
         {
@@ -642,9 +639,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.builtin.MadeInOffice"
-    },
-    {
       "type": "org.miaixz.bus.office.builtin.OnlineMadeInOffice",
       "methods": [
         {
@@ -697,10 +691,45 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.Bundle$Codec"
-    },
-    {
       "type": "org.miaixz.bus.office.Bundle$Paged",
+      "fields": [
+        {
+          "name": "attributes"
+        },
+        {
+          "name": "expiresAt"
+        },
+        {
+          "name": "handleId"
+        },
+        {
+          "name": "items"
+        },
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "previewRows"
+        },
+        {
+          "name": "segmentCount"
+        },
+        {
+          "name": "segmentIndex"
+        },
+        {
+          "name": "segmentName"
+        },
+        {
+          "name": "total"
+        },
+        {
+          "name": "totalItems"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1150,6 +1179,20 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvConfig",
+      "fields": [
+        {
+          "name": "commentCharacter"
+        },
+        {
+          "name": "fieldSeparator"
+        },
+        {
+          "name": "headerAlias"
+        },
+        {
+          "name": "textDelimiter"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1200,6 +1243,14 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvData",
+      "fields": [
+        {
+          "name": "header"
+        },
+        {
+          "name": "rows"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1322,6 +1373,11 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvParser",
+      "fields": [
+        {
+          "name": "header"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1380,6 +1436,26 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvReadConfig",
+      "fields": [
+        {
+          "name": "beginLineNo"
+        },
+        {
+          "name": "endLineNo"
+        },
+        {
+          "name": "errorOnDifferentFieldCount"
+        },
+        {
+          "name": "headerLineNo"
+        },
+        {
+          "name": "skipEmptyRows"
+        },
+        {
+          "name": "trimField"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1509,6 +1585,11 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvRow",
+      "fields": [
+        {
+          "name": "originalLineNumber"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1558,6 +1639,11 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvTokener",
+      "fields": [
+        {
+          "name": "index"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1585,6 +1671,20 @@
     },
     {
       "type": "org.miaixz.bus.office.csv.CsvWriteConfig",
+      "fields": [
+        {
+          "name": "alwaysDelimitText"
+        },
+        {
+          "name": "ddeSafe"
+        },
+        {
+          "name": "endingLineBreak"
+        },
+        {
+          "name": "lineDelimiter"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1804,9 +1904,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.cell.editors.CellEditor"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.cell.editors.NumericToIntEditor",
       "methods": [
         {
@@ -1823,9 +1920,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.cell.MergedCell"
     },
     {
       "type": "org.miaixz.bus.office.excel.cell.NullCell",
@@ -2097,9 +2191,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.cell.setters.CellSetter"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.cell.setters.CellSetterFactory",
       "methods": [
         {
@@ -2154,9 +2245,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.cell.setters.HyperlinkCellSetter"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.cell.setters.NullCellSetter",
       "methods": [
         {
@@ -2201,9 +2289,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.cell.setters.RichTextCellSetter"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.cell.setters.TemporalAccessorCellSetter",
       "methods": [
         {
@@ -2215,12 +2300,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.cell.values.CellValue"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.cell.values.CompositeCellValue"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.cell.values.ErrorCellValue",
       "methods": [
         {
@@ -2228,9 +2307,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.cell.values.FormulaCellValue"
     },
     {
       "type": "org.miaixz.bus.office.excel.cell.values.NumericCellValue",
@@ -2584,13 +2660,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.CellKit"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.ExcelBase"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.ExcelConfig",
+      "fields": [
+        {
+          "name": "cellEditor"
+        },
+        {
+          "name": "headerAlias"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2647,9 +2725,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.ExcelExtractor"
     },
     {
       "type": "org.miaixz.bus.office.excel.ExcelKit",
@@ -3122,6 +3197,11 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.reader.BigExcelReader",
+      "fields": [
+        {
+          "name": "config"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3338,12 +3418,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$BatchRowHandler"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$ContextBatchRowHandler"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException",
       "methods": [
         {
@@ -3415,6 +3489,47 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig",
+      "fields": [
+        {
+          "name": "batchSize"
+        },
+        {
+          "name": "endRow"
+        },
+        {
+          "name": "ignoreEmptyRow"
+        },
+        {
+          "name": "includeColumns"
+        },
+        {
+          "name": "padCellAtEndOfRow"
+        },
+        {
+          "name": "previewRowsPerSheet"
+        },
+        {
+          "name": "progressReportIntervalRows"
+        },
+        {
+          "name": "readListener"
+        },
+        {
+          "name": "readMode"
+        },
+        {
+          "name": "startRow"
+        },
+        {
+          "name": "transferEstimatedColumnCount"
+        },
+        {
+          "name": "transferPollTimeoutMs"
+        },
+        {
+          "name": "transferQueueCapacity"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3554,6 +3669,17 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.reader.ExcelReadConfig$ReadMode",
+      "fields": [
+        {
+          "name": "AUTO"
+        },
+        {
+          "name": "MEMORY"
+        },
+        {
+          "name": "STREAMING"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3573,12 +3699,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReader"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.reader.ExcelReadListener"
     },
     {
       "type": "org.miaixz.bus.office.excel.reader.ExcelReadState",
@@ -3743,12 +3863,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.reader.SheetReader"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.reader.WalkSheetReader"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.RowGroup",
       "methods": [
         {
@@ -3770,6 +3884,17 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.sax.AttributeName",
+      "fields": [
+        {
+          "name": "r"
+        },
+        {
+          "name": "s"
+        },
+        {
+          "name": "t"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3804,6 +3929,35 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.sax.CellDataType",
+      "fields": [
+        {
+          "name": "BOOL"
+        },
+        {
+          "name": "DATE"
+        },
+        {
+          "name": "ERROR"
+        },
+        {
+          "name": "FORMULA"
+        },
+        {
+          "name": "INLINESTR"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "NULL"
+        },
+        {
+          "name": "NUMBER"
+        },
+        {
+          "name": "SSTINDEX"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3837,6 +3991,20 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.sax.ElementName",
+      "fields": [
+        {
+          "name": "c"
+        },
+        {
+          "name": "f"
+        },
+        {
+          "name": "row"
+        },
+        {
+          "name": "v"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4097,12 +4265,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.sax.Excel07SaxReader"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.sax.ExcelSaxReader"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.sax.handler.AbstractRowHandler",
       "methods": [
         {
@@ -4166,16 +4328,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.sax.handler.RowHandler"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.sax.SheetDataSaxHandler"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.sax.SheetRidReader"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.shape.ExcelPictureType",
+      "fields": [
+        {
+          "name": "DIB"
+        },
+        {
+          "name": "EMF"
+        },
+        {
+          "name": "JPEG"
+        },
+        {
+          "name": "PICT"
+        },
+        {
+          "name": "PNG"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "WMF"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4430,10 +4606,48 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.style.DefaultStyleSet"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.style.LineStyle",
+      "fields": [
+        {
+          "name": "DASHDOTDOTSYS"
+        },
+        {
+          "name": "DASHDOTGEL"
+        },
+        {
+          "name": "DASHDOTSYS"
+        },
+        {
+          "name": "DASHGEL"
+        },
+        {
+          "name": "DASHSYS"
+        },
+        {
+          "name": "DOTGEL"
+        },
+        {
+          "name": "DOTSYS"
+        },
+        {
+          "name": "LONGDASHDOTDOTGEL"
+        },
+        {
+          "name": "LONGDASHDOTGEL"
+        },
+        {
+          "name": "LONGDASHGEL"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "SOLID"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4469,12 +4683,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.style.StyleSet"
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.StyleKit"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.WorkbookKit",
       "methods": [
         {
@@ -4482,9 +4690,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.excel.writer.BigExcelWriter"
     },
     {
       "type": "org.miaixz.bus.office.excel.writer.ExcelDrawing",
@@ -4497,6 +4702,38 @@
     },
     {
       "type": "org.miaixz.bus.office.excel.writer.ExcelWriteConfig",
+      "fields": [
+        {
+          "name": "autoSplitSheet"
+        },
+        {
+          "name": "bigDataMode"
+        },
+        {
+          "name": "bigWriterCompressTmpFiles"
+        },
+        {
+          "name": "bigWriterRowAccessWindowSize"
+        },
+        {
+          "name": "bigWriterUseSharedStringsTable"
+        },
+        {
+          "name": "expectedRows"
+        },
+        {
+          "name": "insertRow"
+        },
+        {
+          "name": "maxRowsPerSheet"
+        },
+        {
+          "name": "onlyAlias"
+        },
+        {
+          "name": "sheetNamePattern"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4626,10 +4863,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.writer.ExcelWriter"
-    },
-    {
       "type": "org.miaixz.bus.office.excel.writer.SheetDataWriter",
+      "fields": [
+        {
+          "name": "currentRow"
+        },
+        {
+          "name": "headerLocationCache"
+        },
+        {
+          "name": "styleSet"
+        }
+      ],
       "methods": [
         {
           "name": "getColumnIndex",
@@ -4728,10 +4973,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.writer.TemplateContext"
-    },
-    {
       "type": "org.miaixz.bus.office.Expense",
+      "fields": [
+        {
+          "name": "process"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4746,22 +4993,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.ofd.OfdConverter"
-    },
-    {
-      "type": "org.miaixz.bus.office.ofd.OfdWriter"
-    },
-    {
-      "type": "org.miaixz.bus.office.ppt.PptKit"
-    },
-    {
-      "type": "org.miaixz.bus.office.ppt.PptReader"
-    },
-    {
-      "type": "org.miaixz.bus.office.ppt.PptShape"
-    },
-    {
       "type": "org.miaixz.bus.office.ppt.PptShape$Data",
+      "fields": [
+        {
+          "name": "anchor"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "pictureContentType"
+        },
+        {
+          "name": "pictureFileName"
+        },
+        {
+          "name": "tableData"
+        },
+        {
+          "name": "text"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4841,6 +5096,26 @@
     },
     {
       "type": "org.miaixz.bus.office.ppt.PptShape$Type",
+      "fields": [
+        {
+          "name": "AUTO_SHAPE"
+        },
+        {
+          "name": "GROUP"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "PICTURE"
+        },
+        {
+          "name": "TABLE"
+        },
+        {
+          "name": "TEXT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4860,18 +5135,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.ppt.PptSlide"
-    },
-    {
-      "type": "org.miaixz.bus.office.ppt.PptStyle"
-    },
-    {
-      "type": "org.miaixz.bus.office.ppt.PptWriter"
-    },
-    {
-      "type": "org.miaixz.bus.office.Provider"
     },
     {
       "type": "org.miaixz.bus.office.Registry",
@@ -4944,12 +5207,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.office.word.Word07Writer"
-    },
-    {
-      "type": "org.miaixz.bus.office.word.WordKit"
     },
     {
       "type": "org.miaixz.bus.office.word.WordTable",

@@ -72,6 +72,11 @@
     },
     {
       "type": "org.miaixz.bus.vortex.Args$Limit",
+      "fields": [
+        {
+          "name": "enabled"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -200,6 +205,29 @@
     },
     {
       "type": "org.miaixz.bus.vortex.Channel",
+      "fields": [
+        {
+          "name": "APP"
+        },
+        {
+          "name": "DINGTALK"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "WEB"
+        },
+        {
+          "name": "WECHAT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -235,10 +263,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.cluster.ClusterSynchronizer"
-    },
-    {
       "type": "org.miaixz.bus.vortex.Context",
+      "fields": [
+        {
+          "name": "headers"
+        },
+        {
+          "name": "query"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -266,9 +299,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.Egress"
-    },
-    {
       "type": "org.miaixz.bus.vortex.Egress$ClientHolder",
       "methods": [
         {
@@ -276,9 +306,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Executor"
     },
     {
       "type": "org.miaixz.bus.vortex.Filter",
@@ -532,12 +559,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Formats"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Handler"
     },
     {
       "type": "org.miaixz.bus.vortex.handler.AbstractHandler",
@@ -833,9 +854,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.handler.VortexHandler"
-    },
-    {
       "type": "org.miaixz.bus.vortex.Holder",
       "methods": [
         {
@@ -846,6 +864,14 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Delegate",
+      "fields": [
+        {
+          "name": "authorize"
+        },
+        {
+          "name": "message"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -947,6 +973,23 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Limiter",
+      "fields": [
+        {
+          "name": "ip"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "rateLimiter"
+        },
+        {
+          "name": "throttle"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1121,6 +1164,47 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Metrics",
+      "fields": [
+        {
+          "name": "avgDbDurationMs"
+        },
+        {
+          "name": "avgDurationMs"
+        },
+        {
+          "name": "cacheHitRate"
+        },
+        {
+          "name": "cacheHits"
+        },
+        {
+          "name": "cacheMisses"
+        },
+        {
+          "name": "cpu"
+        },
+        {
+          "name": "failureRequests"
+        },
+        {
+          "name": "memory"
+        },
+        {
+          "name": "p95DurationMs"
+        },
+        {
+          "name": "p99DurationMs"
+        },
+        {
+          "name": "successRequests"
+        },
+        {
+          "name": "totalDbOperations"
+        },
+        {
+          "name": "totalRequests"
+        }
+      ],
       "methods": [
         {
           "name": "$default$avgDbDurationMs",
@@ -1525,6 +1609,68 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Performance",
+      "fields": [
+        {
+          "name": "cacheExpireMs"
+        },
+        {
+          "name": "cacheSize"
+        },
+        {
+          "name": "fullSyncOnStartup"
+        },
+        {
+          "name": "maxConnections"
+        },
+        {
+          "name": "maxMultipartRequestSize"
+        },
+        {
+          "name": "maxProducerCacheSize"
+        },
+        {
+          "name": "maxRequestSize"
+        },
+        {
+          "name": "mcpTrustedOrigins"
+        },
+        {
+          "name": "outboundEvictSeconds"
+        },
+        {
+          "name": "outboundMaxIdleSeconds"
+        },
+        {
+          "name": "outboundMaxLifeMinutes"
+        },
+        {
+          "name": "outboundRetryBackoffMillis"
+        },
+        {
+          "name": "outboundRetryMaxBackoffMillis"
+        },
+        {
+          "name": "pendingAcquireMaxCount"
+        },
+        {
+          "name": "pendingAcquireTimeoutSeconds"
+        },
+        {
+          "name": "sanitizeNullLikeParameters"
+        },
+        {
+          "name": "startupDelaySeconds"
+        },
+        {
+          "name": "streamingRequestThreshold"
+        },
+        {
+          "name": "syncIntervalSeconds"
+        },
+        {
+          "name": "timestampToleranceMinutes"
+        }
+      ],
       "methods": [
         {
           "name": "$default$cacheExpireMs",
@@ -1999,6 +2145,20 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Principal",
+      "fields": [
+        {
+          "name": "channel"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2121,6 +2281,17 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Transmit",
+      "fields": [
+        {
+          "name": "lifecycle"
+        },
+        {
+          "name": "metrics"
+        },
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2217,10 +2388,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.Monitor"
-    },
-    {
       "type": "org.miaixz.bus.vortex.nimble.CacheStats",
+      "fields": [
+        {
+          "name": "cacheSize"
+        },
+        {
+          "name": "hitCount"
+        },
+        {
+          "name": "hitRate"
+        },
+        {
+          "name": "missCount"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2363,12 +2545,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.Provider"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.provider.AuthorizeProvider"
-    },
-    {
       "type": "org.miaixz.bus.vortex.provider.BinaryProvider",
       "methods": [
         {
@@ -2387,12 +2563,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.provider.MetricsProvider"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.provider.ProcessProvider"
-    },
-    {
       "type": "org.miaixz.bus.vortex.provider.XmlProvider",
       "methods": [
         {
@@ -2400,9 +2570,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Registry"
     },
     {
       "type": "org.miaixz.bus.vortex.registry.AbstractRegistry",
@@ -3067,12 +3234,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.registry.ServerRegistry"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Router"
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.Coordinator",
       "methods": [
         {
@@ -3080,9 +3241,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.routing.grpc.GrpcExecutor"
     },
     {
       "type": "org.miaixz.bus.vortex.routing.GrpcRouter",
@@ -3094,9 +3252,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.routing.llm.LlmExecutor"
     },
     {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmExecutor$ProviderConfig",
@@ -3139,10 +3294,39 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.routing.llm.LlmProvider"
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmRequest",
+      "fields": [
+        {
+          "name": "frequencyPenalty"
+        },
+        {
+          "name": "maxTokens"
+        },
+        {
+          "name": "messages"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "presencePenalty"
+        },
+        {
+          "name": "stop"
+        },
+        {
+          "name": "stream"
+        },
+        {
+          "name": "temperature"
+        },
+        {
+          "name": "topP"
+        },
+        {
+          "name": "user"
+        }
+      ],
       "methods": [
         {
           "name": "$default$stream",
@@ -3371,6 +3555,17 @@
     },
     {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmRequest$Message",
+      "fields": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "role"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3410,6 +3605,26 @@
     },
     {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmResponse",
+      "fields": [
+        {
+          "name": "choices"
+        },
+        {
+          "name": "created"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "model"
+        },
+        {
+          "name": "object"
+        },
+        {
+          "name": "usage"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3496,6 +3711,17 @@
     },
     {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmResponse$Choice",
+      "fields": [
+        {
+          "name": "finishReason"
+        },
+        {
+          "name": "index"
+        },
+        {
+          "name": "message"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3601,6 +3827,14 @@
     },
     {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmResponse$Message",
+      "fields": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "role"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3630,6 +3864,17 @@
     },
     {
       "type": "org.miaixz.bus.vortex.routing.llm.LlmResponse$Usage",
+      "fields": [
+        {
+          "name": "completionTokens"
+        },
+        {
+          "name": "promptTokens"
+        },
+        {
+          "name": "totalTokens"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3682,12 +3927,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.routing.LlmRouter"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.routing.mcp.McpExecutor"
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.McpRouter",
       "methods": [
         {
@@ -3719,9 +3958,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.routing.rest.RestExecutor"
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.RestRouter",
       "methods": [
         {
@@ -3733,10 +3969,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.routing.ws.WsExecutor"
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.ws.WsExecutor$SessionMetadata",
+      "fields": [
+        {
+          "name": "connectedAt"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "sessionId"
+        },
+        {
+          "name": "upstreamTarget"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3764,33 +4011,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.routing.WsRouter"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Strategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Strategy$Chain"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.AbstractStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.LimiterStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.qualifier.CstQualifierStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.QualifierStrategy"
     },
     {
       "type": "org.miaixz.bus.vortex.strategy.QualifierStrategy$Credential",
@@ -3830,21 +4050,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.request.CstRequestStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.request.McpRequestStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.request.RestRequestStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.RequestStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.ResponseStrategy"
     },
     {
       "type": "org.miaixz.bus.vortex.strategy.StrategyFactory",
@@ -3894,18 +4099,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy"
-    },
-    {
-      "type": "org.miaixz.bus.vortex.strategy.VettingStrategy"
     },
     {
       "type": "org.miaixz.bus.vortex.Vortex",

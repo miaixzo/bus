@@ -33,13 +33,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.Executor"
-        ]
-      }
-    },
-    {
       "type": "org.apache.ibatis.executor.resultset.ResultSetHandler",
       "methods": [
         {
@@ -49,13 +42,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.resultset.ResultSetHandler"
-        ]
-      }
     },
     {
       "type": "org.apache.ibatis.executor.statement.BaseStatementHandler",
@@ -120,22 +106,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.apache.ibatis.executor.statement.StatementHandler"
-        ]
-      }
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.MethodFilter"
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.MethodHandler"
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.Proxy"
-    },
-    {
       "type": "org.apache.ibatis.javassist.util.proxy.ProxyFactory",
       "methods": [
         {
@@ -162,9 +132,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.ProxyObject"
     },
     {
       "type": "org.apache.ibatis.logging.commons.JakartaCommonsLoggingImpl",
@@ -280,6 +247,27 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.Executor"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.resultset.ResultSetHandler"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.apache.ibatis.executor.statement.StatementHandler"
+        ]
+      }
     }
   ],
   "resources": [

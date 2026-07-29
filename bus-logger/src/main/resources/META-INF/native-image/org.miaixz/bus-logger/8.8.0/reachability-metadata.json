@@ -1,9 +1,6 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.logger.Factory"
-    },
-    {
       "type": "org.miaixz.bus.logger.Holder",
       "methods": [
         {
@@ -53,6 +50,32 @@
     },
     {
       "type": "org.miaixz.bus.logger.Level",
+      "fields": [
+        {
+          "name": "ALL"
+        },
+        {
+          "name": "DEBUG"
+        },
+        {
+          "name": "ERROR"
+        },
+        {
+          "name": "FATAL"
+        },
+        {
+          "name": "INFO"
+        },
+        {
+          "name": "OFF"
+        },
+        {
+          "name": "TRACE"
+        },
+        {
+          "name": "WARN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -404,6 +427,11 @@
     },
     {
       "type": "org.miaixz.bus.logger.magic.AbstractFactory",
+      "fields": [
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -561,21 +589,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.logger.magic.level.Debug"
-    },
-    {
-      "type": "org.miaixz.bus.logger.magic.level.Error"
-    },
-    {
-      "type": "org.miaixz.bus.logger.magic.level.Info"
-    },
-    {
-      "type": "org.miaixz.bus.logger.magic.level.Trace"
-    },
-    {
-      "type": "org.miaixz.bus.logger.magic.level.Warn"
-    },
-    {
       "type": "org.miaixz.bus.logger.nimble.apache.commons.CommonsLoggingFactory",
       "methods": [
         {
@@ -704,12 +717,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory",
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
-      }
     },
     {
       "type": "org.miaixz.bus.logger.nimble.apache.log4j.Log4jLoggingFactory",
@@ -1041,12 +1048,6 @@
     },
     {
       "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory",
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
-      }
-    },
-    {
-      "type": "org.miaixz.bus.logger.nimble.jboss.JbossLoggingFactory",
       "methods": [
         {
           "name": "<init>",
@@ -1304,12 +1305,6 @@
     },
     {
       "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory",
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
-      }
-    },
-    {
-      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory",
       "methods": [
         {
           "name": "<init>",
@@ -1336,15 +1331,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingProvider"
-    },
-    {
-      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory",
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ClassKit"
-      }
-    },
-    {
       "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingFactory",
       "methods": [
         {
@@ -1364,9 +1350,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.logger.nimble.tinylog.TinyLoggingProvider"
     },
     {
       "type": "org.miaixz.bus.logger.Provider",

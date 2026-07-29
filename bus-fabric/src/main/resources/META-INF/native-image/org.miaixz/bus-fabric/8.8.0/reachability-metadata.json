@@ -2,6 +2,17 @@
   "reflection": [
     {
       "type": "org.miaixz.bus.fabric.cache.DiskLruCache",
+      "fields": [
+        {
+          "name": "closed"
+        },
+        {
+          "name": "directory"
+        },
+        {
+          "name": "maxSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -167,18 +178,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$1"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$3"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$DiskFile$1"
-    },
-    {
       "type": "org.miaixz.bus.fabric.cache.DiskLruCache$Editor",
       "methods": [
         {
@@ -274,9 +273,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.cache.DiskLruCache$State"
-    },
-    {
       "type": "org.miaixz.bus.fabric.codec.body.ProgressBody",
       "methods": [
         {
@@ -323,12 +319,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.codec.body.RequestBody"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.codec.body.ResponseBody"
     },
     {
       "type": "org.miaixz.bus.fabric.codec.frame.FixedCodec",
@@ -888,18 +878,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.network.aio.AioNetwork"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.network.aio.AioNetwork$ConnectRace"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.network.dns.DnsResolver"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.network.kcp.KcpNetwork"
-    },
-    {
       "type": "org.miaixz.bus.fabric.network.kcp.KcpPacket",
       "methods": [
         {
@@ -1113,15 +1091,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.network.tcp.TcpServer"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.network.tcp.TcpServer$TcpSession"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.network.tls.TlsChannel"
     },
     {
       "type": "org.miaixz.bus.fabric.network.udp.UdpChannel",
@@ -2124,9 +2093,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.protocol.CookieJar"
-    },
-    {
       "type": "org.miaixz.bus.fabric.protocol.http.auth.Challenge",
       "methods": [
         {
@@ -2498,21 +2464,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.protocol.http.cache.HttpCache"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpChain"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpConnect"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpConnectionLease"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.chain.HttpCoordinator"
-    },
-    {
       "type": "org.miaixz.bus.fabric.protocol.http.codec.Http1Codec",
       "methods": [
         {
@@ -2791,9 +2742,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.codec.HttpCodec"
     },
     {
       "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Connection",
@@ -3751,6 +3699,11 @@
     },
     {
       "type": "org.miaixz.bus.fabric.protocol.http.http2.Http2Settings",
+      "fields": [
+        {
+          "name": "set"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4095,12 +4048,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.protocol.http.http2.PushObserver"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpDownload"
-    },
-    {
       "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest",
       "methods": [
         {
@@ -4227,12 +4174,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpRunner"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpRunner$Pipeline"
     },
     {
       "type": "org.miaixz.bus.fabric.protocol.http.HttpX",
@@ -5035,12 +4976,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.protocol.http.retry.HttpRetry"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.socket.SocketRunner"
-    },
-    {
       "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession",
       "methods": [
         {
@@ -5493,12 +5428,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.protocol.sse.EventSource"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.sse.EventSource$Factory"
-    },
-    {
       "type": "org.miaixz.bus.fabric.protocol.sse.EventSourceListener",
       "methods": [
         {
@@ -5536,21 +5465,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.sse.SseRunner"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.sse.SseRunner$1"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.sse.SseSession"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.stomp.StompRunner"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.stomp.StompSession"
     },
     {
       "type": "org.miaixz.bus.fabric.protocol.websocket.frame.WebSocketReader",
@@ -5695,12 +5609,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.websocket.WebSocketRunner"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.websocket.WebSocketSession"
     },
     {
       "type": "org.miaixz.bus.fabric.registry.connection.ConnectionPool",
@@ -6080,9 +5988,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.runtime.dispatch.DefaultDispatcher"
-    },
-    {
       "type": "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
       "methods": [
         {
@@ -6186,12 +6091,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.runtime.resource.Cancellation"
-    },
-    {
-      "type": "org.miaixz.bus.fabric.runtime.resource.ResourceScope"
     }
   ],
   "resources": [

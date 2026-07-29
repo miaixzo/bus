@@ -1,9 +1,6 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.mapper.annotation.SqlWrapper"
-    },
-    {
       "type": "org.miaixz.bus.mapper.Args",
       "methods": [
         {
@@ -11,28 +8,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.behavior.OptionsBehavior"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.behavior.PagingBehavior"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.behavior.SchemaBehavior"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.behavior.UpsertBehavior"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.basic.ClassMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.basic.ClassMapper"
     },
     {
       "type": "org.miaixz.bus.mapper.binding.basic.ClassMapper$CachingEntityClass",
@@ -50,37 +25,33 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.basic.EntityMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.basic.EntityMapper"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.BasicMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.BasicMapper"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.batch.BatchMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.batch.BatchMapper"
-    },
-    {
       "type": "org.miaixz.bus.mapper.binding.condition.Condition",
+      "fields": [
+        {
+          "name": "distinct"
+        },
+        {
+          "name": "endSql"
+        },
+        {
+          "name": "orderByClause"
+        },
+        {
+          "name": "oredCriteria"
+        },
+        {
+          "name": "selectColumns"
+        },
+        {
+          "name": "setValues"
+        },
+        {
+          "name": "simpleSelectColumns"
+        },
+        {
+          "name": "startSql"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -357,16 +328,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
-    },
-    {
       "type": "org.miaixz.bus.mapper.binding.condition.ConditionWrapper",
       "methods": [
         {
@@ -377,16 +338,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
     },
     {
       "type": "org.miaixz.bus.mapper.binding.function.Fn",
@@ -433,9 +384,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.function.Fn$FnArray"
     },
     {
       "type": "org.miaixz.bus.mapper.binding.function.Fn$FnName",
@@ -506,36 +454,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.function.FunctionMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.function.FunctionMapper"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.list.ListMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.list.ListMapper"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
     },
     {
       "type": "org.miaixz.bus.mapper.builder.CachingTableSchemaBuilder",
@@ -667,12 +585,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.builder.ColumnSchemaBuilder"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.builder.ColumnSchemaBuilder$Chain"
     },
     {
       "type": "org.miaixz.bus.mapper.builder.ColumnSchemaChain",
@@ -910,6 +822,11 @@
     },
     {
       "type": "org.miaixz.bus.mapper.builder.GenericTypeResolver$GenericArrayTypes",
+      "fields": [
+        {
+          "name": "genericComponentType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -925,6 +842,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.builder.GenericTypeResolver$ParameterizedTypes",
+      "fields": [
+        {
+          "name": "actualTypeArguments"
+        },
+        {
+          "name": "ownerType"
+        },
+        {
+          "name": "rawType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -954,6 +882,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.builder.GenericTypeResolver$WildcardTypes",
+      "fields": [
+        {
+          "name": "lowerBounds"
+        },
+        {
+          "name": "upperBounds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1019,6 +955,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.builder.SchemaSqlBuilder",
+      "fields": [
+        {
+          "name": "annotations"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1101,12 +1048,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.builder.TableSchemaBuilder"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.builder.TableSchemaBuilder$Chain"
     },
     {
       "type": "org.miaixz.bus.mapper.builder.TableSchemaChain",
@@ -1239,6 +1180,95 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Behavior",
+      "fields": [
+        {
+          "name": "ADD_COLUMN"
+        },
+        {
+          "name": "CREATE_FOREIGN_KEY"
+        },
+        {
+          "name": "CREATE_INDEX"
+        },
+        {
+          "name": "CREATE_PRIMARY_KEY"
+        },
+        {
+          "name": "CREATE_TABLE"
+        },
+        {
+          "name": "CREATE_UNIQUE"
+        },
+        {
+          "name": "DROP_COLUMN"
+        },
+        {
+          "name": "DROP_FOREIGN_KEY"
+        },
+        {
+          "name": "DROP_INDEX"
+        },
+        {
+          "name": "DROP_PRIMARY_KEY"
+        },
+        {
+          "name": "DROP_UNIQUE"
+        },
+        {
+          "name": "INSERT_ON_CONFLICT"
+        },
+        {
+          "name": "INSERT_ON_DUPLICATE"
+        },
+        {
+          "name": "INSERT_OR_REPLACE"
+        },
+        {
+          "name": "MERGE_INTO_KEY"
+        },
+        {
+          "name": "MERGE_USING_DUAL"
+        },
+        {
+          "name": "MERGE_USING_VALUES"
+        },
+        {
+          "name": "MODIFY_COLUMN_DECIMAL"
+        },
+        {
+          "name": "MODIFY_COLUMN_LENGTH"
+        },
+        {
+          "name": "MODIFY_COLUMN_NULLABLE"
+        },
+        {
+          "name": "MODIFY_COLUMN_TYPE"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "READ_COLUMN_METADATA"
+        },
+        {
+          "name": "READ_FOREIGN_KEY_METADATA"
+        },
+        {
+          "name": "READ_INDEX_METADATA"
+        },
+        {
+          "name": "READ_PRIMARY_KEY_METADATA"
+        },
+        {
+          "name": "READ_TABLE_METADATA"
+        },
+        {
+          "name": "RENAME_COLUMN"
+        },
+        {
+          "name": "UPDATE_OR_INSERT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1266,6 +1296,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Group",
+      "fields": [
+        {
+          "name": "METADATA"
+        },
+        {
+          "name": "SCHEMA"
+        },
+        {
+          "name": "UPSERT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1288,6 +1329,20 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Handler",
+      "fields": [
+        {
+          "name": "GET_BOUND_SQL"
+        },
+        {
+          "name": "PREPARE"
+        },
+        {
+          "name": "QUERY"
+        },
+        {
+          "name": "UPDATE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1310,6 +1365,23 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Isolation",
+      "fields": [
+        {
+          "name": "COLUMN"
+        },
+        {
+          "name": "DATASOURCE"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "SCHEMA"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1350,6 +1422,23 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Modify",
+      "fields": [
+        {
+          "name": "ALTER_COLUMN"
+        },
+        {
+          "name": "ALTER_COLUMN_TYPE"
+        },
+        {
+          "name": "MODIFY"
+        },
+        {
+          "name": "MODIFY_PARENTHESES"
+        },
+        {
+          "name": "SET_DATA_TYPE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1372,6 +1461,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Risk",
+      "fields": [
+        {
+          "name": "CAUTION"
+        },
+        {
+          "name": "DANGEROUS"
+        },
+        {
+          "name": "SAFE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1394,6 +1494,23 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Charter$Schema",
+      "fields": [
+        {
+          "name": "CREATE"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "SCRIPT"
+        },
+        {
+          "name": "UPDATE"
+        },
+        {
+          "name": "VALIDATE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1467,6 +1584,23 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Context$MapperConfig",
+      "fields": [
+        {
+          "name": "audit"
+        },
+        {
+          "name": "populate"
+        },
+        {
+          "name": "prefix"
+        },
+        {
+          "name": "tenant"
+        },
+        {
+          "name": "visible"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1573,6 +1707,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.criteria.Criteria",
+      "fields": [
+        {
+          "name": "criteria"
+        },
+        {
+          "name": "useSelective"
+        }
+      ],
       "methods": [
         {
           "name": "$default$useSelective",
@@ -1976,6 +2118,38 @@
     },
     {
       "type": "org.miaixz.bus.mapper.criteria.Criterion",
+      "fields": [
+        {
+          "name": "betweenValue"
+        },
+        {
+          "name": "condition"
+        },
+        {
+          "name": "javaType"
+        },
+        {
+          "name": "listValue"
+        },
+        {
+          "name": "noValue"
+        },
+        {
+          "name": "orValue"
+        },
+        {
+          "name": "secondValue"
+        },
+        {
+          "name": "singleValue"
+        },
+        {
+          "name": "typeHandler"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2878,9 +3052,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.dialect.Dialect"
-    },
-    {
       "type": "org.miaixz.bus.mapper.dialect.DialectRegistry",
       "methods": [
         {
@@ -3495,6 +3666,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.dialect.Polardb$Engine",
+      "fields": [
+        {
+          "name": "MYSQL"
+        },
+        {
+          "name": "POSTGRESQL"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3803,6 +3985,26 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.audit.AuditConfig",
+      "fields": [
+        {
+          "name": "logAllSql"
+        },
+        {
+          "name": "logParameters"
+        },
+        {
+          "name": "logResults"
+        },
+        {
+          "name": "printConsole"
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "slowSqlThreshold"
+        }
+      ],
       "methods": [
         {
           "name": "$default$logAllSql",
@@ -4020,20 +4222,45 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.audit.AuditHandler"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.audit.AuditProvider"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.audit.AuditProvider"
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.audit.AuditRecord",
+      "fields": [
+        {
+          "name": "affectedRows"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "elapsedTime"
+        },
+        {
+          "name": "endTime"
+        },
+        {
+          "name": "exception"
+        },
+        {
+          "name": "parameter"
+        },
+        {
+          "name": "resultCount"
+        },
+        {
+          "name": "sql"
+        },
+        {
+          "name": "sqlId"
+        },
+        {
+          "name": "sqlType"
+        },
+        {
+          "name": "startTime"
+        },
+        {
+          "name": "success"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4156,9 +4383,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.keygen.GenId"
     },
     {
       "type": "org.miaixz.bus.mapper.feature.keygen.GenId$NULL",
@@ -4361,16 +4585,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.keygen.KeySqlRegistry"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.keygen.PrimaryKeyEnhancer"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.operation.OperationHandler"
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.paging.Page",
+      "fields": [
+        {
+          "name": "total"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4537,6 +4757,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.paging.Pageable$PageRequest",
+      "fields": [
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "sort"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4708,6 +4939,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.paging.PageBuilder$PaginationResult",
+      "fields": [
+        {
+          "name": "countRequired"
+        },
+        {
+          "name": "countSql"
+        },
+        {
+          "name": "sql"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4853,12 +5095,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.paging.PageContext$PageSelector"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.paging.PageHandler"
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.paging.PageHandler$CountSqlSource",
       "fields": [
         {
@@ -4996,6 +5232,11 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.paging.Sort",
+      "fields": [
+        {
+          "name": "orders"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5153,6 +5394,23 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.populate.PopulateConfig",
+      "fields": [
+        {
+          "name": "created"
+        },
+        {
+          "name": "creator"
+        },
+        {
+          "name": "modified"
+        },
+        {
+          "name": "modifier"
+        },
+        {
+          "name": "provider"
+        }
+      ],
       "methods": [
         {
           "name": "$default$created",
@@ -5279,19 +5537,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.populate.PopulateHandler"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixBuilder",
       "methods": [
         {
@@ -5317,6 +5562,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig",
+      "fields": [
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "provider"
+        }
+      ],
       "methods": [
         {
           "name": "$default$ignore",
@@ -5396,19 +5649,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot",
@@ -5621,6 +5861,20 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer$SchemaPhase",
+      "fields": [
+        {
+          "name": "FOREIGN_KEY"
+        },
+        {
+          "name": "INDEX"
+        },
+        {
+          "name": "STRUCTURE"
+        },
+        {
+          "name": "TABLE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6334,16 +6588,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport",
       "methods": [
         {
@@ -6733,6 +6977,29 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.tenant.TenantConfig",
+      "fields": [
+        {
+          "name": "column"
+        },
+        {
+          "name": "enableSqlCache"
+        },
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "ignoreMappers"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "tablePrefix"
+        }
+      ],
       "methods": [
         {
           "name": "$default$enableSqlCache",
@@ -6954,19 +7221,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.tenant.TenantHandler"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.visible.VisibleBuilder",
       "methods": [
         {
@@ -7105,6 +7359,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.feature.visible.VisibleConfig",
+      "fields": [
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "provider"
+        }
+      ],
       "methods": [
         {
           "name": "$default$ignore",
@@ -7231,19 +7493,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.feature.visible.VisibleContext$Ignore"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.visible.VisibleHandler"
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
-        ]
-      }
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.visible.VisibleProvider",
       "methods": [
         {
@@ -7254,12 +7503,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.handler.AbstractSqlHandler"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.handler.ConditionHandler"
     },
     {
       "type": "org.miaixz.bus.mapper.handler.ConditionHandler$DerivedConfigKey",
@@ -7286,6 +7529,11 @@
     },
     {
       "type": "org.miaixz.bus.mapper.handler.HandlerRegistry",
+      "fields": [
+        {
+          "name": "handlers"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7350,6 +7598,11 @@
     },
     {
       "type": "org.miaixz.bus.mapper.handler.HandlerRegistry$HandlerSnapshot",
+      "fields": [
+        {
+          "name": "handlers"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7396,12 +7649,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.handler.MapperHandler"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.handler.MapperStatementHandler"
     },
     {
       "type": "org.miaixz.bus.mapper.handler.MybatisInterceptor",
@@ -7629,9 +7876,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.handler.ScopedProviderHandler"
-    },
-    {
       "type": "org.miaixz.bus.mapper.handler.SqlRewriteContext",
       "methods": [
         {
@@ -7695,19 +7939,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.Mapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Mapper"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Marker"
-    },
-    {
       "type": "org.miaixz.bus.mapper.OGNL",
       "methods": [
         {
@@ -7718,6 +7949,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.OGNL$CacheStats",
+      "fields": [
+        {
+          "name": "classCacheSize"
+        },
+        {
+          "name": "lambdaCacheSize"
+        },
+        {
+          "name": "methodCacheSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7794,6 +8036,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.Order$SimpleOrder",
+      "fields": [
+        {
+          "name": "direction"
+        },
+        {
+          "name": "property"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7859,9 +8109,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.parsing.AidedSqlScript"
-    },
-    {
       "type": "org.miaixz.bus.mapper.parsing.ClassColumn",
       "methods": [
         {
@@ -7881,6 +8128,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.parsing.ClassField",
+      "fields": [
+        {
+          "name": "clazz"
+        },
+        {
+          "name": "field"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7917,10 +8172,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.parsing.EasySqlScript"
-    },
-    {
       "type": "org.miaixz.bus.mapper.parsing.FieldMeta",
+      "fields": [
+        {
+          "name": "field"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8333,18 +8590,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.parsing.SqlMetaCache"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.parsing.SqlScript"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.parsing.SqlScript$LRSupplier"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.parsing.SqlScriptWrapper"
-    },
-    {
       "type": "org.miaixz.bus.mapper.parsing.SqlScriptWrapper$Holder",
       "methods": [
         {
@@ -8562,12 +8807,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.parsing.SqlSourceEnhancer"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.parsing.TableMeta"
-    },
-    {
       "type": "org.miaixz.bus.mapper.parsing.TableNameParser",
       "methods": [
         {
@@ -8691,6 +8930,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.parsing.TableNameParser$SqlToken",
+      "fields": [
+        {
+          "name": "end"
+        },
+        {
+          "name": "start"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8723,9 +8973,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.parsing.TableNameParser$TableNameVisitor"
     },
     {
       "type": "org.miaixz.bus.mapper.provider.BasicProvider",
@@ -9381,13 +9628,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.provider.LogicalProvider$LogicalSqlScript"
-    },
-    {
-      "type": "org.miaixz.bus.mapper.provider.MapperProvider"
-    },
-    {
       "type": "org.miaixz.bus.mapper.provider.NamingProvider",
+      "fields": [
+        {
+          "name": "naming"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9453,9 +9699,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.Registry"
-    },
-    {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions",
       "methods": [
         {
@@ -9466,6 +9709,26 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AuditOptions",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "logAllSql"
+        },
+        {
+          "name": "logParameters"
+        },
+        {
+          "name": "logResults"
+        },
+        {
+          "name": "printConsole"
+        },
+        {
+          "name": "slowSqlThreshold"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9535,6 +9798,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$OperationOptions",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "strictMode"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9564,6 +9835,23 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$PopulateOptions",
+      "fields": [
+        {
+          "name": "created"
+        },
+        {
+          "name": "creator"
+        },
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "modified"
+        },
+        {
+          "name": "modifier"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9623,6 +9911,17 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$PrefixOptions",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9662,6 +9961,110 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
+      "fields": [
+        {
+          "name": "allowAddColumn"
+        },
+        {
+          "name": "allowCreateForeignKey"
+        },
+        {
+          "name": "allowCreateIndex"
+        },
+        {
+          "name": "allowCreatePrimaryKey"
+        },
+        {
+          "name": "allowCreateTable"
+        },
+        {
+          "name": "allowCreateUnique"
+        },
+        {
+          "name": "allowDangerous"
+        },
+        {
+          "name": "allowDropColumn"
+        },
+        {
+          "name": "allowDropForeignKey"
+        },
+        {
+          "name": "allowDropIndex"
+        },
+        {
+          "name": "allowDropPrimaryKey"
+        },
+        {
+          "name": "allowDropUnique"
+        },
+        {
+          "name": "allowExpandDecimal"
+        },
+        {
+          "name": "allowExpandLength"
+        },
+        {
+          "name": "allowModifyNullable"
+        },
+        {
+          "name": "allowModifyType"
+        },
+        {
+          "name": "allowRenameColumn"
+        },
+        {
+          "name": "allowShrinkDecimal"
+        },
+        {
+          "name": "allowShrinkLength"
+        },
+        {
+          "name": "continueOnError"
+        },
+        {
+          "name": "dangerousWhitelist"
+        },
+        {
+          "name": "datasourceKey"
+        },
+        {
+          "name": "dryRun"
+        },
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "entityPackages"
+        },
+        {
+          "name": "excludeEntities"
+        },
+        {
+          "name": "excludeTables"
+        },
+        {
+          "name": "failFast"
+        },
+        {
+          "name": "includeEntities"
+        },
+        {
+          "name": "includeTables"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "printSql"
+        },
+        {
+          "name": "renameMappings"
+        },
+        {
+          "name": "scriptLocation"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10011,6 +10414,20 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$TenantOptions",
+      "fields": [
+        {
+          "name": "column"
+        },
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "ignoreMappers"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10060,6 +10477,14 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$VisibleOptions",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "ignore"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10176,14 +10601,14 @@
         {
           "name": "resolveSchemaOptions",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
-            "java.util.Properties"
+            "org.miaixz.bus.mapper.runtime.MapperOptions"
           ]
         },
         {
           "name": "resolveSchemaOptions",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions"
+            "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
+            "java.util.Properties"
           ]
         }
       ]
@@ -10199,6 +10624,26 @@
     },
     {
       "type": "org.miaixz.bus.mapper.runtime.MapperPluginProviders",
+      "fields": [
+        {
+          "name": "auditProvider"
+        },
+        {
+          "name": "populateProvider"
+        },
+        {
+          "name": "prefixProvider"
+        },
+        {
+          "name": "schemaProvider"
+        },
+        {
+          "name": "tenantProvider"
+        },
+        {
+          "name": "visibleProvider"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10265,6 +10710,118 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.basic.ClassMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.basic.EntityMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.BasicMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.batch.BatchMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.function.FunctionMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.list.ListMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.audit.AuditProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.Mapper"
+        ]
+      }
     }
   ],
   "resources": [

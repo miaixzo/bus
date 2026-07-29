@@ -153,9 +153,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cache.builtin.Addables$Addable"
-    },
-    {
       "type": "org.miaixz.bus.cache.builtin.Addables$ArrayAddable",
       "methods": [
         {
@@ -464,9 +461,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cache.CacheX"
-    },
-    {
       "type": "org.miaixz.bus.cache.collect.AbstractCollector",
       "methods": [
         {
@@ -575,6 +569,20 @@
     },
     {
       "type": "org.miaixz.bus.cache.collect.AbstractCollector$Tally",
+      "fields": [
+        {
+          "name": "hitCount"
+        },
+        {
+          "name": "pattern"
+        },
+        {
+          "name": "requireCount"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -705,6 +713,11 @@
     },
     {
       "type": "org.miaixz.bus.cache.collect.JdbcRunner$SingleConnectionSource",
+      "fields": [
+        {
+          "name": "connection"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -892,10 +905,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cache.Collector"
-    },
-    {
       "type": "org.miaixz.bus.cache.Collector$Snapshot",
+      "fields": [
+        {
+          "name": "hit"
+        },
+        {
+          "name": "rate"
+        },
+        {
+          "name": "required"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -935,6 +956,20 @@
     },
     {
       "type": "org.miaixz.bus.cache.Complex",
+      "fields": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "manage"
+        },
+        {
+          "name": "multiCacheReader"
+        },
+        {
+          "name": "singleCacheReader"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1041,6 +1076,20 @@
     },
     {
       "type": "org.miaixz.bus.cache.Context",
+      "fields": [
+        {
+          "name": "cache"
+        },
+        {
+          "name": "caches"
+        },
+        {
+          "name": "collector"
+        },
+        {
+          "name": "prevent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1097,9 +1146,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cache.Factory"
     },
     {
       "type": "org.miaixz.bus.cache.Factory$Backend",
@@ -1245,6 +1291,29 @@
     },
     {
       "type": "org.miaixz.bus.cache.magic.AnnoHolder",
+      "fields": [
+        {
+          "name": "cache"
+        },
+        {
+          "name": "cacheKeyMap"
+        },
+        {
+          "name": "expire"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "multiIndex"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1294,6 +1363,26 @@
     },
     {
       "type": "org.miaixz.bus.cache.magic.AnnoHolder$Builder",
+      "fields": [
+        {
+          "name": "cache"
+        },
+        {
+          "name": "cacheKeyMap"
+        },
+        {
+          "name": "expire"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "multiIndex"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1350,22 +1439,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cache.magic.annotation.Cached"
-    },
-    {
-      "type": "org.miaixz.bus.cache.magic.annotation.CachedGet"
-    },
-    {
-      "type": "org.miaixz.bus.cache.magic.annotation.CacheKey"
-    },
-    {
-      "type": "org.miaixz.bus.cache.magic.annotation.Invalid"
-    },
-    {
-      "type": "org.miaixz.bus.cache.magic.CacheExpire"
-    },
-    {
       "type": "org.miaixz.bus.cache.magic.CacheKeys",
+      "fields": [
+        {
+          "name": "hitKeyMap"
+        },
+        {
+          "name": "missKeySet"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1390,6 +1472,14 @@
     },
     {
       "type": "org.miaixz.bus.cache.magic.CachePair",
+      "fields": [
+        {
+          "name": "left"
+        },
+        {
+          "name": "right"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1417,6 +1507,17 @@
     },
     {
       "type": "org.miaixz.bus.cache.magic.MethodHolder",
+      "fields": [
+        {
+          "name": "collection"
+        },
+        {
+          "name": "innerReturnType"
+        },
+        {
+          "name": "returnType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1458,6 +1559,14 @@
     },
     {
       "type": "org.miaixz.bus.cache.Manage",
+      "fields": [
+        {
+          "name": "cachePool"
+        },
+        {
+          "name": "collector"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1530,6 +1639,17 @@
     },
     {
       "type": "org.miaixz.bus.cache.Module",
+      "fields": [
+        {
+          "name": "collector"
+        },
+        {
+          "name": "multiCacheReader"
+        },
+        {
+          "name": "singleCacheReader"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1579,21 +1699,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cache.nimble.CaffeineCache"
-    },
-    {
-      "type": "org.miaixz.bus.cache.nimble.GuavaCache"
-    },
-    {
-      "type": "org.miaixz.bus.cache.nimble.MemcachedCache"
-    },
-    {
-      "type": "org.miaixz.bus.cache.nimble.MemoryCache",
-      "condition": {
-        "typeReached": "org.miaixz.bus.logger.Logger"
-      }
     },
     {
       "type": "org.miaixz.bus.cache.nimble.MemoryCache",
@@ -1696,6 +1801,14 @@
     },
     {
       "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheScheduler",
+      "fields": [
+        {
+          "name": "cacheTaskNumber"
+        },
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1733,6 +1846,23 @@
     },
     {
       "type": "org.miaixz.bus.cache.nimble.MemoryCache$CacheState",
+      "fields": [
+        {
+          "name": "expireAfterWrite"
+        },
+        {
+          "name": "forever"
+        },
+        {
+          "name": "lastAccessTime"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "writeTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1958,6 +2088,23 @@
     },
     {
       "type": "org.miaixz.bus.cache.Options",
+      "fields": [
+        {
+          "name": "expire"
+        },
+        {
+          "name": "maxSize"
+        },
+        {
+          "name": "nodes"
+        },
+        {
+          "name": "redis"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2017,6 +2164,32 @@
     },
     {
       "type": "org.miaixz.bus.cache.Options$Redis",
+      "fields": [
+        {
+          "name": "host"
+        },
+        {
+          "name": "maxActive"
+        },
+        {
+          "name": "maxIdle"
+        },
+        {
+          "name": "minIdle"
+        },
+        {
+          "name": "nodes"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "timeout"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2106,6 +2279,17 @@
     },
     {
       "type": "org.miaixz.bus.cache.reader.AbstractReader",
+      "fields": [
+        {
+          "name": "collector"
+        },
+        {
+          "name": "context"
+        },
+        {
+          "name": "manage"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2136,9 +2320,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cache.reader.AbstractReader$ThrowableSupplier"
     },
     {
       "type": "org.miaixz.bus.cache.reader.MultiCacheReader",
@@ -2400,9 +2581,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cache.Serializer"
     }
   ],
   "resources": [

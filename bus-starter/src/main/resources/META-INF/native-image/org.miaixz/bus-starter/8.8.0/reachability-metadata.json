@@ -972,9 +972,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.spring.annotation.PlaceHolderBinder"
-    },
-    {
       "type": "org.miaixz.bus.spring.annotation.PlaceHolderHandler",
       "methods": [
         {
@@ -1004,9 +1001,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.spring.annotation.WrapperAnnotation"
     },
     {
       "type": "org.miaixz.bus.spring.autoproxy.ExcludeBeanNameAutoProxy",
@@ -1365,9 +1359,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.spring.banner.BannerPrinter"
     },
     {
       "type": "org.miaixz.bus.spring.banner.ImageBanner",
@@ -2235,9 +2226,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.spring.boot.StartupReporter"
-    },
-    {
       "type": "org.miaixz.bus.spring.boot.StartupReporterAware",
       "methods": [
         {
@@ -2889,9 +2877,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.spring.ContextProvider"
     },
     {
       "type": "org.miaixz.bus.spring.env.LoggingEnvironmentPostProcessor",
@@ -4024,9 +4009,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.spring.http.GsonMessageConverter"
-    },
-    {
       "type": "org.miaixz.bus.spring.http.GsonMessageConverter$AutoTypeAdapterFactory",
       "fields": [
         {
@@ -4091,15 +4073,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.spring.http.HttpMessageConverter"
-    },
-    {
-      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter"
-    },
-    {
-      "type": "org.miaixz.bus.spring.http.JacksonMessageConverter$FilterMixIn"
     },
     {
       "type": "org.miaixz.bus.spring.http.JacksonMessageConverter$IncludeTransientPropertyFilter",
@@ -6164,6 +6137,23 @@
     },
     {
       "type": "org.miaixz.bus.spring.metrics.BaseMetrics",
+      "fields": [
+        {
+          "name": "attributes"
+        },
+        {
+          "name": "cost"
+        },
+        {
+          "name": "endTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "startTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6230,6 +6220,14 @@
     },
     {
       "type": "org.miaixz.bus.spring.metrics.BeanMetrics",
+      "fields": [
+        {
+          "name": "realRefreshElapsedTime"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6258,10 +6256,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.spring.metrics.BeanMetricsCustomizer"
-    },
-    {
       "type": "org.miaixz.bus.spring.metrics.ChildrenMetrics",
+      "fields": [
+        {
+          "name": "children"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6287,6 +6287,11 @@
     },
     {
       "type": "org.miaixz.bus.spring.metrics.ModuleMetrics",
+      "fields": [
+        {
+          "name": "threadName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6306,6 +6311,20 @@
     },
     {
       "type": "org.miaixz.bus.spring.metrics.StartupMetrics",
+      "fields": [
+        {
+          "name": "applicationBootElapsedTime"
+        },
+        {
+          "name": "applicationBootTime"
+        },
+        {
+          "name": "appName"
+        },
+        {
+          "name": "stageStats"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6696,81 +6715,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.spring.SpringHolder"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableAuth"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableCache"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableCors"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableCortex"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableDubbo"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableElastic"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableFabric"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableHealth"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableI18n"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableImage"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableJdbc"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableLimiter"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableMapper"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableMetrics"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableNotify"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableOffice"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableSensitive"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableStorage"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableTempus"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableTracer"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableValidate"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableVortex"
-    },
-    {
-      "type": "org.miaixz.bus.starter.annotation.EnableWrapper"
-    },
-    {
-      "type": "org.miaixz.bus.starter.auth.AuthConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.auth.AuthMethodResolver",
       "methods": [
         {
@@ -6845,15 +6789,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.auth.AuthService"
-    },
-    {
-      "type": "org.miaixz.bus.starter.cache.AspectjCacheProxy"
-    },
-    {
-      "type": "org.miaixz.bus.starter.cache.CacheConfiguration"
     },
     {
       "type": "org.miaixz.bus.starter.cache.CacheFactoryProvider",
@@ -6995,10 +6930,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cors.CorsConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.cors.CorsProperties",
+      "fields": [
+        {
+          "name": "allowCredentials"
+        },
+        {
+          "name": "allowedHeaders"
+        },
+        {
+          "name": "allowedMethods"
+        },
+        {
+          "name": "allowedOrigins"
+        },
+        {
+          "name": "exposedHeaders"
+        },
+        {
+          "name": "maxAge"
+        },
+        {
+          "name": "path"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7075,9 +7030,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexConfiguration"
     },
     {
       "type": "org.miaixz.bus.starter.cortex.CortexConfiguration$TypedRegistryStore",
@@ -7888,10 +7840,36 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.elastic.ElasticConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.elastic.ElasticProperties",
+      "fields": [
+        {
+          "name": "connectionRequestTimeout"
+        },
+        {
+          "name": "connectTimeout"
+        },
+        {
+          "name": "hosts"
+        },
+        {
+          "name": "maxConnectPerRoute"
+        },
+        {
+          "name": "maxConnectTotal"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "schema"
+        },
+        {
+          "name": "socketTimeout"
+        },
+        {
+          "name": "username"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8016,6 +7994,17 @@
     },
     {
       "type": "org.miaixz.bus.starter.fabric.FabricProperties",
+      "fields": [
+        {
+          "name": "dns"
+        },
+        {
+          "name": "socket"
+        },
+        {
+          "name": "websocket"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8055,6 +8044,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns",
+      "fields": [
+        {
+          "name": "cache"
+        },
+        {
+          "name": "enabled"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8084,6 +8081,17 @@
     },
     {
       "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "port"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8123,6 +8131,20 @@
     },
     {
       "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "port"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8218,9 +8240,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.health.HealthConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.health.HealthConfiguration$EnableHealthCondition",
       "methods": [
         {
@@ -8314,6 +8333,11 @@
     },
     {
       "type": "org.miaixz.bus.starter.health.HealthProperties",
+      "fields": [
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8330,9 +8354,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.health.HealthService"
     },
     {
       "type": "org.miaixz.bus.starter.i18n.I18nConfiguration",
@@ -8501,6 +8522,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.i18n.I18nProperties",
+      "fields": [
+        {
+          "name": "baseNames"
+        },
+        {
+          "name": "defaultEncoding"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8539,6 +8568,23 @@
     },
     {
       "type": "org.miaixz.bus.starter.image.ImageProperties",
+      "fields": [
+        {
+          "name": "dcmDir"
+        },
+        {
+          "name": "imgDir"
+        },
+        {
+          "name": "node"
+        },
+        {
+          "name": "opencv"
+        },
+        {
+          "name": "server"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8598,6 +8644,29 @@
     },
     {
       "type": "org.miaixz.bus.starter.image.ImageProperties$Node",
+      "fields": [
+        {
+          "name": "aeTitle"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "negociation"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "sopClasses"
+        },
+        {
+          "name": "sopClassesTCS"
+        },
+        {
+          "name": "sopClassesUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8685,9 +8754,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.jdbc.DataSource"
     },
     {
       "type": "org.miaixz.bus.starter.jdbc.DataSourceHolder",
@@ -8963,10 +9029,78 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.jdbc.JdbcConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.jdbc.JdbcProperties",
+      "fields": [
+        {
+          "name": "driverClassName"
+        },
+        {
+          "name": "filters"
+        },
+        {
+          "name": "initialSize"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "maxActive"
+        },
+        {
+          "name": "maxEvictableIdleTimeMillis"
+        },
+        {
+          "name": "maxOpenPreparedStatements"
+        },
+        {
+          "name": "maxWait"
+        },
+        {
+          "name": "minEvictableIdleTimeMillis"
+        },
+        {
+          "name": "minIdle"
+        },
+        {
+          "name": "multi"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "poolPreparedStatements"
+        },
+        {
+          "name": "privateKey"
+        },
+        {
+          "name": "testOnBorrow"
+        },
+        {
+          "name": "testOnReturn"
+        },
+        {
+          "name": "testWhileIdle"
+        },
+        {
+          "name": "timeBetweenEvictionRunsMillis"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "name": "username"
+        },
+        {
+          "name": "validationFilter"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9203,9 +9337,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.limiter.LimiterConfiguration"
     },
     {
       "type": "org.miaixz.bus.starter.limiter.LimiterProperties",
@@ -10372,9 +10503,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder"
-    },
-    {
       "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder$ResolvedSchemaDataSource",
       "methods": [
         {
@@ -10536,14 +10664,14 @@
         {
           "name": "resolveSchemaOptions",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
-            "java.util.Properties"
+            "org.miaixz.bus.mapper.runtime.MapperOptions"
           ]
         },
         {
           "name": "resolveSchemaOptions",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions"
+            "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
+            "java.util.Properties"
           ]
         },
         {
@@ -10783,12 +10911,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.mapper.MyBatisConfigCustomizer"
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.metrics.MetricsEndpoint",
       "methods": [
         {
@@ -10805,6 +10927,41 @@
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties",
+      "fields": [
+        {
+          "name": "cardinality"
+        },
+        {
+          "name": "cortex"
+        },
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "health"
+        },
+        {
+          "name": "http"
+        },
+        {
+          "name": "jvm"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "rateWindow"
+        },
+        {
+          "name": "slo"
+        },
+        {
+          "name": "system"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10924,6 +11081,17 @@
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
+      "fields": [
+        {
+          "name": "defaultMax"
+        },
+        {
+          "name": "denyList"
+        },
+        {
+          "name": "rules"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10963,6 +11131,17 @@
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties$CardinalityRule",
+      "fields": [
+        {
+          "name": "max"
+        },
+        {
+          "name": "policy"
+        },
+        {
+          "name": "tag"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11002,6 +11181,23 @@
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "intervalSeconds"
+        },
+        {
+          "name": "namespace"
+        },
+        {
+          "name": "serverAddr"
+        },
+        {
+          "name": "serviceId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11061,6 +11257,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "tickIntervalSeconds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11090,6 +11294,29 @@
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties$SloDefinition",
+      "fields": [
+        {
+          "name": "metric"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "percentile"
+        },
+        {
+          "name": "target"
+        },
+        {
+          "name": "thresholdMs"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "windowMinutes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11178,6 +11405,26 @@
     },
     {
       "type": "org.miaixz.bus.starter.mongo.MongoProperties",
+      "fields": [
+        {
+          "name": "cluster"
+        },
+        {
+          "name": "connectionPool"
+        },
+        {
+          "name": "heartbeatSocket"
+        },
+        {
+          "name": "server"
+        },
+        {
+          "name": "socket"
+        },
+        {
+          "name": "ssl"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11256,6 +11503,29 @@
     },
     {
       "type": "org.miaixz.bus.starter.mongo.MongoProperties$Connection",
+      "fields": [
+        {
+          "name": "maintenanceFrequencyMilliSeconds"
+        },
+        {
+          "name": "maintenanceInitialDelayMilliSeconds"
+        },
+        {
+          "name": "maxConnectionIdleTimeMilliSeconds"
+        },
+        {
+          "name": "maxConnectionLifeTimeMilliSeconds"
+        },
+        {
+          "name": "maxSize"
+        },
+        {
+          "name": "maxWaitTimeMilliSeconds"
+        },
+        {
+          "name": "minSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11355,6 +11625,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.mongo.MongoProperties$Server",
+      "fields": [
+        {
+          "name": "heartbeatFrequencyMilliSeconds"
+        },
+        {
+          "name": "minHeartbeatFrequencyMilliSeconds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11404,6 +11682,20 @@
     },
     {
       "type": "org.miaixz.bus.starter.mongo.MongoProperties$Socket",
+      "fields": [
+        {
+          "name": "connectTimeoutMilliSeconds"
+        },
+        {
+          "name": "readTimeoutMilliSeconds"
+        },
+        {
+          "name": "receiveBufferSize"
+        },
+        {
+          "name": "sendBufferSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11473,6 +11765,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.mongo.MongoProperties$Ssl",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "invalidHostNameAllowed"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11607,9 +11907,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.notify.NotifyService"
-    },
-    {
       "type": "org.miaixz.bus.starter.office.OfficeConfiguration",
       "methods": [
         {
@@ -11628,12 +11925,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.office.OfficeService"
-    },
-    {
-      "type": "org.miaixz.bus.starter.pay.PayConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.pay.PayProperties",
       "methods": [
         {
@@ -11641,9 +11932,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.pay.PayService"
     },
     {
       "type": "org.miaixz.bus.starter.sensitive.SensitiveConfiguration",
@@ -11656,6 +11944,17 @@
     },
     {
       "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties",
+      "fields": [
+        {
+          "name": "debug"
+        },
+        {
+          "name": "decrypt"
+        },
+        {
+          "name": "encrypt"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11695,6 +11994,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt",
+      "fields": [
+        {
+          "name": "key"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11724,6 +12031,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt",
+      "fields": [
+        {
+          "name": "key"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12335,9 +12650,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.storage.StorageConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.storage.StorageProperties",
       "methods": [
         {
@@ -12345,12 +12657,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.storage.StorageService"
-    },
-    {
-      "type": "org.miaixz.bus.starter.tempus.TempusConfiguration"
     },
     {
       "type": "org.miaixz.bus.starter.tempus.TempusProperties",
@@ -12661,9 +12967,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.validate.AspectjValidateProxy"
-    },
-    {
       "type": "org.miaixz.bus.starter.validate.AutoValidateAdvice",
       "methods": [
         {
@@ -12682,9 +12985,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.vortex.VortexConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.vortex.VortexProperties",
       "methods": [
         {
@@ -12695,6 +12995,26 @@
     },
     {
       "type": "org.miaixz.bus.starter.vortex.VortexProperties$Assets",
+      "fields": [
+        {
+          "name": "fullCalibrationIntervalSeconds"
+        },
+        {
+          "name": "fullCalibrationOnStartup"
+        },
+        {
+          "name": "incrementalRefreshIntervalSeconds"
+        },
+        {
+          "name": "modifiedOverlapMs"
+        },
+        {
+          "name": "refreshEnabled"
+        },
+        {
+          "name": "refreshStartupDelaySeconds"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -13216,6 +13536,47 @@
     },
     {
       "type": "org.miaixz.bus.starter.wrapper.WrapperProperties",
+      "fields": [
+        {
+          "name": "autoType"
+        },
+        {
+          "name": "basePackages"
+        },
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "includeMultipart"
+        },
+        {
+          "name": "initParameters"
+        },
+        {
+          "name": "inStorage"
+        },
+        {
+          "name": "order"
+        },
+        {
+          "name": "prefix"
+        },
+        {
+          "name": "resolveNonSimpleArguments"
+        },
+        {
+          "name": "sanitizeInputValues"
+        },
+        {
+          "name": "servletNames"
+        },
+        {
+          "name": "synthesizeFormBody"
+        },
+        {
+          "name": "wrapContentTypes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -13354,10 +13715,27 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.zookeeper.ZookeeperConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.starter.zookeeper.ZookeeperProperties",
+      "fields": [
+        {
+          "name": "baseSleepTimeMs"
+        },
+        {
+          "name": "connectionTimeoutMs"
+        },
+        {
+          "name": "connectString"
+        },
+        {
+          "name": "maxRetries"
+        },
+        {
+          "name": "namespace"
+        },
+        {
+          "name": "sessionTimeoutMs"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",

@@ -21,6 +21,11 @@
     },
     {
       "type": "org.miaixz.bus.storage.cache.StorageCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "clear",
@@ -79,6 +84,44 @@
     },
     {
       "type": "org.miaixz.bus.storage.Context",
+      "fields": [
+        {
+          "name": "accessKey"
+        },
+        {
+          "name": "bucket"
+        },
+        {
+          "name": "connectTimeout"
+        },
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "extension"
+        },
+        {
+          "name": "pathStyle"
+        },
+        {
+          "name": "prefix"
+        },
+        {
+          "name": "readTimeout"
+        },
+        {
+          "name": "region"
+        },
+        {
+          "name": "secretKey"
+        },
+        {
+          "name": "secure"
+        },
+        {
+          "name": "writeTimeout"
+        }
+      ],
       "methods": [
         {
           "name": "$default$connectTimeout",
@@ -322,6 +365,47 @@
     },
     {
       "type": "org.miaixz.bus.storage.magic.Blob",
+      "fields": [
+        {
+          "name": "alias"
+        },
+        {
+          "name": "bytes"
+        },
+        {
+          "name": "extend"
+        },
+        {
+          "name": "hash"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "owner"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "platform"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "url"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -560,30 +644,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.magic.ErrorCode"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.AbstractProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.AlibabaCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.AliYunOssProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.AmazonS3Provider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.AzureBsProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.BackblazeB2Provider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.BaiduBosProvider"
-    },
-    {
       "type": "org.miaixz.bus.storage.nimble.BoxProvider",
       "methods": [
         {
@@ -728,15 +788,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.nimble.CloudflareR2Provider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.ContaboProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.DigitalOceanProvider"
-    },
-    {
       "type": "org.miaixz.bus.storage.nimble.DropboxProvider",
       "methods": [
         {
@@ -879,12 +930,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.ExoscaleProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.FilebaseProvider"
     },
     {
       "type": "org.miaixz.bus.storage.nimble.FtpFileProvider",
@@ -1044,9 +1089,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.nimble.GenericS3Provider"
-    },
-    {
       "type": "org.miaixz.bus.storage.nimble.GitlabFileProvider",
       "methods": [
         {
@@ -1184,10 +1226,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.nimble.GoogleCsProvider"
-    },
-    {
       "type": "org.miaixz.bus.storage.nimble.GoogleDriveProvider",
+      "fields": [
+        {
+          "name": "accessToken"
+        }
+      ],
       "methods": [
         {
           "name": "download",
@@ -1343,12 +1387,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.HuaweiObsProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.IBMCosProvider"
     },
     {
       "type": "org.miaixz.bus.storage.nimble.ICloudDriveProvider",
@@ -1557,15 +1595,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.JdOssProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.KakaoCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.LinodeOssProvider"
     },
     {
       "type": "org.miaixz.bus.storage.nimble.LocalFileProvider",
@@ -1865,30 +1894,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.nimble.MinioOssProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.NaverCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.NhnCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.OracleOssProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.OvhCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.QiniuOssProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.SakuraCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.ScalewayProvider"
-    },
-    {
       "type": "org.miaixz.bus.storage.nimble.SftpFileProvider",
       "methods": [
         {
@@ -2053,6 +2058,11 @@
     },
     {
       "type": "org.miaixz.bus.storage.nimble.SharePointProvider",
+      "fields": [
+        {
+          "name": "accessToken"
+        }
+      ],
       "methods": [
         {
           "name": "buildApiPath",
@@ -2213,18 +2223,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.nimble.SmbFileProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.StorjProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.TencentCloudProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.TencentCosProvider"
-    },
-    {
       "type": "org.miaixz.bus.storage.nimble.UpyunOssProvider",
       "methods": [
         {
@@ -2371,22 +2369,144 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.storage.nimble.VolcengineTosProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.VultrProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.WasabiProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.nimble.WebDavProvider"
-    },
-    {
-      "type": "org.miaixz.bus.storage.Provider"
-    },
-    {
       "type": "org.miaixz.bus.storage.Registry",
+      "fields": [
+        {
+          "name": "ALIYUN"
+        },
+        {
+          "name": "ALIYUN_INTL"
+        },
+        {
+          "name": "AMAZON"
+        },
+        {
+          "name": "AZURE"
+        },
+        {
+          "name": "BACKBLAZE_B2"
+        },
+        {
+          "name": "BAIDU"
+        },
+        {
+          "name": "BOX"
+        },
+        {
+          "name": "CLOUDFLARE_R2"
+        },
+        {
+          "name": "CONTABO"
+        },
+        {
+          "name": "DIGITALOCEAN"
+        },
+        {
+          "name": "DROPBOX"
+        },
+        {
+          "name": "EXOSCALE"
+        },
+        {
+          "name": "FILEBASE"
+        },
+        {
+          "name": "FTP"
+        },
+        {
+          "name": "GITLAB"
+        },
+        {
+          "name": "GOOGLE"
+        },
+        {
+          "name": "GOOGLE_DRIVE"
+        },
+        {
+          "name": "HUAWEI"
+        },
+        {
+          "name": "IBM"
+        },
+        {
+          "name": "ICLOUD"
+        },
+        {
+          "name": "JD"
+        },
+        {
+          "name": "KAKAO"
+        },
+        {
+          "name": "LINODE"
+        },
+        {
+          "name": "LOCAL"
+        },
+        {
+          "name": "MEGA"
+        },
+        {
+          "name": "MINIO"
+        },
+        {
+          "name": "NAVER"
+        },
+        {
+          "name": "NHN"
+        },
+        {
+          "name": "ORACLE"
+        },
+        {
+          "name": "OVHCLOUD"
+        },
+        {
+          "name": "QINIU"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "SAKURA"
+        },
+        {
+          "name": "SCALEWAY"
+        },
+        {
+          "name": "SFTP"
+        },
+        {
+          "name": "SHAREPOINT"
+        },
+        {
+          "name": "SMB"
+        },
+        {
+          "name": "STORJ"
+        },
+        {
+          "name": "TENCENT"
+        },
+        {
+          "name": "TENCENT_INTL"
+        },
+        {
+          "name": "UPYUN"
+        },
+        {
+          "name": "VOLCENGINE"
+        },
+        {
+          "name": "VULTR"
+        },
+        {
+          "name": "WASABI"
+        },
+        {
+          "name": "WEBDAV"
+        }
+      ],
       "methods": [
         {
           "name": "valueOf",

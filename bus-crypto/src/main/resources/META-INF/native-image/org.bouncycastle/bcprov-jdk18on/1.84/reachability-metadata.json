@@ -196,9 +196,6 @@
       ]
     },
     {
-      "type": "org.bouncycastle.asn1.gm.GMObjectIdentifiers"
-    },
-    {
       "type": "org.bouncycastle.asn1.pkcs.PrivateKeyInfo",
       "methods": [
         {
@@ -299,9 +296,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.bouncycastle.asn1.sec.SECObjectIdentifiers"
     },
     {
       "type": "org.bouncycastle.asn1.util.ASN1Dump",
@@ -540,9 +534,6 @@
       ]
     },
     {
-      "type": "org.bouncycastle.asn1.x9.X9ObjectIdentifiers"
-    },
-    {
       "type": "org.bouncycastle.cert.CertIOException",
       "methods": [
         {
@@ -690,9 +681,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.bouncycastle.crypto.AlphabetMapper"
     },
     {
       "type": "org.bouncycastle.crypto.DefaultBufferedBlockCipher",
@@ -1103,9 +1091,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.bouncycastle.crypto.signers.DSAEncoding"
     },
     {
       "type": "org.bouncycastle.crypto.signers.PlainDSAEncoding",
@@ -1593,9 +1578,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.bouncycastle.jcajce.provider.config.ProviderConfiguration"
     },
     {
       "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
@@ -2440,9 +2422,6 @@
       ]
     },
     {
-      "type": "org.bouncycastle.jce.interfaces.ECPrivateKey"
-    },
-    {
       "type": "org.bouncycastle.jce.provider.BouncyCastleProvider",
       "methods": [
         {
@@ -2719,9 +2698,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.bouncycastle.util.io.pem.PemObjectGenerator"
     },
     {
       "type": "org.bouncycastle.util.io.pem.PemReader",

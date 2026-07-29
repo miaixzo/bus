@@ -23,6 +23,20 @@
     },
     {
       "type": "org.miaixz.bus.limiter.Context",
+      "fields": [
+        {
+          "name": "extension"
+        },
+        {
+          "name": "logger"
+        },
+        {
+          "name": "seconds"
+        },
+        {
+          "name": "supplier"
+        }
+      ],
       "methods": [
         {
           "name": "$default$logger",
@@ -175,16 +189,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.limiter.magic.annotation.Downgrade"
-    },
-    {
-      "type": "org.miaixz.bus.limiter.magic.annotation.Hotspot"
-    },
-    {
-      "type": "org.miaixz.bus.limiter.magic.annotation.Limiting"
-    },
-    {
       "type": "org.miaixz.bus.limiter.magic.FlowGrade",
+      "fields": [
+        {
+          "name": "FLOW_GRADE_QPS"
+        },
+        {
+          "name": "FLOW_GRADE_THREAD"
+        },
+        {
+          "name": "grade"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -212,6 +228,17 @@
     },
     {
       "type": "org.miaixz.bus.limiter.magic.StrategyMode",
+      "fields": [
+        {
+          "name": "FALLBACK"
+        },
+        {
+          "name": "HOT_METHOD"
+        },
+        {
+          "name": "REQUEST_LIMIT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -414,9 +441,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.limiter.Provider"
-    },
-    {
       "type": "org.miaixz.bus.limiter.proxy.ByteBuddyHandler",
       "methods": [
         {
@@ -434,9 +458,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.limiter.proxy.ByteBuddyProxy"
     },
     {
       "type": "org.miaixz.bus.limiter.Registry",
@@ -467,9 +488,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.limiter.Sentinel"
     },
     {
       "type": "org.miaixz.bus.limiter.Supplier",
