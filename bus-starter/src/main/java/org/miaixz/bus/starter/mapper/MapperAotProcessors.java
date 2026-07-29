@@ -20,8 +20,11 @@
 package org.miaixz.bus.starter.mapper;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -29,7 +32,8 @@ import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
-import org.springframework.aot.hint.MemberCategory;
+import org.springframework.aot.hint.ExecutableMode;
+import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
@@ -246,7 +250,20 @@ public final class MapperAotProcessors {
          */
         private void registerReflectionTypeIfNecessary(Class<?> type, RuntimeHints hints) {
             if (!type.isPrimitive() && !type.getName().startsWith("java")) {
-                hints.reflection().registerType(type, MemberCategory.values());
+                ReflectionHints reflection = hints.reflection();
+                reflection.registerType(type);
+
+                Set<Constructor<?>> constructors = new LinkedHashSet<>(Set.of(type.getDeclaredConstructors()));
+                constructors.addAll(Set.of(type.getConstructors()));
+                constructors.forEach(constructor -> reflection.registerConstructor(constructor, ExecutableMode.INVOKE));
+
+                Set<Field> fields = new LinkedHashSet<>(Set.of(type.getDeclaredFields()));
+                fields.addAll(Set.of(type.getFields()));
+                fields.forEach(reflection::registerField);
+
+                Set<Method> methods = new LinkedHashSet<>(Set.of(type.getDeclaredMethods()));
+                methods.addAll(Set.of(type.getMethods()));
+                methods.forEach(method -> reflection.registerMethod(method, ExecutableMode.INVOKE));
             }
         }
 

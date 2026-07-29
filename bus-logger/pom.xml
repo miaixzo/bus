@@ -84,14 +84,15 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -99,8 +100,8 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

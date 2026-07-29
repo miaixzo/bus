@@ -19,7 +19,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -83,86 +83,86 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <activemq.version>6.2.6</activemq.version>
-        <amazon.s3.version>2.46.15</amazon.s3.version>
-        <ansj.version>5.1.6</ansj.version>
-        <bcpkix.version>1.84</bcpkix.version>
-        <beetl.version>3.21.2.RELEASE</beetl.version>
-        <bopomofo4j.version>1.0.1</bopomofo4j.version>
-        <commons.io.version>2.22.0</commons.io.version>
-        <commons.logging.version>1.4.0</commons.logging.version>
-        <compress.version>1.28.0</compress.version>
-        <curator.version>5.9.0</curator.version>
-        <dubbo.version>3.3.6</dubbo.version>
-        <druid.version>1.2.28</druid.version>
-        <h2.version>2.4.240</h2.version>
-        <postgresql.version>42.7.11</postgresql.version>
-        <sshd.version>2.18.0</sshd.version>
+        <logback.version>1.5.34</logback.version>
         <elastic.version>9.4.2</elastic.version>
-        <emoji.java.version>5.1.1</emoji.java.version>
+        <druid.version>1.2.28</druid.version>
+        <sentinel.version>1.8.10</sentinel.version>
         <fastjson.version>2.0.62</fastjson.version>
-        <ftpserver.version>1.2.1</ftpserver.version>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
+        <hessian.version>4.0.66</hessian.version>
+        <mmseg4j.version>1.10.0</mmseg4j.version>
+        <houbb.version>0.4.0</houbb.version>
+        <sardine.version>5.13</sardine.version>
+        <jsch.version>2.28.3</jsch.version>
+        <jpinyin.version>1.1.8</jpinyin.version>
         <gson.version>2.14.0</gson.version>
         <guava.version>33.6.0-jre</guava.version>
         <guice.version>7.0.0</guice.version>
+        <zxing.version>3.5.4</zxing.version>
+        <xmemcached.version>2.4.9</xmemcached.version>
+        <h2.version>2.4.240</h2.version>
         <hanlp.version>portable-1.8.6</hanlp.version>
-        <hessian.version>4.0.66</hessian.version>
-        <hikaricp.version>7.1.0</hikaricp.version>
-        <houbb.version>0.4.0</houbb.version>
+        <smbj.version>0.14.0</smbj.version>
+        <sshj.version>0.40.0</sshj.version>
+        <jieba.version>1.0.2</jieba.version>
+        <beetl.version>3.21.2.RELEASE</beetl.version>
         <ikanalyzer.version>2012_u6</ikanalyzer.version>
+        <mynlp.version>4.0.0</mynlp.version>
+        <mysql.version>9.7.0</mysql.version>
+        <rabbitmq.version>5.32.0</rabbitmq.version>
+        <bopomofo4j.version>1.0.1</bopomofo4j.version>
+        <okhttp.version>5.4.0</okhttp.version>
+        <emoji.java.version>5.1.1</emoji.java.version>
+        <hikaricp.version>7.1.0</hikaricp.version>
+        <commons.io.version>2.22.0</commons.io.version>
+        <commons.logging.version>1.4.0</commons.logging.version>
+        <net.version>3.13.0</net.version>
+        <tiny.version>2.0.3.RELEASE</tiny.version>
+        <micrometer.version>1.17.0</micrometer.version>
+        <temporal.version>1.35.0</temporal.version>
+        <vertx.version>5.1.2</vertx.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
-        <javassist.version>3.31.0-GA</javassist.version>
-        <jcseg.version>2.6.3</jcseg.version>
-        <jedis.version>7.5.2</jedis.version>
-        <jieba.version>1.0.2</jieba.version>
         <jna.version>5.19.1</jna.version>
-        <jpinyin.version>1.1.8</jpinyin.version>
-        <jsch.version>2.28.3</jsch.version>
+        <ansj.version>5.1.6</ansj.version>
+        <activemq.version>6.2.6</activemq.version>
+        <compress.version>1.28.0</compress.version>
+        <curator.version>5.9.0</curator.version>
+        <dubbo.version>3.3.6</dubbo.version>
+        <ftpserver.version>1.2.1</ftpserver.version>
         <kafka.version>4.3.0</kafka.version>
         <log4j.version>2.26.0</log4j.version>
-        <logback.version>1.5.34</logback.version>
-        <lombok.version>1.18.46</lombok.version>
         <lucene.smartcn.version>8.11.4</lucene.smartcn.version>
-        <micrometer.version>1.17.0</micrometer.version>
-        <mmseg4j.version>1.10.0</mmseg4j.version>
-        <mybatis.spring.version>4.0.0</mybatis.spring.version>
-        <mybatis.version>3.5.19</mybatis.version>
-        <mynlp.version>4.0.0</mynlp.version>
-        <mysql.version>9.7.0</mysql.version>
-        <net.version>3.13.0</net.version>
-        <ofdrw.version>2.3.9</ofdrw.version>
-        <okhttp.version>5.4.0</okhttp.version>
-        <pinyin4j.version>2.5.1</pinyin4j.version>
         <poi.version>5.5.1</poi.version>
-        <rabbitmq.version>5.32.0</rabbitmq.version>
-        <reflections.version>0.10.2</reflections.version>
         <rocketmq.version>5.5.0</rocketmq.version>
-        <sardine.version>5.13</sardine.version>
-        <sentinel.version>1.8.10</sentinel.version>
-        <smbj.version>0.14.0</smbj.version>
-        <spring.boot.version>4.1.0</spring.boot.version>
-        <sshj.version>0.40.0</sshj.version>
-        <temporal.version>1.35.0</temporal.version>
-        <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
-        <tiny.version>2.0.3.RELEASE</tiny.version>
-        <tinylog.version>2.7.0</tinylog.version>
-        <vertx.version>5.1.2</vertx.version>
+        <sshd.version>2.18.0</sshd.version>
         <word.version>1.3.1</word.version>
-        <xmemcached.version>2.4.9</xmemcached.version>
+        <bcpkix.version>1.84</bcpkix.version>
+        <javassist.version>3.31.0-GA</javassist.version>
+        <jcseg.version>2.6.3</jcseg.version>
+        <mybatis.version>3.5.19</mybatis.version>
+        <mybatis.spring.version>4.0.0</mybatis.spring.version>
+        <ofdrw.version>2.3.9</ofdrw.version>
+        <postgresql.version>42.7.11</postgresql.version>
+        <lombok.version>1.18.46</lombok.version>
+        <reflections.version>0.10.2</reflections.version>
+        <spring.boot.version>4.1.0</spring.boot.version>
+        <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
+        <tinylog.version>2.7.0</tinylog.version>
         <yaml.version>2.6</yaml.version>
-        <zxing.version>3.5.4</zxing.version>
+        <jedis.version>7.5.2</jedis.version>
+        <amazon.s3.version>2.46.15</amazon.s3.version>
+        <maven.groom.version>${groom.version}</maven.groom.version>
+        <maven.spotless.version>3.7.0</maven.spotless.version>
         <maven.antrun.version>3.2.0</maven.antrun.version>
-        <maven.central.version>0.11.0</maven.central.version>
         <maven.compiler.version>3.15.0</maven.compiler.version>
-        <maven.groom.version>2.1.8</maven.groom.version>
         <maven.gpg.version>3.2.8</maven.gpg.version>
         <maven.javadoc.version>3.12.0</maven.javadoc.version>
-        <maven.native.version>1.1.2</maven.native.version>
         <maven.plugin.version>3.15.2</maven.plugin.version>
-        <maven.spotless.version>3.7.0</maven.spotless.version>
         <maven.versions.version>2.21.0</maven.versions.version>
+        <maven.native.version>1.1.2</maven.native.version>
+        <maven.central.version>0.11.0</maven.central.version>
     </properties>
 
     <dependencyManagement>
@@ -366,6 +366,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-core</artifactId>
                 <version>${sentinel.version}</version>
@@ -456,6 +461,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.hankcs</groupId>
                 <artifactId>hanlp</artifactId>
                 <version>${hanlp.version}</version>
@@ -512,6 +522,25 @@
                 <version>${beetl.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.janeluo</groupId>
+                <artifactId>ikanalyzer</artifactId>
+                <version>${ikanalyzer.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.lucene</groupId>
+                        <artifactId>lucene-analyzers-common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.lucene</groupId>
+                        <artifactId>lucene-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.lucene</groupId>
+                        <artifactId>lucene-queryparser</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>com.mayabot.mynlp</groupId>
                 <artifactId>mynlp-all</artifactId>
                 <version>${mynlp.version}</version>
@@ -536,6 +565,11 @@
                 <groupId>com.rnkrsoft.bopomofo4j</groupId>
                 <artifactId>bopomofo4j</artifactId>
                 <version>${bopomofo4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.vdurmont</groupId>
@@ -626,11 +660,6 @@
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>${jakarta.servlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.jna</groupId>
@@ -731,12 +760,12 @@
                         <artifactId>jackson-core</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>org.reflections</groupId>
-                        <artifactId>reflections</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>org.javassist</groupId>
                         <artifactId>javassist</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.reflections</groupId>
+                        <artifactId>reflections</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -750,12 +779,27 @@
                         <artifactId>jackson-core</artifactId>
                     </exclusion>
                     <exclusion>
+                        <groupId>org.javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.reflections</groupId>
                         <artifactId>reflections</artifactId>
                     </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-core</artifactId>
+                <version>${sshd.version}</version>
+                <exclusions>
                     <exclusion>
-                        <groupId>org.javassist</groupId>
-                        <artifactId>javassist</artifactId>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -802,6 +846,11 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk18on</artifactId>
                 <version>${bcpkix.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.lionsoul</groupId>
@@ -854,14 +903,35 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-autoconfigure</artifactId>
                 <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-loader</artifactId>
+                <version>${spring.boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -887,17 +957,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-webmvc</artifactId>
                 <version>${spring.boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-loader</artifactId>
-                <version>${spring.boot.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.thymeleaf</groupId>
@@ -982,65 +1041,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.apache.sshd</groupId>
-                <artifactId>sshd-core</artifactId>
-                <version>${sshd.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>jcl-over-slf4j</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.janeluo</groupId>
-                <artifactId>ikanalyzer</artifactId>
-                <version>${ikanalyzer.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.lucene</groupId>
-                        <artifactId>lucene-analyzers-common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.lucene</groupId>
-                        <artifactId>lucene-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.lucene</groupId>
-                        <artifactId>lucene-queryparser</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>druid</artifactId>
-                <version>${druid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -1052,15 +1052,11 @@
                     <artifactId>groom-maven-plugin</artifactId>
                     <version>${maven.groom.version}</version>
                 </plugin>
+
                 <plugin>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>native-maven-plugin</artifactId>
-                    <version>${maven.native.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring.boot.version}</version>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${maven.spotless.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1088,19 +1084,24 @@
                     <version>${maven.plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.diffplug.spotless</groupId>
-                    <artifactId>spotless-maven-plugin</artifactId>
-                    <version>${maven.spotless.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${maven.versions.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>${maven.native.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
                     <version>${maven.central.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1140,6 +1141,39 @@
                                 <profiles>remove</profiles>
                             </pomElements>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <configuration>
+                    <upToDateChecking>
+                        <enabled>false</enabled>
+                    </upToDateChecking>
+                    <pom>
+                        <sortPom>
+                            <encoding>UTF-8</encoding>
+                            <nrOfIndentSpace>4</nrOfIndentSpace>
+                            <keepBlankLines>true</keepBlankLines>
+                            <indentBlankLines>false</indentBlankLines>
+                            <indentAttribute>schemaLocation</indentAttribute>
+                            <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                            <sortDependencyExclusions>groupId,artifactId</sortDependencyExclusions>
+                            <sortProperties>false</sortProperties>
+                            <sortModules>false</sortModules>
+                            <sortExecutions>false</sortExecutions>
+                            <expandEmptyElements>false</expandEmptyElements>
+                        </sortPom>
+                    </pom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>clean</phase>
                     </execution>
                 </executions>
             </plugin>

@@ -21,8 +21,13 @@ package org.miaixz.bus.core.instance;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -38,9 +43,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public final class InstanceFactory implements Instance {
 
     /**
-     * Singleton map object. The key is the fully qualified class name.
+     * Process-wide singleton slots.
      */
-    private final Map<String, Object> singletonMap = new ConcurrentHashMap<>();
+    private final Map<String, Slot> singletonMap = new ConcurrentHashMap<>();
 
     /**
      * Thread-local map object.
@@ -60,7 +65,7 @@ public final class InstanceFactory implements Instance {
      * @return The instance factory.
      */
     public static InstanceFactory getInstance() {
-        return SingletonHolder.INSTANCE_FACTORY;
+        return Holder.INSTANCE;
     }
 
     /**
@@ -91,7 +96,10 @@ public final class InstanceFactory implements Instance {
      */
     @Override
     public <T> T singleton(Class<T> clazz, String groupName) {
-        return getSingleton(clazz, groupName, singletonMap);
+        this.notNull(clazz);
+        Assert.notEmpty(groupName, "id");
+        final String key = clazz.getName() + Symbol.MINUS + groupName;
+        return singleton(key, () -> this.multiple(clazz));
     }
 
     /**
@@ -100,8 +108,107 @@ public final class InstanceFactory implements Instance {
     @Override
     public <T> T singleton(Class<T> clazz) {
         this.notNull(clazz);
+        return singleton(clazz.getName(), () -> this.multiple(clazz));
+    }
 
-        return this.getSingleton(clazz, singletonMap);
+    /**
+     * Gets or creates a process-wide singleton for a custom key.
+     *
+     * @param key      The singleton key.
+     * @param supplier The singleton supplier.
+     * @param <T>      The singleton type.
+     * @return The resolved singleton, or {@code null} when the supplier returns {@code null}.
+     */
+    public <T> T singleton(final String key, final SupplierX<T> supplier) {
+        while (true) {
+            final Slot existing = singletonMap.get(key);
+            if (null != existing) {
+                return (T) existing.await(key);
+            }
+
+            final Slot created = new Slot();
+            if (null != singletonMap.putIfAbsent(key, created)) {
+                continue;
+            }
+
+            try {
+                final T value = supplier.get();
+                if (null == value) {
+                    if (created.complete(null)) {
+                        singletonMap.remove(key, created);
+                        return null;
+                    }
+                    return (T) created.await(key);
+                }
+                created.complete(value);
+                return (T) created.await(key);
+            } catch (final RuntimeException | Error cause) {
+                if (created.fail(cause)) {
+                    singletonMap.remove(key, created);
+                    throw cause;
+                }
+                return (T) created.await(key);
+            }
+        }
+    }
+
+    /**
+     * Puts an existing process-wide singleton.
+     *
+     * @param key   The singleton key.
+     * @param value The singleton value.
+     */
+    public void put(final String key, final Object value) {
+        Assert.notNull(value, "Bean object must be not null !");
+        while (true) {
+            final Slot existing = singletonMap.get(key);
+            if (null == existing) {
+                if (null == singletonMap.putIfAbsent(key, Slot.completed(value))) {
+                    return;
+                }
+            } else if (existing.complete(value)) {
+                return;
+            } else if (singletonMap.replace(key, existing, Slot.completed(value))) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * Tests whether a completed process-wide singleton exists.
+     *
+     * @param key The singleton key.
+     * @return {@code true} when a completed singleton exists.
+     */
+    public boolean exists(final String key) {
+        final Slot slot = singletonMap.get(key);
+        return null != slot && slot.isReady();
+    }
+
+    /**
+     * Gets the classes of all completed process-wide singletons.
+     *
+     * @return The singleton classes.
+     */
+    public Set<Class<?>> getExistClass() {
+        return singletonMap.values().stream().map(Slot::value).filter(value -> null != value).map(Object::getClass)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Removes a process-wide singleton.
+     *
+     * @param key The singleton key.
+     */
+    public void remove(final String key) {
+        singletonMap.remove(key);
+    }
+
+    /**
+     * Clears all process-wide singletons.
+     */
+    public void destroy() {
+        singletonMap.clear();
     }
 
     /**
@@ -173,28 +280,6 @@ public final class InstanceFactory implements Instance {
     }
 
     /**
-     * Gets the singleton object from a group.
-     *
-     * @param <T>         The generic type.
-     * @param clazz       The class to query.
-     * @param group       The group information.
-     * @param instanceMap The instance map.
-     * @return The singleton object.
-     */
-    private <T> T getSingleton(final Class<T> clazz, final String group, final Map<String, Object> instanceMap) {
-        this.notNull(clazz);
-        Assert.notEmpty(group, "id");
-
-        final String fullClassName = clazz.getName() + Symbol.MINUS + group;
-        T instance = (T) instanceMap.get(fullClassName);
-        if (ObjectKit.isNull(instance)) {
-            instance = this.multiple(clazz);
-            instanceMap.put(fullClassName, instance);
-        }
-        return instance;
-    }
-
-    /**
      * Asserts that the class is not null.
      *
      * @param clazz The class information.
@@ -204,17 +289,120 @@ public final class InstanceFactory implements Instance {
     }
 
     /**
+     * One singleton slot shared by its creator and concurrent waiters.
+     */
+    private static final class Slot {
+
+        /**
+         * Thread creating the value, cleared after completion to avoid retaining the thread.
+         */
+        private volatile Thread owner;
+
+        /**
+         * Creation result shared by concurrent callers.
+         */
+        private final CompletableFuture<Object> completion;
+
+        /**
+         * Creates an incomplete slot owned by the current thread.
+         */
+        private Slot() {
+            this.owner = Thread.currentThread();
+            this.completion = new CompletableFuture<>();
+        }
+
+        /**
+         * Creates a completed slot for an explicitly supplied value.
+         *
+         * @param value The singleton value.
+         * @return A completed slot.
+         */
+        private static Slot completed(final Object value) {
+            final Slot slot = new Slot();
+            slot.complete(value);
+            return slot;
+        }
+
+        /**
+         * Waits for creation, rejecting a circular dependency owned by the current thread.
+         *
+         * @param key The singleton key used in a circular dependency error.
+         * @return The created value.
+         */
+        private Object await(final String key) {
+            if (!completion.isDone() && owner == Thread.currentThread()) {
+                throw new IllegalStateException("Circular instance dependency: " + key);
+            }
+            try {
+                return completion.join();
+            } catch (final CompletionException failure) {
+                final Throwable cause = failure.getCause();
+                if (cause instanceof RuntimeException runtime) {
+                    throw runtime;
+                }
+                if (cause instanceof Error error) {
+                    throw error;
+                }
+                throw failure;
+            }
+        }
+
+        /**
+         * Completes creation successfully.
+         *
+         * @param value The created value.
+         * @return {@code true} when this invocation completed the slot.
+         */
+        private boolean complete(final Object value) {
+            owner = null;
+            return completion.complete(value);
+        }
+
+        /**
+         * Completes creation exceptionally.
+         *
+         * @param cause The creation failure.
+         * @return {@code true} when this invocation completed the slot.
+         */
+        private boolean fail(final Throwable cause) {
+            owner = null;
+            return completion.completeExceptionally(cause);
+        }
+
+        /**
+         * Tests whether this slot contains a successfully created value.
+         *
+         * @return {@code true} when creation completed with a non-null value.
+         */
+        private boolean isReady() {
+            return null != value();
+        }
+
+        /**
+         * Returns the completed value without waiting.
+         *
+         * @return The completed value, or {@code null} while incomplete or failed.
+         */
+        private Object value() {
+            if (!completion.isDone() || completion.isCompletedExceptionally() || completion.isCancelled()) {
+                return null;
+            }
+            return completion.getNow(null);
+        }
+    }
+
+    /**
      * Static inner class for singleton implementation.
      *
      * @author Kimi Liu
      * @since Java 21+
      */
-    private static class SingletonHolder {
+    private static final class Holder {
 
         /**
          * The singleton instance of the factory.
          */
-        private static final InstanceFactory INSTANCE_FACTORY = new InstanceFactory();
+        private static final InstanceFactory INSTANCE = new InstanceFactory();
 
     }
 

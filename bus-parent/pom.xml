@@ -83,6 +83,22 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>io.github.git-commit-id</groupId>
+                    <artifactId>git-commit-id-maven-plugin</artifactId>
+                    <configuration>
+                        <verbose>true</verbose>
+                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                        <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>revision</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
@@ -126,17 +142,16 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <addMavenDescriptor>false</addMavenDescriptor>
-                            <manifest>
-                                <mainClass>${start-class}</mainClass>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -148,80 +163,6 @@
                         </delimiters>
                         <useDefaultDelimiters>false</useDefaultDelimiters>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>io.github.git-commit-id</groupId>
-                    <artifactId>git-commit-id-maven-plugin</artifactId>
-                    <configuration>
-                        <verbose>true</verbose>
-                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                        <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>revision</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <configuration>
-                        <mainClass>${spring-boot.run.main-class}</mainClass>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>repackage</id>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.graalvm.buildtools</groupId>
-                    <artifactId>native-maven-plugin</artifactId>
-                    <configuration>
-                        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-                        <metadataRepository>
-                            <enabled>true</enabled>
-                        </metadataRepository>
-                        <buildArgs>
-                            <buildArg>--enable-url-protocols=http,https</buildArg>
-                            <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
-                            <buildArg>-H:+AddAllCharsets</buildArg>
-                        </buildArgs>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>add-reachability-metadata</id>
-                            <goals>
-                                <goal>add-reachability-metadata</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>build-native</id>
-                            <goals>
-                                <goal>compile-no-fork</goal>
-                            </goals>
-                            <phase>package</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <phase>package</phase>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -247,18 +188,135 @@
                         <useModulePath>false</useModulePath>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                            <manifest>
+                                <mainClass>${start-class}</mainClass>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <configuration>
+                        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                        <metadataRepository>
+                            <enabled>true</enabled>
+                        </metadataRepository>
+                        <buildArgs combine.children="append">
+                            <buildArg>--enable-url-protocols=http,https</buildArg>
+                            <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
+                            <buildArg>-H:+AddAllCharsets</buildArg>
+                        </buildArgs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>add-reachability-metadata</id>
+                            <goals>
+                                <goal>add-reachability-metadata</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>build-native</id>
+                            <goals>
+                                <goal>compile-no-fork</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <mainClass>${spring-boot.run.main-class}</mainClass>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>repackage</id>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
+                <groupId>org.miaixz.maven</groupId>
+                <artifactId>groom-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>module-publish-pom</id>
+                        <goals>
+                            <goal>normalize</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
+                            <resolveProjectVersion>true</resolveProjectVersion>
+                            <resolveProjectExpressions>true</resolveProjectExpressions>
+                            <groomMode>oss</groomMode>
+                            <groomDependencyMode>inherited</groomDependencyMode>
+                            <applyProjectElementRemovalsToPomPackaging>false</applyProjectElementRemovalsToPomPackaging>
+                            <pomElements>
+                                <parent>remove</parent>
+                                <properties>remove</properties>
+                                <dependencyManagement>remove</dependencyManagement>
+                                <distributionManagement>remove</distributionManagement>
+                                <repositories>remove</repositories>
+                                <pluginManagement>remove</pluginManagement>
+                                <pluginRepositories>remove</pluginRepositories>
+                                <compileScope>remove</compileScope>
+                                <reporting>remove</reporting>
+                                <build>remove</build>
+                                <profiles>remove</profiles>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>parent-publish-pom</id>
+                        <goals>
+                            <goal>normalize</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
+                            <resolveProjectVersion>true</resolveProjectVersion>
+                            <resolveProjectExpressions>true</resolveProjectExpressions>
+                            <groomMode>resolveCiFriendliesOnly</groomMode>
+                            <pomElements>
+                                <parent>keep</parent>
+                                <properties>remove</properties>
+                                <dependencies>keep</dependencies>
+                                <compileScope>remove</compileScope>
+                                <build>keep</build>
+                                <buildPlugins>keep</buildPlugins>
+                                <pluginManagement>keep</pluginManagement>
+                                <dependencyManagement>keep</dependencyManagement>
+                                <distributionManagement>remove</distributionManagement>
+                                <pluginRepositories>remove</pluginRepositories>
+                                <repositories>remove</repositories>
+                                <reporting>remove</reporting>
+                                <profiles>remove</profiles>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
+
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -335,10 +393,11 @@
                             <indentBlankLines>false</indentBlankLines>
                             <indentAttribute>schemaLocation</indentAttribute>
                             <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                            <sortDependencyExclusions>groupId,artifactId</sortDependencyExclusions>
+                            <sortProperties>false</sortProperties>
                             <sortModules>false</sortModules>
                             <sortExecutions>false</sortExecutions>
                             <expandEmptyElements>false</expandEmptyElements>
-                            <sortProperties>false</sortProperties>
                         </sortPom>
                     </pom>
                 </configuration>
@@ -348,71 +407,6 @@
                             <goal>apply</goal>
                         </goals>
                         <phase>clean</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.miaixz.maven</groupId>
-                <artifactId>groom-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>module-publish-pom</id>
-                        <goals>
-                            <goal>normalize</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
-                            <resolveProjectVersion>true</resolveProjectVersion>
-                            <resolveProjectExpressions>true</resolveProjectExpressions>
-                            <groomMode>oss</groomMode>
-                            <groomDependencyMode>inherited</groomDependencyMode>
-                            <applyProjectElementRemovalsToPomPackaging>false</applyProjectElementRemovalsToPomPackaging>
-                            <pomElements>
-                                <parent>remove</parent>
-                                <properties>remove</properties>
-                                <dependencyManagement>remove</dependencyManagement>
-                                <distributionManagement>remove</distributionManagement>
-                                <repositories>remove</repositories>
-                                <pluginManagement>remove</pluginManagement>
-                                <pluginRepositories>remove</pluginRepositories>
-                                <compileScope>remove</compileScope>
-                                <reporting>remove</reporting>
-                                <build>remove</build>
-                                <profiles>remove</profiles>
-                            </pomElements>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>parent-publish-pom</id>
-                        <goals>
-                            <goal>normalize</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <inherited>false</inherited>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <groomedPomFilename>${project.artifactId}-${project.version}.pom</groomedPomFilename>
-                            <resolveProjectVersion>true</resolveProjectVersion>
-                            <resolveProjectExpressions>true</resolveProjectExpressions>
-                            <groomMode>resolveCiFriendliesOnly</groomMode>
-                            <pomElements>
-                                <parent>keep</parent>
-                                <properties>remove</properties>
-                                <dependencies>keep</dependencies>
-                                <compileScope>remove</compileScope>
-                                <build>keep</build>
-                                <buildPlugins>keep</buildPlugins>
-                                <pluginManagement>keep</pluginManagement>
-                                <dependencyManagement>keep</dependencyManagement>
-                                <distributionManagement>remove</distributionManagement>
-                                <pluginRepositories>remove</pluginRepositories>
-                                <repositories>remove</repositories>
-                                <reporting>remove</reporting>
-                                <profiles>remove</profiles>
-                            </pomElements>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -429,6 +423,14 @@
                         <phase>verify</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.central</groupId>

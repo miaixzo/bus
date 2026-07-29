@@ -1,6 +1,7 @@
 {
   "reflection": [
     {
+      "type": "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl",
       "condition": {
         "typeReached": "org.miaixz.bus.core.convert.XMLGregorianCalendarConverter"
       },
@@ -9,148 +10,10 @@
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Closeable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Flushable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.InputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.io.Serializable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Comparable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.constant.Constable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Enum"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Exception"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory"
-      },
-      "methods": [
-        {
-          "name": "privateLookupIn",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.invoke.MethodHandles$Lookup"
-          ]
-        }
-      ],
-      "type": "java.lang.invoke.MethodHandles"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Object"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Record"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.array.ArrayWrapper"
-      },
-      "type": "java.lang.reflect.Field[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.reflect.Method[]"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.RuntimeException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.lang.Throwable"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.Iterator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "java.util.RandomAccess"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.AbstractProvider",
       "methods": [
         {
           "name": "<init>",
@@ -260,31 +123,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.AbstractProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.AbstractProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.CaptchaBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.CaptchaBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.CaptchaBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -393,43 +235,13 @@
             "float"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.CaptchaBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.CaptchaBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.captcha.CaptchaProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.CaptchaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.CircleProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.CircleProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.provider.CircleProvider",
       "methods": [
         {
           "name": "<init>",
@@ -493,31 +305,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.provider.CircleProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.CircleProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.ClickWordProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.ClickWordProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.provider.ClickWordProvider",
       "methods": [
         {
           "name": "<init>",
@@ -553,31 +344,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.provider.ClickWordProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.ClickWordProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.GifProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.GifProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.provider.GifProvider",
       "methods": [
         {
           "name": "<init>",
@@ -680,31 +450,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.provider.GifProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.GifProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.LineProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.LineProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.provider.LineProvider",
       "methods": [
         {
           "name": "<init>",
@@ -760,31 +509,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.provider.LineProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.LineProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.PuzzleProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.PuzzleProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.provider.PuzzleProvider",
       "methods": [
         {
           "name": "<init>",
@@ -820,31 +548,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.provider.PuzzleProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.PuzzleProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.ShearProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.ShearProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.provider.ShearProvider",
       "methods": [
         {
           "name": "<init>",
@@ -941,31 +648,10 @@
             "java.awt.Color"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.provider.ShearProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.provider.ShearProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.AbstractStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.AbstractStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.strategy.AbstractStrategy",
       "methods": [
         {
           "name": "<init>",
@@ -984,43 +670,13 @@
           "name": "getLength",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.strategy.AbstractStrategy"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.AbstractStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.captcha.strategy.CodeStrategy"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.CodeStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.MathStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.MathStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.strategy.MathStrategy",
       "methods": [
         {
           "name": "<init>",
@@ -1052,31 +708,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.strategy.MathStrategy"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.MathStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.RandomStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.RandomStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.captcha.strategy.RandomStrategy",
       "methods": [
         {
           "name": "<init>",
@@ -1102,43 +737,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.captcha.strategy.RandomStrategy"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.captcha.strategy.RandomStrategy"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.compress.archiver.Archiver"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.archiver.Archiver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.archiver.SevenZArchiver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.archiver.SevenZArchiver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.compress.archiver.SevenZArchiver",
       "methods": [
         {
           "name": "<init>",
@@ -1158,79 +763,19 @@
             "java.nio.channels.SeekableByteChannel"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.compress.archiver.SevenZArchiver"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.archiver.SevenZArchiver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.compress.archiver.StreamArchiver"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.archiver.StreamArchiver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.archiver.StreamArchiver"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.compress.CompressBuilder"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.CompressBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.CompressBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.compress.extractor.Extractor"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.Extractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.Seven7EntryInputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.Seven7EntryInputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.compress.extractor.Seven7EntryInputStream",
       "methods": [
         {
           "name": "available",
@@ -1244,31 +789,10 @@
           "name": "read",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.compress.extractor.Seven7EntryInputStream"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.Seven7EntryInputStream"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.SevenZExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.SevenZExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.compress.extractor.SevenZExtractor",
       "methods": [
         {
           "name": "<init>",
@@ -1309,79 +833,22 @@
             "char[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.compress.extractor.SevenZExtractor"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.SevenZExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.compress.extractor.StreamExtractor"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.StreamExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.compress.extractor.StreamExtractor"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.emoji.EmojiKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.emoji.EmojiKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.emoji.EmojiKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.emoji.EmojiKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.emoji.EmojiKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.ftp.AbstractFtp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ftp.AbstractFtp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.ftp.AbstractFtp",
       "methods": [
         {
           "name": "<init>",
@@ -1420,61 +887,16 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.ftp.AbstractFtp"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ftp.AbstractFtp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ftp.CommonsFtp"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ftp.CommonsFtp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ftp.CommonsFtp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.ftp.Ftp"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ftp.Ftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.ftp.FtpConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ftp.FtpConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.ftp.FtpConfig",
       "methods": [
         {
           "name": "<init>",
@@ -1556,49 +978,13 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.ftp.FtpConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ftp.FtpConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ftp.SimpleFtpServer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ftp.SimpleFtpServer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ftp.SimpleFtpServer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
       "methods": [
         {
           "name": "<init>",
@@ -1748,31 +1134,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder",
       "methods": [
         {
           "name": "<init>",
@@ -1890,31 +1255,10 @@
           "name": "skip",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame",
       "methods": [
         {
           "name": "<init>",
@@ -1923,31 +1267,10 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder",
       "methods": [
         {
           "name": "<init>",
@@ -2013,31 +1336,10 @@
             "java.io.OutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.NeuQuant"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.NeuQuant"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.gif.NeuQuant",
       "methods": [
         {
           "name": "<init>",
@@ -2103,31 +1405,10 @@
           "name": "unbiasnet",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.gif.NeuQuant"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.gif.NeuQuant"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.ImageKit",
       "methods": [
         {
           "name": "<init>",
@@ -3263,31 +2544,10 @@
             "javax.imageio.stream.ImageOutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.ImageKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.ImagePlace"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.ImagePlace"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.ImagePlace",
       "methods": [
         {
           "name": "<init>",
@@ -3387,31 +2647,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.ImagePlace"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.ImagePlace"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.Images"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.Images"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.Images",
       "methods": [
         {
           "name": "<init>",
@@ -3703,31 +2942,10 @@
             "javax.imageio.stream.ImageOutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.Images"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.Images"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageText"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageText"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.ImageText",
       "methods": [
         {
           "name": "<init>",
@@ -3813,31 +3031,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.ImageText"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageText"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.ImageWriter",
       "methods": [
         {
           "name": "<init>",
@@ -3897,31 +3094,10 @@
             "javax.imageio.stream.ImageOutputStream"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.ImageWriter"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.ImageWriter"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder",
       "methods": [
         {
           "name": "<init>",
@@ -3995,25 +3171,10 @@
             "java.lang.Integer"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation",
       "methods": [
         {
           "name": "<init>",
@@ -4037,25 +3198,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias",
       "methods": [
         {
           "name": "<init>",
@@ -4079,25 +3225,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender",
       "methods": [
         {
           "name": "<init>",
@@ -4121,25 +3252,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither",
       "methods": [
         {
           "name": "<init>",
@@ -4163,25 +3279,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics",
       "methods": [
         {
           "name": "<init>",
@@ -4205,25 +3306,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation",
       "methods": [
         {
           "name": "<init>",
@@ -4247,25 +3333,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render",
       "methods": [
         {
           "name": "<init>",
@@ -4289,25 +3360,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl",
       "methods": [
         {
           "name": "<init>",
@@ -4331,25 +3387,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias",
       "methods": [
         {
           "name": "<init>",
@@ -4373,31 +3414,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.json.JsonFactory",
       "methods": [
         {
           "name": "<init>",
@@ -4411,31 +3431,10 @@
           "name": "of",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.json.JsonFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.json.JsonKit",
       "methods": [
         {
           "name": "<init>",
@@ -4517,73 +3516,22 @@
             "java.lang.Class"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.json.JsonKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.json.JsonProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.JsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.AbstractJsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.AbstractJsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.json.provider.AbstractJsonProvider",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.json.provider.AbstractJsonProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.AbstractJsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.FastJsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.FastJsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.json.provider.FastJsonProvider",
       "methods": [
         {
           "name": "<init>",
@@ -4661,61 +3609,16 @@
             "java.lang.Class"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.json.provider.FastJsonProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.FastJsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.json.provider.GsonProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.GsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.GsonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.json.provider.JacksonProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.JacksonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.json.provider.JacksonProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.GlobalMailAccount"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mail.GlobalMailAccount",
       "methods": [
         {
           "name": "<init>",
@@ -4754,49 +3657,13 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.mail.GlobalMailAccount"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mail.GlobalMailAccount"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mail.InternalMail"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.InternalMail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mail.InternalMail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mail.Mail",
       "methods": [
         {
           "name": "<init>",
@@ -4808,31 +3675,10 @@
             "org.miaixz.bus.extra.mail.MailAccount"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.mail.Mail"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mail.Mail"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.mail.MailAccount"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.MailAccount"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mail.MailAccount",
       "methods": [
         {
           "name": "<init>",
@@ -5051,107 +3897,731 @@
           "name": "toString",
           "parameterTypes": []
         }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.mail.MailAuthenticator",
+      "fields": [
+        {
+          "name": "auth"
+        }
       ],
-      "type": "org.miaixz.bus.extra.mail.MailAccount"
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "jakarta.mail.PasswordAuthentication"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.mail.MailAccount"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPasswordAuthentication",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mail.MailAccount"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.extra.mail.MailAuthenticator"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mail.MailKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mail.MailKit"
+      "type": "org.miaixz.bus.extra.mail.SMTPMessage",
+      "fields": [
+        {
+          "name": "ATTACHMENT"
+        },
+        {
+          "name": "INLINE"
+        },
+        {
+          "name": "mailAccount"
+        },
+        {
+          "name": "multipart"
+        }
+      ],
+      "methods": [
+        {
+          "name": "$deserializeLambda$",
+          "parameterTypes": [
+            "java.lang.invoke.SerializedLambda"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.mail.MailAccount",
+            "jakarta.mail.Session"
+          ]
+        },
+        {
+          "name": "addAttachments",
+          "parameterTypes": [
+            "jakarta.activation.DataSource[]"
+          ]
+        },
+        {
+          "name": "addBodyPart",
+          "parameterTypes": [
+            "jakarta.mail.BodyPart"
+          ]
+        },
+        {
+          "name": "addBodyPart",
+          "parameterTypes": [
+            "jakarta.mail.BodyPart",
+            "int"
+          ]
+        },
+        {
+          "name": "addFiles",
+          "parameterTypes": [
+            "java.io.File[]"
+          ]
+        },
+        {
+          "name": "addFrom",
+          "parameterTypes": [
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "addHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addHeaderLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addImage",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "addImage",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "addImage",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addRecipient",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "addRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "addRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildBodyPart",
+          "parameterTypes": [
+            "jakarta.activation.DataSource",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "buildContent",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset",
+            "boolean"
+          ]
+        },
+        {
+          "name": "doSend",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getAllHeaderLines",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllRecipients",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentLanguage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentMD5",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataHandler",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisposition",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEncoding",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFlags",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFolder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFrom",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLineCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMatchingHeaderLines",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getMatchingHeaders",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getMessageID",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMessageNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNonMatchingHeaderLines",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getNonMatchingHeaders",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getRawInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReceivedDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType"
+          ]
+        },
+        {
+          "name": "getReplyTo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSender",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSentDate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSession",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubject",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": []
+        },
+        {
+          "name": "isExpunged",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMimeType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isSet",
+          "parameterTypes": [
+            "jakarta.mail.Flags$Flag"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "jakarta.mail.search.SearchTerm"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.mail.MailAccount",
+            "boolean",
+            "java.io.PrintStream"
+          ]
+        },
+        {
+          "name": "removeHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "reply",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "reply",
+          "parameterTypes": [
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "saveChanges",
+          "parameterTypes": []
+        },
+        {
+          "name": "send",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBccs",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setCcs",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setContent",
+          "parameterTypes": [
+            "jakarta.mail.Multipart"
+          ]
+        },
+        {
+          "name": "setContent",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContent",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setContentID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setContentLanguage",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setContentMD5",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDataHandler",
+          "parameterTypes": [
+            "jakarta.activation.DataHandler"
+          ]
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDescription",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDisposition",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFileName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFlag",
+          "parameterTypes": [
+            "jakarta.mail.Flags$Flag",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setFlags",
+          "parameterTypes": [
+            "jakarta.mail.Flags",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setFrom",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFrom",
+          "parameterTypes": [
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "setFrom",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRecipient",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "setRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "setRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRecipients",
+          "parameterTypes": [
+            "jakarta.mail.Message$RecipientType",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setReply",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setReplyTo",
+          "parameterTypes": [
+            "jakarta.mail.Address[]"
+          ]
+        },
+        {
+          "name": "setSender",
+          "parameterTypes": [
+            "jakarta.mail.Address"
+          ]
+        },
+        {
+          "name": "setSentDate",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setSubject",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSubject",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setText",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setText",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setText",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTitle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTos",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "writeTo",
+          "parameterTypes": [
+            "java.io.OutputStream",
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mail.MailKit"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.extra.mail.SMTPMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.Consumer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.Consumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.Message"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.Message"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.MessageHandler"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.MessageHandler"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mq.MQConfig",
       "methods": [
         {
           "name": "<init>",
@@ -5202,31 +4672,10 @@
             "java.util.Properties"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.mq.MQConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mq.MQFactory",
       "methods": [
         {
           "name": "<init>",
@@ -5244,181 +4693,37 @@
             "org.miaixz.bus.extra.mq.MQConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.mq.MQFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.MQProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.MQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.Producer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.Producer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProducer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaConsumer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProducer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider",
       "methods": [
         {
           "name": "<init>",
@@ -5469,49 +4774,13 @@
             "org.miaixz.bus.extra.mq.MQConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQConsumer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProducer",
       "methods": [
         {
           "name": "close",
@@ -5539,67 +4808,16 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProducer"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQConsumer"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQConsumer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer",
       "methods": [
         {
           "name": "close",
@@ -5611,49 +4829,13 @@
             "org.miaixz.bus.extra.mq.Message"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.RecordBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.mq.RawMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.mq.RawMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.mq.RawMessage",
       "methods": [
         {
           "name": "<init>",
@@ -5684,31 +4866,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.mq.RawMessage"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.mq.RawMessage"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.AbstractResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.AbstractResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.AbstractResult",
       "methods": [
         {
           "name": "<init>",
@@ -5718,31 +4879,10 @@
           "name": "computeNext",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.AbstractResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.AbstractResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.NLPFactory",
       "methods": [
         {
           "name": "<init>",
@@ -5766,31 +4906,10 @@
           "name": "getEngine",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.NLPFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.NLPKit",
       "methods": [
         {
           "name": "<init>",
@@ -5812,67 +4931,19 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.NLPKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.NLPProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.NLPResult"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.NLPWord"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.NLPWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisProvider",
       "methods": [
         {
           "name": "parse",
@@ -5880,115 +4951,28 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisResult",
       "methods": [
         {
           "name": "nextWord",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisWord"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.provider.analysis.SmartcnProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.SmartcnProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.SmartcnProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult",
       "methods": [
         {
           "name": "hasNext",
@@ -6002,31 +4986,10 @@
           "name": "remove",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6044,31 +5007,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider",
       "methods": [
         {
           "name": "parse",
@@ -6076,31 +5018,10 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPResult",
       "methods": [
         {
           "name": "hasNext",
@@ -6114,31 +5035,10 @@
           "name": "remove",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6156,31 +5056,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider",
       "methods": [
         {
           "name": "parse",
@@ -6188,61 +5067,19 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegResult",
       "methods": [
         {
           "name": "nextWord",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6260,31 +5097,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider",
       "methods": [
         {
           "name": "parse",
@@ -6292,31 +5108,10 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaResult",
       "methods": [
         {
           "name": "hasNext",
@@ -6330,31 +5125,10 @@
           "name": "remove",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6372,79 +5146,22 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult",
       "methods": [
         {
           "name": "nextWord",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6462,31 +5179,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider",
       "methods": [
         {
           "name": "parse",
@@ -6494,31 +5190,10 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpResult",
       "methods": [
         {
           "name": "hasNext",
@@ -6532,31 +5207,10 @@
           "name": "remove",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6574,31 +5228,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider",
       "methods": [
         {
           "name": "parse",
@@ -6606,31 +5239,10 @@
             "java.lang.CharSequence"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.word.WordResult",
       "methods": [
         {
           "name": "hasNext",
@@ -6644,31 +5256,10 @@
           "name": "remove",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordResult"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordResult"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.nlp.provider.word.WordWord",
       "methods": [
         {
           "name": "getEndOffset",
@@ -6686,31 +5277,10 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordWord"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.nlp.provider.word.WordWord"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.pinyin.PinyinFactory",
       "methods": [
         {
           "name": "<init>",
@@ -6730,31 +5300,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.pinyin.PinyinFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.pinyin.PinyinKit",
       "methods": [
         {
           "name": "<init>",
@@ -6830,43 +5379,13 @@
             "char"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.pinyin.PinyinKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.pinyin.PinyinProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.PinyinProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.bopomofo4j.Bopomofo4JProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.bopomofo4j.Bopomofo4JProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.pinyin.provider.bopomofo4j.Bopomofo4JProvider",
       "methods": [
         {
           "name": "<init>",
@@ -6887,31 +5406,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.pinyin.provider.bopomofo4j.Bopomofo4JProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.bopomofo4j.Bopomofo4JProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.houbb.HoubbProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.houbb.HoubbProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.pinyin.provider.houbb.HoubbProvider",
       "methods": [
         {
           "name": "<init>",
@@ -6932,67 +5430,16 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.pinyin.provider.houbb.HoubbProvider"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.houbb.HoubbProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.pinyin.provider.jpinyin.JPinyinProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.jpinyin.JPinyinProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.jpinyin.JPinyinProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.pinyin.provider.pinyin4j.Pinyin4JProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.pinyin4j.Pinyin4JProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.pinyin4j.Pinyin4JProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider",
       "methods": [
         {
           "name": "getPinyin",
@@ -7009,42 +5456,133 @@
             "boolean"
           ]
         }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.qrcode.LuminanceSource",
+      "fields": [
+        {
+          "name": "image"
+        },
+        {
+          "name": "left"
+        },
+        {
+          "name": "top"
+        }
       ],
-      "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider"
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "crop",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMatrix",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRow",
+          "parameterTypes": [
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "invert",
+          "parameterTypes": []
+        },
+        {
+          "name": "isCropSupported",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRotateSupported",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "rotateCounterClockwise",
+          "parameterTypes": []
+        },
+        {
+          "name": "rotateCounterClockwise45",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.extra.qrcode.LuminanceSource"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.qrcode.QrCodeException",
       "methods": [
         {
           "name": "<init>",
@@ -7089,61 +5627,19 @@
             "java.lang.Object[]"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeException"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeException"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.qrcode.QrCodeKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.qrcode.QrConfig",
       "methods": [
         {
           "name": "<init>",
@@ -7156,67 +5652,16 @@
             "int"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.qrcode.QrConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.qrcode.QrDecoder"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrDecoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrDecoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.qrcode.QrEncoder"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.QrEncoder"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.AsciiArtRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.AsciiArtRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.qrcode.render.AsciiArtRender",
       "methods": [
         {
           "name": "<init>",
@@ -7224,43 +5669,13 @@
             "org.miaixz.bus.extra.qrcode.QrConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.qrcode.render.AsciiArtRender"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.AsciiArtRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.qrcode.render.BitMatrixRender"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.BitMatrixRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.ImageRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.ImageRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.qrcode.render.ImageRender",
       "methods": [
         {
           "name": "<init>",
@@ -7269,31 +5684,10 @@
             "java.lang.String"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.qrcode.render.ImageRender"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.ImageRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.SVGRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.SVGRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.qrcode.render.SVGRender",
       "methods": [
         {
           "name": "<init>",
@@ -7301,31 +5695,10 @@
             "org.miaixz.bus.extra.qrcode.QrConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.qrcode.render.SVGRender"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.qrcode.render.SVGRender"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.ssh.Connector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.Connector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.ssh.Connector",
       "methods": [
         {
           "name": "<init>",
@@ -7418,43 +5791,13 @@
           "name": "toString",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.ssh.Connector"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.Connector"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.JschKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.JschKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.JschKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.ChannelType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.ssh.provider.jsch.ChannelType",
       "methods": [
         {
           "name": "<init>",
@@ -7478,61 +5821,16 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.ChannelType"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.ChannelType"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSession"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSession"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSession"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode",
       "methods": [
         {
           "name": "<init>",
@@ -7551,228 +5849,120 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSession"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSession"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSession"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSftp"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSftp"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.Session"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.Session"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.ssh.SshjKit"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.ssh.SshjKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.ssh.SshjKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlTemplate"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlTemplate"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlTemplate"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerTemplate"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerTemplate"
+      "type": "org.miaixz.bus.extra.template.provider.freemarker.SimpleStringTemplateLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "closeTemplateSource",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "findTemplateSource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastModified",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getReader",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerTemplate"
-    },
-    {
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allPublicConstructors": true,
-      "allPublicFields": true,
-      "allPublicMethods": true,
-      "queryAllDeclaredMethods": true,
-      "queryAllPublicMethods": true,
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.SimpleStringTemplateLoader"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.field.FieldReflect"
-      },
       "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafTemplate"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafTemplate"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafTemplate"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
       "type": "org.miaixz.bus.extra.template.Template"
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.Template"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.StrictBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.template.TemplateConfig",
       "methods": [
         {
           "name": "<init>",
@@ -7863,25 +6053,10 @@
             "boolean"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.template.TemplateConfig"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode",
       "methods": [
         {
           "name": "<init>",
@@ -7900,31 +6075,10 @@
           "name": "values",
           "parameterTypes": []
         }
-      ],
-      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.template.TemplateFactory",
       "methods": [
         {
           "name": "<init>",
@@ -7950,31 +6104,10 @@
             "org.miaixz.bus.extra.template.TemplateConfig"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.template.TemplateFactory"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateFactory"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.bean.desc.SimpleBeanDesc"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.LookupKit"
-      },
+      "type": "org.miaixz.bus.extra.template.TemplateKit",
       "methods": [
         {
           "name": "<init>",
@@ -7999,25 +6132,9 @@
             "java.io.Writer"
           ]
         }
-      ],
-      "type": "org.miaixz.bus.extra.template.TemplateKit"
+      ]
     },
     {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateKit"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.reflect.method.MethodReflect"
-      },
-      "type": "org.miaixz.bus.extra.template.TemplateProvider"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ReflectKit"
-      },
       "type": "org.miaixz.bus.extra.template.TemplateProvider"
     }
   ],

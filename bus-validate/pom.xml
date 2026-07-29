@@ -84,6 +84,7 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-logger</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

@@ -20,8 +20,6 @@
 package org.miaixz.bus.core.instance;
 
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
@@ -41,11 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 @ThreadSafe
 public final class Instances {
-
-    /**
-     * The singleton object pool.
-     */
-    private static final ConcurrentHashMap<String, Object> POOL = new ConcurrentHashMap<>();
 
     /**
      * Private constructor to prevent instantiation.
@@ -81,7 +74,7 @@ public final class Instances {
      * @return The singleton object.
      */
     public static <T> T get(final String key, final SupplierX<T> supplier) {
-        return (T) POOL.computeIfAbsent(key, (k) -> supplier.get());
+        return InstanceFactory.getInstance().singleton(key, supplier);
     }
 
     /**
@@ -101,7 +94,7 @@ public final class Instances {
      * @param object The object.
      */
     public static void put(final String key, final Object object) {
-        POOL.put(key, object);
+        InstanceFactory.getInstance().put(key, object);
     }
 
     /**
@@ -114,7 +107,7 @@ public final class Instances {
     public static boolean exists(final Class<?> clazz, final Object... args) {
         if (null != clazz) {
             final String key = buildKey(clazz.getName(), args);
-            return POOL.containsKey(key);
+            return InstanceFactory.getInstance().exists(key);
         }
         return false;
     }
@@ -125,7 +118,7 @@ public final class Instances {
      * @return A set of unique classes.
      */
     public static Set<Class<?>> getExistClass() {
-        return POOL.values().stream().map(Object::getClass).collect(Collectors.toSet());
+        return InstanceFactory.getInstance().getExistClass();
     }
 
     /**
@@ -145,14 +138,14 @@ public final class Instances {
      * @param key The key of the object to remove.
      */
     public static void remove(final String key) {
-        POOL.remove(key);
+        InstanceFactory.getInstance().remove(key);
     }
 
     /**
      * Clears all singleton objects from the pool.
      */
     public static void destroy() {
-        POOL.clear();
+        InstanceFactory.getInstance().destroy();
     }
 
     /**
@@ -239,12 +232,7 @@ public final class Instances {
      * @return The singleton object.
      */
     public static <T> T singletion(String key, SupplierX<T> supplier) {
-        Object value = POOL.get(key);
-        if (null == value) {
-            POOL.putIfAbsent(key, supplier.get());
-            value = POOL.get(key);
-        }
-        return (T) value;
+        return InstanceFactory.getInstance().singleton(key, supplier);
     }
 
     /**

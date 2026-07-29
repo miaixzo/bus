@@ -40,11 +40,6 @@ import org.miaixz.bus.fabric.protocol.websocket.WebSocketX;
 public final class Fabric {
 
     /**
-     * Lock serializing default Context creation and shutdown.
-     */
-    private static final Object DEFAULT_RUNTIME_LOCK = new Object();
-
-    /**
      * Creates an entry point around an already validated context.
      */
     private Fabric() {
@@ -230,12 +225,12 @@ public final class Fabric {
      * Closes and removes the shared default context when it has been created; otherwise does nothing.
      */
     public static void shutdown() {
-        synchronized (DEFAULT_RUNTIME_LOCK) {
+        synchronized (DefaultRuntime.class) {
             if (!Instances.exists(DefaultRuntime.class)) {
                 return;
             }
             try {
-                Instances.get(DefaultRuntime.class).context.close();
+                Instances.get(DefaultRuntime.class.getName(), DefaultRuntime::new).context.close();
             } finally {
                 Instances.remove(DefaultRuntime.class);
             }
@@ -248,9 +243,9 @@ public final class Fabric {
      * @return shared default context, created on first access
      */
     private static Context defaultContext() {
-        synchronized (DEFAULT_RUNTIME_LOCK) {
+        synchronized (DefaultRuntime.class) {
             try {
-                return Instances.get(DefaultRuntime.class).context;
+                return Instances.get(DefaultRuntime.class.getName(), DefaultRuntime::new).context;
             } catch (final RuntimeException e) {
                 if (e instanceof InternalException) {
                     throw e;

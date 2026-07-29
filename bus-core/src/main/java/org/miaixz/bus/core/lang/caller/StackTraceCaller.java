@@ -21,8 +21,8 @@ package org.miaixz.bus.core.lang.caller;
 
 import java.io.Serial;
 import java.io.Serializable;
-
-import org.miaixz.bus.core.lang.exception.InternalException;
+import java.lang.StackWalker.Option;
+import java.util.Set;
 
 /**
  * Implementation of the {@link Caller} interface that retrieves caller information by analyzing the current thread's
@@ -45,83 +45,52 @@ public class StackTraceCaller implements Caller, Serializable {
     }
 
     /**
-     * The offset in the stack trace to account for internal method calls within this class and
-     * {@link Thread#getStackTrace()}.
+     * Retains declaring classes directly so caller resolution does not require loading stack-trace class names.
      */
-    private static final int OFFSET = 2;
+    private static final StackWalker STACK_WALKER = StackWalker
+            .getInstance(Set.of(Option.RETAIN_CLASS_REFERENCE, Option.SHOW_REFLECT_FRAMES));
 
     /**
      * Retrieves the immediate calling class from the current thread's stack trace.
      *
      * @return The {@link Class} object representing the immediate caller, or {@code null} if not found.
-     * @throws InternalException if the class of the caller cannot be found.
      */
     @Override
     public Class<?> getCaller() {
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (OFFSET + 1 >= stackTrace.length) {
-            return null;
-        }
-        final String className = stackTrace[OFFSET + 1].getClassName();
-        try {
-            return Class.forName(className);
-        } catch (final ClassNotFoundException e) {
-            throw new InternalException(e, "[{}] not found!", className);
-        }
+        return getDeclaringClass(3);
     }
 
     /**
      * Retrieves the caller of the immediate caller from the current thread's stack trace.
      *
      * @return The {@link Class} object representing the caller's caller, or {@code null} if not found.
-     * @throws InternalException if the class of the caller cannot be found.
      */
     @Override
     public Class<?> getCallers() {
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (OFFSET + 2 >= stackTrace.length) {
-            return null;
-        }
-        final String className = stackTrace[OFFSET + 2].getClassName();
-        try {
-            return Class.forName(className);
-        } catch (final ClassNotFoundException e) {
-            throw new InternalException(e, "[{}] not found!", className);
-        }
+        return getDeclaringClass(4);
     }
 
     /**
-     * Retrieves the calling class at a specific depth in the call stack. The depth is relative to the
-     * {@link StackTraceCaller} class itself.
+     * Retrieves the calling class at a specific depth in the call stack. The depth is relative to the public
+     * {@link org.miaixz.bus.core.xyz.CallerKit} entry point.
      *
      * <p>
      * Call stack depth explanation:
      *
      * <pre>
-     * 0: {@link Thread#getStackTrace()} itself (internal)
-     * 1: {@link StackTraceCaller} method (internal)
-     * 2: The class that calls a method within {@link StackTraceCaller}
-     * 3: The caller of the class at depth 2
+     * 0: {@link org.miaixz.bus.core.xyz.CallerKit}
+     * 1: The class that calls a method within {@link org.miaixz.bus.core.xyz.CallerKit}
+     * 2: The caller of the class at depth 1
      * ... and so on.
      * </pre>
      *
-     * @param depth The depth in the call stack, where 0 refers to the immediate caller of this method.
+     * @param depth The depth in the call stack, where 0 refers to {@link org.miaixz.bus.core.xyz.CallerKit}.
      * @return The {@link Class} object at the specified call stack depth, or {@code null} if the depth is out of
      *         bounds.
-     * @throws InternalException if the class at the specified depth cannot be found.
      */
     @Override
     public Class<?> getCaller(final int depth) {
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (OFFSET + depth >= stackTrace.length) {
-            return null;
-        }
-        final String className = stackTrace[OFFSET + depth].getClassName();
-        try {
-            return Class.forName(className);
-        } catch (final ClassNotFoundException e) {
-            throw new InternalException(e, "[{}] not found!", className);
-        }
+        return getDeclaringClass(2L + depth);
     }
 
     /**
@@ -132,13 +101,22 @@ public class StackTraceCaller implements Caller, Serializable {
      */
     @Override
     public boolean isCalledBy(final Class<?> clazz) {
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        for (final StackTraceElement element : stackTrace) {
-            if (element.getClassName().equals(clazz.getName())) {
-                return true;
-            }
+        final String className = clazz.getName();
+        return STACK_WALKER.walk(frames -> frames.anyMatch(frame -> frame.getClassName().equals(className)));
+    }
+
+    /**
+     * Returns the declaring class at the requested stack depth.
+     *
+     * @param depth number of frames to skip
+     * @return the declaring class, or {@code null} when the requested frame does not exist
+     */
+    private Class<?> getDeclaringClass(final long depth) {
+        if (depth < 0) {
+            return null;
         }
-        return false;
+        return STACK_WALKER.walk(
+                frames -> frames.skip(depth).findFirst().map(StackWalker.StackFrame::getDeclaringClass).orElse(null));
     }
 
 }

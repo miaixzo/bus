@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.spring.http;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -33,14 +30,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 
 /**
  * Normalizes {@link Message} response bodies before serialization.
  * <p>
- * Failed messages are converted to a structure without {@code data}, even when callers manually populated that field.
- * This keeps the rule framework-level without adding serialization annotations or JSON dependencies to bus-core.
+ * Failed messages have their {@code data} cleared before serialization, even when callers manually populated that
+ * field. This keeps the rule framework-level without adding serialization annotations or JSON dependencies to bus-core.
  * </p>
  *
  * @author Kimi Liu
@@ -72,7 +68,7 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
      * @param selectedConverterType the selected converter type
      * @param request               the current request
      * @param response              the current response
-     * @return the original body for success and non-Message responses, otherwise a failure response map
+     * @return the original body, with {@code data} cleared when it is a failure message
      */
     @Override
     public Object beforeBodyWrite(
@@ -85,10 +81,8 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         if (!(body instanceof Message<?> message) || isSuccess(message)) {
             return body;
         }
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put(Consts.ERRCODE, message.getErrcode());
-        result.put(Consts.ERRMSG, message.getErrmsg());
-        return result;
+        message.setData(null);
+        return message;
     }
 
     /**

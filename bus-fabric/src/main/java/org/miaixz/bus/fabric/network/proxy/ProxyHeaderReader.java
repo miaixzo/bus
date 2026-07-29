@@ -194,9 +194,7 @@ public final class ProxyHeaderReader {
          * @param conduit    completion-capable transport
          * @param completion terminal result callback
          */
-        private AsyncReader(
-                final Conduit conduit,
-                final BiConsumerX<? super Result, ? super Throwable> completion) {
+        private AsyncReader(final Conduit conduit, final BiConsumerX<? super Result, ? super Throwable> completion) {
             this.conduit = conduit;
             this.completion = completion;
         }
@@ -268,9 +266,7 @@ public final class ProxyHeaderReader {
          * @param byteCount maximum byte count
          * @param callback  phase-specific completion callback
          */
-        private void read(
-                final long byteCount,
-                final BiConsumerX<? super Long, ? super Throwable> callback) {
+        private void read(final long byteCount, final BiConsumerX<? super Long, ? super Throwable> callback) {
             try {
                 conduit.read(consumed, byteCount, callback);
             } catch (final RuntimeException e) {

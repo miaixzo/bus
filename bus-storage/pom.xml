@@ -100,11 +100,7 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-gitlab</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+
         <dependency>
             <groupId>com.github.lookfirst</groupId>
             <artifactId>sardine</artifactId>
@@ -118,6 +114,11 @@
         <dependency>
             <groupId>com.hierynomus</groupId>
             <artifactId>smbj</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
