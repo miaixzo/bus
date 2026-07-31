@@ -36,8 +36,10 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -221,8 +223,9 @@ public class RequestStrategy extends AbstractStrategy {
     /**
      * Performs the actual parsing of a JSON request body.
      * <p>
-     * This method merges the data buffers, parses the resulting JSON string into a map, and populates the
-     * {@link Context}. It then decorates the request to allow the body to be re-read downstream.
+     * This method merges the data buffers and supports JSON objects and arrays as request roots. Object properties are
+     * added to the {@link Context}; arrays are validated and marked for original-body forwarding. It then decorates the
+     * request to allow the body to be re-read downstream.
      * <p>
      * Performance optimization: For large requests, adds detailed logging to track memory usage.
      *
@@ -251,8 +254,21 @@ public class RequestStrategy extends AbstractStrategy {
             }
 
             String jsonBody = new String(bytes, Charset.UTF_8);
-            Map<String, Object> jsonMap = JsonKit.toMap(jsonBody);
-            context.getParameters().putAll(jsonMap);
+            boolean jsonArray = isJsonArray(jsonBody);
+            try {
+                if (jsonArray) {
+                    JsonKit.toList(jsonBody);
+                    context.getParameters().putAll(context.getQuery());
+                    exchange.getAttributes().put(Context.JSON_ARRAY_BODY_ATTRIBUTE, Boolean.TRUE);
+                } else {
+                    Map<String, Object> jsonMap = JsonKit.toMap(jsonBody);
+                    context.getParameters().putAll(jsonMap);
+                }
+            } catch (ValidateException exception) {
+                throw exception;
+            } catch (RuntimeException exception) {
+                throw new ValidateException(ErrorCode._100302.getKey(), ErrorCode._100302.getValue(), exception);
+            }
             Logger.debug(
                     true,
                     "Vortex",
@@ -279,7 +295,7 @@ public class RequestStrategy extends AbstractStrategy {
                  */
                 @Override
                 public Flux<DataBuffer> getBody() {
-                    return Flux.just(exchange.getResponse().bufferFactory().wrap(bytes));
+                    return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
                 }
             };
 
@@ -310,6 +326,36 @@ public class RequestStrategy extends AbstractStrategy {
                             e.getClass().getSimpleName());
                     return Mono.error(e);
                 });
+    }
+
+    /**
+     * Determines whether a JSON request uses an array as its root.
+     * <p>
+     * UTF-8 byte-order marks and leading whitespace are ignored. REST request bodies must use either an object or an
+     * array as the root value.
+     *
+     * @param json JSON request text
+     * @return {@code true} for an array root, or {@code false} for an object root
+     * @throws ValidateException when the body is empty or uses an unsupported root value
+     */
+    private boolean isJsonArray(String json) {
+        if (StringKit.isBlank(json)) {
+            throw new ValidateException(ErrorCode._100302);
+        }
+        for (int index = 0; index < json.length(); index++) {
+            char value = json.charAt(index);
+            if (value == '\uFEFF' || Character.isWhitespace(value)) {
+                continue;
+            }
+            if (value == Symbol.C_BRACKET_LEFT) {
+                return true;
+            }
+            if (value == Symbol.C_BRACE_LEFT) {
+                return false;
+            }
+            throw new ValidateException(ErrorCode._100302);
+        }
+        throw new ValidateException(ErrorCode._100302);
     }
 
     /**

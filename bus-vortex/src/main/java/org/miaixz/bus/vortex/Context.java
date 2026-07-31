@@ -63,6 +63,14 @@ public class Context extends Tracer {
     public static final String $ = "X.CONTEXT";
 
     /**
+     * The exchange attribute key that marks a request whose JSON body uses an array as its root.
+     * <p>
+     * This marker is internal request state only. It is not added to request parameters, signatures, or downstream
+     * payloads.
+     */
+    public static final String JSON_ARRAY_BODY_ATTRIBUTE = "X.JSON_ARRAY_BODY";
+
+    /**
      * A map of the HTTP request headers. This map is a direct, single-value representation of the incoming request's
      * headers.
      */
