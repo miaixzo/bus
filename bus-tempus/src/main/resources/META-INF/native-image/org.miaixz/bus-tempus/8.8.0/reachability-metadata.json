@@ -1,6 +1,80 @@
 {
   "reflection": [
     {
+      "type": "com.google.protobuf.ByteString",
+      "methods": [
+        {
+          "name": "copyFrom",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "copyFromUtf8",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toByteArray",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.api.common.v1.Payload",
+      "methods": [
+        {
+          "name": "getData",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.api.common.v1.Payload$Builder",
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "putMetadata",
+          "parameterTypes": [
+            "java.lang.String",
+            "com.google.protobuf.ByteString"
+          ]
+        },
+        {
+          "name": "setData",
+          "parameterTypes": [
+            "com.google.protobuf.ByteString"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.common.converter.PayloadAndFailureDataConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.common.converter.PayloadConverter"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.tempus.Builder",
       "methods": [
         {
@@ -1898,14 +1972,6 @@
           "parameterTypes": []
         },
         {
-          "name": "invokeNoArgIfPresent",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "notify",
           "parameterTypes": []
         },
@@ -1933,18 +1999,6 @@
         },
         {
           "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "tryCreateFastjsonAdapter",
-          "parameterTypes": []
-        },
-        {
-          "name": "tryCreateGsonAdapter",
-          "parameterTypes": []
-        },
-        {
-          "name": "tryCreateJacksonAdapter",
           "parameterTypes": []
         },
         {
@@ -2327,10 +2381,6 @@
     {
       "type": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport",
       "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
         {
           "name": "<init>",
           "parameterTypes": [
