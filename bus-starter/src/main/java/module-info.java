@@ -50,6 +50,7 @@ module bus.starter {
     requires bus.proxy;
     requires bus.sensitive;
     requires bus.setting;
+    requires transitive bus.spring;
     requires bus.storage;
     requires bus.tempus;
     requires bus.tracer;
@@ -74,11 +75,6 @@ module bus.starter {
     requires static spring.web;
     requires static spring.webflux;
     requires static spring.webmvc;
-    requires static com.alibaba.fastjson2;
-    requires static com.fasterxml.jackson.annotation;
-    requires static tools.jackson.core;
-    requires static tools.jackson.databind;
-    requires static com.google.gson;
     requires static com.zaxxer.hikari;
     requires static curator.client;
     requires static curator.framework;
@@ -98,15 +94,7 @@ module bus.starter {
     requires static org.apache.httpcomponents.client5.httpclient5;
     requires static org.apache.httpcomponents.core5.httpcore5;
 
-    exports org.miaixz.bus.spring;
-    exports org.miaixz.bus.spring.annotation;
-    exports org.miaixz.bus.spring.autoproxy;
-    exports org.miaixz.bus.spring.banner;
-    exports org.miaixz.bus.spring.boot;
-    exports org.miaixz.bus.spring.env;
-    exports org.miaixz.bus.spring.http;
-    exports org.miaixz.bus.spring.listener;
-    exports org.miaixz.bus.spring.metrics;
+    exports org.miaixz.bus.starter;
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.cache;
     exports org.miaixz.bus.starter.cors;
@@ -119,6 +107,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.i18n;
     exports org.miaixz.bus.starter.image;
     exports org.miaixz.bus.starter.jdbc;
+    exports org.miaixz.bus.starter.json;
     exports org.miaixz.bus.starter.limiter;
     exports org.miaixz.bus.starter.metrics;
     exports org.miaixz.bus.starter.mapper;
@@ -134,6 +123,4 @@ module bus.starter {
     exports org.miaixz.bus.starter.validate;
     exports org.miaixz.bus.starter.wrapper;
     exports org.miaixz.bus.starter.zookeeper;
-    exports org.miaixz.bus.spring.options;
-
 }

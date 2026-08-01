@@ -47,15 +47,16 @@ import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcess
 import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.ResolvableType;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.io.file.FileType;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperMethodTypeResolver;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 
 /**
  * MyBatis mapper AOT and bean-definition processors.
@@ -91,9 +92,17 @@ public final class MapperAotProcessors {
         private final Set<Class<?>> excludeClasses = new HashSet<>();
 
         /**
-         * Constructs the AOT processor and records infrastructure beans that should be excluded from AOT processing.
+         * Spring environment used to bind mapper locations before regular configuration property beans are available.
          */
-        MyBatisBeanFactoryInitializationAotProcessor() {
+        private final Environment environment;
+
+        /**
+         * Constructs the AOT processor and records infrastructure beans that should be excluded from AOT processing.
+         *
+         * @param environment Spring environment used for early mapper property binding
+         */
+        MyBatisBeanFactoryInitializationAotProcessor(Environment environment) {
+            this.environment = environment;
             excludeClasses.add(MapperScannerConfigurer.class);
         }
 
@@ -122,8 +131,22 @@ public final class MapperAotProcessors {
             if (beanNames.length == 0) {
                 return null;
             }
+            MapperProperties properties = PlaceHolderBinder
+                    .bind(this.environment, MapperProperties.class, GeniusBuilder.MAPPER);
+            if (properties == null) {
+                properties = new MapperProperties();
+            }
+            MapperLocationResolver.Result mapperLocations = MapperLocationResolver
+                    .resolve(properties, new PathMatchingResourcePatternResolver(beanFactory.getBeanClassLoader()));
+            Logger.info(
+                    false,
+                    "Starter",
+                    "Mapper AOT resources resolved: resourceCount={}, patterns={}",
+                    mapperLocations.resources().length,
+                    mapperLocations.patterns());
             return (context, code) -> {
                 RuntimeHints hints = context.getRuntimeHints();
+                mapperLocations.patterns().forEach(hints.resources()::registerPattern);
                 for (String beanName : beanNames) {
                     BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName.substring(1));
                     PropertyValue mapperInterface = beanDefinition.getPropertyValues()
@@ -133,9 +156,6 @@ public final class MapperAotProcessors {
                         if (mapperInterfaceType != null) {
                             registerReflectionTypeIfNecessary(mapperInterfaceType, hints);
                             hints.proxies().registerJdkProxy(mapperInterfaceType);
-                            String registerPattern = mapperInterfaceType.getName().replace(Symbol.C_DOT, Symbol.C_SLASH)
-                                    .replace("org/miaixz/", Normal.EMPTY).concat(FileType.TYPE_XML);
-                            hints.resources().registerPattern(registerPattern);
                             registerMapperRelationships(mapperInterfaceType, hints);
                         }
                     }

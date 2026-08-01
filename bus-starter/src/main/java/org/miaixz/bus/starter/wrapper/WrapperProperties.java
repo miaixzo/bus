@@ -21,8 +21,10 @@ package org.miaixz.bus.starter.wrapper;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -114,11 +116,25 @@ public class WrapperProperties {
     private boolean inStorage;
 
     /**
-     * Specifies the auto-type handling for JSON serialization/deserialization (e.g., for Fastjson or Jackson). This
-     * feature includes type information in the JSON string, allowing for automatic type recognition during
-     * deserialization without needing to pass the type explicitly.
+     * Auto-type package rules used during JSON deserialization.
+     * <p>
+     * A list preserves compatibility with the original YAML sequence form while Spring Boot also accepts a
+     * comma-separated scalar value.
      */
-    private String autoType;
+    private List<String> autoType = List.of();
+
+    /**
+     * Returns the configured auto-type rules in the expression format consumed by Spring JSON adapters.
+     *
+     * @return comma-separated, trimmed auto-type rules
+     */
+    public String getAutoTypeExpression() {
+        if (this.autoType == null || this.autoType.isEmpty()) {
+            return Normal.EMPTY;
+        }
+        return this.autoType.stream().filter(value -> value != null && !value.isBlank()).map(String::trim)
+                .collect(Collectors.joining(","));
+    }
 
     /**
      * Initialization parameters for this registration. Calling this will replace any existing parameters.

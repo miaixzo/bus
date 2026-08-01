@@ -25,17 +25,20 @@ import java.util.Map;
 import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -46,11 +49,16 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.http.AwareWebMvcConfigurer;
-import org.miaixz.bus.spring.http.HttpMessageConverter;
+import org.miaixz.bus.spring.http.JsonMessageConverter;
+import org.miaixz.bus.spring.http.JsonWebMvcConfigurer;
+import org.miaixz.bus.spring.http.MessageConverterRegistrar;
+import org.miaixz.bus.spring.http.RequestWebMvcConfigurer;
 import org.miaixz.bus.spring.http.RuntimeContextBindingFilter;
 import org.miaixz.bus.spring.http.SentinelRequestHandler;
+import org.miaixz.bus.spring.http.TextWebMvcConfigurer;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
+import org.miaixz.bus.starter.json.JsonConfiguration;
+import org.miaixz.bus.starter.json.SelectedJsonProvider;
 
 /**
  * Configuration class for XSS protection and request/response content caching. This class configures web request
@@ -91,6 +99,7 @@ import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
  */
 @EnableConfigurationProperties(value = { WrapperProperties.class })
 @ConditionalOnProperty(prefix = GeniusBuilder.WRAPPER, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Import(JsonConfiguration.class)
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     /**
@@ -126,9 +135,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
      * methods, enabling XSS protection and request/response content caching.
      * </p>
      *
-     * @return A configured {@link FilterRegistrationBean} for the body cache filter.
-     *
      * @param options the options value
+     * @return A configured {@link FilterRegistrationBean} for the body cache filter.
      */
     @Bean("registrationBodyCacheFilter")
     public FilterRegistrationBean<RuntimeContextBindingFilter> registrationBodyCacheFilter(
@@ -180,21 +188,49 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     /**
      * Creates a {@link org.springframework.web.servlet.config.annotation.WebMvcConfigurer} bean.
      *
-     * @return A new {@link AwareWebMvcConfigurer} instance.
-     *
-     * @param requestHandler  the request handler value
-     *
-     * @param options         the options value
-     *
-     * @param jsonConfigurers the JSON configurers provider
+     * @param requestHandler the request handler value
+     * @param options        the options value
+     * @return A new {@link RequestWebMvcConfigurer} instance.
      */
-    @Bean("supportWebMvcConfigurer")
-    public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer(
+    @Bean("requestWebMvcConfigurer")
+    public WebMvcConfigurer requestWebMvcConfigurer(
             SentinelRequestHandler requestHandler,
-            WrapperRuntimeOptions options,
-            ObjectProvider<HttpMessageConverter> jsonConfigurers) {
-        return new AwareWebMvcConfigurer(this.properties.getAutoType(), this.properties.getPrefix(), requestHandler,
-                options, jsonConfigurers);
+            WrapperRuntimeOptions options) {
+        return new RequestWebMvcConfigurer(this.properties.getPrefix(), requestHandler, options);
+    }
+
+    /**
+     * Creates the UTF-8 plain-text Spring MVC configurer.
+     *
+     * @return A new {@link TextWebMvcConfigurer} instance.
+     */
+    @Bean("textWebMvcConfigurer")
+    public WebMvcConfigurer textWebMvcConfigurer() {
+        return new TextWebMvcConfigurer();
+    }
+
+    /**
+     * Creates the provider-backed Bus JSON converter used by Spring MVC.
+     *
+     * @param selectedProvider application-wide JSON provider selection
+     * @return provider-backed JSON converter registrar
+     */
+    @Bean
+    @ConditionalOnMissingBean(JsonMessageConverter.class)
+    public JsonMessageConverter jsonMessageConverter(SelectedJsonProvider selectedProvider) {
+        return new JsonMessageConverter(selectedProvider.provider());
+    }
+
+    /**
+     * Creates the Spring MVC bridge that invokes registered Bus message converter registrars.
+     *
+     * @param registrars converter registrars visible to the application context
+     * @return JSON Web MVC configurer using the wrapper safe-type rules
+     */
+    @Bean("jsonWebMvcConfigurer")
+    @ConditionalOnMissingBean(name = "jsonWebMvcConfigurer")
+    public WebMvcConfigurer jsonWebMvcConfigurer(ObjectProvider<MessageConverterRegistrar> registrars) {
+        return new JsonWebMvcConfigurer(registrars, this.properties.getAutoTypeExpression());
     }
 
     /**

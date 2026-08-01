@@ -15,4 +15,4 @@
 # limitations under the License.                                            #
 #                                                                           #
 #############################################################################
-org.miaixz.bus.spring.SpringHolder
+org.miaixz.bus.starter.SpringConfiguration

@@ -77,7 +77,7 @@ bus:
 - `synthesize-form-body=true` 时，保留当前从 `parameterMap` 合成 form body 的行为，同时允许
   `ContextBuilder.getParameters()` 再从该 body 反向恢复参数。
 - `sanitize-input-values=true` 时，保留当前 wrapper 层对参数和 header 的 HTML escape 行为。
-- `resolve-non-simple-arguments=true` 时，保留当前 `CompositeArgumentResolver` 对裸 DTO 参数的解析行为。
+- `resolve-non-simple-arguments=true` 时，保留当前 `RequestObjectArgumentResolver` 对裸 DTO 参数的解析行为。
 - `wrap-content-types` 支持 `all`、`json-form`、`json-only`。
 
 迁移建议：

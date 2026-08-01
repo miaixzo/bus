@@ -282,12 +282,14 @@ public class MapperConfiguration implements InitializingBean {
      * <strong>JVM Mode:</strong> Instantiated but not executed (AOT processors are ignored) <strong>Native Image
      * Mode:</strong> Executed during native-image compilation
      *
+     * @param environment Spring environment used for early mapper property binding
      * @return the AOT processor bean
      */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    static MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor() {
-        return new MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor();
+    static MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor(
+            Environment environment) {
+        return new MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor(environment);
     }
 
     /**
@@ -327,30 +329,15 @@ public class MapperConfiguration implements InitializingBean {
      * @return resolved mapper XML resources
      */
     private org.springframework.core.io.Resource[] resolveMapperLocations() {
-        List<org.springframework.core.io.Resource> resources = new ArrayList<>();
-        String[] mapperLocations = this.properties.getMapperLocations();
-        if (mapperLocations != null) {
-            for (String mapperLocation : mapperLocations) {
-                resources.addAll(Arrays.asList(getResources(mapperLocation)));
-            }
-        }
-        return resources.toArray(new org.springframework.core.io.Resource[resources.size()]);
-    }
-
-    /**
-     * Retrieves resources from a mapper XML location pattern.
-     * <p>
-     * Resolution failures are treated as an empty result to preserve the previous starter behavior.
-     *
-     * @param location mapper XML location pattern
-     * @return resolved resources, or an empty array when resolution fails
-     */
-    private org.springframework.core.io.Resource[] getResources(String location) {
-        try {
-            return mapperResourceResolver().getResources(location);
-        } catch (IOException e) {
-            return new org.springframework.core.io.Resource[0];
-        }
+        MapperLocationResolver.Result result = MapperLocationResolver
+                .resolve(this.properties, mapperResourceResolver());
+        Logger.info(
+                false,
+                "Starter",
+                "Mapper runtime resources resolved: resourceCount={}, patterns={}",
+                result.resources().length,
+                result.patterns());
+        return result.resources();
     }
 
     /**

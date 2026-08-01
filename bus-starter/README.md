@@ -74,10 +74,10 @@ bus:
 
 Compatibility notes:
 
-- `synthesize-form-body=true` preserves the legacy behavior where `MutableRequestWrapper` rebuilds a form body from
+- `synthesize-form-body=true` preserves the legacy behavior where `CachedBodyRequestWrapper` rebuilds a form body from
   `parameterMap`, and `ContextBuilder.getParameters()` can reconstruct parameters from that synthesized body.
 - `sanitize-input-values=true` preserves the current wrapper-level HTML escaping for request parameters and headers.
-- `resolve-non-simple-arguments=true` preserves the existing `CompositeArgumentResolver` behavior for bare DTO
+- `resolve-non-simple-arguments=true` preserves the existing `RequestObjectArgumentResolver` behavior for bare DTO
   arguments.
 - `wrap-content-types` supports `all`, `json-form`, and `json-only`.
 

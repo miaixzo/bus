@@ -26,9 +26,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableTempus;
+import org.miaixz.bus.starter.json.JsonConfiguration;
+import org.miaixz.bus.starter.json.SelectedJsonProvider;
 import org.miaixz.bus.tempus.temporal.Publisher;
 import org.miaixz.bus.tempus.temporal.Subscriber;
 import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector;
@@ -58,6 +61,7 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
  * @since Java 21+
  */
 @EnableConfigurationProperties(TempusProperties.class)
+@Import(JsonConfiguration.class)
 @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class TempusConfiguration {
 
@@ -79,12 +83,13 @@ public class TempusConfiguration {
      * <p>
      * Skipped when the application registers a custom {@code WorkflowTransport} bean.
      *
+     * @param selectedJsonProvider application-wide JSON provider selection
      * @return default Temporal workflow transport
      */
     @Bean
     @ConditionalOnMissingBean
-    public WorkflowTransport workflowTransport() {
-        return new DefaultWorkflowTransport();
+    public WorkflowTransport workflowTransport(SelectedJsonProvider selectedJsonProvider) {
+        return new DefaultWorkflowTransport(selectedJsonProvider.provider());
     }
 
     /**
