@@ -65,7 +65,7 @@ import org.miaixz.bus.validate.magic.annotation.Valid;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class CompositeArgumentResolver implements HandlerMethodArgumentResolver {
+public class RequestObjectArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
      * Runtime wrapper compatibility snapshot used to decide resolver behavior.
@@ -81,7 +81,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
      * This constructor is suitable for the default framework wiring path where all wrapper-related components share the
      * same runtime compatibility snapshot.
      */
-    public CompositeArgumentResolver() {
+    public RequestObjectArgumentResolver() {
         this(WrapperRuntimeOptions.of());
     }
 
@@ -90,7 +90,7 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
      *
      * @param options The runtime compatibility options. If {@code null}, the current shared snapshot is used.
      */
-    public CompositeArgumentResolver(WrapperRuntimeOptions options) {
+    public RequestObjectArgumentResolver(WrapperRuntimeOptions options) {
         this.options = options == null ? WrapperRuntimeOptions.of() : options;
     }
 
@@ -152,8 +152,8 @@ public class CompositeArgumentResolver implements HandlerMethodArgumentResolver 
 
         byte[] body;
         String contentType = request.getContentType();
-        // If it's a MutableRequestWrapper, prioritize its cached body
-        if (request instanceof MutableRequestWrapper wrapper) {
+        // If the request body is cached, prioritize the repeatable copy.
+        if (request instanceof CachedBodyRequestWrapper wrapper) {
             request = wrapper.getRequest();
             body = wrapper.getBody();
             contentType = wrapper.getContentType();

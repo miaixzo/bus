@@ -1,0 +1,4438 @@
+{
+  "reflection": [
+    {
+      "type": "org.miaixz.bus.spring.annotation.AnnotationWrapper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.annotation.DefaultPlaceHolderBinder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.annotation.PlaceHolderHandler",
+      "methods": [
+        {
+          "name": "doResolvePlaceHolder",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "invoke",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "isObjectMethod",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "resolvePlaceHolder",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.autoproxy.ExcludeBeanNameAutoProxy",
+      "fields": [
+        {
+          "name": "excludeBeanNames"
+        },
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "copyFrom",
+          "parameterTypes": [
+            "org.springframework.aop.framework.ProxyConfig"
+          ]
+        },
+        {
+          "name": "determineCandidateConstructors",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEarlyBeanReference",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isExcluded",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isExposeProxy",
+          "parameterTypes": []
+        },
+        {
+          "name": "isFrozen",
+          "parameterTypes": []
+        },
+        {
+          "name": "isMatch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isOpaque",
+          "parameterTypes": []
+        },
+        {
+          "name": "isOptimize",
+          "parameterTypes": []
+        },
+        {
+          "name": "isProxyTargetClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "postProcessAfterInitialization",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "postProcessAfterInstantiation",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "postProcessBeforeInitialization",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "postProcessBeforeInstantiation",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "postProcessProperties",
+          "parameterTypes": [
+            "org.springframework.beans.PropertyValues",
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "predictBeanType",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setAdvisorAdapterRegistry",
+          "parameterTypes": [
+            "org.springframework.aop.framework.adapter.AdvisorAdapterRegistry"
+          ]
+        },
+        {
+          "name": "setApplyCommonInterceptorsFirst",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setBeanClassLoader",
+          "parameterTypes": [
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "setBeanFactory",
+          "parameterTypes": [
+            "org.springframework.beans.factory.BeanFactory"
+          ]
+        },
+        {
+          "name": "setBeanNames",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setCustomTargetSourceCreators",
+          "parameterTypes": [
+            "org.springframework.aop.framework.autoproxy.TargetSourceCreator[]"
+          ]
+        },
+        {
+          "name": "setExcludeBeanNames",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setExposeProxy",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setFrozen",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setInterceptorNames",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setOpaque",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setOptimize",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setOrder",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setProxyClassLoader",
+          "parameterTypes": [
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "setProxyTargetClass",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.banner.AbstractBanner",
+      "fields": [
+        {
+          "name": "banner"
+        },
+        {
+          "name": "defaultBanner"
+        },
+        {
+          "name": "resourceClass"
+        },
+        {
+          "name": "resourceLocation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getBanner",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlainBanner",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "initialize",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "org.springframework.core.env.Environment",
+            "java.lang.Class",
+            "java.io.PrintStream"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.banner.ImageBanner",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "colorsInit",
+          "parameterTypes": []
+        },
+        {
+          "name": "f",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "getAsciiCharacter",
+          "parameterTypes": [
+            "java.awt.Color",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getColorDistance",
+          "parameterTypes": [
+            "java.awt.Color",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "getColorDistanceCIE94",
+          "parameterTypes": [
+            "java.awt.Color",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "getFormatString",
+          "parameterTypes": [
+            "java.awt.Color",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getLuminance",
+          "parameterTypes": [
+            "java.awt.Color",
+            "boolean"
+          ]
+        },
+        {
+          "name": "imageToBanner",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "java.lang.Integer",
+            "java.lang.Double",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "resizeImage",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "toLab",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "xyzToLab",
+          "parameterTypes": [
+            "float[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.banner.TextBanner",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getBanner",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlainBanner",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "org.springframework.core.env.Environment",
+            "java.lang.Class",
+            "java.io.PrintStream"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.banner.VersionBanner",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getBanner",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlainBanner",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "printBanner",
+          "parameterTypes": [
+            "org.springframework.core.env.Environment",
+            "java.lang.Class",
+            "java.io.PrintStream"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.SpringApplication",
+      "fields": [
+        {
+          "name": "BANNER_LOCATION_PROPERTY"
+        },
+        {
+          "name": "BANNER_LOCATION_PROPERTY_VALUE"
+        },
+        {
+          "name": "initializerStartupStatList"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.core.io.ResourceLoader",
+            "java.lang.Class[]"
+          ]
+        },
+        {
+          "name": "addBootstrapRegistryInitializer",
+          "parameterTypes": [
+            "org.springframework.boot.bootstrap.BootstrapRegistryInitializer"
+          ]
+        },
+        {
+          "name": "addInitializers",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationContextInitializer[]"
+          ]
+        },
+        {
+          "name": "addListeners",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationListener[]"
+          ]
+        },
+        {
+          "name": "addPrimarySources",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "applyInitializers",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "exit",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationContext",
+            "org.springframework.boot.ExitCodeGenerator[]"
+          ]
+        },
+        {
+          "name": "getAdditionalProfiles",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAllSources",
+          "parameterTypes": []
+        },
+        {
+          "name": "getApplicationStartup",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEnvironmentPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitializers",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInitializerStartupStatList",
+          "parameterTypes": []
+        },
+        {
+          "name": "getListeners",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMainApplicationClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResourceLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getShutdownHandlers",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSources",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWebApplicationType",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "main",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "run",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "run",
+          "parameterTypes": [
+            "java.lang.Class[]",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "run",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setAddCommandLineProperties",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAddConversionService",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAdditionalProfiles",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setAllowBeanDefinitionOverriding",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAllowCircularReferences",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setApplicationContextFactory",
+          "parameterTypes": [
+            "org.springframework.boot.ApplicationContextFactory"
+          ]
+        },
+        {
+          "name": "setApplicationStartup",
+          "parameterTypes": [
+            "org.springframework.core.metrics.ApplicationStartup"
+          ]
+        },
+        {
+          "name": "setBanner",
+          "parameterTypes": [
+            "org.springframework.boot.Banner"
+          ]
+        },
+        {
+          "name": "setBannerMode",
+          "parameterTypes": [
+            "org.springframework.boot.Banner$Mode"
+          ]
+        },
+        {
+          "name": "setBeanNameGenerator",
+          "parameterTypes": [
+            "org.springframework.beans.factory.support.BeanNameGenerator"
+          ]
+        },
+        {
+          "name": "setDefaultProperties",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setDefaultProperties",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "setEnvironment",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "setEnvironmentPrefix",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHeadless",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setInitializers",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "setLazyInitialization",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setListeners",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "setLogStartupInfo",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setMainApplicationClass",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setRegisterShutdownHook",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setResourceLoader",
+          "parameterTypes": [
+            "org.springframework.core.io.ResourceLoader"
+          ]
+        },
+        {
+          "name": "setSources",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "setWebApplicationType",
+          "parameterTypes": [
+            "org.springframework.boot.WebApplicationType"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.SpringApplicationRunListener",
+      "fields": [
+        {
+          "name": "application"
+        },
+        {
+          "name": "applicationContextLoadStage"
+        },
+        {
+          "name": "applicationContextPrepareStage"
+        },
+        {
+          "name": "environmentPrepareStage"
+        },
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "jvmStartingStage"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        },
+        {
+          "name": "startupReporter"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.boot.SpringApplication"
+          ]
+        },
+        {
+          "name": "contextLoaded",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext"
+          ]
+        },
+        {
+          "name": "contextPrepared",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext"
+          ]
+        },
+        {
+          "name": "environmentPrepared",
+          "parameterTypes": [
+            "org.springframework.boot.bootstrap.ConfigurableBootstrapContext",
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "environmentPrepared",
+          "parameterTypes": [
+            "org.springframework.boot.bootstrap.ConfigurableBootstrapContext",
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "failed",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStartedMessage",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$environmentPrepared$0",
+          "parameterTypes": [
+            "org.springframework.boot.bootstrap.BootstrapContext"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "onApplicationEvent",
+          "parameterTypes": [
+            "org.springframework.boot.context.event.ApplicationStartedEvent"
+          ]
+        },
+        {
+          "name": "onApplicationEvent",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationEvent"
+          ]
+        },
+        {
+          "name": "ready",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "started",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "started",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "starting",
+          "parameterTypes": [
+            "org.springframework.boot.bootstrap.ConfigurableBootstrapContext"
+          ]
+        },
+        {
+          "name": "starting",
+          "parameterTypes": [
+            "org.springframework.boot.bootstrap.ConfigurableBootstrapContext"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.SpringSmartLifecycle",
+      "fields": [
+        {
+          "name": "applicationContext"
+        },
+        {
+          "name": "DEFAULT_PHASE"
+        },
+        {
+          "name": "ROOT_MODULE_NAME"
+        },
+        {
+          "name": "startupReporter"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.boot.StartupReporter"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPhase",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAutoStartup",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRunning",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "setApplicationContext",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationContext"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.StartupReporterAware",
+      "methods": [
+        {
+          "name": "setStartupReporter",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.boot.StartupReporter"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.StartupReporterProcessor",
+      "fields": [
+        {
+          "name": "startupReporter"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.boot.StartupReporter"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "postProcessAfterInitialization",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "postProcessBeforeInitialization",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.ContextBuilder",
+      "fields": [
+        {
+          "name": "AUTHORIZATION_CONTEXT"
+        },
+        {
+          "name": "BODY_CACHE"
+        },
+        {
+          "name": "CONTENT_TYPE_CHARSET_PREFIX"
+        },
+        {
+          "name": "DEFAULT_CACHE_EXPIRE"
+        },
+        {
+          "name": "DEFAULT_CACHE_SIZE"
+        },
+        {
+          "name": "DEFAULT_CHARACTER_ENCODING"
+        },
+        {
+          "name": "DEFAULT_WEB_APP_ROOT_KEY"
+        },
+        {
+          "name": "ERROR_EXCEPTION_ATTRIBUTE"
+        },
+        {
+          "name": "ERROR_EXCEPTION_TYPE_ATTRIBUTE"
+        },
+        {
+          "name": "ERROR_MESSAGE_ATTRIBUTE"
+        },
+        {
+          "name": "ERROR_REQUEST_URI_ATTRIBUTE"
+        },
+        {
+          "name": "ERROR_SERVLET_NAME_ATTRIBUTE"
+        },
+        {
+          "name": "ERROR_STATUS_CODE_ATTRIBUTE"
+        },
+        {
+          "name": "FORWARD_CONTEXT_PATH_ATTRIBUTE"
+        },
+        {
+          "name": "FORWARD_PATH_INFO_ATTRIBUTE"
+        },
+        {
+          "name": "FORWARD_QUERY_STRING_ATTRIBUTE"
+        },
+        {
+          "name": "FORWARD_REQUEST_URI_ATTRIBUTE"
+        },
+        {
+          "name": "FORWARD_SERVLET_PATH_ATTRIBUTE"
+        },
+        {
+          "name": "HEADER_CACHE"
+        },
+        {
+          "name": "HTML_ESCAPE_CONTEXT_PARAM"
+        },
+        {
+          "name": "INCLUDE_CONTEXT_PATH_ATTRIBUTE"
+        },
+        {
+          "name": "INCLUDE_PATH_INFO_ATTRIBUTE"
+        },
+        {
+          "name": "INCLUDE_QUERY_STRING_ATTRIBUTE"
+        },
+        {
+          "name": "INCLUDE_REQUEST_URI_ATTRIBUTE"
+        },
+        {
+          "name": "INCLUDE_SERVLET_PATH_ATTRIBUTE"
+        },
+        {
+          "name": "PARAMETER_CACHE"
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "REQUEST_ID"
+        },
+        {
+          "name": "RESPONSE_ENCODED_HTML_ESCAPE_CONTEXT_PARAM"
+        },
+        {
+          "name": "SESSION_MUTEX_ATTRIBUTE"
+        },
+        {
+          "name": "SUBMIT_IMAGE_SUFFIXES"
+        },
+        {
+          "name": "TEMP_DIR_CONTEXT_ATTRIBUTE"
+        },
+        {
+          "name": "WEB_APP_ROOT_KEY_PARAM"
+        }
+      ],
+      "methods": [
+        {
+          "name": "$deserializeLambda$",
+          "parameterTypes": [
+            "java.lang.invoke.SerializedLambda"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "clearErrorRequestAttributes",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "exposeErrorRequestAttributes",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.Throwable",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "extractValueFromJson",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findParameterValue",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "findParameterValue",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getApiKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAuthorize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBodyCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBooleanValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getCached",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.core.center.function.SupplierX",
+            "org.miaixz.bus.cache.CacheX",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCookie",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCookieValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getCredential",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultHtmlEscape",
+          "parameterTypes": [
+            "jakarta.servlet.ServletContext"
+          ]
+        },
+        {
+          "name": "getDoubleValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "double"
+          ]
+        },
+        {
+          "name": "getHeaderCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeaderValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getIntValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "getJsonBodyValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getJsonValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getLongValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "getMultipartParameterValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getNativeRequest",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getNativeResponse",
+          "parameterTypes": [
+            "jakarta.servlet.ServletResponse",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getParameterCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParameters",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParametersStartingWith",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getParameterValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPathVariable",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRealPath",
+          "parameterTypes": [
+            "jakarta.servlet.ServletContext",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequiredSessionAttribute",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getResponseEncodedHtmlEscape",
+          "parameterTypes": [
+            "jakarta.servlet.ServletContext"
+          ]
+        },
+        {
+          "name": "getSessionAttribute",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSessionId",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        },
+        {
+          "name": "getSessionMutex",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpSession"
+          ]
+        },
+        {
+          "name": "getTempDir",
+          "parameterTypes": [
+            "jakarta.servlet.ServletContext"
+          ]
+        },
+        {
+          "name": "getTenantId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.EnumValue$Params"
+          ]
+        },
+        {
+          "name": "getValueFromJsonBody",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasSubmitParameter",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "init",
+          "parameterTypes": []
+        },
+        {
+          "name": "isIncludeRequest",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest"
+          ]
+        },
+        {
+          "name": "isMultipartContent",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        },
+        {
+          "name": "isSameOrigin",
+          "parameterTypes": [
+            "org.springframework.http.HttpRequest"
+          ]
+        },
+        {
+          "name": "isValidOrigin",
+          "parameterTypes": [
+            "org.springframework.http.HttpRequest",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "lambda$getHeaders$0",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "lambda$getHeaders$c9b9d312$1",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$getParameters$0",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "lambda$getParameters$1",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "lambda$getParameters$c9b9d312$1",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "parseMatrixVariables",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseUrlEncoded",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "removeWebAppRootSystemProperty",
+          "parameterTypes": [
+            "jakarta.servlet.ServletContext"
+          ]
+        },
+        {
+          "name": "reset",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAuthorize",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Authorize"
+          ]
+        },
+        {
+          "name": "setBodyCache",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        },
+        {
+          "name": "setHeaderCache",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        },
+        {
+          "name": "setParameterCache",
+          "parameterTypes": [
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        },
+        {
+          "name": "setProvider",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.ContextProvider"
+          ]
+        },
+        {
+          "name": "setRequestId",
+          "parameterTypes": []
+        },
+        {
+          "name": "setSessionAttribute",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setWebAppRootSystemProperty",
+          "parameterTypes": [
+            "jakarta.servlet.ServletContext"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.env.LoggingEnvironmentPostProcessor",
+      "fields": [
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "keepCompatible",
+          "parameterTypes": [
+            "java.util.Map",
+            "boolean"
+          ]
+        },
+        {
+          "name": "loadLogConfiguration",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "postProcessEnvironment",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment",
+            "org.springframework.boot.SpringApplication"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.env.ScenesEnvironmentPostProcessor",
+      "fields": [
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$scenesResources$0",
+          "parameterTypes": [
+            "java.util.List",
+            "org.springframework.core.io.ResourceLoader",
+            "java.util.List",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "lambda$scenesResources$1",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.springframework.core.io.ResourceLoader",
+            "java.util.List",
+            "org.springframework.boot.env.PropertySourceLoader"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "postProcessEnvironment",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment",
+            "org.springframework.boot.SpringApplication"
+          ]
+        },
+        {
+          "name": "processAndApply",
+          "parameterTypes": [
+            "java.util.List",
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "scenesResources",
+          "parameterTypes": [
+            "org.springframework.core.io.ResourceLoader",
+            "java.util.List",
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.env.ScenesEnvironmentPostProcessor$SceneConfigDataReference",
+      "fields": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "propertySourceLoader"
+        },
+        {
+          "name": "resource"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.springframework.core.io.Resource",
+            "org.springframework.boot.env.PropertySourceLoader"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPropertySourceLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResource",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPropertySourceLoader",
+          "parameterTypes": [
+            "org.springframework.boot.env.PropertySourceLoader"
+          ]
+        },
+        {
+          "name": "setResource",
+          "parameterTypes": [
+            "org.springframework.core.io.Resource"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor",
+      "fields": [
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "postProcessEnvironment",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment",
+            "org.springframework.boot.SpringApplication"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.GeniusBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.AbstractHttpMessageConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "isClassIgnored",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "isFieldIgnored",
+          "parameterTypes": [
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "isValueIgnored",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "shouldSkipField",
+          "parameterTypes": [
+            "java.lang.reflect.Field",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.AutoBindingTypeMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "description",
+          "parameterTypes": []
+        },
+        {
+          "name": "isImplicitlyAllowed",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "match",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "int",
+            "java.lang.String[]",
+            "int"
+          ]
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matchesArrayDescriptor",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matchesPackagePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matchesRule",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matchesSegment",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "packageNameOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "split",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "DEFAULT_TYPES"
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.RequestWebMvcConfigurer",
+      "fields": [
+        {
+          "name": "handler"
+        },
+        {
+          "name": "options"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.spring.http.SentinelRequestHandler",
+            "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+          ]
+        },
+        {
+          "name": "addArgumentResolvers",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "addInterceptors",
+          "parameterTypes": [
+            "org.springframework.web.servlet.config.annotation.InterceptorRegistry"
+          ]
+        },
+        {
+          "name": "configurePathMatch",
+          "parameterTypes": [
+            "org.springframework.web.servlet.config.annotation.PathMatchConfigurer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.TextWebMvcConfigurer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "configureMessageConverters",
+          "parameterTypes": [
+            "org.springframework.http.converter.HttpMessageConverters$ServerBuilder"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.RequestObjectArgumentResolver",
+      "fields": [
+        {
+          "name": "options"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isNullLike",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isSimpleType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "lambda$resolveArgument$0",
+          "parameterTypes": [
+            "java.util.Map$Entry"
+          ]
+        },
+        {
+          "name": "lambda$resolveArgument$1",
+          "parameterTypes": [
+            "org.springframework.beans.MutablePropertyValues",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "lambda$sanitizePropertyValues$0",
+          "parameterTypes": [
+            "java.util.List",
+            "org.springframework.beans.MutablePropertyValues",
+            "org.springframework.beans.PropertyValue"
+          ]
+        },
+        {
+          "name": "lambda$sanitizePropertyValues$1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveArgument",
+          "parameterTypes": [
+            "org.springframework.core.MethodParameter",
+            "org.springframework.web.method.support.ModelAndViewContainer",
+            "org.springframework.web.context.request.NativeWebRequest",
+            "org.springframework.web.bind.support.WebDataBinderFactory"
+          ]
+        },
+        {
+          "name": "sanitizePropertyValues",
+          "parameterTypes": [
+            "org.springframework.beans.MutablePropertyValues"
+          ]
+        },
+        {
+          "name": "supportsParameter",
+          "parameterTypes": [
+            "org.springframework.core.MethodParameter"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.JsonMessageConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.json.JsonProvider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.JsonMessageConverter$ProviderHttpMessageConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.json.JsonProvider",
+            "org.miaixz.bus.extra.json.JsonReadOptions",
+            "org.miaixz.bus.extra.json.JsonWriteOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.JsonWebMvcConfigurer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectProvider",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.MessageResponseBodyAdvice",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "beforeBodyWrite",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.springframework.core.MethodParameter",
+            "org.springframework.http.MediaType",
+            "java.lang.Class",
+            "org.springframework.http.server.ServerHttpRequest",
+            "org.springframework.http.server.ServerHttpResponse"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSuccess",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.entity.Message"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "supports",
+          "parameterTypes": [
+            "org.springframework.core.MethodParameter",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.CachedBodyRequestWrapper",
+      "fields": [
+        {
+          "name": "BASIC_AUTH"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "CLIENT_CERT_AUTH"
+        },
+        {
+          "name": "contentType"
+        },
+        {
+          "name": "DIGEST_AUTH"
+        },
+        {
+          "name": "FORM_AUTH"
+        },
+        {
+          "name": "request"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        },
+        {
+          "name": "authenticate",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletResponse"
+          ]
+        },
+        {
+          "name": "changeSessionId",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getAsyncContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAttribute",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAttributeNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAuthType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBody",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCharacterEncoding",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentLengthLong",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContentType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContextPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCookies",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDateHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDispatcherType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHeaderNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeaders",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHttpServletMapping",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIntHeader",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLocalAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocale",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocales",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLocalPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMethod",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParameter",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getParameterMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParameterNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParameterValues",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPart",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getParts",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPathInfo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPathTranslated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProtocol",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProtocolRequestId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getQueryString",
+          "parameterTypes": []
+        },
+        {
+          "name": "getReader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoteAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoteHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemotePort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoteUser",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestDispatcher",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRequestedSessionId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestURI",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestURL",
+          "parameterTypes": []
+        },
+        {
+          "name": "getScheme",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServletConnection",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServletContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServletPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSession",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSession",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getTrailerFields",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUserPrincipal",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAsyncStarted",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAsyncSupported",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRequestedSessionIdFromCookie",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRequestedSessionIdFromURL",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRequestedSessionIdValid",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSecure",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTrailerFieldsReady",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUserInRole",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isWrapperFor",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest"
+          ]
+        },
+        {
+          "name": "isWrapperFor",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "lambda$new$0",
+          "parameterTypes": [
+            "java.util.Map$Entry"
+          ]
+        },
+        {
+          "name": "login",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "logout",
+          "parameterTypes": []
+        },
+        {
+          "name": "newPushBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeAttribute",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setAttribute",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setCharacterEncoding",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRequest",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest"
+          ]
+        },
+        {
+          "name": "startAsync",
+          "parameterTypes": []
+        },
+        {
+          "name": "startAsync",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "jakarta.servlet.ServletResponse"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "upgrade",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.CachedBodyRequestWrapper$ServletInputStreamWrapper",
+      "fields": [
+        {
+          "name": "inputStream"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "available",
+          "parameterTypes": []
+        },
+        {
+          "name": "canEqual",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isFinished",
+          "parameterTypes": []
+        },
+        {
+          "name": "isReady",
+          "parameterTypes": []
+        },
+        {
+          "name": "mark",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "markSupported",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "nullInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "readAllBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "readLine",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "readNBytes",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "readNBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "reset",
+          "parameterTypes": []
+        },
+        {
+          "name": "setInputStream",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "setReadListener",
+          "parameterTypes": [
+            "jakarta.servlet.ReadListener"
+          ]
+        },
+        {
+          "name": "skip",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "skipNBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "transferTo",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.CachedBodyResponseWrapper",
+      "fields": [
+        {
+          "name": "cachedBody"
+        },
+        {
+          "name": "cachedWriter"
+        },
+        {
+          "name": "outputStream"
+        },
+        {
+          "name": "outputStreamAccessed"
+        },
+        {
+          "name": "streaming"
+        },
+        {
+          "name": "writer"
+        },
+        {
+          "name": "writerAccessed"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletResponse"
+          ]
+        },
+        {
+          "name": "getBody",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOutputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriter",
+          "parameterTypes": []
+        },
+        {
+          "name": "isStreaming",
+          "parameterTypes": []
+        },
+        {
+          "name": "reset",
+          "parameterTypes": []
+        },
+        {
+          "name": "resetBuffer",
+          "parameterTypes": []
+        },
+        {
+          "name": "setContentType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "streaming",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.RuntimeContextBindingFilter",
+      "fields": [
+        {
+          "name": "ALREADY_FILTERED_SUFFIX"
+        },
+        {
+          "name": "options"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
+          ]
+        },
+        {
+          "name": "destroy",
+          "parameterTypes": []
+        },
+        {
+          "name": "doFilter",
+          "parameterTypes": [
+            "jakarta.servlet.ServletRequest",
+            "jakarta.servlet.ServletResponse",
+            "jakarta.servlet.FilterChain"
+          ]
+        },
+        {
+          "name": "doFilterInternal",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "jakarta.servlet.FilterChain"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getAlreadyFilteredAttributeName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "jakarta.servlet.FilterConfig"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "skipDispatch",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.http.SentinelRequestHandler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "afterCompletion",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "java.lang.Object",
+            "java.lang.Exception"
+          ]
+        },
+        {
+          "name": "afterCompletion",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "java.lang.Object",
+            "java.lang.Exception"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClientIP",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getClientIPByHeader",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "postHandle",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "java.lang.Object",
+            "org.springframework.web.servlet.ModelAndView"
+          ]
+        },
+        {
+          "name": "postHandle",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "java.lang.Object",
+            "org.springframework.web.servlet.ModelAndView"
+          ]
+        },
+        {
+          "name": "preHandle",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "preHandle",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "jakarta.servlet.http.HttpServletResponse",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "requestInfo",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "requestParameters",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.listener.SpringBootConfigListener",
+      "fields": [
+        {
+          "name": "application"
+        },
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        },
+        {
+          "name": "registered"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "onApplicationEvent",
+          "parameterTypes": [
+            "org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent"
+          ]
+        },
+        {
+          "name": "onApplicationEvent",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationEvent"
+          ]
+        },
+        {
+          "name": "registerConfigs",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.listener.SpringCloudConfigListener",
+      "fields": [
+        {
+          "name": "HIGH_PRIORITY_CONFIG"
+        },
+        {
+          "name": "HIGHEST_PRECEDENCE"
+        },
+        {
+          "name": "LOWEST_PRECEDENCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOrder",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$logSetting$0",
+          "parameterTypes": [
+            "org.springframework.core.env.PropertySource"
+          ]
+        },
+        {
+          "name": "lambda$logSetting$1",
+          "parameterTypes": [
+            "org.springframework.core.env.PropertySource"
+          ]
+        },
+        {
+          "name": "lambda$logSetting$2",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "lambda$onApplicationEvent$0",
+          "parameterTypes": [
+            "org.springframework.core.env.PropertySource"
+          ]
+        },
+        {
+          "name": "lambda$onApplicationEvent$1",
+          "parameterTypes": [
+            "org.springframework.core.env.StandardEnvironment",
+            "org.springframework.core.env.PropertySource"
+          ]
+        },
+        {
+          "name": "lambda$onApplicationEvent$2",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationListener"
+          ]
+        },
+        {
+          "name": "lambda$onApplicationEvent$3",
+          "parameterTypes": [
+            "org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent",
+            "org.springframework.context.ApplicationListener"
+          ]
+        },
+        {
+          "name": "logSetting",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "onApplicationEvent",
+          "parameterTypes": [
+            "org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent"
+          ]
+        },
+        {
+          "name": "onApplicationEvent",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationEvent"
+          ]
+        },
+        {
+          "name": "requireProperties",
+          "parameterTypes": [
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.metrics.BaseMetrics",
+      "fields": [
+        {
+          "name": "attributes"
+        },
+        {
+          "name": "cost"
+        },
+        {
+          "name": "endTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "startTime"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAttribute",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEndTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStartTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "putAttribute",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCost",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setEndTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setStartTime",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.metrics.BeanMetrics",
+      "fields": [
+        {
+          "name": "realRefreshElapsedTime"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRealRefreshElapsedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRealRefreshElapsedTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.metrics.ChildrenMetrics",
+      "fields": [
+        {
+          "name": "children"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addChild",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.metrics.BaseMetrics"
+          ]
+        },
+        {
+          "name": "getChildren",
+          "parameterTypes": []
+        },
+        {
+          "name": "setChildren",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.metrics.ModuleMetrics",
+      "fields": [
+        {
+          "name": "threadName"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getThreadName",
+          "parameterTypes": []
+        },
+        {
+          "name": "setThreadName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.metrics.StartupMetrics",
+      "fields": [
+        {
+          "name": "applicationBootElapsedTime"
+        },
+        {
+          "name": "applicationBootTime"
+        },
+        {
+          "name": "appName"
+        },
+        {
+          "name": "stageStats"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getApplicationBootElapsedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getApplicationBootTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAppName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStageStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "setApplicationBootElapsedTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setApplicationBootTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setAppName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setStageStats",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilder"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "includeMultipart",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "resolveNonSimpleArguments",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "sanitizeInputValues",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "synthesizeFormBody",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wrapContentTypes",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.options.WrapperRuntimeOptions$WrapperRuntimeOptionsBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.ProviderManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "all",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "load",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "loadProvider",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.SpringBuilder",
+      "fields": [
+        {
+          "name": "context"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getActiveProfile",
+          "parameterTypes": []
+        },
+        {
+          "name": "getActiveProfiles",
+          "parameterTypes": []
+        },
+        {
+          "name": "getApplicationName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBean",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getBean",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getBean",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getBean",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "getBean",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.reflect.TypeReference"
+          ]
+        },
+        {
+          "name": "getBeanFactory",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBeanNamesForType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getBeansOfType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProperty",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDemoMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDevMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isFromConfigurationSource",
+          "parameterTypes": [
+            "org.springframework.beans.factory.config.BeanDefinition"
+          ]
+        },
+        {
+          "name": "isTestMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$getBean$0",
+          "parameterTypes": [
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "lambda$getBean$1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "lambda$replacePlaceholders$0",
+          "parameterTypes": [
+            "java.util.Properties",
+            "org.springframework.core.env.PropertySource"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "publishEvent",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "refreshContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "registerBeanDefinition",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "registerSingleton",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "registerSingleton",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "removeContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "replacePlaceholders",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.springframework.core.env.ConfigurableEnvironment"
+          ]
+        },
+        {
+          "name": "resolveBeanClassType",
+          "parameterTypes": [
+            "org.springframework.beans.factory.config.BeanDefinition"
+          ]
+        },
+        {
+          "name": "setApplicationContext",
+          "parameterTypes": [
+            "org.springframework.context.ApplicationContext"
+          ]
+        },
+        {
+          "name": "setContext",
+          "parameterTypes": [
+            "org.springframework.context.ConfigurableApplicationContext"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "unRegisterSingleton",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/spring.factories"
+    },
+    {
+      "glob": "META-INF/spring/**"
+    }
+  ]
+}

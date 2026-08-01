@@ -88,8 +88,7 @@ public class SpringBuilder implements ApplicationContextAware {
     /**
      * Sets the Spring {@link ConfigurableApplicationContext}.
      * <p>
-     * This method is typically called by the Spring framework during initialization. It also sets the
-     * {@link SpringHolder#alive} flag to {@code true}.
+     * This method is typically called by the Spring framework during initialization.
      * </p>
      *
      * @param context The application context object.
@@ -97,7 +96,6 @@ public class SpringBuilder implements ApplicationContextAware {
     public static void setContext(ConfigurableApplicationContext context) {
         Assert.notNull(context, "Spring context not found.");
         SpringBuilder.context = context;
-        SpringHolder.alive = true;
     }
 
     /**
@@ -297,7 +295,7 @@ public class SpringBuilder implements ApplicationContextAware {
      * </p>
      */
     public static void refreshContext() {
-        if (SpringHolder.alive) {
+        if (context != null && context.isActive()) {
             context.refresh();
         }
     }
@@ -309,10 +307,9 @@ public class SpringBuilder implements ApplicationContextAware {
      * </p>
      */
     public static void removeContext() {
-        if (SpringHolder.alive) {
+        if (context != null) {
             context.close();
             context = null;
-            SpringHolder.alive = false;
         }
     }
 

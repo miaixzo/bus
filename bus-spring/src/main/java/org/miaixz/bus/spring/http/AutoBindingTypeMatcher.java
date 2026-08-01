@@ -50,7 +50,36 @@ public class AutoBindingTypeMatcher {
      * These types are common scalar, collection, servlet, and Spring framework types that can appear in normal
      * controller responses and exception payloads.
      */
-    private static final List<String> DEFAULT_PREFIXES = List.of("java.", "javax.", "jakarta.", "org.springframework.");
+    private static final List<String> DEFAULT_PREFIXES = List.of("java.lang.", "java.math.", "java.time.");
+
+    /**
+     * Common container and scalar types allowed without opening the complete {@code java.util} package.
+     */
+    private static final List<String> DEFAULT_TYPES = List.of(
+            "java.util.ArrayList",
+            "java.util.Collection",
+            "java.util.Date",
+            "java.util.Deque",
+            "java.util.HashMap",
+            "java.util.HashSet",
+            "java.util.LinkedHashMap",
+            "java.util.LinkedHashSet",
+            "java.util.LinkedList",
+            "java.util.List",
+            "java.util.Map",
+            "java.util.NavigableMap",
+            "java.util.NavigableSet",
+            "java.util.Optional",
+            "java.util.OptionalDouble",
+            "java.util.OptionalInt",
+            "java.util.OptionalLong",
+            "java.util.Queue",
+            "java.util.Set",
+            "java.util.SortedMap",
+            "java.util.SortedSet",
+            "java.util.TreeMap",
+            "java.util.TreeSet",
+            "java.util.UUID");
 
     /**
      * The normalized rule list used during matching.
@@ -137,7 +166,8 @@ public class AutoBindingTypeMatcher {
      * @return the current rules joined with commas
      */
     String description() {
-        return String.join(", ", this.rules) + ", " + String.join(", ", DEFAULT_PREFIXES);
+        return String.join(", ", this.rules) + ", " + String.join(", ", DEFAULT_PREFIXES) + ", "
+                + String.join(", ", DEFAULT_TYPES);
     }
 
     /**
@@ -147,7 +177,7 @@ public class AutoBindingTypeMatcher {
      * @return {@code true} if the class belongs to a built-in allowed package; otherwise {@code false}
      */
     private boolean isImplicitlyAllowed(String className) {
-        return DEFAULT_PREFIXES.stream().anyMatch(className::startsWith);
+        return DEFAULT_TYPES.contains(className) || DEFAULT_PREFIXES.stream().anyMatch(className::startsWith);
     }
 
     /**
@@ -189,8 +219,12 @@ public class AutoBindingTypeMatcher {
      */
     private boolean matchesRule(String rule, String className, String packageName) {
         if (rule.indexOf('*') < 0) {
-            // Preserve the original prefix behavior for plain package rules.
-            return className.startsWith(rule) || packageName.startsWith(rule);
+            String normalizedRule = rule.endsWith(Symbol.DOT)
+                    ? rule.substring(0, rule.length() - 1)
+                    : rule;
+            return className.equals(normalizedRule) || className.startsWith(normalizedRule + Symbol.DOT)
+                    || className.startsWith(normalizedRule + "$") || packageName.equals(normalizedRule)
+                    || packageName.startsWith(normalizedRule + Symbol.DOT);
         }
         // Wildcard rules are evaluated against the package path only.
         return matchesPackagePattern(rule, packageName);

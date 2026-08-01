@@ -17,13 +17,28 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.spring;
+
+import org.miaixz.bus.core.basic.entity.Authorize;
+
 /**
- * Provides HTTP client integration with Spring Framework.
+ * An interface for providing authenticated request context information.
  * <p>
- * This package contains classes for configuring and using HTTP clients within a Spring application context, including
- * RestTemplate customization and WebClient integration.
+ * Implementations provide an already authenticated {@link Authorize} value. They are not responsible for reading or
+ * interpreting raw request headers.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.spring.http;
+public interface ContextProvider {
+
+    /**
+     * Gets the authenticated authorization information for the current user.
+     *
+     * @return An {@link Authorize} object, or null if not available.
+     */
+    default Authorize getAuthorize() {
+        return null;
+    }
+
+}

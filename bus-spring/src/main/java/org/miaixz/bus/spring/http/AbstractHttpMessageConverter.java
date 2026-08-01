@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public abstract class AbstractHttpMessageConverter implements HttpMessageConverter {
+public abstract class AbstractHttpMessageConverter implements MessageConverterRegistrar {
 
     /**
      * Constructs a new AbstractHttpMessageConverter instance.

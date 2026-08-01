@@ -283,6 +283,11 @@ public class GeniusBuilder {
     public static final String TEMPUS = Keys.BUS + Symbol.DOT + "tempus";
 
     /**
+     * Property prefix for the shared JSON provider.
+     */
+    public static final String JSON = Keys.BUS + Symbol.DOT + "json";
+
+    /**
      * Property key for Bus validation configuration.
      */
     public static final String VALIDATE = Keys.BUS + Symbol.DOT + "validate";

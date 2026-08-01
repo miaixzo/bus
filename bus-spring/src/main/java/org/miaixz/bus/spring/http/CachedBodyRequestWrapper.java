@@ -69,7 +69,7 @@ import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
  *             throws IOException, ServletException {
  *         // Wrap the request
- *         MutableRequestWrapper wrappedRequest = new MutableRequestWrapper((HttpServletRequest) request);
+ *         CachedBodyRequestWrapper wrappedRequest = new CachedBodyRequestWrapper((HttpServletRequest) request);
  *         // Continue the filter chain
  *         chain.doFilter(wrappedRequest, response);
  *     }
@@ -80,7 +80,7 @@ import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class MutableRequestWrapper extends HttpServletRequestWrapper {
+public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * The original HTTP servlet request.
@@ -98,7 +98,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     public byte[] body;
 
     /**
-     * Constructs a new {@code MutableRequestWrapper}, initializing the request wrapper.
+     * Constructs a new {@code CachedBodyRequestWrapper}, initializing the request wrapper.
      * <p>
      * This constructor reads and caches the request body content, initializes a custom input stream wrapper, and logs
      * request parameters.
@@ -107,7 +107,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
      * @param request The original {@link HttpServletRequest} object.
      * @throws IOException If an I/O error occurs while reading the request body.
      */
-    public MutableRequestWrapper(HttpServletRequest request) throws IOException {
+    public CachedBodyRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         this.request = request;
         this.contentType = request.getContentType();
@@ -221,7 +221,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
             encodedValues[i] = values[i];
-            if (!JsonKit.isJson(values[i])) {
+            if (values[i] != null && !JsonKit.isJson(values[i])) {
                 encodedValues[i] = EscapeKit.escapeHtml4(values[i]);
             }
         }
@@ -243,7 +243,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
         if (!WrapperRuntimeOptions.of().isSanitizeInputValues()) {
             return content;
         }
-        if (!JsonKit.isJson(content)) {
+        if (content != null && !JsonKit.isJson(content)) {
             content = EscapeKit.escapeHtml4(content);
         }
         return content;
@@ -264,7 +264,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
         if (!WrapperRuntimeOptions.of().isSanitizeInputValues()) {
             return content;
         }
-        if (!JsonKit.isJson(content)) {
+        if (content != null && !JsonKit.isJson(content)) {
             content = EscapeKit.escapeHtml4(content);
         }
         return content;

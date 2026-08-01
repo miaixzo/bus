@@ -25,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
@@ -35,14 +34,13 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 /**
  * Normalizes {@link Message} response bodies before serialization.
  * <p>
- * Failed messages have their {@code data} cleared before serialization, even when callers manually populated that
- * field. This keeps the rule framework-level without adding serialization annotations or JSON dependencies to bus-core.
+ * Failed messages are represented by a new payload without {@code data}, even when callers manually populated that
+ * field. This keeps the rule framework-level without mutating controller-owned response objects.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@ControllerAdvice
 @RestControllerAdvice
 @ConditionalOnWebApplication
 public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
@@ -60,7 +58,7 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * Removes {@code data} from non-success {@link Message} responses.
+     * Replaces non-success {@link Message} responses with an equivalent payload that has no {@code data}.
      *
      * @param body                  the response body
      * @param returnType            the controller return type
@@ -68,7 +66,7 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
      * @param selectedConverterType the selected converter type
      * @param request               the current request
      * @param response              the current response
-     * @return the original body, with {@code data} cleared when it is a failure message
+     * @return the original successful body or a new failure message without data
      */
     @Override
     public Object beforeBodyWrite(
@@ -81,8 +79,7 @@ public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         if (!(body instanceof Message<?> message) || isSuccess(message)) {
             return body;
         }
-        message.setData(null);
-        return message;
+        return Message.failure(message.getErrcode(), message.getErrmsg());
     }
 
     /**

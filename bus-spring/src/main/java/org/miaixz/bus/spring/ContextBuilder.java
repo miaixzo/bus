@@ -48,10 +48,9 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.http.MutableRequestWrapper;
+import org.miaixz.bus.spring.http.CachedBodyRequestWrapper;
 import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
@@ -86,16 +85,6 @@ public class ContextBuilder extends WebUtils {
      * Cache implementation for request bodies.
      */
     private static volatile CacheX<String, String> BODY_CACHE;
-
-    /**
-     * Thread-local storage for the current request ID.
-     */
-    private static final ThreadLocal<String> REQUEST_ID = ThreadKit.newThreadLocal(false);
-
-    /**
-     * Thread-local storage for the current request authorization information.
-     */
-    private static final ThreadLocal<Authorize> AUTHORIZATION_CONTEXT = ThreadKit.newThreadLocal(false);
 
     /**
      * The default maximum number of entries for caches.
@@ -135,8 +124,16 @@ public class ContextBuilder extends WebUtils {
      * Initializes the request context by generating a new request ID and storing it in a ThreadLocal.
      */
     public static void setRequestId() {
-        String requestId = ID.objectId();
-        REQUEST_ID.set(requestId);
+        setRequestId(ID.objectId());
+    }
+
+    /**
+     * Sets the request identifier visible to the current thread.
+     *
+     * @param requestId request correlation identifier
+     */
+    public static void setRequestId(@Nullable String requestId) {
+        RuntimeContextSnapshot.setCurrentRequestId(requestId);
     }
 
     /**
@@ -145,12 +142,12 @@ public class ContextBuilder extends WebUtils {
      * @return The request ID, or null if no request is available.
      */
     public static String getRequestId() {
-        String requestId = REQUEST_ID.get();
+        String requestId = RuntimeContextSnapshot.currentRequestId();
         if (requestId == null) {
             HttpServletRequest request = getRequest();
             if (request != null) {
                 requestId = ID.objectId();
-                REQUEST_ID.set(requestId);
+                RuntimeContextSnapshot.setCurrentRequestId(requestId);
                 Logger.debug(true, "Starter", "Request ID: {}", requestId);
             } else {
                 Logger.debug(true, "Starter", "No request available to generate request ID");
@@ -357,7 +354,7 @@ public class ContextBuilder extends WebUtils {
                         parameters.put(key, values[0]);
                     }
                 });
-                if (request instanceof MutableRequestWrapper wrapper) {
+                if (request instanceof CachedBodyRequestWrapper wrapper) {
                     String contentType = request.getContentType();
                     byte[] bodyBytes = wrapper.getBody();
                     if (WrapperRuntimeOptions.of().isSynthesizeFormBody() && contentType != null
@@ -432,7 +429,7 @@ public class ContextBuilder extends WebUtils {
         }
         String requestBody;
         try {
-            if (request instanceof MutableRequestWrapper wrapper) {
+            if (request instanceof CachedBodyRequestWrapper wrapper) {
                 byte[] bodyBytes = wrapper.getBody();
                 requestBody = (bodyBytes != null && bodyBytes.length > 0) ? new String(bodyBytes, Charset.UTF_8)
                         : Normal.EMPTY;
@@ -824,7 +821,7 @@ public class ContextBuilder extends WebUtils {
     public static Authorize getAuthorize() {
         try {
             // 1. First, retrieve from ThreadLocal (request-level, highest priority)
-            Authorize authorize = AUTHORIZATION_CONTEXT.get();
+            Authorize authorize = RuntimeContextSnapshot.currentAuthorize();
             if (authorize != null) {
                 Logger.info(true, "Starter", "Authorize (from ThreadLocal): {}", authorize);
                 return authorize;
@@ -865,7 +862,35 @@ public class ContextBuilder extends WebUtils {
      * @param authorize The authorization information to set.
      */
     public static void setAuthorize(@Nullable Authorize authorize) {
-        AUTHORIZATION_CONTEXT.set(authorize);
+        RuntimeContextSnapshot.setCurrentAuthorize(authorize);
+    }
+
+    /**
+     * Captures the current generic runtime context.
+     *
+     * @return an immutable context snapshot
+     */
+    public static RuntimeContextSnapshot capture() {
+        return RuntimeContextSnapshot.capture();
+    }
+
+    /**
+     * Installs a context snapshot and returns a scope that restores the parent context when closed.
+     *
+     * @param snapshot snapshot to install
+     * @return the installed context scope
+     */
+    public static RuntimeContextScope install(@Nullable RuntimeContextSnapshot snapshot) {
+        return RuntimeContextScope.open(snapshot);
+    }
+
+    /**
+     * Replaces the current context with a previously captured snapshot.
+     *
+     * @param snapshot snapshot to restore; {@code null} clears the context
+     */
+    public static void restore(@Nullable RuntimeContextSnapshot snapshot) {
+        RuntimeContextSnapshot.replaceCurrent(snapshot);
     }
 
     /**
@@ -875,16 +900,29 @@ public class ContextBuilder extends WebUtils {
      * @return The tenant ID, or null if not found.
      */
     public static String getTenantId() {
+        return getTenantId(false);
+    }
+
+    /**
+     * Gets the tenant ID using the fixed interoperability protocol.
+     *
+     * @param legacyRequestSources whether legacy request parameter and JSON body sources may be read
+     * @return the tenant ID, or {@code null} if not found
+     */
+    public static String getTenantId(boolean legacyRequestSources) {
         try {
+            String tenantId = getValue("x_tenant_id", EnumValue.Params.HEADER);
+            if (StringKit.isNotEmpty(tenantId)) {
+                Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
+                return tenantId;
+            }
             Authorize authorize = getAuthorize();
             if (authorize != null && StringKit.isNotEmpty(authorize.getX_tenant_id())) {
                 Logger.info(true, "Starter", "Tenant ID: {}", authorize.getX_tenant_id());
                 return authorize.getX_tenant_id();
             }
-            String tenantId = getValue("x_tenant_id", EnumValue.Params.HEADER);
-            if (StringKit.isNotEmpty(tenantId)) {
-                Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
-                return tenantId;
+            if (!legacyRequestSources) {
+                return null;
             }
             tenantId = getValue("tenant_id", EnumValue.Params.PARAMETER);
             if (StringKit.isNotEmpty(tenantId)) {
@@ -916,17 +954,16 @@ public class ContextBuilder extends WebUtils {
      * entries.
      */
     public static void clear() {
-        String requestId = REQUEST_ID.get();
+        String requestId = RuntimeContextSnapshot.currentRequestId();
         if (requestId != null) {
             getHeaderCache().remove(requestId);
             getParameterCache().remove(requestId);
             getBodyCache().remove(requestId);
-            REQUEST_ID.remove();
-            AUTHORIZATION_CONTEXT.remove();
             Logger.debug(false, "Starter", "Cleared: {}", requestId);
         } else {
             Logger.debug(false, "Starter", "No request ID to clear");
         }
+        RuntimeContextSnapshot.clearCurrent();
     }
 
     /**

@@ -45,7 +45,7 @@ import org.miaixz.bus.logger.Logger;
  * <p>
  * <b>Performance Optimizations</b>
  * <ul>
- * <li>Uses {@link MutableRequestWrapper} to cache the request body, solving the issue of an InputStream only being
+ * <li>Uses {@link CachedBodyRequestWrapper} to cache the request body, solving the issue of an InputStream only being
  * readable once.</li>
  * <li>Limits the length of the logged response body (default 150 characters) to prevent memory overflow with large
  * responses.</li>
@@ -103,9 +103,9 @@ public class SentinelRequestHandler implements HandlerInterceptor {
         // Handle logging based on the request method type.
         if (Http.Method.POST.value().equals(method) || Http.Method.PATCH.value().equals(method)
                 || Http.Method.PUT.value().equals(method)) {
-            // For methods with a request body, log the body if it's a MutableRequestWrapper.
-            if (request instanceof MutableRequestWrapper) {
-                String requestBody = new String(((MutableRequestWrapper) request).getBody())
+            // For methods with a request body, log the body if it is cached.
+            if (request instanceof CachedBodyRequestWrapper) {
+                String requestBody = new String(((CachedBodyRequestWrapper) request).getBody())
                         .replaceAll("\\s+", Normal.EMPTY);
                 Map<String, String> params = new HashMap<>();
                 params.put("body", requestBody);
@@ -149,12 +149,12 @@ public class SentinelRequestHandler implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler,
             Exception exception) {
-        if (response instanceof MutableResponseWrapper mutableResponseWrapper) {
+        if (response instanceof CachedBodyResponseWrapper cachedResponse) {
             Logger.info(
                     false,
                     "Starter",
                     "Response captured: responseBytes={}",
-                    mutableResponseWrapper.getBody().length);
+                    cachedResponse.getBody().length);
         } else {
             Logger.info(false, "Starter", "Status: {}", response.getStatus());
         }

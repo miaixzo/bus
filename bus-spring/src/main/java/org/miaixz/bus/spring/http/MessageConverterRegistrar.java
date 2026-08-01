@@ -17,25 +17,49 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring;
+package org.miaixz.bus.spring.http;
 
-import org.miaixz.bus.core.basic.entity.Authorize;
+import java.util.List;
 
 /**
- * An interface for providing custom logic to retrieve request context information, such as user authorization.
+ * Registers Bus-managed HTTP message converters with Spring MVC.
+ * <p>
+ * Implementations describe their diagnostic name and ordering, then add one or more concrete Spring
+ * {@link org.springframework.http.converter.HttpMessageConverter} instances to the supplied converter list.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface ContextProvider {
+public interface MessageConverterRegistrar {
 
     /**
-     * Gets the authorization information for the current user.
+     * Returns the registrar name used for diagnostics.
      *
-     * @return An {@link Authorize} object, or null if not available.
+     * @return registrar name
      */
-    default Authorize getAuthorize() {
-        return null;
+    String name();
+
+    /**
+     * Returns the registrar precedence; lower values run first.
+     *
+     * @return ordering value
+     */
+    int order();
+
+    /**
+     * Adds the concrete Spring message converters managed by this registrar.
+     *
+     * @param converters mutable Spring message converter list
+     */
+    void register(List<org.springframework.http.converter.HttpMessageConverter<?>> converters);
+
+    /**
+     * Supplies optional safe deserialization type rules to registrars that support them.
+     *
+     * @param autoType comma-separated safe deserialization type rules
+     */
+    default void autoType(String autoType) {
+        // Registrars without deserialization type handling need no additional configuration.
     }
 
 }
