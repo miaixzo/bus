@@ -19,11 +19,18 @@
 */
 package org.miaixz.bus.extra.json.provider;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
+import org.miaixz.bus.extra.json.JsonWriteOptions;
 
 /**
  * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on Google's Gson library. This class provides
@@ -37,14 +44,32 @@ public class GsonProvider extends AbstractJsonProvider {
     /**
      * The underlying Gson instance used for JSON operations. It is configured with custom type adapters.
      */
-    public static Gson gson;
+    private final Gson gson;
 
     /**
      * Constructs a new {@code GsonProvider} instance. Initializes a {@link Gson} instance with custom type adapters to
      * handle potential issues, such as integers being converted to floating-point numbers during deserialization.
      */
     public GsonProvider() {
-        gson = new GsonBuilder()
+        this(createDefaultGson());
+    }
+
+    /**
+     * Constructs a provider backed by an application-configured Gson instance.
+     *
+     * @param gson Gson instance
+     */
+    public GsonProvider(Gson gson) {
+        this.gson = Objects.requireNonNull(gson, "gson");
+    }
+
+    /**
+     * Creates the standalone default Gson engine used when the application does not provide a configured Gson bean.
+     *
+     * @return Gson engine with Bus-compatible map and list adapters
+     */
+    private static Gson createDefaultGson() {
+        return new GsonBuilder()
                 // Custom deserializer for Map to prevent integers from being parsed as doubles.
                 .registerTypeAdapter(new TypeToken<Map<Object, Object>>() {
                 }.getType(),
@@ -89,6 +114,16 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     /**
+     * Returns the canonical configuration name of this provider.
+     *
+     * @return {@code gson}
+     */
+    @Override
+    public String name() {
+        return "gson";
+    }
+
+    /**
      * Description inherited from parent class or interface.
      */
     @Override
@@ -101,9 +136,27 @@ public class GsonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object, String format) {
-        // Note: This creates a new Gson instance on each call, which can be inefficient.
-        gson = new GsonBuilder().setDateFormat(format).create();
-        return gson.toJson(object);
+        return gson.newBuilder().setDateFormat(format).create().toJson(object);
+    }
+
+    /**
+     * Serializes a value with the shared date, null, and property-filtering options.
+     *
+     * @param object  value to serialize
+     * @param options framework-independent serialization options
+     * @return UTF-8 JSON bytes
+     */
+    @Override
+    public byte[] write(Object object, JsonWriteOptions options) {
+        JsonWriteOptions resolved = options == null ? JsonWriteOptions.defaults() : options;
+        GsonBuilder builder = gson.newBuilder().registerTypeAdapterFactory(new FilteringTypeAdapterFactory(resolved));
+        if (resolved.writeNulls()) {
+            builder.serializeNulls();
+        }
+        if (resolved.dateFormat() != null) {
+            builder.setDateFormat(resolved.dateFormat());
+        }
+        return builder.create().toJson(object).getBytes(StandardCharsets.UTF_8);
     }
 
     /**
@@ -112,6 +165,19 @@ public class GsonProvider extends AbstractJsonProvider {
     @Override
     public <T> T toPojo(String json, Class<T> clazz) {
         return gson.fromJson(json, clazz);
+    }
+
+    /**
+     * Deserializes JSON into the supplied Java type, including parameterized generic types.
+     *
+     * @param <T>  target value type
+     * @param json JSON document
+     * @param type target Java type
+     * @return deserialized value
+     */
+    @Override
+    public <T> T toPojo(String json, Type type) {
+        return gson.fromJson(json, type);
     }
 
     /**
@@ -137,7 +203,7 @@ public class GsonProvider extends AbstractJsonProvider {
      */
     @Override
     public <T> List<T> toList(String json, Class<T> clazz) {
-        return gson.fromJson(json, (Type) clazz);
+        return gson.fromJson(json, TypeToken.getParameterized(List.class, clazz).getType());
     }
 
     /**
@@ -187,6 +253,116 @@ public class GsonProvider extends AbstractJsonProvider {
         } catch (JsonSyntaxException ex) {
             return false;
         }
+    }
+
+    /**
+     * Wraps Gson serialization adapters so shared null and property-filtering options are applied without replacing
+     * application-configured adapters.
+     */
+    private static final class FilteringTypeAdapterFactory implements TypeAdapterFactory {
+
+        /**
+         * Serialization options applied by every adapter created through this factory.
+         */
+        private final JsonWriteOptions options;
+
+        /**
+         * Creates a filtering adapter factory.
+         *
+         * @param options framework-independent serialization options
+         */
+        private FilteringTypeAdapterFactory(JsonWriteOptions options) {
+            this.options = options;
+        }
+
+        /**
+         * Wraps Gson's next adapter and filters its JSON object representation before output.
+         *
+         * @param <T>  adapted value type
+         * @param gson Gson engine creating the adapter
+         * @param type adapted type token
+         * @return filtering adapter delegating reads to Gson's original adapter
+         */
+        @Override
+        public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+            TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
+            return new TypeAdapter<>() {
+
+                /**
+                 * Writes a filtered JSON tree produced by the delegated application adapter.
+                 *
+                 * @param output target JSON writer
+                 * @param value  value to serialize
+                 * @throws IOException if the JSON writer fails
+                 */
+                @Override
+                public void write(JsonWriter output, T value) throws IOException {
+                    JsonElement tree = delegate.toJsonTree(value);
+                    filterObject(value, tree, options);
+                    gson.toJson(tree, output);
+                }
+
+                /**
+                 * Reads with the delegated application adapter because write options must not alter deserialization.
+                 *
+                 * @param input source JSON reader
+                 * @return deserialized value
+                 * @throws IOException if the JSON reader fails
+                 */
+                @Override
+                public T read(JsonReader input) throws IOException {
+                    return delegate.read(input);
+                }
+            };
+        }
+    }
+
+    /**
+     * Filters the direct properties of a Gson JSON object using values read from the original source object. Nested
+     * objects are handled by their own wrapped adapters.
+     *
+     * @param source  original source value
+     * @param tree    serialized JSON tree
+     * @param options serialization options
+     */
+    private static void filterObject(Object source, JsonElement tree, JsonWriteOptions options) {
+        if (source == null || !tree.isJsonObject()) {
+            return;
+        }
+        Iterator<Map.Entry<String, JsonElement>> entries = tree.getAsJsonObject().entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, JsonElement> entry = entries.next();
+            Object propertyValue = readFieldValue(source, entry.getKey());
+            if ((!options.writeNulls() && entry.getValue().isJsonNull())
+                    || !options.propertyFilter().include(source, entry.getKey(), propertyValue)) {
+                entries.remove();
+            }
+        }
+    }
+
+    /**
+     * Reads a field value for filtering while keeping custom adapters and synthetic JSON properties permissive.
+     *
+     * @param source source object
+     * @param name   serialized property name
+     * @return field value, or {@code null} when the field is absent or inaccessible
+     */
+    private static Object readFieldValue(Object source, String name) {
+        Class<?> type = source.getClass();
+        while (type != null && type != Object.class) {
+            try {
+                Field field = type.getDeclaredField(name);
+                if (field.trySetAccessible()) {
+                    return field.get(source);
+                }
+                return null;
+            } catch (NoSuchFieldException ignored) {
+                type = type.getSuperclass();
+            } catch (IllegalAccessException | RuntimeException ignored) {
+                return null;
+            }
+        }
+        return null;
     }
 
 }

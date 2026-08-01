@@ -20,6 +20,8 @@
 package org.miaixz.bus.extra.json.provider;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,10 @@ import java.util.Map;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.filter.Filter;
+import com.alibaba.fastjson2.filter.PropertyFilter;
 import com.alibaba.fastjson2.filter.ValueFilter;
+
+import org.miaixz.bus.extra.json.JsonWriteOptions;
 
 /**
  * A {@link org.miaixz.bus.extra.json.JsonProvider} implementation based on Alibaba's Fastjson2 library. This class
@@ -39,11 +44,27 @@ import com.alibaba.fastjson2.filter.ValueFilter;
 public class FastJsonProvider extends AbstractJsonProvider {
 
     /**
+     * Returns the canonical configuration name of this provider.
+     *
+     * @return {@code fastjson}
+     */
+    @Override
+    public String name() {
+        return "fastjson";
+    }
+
+    /**
      * Default writer features for Fastjson serialization, including field-based serialization and writing null values.
      */
     private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
             JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNullListAsEmpty,
             JSONWriter.Feature.BrowserCompatible, JSONWriter.Feature.WriteNulls };
+
+    /**
+     * Writer features used when null-valued properties must be omitted.
+     */
+    private static final JSONWriter.Feature[] NON_NULL_WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
+            JSONWriter.Feature.WriteNullListAsEmpty, JSONWriter.Feature.BrowserCompatible };
 
     /**
      * Default filters for Fastjson serialization, which convert null, empty, or blank string values to null.
@@ -74,11 +95,45 @@ public class FastJsonProvider extends AbstractJsonProvider {
     }
 
     /**
+     * Serializes a value with the shared date, null, and property-filtering options.
+     *
+     * @param object  value to serialize
+     * @param options framework-independent serialization options
+     * @return UTF-8 JSON bytes
+     */
+    @Override
+    public byte[] write(Object object, JsonWriteOptions options) {
+        JsonWriteOptions resolved = options == null ? JsonWriteOptions.defaults() : options;
+        List<Filter> filters = new ArrayList<>(List.of(FILTERS));
+        if (resolved.hasPropertyFilter()) {
+            filters.add((PropertyFilter) resolved.propertyFilter()::include);
+        }
+        JSONWriter.Feature[] features = resolved.writeNulls() ? WRITER_FEATURES : NON_NULL_WRITER_FEATURES;
+        String json = resolved.dateFormat() == null
+                ? JSON.toJSONString(object, filters.toArray(Filter[]::new), features)
+                : JSON.toJSONString(object, resolved.dateFormat(), filters.toArray(Filter[]::new), features);
+        return json.getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
      * Description inherited from parent class or interface.
      */
     @Override
     public <T> T toPojo(String json, Class<T> clazz) {
         return JSON.parseObject(json, clazz);
+    }
+
+    /**
+     * Deserializes JSON into the supplied Java type, including parameterized generic types.
+     *
+     * @param <T>  target value type
+     * @param json JSON document
+     * @param type target Java type
+     * @return deserialized value
+     */
+    @Override
+    public <T> T toPojo(String json, Type type) {
+        return JSON.parseObject(json, type);
     }
 
     /**

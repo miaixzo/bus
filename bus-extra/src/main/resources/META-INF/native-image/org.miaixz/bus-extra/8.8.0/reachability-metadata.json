@@ -4013,6 +4013,36 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.json.provider.GsonProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.google.gson.Gson"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.json.provider.JacksonProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "tools.jackson.databind.ObjectMapper"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.mail.GlobalMailAccount",
       "fields": [
         {

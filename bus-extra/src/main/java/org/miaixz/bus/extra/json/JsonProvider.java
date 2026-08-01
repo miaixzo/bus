@@ -20,11 +20,13 @@
 package org.miaixz.bus.extra.json;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * Defines the contract for a JSON service provider. This interface specifies a set of common methods for JSON
@@ -35,6 +37,15 @@ import org.miaixz.bus.core.lang.EnumValue;
  * @since Java 21+
  */
 public interface JsonProvider extends Provider {
+
+    /**
+     * Returns the stable provider name used by configuration and diagnostics.
+     *
+     * @return provider name
+     */
+    default String name() {
+        return getClass().getName();
+    }
 
     /**
      * Converts an object into its JSON string representation.
@@ -62,6 +73,79 @@ public interface JsonProvider extends Provider {
      * @return The deserialized object.
      */
     <T> T toPojo(String json, Class<T> clazz);
+
+    /**
+     * Parses JSON into the specified Java type, preserving generic type information when supported.
+     *
+     * @param <T>  target value type
+     * @param json JSON document
+     * @param type target Java type
+     * @return deserialized value
+     */
+    default <T> T toPojo(String json, Type type) {
+        if (type instanceof Class<?> clazz) {
+            return (T) toPojo(json, clazz);
+        }
+        throw new InternalException("JSON provider does not support generic type: " + name() + ", type=" + type);
+    }
+
+    /**
+     * Serializes a value to UTF-8 JSON bytes.
+     *
+     * @param object value to serialize
+     * @return UTF-8 JSON bytes
+     */
+    default byte[] write(Object object) {
+        return toJsonString(object).getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Serializes a value to UTF-8 JSON bytes using framework-independent options. Third-party providers inherit a
+     * compatibility implementation supporting date formatting, but must override this method before accepting null or
+     * property-filtering behavior that differs from their native defaults.
+     *
+     * @param object  value to serialize
+     * @param options serialization options
+     * @return UTF-8 JSON bytes
+     * @throws InternalException if the provider does not support requested filtering behavior
+     */
+    default byte[] write(Object object, JsonWriteOptions options) {
+        JsonWriteOptions resolved = options == null ? JsonWriteOptions.defaults() : options;
+        if (!resolved.writeNulls() || resolved.hasPropertyFilter()) {
+            throw new InternalException("JSON provider does not support write options: " + name());
+        }
+        String json = resolved.dateFormat() == null ? toJsonString(object)
+                : toJsonString(object, resolved.dateFormat());
+        return json.getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Deserializes UTF-8 JSON bytes into the specified Java type.
+     *
+     * @param <T>  target value type
+     * @param json UTF-8 JSON bytes
+     * @param type target Java type
+     * @return deserialized value
+     */
+    default <T> T read(byte[] json, Type type) {
+        return toPojo(new String(json, StandardCharsets.UTF_8), type);
+    }
+
+    /**
+     * Deserializes UTF-8 JSON bytes after validating the requested Java type against framework-independent options.
+     *
+     * @param <T>     target value type
+     * @param json    UTF-8 JSON bytes
+     * @param type    target Java type
+     * @param options deserialization options
+     * @return deserialized value
+     * @throws IllegalArgumentException if the requested type is rejected
+     */
+    default <T> T read(byte[] json, Type type, JsonReadOptions options) {
+        JsonReadOptions resolved = options == null ? JsonReadOptions.defaults() : options;
+        resolved.validate(type);
+        return read(json, type);
+    }
 
     /**
      * Converts a {@link Map} into a plain old Java object (POJO) of the specified class.
