@@ -29,7 +29,7 @@ package org.miaixz.bus.limiter;
 public class Holder {
 
     /**
-     * Constructs a new Holder instance.
+     * Initializes the access point for limiter configuration and shared runtime resources.
      */
     public Holder() {
         // No initialization required.
@@ -58,6 +58,17 @@ public class Holder {
      */
     public static Context load() {
         return context;
+    }
+
+    /**
+     * Clears the global context only when it is still owned by the closing caller.
+     *
+     * @param expected context owned by the closing caller
+     */
+    public static void clear(Context expected) {
+        if (context == expected) {
+            context = null;
+        }
     }
 
 }

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.limiter;
 
+import java.util.List;
+
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
@@ -39,7 +41,7 @@ import org.miaixz.bus.logger.Logger;
 public class Registry {
 
     /**
-     * Constructs a new Registry instance.
+     * Initializes the limiter rule registry used to translate annotations into runtime protection rules.
      */
     public Registry() {
         // No initialization required.
@@ -159,6 +161,13 @@ public class Registry {
                     rule.getLimitApp(),
                     1);
         }
+    }
+
+    /**
+     * Removes all Sentinel flow rules registered by the limiter runtime.
+     */
+    public static void clear() {
+        FlowRuleManager.loadRules(List.of());
     }
 
 }

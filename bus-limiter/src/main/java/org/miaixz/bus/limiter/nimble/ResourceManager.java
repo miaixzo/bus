@@ -38,7 +38,7 @@ import org.miaixz.bus.limiter.magic.annotation.Limiting;
 public class ResourceManager {
 
     /**
-     * Constructs a new ResourceManager instance.
+     * Initializes the manager that tracks protected limiter resources and their runtime counters.
      */
     public ResourceManager() {
         // No initialization required.
@@ -74,6 +74,13 @@ public class ResourceManager {
      */
     public static void add(String resourceKey) {
         PROTECTED_METHODS.add(resourceKey);
+    }
+
+    /**
+     * Clears the process-wide protected method index.
+     */
+    public static void clearRegisteredMethods() {
+        PROTECTED_METHODS.clear();
     }
 
     /**
