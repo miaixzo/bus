@@ -1,802 +1,290 @@
-# 🪵 Bus Logger: Universal Logging Abstraction Framework
+# bus-logger
 
-<p align="center">
-<strong>High-Performance, Framework-Agnostic Logging Facade</strong>
-</p>
+`bus-logger` is the framework-neutral logging facade used by Bus modules. It provides one API over the logging backend
+available at runtime, keeps backend-native placeholder formatting, resolves caller identities, caches providers, and
+offers a small pre-output processing pipeline. It does not own application logging configuration or sensitive-data
+policy.
 
------
+## Module responsibilities
 
-## 📖 Project Introduction
+The module is responsible for:
 
-**Bus Logger** is a universal logging abstraction framework that provides a **simple, consistent, and high-performance** logging API for Java applications. It acts as a facade that automatically detects and integrates with multiple logging frameworks, eliminating the need for direct dependencies on specific logging implementations.
+- selecting an available logging implementation;
+- resolving and caching named or class-based log providers;
+- exposing TRACE, DEBUG, INFO, WARN, and ERROR APIs;
+- forwarding parameterized messages without eagerly formatting them;
+- applying registered `Operator` instances before provider output;
+- supplying normal and colored console fallbacks;
+- exposing SPI contracts for additional logging backends.
 
-With Bus Logger, you can write logging code once and switch between different logging frameworks without changing your application code. It provides **static logging methods** that automatically detect the caller's class information, making logging even more convenient.
+The module is not responsible for:
 
------
+- configuring Logback, Log4j 2, JUL, or another backend;
+- choosing an application's log file, pattern, rotation, or retention policy;
+- classifying passwords, tokens, cookies, or other protected data;
+- retaining request or Spring application context state.
 
-## ✨ Core Features
+Sensitive-data classification belongs to `bus-sensitive`. Spring lifecycle registration of a sanitizer belongs to
+`bus-starter`.
 
-### 🎯 Universal Integration
-
-* **Automatic Framework Detection**: Automatically detects and integrates with available logging frameworks on the classpath
-* **Zero Configuration**: Works out of the box with no required configuration
-* **Static API**: Convenient static logging methods that don't require logger instance creation
-* **Caller Detection**: Automatically detects caller class information for accurate log location tracking
-
-### ⚡ Supported Logging Frameworks
-
-| Framework | Status | Factory Class |
-| :--- | :--- | :--- |
-| **SLF4J** | Primary | `Slf4jLoggingFactory` |
-| **Log4j2** | Primary | `Log4jLoggingFactory` |
-| **Jboss Logging** | Supported | `JbossLoggingFactory` |
-| **Commons Logging** | Supported | `CommonsLoggingFactory` |
-| **JUL (JDK Util Logging)** | Supported | `JdkLoggingFactory` |
-| **Tinylog** | Supported | `TinyLoggingFactory` |
-| **Console** | Fallback | `NormalLoggingFactory` / `ColorLoggingFactory` |
-
-### 🎨 Logging Levels
-
-```java
-public enum Level {
-    ALL,      // All messages
-    TRACE,    // Finer-grained informational events
-    DEBUG,    // Fine-grained debugging events
-    INFO,     // Informational messages
-    WARN,     // Warning situations
-    ERROR,    // Error events
-    FATAL,    // Severe error events
-    OFF       // No logging
-}
-```
-
-### 🛡️ Advanced Features
-
-* **Aligned Logging**: Built-in support for aligned log messages with customizable tags
-* **Exception Logging**: Dedicated methods for logging exceptions with stack traces
-* **Level Checking**: Performance-optimized level checking before logging
-* **Provider Abstraction**: Unified `Provider` interface for all logging implementations
-* **Factory Pattern**: Extensible factory pattern for custom logging implementations
-
------
-
-## 🚀 Quick Start
-
-### Maven Dependency
+## Dependency
 
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>x.x.x</version>
+    <version>${revision}</version>
 </dependency>
 ```
 
-### Basic Usage
+Backend dependencies are optional. The application should add and configure the backend it intends to use.
 
-#### 1. Static Logging (Recommended)
+## Architecture
 
-The simplest way to use Bus Logger is through static methods:
+```text
+application code
+      |
+      v
+   Logger --------------------------+
+      |                             |
+      v                             v
+  Loggable -> Executor -> Operator(s)
+      |
+      v
+   Provider -> backend adapter -> logging framework
+      ^
+      |
+ Registry -> Holder -> Factory -> SPI discovery
+```
+
+| Type | Responsibility |
+|---|---|
+| `Logger` | Static facade, caller resolution, level checks, aligned diagnostic output, and generic `log` dispatch. |
+| `Level` | Common `TRACE`, `DEBUG`, `INFO`, `WARN`, and `ERROR` level model. |
+| `Provider` | Backend-neutral logging operations and level checks. |
+| `Factory` | Creates and caches providers for names and classes. |
+| `Holder` | Selects or explicitly installs the default factory. |
+| `Registry` | Resolves the cached provider for a name or class. |
+| `Loggable` | Immutable event snapshot with a defensive copy of its argument array. |
+| `Operator` | Transforms a complete event or a named diagnostic value without writing output. |
+| `Executor` | Applies operators in registration order and isolates logging from operator failures. |
+
+## Supported backends
+
+The module includes adapters for:
+
+| Backend | Factory | Provider |
+|---|---|---|
+| SLF4J | `Slf4jLoggingFactory` | `Slf4jLoggingProvider` |
+| Log4j 2 | `Log4jLoggingFactory` | `Log4jLoggingProvider` |
+| Apache Commons Logging | `CommonsLoggingFactory` | `CommonsLoggingProvider` |
+| JBoss Logging | `JbossLoggingFactory` | `JbossLoggingProvider` |
+| `java.util.logging` | `JdkLoggingFactory` | `JdkLoggingProvider` |
+| tinylog | `TinyLoggingFactory` | `TinyLoggingProvider` |
+| Colored console | `ColorLoggingFactory` | `ColorLoggingProvider` |
+| Plain console | `NormalLoggingFactory` | `NormalLoggingProvider` |
+
+Factories are discovered through `META-INF/services/org.miaixz.bus.logger.Factory`. Discovery selects the first
+available SPI implementation. If no supported provider is available, a classpath `logging.properties` selects JUL;
+otherwise the plain console provider is used.
+
+Use `Logger.getFactory()` to inspect the selected factory class. Use `Holder.setDefaultFactory(...)` only when the
+application must force a backend before the first provider is resolved.
+
+## Basic usage
+
+### Static facade
 
 ```java
 import org.miaixz.bus.logger.Logger;
 
-public class MyService {
-
-    public void doSomething() {
-        Logger.trace("This is a trace message");
-        Logger.debug("Debug information: {}", someData);
-        Logger.info("Application started successfully");
-        Logger.warn("Configuration file not found, using defaults");
-        Logger.error("An error occurred: {}", errorMessage);
-
-        // Log with exception
-        try {
-            // ...
-        } catch (Exception e) {
-            Logger.error(e, "Failed to process request");
-        }
-    }
-}
+Logger.trace("Loading order: orderId={}", orderId);
+Logger.debug("Resolved {} order lines", lines.size());
+Logger.info("Order accepted: orderId={}", orderId);
+Logger.warn("Retrying request: attempt={}", attempt);
+Logger.error(failure, "Order processing failed: orderId={}", orderId);
 ```
 
-#### 2. Provider-Based Logging
+The `{}` arguments remain separate until they reach the provider. Do not build messages through string concatenation
+when placeholder formatting is sufficient.
 
-For more control, you can obtain a `Provider` instance:
+### Reusable provider
+
+Resolve a provider when a class performs frequent logging or must guard expensive diagnostic work:
 
 ```java
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.Registry;
 
-public class MyService {
-    private static final Provider log = Registry.get(MyService.class);
+private static final Provider LOG = Registry.get(OrderService.class);
 
-    public void doSomething() {
-        if (log.isDebugEnabled()) {
-            log.debug("Debug information: {}", someData);
-        }
-
-        log.info("Processing user request");
-    }
+if (LOG.isDebugEnabled()) {
+    LOG.debug("Loaded order graph: {}", buildExpensiveDiagnostic(order));
 }
 ```
 
-#### 3. Framework Integration
+`Registry.get(Class<?>)` and `Registry.get(String)` return providers cached by the selected factory.
 
-Bus Logger automatically detects the logging framework in use. For example, with **SLF4J + Logback**:
-
-```xml
-<!-- Add your preferred logging framework -->
-<dependency>
-    <groupId>ch.qos.logback</groupId>
-    <artifactId>logback-classic</artifactId>
-    <version>1.5.18</version>
-</dependency>
-
-<!-- Bus Logger will automatically use SLF4J -->
-```
-
------
-
-## 📝 Usage Examples
-
-### 1. Basic Logging
+### Exceptions
 
 ```java
-import org.miaixz.bus.logger.Logger;
-
-public class UserService {
-
-    public void createUser(String username, String email) {
-        Logger.info("Creating user: {}, email: {}", username, email);
-
-        try {
-            // Business logic
-            validateEmail(email);
-            saveUser(username, email);
-
-            Logger.info("User created successfully: {}", username);
-        } catch (ValidationException e) {
-            Logger.warn(e, "Email validation failed for user: {}", username);
-        } catch (Exception e) {
-            Logger.error(e, "Failed to create user: {}", username);
-        }
-    }
+try {
+    repository.save(order);
+} catch (RuntimeException failure) {
+    Logger.error(failure, "Unable to persist order: orderId={}", order.getId());
+    throw failure;
 }
 ```
 
-### 2. Conditional Logging
+Pass the exception through the throwable overload. Do not interpolate the exception into the message and lose its
+stack trace.
+
+### Dynamic levels
 
 ```java
-import org.miaixz.bus.logger.Logger;
-
-public class DataProcessor {
-
-    public void processLargeDataset(List<Data> data) {
-        // Only log when DEBUG level is enabled
-        if (Logger.isDebugEnabled()) {
-            Logger.debug("Processing {} records", data.size());
-        }
-
-        for (Data item : data) {
-            // Expensive operation only performed when DEBUG is enabled
-            if (Logger.isDebugEnabled()) {
-                Logger.debug("Processing item: {}", item.toJson());
-            }
-
-            process(item);
-        }
-    }
-}
-```
-
-### 3. Contextual Logging
-
-Use the log message itself to carry the business context:
-
-```java
-import org.miaixz.bus.logger.Logger;
-
-public class OrderService {
-
-    public void processOrder(Order order) {
-        Logger.info("Order processing started: orderId={}", order.getId());
-
-        try {
-            validateOrder(order);
-            Logger.info("Order validation passed: orderId={}", order.getId());
-            paymentService.charge(order);
-            Logger.info("Order payment completed: orderId={}", order.getId());
-            shippingService.ship(order);
-            Logger.info("Order shipping completed: orderId={}", order.getId());
-
-            Logger.info("Order processing completed: orderId={}", order.getId());
-        } catch (Exception e) {
-            Logger.error("Order processing failed: orderId={}", order.getId(), e);
-            throw e;
-        }
-    }
-}
-```
-
-**Output:**
-```
-Order processing started: orderId=ORD-12345
-Order validation passed: orderId=ORD-12345
-Order payment completed: orderId=ORD-12345
-Order shipping completed: orderId=ORD-12345
-Order processing completed: orderId=ORD-12345
-```
-
-### 4. Request Context Logging
-
-```java
-import org.miaixz.bus.logger.Logger;
-
-public class ApiService {
-
-    public void handleRequest(Request request) {
-        Logger.debug("API security filter applied: requestId={}", request.getId());
-        Logger.debug("API user authenticated: requestId={}, user={}", request.getId(), request.getUser());
-        Logger.debug("API request processing started: requestId={}", request.getId());
-        Logger.debug("API request processed successfully: requestId={}", request.getId());
-    }
-}
-```
-
-**Output:**
-```
-API security filter applied: requestId=REQ-001
-API user authenticated: requestId=REQ-001, user=john.doe
-API request processing started: requestId=REQ-001
-API request processed successfully: requestId=REQ-001
-```
-
-### 5. Exception Logging
-
-```java
-import org.miaixz.bus.logger.Logger;
-
-public class FileService {
-
-    public void readFile(String path) {
-        try {
-            byte[] content = Files.readAllBytes(Paths.get(path));
-            Logger.info("File read successfully: {} bytes", content.length);
-        } catch (IOException e) {
-            // Log exception with custom message
-            Logger.error(e, "Failed to read file: {}", path);
-
-            // Or log exception with formatted message
-            Logger.error(e, "File not found or inaccessible: {}", path);
-        }
-    }
-}
-```
-
-### 6. Dynamic Level Checking
-
-```java
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.logger.Level;
-
-public class ConfigurableService {
-
-    public void performOperation() {
-        // Check current logging level
-        Level currentLevel = Logger.getLevel();
-        Logger.info("Current logging level: {}", currentLevel);
-
-        // Check if specific level is enabled
-        if (Logger.isEnabled(Level.DEBUG)) {
-            // Expensive debug operation
-            dumpDetailedState();
-        }
-
-        // Convenience methods
-        if (Logger.isTraceEnabled()) {
-            Logger.trace("Detailed trace information");
-        }
-    }
-}
-```
-
-### 7. Setting Logging Level Programmatically
-
-```java
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.logger.Level;
 
-public class Application {
+if (Logger.isEnabled(Level.DEBUG)) {
+    Logger.log(Level.DEBUG, null, "Cache state: key={}, value={}", key, value);
+}
 
-    public static void main(String[] args) {
-        // Set logging level (if supported by underlying framework)
-        try {
-            Logger.setLevel(Level.DEBUG);
-            Logger.info("Logging level set to DEBUG");
-        } catch (UnsupportedOperationException e) {
-            Logger.warn("Dynamic level setting not supported by current framework");
-        }
-    }
+Level previous = Logger.getLevel();
+Logger.setLevel(Level.INFO);
+```
+
+Programmatic level changes affect providers that support runtime level control. Normal backend configuration remains the
+preferred application-level mechanism.
+
+### Aligned diagnostic output
+
+The `Logger` overloads accepting `isEntry`, `tag`, and optional `width` are intended for structured startup and
+lifecycle diagnostics:
+
+```java
+Logger.info(true, "Storage", "Initializing provider: type={}", providerType);
+Logger.info(false, "Storage", 24, "Provider ready: type={}", providerType);
+```
+
+Use ordinary placeholder overloads for normal business logs.
+
+## Event processing
+
+An `Operator` can transform every event immediately before provider dispatch:
+
+```java
+import org.miaixz.bus.logger.Executor;
+import org.miaixz.bus.logger.Loggable;
+import org.miaixz.bus.logger.Operator;
+
+Operator tenantTag = event -> new Loggable(
+        event.level(),
+        event.throwable(),
+        "[tenant-a] " + event.format(),
+        event.arguments());
+
+Executor.register(tenantTag);
+try {
+    Logger.info("Order accepted: orderId={}", orderId);
+} finally {
+    Executor.unregister(tenantTag);
 }
 ```
 
-### 8. Framework-Specific Configuration
+Operator behavior is deliberately constrained:
 
-#### SLF4J + Logback
+- registration is based on object identity;
+- repeated registration of the same instance is reference-counted;
+- execution order is registration order;
+- returning `null` leaves the current event unchanged;
+- an operator exception produces `[LOG PROCESSING FAILED]` without exposing rejected arguments;
+- the hot path reads an immutable operator snapshot without registration locking.
 
-**logback.xml:**
-```xml
-<configuration>
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+`Executor.processValue(key, value)` applies the same operators to named values produced outside the facade. It is useful
+for structured diagnostics that still require the application's registered protection policy.
 
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/application.log</file>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+## Sensitive logging
 
-    <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE" />
-    </root>
+`bus-logger` intentionally contains no list of sensitive field names. When `bus-sensitive` and `bus-starter` are used,
+`SensitiveConfiguration` creates a `Sanitizer`, and `SensitiveBinding` registers it with `Executor` for the lifetime of
+the Spring application context.
 
-    <!-- Set specific package logging level -->
-    <logger name="org.miaixz.bus.logger" level="DEBUG" />
-</configuration>
+```yaml
+bus:
+  sensitive:
+    enabled: true
 ```
 
-#### Log4j2
-
-**log4j2.xml:**
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </Console>
-
-        <RollingFile name="RollingFile" fileName="logs/application.log"
-                     filePattern="logs/application-%d{yyyy-MM-dd}-%i.log.gz">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100 MB"/>
-            </Policies>
-        </RollingFile>
-    </Appenders>
-
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="RollingFile"/>
-        </Root>
-
-        <Logger name="org.miaixz.bus.logger" level="debug" additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
-    </Loggers>
-</Configuration>
-```
-
-#### Java Util Logging (JUL)
-
-**logging.properties:**
-```properties
-# Global logging level
-.level=INFO
-
-# Console handler configuration
-handlers=java.util.logging.ConsoleHandler
-java.util.logging.ConsoleHandler.level=INFO
-java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
-java.util.logging.SimpleFormatter.format=%1$tF %1$tT %4$s %2$s - %5$s%6$s%n
-
-# File handler configuration
-handlers=java.util.logging.FileHandler
-java.util.logging.FileHandler.level=ALL
-java.util.logging.FileHandler.pattern=logs/application%u.log
-java.util.logging.FileHandler.limit=1000000
-java.util.logging.FileHandler.count=10
-java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter
-
-# Package-specific logging
-org.miaixz.bus.logger.level=FINE
-```
-
-### 9. Custom Logging Factory
+Use named placeholders when values require classification:
 
 ```java
+Logger.warn("Login rejected: username={}, password={}", username, password);
+```
 
-import org.miaixz.bus.logger.Holder;
-import org.miaixz.bus.logger.Provider;
-import org.miaixz.bus.logger.magic.AbstractFactory;
+The name immediately before a placeholder gives the sanitizer enough context to protect `password`. A positional value
+without a meaningful field name cannot be classified safely.
 
-public class CustomLoggingFactory extends AbstractFactory {
+## Custom backend
+
+Implement `Factory` and `Provider`, then publish the factory through the Java service loader:
+
+```java
+public final class AcmeFactory implements Factory {
 
     @Override
     public String getName() {
-        return "CustomLogger";
+        return "Acme";
     }
 
     @Override
-    public Provider create(String name) {
-        // Return your custom provider implementation
-        return new CustomProvider(name);
+    public Provider of(String name) {
+        return new AcmeProvider(name);
     }
 
     @Override
-    public Provider create(Class<?> clazz) {
-        return of(clazz.getName());
+    public Provider of(Class<?> type) {
+        return of(type.getName());
     }
 
-    // Set as default factory
-    public static void initialize() {
-        Holder.setDefaultFactory(CustomLoggingFactory.class);
-    }
 }
 ```
 
------
+Resource file:
 
-## 💡 Best Practices
-
-### 1. Use Appropriate Log Levels
-
-```java
-// ✅ Recommended: Use appropriate log levels
-Logger.trace("Entry: methodX(), param1={}", param1);  // Very detailed
-Logger.debug("User object: {}", user);  // Debugging information
-Logger.info("Application started");  // Important application events
-Logger.warn("Cache miss, using fallback");  // Potentially harmful situations
-Logger.error(e, "Database connection failed");  // Error events
-
-// ❌ Not Recommended: Using ERROR for non-error situations
-Logger.error("User logged in successfully");  // Should be INFO
+```text
+META-INF/services/org.miaixz.bus.logger.Factory
 ```
 
-### 2. Use Parameterized Logging
+Its content is the fully qualified factory class name. The adapter should preserve placeholder arguments and implement
+all level checks accurately.
 
-```java
-// ✅ Recommended: Parameterized logging (only constructs string if level enabled)
-Logger.debug("User: {}, Age: {}, Email: {}", user.getName(), user.getAge(), user.getEmail());
+## Package layout
 
-// ❌ Not Recommended: String concatenation (always constructs string)
-Logger.debug("User: " + user.getName() + ", Age: " + user.getAge() + ", Email: " + user.getEmail());
-```
+| Package | Content |
+|---|---|
+| `org.miaixz.bus.logger` | Public facade, event model, registry, executor, and SPI contracts. |
+| `org.miaixz.bus.logger.magic` | Shared abstract factory and provider implementations. |
+| `org.miaixz.bus.logger.magic.level` | Reusable level-specific contracts. |
+| `org.miaixz.bus.logger.nimble.*` | Backend adapters. |
 
-### 3. Check Log Level Before Expensive Operations
+All of these packages are exported by the JPMS module. Backend modules are optional static requirements.
 
-```java
-// ✅ Recommended: Check level before expensive operations
-if (Logger.isDebugEnabled()) {
-    String largeJson = objectMapper.writeValueAsString(complexObject);
-    Logger.debug("Response payload: {}", largeJson);
-}
+## Best practices
 
-// ❌ Not Recommended: Expensive operation always executed
-Logger.debug("Response payload: {}", objectMapper.writeValueAsString(complexObject));
-```
+- Prefer parameterized logging over string concatenation.
+- Guard expensive diagnostic construction with the matching level check.
+- Use a class-based provider for stable logger identity.
+- Pass failures to throwable overloads.
+- Register cross-cutting operators once per lifecycle owner and always unregister them.
+- Keep business masking rules out of logger factories and providers.
+- Configure formatting, files, rotation, and retention in the selected backend.
 
-### 4. Include Context Information
+## Native Image
 
-```java
-// ✅ Recommended: Include relevant context
-Logger.error(e, "Failed to process order [orderId={}, userId={}, amount={}]",
-    order.getId(), order.getUserId(), order.getAmount());
+Reachability metadata covers service-loaded factories and exact dynamically accessed members. Entries are sorted A–Z.
+Broad reflection grants such as `allDeclaredConstructors`, `allDeclaredMethods`, and `allDeclaredFields` are prohibited.
 
-// ❌ Not Recommended: Insufficient context
-Logger.error("Failed to process order");
-```
+## Verification boundary
 
-### 5. Use Static Methods for Simple Logging
-
-```java
-// ✅ Recommended: Static methods for simple use cases
-public class UserService {
-    public void createUser(User user) {
-        Logger.info("Creating user: {}", user.getUsername());
-        // ...
-    }
-}
-
-// Alternative: Provider for more control
-public class UserService {
-    private static final Provider log = Registry.get(UserService.class);
-
-    public void createUser(User user) {
-        if (log.isInfoEnabled()) {
-            log.info("Creating user: {}", user.getUsername());
-        }
-        // ...
-    }
-}
-```
-
-### 6. Handle Exceptions Properly
-
-```java
-// ✅ Recommended: Log exception with context
-try {
-    processPayment(order);
-} catch (PaymentException e) {
-    Logger.error(e, "Payment failed for order [id={}, amount={}]",
-        order.getId(), order.getAmount());
-    throw new BusinessException("Payment processing failed", e);
-}
-
-// ❌ Not Recommended: Log and swallow exception
-try {
-    processPayment(order);
-} catch (Exception e) {
-    Logger.error("Payment failed");  // Lost stack trace and context
-}
-```
-
------
-
-## ❓ Frequently Asked Questions
-
-### Q1: How do I know which logging framework is being used?
-
-```java
-import org.miaixz.bus.logger.Logger;
-
-Class<?> factoryClass = Logger.getFactory();
-System.out.println("Current logging framework: " + factoryClass.getName());
-
-// Output examples:
-// org.slf4j.Logger  -> SLF4J
-// org.apache.logging.log4j.Logger  -> Log4j2
-// java.util.logging.Logger  -> JDK Util Logging
-```
-
-### Q2: Can I use Bus Logger with Spring Boot?
-
-Yes! Spring Boot uses SLF4J by default, so Bus Logger will automatically integrate:
-
-```xml
-<dependency>
-    <groupId>org.miaixz</groupId>
-    <artifactId>bus-logger</artifactId>
-    <version>x.x.x</version>
-</dependency>
-<!-- Spring Boot already includes SLF4J + Logback -->
-```
-
-Configure logging in `application.yml`:
-```yaml
-logging:
-  level:
-    root: INFO
-    org.miaixz.bus.logger: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-```
-
-### Q3: How do I switch logging frameworks?
-
-Simply change the dependency in your `pom.xml`:
-
-```xml
-<!-- Switch from SLF4J to Log4j2 -->
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-core</artifactId>
-    <version>2.25.3</version>
-</dependency>
-
-<!-- Remove or exclude SLF4J -->
-<!-- No code changes needed! -->
-```
-
-### Q4: Why are my logs not appearing?
-
-Check the following:
-
-1. Verify the logging level is configured correctly
-2. Check if the appender is configured
-3. Ensure the logger name matches the package/class
-
-```java
-// Debug logging configuration
-Logger.info("Current level: {}", Logger.getLevel());
-Logger.info("Is DEBUG enabled: {}", Logger.isDebugEnabled());
-Logger.info("Factory class: {}", Logger.getFactory());
-```
-
-### Q5: Can I use multiple logging frameworks simultaneously?
-
-While technically possible, it's not recommended. Bus Logger will use the **first available** framework detected on the classpath. If you need to log to multiple destinations, configure your chosen logging framework appropriately (e.g., multiple appenders in Logback).
-
-### Q6: How do I disable logging entirely?
-
-```java
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.logger.Level;
-
-// Programmatically
-Logger.setLevel(Level.OFF);
-
-// Or configure in framework-specific config
-// Logback example:
-<root level="OFF">...</root>
-```
-
-### Q7: Does Bus Logger have any performance impact?
-
-Bus Logger is designed to be very lightweight:
-
-* **Static method overhead**: ~1-2 nanoseconds per call
-* **Level checking**: Optimized to avoid unnecessary string construction
-* **No reflection**: Uses direct method calls
-* **Lazy evaluation**: Parameters only evaluated if level is enabled
-
-The actual performance depends on the underlying logging framework, but Bus Logger itself adds negligible overhead.
-
-### Q8: How can I create custom log formats?
-
-Configure the format in your chosen logging framework:
-
-**Logback:**
-```xml
-<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-```
-
-**Log4j2:**
-```xml
-<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-```
-
-**JUL:**
-```properties
-java.util.logging.SimpleFormatter.format=%1$tF %1$tT %4$s %2$s - %5$s%6$s%n
-```
-
------
-
-## 🔄 Version Compatibility
-
-| Bus Logger Version | JDK Version | Supported Frameworks |
-| :--- | :--- | :--- |
-| 8.x | 17+ | SLF4J 2.x, Log4j2 2.x, Logback 1.5.x, JUL, JBoss Logging, Commons Logging, Tinylog |
-| 7.x | 11+ | SLF4J 1.7.x/2.x, Log4j2 2.x, Logback 1.4.x, JUL, JBoss Logging, Commons Logging |
-
------
-
-## 📊 Framework Detection Order
-
-Bus Logger detects logging frameworks in the following order:
-
-1. **SLF4J** - If `org.slf4j.Logger` is available
-2. **Log4j2** - If `org.apache.logging.log4j.Logger` is available
-3. **JBoss Logging** - If `org.jboss.logging.Logger` is available
-4. **Commons Logging** - If `org.apache.commons.logging.Log` is available
-5. **Tinylog** - If `org.tinylog.Logger` is available
-6. **JUL** - If `logging.properties` is found in classpath
-7. **Console** - Fallback to simple console logging
-
-You can override this by explicitly setting the factory:
-
-```java
-import org.miaixz.bus.logger.Holder;
-import org.miaixz.bus.logger.nimble.slf4j.Slf4jLoggingFactory;
-
-// Force SLF4J usage
-Holder.setDefaultFactory(Slf4jLoggingFactory.class);
-```
-
------
-
-## 🔧 API Reference
-
-### Static Logger Methods
-
-```java
-// Basic logging
-Logger.trace(String format, Object... args)
-Logger.debug(String format, Object... args)
-Logger.info(String format, Object... args)
-Logger.warn(String format, Object... args)
-Logger.warn(Throwable e, String format, Object... args)
-Logger.error(Throwable e)
-Logger.error(String format, Object... args)
-Logger.error(Throwable e, String format, Object... args)
-
-// Aligned logging
-Logger.info(boolean isEntry, String tag, String message, Object... args)
-Logger.info(boolean isEntry, String tag, int width, String message, Object... args)
-// Same pattern exists for: trace, debug, warn, error
-
-// Level checking
-Logger.isTraceEnabled()
-Logger.isDebugEnabled()
-Logger.isInfoEnabled()
-Logger.isWarnEnabled()
-Logger.isEnabled(Level level)
-
-// Level control
-Level Logger.getLevel()
-void Logger.setLevel(Level level)
-
-// Framework information
-Class<?> Logger.getFactory()
-Provider Logger.getProvider()
-```
-
-### Provider Interface Methods
-
-```java
-// Get logger instances
-Provider Provider.get(Class<?> clazz)
-Provider Provider.get(String name)
-Provider Provider.get()
-
-// Logging methods
-void Provider.trace(String fqcn, Throwable t, String format, Object... args)
-void Provider.debug(String fqcn, Throwable t, String format, Object... args)
-void Provider.info(String fqcn, Throwable t, String format, Object... args)
-void Provider.warn(String fqcn, Throwable t, String format, Object... args)
-void Provider.error(String fqcn, Throwable t, String format, Object... args)
-
-// General logging
-void Provider.log(Level level, String format, Object... args)
-void Provider.log(Level level, Throwable t, String format, Object... args)
-void Provider.log(String fqcn, Level level, Throwable t, String format, Object... args)
-
-// Level checking
-boolean Provider.isTraceEnabled()
-boolean Provider.isDebugEnabled()
-boolean Provider.isInfoEnabled()
-boolean Provider.isWarnEnabled()
-boolean Provider.isErrorEnabled()
-boolean Provider.isEnabled(Level level)
-
-// Level control
-Level Provider.getLevel()
-void Provider.setLevel(Level level)
-
-// Logger information
-String Provider.getName()
-```
-
-### Registry Methods
-
-```java
-// Get logger instances
-Provider Registry.get(String name)
-Provider Registry.get(Class<?> clazz)
-```
-
-### Holder/Factory Methods
-
-```java
-// Get default factory
-Factory Holder.getFactory()
-
-// Set custom factory
-void Holder.setDefaultFactory(Factory factory)
-void Holder.setDefaultFactory(Class<? extends Factory> clazz)
-
-// Create factory instance
-Factory Holder.of(Class<? extends Factory> clazz)
-Factory Holder.of()
-```
-
------
-
-## 📚 Additional Resources
-
-- **Project Homepage**: https://github.com/818000/bus
-- **Issue Tracker**: https://github.com/818000/bus/issues
-- **Maven Central**: https://central.sonatype.com/artifact/org.miaixz/bus-logger
-
------
-
-**Bus Logger** - Universal logging abstraction designed for simplicity and performance. 🚀
+Bus contains and runs no tests. Provider, pipeline, lifecycle, metadata, AOT, and Native Image tests are maintained in
+the sibling Abarth repository. Bus builds must skip tests explicitly.

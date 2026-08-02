@@ -604,6 +604,15 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.sensitive.Sanitizer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     }
   ]
 }

@@ -67,7 +67,7 @@ public class Logger {
      * @param args     the arguments to be substituted into the format string
      */
     public static void trace(final Provider provider, final String format, final Object... args) {
-        provider.trace(FQCN, null, format, args);
+        write(provider, Level.TRACE, null, format, args);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Logger {
      * @param args     the arguments to be substituted into the format string
      */
     public static void debug(final Provider provider, final String format, final Object... args) {
-        provider.debug(FQCN, null, format, args);
+        write(provider, Level.DEBUG, null, format, args);
     }
 
     /**
@@ -165,7 +165,7 @@ public class Logger {
      * @param args     the arguments to be substituted into the format string
      */
     public static void info(final Provider provider, final String format, final Object... args) {
-        provider.info(FQCN, null, format, args);
+        write(provider, Level.INFO, null, format, args);
     }
 
     /**
@@ -214,7 +214,7 @@ public class Logger {
      * @param args   the arguments to be substituted into the format string
      */
     public static void warn(final Throwable e, final String format, final Object... args) {
-        warn(Registry.get(CallerKit.getCallers()), e, StringKit.format(format, args));
+        warn(Registry.get(CallerKit.getCallers()), e, format, args);
     }
 
     /**
@@ -237,7 +237,7 @@ public class Logger {
      * @param args     the arguments to be substituted into the format string
      */
     public static void warn(final Provider provider, final Throwable e, final String format, final Object... args) {
-        provider.warn(FQCN, e, format, args);
+        write(provider, Level.WARN, e, format, args);
     }
 
     /**
@@ -357,7 +357,7 @@ public class Logger {
      * @param args     the arguments to be substituted into the format string
      */
     public static void error(final Provider provider, final Throwable e, final String format, final Object... args) {
-        provider.error(FQCN, e, format, args);
+        write(provider, Level.ERROR, e, format, args);
     }
 
     /**
@@ -426,7 +426,31 @@ public class Logger {
      * @param args   the arguments to be substituted into the format string
      */
     public static void log(final Level level, final Throwable t, final String format, final Object... args) {
-        Registry.get(CallerKit.getCallers()).log(FQCN, level, t, format, args);
+        write(Registry.get(CallerKit.getCallers()), level, t, format, args);
+    }
+
+    /**
+     * Processes and delegates one event to the selected logging provider.
+     *
+     * @param provider  selected logging provider
+     * @param level     logging level
+     * @param throwable associated failure, or {@code null}
+     * @param format    provider-compatible message format
+     * @param arguments message arguments
+     */
+    private static void write(
+            Provider provider,
+            Level level,
+            Throwable throwable,
+            String format,
+            Object... arguments) {
+        Loggable loggable = Executor.process(new Loggable(level, throwable, format, arguments));
+        provider.log(
+                FQCN,
+                loggable.level(),
+                loggable.throwable(),
+                loggable.format(),
+                loggable.arguments());
     }
 
     /**

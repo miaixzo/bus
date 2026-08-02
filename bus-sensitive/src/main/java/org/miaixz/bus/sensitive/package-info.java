@@ -18,8 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides the core framework for data desensitization and encryption/decryption, including context management,
- * filters, and strategy providers.
+ * Provides data desensitization, encryption/decryption, and structured log sanitization algorithms.
  *
  * @author Kimi Liu
  * @since Java 21+

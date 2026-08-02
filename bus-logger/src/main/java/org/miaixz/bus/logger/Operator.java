@@ -17,31 +17,34 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter;
-
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+package org.miaixz.bus.logger;
 
 /**
- * Activates the shared Bus Spring components when at least one starter feature is enabled.
+ * Processes a log event immediately before it is delegated to a logging provider.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@AutoConfiguration
-@ComponentScan("org.miaixz.**")
-@Conditional(Nexus.class)
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class SpringConfiguration {
+@FunctionalInterface
+public interface Operator {
 
     /**
-     * Creates the shared Spring component configuration.
+     * Processes one log event without writing it.
+     *
+     * @param loggable current loggable data
+     * @return processed non-null loggable data
      */
-    public SpringConfiguration() {
-        // No initialization required.
+    Loggable apply(Loggable loggable);
+
+    /**
+     * Processes one named diagnostic value assembled outside the logger facade.
+     *
+     * @param key   diagnostic field name
+     * @param value diagnostic field value
+     * @return processed diagnostic value
+     */
+    default Object applyValue(String key, Object value) {
+        return value;
     }
 
 }
