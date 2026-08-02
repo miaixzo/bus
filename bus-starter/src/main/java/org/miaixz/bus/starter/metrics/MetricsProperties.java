@@ -19,236 +19,315 @@
 */
 package org.miaixz.bus.starter.metrics;
 
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for bus-metrics. Bound to prefix {@code bus.metrics}.
+ * Immutable bus-metrics properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.METRICS)
-public class MetricsProperties {
+public final class MetricsProperties {
 
     /**
-     * Constructs a new MetricsProperties instance.
+     * Whether the metrics integration is enabled.
      */
-    public MetricsProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Metrics provider selected for collection and publication.
+     */
+    private final String provider;
+    /**
+     * Whether JVM runtime metrics are collected.
+     */
+    private final boolean jvm;
+    /**
+     * Whether operating-system metrics are collected.
+     */
+    private final boolean system;
+    /**
+     * Whether health metrics are included in the metrics endpoint.
+     */
+    private final boolean health;
+    /**
+     * Whether HTTP request metrics are collected.
+     */
+    private final boolean http;
+    /**
+     * Request path on which metrics are exposed.
+     */
+    private final String path;
+    /**
+     * Metrics endpoint activation and access settings.
+     */
+    private final Endpoint endpoint;
+    /**
+     * Limits applied to metric tag cardinality.
+     */
+    private final Cardinality cardinality;
+    /**
+     * Service-level objectives used to configure metric histograms.
+     */
+    private final List<SloDefinition> slo;
+    /**
+     * Rolling window used for rate calculations.
+     */
+    private final RateWindow rateWindow;
+    /**
+     * Cortex export settings for remote metric publication.
+     */
+    private final Cortex cortex;
+
+    /**
+     * Creates metrics properties with stable defaults.
+     *
+     * @param enabled     whether the feature is enabled
+     * @param provider    provider identifier or configuration
+     * @param jvm         JVM metric settings
+     * @param system      system metric settings
+     * @param health      health metric settings
+     * @param http        HTTP metric settings
+     * @param path        configured path
+     * @param endpoint    endpoint options
+     * @param cardinality metric cardinality settings
+     * @param slo         service-level objective settings
+     * @param rateWindow  rate window
+     * @param cortex      Cortex export settings
+     */
+    public MetricsProperties(@DefaultValue("false") boolean enabled, @DefaultValue("native") String provider,
+            @DefaultValue("true") boolean jvm, @DefaultValue("true") boolean system,
+            @DefaultValue("true") boolean health, @DefaultValue("true") boolean http,
+            @DefaultValue("/metricz") String path, @DefaultValue Endpoint endpoint,
+            @DefaultValue Cardinality cardinality, @DefaultValue List<SloDefinition> slo,
+            @DefaultValue RateWindow rateWindow, @DefaultValue Cortex cortex) {
+        this.enabled = enabled;
+        this.provider = provider;
+        this.jvm = jvm;
+        this.system = system;
+        this.health = health;
+        this.http = http;
+        this.path = path;
+        this.endpoint = endpoint == null ? new Endpoint() : endpoint;
+        this.cardinality = cardinality == null ? new Cardinality() : cardinality;
+        this.slo = slo == null ? List.of() : List.copyOf(slo);
+        this.rateWindow = rateWindow == null ? new RateWindow() : rateWindow;
+        this.cortex = cortex == null ? new Cortex() : cortex;
     }
 
     /**
-     * Provider selection: "native" (default) or "micrometer".
-     */
-    private String provider = "native";
-
-    /**
-     * Enable JVM metrics (memory, GC, threads). Default: true.
-     */
-    private boolean jvm = true;
-
-    /**
-     * Enable system metrics (CPU, uptime). Default: true.
-     */
-    private boolean system = true;
-
-    /**
-     * Enable bus-health integration for hardware-accurate system metrics (JNA-backed). When true and bus-health is on
-     * the classpath, replaces JvmMetrics+SystemMetrics with HealthMetrics (physical CPU ticks, real RAM, disk I/O,
-     * network stats). Default: true (auto-detected).
-     */
-    private boolean health = true;
-
-    /**
-     * Enable HTTP request interceptor auto-registration. Default: true.
-     */
-    private boolean http = true;
-
-    /**
-     * Expose /metricz endpoint. Default: true.
-     */
-    private boolean endpoint = true;
-
-    /**
-     * Path for the metrics scrape endpoint. Default: /metricz.
-     */
-    private String path = "/metricz";
-
-    /**
-     * Cardinality guard configuration.
-     */
-    private Cardinality cardinality = new Cardinality();
-
-    /**
-     * SLO definitions.
-     */
-    private List<SloDefinition> slo = new ArrayList<>();
-
-    /**
-     * EWMA tick scheduler config.
-     */
-    private RateWindow rateWindow = new RateWindow();
-
-    /**
-     * cortex integration config.
-     */
-    private Cortex cortex = new Cortex();
-
-    /**
-     * The cardinality class.
+     * Scrape endpoint options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
      */
-    @Getter
-    @Setter
-    public static class Cardinality {
+    public record Endpoint(boolean enabled) {
 
         /**
-         * Constructs a new Cardinality instance.
+         * Creates disabled endpoint defaults.
+         */
+        public Endpoint() {
+            this(false);
+        }
+    }
+
+    /**
+     * Cardinality guard options.
+     *
+     * @param defaultMax default maximum value
+     * @param denyList   denied metric names
+     * @param rules      configured rules
+     */
+    public record Cardinality(int defaultMax, List<String> denyList, List<CardinalityRule> rules) {
+
+        /**
+         * Creates cardinality defaults.
          */
         public Cardinality() {
-            // No initialization required.
+            this(100, List.of("user_id", "trace_id", "request_id"), List.of());
         }
 
         /**
-         * Default max distinct values per tag key (for unregistered keys).
+         * Validates cardinality limits and copies lists.
          */
-        private int defaultMax = 100;
-
-        /**
-         * Tag keys that are always denied.
-         */
-        private List<String> denyList = List.of("user_id", "trace_id", "request_id");
-
-        /**
-         * Per-key rules.
-         */
-        private List<CardinalityRule> rules = new ArrayList<>();
-
-    }
-
-    /**
-     * The cardinality rule class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    @Getter
-    @Setter
-    public static class CardinalityRule {
-
-        /**
-         * Constructs a new CardinalityRule instance.
-         */
-        public CardinalityRule() {
-            // No initialization required.
+        public Cardinality {
+            if (defaultMax <= 0) {
+                throw new IllegalArgumentException("bus.metrics.cardinality.default-max must be positive");
+            }
+            denyList = denyList == null ? List.of() : List.copyOf(denyList);
+            rules = rules == null ? List.of() : List.copyOf(rules);
         }
 
         /**
-         * Tag key this rule applies to.
+         * Exposes the fallback cardinality limit applied when no rule matches.
+         *
+         * @return default maximum
          */
-        private String tag;
-
-        /**
-         * Policy: "first-n", "top-n", or "deny".
-         */
-        private String policy = "first-n";
-
-        /**
-         * Max distinct values (for first-n and top-n).
-         */
-        private int max = 100;
-
-    }
-
-    /**
-     * The slo definition class.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    @Getter
-    @Setter
-    public static class SloDefinition {
-
-        /**
-         * Constructs a new SloDefinition instance.
-         */
-        public SloDefinition() {
-            // No initialization required.
+        public int getDefaultMax() {
+            return defaultMax;
         }
 
-        private String name;
-        private String metric;
+        /**
+         * Returns tag names that are rejected before metric publication.
+         *
+         * @return denied tag keys
+         */
+        public List<String> getDenyList() {
+            return denyList;
+        }
 
         /**
-         * "latency" or "availability".
+         * Returns the immutable per-tag cardinality rules.
+         *
+         * @return cardinality rules
          */
-        private String type = "latency";
-        private long thresholdMs = 300;
-        private double percentile = 0.99;
-        private double target = 0.999;
-        private int windowMinutes = 30;
-
+        public List<CardinalityRule> getRules() {
+            return rules;
+        }
     }
 
     /**
-     * The rate window class.
+     * One tag-cardinality rule.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param tag    metric tag name
+     * @param policy cardinality enforcement policy
+     * @param max    maximum allowed value
      */
-    @Getter
-    @Setter
-    public static class RateWindow {
+    public record CardinalityRule(String tag, String policy, int max) {
 
         /**
-         * Constructs a new RateWindow instance.
+         * Validates one cardinality rule.
+         */
+        public CardinalityRule {
+            policy = policy == null ? "first-n" : policy;
+            if (tag == null || tag.isBlank() || max <= 0) {
+                throw new IllegalArgumentException("Metrics cardinality rule requires tag and positive max");
+            }
+        }
+
+        /**
+         * Exposes the metric tag name governed by this cardinality rule.
+         *
+         * @return tag key
+         */
+        public String getTag() {
+            return tag;
+        }
+
+        /**
+         * Exposes the action taken after this tag exceeds its cardinality limit.
+         *
+         * @return policy name
+         */
+        public String getPolicy() {
+            return policy;
+        }
+
+        /**
+         * Exposes the maximum distinct values permitted for this tag.
+         *
+         * @return maximum cardinality
+         */
+        public int getMax() {
+            return max;
+        }
+    }
+
+    /**
+     * One SLO definition.
+     *
+     * @param name          logical name
+     * @param metric        metric identifier or sample
+     * @param type          SLO comparison or aggregation type
+     * @param thresholdMs   threshold ms
+     * @param percentile    configured percentile
+     * @param target        target metric value
+     * @param windowMinutes window minutes
+     */
+    public record SloDefinition(String name, String metric, String type, long thresholdMs, double percentile,
+            double target, int windowMinutes) {
+
+        /**
+         * Validates ratios and time window.
+         */
+        public SloDefinition {
+            if (percentile < 0 || percentile > 1 || target < 0 || target > 1 || thresholdMs <= 0
+                    || windowMinutes <= 0) {
+                throw new IllegalArgumentException("Invalid metrics SLO bounds");
+            }
+        }
+    }
+
+    /**
+     * EWMA collection window options.
+     *
+     * @param enabled      whether the feature is enabled
+     * @param tickInterval tick interval
+     */
+    public record RateWindow(boolean enabled, Duration tickInterval) {
+
+        /**
+         * Creates rate-window defaults.
          */
         public RateWindow() {
-            // No initialization required.
+            this(true, Duration.ofSeconds(5));
         }
 
-        private boolean enabled = true;
-        private int tickIntervalSeconds = 5;
-
+        /**
+         * Validates collection interval.
+         */
+        public RateWindow {
+            requirePositive(tickInterval, "rate-window.tick-interval");
+        }
     }
 
     /**
-     * The cortex class.
+     * Cortex metrics export options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled    whether the feature is enabled
+     * @param interval   metric export interval
+     * @param serverAddr server addr
+     * @param namespace  logical registry namespace
+     * @param serviceId  service id
      */
-    @Getter
-    @Setter
-    public static class Cortex {
+    public record Cortex(boolean enabled, Duration interval, String serverAddr, String namespace, String serviceId) {
 
         /**
-         * Constructs a new Cortex instance.
+         * Creates Cortex export defaults.
          */
         public Cortex() {
-            // No initialization required.
+            this(false, Duration.ofSeconds(15), Normal.EMPTY, Normal.DEFAULT, Normal.EMPTY);
         }
 
-        private boolean enabled = false;
-        private int intervalSeconds = 15;
-        private String serverAddr = Normal.EMPTY;
-        private String namespace = "default";
-        private String serviceId = Normal.EMPTY;
+        /**
+         * Validates export interval.
+         */
+        public Cortex {
+            requirePositive(interval, "cortex.interval");
+        }
+    }
 
+    /**
+     * Validates a required positive duration property.
+     *
+     * @param value configured duration
+     * @param name  configuration property suffix
+     */
+    private static void requirePositive(Duration value, String name) {
+        if (value == null || value.isZero() || value.isNegative()) {
+            throw new IllegalArgumentException("bus.metrics." + name + " must be greater than zero");
+        }
     }
 
 }

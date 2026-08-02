@@ -21,6 +21,7 @@ package org.miaixz.bus.starter.validate;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -28,6 +29,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.Context;
@@ -45,10 +47,47 @@ import org.miaixz.bus.validate.Context;
 public class AutoValidateAdvice {
 
     /**
-     * Constructs a new AutoValidateAdvice instance.
+     * Parameter name discoverer shared by validation invocations.
+     */
+    private static final DefaultParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+
+    /**
+     * Executor that validates intercepted method arguments.
+     */
+    private final ValidationExecutor validationExecutor;
+
+    /**
+     * Executes validation without exposing the object being validated to reporting code.
+     */
+    @FunctionalInterface
+    public interface ValidationExecutor {
+
+        /**
+         * Validates one intercepted method argument.
+         *
+         * @param value       intercepted argument value
+         * @param annotations validation annotations
+         * @param context     validation context
+         * @param name        parameter name
+         */
+        void validate(Object value, Annotation[] annotations, Context context, String name);
+
+    }
+
+    /**
+     * Initializes validation advice backed by the standard Bus validation executor.
      */
     public AutoValidateAdvice() {
-        // No initialization required.
+        this(Builder::on);
+    }
+
+    /**
+     * Constructs an advice with an explicit validation executor.
+     *
+     * @param validationExecutor validation executor
+     */
+    public AutoValidateAdvice(ValidationExecutor validationExecutor) {
+        this.validationExecutor = Objects.requireNonNull(validationExecutor, "validationExecutor");
     }
 
     /**
@@ -60,7 +99,7 @@ public class AutoValidateAdvice {
      * execution.
      *
      * @param joinPoint The AOP join point, expected to be a {@link ProceedingJoinPoint} for {@code @Around} advice.
-     * @return The result of the original method's execution.
+     * @return the value returned by the intercepted method
      * @throws Throwable if an exception occurs during validation or method execution.
      */
     public Object access(JoinPoint joinPoint) throws Throwable {
@@ -86,7 +125,7 @@ public class AutoValidateAdvice {
 
         // Get parameter annotations and names
         Annotation[][] annotations = method.getParameterAnnotations();
-        String[] names = new DefaultParameterNameDiscoverer().getParameterNames(method);
+        String[] names = PARAMETER_NAME_DISCOVERER.getParameterNames(method);
         if (names == null || names.length == 0) {
             names = new String[arguments.length]; // Assign default names if discovery fails
             for (int i = 0; i < names.length; i++) {
@@ -96,7 +135,21 @@ public class AutoValidateAdvice {
 
         // Perform validation for each argument
         for (int i = 0; i < arguments.length; i++) {
-            Builder.on(arguments[i], annotations[i], Context.newInstance(), names[i]);
+            try {
+                validationExecutor.validate(arguments[i], annotations[i], Context.newInstance(), names[i]);
+            } catch (ValidateException exception) {
+                Logger.warn(
+                        false,
+                        "Starter",
+                        "Validation rejected invocation: declaringType={}, method={}, parameterIndex={}, parameterName={}, errorCode={}, exceptionType={}",
+                        method.getDeclaringClass().getName(),
+                        method.getName(),
+                        i,
+                        names[i],
+                        exception.getErrcode(),
+                        exception.getClass().getName());
+                throw exception;
+            }
         }
 
         // Continue with the original method execution
@@ -111,7 +164,7 @@ public class AutoValidateAdvice {
      *
      * @param joinPoint The AOP join point.
      * @param arguments The method arguments.
-     * @return The result of the original method execution.
+     * @return the value returned by the intercepted method
      * @throws Throwable if an exception is thrown by the intercepted method.
      */
     private Object proceed(JoinPoint joinPoint, Object[] arguments) throws Throwable {

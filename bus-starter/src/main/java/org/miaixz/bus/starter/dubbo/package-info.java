@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Apache Dubbo integration support.
+ * Activates Dubbo integration and binds its service exposure and consumption properties. This non-exported package
+ * contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

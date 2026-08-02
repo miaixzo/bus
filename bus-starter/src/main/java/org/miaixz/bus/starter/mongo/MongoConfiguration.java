@@ -22,18 +22,19 @@ package org.miaixz.bus.starter.mongo;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.annotation.Resource;
-
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.mongodb.autoconfigure.MongoClientSettingsBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for MongoDB, providing fine-grained control over the {@link com.mongodb.MongoClientSettings}.
+ * Configures MongoDB client settings from validated Bus properties.
  * <p>
  * This class defines a series of {@link MongoClientSettingsBuilderCustomizer} beans. Each bean is responsible for
  * applying a specific part of the configuration from {@link MongoProperties} to the
@@ -44,29 +45,34 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MongoProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.MONGO, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = { "com.mongodb.client.MongoClient",
+        "org.springframework.boot.mongodb.autoconfigure.MongoClientSettingsBuilderCustomizer" })
+@ConditionalOnProperty(prefix = GeniusBuilder.MONGO, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class MongoConfiguration {
 
     /**
-     * Constructs a new MongoConfiguration instance.
+     * Bound mongo configuration properties.
      */
-    public MongoConfiguration() {
-        // No initialization required.
-    }
+    private final MongoProperties properties;
 
     /**
-     * Injected MongoDB configuration properties.
+     * Stores the validated client settings applied by each MongoDB customizer Bean.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    MongoProperties properties;
+    public MongoConfiguration(MongoProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Customizer for general socket settings.
      *
      * @return A {@link MongoClientSettingsBuilderCustomizer} for socket settings.
      */
-    @Bean
-    @Order(0)
+    @Bean(name = "busMongoSocketSettings")
+    @Order(100)
+    @ConditionalOnMissingBean(name = "busMongoSocketSettings")
     public MongoClientSettingsBuilderCustomizer socketSettings() {
         return builder -> Optional.ofNullable(properties.getSocket()).ifPresent(
                 socketSettings -> builder.applyToSocketSettings(
@@ -84,8 +90,9 @@ public class MongoConfiguration {
      *
      * @return A {@link MongoClientSettingsBuilderCustomizer} for heartbeat socket settings.
      */
-    @Bean
-    @Order(1)
+    @Bean(name = "busMongoHeartbeatSocketSettings")
+    @Order(200)
+    @ConditionalOnMissingBean(name = "busMongoHeartbeatSocketSettings")
     public MongoClientSettingsBuilderCustomizer heartbeatSocketSettings() {
         return builder -> Optional
                 .ofNullable(
@@ -108,8 +115,9 @@ public class MongoConfiguration {
      *
      * @return A {@link MongoClientSettingsBuilderCustomizer} for cluster settings.
      */
-    @Bean
-    @Order(2)
+    @Bean(name = "busMongoClusterSettings")
+    @Order(300)
+    @ConditionalOnMissingBean(name = "busMongoClusterSettings")
     public MongoClientSettingsBuilderCustomizer clusterSettings() {
         return builder -> Optional.ofNullable(properties.getCluster())
                 .ifPresent(clusterSettings -> builder.applyToClusterSettings(cluster -> {
@@ -131,8 +139,9 @@ public class MongoConfiguration {
      *
      * @return A {@link MongoClientSettingsBuilderCustomizer} for server settings.
      */
-    @Bean
-    @Order(3)
+    @Bean(name = "busMongoServerSettings")
+    @Order(400)
+    @ConditionalOnMissingBean(name = "busMongoServerSettings")
     public MongoClientSettingsBuilderCustomizer serverSettings() {
         return builder -> Optional
                 .ofNullable(
@@ -151,8 +160,9 @@ public class MongoConfiguration {
      *
      * @return A {@link MongoClientSettingsBuilderCustomizer} for connection pool settings.
      */
-    @Bean
-    @Order(4)
+    @Bean(name = "busMongoConnectionSettings")
+    @Order(500)
+    @ConditionalOnMissingBean(name = "busMongoConnectionSettings")
     public MongoClientSettingsBuilderCustomizer connectionSettings() {
         return builder -> Optional.ofNullable(properties.getConnectionPool()).ifPresent(
                 connectionSettings -> builder.applyToConnectionPoolSettings(
@@ -178,8 +188,9 @@ public class MongoConfiguration {
      *
      * @return A {@link MongoClientSettingsBuilderCustomizer} for SSL settings.
      */
-    @Bean
-    @Order(5)
+    @Bean(name = "busMongoSslSettings")
+    @Order(600)
+    @ConditionalOnMissingBean(name = "busMongoSslSettings")
     public MongoClientSettingsBuilderCustomizer sslSettings() {
         return builder -> Optional.ofNullable(properties.getSsl()).ifPresent(
                 sslSettings -> builder.applyToSslSettings(

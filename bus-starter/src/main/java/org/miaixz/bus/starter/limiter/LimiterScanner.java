@@ -21,13 +21,17 @@ package org.miaixz.bus.starter.limiter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -55,10 +59,17 @@ import org.miaixz.bus.limiter.proxy.ByteBuddyProxy;
 public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
 
     /**
-     * Constructs a new LimiterScanner instance.
+     * Normalized base packages scanned for limiter annotations.
      */
-    public LimiterScanner() {
-        // No initialization required.
+    private final List<String> basePackages;
+
+    /**
+     * Constructs a scanner limited to explicitly configured package prefixes.
+     *
+     * @param basePackages package prefixes to scan; empty disables scanning
+     */
+    public LimiterScanner(Collection<String> basePackages) {
+        this.basePackages = normalize(basePackages);
     }
 
     /**
@@ -77,6 +88,9 @@ public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class<?> clazz = Builder.getUserClass(bean.getClass());
+        if (!isInScope(clazz)) {
+            return bean;
+        }
 
         // Register custom strategy providers.
         if (Provider.class.isAssignableFrom(clazz)) {
@@ -158,6 +172,41 @@ public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
         }
 
         return anno;
+    }
+
+    /**
+     * Tests whether a class belongs to one of the explicitly configured limiter scan packages.
+     *
+     * @param type candidate class discovered by the scanner
+     * @return whether in scope
+     */
+    private boolean isInScope(Class<?> type) {
+        String packageName = type.getPackageName();
+        return this.basePackages.stream().anyMatch(
+                basePackage -> packageName.equals(basePackage) || packageName.startsWith(basePackage + Symbol.DOT));
+    }
+
+    /**
+     * Normalizes and de-duplicates configured scanner base packages.
+     *
+     * @param basePackages base packages
+     * @return normalized package name, or an empty string for blank input
+     */
+    private static List<String> normalize(Collection<String> basePackages) {
+        if (basePackages == null || basePackages.isEmpty()) {
+            return List.of();
+        }
+        List<String> normalized = new ArrayList<>(basePackages.size());
+        for (String basePackage : basePackages) {
+            if (basePackage == null || basePackage.isBlank()) {
+                throw new IllegalArgumentException("Limiter scan package must not be blank");
+            }
+            String value = basePackage.trim();
+            if (!normalized.contains(value)) {
+                normalized.add(value);
+            }
+        }
+        return List.copyOf(normalized);
     }
 
 }

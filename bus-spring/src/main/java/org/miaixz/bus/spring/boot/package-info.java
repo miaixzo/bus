@@ -18,10 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides Spring Boot auto-configuration for the Bus framework.
- * <p>
- * This package contains auto-configuration classes that automatically configure Bus framework components when detected
- * on the classpath, following Spring Boot's convention-over-configuration approach.
+ * Root Spring Boot lifecycle integration. Banner, environment, configuration-listener, and startup metrics support
+ * remain isolated in dedicated child packages.
  *
  * @author Kimi Liu
  * @since Java 21+

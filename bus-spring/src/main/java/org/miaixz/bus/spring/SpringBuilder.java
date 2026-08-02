@@ -19,471 +19,371 @@
 */
 package org.miaixz.bus.spring;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Objects;
 
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ResolvableType;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.MethodMetadata;
-import org.springframework.stereotype.Component;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.bean.*;
 
 /**
- * Utility class for Spring context management and Bean operations.
- * <p>
- * This class provides static methods to access the Spring {@link ApplicationContext}, retrieve beans by various
- * criteria, manage bean definitions, publish events, and perform environment-related operations like placeholder
- * replacement. It implements {@link ApplicationContextAware} to capture the application context.
+ * Instance facade for the six narrowly scoped Spring Bean infrastructure services.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Component
-public class SpringBuilder implements ApplicationContextAware {
+public final class SpringBuilder {
 
     /**
-     * Constructs a new SpringBuilder instance.
+     * Application context owned by this facade.
      */
-    public SpringBuilder() {
-        // No initialization required.
+    private final SpringContext context;
+    /**
+     * Read-only Bean lookup service.
+     */
+    private final BeanProvider beans;
+    /**
+     * Bean registration service.
+     */
+    private final BeanRegistry registry;
+    /**
+     * Side-effect-free Bean metadata service.
+     */
+    private final BeanMetadata metadata;
+    /**
+     * Environment property resolution service.
+     */
+    private final EnvironmentResolver environment;
+    /**
+     * Ordered Provider discovery service.
+     */
+    private final ProviderRegistry providers;
+
+    /**
+     * Creates a facade whose collaborators all belong to the same application context.
+     *
+     * @param context     owning application context
+     * @param beans       read-only Bean lookup service
+     * @param registry    Bean registration service
+     * @param metadata    side-effect-free Bean metadata service
+     * @param environment Spring environment
+     * @param providers   ordered provider candidates
+     */
+    public SpringBuilder(SpringContext context, BeanProvider beans, BeanRegistry registry, BeanMetadata metadata,
+            EnvironmentResolver environment, ProviderRegistry providers) {
+        this.context = Objects.requireNonNull(context, "context");
+        this.beans = Objects.requireNonNull(beans, "beans");
+        this.registry = Objects.requireNonNull(registry, "registry");
+        this.metadata = Objects.requireNonNull(metadata, "metadata");
+        this.environment = Objects.requireNonNull(environment, "environment");
+        this.providers = Objects.requireNonNull(providers, "providers");
     }
 
     /**
-     * The Spring {@link ConfigurableApplicationContext} instance. This is set via
-     * {@link #setApplicationContext(ApplicationContext)}.
-     */
-    private static ConfigurableApplicationContext context;
-
-    /**
-     * Retrieves the Spring {@link ConfigurableApplicationContext}.
+     * Exposes the active application context owned by this facade.
      *
-     * @return The application context object.
+     * @return the facade's active application context
      */
-    public static ConfigurableApplicationContext getContext() {
-        return context;
+    public ApplicationContext getContext() {
+        return this.context.get();
     }
 
     /**
-     * Sets the Spring {@link ConfigurableApplicationContext}.
-     * <p>
-     * This method is typically called by the Spring framework during initialization.
-     * </p>
+     * Returns the owned context as a read-only listable Bean factory.
      *
-     * @param context The application context object.
+     * @return the bean factory
      */
-    public static void setContext(ConfigurableApplicationContext context) {
-        Assert.notNull(context, "Spring context not found.");
-        SpringBuilder.context = context;
+    public ListableBeanFactory getBeanFactory() {
+        return this.context.get();
     }
 
     /**
-     * Retrieves the Spring {@link ListableBeanFactory}.
+     * Resolves a named Bean without imposing a compile-time result type.
      *
-     * @return The BeanFactory object, or {@code null} if the context is not set.
+     * @param <T>  result type
+     * @param name logical name
+     * @return the Bean registered under the supplied name
      */
-    public static ListableBeanFactory getBeanFactory() {
-        return context != null ? context.getBeanFactory() : null;
+    public <T> T getBean(String name) {
+        return this.beans.getBean(name);
     }
 
     /**
-     * Retrieves a bean by its name.
+     * Resolves the unique Bean of a type, passing explicit arguments to Spring when it must be created.
      *
-     * @param name The name of the bean.
-     * @param <T>  The type of the bean.
-     * @return The bean instance.
+     * @param <T>       result type
+     * @param type      required Bean contract
+     * @param arguments explicit invocation arguments
+     * @return the unique Bean assignable to the required contract
      */
-    public static <T> T getBean(String name) {
-        return (T) getBeanFactory().getBean(name);
+    public <T> T getBean(Class<T> type, Object... arguments) {
+        return this.beans.getBean(type, arguments);
     }
 
     /**
-     * Retrieves a bean by its type, optionally with constructor arguments.
+     * Resolves a named Bean and supplies explicit construction arguments when Spring creates it.
      *
-     * @param clazz The type of the bean.
-     * @param args  Constructor arguments for the bean.
-     * @param <T>   The type of the bean.
-     * @return The bean instance.
+     * @param <T>       result type
+     * @param name      logical name
+     * @param arguments explicit invocation arguments
+     * @return the Bean registered under the supplied name
      */
-    public static <T> T getBean(Class<T> clazz, Object... args) {
-        return ArrayKit.isEmpty(args) ? getBeanFactory().getBean(clazz) : getBeanFactory().getBean(clazz, args);
+    public <T> T getBean(String name, Object... arguments) {
+        return this.beans.getBean(name, arguments);
     }
 
     /**
-     * Retrieves a bean by its type, optionally with constructor arguments.
+     * Resolves a named Bean and verifies that it implements the required contract.
      *
-     * @param name The name of the bean.
-     * @param args Constructor arguments for the bean.
-     * @param <T>  The type of the bean.
-     * @return The bean instance.
+     * @param <T>  result type
+     * @param name logical name
+     * @param type required Bean contract
+     * @return the named Bean cast to the required contract
      */
-    public static <T> T getBean(String name, Object... args) {
-        return (T) (ArrayKit.isEmpty(args) ? getBeanFactory().getBean(name) : getBeanFactory().getBean(name, args));
+    public <T> T getBean(String name, Class<T> type) {
+        return this.beans.getBean(name, type);
     }
 
     /**
-     * Retrieves a bean by its name and type.
+     * Returns a Bean matching a concrete generic type reference.
      *
-     * @param name  The name of the bean.
-     * @param clazz The type of the bean.
-     * @param <T>   The type of the bean.
-     * @return The bean instance.
+     * @param <T>       result type
+     * @param reference Bean reference containing a name and required type
+     * @return the unique Bean matching the concrete generic signature
      */
-    public static <T> T getBean(String name, Class<T> clazz) {
-        return getBeanFactory().getBean(name, clazz);
-    }
-
-    /**
-     * Retrieves a bean with generic type information using a {@link TypeReference}.
-     *
-     * @param reference The {@link TypeReference} providing generic type information.
-     * @param <T>       The generic type of the bean.
-     * @return The bean instance matching the generic type.
-     */
-    public static <T> T getBean(TypeReference<T> reference) {
-        ParameterizedType type = (ParameterizedType) reference.getType();
+    public <T> T getBean(TypeReference<T> reference) {
+        ParameterizedType type = (ParameterizedType) Objects.requireNonNull(reference, "reference").getType();
         Class<T> rawType = (Class<T>) type.getRawType();
-        Class<?>[] genericTypes = Arrays.stream(type.getActualTypeArguments()).map(t -> (Class<?>) t)
-                .toArray(Class[]::new);
-        String[] beanNames = getBeanFactory()
-                .getBeanNamesForType(ResolvableType.forClassWithGenerics(rawType, genericTypes));
-        return getBean(beanNames[0], rawType);
-    }
-
-    /**
-     * Retrieves all beans of a specified type.
-     *
-     * @param type The type of the beans.
-     * @param <T>  The type of the beans.
-     * @return A map where keys are bean names and values are bean instances of the specified type.
-     */
-    public static <T> Map<String, T> getBeansOfType(Class<T> type) {
-        return getBeanFactory().getBeansOfType(type);
-    }
-
-    /**
-     * Retrieves the names of all beans of a specified type.
-     *
-     * @param type The type of the beans.
-     * @return An array of bean names.
-     */
-    public static String[] getBeanNamesForType(Class<?> type) {
-        return getBeanFactory().getBeanNamesForType(type);
-    }
-
-    /**
-     * Retrieves a property value from the Spring {@link Environment}.
-     *
-     * @param key The property key.
-     * @return The property value, or {@code null} if not found or context is not set.
-     */
-    public static String getProperty(String key) {
-        return context != null ? context.getEnvironment().getProperty(key) : null;
-    }
-
-    /**
-     * Retrieves the current active profiles from the Spring {@link Environment}.
-     *
-     * @return An array of active profile names, or {@code null} if context is not set.
-     */
-    public static String[] getActiveProfiles() {
-        return context != null ? context.getEnvironment().getActiveProfiles() : null;
-    }
-
-    /**
-     * Retrieves the first active profile from the Spring {@link Environment}.
-     *
-     * @return The name of the first active profile, or {@code null} if no profiles are active or context is not set.
-     */
-    public static String getActiveProfile() {
-        String[] profiles = getActiveProfiles();
-        return ArrayKit.isNotEmpty(profiles) ? profiles[0] : null;
-    }
-
-    /**
-     * Dynamically registers a bean definition with the Spring container.
-     *
-     * @param clazz The class of the bean to register.
-     */
-    public static void registerBeanDefinition(Class<?> clazz) {
-        DefaultListableBeanFactory factory = (DefaultListableBeanFactory) getBeanFactory();
-        factory.registerBeanDefinition(
-                StringKit.lowerFirst(clazz.getSimpleName()),
-                BeanDefinitionBuilder.rootBeanDefinition(clazz).getBeanDefinition());
-    }
-
-    /**
-     * Dynamically registers a singleton bean with the Spring container.
-     * <p>
-     * This method attempts to create a new instance of the class using its default constructor.
-     * </p>
-     *
-     * @param clazz The class of the singleton bean to register.
-     */
-    public static void registerSingleton(Class<?> clazz) {
-        try {
-            registerSingleton(clazz, clazz.getConstructor().newInstance());
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException
-                | InstantiationException e) {
-            Logger.error(false, "Starter", "Spring failed to register singleton for class: {}", clazz.getName(), e);
+        Class<?>[] genericTypes = Arrays.stream(type.getActualTypeArguments()).map(argument -> (Class<?>) argument)
+                .toArray(Class<?>[]::new);
+        String[] names = this.beans.getBeanNamesForType(ResolvableType.forClassWithGenerics(rawType, genericTypes));
+        if (names.length != 1) {
+            throw new IllegalStateException(
+                    "Expected one Bean for the requested generic type but found " + names.length);
         }
+        return this.beans.getBean(names[0], rawType);
     }
 
     /**
-     * Dynamically registers a singleton bean instance with the Spring container.
+     * Resolves every Bean assignable to the required contract, keyed by Bean name.
      *
-     * @param clazz The class of the singleton bean.
-     * @param bean  The instance of the singleton bean.
+     * @param <T>  result type
+     * @param type required Bean contract
+     * @return matching Beans keyed by their registration names
      */
-    public static void registerSingleton(Class<?> clazz, Object bean) {
-        ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
-        factory.autowireBean(bean);
-        factory.registerSingleton(StringKit.lowerFirst(clazz.getSimpleName()), bean);
+    public <T> Map<String, T> getBeansOfType(Class<T> type) {
+        return this.beans.getBeansOfType(type);
     }
 
     /**
-     * Unregisters a singleton bean from the Spring container.
+     * Resolves the registration names of Beans assignable to a contract.
      *
-     * @param beanName The name of the bean to unregister.
-     * @throws InternalException if the BeanFactory is not a {@link DefaultSingletonBeanRegistry}.
+     * @param type required Bean contract
+     * @return registration names in Spring's discovery order
      */
-    public static void unRegisterSingleton(String beanName) {
-        ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
-        if (factory instanceof DefaultSingletonBeanRegistry registry) {
-            registry.destroySingleton(beanName);
-        } else {
-            throw new InternalException("Cannot unregister bean: Factory is not DefaultSingletonBeanRegistry.");
-        }
+    public String[] getBeanNamesForType(Class<?> type) {
+        return this.beans.getBeanNamesForType(type);
     }
 
     /**
-     * Publishes an event to the Spring application context.
+     * Registers the bean definition.
      *
-     * @param event The event object to publish.
+     * @param type concrete Bean class registered under its derived name
      */
-    public static void publishEvent(Object event) {
-        if (context != null) {
-            context.publishEvent(event);
-        }
+    public void registerBeanDefinition(Class<?> type) {
+        this.registry.registerBeanDefinition(type);
     }
 
     /**
-     * Refreshes the Spring application context.
-     * <p>
-     * This operation is only performed if the context is currently alive.
-     * </p>
-     */
-    public static void refreshContext() {
-        if (context != null && context.isActive()) {
-            context.refresh();
-        }
-    }
-
-    /**
-     * Closes and removes the Spring application context.
-     * <p>
-     * This operation is only performed if the context is currently alive.
-     * </p>
-     */
-    public static void removeContext() {
-        if (context != null) {
-            context.close();
-            context = null;
-        }
-    }
-
-    /**
-     * Retrieves the application name from the Spring environment.
+     * Registers the bean definition.
      *
-     * @return The application name, or {@code null} if not found.
+     * @param name logical name
+     * @param type concrete Bean class associated with the definition
      */
-    public static String getApplicationName() {
-        return getProperty(GeniusBuilder.APP_NAME);
+    public void registerBeanDefinition(String name, Class<?> type) {
+        this.registry.registerBeanDefinition(name, type);
     }
 
     /**
-     * Checks if the application is running in development or test mode.
+     * Registers an existing object as a singleton under its derived Bean name.
      *
-     * @return {@code true} if in dev or test mode, {@code false} otherwise.
+     * @param bean Bean instance
      */
-    public static boolean isDemoMode() {
-        return isDevMode() || isTestMode();
+    public void registerSingleton(Object bean) {
+        this.registry.registerSingleton(bean);
     }
 
     /**
-     * Checks if the application is running in development environment mode.
+     * Registers an existing object as a named singleton after validating its declared contract.
      *
-     * @return {@code true} if in dev mode, {@code false} otherwise.
+     * @param name logical name
+     * @param type contract the singleton must implement
+     * @param bean Bean instance
      */
-    public static boolean isDevMode() {
-        return "dev".equalsIgnoreCase(getActiveProfile());
+    public void registerSingleton(String name, Class<?> type, Object bean) {
+        this.registry.registerSingleton(name, type, bean);
     }
 
     /**
-     * Checks if the application is running in test environment mode.
+     * Unregisters the bean definition.
      *
-     * @return {@code true} if in test mode, {@code false} otherwise.
+     * @param name logical name
      */
-    public static boolean isTestMode() {
-        return "test".equalsIgnoreCase(getActiveProfile());
+    public void unregisterBeanDefinition(String name) {
+        this.registry.unregisterBeanDefinition(name);
     }
 
     /**
-     * Replaces environment variable placeholders in the given text.
-     * <p>
-     * This method iterates through all property sources in the environment and replaces placeholders like
-     * {@code ${property.name}} with their corresponding values.
-     * </p>
+     * Unregisters the singleton.
      *
-     * @param text The text containing placeholders.
-     * @param env  The {@link ConfigurableEnvironment} to use for placeholder resolution.
-     * @return The text with placeholders resolved.
+     * @param name logical name
      */
-    public static String replacePlaceholders(String text, ConfigurableEnvironment env) {
-        if (context != null) {
-            env = context.getEnvironment();
-        }
-        Properties props = new Properties();
-        env.getPropertySources().forEach(source -> {
-            if (source instanceof EnumerablePropertySource eps) {
-                for (String name : eps.getPropertyNames()) {
-                    props.put(name, String.valueOf(eps.getProperty(name)));
-                }
-            }
-        });
-        String result = text;
-        for (String key : props.stringPropertyNames()) {
-            result = result
-                    .replace(Symbol.DOLLAR + Symbol.BRACE_LEFT + key + Symbol.BRACE_RIGHT, props.getProperty(key));
-        }
-        return result;
+    public void unregisterSingleton(String name) {
+        this.registry.unregisterSingleton(name);
     }
 
     /**
-     * Resolves the class type of a bean from its {@link BeanDefinition}.
-     * <p>
-     * This method attempts to determine the actual {@link Class} of a bean by inspecting its {@link BeanDefinition},
-     * handling various types like {@link AnnotatedBeanDefinition} and
-     * {@link org.springframework.beans.factory.support.AbstractBeanDefinition}.
-     * </p>
+     * Publishes an application event through the owned Spring context.
      *
-     * @param beanDefinition The {@link BeanDefinition} of the bean, must not be {@code null}.
-     * @return The resolved {@link Class} of the bean, or {@code null} if it cannot be determined.
-     * @throws IllegalArgumentException if {@code beanDefinition} is {@code null}.
+     * @param event published event
      */
-    public static Class<?> resolveBeanClassType(BeanDefinition beanDefinition) {
-        if (beanDefinition == null) {
-            throw new IllegalArgumentException("BeanDefinition cannot be null");
-        }
-
-        Class<?> clazz = null;
-        String className = null;
-
-        // Handle AnnotatedBeanDefinition types
-        if (beanDefinition instanceof AnnotatedBeanDefinition annotatedBeanDefinition) {
-            if (isFromConfigurationSource(beanDefinition)) {
-                // Get return type from factory method metadata
-                MethodMetadata methodMetadata = annotatedBeanDefinition.getFactoryMethodMetadata();
-                className = methodMetadata != null ? methodMetadata.getReturnTypeName() : null;
-            } else {
-                // Get class name from annotation metadata
-                AnnotationMetadata annotationMetadata = annotatedBeanDefinition.getMetadata();
-                className = annotationMetadata != null ? annotationMetadata.getClassName() : null;
-            }
-        }
-
-        // Attempt to load the class
-        if (StringKit.hasText(className)) {
-            try {
-                clazz = ClassKit.forName(className, null);
-            } catch (Throwable e) {
-                Logger.debug(false, "Starter", "Spring failed to load class: {}", className, e);
-            }
-        }
-
-        // If class is still not resolved, try to get it from AbstractBeanDefinition
-        if (clazz == null && beanDefinition instanceof AbstractBeanDefinition abstractBeanDefinition) {
-            try {
-                clazz = abstractBeanDefinition.getBeanClass();
-            } catch (IllegalStateException e) {
-                Logger.debug(false, "Starter", "Spring failed to get bean class from AbstractBeanDefinition", e);
-                className = beanDefinition.getBeanClassName();
-                if (StringKit.hasText(className)) {
-                    try {
-                        clazz = ClassKit.forName(className, null);
-                    } catch (Throwable ex) {
-                        Logger.debug(
-                                false,
-                                "Starter",
-                                "Spring failed to load class from bean class name: {}",
-                                className,
-                                ex);
-                    }
-                }
-            }
-        }
-
-        // If class is still not resolved, try to get target type from RootBeanDefinition
-        if (clazz == null && beanDefinition instanceof RootBeanDefinition rootBeanDefinition) {
-            clazz = rootBeanDefinition.getTargetType();
-        }
-
-        return clazz;
+    public void publishEvent(Object event) {
+        this.context.publishEvent(event);
     }
 
     /**
-     * Checks if a {@link BeanDefinition} originates from a Spring {@code @Configuration} class.
-     * <p>
-     * This method determines if a {@link BeanDefinition} was generated by Spring's configuration class processing
-     * (e.g., from a method annotated with {@code @Bean}) rather than from other sources like XML configuration or
-     * component scanning.
-     * </p>
+     * Resolves a String property from the owned Spring environment.
      *
-     * @param beanDefinition The {@link BeanDefinition} object to check, must not be {@code null}.
-     * @return {@code true} if the {@link BeanDefinition} originates from a configuration class; {@code false}
-     *         otherwise.
-     * @throws IllegalArgumentException if {@code beanDefinition} is {@code null}.
+     * @param key lookup key
+     * @return resolved property value, or {@code null} when absent
      */
-    public static boolean isFromConfigurationSource(BeanDefinition beanDefinition) {
-        if (beanDefinition == null) {
-            throw new IllegalArgumentException("BeanDefinition cannot be null");
-        }
-        return beanDefinition.getClass().getCanonicalName()
-                .startsWith("org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader");
+    public String getProperty(String key) {
+        return this.environment.getProperty(key);
     }
 
     /**
-     * Sets the {@link ApplicationContext} for this utility class.
-     * <p>
-     * This method is part of the {@link ApplicationContextAware} interface implementation.
-     * </p>
+     * Returns an isolated copy of all active Spring profile names.
      *
-     * @param applicationContext The application context to be set.
+     * @return the active profiles
      */
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
+    public String[] getActiveProfiles() {
+        return this.environment.getActiveProfiles();
+    }
+
+    /**
+     * Selects the first active Spring profile.
+     *
+     * @return first active profile, or {@code null} when no profile is active
+     */
+    public String getActiveProfile() {
+        return this.environment.getActiveProfile();
+    }
+
+    /**
+     * Resolves the application name from {@code spring.application.name}.
+     *
+     * @return the application name
+     */
+    public String getApplicationName() {
+        return this.environment.getApplicationName();
+    }
+
+    /**
+     * Tests whether a non-production demonstration profile is active.
+     *
+     * @return whether demo mode
+     */
+    public boolean isDemoMode() {
+        return this.environment.isDemoMode();
+    }
+
+    /**
+     * Tests whether the development profile is active.
+     *
+     * @return whether dev mode
+     */
+    public boolean isDevMode() {
+        return this.environment.isDevMode();
+    }
+
+    /**
+     * Tests whether the test profile is active.
+     *
+     * @return whether test mode
+     */
+    public boolean isTestMode() {
+        return this.environment.isTestMode();
+    }
+
+    /**
+     * Tests whether the production profile is active.
+     *
+     * @return whether prod mode
+     */
+    public boolean isProdMode() {
+        return this.environment.isProdMode();
+    }
+
+    /**
+     * Resolves Spring property placeholders embedded in arbitrary text.
+     *
+     * @param text text containing Spring property placeholders
+     * @return text with placeholders replaced
+     */
+    public String replacePlaceholders(String text) {
+        return this.environment.replacePlaceholders(text);
+    }
+
+    /**
+     * Resolves the bean class type.
+     *
+     * @param definition Bean definition whose target type is required
+     * @return resolved bean class type
+     */
+    public Class<?> resolveBeanClassType(BeanDefinition definition) {
+        return this.metadata.resolveBeanClassType(definition);
+    }
+
+    /**
+     * Tests whether a Bean definition originated from Spring configuration method metadata.
+     *
+     * @param definition Bean definition whose declared class is required
+     * @return {@code true} when the definition was declared by a configuration-class method
+     */
+    public boolean isFromConfigurationSource(BeanDefinition definition) {
+        return this.metadata.isFromConfigurationSource(definition);
+    }
+
+    /**
+     * Selects the first ordered provider whose declared support matches the supplied value.
+     *
+     * @param <T>           result type
+     * @param <S>           support type
+     * @param providerClass provider contract
+     * @param support       provider selection predicate
+     * @return loaded provider
+     */
+    public <T extends Provider<S>, S> T loadProvider(Class<T> providerClass, S support) {
+        return this.providers.load(providerClass, support);
+    }
+
+    /**
+     * Resolves every provider of a contract in Spring ordering.
+     *
+     * @param <T>           result type
+     * @param providerClass provider contract
+     * @return immutable ordered provider list for this application context
+     */
+    public <T extends Provider<?>> List<T> getProviders(Class<T> providerClass) {
+        return this.providers.all(providerClass);
     }
 
 }

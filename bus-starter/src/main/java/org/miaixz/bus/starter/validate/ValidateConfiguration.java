@@ -19,13 +19,16 @@
 */
 package org.miaixz.bus.starter.validate;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for data validation.
+ * Configures annotation-driven method validation and controller validation advice.
  * <p>
  * This configuration class enables the AOP-based validation feature by importing the {@link AspectjValidateProxy}. This
  * allows for automatic validation of method parameters in Spring-managed beans (typically controllers) that are
@@ -34,15 +37,38 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @author Kimi Liu
  * @since Java 21+
  */
-@ConditionalOnProperty(prefix = GeniusBuilder.VALIDATE, name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(AspectjValidateProxy.class)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.validate.Builder")
+@ConditionalOnProperty(prefix = GeniusBuilder.VALIDATE, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class ValidateConfiguration {
 
     /**
-     * Constructs a new ValidateConfiguration instance.
+     * Initializes validation infrastructure when {@code bus.validate.enabled=true}.
      */
     public ValidateConfiguration() {
         // No initialization required.
+    }
+
+    /**
+     * Creates the validation aspect only when this feature configuration is active.
+     *
+     * @return validation aspect
+     */
+    @Bean
+    @ConditionalOnMissingBean(AspectjValidateProxy.class)
+    AspectjValidateProxy aspectjValidateProxy() {
+        return new AspectjValidateProxy();
+    }
+
+    /**
+     * Creates the validation advice explicitly without component scanning.
+     *
+     * @return the advice that performs automatic method validation
+     */
+    @Bean
+    @ConditionalOnMissingBean(AutoValidateAdvice.class)
+    AutoValidateAdvice autoValidateAdvice() {
+        return new AutoValidateAdvice();
     }
 
 }

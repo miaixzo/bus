@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Office document processing support.
+ * Activates document conversion services backed by bus-office and binds their runtime properties. This non-exported
+ * package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

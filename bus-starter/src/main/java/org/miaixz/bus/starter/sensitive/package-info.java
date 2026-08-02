@@ -18,7 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Data desensitization support.
+ * Integrates sensitive algorithms with Spring, binds structured log sanitization to the logger lifecycle, and adds
+ * Servlet request and response advice when Spring MVC is present. This non-exported package must not define public
+ * business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

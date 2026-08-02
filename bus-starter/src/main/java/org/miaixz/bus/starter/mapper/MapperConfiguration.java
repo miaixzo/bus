@@ -25,14 +25,13 @@ import java.util.*;
 
 import javax.sql.DataSource;
 
-import jakarta.annotation.Resource;
-
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
@@ -43,6 +42,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
@@ -57,10 +57,14 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
+import org.miaixz.bus.mapper.provider.MyBatisConfigCustomizer;
+import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.bean.BeanProvider;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Unified auto-configuration for MyBatis with comprehensive Native Image support.
+ * Configures MyBatis runtime Beans and GraalVM Native Image support.
  * <p>
  * This class handles both:
  * <ul>
@@ -70,7 +74,7 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * <p>
  * <strong>JVM Mode Behavior:</strong>
  * <ul>
- * <li>Loads MapperConfiguration (this class) as auto-configuration</li>
+ * <li>Imports {@code MapperConfiguration} through {@code EnableMapper}</li>
  * <li>Creates SqlSessionFactory and SqlSessionTemplate beans</li>
  * <li>AOT processors are instantiated but not executed (Spring ignores BeanFactoryInitializationAotProcessor in
  * JVM)</li>
@@ -101,35 +105,26 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MapperProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.MAPPER, name = "enabled", havingValue = "true", matchIfMissing = true)
+@org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = GeniusBuilder.MAPPER, name = "enabled", havingValue = "true", matchIfMissing = false)
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 public class MapperConfiguration implements InitializingBean {
 
     /**
-     * Constructs a MapperConfiguration instance for Spring field injection.
+     * Environment dependency used by this component.
      */
-    public MapperConfiguration() {
-        // No initialization required.
-    }
+    private final Environment environment;
 
     /**
-     * Spring environment configuration.
+     * Resource loader dependency used by this component.
      */
-    @Resource
-    private Environment environment;
+    private final ResourceLoader resourceLoader;
 
     /**
-     * Spring resource loader.
+     * Bound mapper configuration properties.
      */
-    @Resource
-    private ResourceLoader resourceLoader;
-
-    /**
-     * MyBatis-specific configuration properties.
-     */
-    @Resource
-    private MapperProperties properties;
+    private final MapperProperties properties;
 
     /**
      * Spring resource pattern resolver used to resolve mapper XML locations.
@@ -139,8 +134,23 @@ public class MapperConfiguration implements InitializingBean {
     /**
      * Provider for optional MyBatis configuration customizers.
      */
-    @Resource
-    private ObjectProvider<List<MyBatisConfigCustomizer>> configurationCustomizersProvider;
+    private final ObjectProvider<List<MyBatisConfigCustomizer>> configurationCustomizersProvider;
+
+    /**
+     * Creates the Mapper integration configuration from its required collaborators.
+     *
+     * @param environment                      Spring environment
+     * @param resourceLoader                   resource loader
+     * @param properties                       bound feature configuration properties
+     * @param configurationCustomizersProvider configuration customizers provider
+     */
+    public MapperConfiguration(Environment environment, ResourceLoader resourceLoader, MapperProperties properties,
+            ObjectProvider<List<MyBatisConfigCustomizer>> configurationCustomizersProvider) {
+        this.environment = environment;
+        this.resourceLoader = resourceLoader;
+        this.properties = properties;
+        this.configurationCustomizersProvider = configurationCustomizersProvider;
+    }
 
     /**
      * Checks the configured MyBatis XML configuration resource after Spring has injected all properties.
@@ -172,11 +182,14 @@ public class MapperConfiguration implements InitializingBean {
      * @param beanFactory The Spring bean factory used by mapper plugin configuration.
      * @return The configured {@link SqlSessionFactory}.
      * @throws Exception if an error occurs during factory creation.
+     * @param beanProvider Spring Bean provider
      */
     @Bean
-    @ConditionalOnMissingBean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, ConfigurableListableBeanFactory beanFactory)
-            throws Exception {
+    @ConditionalOnMissingBean(SqlSessionFactory.class)
+    public SqlSessionFactory sqlSessionFactory(
+            DataSource dataSource,
+            ConfigurableListableBeanFactory beanFactory,
+            BeanProvider beanProvider) throws Exception {
         Logger.info(
                 true,
                 "Starter",
@@ -243,7 +256,8 @@ public class MapperConfiguration implements InitializingBean {
                 this.environment,
                 this.resourceLoader,
                 dataSource,
-                beanFactory);
+                beanFactory,
+                beanProvider);
 
         SqlSessionFactory sqlSessionFactory = factory.getObject();
         Logger.info(
@@ -261,7 +275,7 @@ public class MapperConfiguration implements InitializingBean {
      * @return The configured {@link SqlSessionTemplate}.
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(SqlSessionTemplate.class)
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         ExecutorType executorType = this.properties.getExecutorType();
         SqlSessionTemplate template;
@@ -276,6 +290,34 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
+     * Adapts the authenticated application context when the application has not supplied its own tenant provider.
+     *
+     * @param contextBuilder authenticated context facade
+     * @return context-backed tenant provider
+     */
+    @Bean
+    @ConditionalOnMissingBean(TenantProvider.class)
+    @ConditionalOnProperty(prefix = GeniusBuilder.MAPPER
+            + ".tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
+    public TenantProvider contextTenantProvider(ContextBuilder contextBuilder) {
+        return new ContextTenantProvider(contextBuilder);
+    }
+
+    /**
+     * Maps a missing authenticated tenant to an empty forbidden response in Servlet applications.
+     *
+     * @return missing-tenant exception advice
+     */
+    @Bean
+    @ConditionalOnMissingBean(TenantExceptionAdvice.class)
+    @ConditionalOnProperty(prefix = GeniusBuilder.MAPPER
+            + ".tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    public TenantExceptionAdvice tenantExceptionAdvice() {
+        return new TenantExceptionAdvice();
+    }
+
+    /**
      * Registers the {@link BeanFactoryInitializationAotProcessor} that scans for {@link MapperFactoryBean} definitions
      * and registers runtime hints.
      * <p>
@@ -287,6 +329,7 @@ public class MapperConfiguration implements InitializingBean {
      */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor.class)
     static MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor(
             Environment environment) {
         return new MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor(environment);
@@ -303,6 +346,7 @@ public class MapperConfiguration implements InitializingBean {
      */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(MapperAotProcessors.MyBatisMapperFactoryBeanPostProcessor.class)
     static MapperAotProcessors.MyBatisMapperFactoryBeanPostProcessor myBatisMapperFactoryBeanPostProcessor() {
         return new MapperAotProcessors.MyBatisMapperFactoryBeanPostProcessor();
     }
@@ -316,6 +360,7 @@ public class MapperConfiguration implements InitializingBean {
      */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(MapperAotProcessors.MapperInterfaceStringToClassConverter.class)
     static MapperAotProcessors.MapperInterfaceStringToClassConverter mapperInterfaceStringToClassConverter() {
         return new MapperAotProcessors.MapperInterfaceStringToClassConverter();
     }

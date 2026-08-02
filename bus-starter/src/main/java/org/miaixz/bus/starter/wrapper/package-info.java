@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Support for features like repeatable-read request bodies.
+ * Aggregates the independently switchable Web wrapper features and binds their shared activation properties. Each Web
+ * capability remains isolated in a child package, and this non-exported package must not define business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

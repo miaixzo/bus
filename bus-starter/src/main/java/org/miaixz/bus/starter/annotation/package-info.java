@@ -18,7 +18,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Annotations for enabling various starter features.
+ * The only exported starter package. It provides EnableAuth, EnableCache, EnableCors, EnableCortex, EnableDubbo,
+ * EnableElastic, EnableFabric, EnableHealth, EnableI18n, EnableImage, EnableJdbc, EnableJson, EnableLimiter,
+ * EnableMapper, EnableMetrics, EnableMongo, EnableNotify, EnableOffice, EnablePay, EnableSensitive, EnableStorage,
+ * EnableTempus, EnableTracer, EnableValidate, EnableVortex, EnableWrapper, and EnableZookeeper.
  *
  * @author Kimi Liu
  * @since Java 21+

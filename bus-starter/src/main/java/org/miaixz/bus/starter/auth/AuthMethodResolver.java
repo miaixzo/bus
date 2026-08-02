@@ -66,10 +66,17 @@ import org.miaixz.bus.spring.ContextBuilder;
 public class AuthMethodResolver implements HandlerMethodArgumentResolver {
 
     /**
-     * Constructs a new AuthMethodResolver instance.
+     * Application-context-scoped runtime context facade.
      */
-    public AuthMethodResolver() {
-        // No initialization required.
+    private final ContextBuilder contextBuilder;
+
+    /**
+     * Initializes argument resolution against the runtime context owned by the current application context.
+     *
+     * @param contextBuilder runtime context facade used to obtain the authenticated subject
+     */
+    public AuthMethodResolver(ContextBuilder contextBuilder) {
+        this.contextBuilder = contextBuilder;
     }
 
     /**
@@ -110,7 +117,7 @@ public class AuthMethodResolver implements HandlerMethodArgumentResolver {
             ModelAndViewContainer modelAndViewContainer,
             NativeWebRequest nativeWebRequest,
             WebDataBinderFactory webDataBinderFactory) {
-        return ContextBuilder.getAuthorize();
+        return this.contextBuilder.getAuthorize();
     }
 
 }

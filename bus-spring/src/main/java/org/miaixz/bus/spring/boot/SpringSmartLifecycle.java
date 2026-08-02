@@ -19,23 +19,21 @@
 */
 package org.miaixz.bus.spring.boot;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.SmartLifecycle;
 
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.metrics.ChildrenMetrics;
-import org.miaixz.bus.spring.metrics.ModuleMetrics;
+import org.miaixz.bus.spring.boot.startup.ChildrenMetrics;
+import org.miaixz.bus.spring.boot.startup.ModuleMetrics;
+import org.miaixz.bus.spring.boot.startup.StartupReporter;
+import org.miaixz.bus.spring.boot.startup.StartupStages;
 
 /**
- * Implements {@link SmartLifecycle} to calculate application context refresh time.
- * <p>
- * This class is used to monitor and record performance metrics during the Spring application context refresh process.
- * By implementing the SmartLifecycle interface, it automatically triggers the collection of context refresh time
- * statistics during application startup and adds these statistics to the {@link StartupReporter}, providing data
- * support for application startup performance analysis.
+ * Captures context refresh statistics once and releases its context reference when stopped.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -43,98 +41,93 @@ import org.miaixz.bus.spring.metrics.ModuleMetrics;
 public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
 
     /**
-     * Constant for the root module name.
+     * Root module name used in context refresh statistics.
      */
     public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
 
     /**
-     * The component responsible for collecting and reporting startup costs.
+     * Reporter receiving application-context refresh metrics.
      */
     private final StartupReporter startupReporter;
-
     /**
-     * The application context.
+     * Application-context refresh start timestamp in milliseconds.
      */
-    private ConfigurableApplicationContext applicationContext;
+    private final long refreshStartTime;
+    /**
+     * Tracks whether this lifecycle has recorded its refresh metrics.
+     */
+    private final AtomicBoolean running = new AtomicBoolean();
 
     /**
-     * Constructs a new {@code SpringSmartLifecycle} instance.
+     * Configurable application context whose refresh is being measured.
+     */
+    private volatile ConfigurableApplicationContext applicationContext;
+
+    /**
+     * Creates the lifecycle for one startup report.
      *
-     * @param startupReporter The {@link StartupReporter} instance to which startup statistics will be added.
+     * @param startupReporter  current startup reporter
+     * @param refreshStartTime refresh start time
      */
-    public SpringSmartLifecycle(StartupReporter startupReporter) {
+    public SpringSmartLifecycle(StartupReporter startupReporter, long refreshStartTime) {
         this.startupReporter = startupReporter;
+        this.refreshStartTime = refreshStartTime;
     }
 
-    /**
-     * Sets the application context.
-     *
-     * @param applicationContext The application context.
-     * @throws BeansException if setting the context fails.
-     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
+        if (!(applicationContext instanceof ConfigurableApplicationContext configurableContext)) {
+            throw new IllegalArgumentException("SpringSmartLifecycle requires a ConfigurableApplicationContext");
+        }
+        this.applicationContext = configurableContext;
     }
 
-    /**
-     * Starts the lifecycle component.
-     * <p>
-     * This method is called during application startup to calculate the application context refresh time. It creates
-     * and initializes context refresh stage statistics and root module statistics, then adds these statistics to the
-     * {@link StartupReporter}.
-     * </p>
-     */
     @Override
     public void start() {
-        // Initialize context refresh stage statistics
-        ChildrenMetrics<ModuleMetrics> stat = new ChildrenMetrics<>();
-        stat.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
-        stat.setEndTime(System.currentTimeMillis());
+        if (!running.compareAndSet(false, true)) {
+            return;
+        }
+        ConfigurableApplicationContext context = applicationContext;
+        try {
+            if (context == null || !context.isActive()) {
+                throw new IllegalStateException("Application context is not active");
+            }
 
-        // Build root module statistics
-        ModuleMetrics rootModuleStat = new ModuleMetrics();
-        rootModuleStat.setName(ROOT_MODULE_NAME);
-        rootModuleStat.setEndTime(stat.getEndTime());
-        rootModuleStat.setThreadName(Thread.currentThread().getName());
+            long refreshEndTime = System.currentTimeMillis();
+            ModuleMetrics rootModule = new ModuleMetrics(ROOT_MODULE_NAME, refreshStartTime, refreshEndTime,
+                    Thread.currentThread().getName(), startupReporter.generateBeanStats(context));
+            ChildrenMetrics<ModuleMetrics> refreshStage = new ChildrenMetrics<>(
+                    StartupStages.APPLICATION_CONTEXT_REFRESH_STAGE, refreshStartTime, refreshEndTime,
+                    java.util.List.of(rootModule));
 
-        // Get Bean statistics list from ApplicationStartup
-        rootModuleStat.setChildren(startupReporter.generateBeanStats(applicationContext));
-
-        // Add root module to context refresh stage statistics
-        stat.addChild(rootModuleStat);
-
-        // Add context refresh stage statistics to the startup reporter
-        startupReporter.addCommonStartupStat(stat);
+            startupReporter.addCommonStartupStat(refreshStage);
+        } catch (RuntimeException | Error ex) {
+            running.set(false);
+            applicationContext = null;
+            throw ex;
+        }
     }
 
-    /**
-     * Stops the lifecycle component.
-     * <p>
-     * This method is an empty implementation as no specific actions are required during stopping.
-     * </p>
-     */
     @Override
     public void stop() {
-        // Empty implementation, no operations needed on stop.
+        running.set(false);
+        applicationContext = null;
     }
 
-    /**
-     * Checks if the lifecycle component is currently running.
-     *
-     * @return Always returns {@code false}, indicating that this component does not require continuous running.
-     */
+    @Override
+    public void stop(Runnable callback) {
+        try {
+            stop();
+        } finally {
+            callback.run();
+        }
+    }
+
     @Override
     public boolean isRunning() {
-        return false;
+        return running.get();
     }
 
-    /**
-     * Returns the phase in which this lifecycle component should be executed.
-     *
-     * @return {@code Integer.MIN_VALUE}, indicating that this component should be executed at the earliest possible
-     *         phase.
-     */
     @Override
     public int getPhase() {
         return Integer.MIN_VALUE;

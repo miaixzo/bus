@@ -21,8 +21,13 @@ package org.miaixz.bus.starter.limiter;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import org.miaixz.bus.limiter.Builder;
 import org.miaixz.bus.limiter.Context;
 import org.miaixz.bus.limiter.Holder;
+import org.miaixz.bus.limiter.Registry;
+import org.miaixz.bus.limiter.nimble.MethodManager;
+import org.miaixz.bus.limiter.nimble.ResourceManager;
+import org.miaixz.bus.limiter.nimble.StrategyManager;
 
 /**
  * A service that initializes the global context for the rate limiting and circuit breaking framework.
@@ -34,12 +39,12 @@ import org.miaixz.bus.limiter.Holder;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class LimiterService implements InitializingBean {
+public class LimiterService implements InitializingBean, AutoCloseable {
 
     /**
      * The limiter context, containing configuration and strategy information.
      */
-    public final Context context;
+    private final Context context;
 
     /**
      * Constructs a new LimiterService with the given context.
@@ -60,6 +65,19 @@ public class LimiterService implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         Holder.set(context);
+    }
+
+    /**
+     * Clears limiter state registered by the closing application context.
+     */
+    @Override
+    public void close() {
+        Holder.clear(context);
+        MethodManager.clear();
+        StrategyManager.clear();
+        ResourceManager.clearRegisteredMethods();
+        Registry.clear();
+        Builder.clear();
     }
 
 }

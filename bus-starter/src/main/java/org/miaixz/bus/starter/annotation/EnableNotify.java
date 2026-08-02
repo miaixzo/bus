@@ -28,9 +28,8 @@ import org.miaixz.bus.starter.notify.NotifyConfiguration;
 /**
  * Enables message notification features.
  * <p>
- * This annotation imports the {@link NotifyConfiguration}, which sets up the
- * {@link org.miaixz.bus.starter.notify.NotifyService}. This service acts as a factory for various notification
- * providers, such as SMS, email, and instant messaging (e.g., DingTalk, WeChat).
+ * This annotation imports the {@link NotifyConfiguration}, which sets up notification providers such as SMS, email, and
+ * instant messaging (e.g., DingTalk, WeChat).
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -19,18 +19,23 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import jakarta.annotation.Resource;
+import java.util.Objects;
+import java.util.WeakHashMap;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import org.miaixz.bus.base.advice.BaseAdvice;
 import org.miaixz.bus.core.basic.entity.Message;
@@ -54,14 +59,24 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
     /**
-     * Constructs a new SensitiveResponseBodyAdvice instance.
+     * Sensitive-data rules applied before response serialization.
      */
-    public SensitiveResponseBodyAdvice() {
-        // No initialization required.
-    }
+    private final SensitiveProperties properties;
 
-    @Resource
-    private SensitiveProperties properties;
+    /**
+     * Identity-based guard preventing repeated processing of the same response object.
+     */
+    private final Map<ServerHttpResponse, Boolean> processedResponses = Collections
+            .synchronizedMap(new WeakHashMap<>());
+
+    /**
+     * Creates response advice with the validated rules owned by the current application context.
+     *
+     * @param properties sensitive processing rules
+     */
+    public SensitiveResponseBodyAdvice(SensitiveProperties properties) {
+        this.properties = Objects.requireNonNull(properties, "properties");
+    }
 
     /**
      * Determines if this advice should be applied to the given method return type.
@@ -72,12 +87,11 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
      */
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        // Check for @Sensitive annotation on the class
-        if (returnType.getDeclaringClass().isAnnotationPresent(Sensitive.class)) {
-            return true;
-        }
-        // Check for @Sensitive annotation on the method
-        return returnType.getMethod().isAnnotationPresent(Sensitive.class);
+        Class<?> responseType = returnType.getParameterType();
+        return returnType.hasMethodAnnotation(Sensitive.class) || returnType.hasMethodAnnotation(Privacy.class)
+                || returnType.getDeclaringClass().isAnnotationPresent(Sensitive.class)
+                || returnType.getDeclaringClass().isAnnotationPresent(Privacy.class)
+                || responseType.isAnnotationPresent(Sensitive.class) || responseType.isAnnotationPresent(Privacy.class);
     }
 
     /**
@@ -103,90 +117,115 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
             Class<? extends HttpMessageConverter<?>> selectedConverterType,
             ServerHttpRequest request,
             ServerHttpResponse response) {
-        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug() && body instanceof Message<?> message) {
-            try {
-                final Sensitive sensitive = returnType.getMethodAnnotation(Sensitive.class);
-                if (ObjectKit.isEmpty(sensitive)) {
-                    return body;
+        if (this.properties.isDebug() || body == null || shouldSkip(body, selectedContentType, response)
+                || this.processedResponses.containsKey(response)) {
+            return body;
+        }
+        try {
+            Sensitive sensitive = returnType.getMethodAnnotation(Sensitive.class);
+            if (sensitive == null) {
+                sensitive = returnType.getDeclaringClass().getAnnotation(Sensitive.class);
+            }
+            if (sensitive == null) {
+                sensitive = body.getClass().getAnnotation(Sensitive.class);
+            }
+            boolean privacyEnabled = returnType.hasMethodAnnotation(Privacy.class)
+                    || returnType.getDeclaringClass().isAnnotationPresent(Privacy.class)
+                    || returnType.getParameterType().isAnnotationPresent(Privacy.class)
+                    || body.getClass().isAnnotationPresent(Privacy.class);
+            Object data = body instanceof Message<?> message ? message.getData() : body;
+            Logger.debug(
+                    true,
+                    "Starter",
+                    "Sensitive response processing started: controller={}, method={}, mode={}, stage={}, dataType={}, contentType={}",
+                    returnType.getDeclaringClass().getName(),
+                    returnType.getExecutable().getName(),
+                    sensitive == null ? null : sensitive.value(),
+                    sensitive == null ? null : sensitive.stage(),
+                    data == null ? null : data.getClass().getName(),
+                    selectedContentType);
+            if (data instanceof Result<?> result) {
+                List<?> rows = result.getRows();
+                for (Object row : rows) {
+                    processObject(sensitive, privacyEnabled, row);
                 }
-
-                Object data = message.getData();
                 Logger.debug(
-                        true,
-                        "Starter",
-                        "Sensitive response processing started: controller={}, method={}, mode={}, stage={}, dataType={}, contentType={}",
-                        returnType.getDeclaringClass().getName(),
-                        returnType.getExecutable().getName(),
-                        sensitive.value(),
-                        sensitive.stage(),
-                        data == null ? null : data.getClass().getName(),
-                        selectedContentType);
-                if (data instanceof Result<?> result) {
-                    List<?> rows = result.getRows();
-                    for (Object row : rows) {
-                        processObject(sensitive, row);
-                    }
-                    Logger.debug(
-                            false,
-                            "Starter",
-                            "Sensitive response processing completed: controller={}, method={}, resultRowCount={}",
-                            returnType.getDeclaringClass().getName(),
-                            returnType.getExecutable().getName(),
-                            rows.size());
-                } else if (data instanceof List<?> list) {
-                    for (Object item : list) {
-                        processObject(sensitive, item);
-                    }
-                    Logger.debug(
-                            false,
-                            "Starter",
-                            "Sensitive response processing completed: controller={}, method={}, listSize={}",
-                            returnType.getDeclaringClass().getName(),
-                            returnType.getExecutable().getName(),
-                            list.size());
-                } else {
-                    processObject(sensitive, data);
-                    Logger.debug(
-                            false,
-                            "Starter",
-                            "Sensitive response processing completed: controller={}, method={}, dataType={}",
-                            returnType.getDeclaringClass().getName(),
-                            returnType.getExecutable().getName(),
-                            data == null ? null : data.getClass().getName());
-                }
-            } catch (Exception e) {
-                Logger.error(
                         false,
                         "Starter",
-                        e,
-                        "Sensitive response processing failed: controller={}, method={}, exception={}",
+                        "Sensitive response processing completed: controller={}, method={}, resultRowCount={}",
                         returnType.getDeclaringClass().getName(),
                         returnType.getExecutable().getName(),
-                        e.getClass().getSimpleName());
+                        rows.size());
+            } else if (data instanceof List<?> list) {
+                for (Object item : list) {
+                    processObject(sensitive, privacyEnabled, item);
+                }
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "Sensitive response processing completed: controller={}, method={}, listSize={}",
+                        returnType.getDeclaringClass().getName(),
+                        returnType.getExecutable().getName(),
+                        list.size());
+            } else {
+                processObject(sensitive, privacyEnabled, data);
+                Logger.debug(
+                        false,
+                        "Starter",
+                        "Sensitive response processing completed: controller={}, method={}, dataType={}",
+                        returnType.getDeclaringClass().getName(),
+                        returnType.getExecutable().getName(),
+                        data == null ? null : data.getClass().getName());
             }
+            this.processedResponses.put(response, Boolean.TRUE);
+        } catch (Exception e) {
+            throw new IllegalStateException("Sensitive response processing failed", e);
         }
         return body;
     }
 
     /**
+     * Determines whether the response has already been desensitized.
+     *
+     * @param body        response body being evaluated
+     * @param contentType content type
+     * @param response    current HTTP response
+     * @return {@code true} when the response must not be processed again
+     */
+    private static boolean shouldSkip(Object body, MediaType contentType, ServerHttpResponse response) {
+        if (body instanceof byte[] || body instanceof InputStream || body instanceof Resource
+                || body instanceof ResponseBodyEmitter || body instanceof StreamingResponseBody) {
+            return true;
+        }
+        if (contentType != null && (MediaType.TEXT_EVENT_STREAM.isCompatibleWith(contentType)
+                || MediaType.APPLICATION_OCTET_STREAM.isCompatibleWith(contentType))) {
+            return true;
+        }
+        String disposition = response.getHeaders().getFirst("Content-Disposition");
+        return StringKit.isNotEmpty(disposition);
+    }
+
+    /**
      * Processes a single object for desensitization and encryption.
      *
-     * @param sensitive The {@link Sensitive} annotation instance.
-     * @param object    The object to process.
+     * @param sensitive      The {@link Sensitive} annotation instance.
+     * @param object         The object to process.
+     * @param privacyEnabled privacy enabled
      */
-    private void processObject(Sensitive sensitive, Object object) {
+    private void processObject(Sensitive sensitive, boolean privacyEnabled, Object object) {
         if (ObjectKit.isEmpty(object)) {
             return;
         }
         // Perform data desensitization
-        if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
+        if (sensitive != null && (Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
             Logger.debug(false, "Starter", "Sensitive response data desensitization enabled...");
             Builder.on(object, sensitive);
         }
         // Perform data encryption
-        if ((Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value()))
-                && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
+        if (privacyEnabled || (sensitive != null
+                && (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value()))
+                && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage())))) {
             Map<String, Privacy> privacyMap = getPrivacyMap(object.getClass());
             for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
                 Privacy privacy = entry.getValue();
@@ -195,7 +234,9 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
                         String property = entry.getKey();
                         Object value = getValue(object, property);
                         if (value instanceof String && StringKit.isNotEmpty((String) value)) {
-                            if (ObjectKit.isEmpty(this.properties.getEncrypt())) {
+                            SensitiveProperties.Encrypt encrypt = this.properties.getEncrypt();
+                            if (encrypt == null || StringKit.isBlank(encrypt.getType())
+                                    || StringKit.isBlank(encrypt.getKey())) {
                                 throw new InternalException(
                                         "Encryption properties are not configured. Please check 'bus.sensitive.encrypt'.");
                             }
@@ -204,11 +245,8 @@ public class SensitiveResponseBodyAdvice extends BaseAdvice
                                     "Starter",
                                     "Sensitive response data encryption enabled for property: {}",
                                     property);
-                            String encryptedValue = org.miaixz.bus.crypto.Builder.encrypt(
-                                    this.properties.getEncrypt().getType(),
-                                    this.properties.getEncrypt().getKey(),
-                                    (String) value,
-                                    Charset.UTF_8);
+                            String encryptedValue = org.miaixz.bus.crypto.Builder
+                                    .encrypt(encrypt.getType(), encrypt.getKey(), (String) value, Charset.UTF_8);
                             setValue(object, property, encryptedValue);
                         }
                     }

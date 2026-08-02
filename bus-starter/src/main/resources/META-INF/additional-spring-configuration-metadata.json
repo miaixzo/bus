@@ -1,0 +1,178 @@
+{
+  "properties": [
+    {
+      "name": "bus.auth.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Auth integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.cache.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Cache integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.context.task.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether runtime context propagation is enabled for Spring-managed task executors.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.context.web.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether runtime context binding is enabled for Servlet requests.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.cors.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether CORS integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.cortex.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Cortex integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.dubbo.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Dubbo integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.elastic.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Elasticsearch integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Fabric integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.health.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether health integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.i18n.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether internationalization integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.image.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether image integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.jdbc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether JDBC integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.json.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether JSON integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.limiter.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether rate limiter integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.mapper.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Mapper integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.metrics.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether metrics integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.mongo.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether MongoDB integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.notify.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether notification integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.office.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether office integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.pay.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether payment integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.sensitive.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether sensitive-data integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.storage.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether storage integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.tempus.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Temporal integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.tracer.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether tracing integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.validate.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether validation integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.vortex.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Vortex integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.wrapper.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether web wrapper integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.zookeeper.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether ZooKeeper integration is enabled.",
+      "defaultValue": false
+    }
+  ]
+}

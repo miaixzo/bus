@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.storage;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.cache.CacheX;
@@ -28,7 +29,6 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
 import org.miaixz.bus.storage.Registry;
-import org.miaixz.bus.storage.cache.StorageCache;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.nimble.*;
 
@@ -68,41 +68,37 @@ import org.miaixz.bus.storage.nimble.*;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class StorageService {
+public final class StorageService implements AutoCloseable {
 
     /**
      * Cache for storing registered storage component contexts. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private final Map<Registry, Context> contexts = new ConcurrentHashMap<>();
+
+    /**
+     * Storage clients created for this application context.
+     */
+    private final Map<Registry, Provider> clients = new ConcurrentHashMap<>();
 
     /**
      * Storage configuration properties, containing settings for various storage components.
      */
-    public StorageProperties properties;
+    private final StorageProperties properties;
 
     /**
      * Cache interface for storing file metadata or other temporary data.
      */
-    public CacheX cacheX;
+    private final CacheX<String, Object> cacheX;
 
     /**
      * Constructs a storage service provider instance with the default cache.
      *
      * @param properties The storage configuration properties (must not be null).
+     * @param cacheX     cache x
      */
-    public StorageService(StorageProperties properties) {
-        this(properties, StorageCache.INSTANCE);
-    }
-
-    /**
-     * Constructs a storage service provider instance with a specified cache.
-     *
-     * @param properties The storage configuration properties (must not be null).
-     * @param cacheX     The cache implementation to use (must not be null).
-     */
-    public StorageService(StorageProperties properties, CacheX cacheX) {
-        this.properties = properties;
-        this.cacheX = cacheX;
+    public StorageService(StorageProperties properties, CacheX<String, Object> cacheX) {
+        this.properties = Objects.requireNonNull(properties, "properties");
+        this.cacheX = Objects.requireNonNull(cacheX, "cacheX");
     }
 
     /**
@@ -113,11 +109,12 @@ public class StorageService {
      * @param context  The context of the storage component (must not be null).
      * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry registry, Context context) {
-        if (CACHE.containsKey(registry)) {
+    public void register(Registry registry, Context context) {
+        Objects.requireNonNull(registry, "registry");
+        Objects.requireNonNull(context, "context");
+        if (this.contexts.putIfAbsent(registry, context) != null) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
-        CACHE.putIfAbsent(registry, context);
     }
 
     /**
@@ -129,8 +126,18 @@ public class StorageService {
      * @throws InternalException if the corresponding storage component cannot be found.
      */
     public Provider require(Registry registry) {
-        // Get the storage component context from the cache
-        Context context = CACHE.get(registry);
+        Objects.requireNonNull(registry, "registry");
+        return this.clients.computeIfAbsent(registry, this::createProvider);
+    }
+
+    /**
+     * Resolves the configured storage provider from the injected registry.
+     *
+     * @param registry Provider registry used for lookup
+     * @return the storage Provider selected for the requested type
+     */
+    private Provider createProvider(Registry registry) {
+        Context context = this.contexts.get(registry);
         // If not in the cache, get it from the properties
         if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(registry);
@@ -276,6 +283,30 @@ public class StorageService {
             default:
                 // If no matching storage type is found, throw an exception
                 throw new InternalException(ErrorCode._100803.getValue());
+        }
+    }
+
+    /**
+     * Closes every storage client and clears state owned by this application context.
+     */
+    @Override
+    public void close() {
+        RuntimeException failure = null;
+        for (Provider client : this.clients.values()) {
+            try {
+                client.close();
+            } catch (Exception exception) {
+                if (failure == null) {
+                    failure = new IllegalStateException("Failed to close storage client", exception);
+                } else {
+                    failure.addSuppressed(exception);
+                }
+            }
+        }
+        this.clients.clear();
+        this.contexts.clear();
+        if (failure != null) {
+            throw failure;
         }
     }
 

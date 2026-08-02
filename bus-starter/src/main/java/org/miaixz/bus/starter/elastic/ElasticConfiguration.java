@@ -24,12 +24,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.annotation.Resource;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
@@ -37,17 +37,16 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.Jackson3JsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest5_client.Rest5ClientTransport;
 import co.elastic.clients.transport.rest5_client.low_level.Rest5Client;
 import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder;
 
 /**
- * Auto-configuration for the Elasticsearch client.
+ * Configures the Elasticsearch low-level REST client.
  * <p>
  * This class sets up the {@link Rest5ClientBuilder} and the new {@link ElasticsearchClient} based on the properties
  * defined in {@link ElasticProperties}.
@@ -56,32 +55,38 @@ import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ElasticProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.ELASTIC, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass({ Rest5Client.class, Rest5ClientTransport.class, ElasticsearchClient.class })
+@ConditionalOnProperty(prefix = GeniusBuilder.ELASTIC, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class ElasticConfiguration {
 
     /**
-     * Constructs a new ElasticConfiguration instance.
+     * Bound elastic configuration properties.
      */
-    public ElasticConfiguration() {
-        // No initialization required.
-    }
-
-    @Resource
-    private ElasticProperties properties;
+    private final ElasticProperties properties;
 
     /**
-     * Creates and configures the {@link Rest5ClientBuilder} bean.
+     * Stores the hosts, credentials, timeouts, and connection limits used to construct the REST client.
+     *
+     * @param properties bound configuration properties
+     */
+    public ElasticConfiguration(ElasticProperties properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * Creates and configures the low-level {@link Rest5Client} bean.
      * <p>
      * This builder is the foundation for the Elasticsearch REST client. It is configured with the cluster hosts,
      * timeouts, and connection pool settings from the properties.
      * </p>
      *
-     * @return A configured {@link Rest5ClientBuilder} instance.
+     * @return A configured {@link Rest5Client} instance.
      * @throws InternalException if the Elasticsearch host list is not configured.
      */
-    @Bean
-    @ConditionalOnClass(Rest5ClientBuilder.class)
-    public Rest5ClientBuilder restClientBuilder() {
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(Rest5Client.class)
+    public Rest5Client restClient() {
         if (CollKit.isEmpty(this.properties.getHostList())) {
             Logger.error(
                     false,
@@ -109,7 +114,24 @@ public class ElasticConfiguration {
             connectionManagerBuilder.setMaxConnPerRoute(this.properties.getMaxConnectPerRoute());
         });
 
-        return restClientBuilder;
+        return restClientBuilder.build();
+    }
+
+    /**
+     * Creates the transport and closes the low-level client if transport construction fails.
+     *
+     * @param restClient configured low-level client
+     * @return Elasticsearch transport
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(Rest5ClientTransport.class)
+    public Rest5ClientTransport restClientTransport(Rest5Client restClient) {
+        try {
+            return new Rest5ClientTransport(restClient, new Jackson3JsonpMapper());
+        } catch (RuntimeException | Error exception) {
+            closeAfterFailure(exception, restClient);
+            throw exception;
+        }
     }
 
     /**
@@ -119,14 +141,19 @@ public class ElasticConfiguration {
      * low-level {@link Rest5Client}.
      * </p>
      *
-     * @param restClientBuilder The configured {@link Rest5ClientBuilder} from the context.
+     * @param transport  The configured {@link Rest5ClientTransport} from the context.
+     * @param restClient The configured low-level client used for failure rollback.
      * @return A new {@link ElasticsearchClient} instance.
      */
     @Bean
-    public ElasticsearchClient elasticsearchClient(Rest5ClientBuilder restClientBuilder) {
-        ElasticsearchTransport transport = new Rest5ClientTransport(restClientBuilder.build(),
-                new Jackson3JsonpMapper());
-        return new ElasticsearchClient(transport);
+    @ConditionalOnMissingBean(ElasticsearchClient.class)
+    public ElasticsearchClient elasticsearchClient(Rest5ClientTransport transport, Rest5Client restClient) {
+        try {
+            return new ElasticsearchClient(transport);
+        } catch (RuntimeException | Error exception) {
+            closeAfterFailure(exception, transport, restClient);
+            throw exception;
+        }
     }
 
     /**
@@ -149,6 +176,22 @@ public class ElasticConfiguration {
             throw new InternalException(
                     "Incorrect Elasticsearch cluster node information configuration. Correct format is [ip1:port,ip2:port...]",
                     e);
+        }
+    }
+
+    /**
+     * Closes partially created resources and attaches close failures to the original failure.
+     *
+     * @param failure   original creation failure
+     * @param resources resources to close in declaration order
+     */
+    private void closeAfterFailure(Throwable failure, AutoCloseable... resources) {
+        for (AutoCloseable resource : resources) {
+            try {
+                resource.close();
+            } catch (Exception closeException) {
+                failure.addSuppressed(closeException);
+            }
         }
     }
 

@@ -21,10 +21,8 @@ package org.miaixz.bus.starter.sensitive;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
-import jakarta.annotation.Resource;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -53,14 +51,18 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice {
 
     /**
-     * Constructs a new SensitiveRequestBodyAdvice instance.
+     * Sensitive-data rules applied to decoded request bodies.
      */
-    public SensitiveRequestBodyAdvice() {
-        // No initialization required.
-    }
+    private final SensitiveProperties properties;
 
-    @Resource
-    private SensitiveProperties properties;
+    /**
+     * Creates request advice with the validated rules owned by the current application context.
+     *
+     * @param properties sensitive processing rules
+     */
+    public SensitiveRequestBodyAdvice(SensitiveProperties properties) {
+        this.properties = Objects.requireNonNull(properties, "properties");
+    }
 
     /**
      * Determines if this advice should be applied to the given method parameter.
@@ -186,7 +188,13 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
      */
     class InputMessage implements HttpInputMessage {
 
+        /**
+         * Immutable copy of the original request headers.
+         */
         private final HttpHeaders headers;
+        /**
+         * Cached request body bytes used for repeated reads.
+         */
         private final InputStream body;
 
         /**
@@ -211,11 +219,9 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
             Logger.debug(
                     true,
                     "Starter",
-                    "request header snapshot: contentType={}, bodyChars={}",
+                    "Sensitive request body received: contentType={}, bodyChars={}",
                     this.headers.getContentType(),
                     content.length());
-            Logger.debug(true, "Starter", "Request headers: headers={}", this.headers.toSingleValueMap());
-            Logger.debug(true, "Starter", "Request parameters: parameters={}", Map.of("body", content));
 
             String decryptBody;
             if (content.startsWith(Symbol.BRACE_LEFT)) {

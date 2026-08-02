@@ -21,31 +21,29 @@ package org.miaixz.bus.starter.cache;
 
 import java.util.Map;
 
-import jakarta.annotation.Resource;
-
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Collector;
 import org.miaixz.bus.cache.Context;
 import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.cache.Module;
 import org.miaixz.bus.cache.collect.*;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.jdbc.JdbcProperties;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for the cache system.
+ * Configures annotation-driven cache interception and cache providers.
  *
  * <p>
  * Reads {@link CacheProperties} and wires two independent components:
@@ -66,22 +64,35 @@ import org.miaixz.bus.starter.jdbc.JdbcProperties;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CacheProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.CACHE, name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(CacheFactoryProvider.class)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.cache.CacheX")
+@ConditionalOnProperty(prefix = GeniusBuilder.CACHE, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class CacheConfiguration {
 
     /**
-     * Constructs a new CacheConfiguration instance.
+     * Bound cache configuration properties.
      */
-    public CacheConfiguration() {
-        // No initialization required.
+    private final CacheProperties properties;
+
+    /**
+     * Stores the cache provider and interception policy used by the Bean factories.
+     *
+     * @param properties bound configuration properties
+     */
+    public CacheConfiguration(CacheProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * Injected cache configuration properties.
+     * Creates the context-owned cache factory.
+     *
+     * @return the cache factory selected from the configured cache type
      */
-    @Resource
-    CacheProperties properties;
+    @Bean
+    @ConditionalOnMissingBean(Factory.class)
+    public Factory factory() {
+        return new Factory();
+    }
 
     /**
      * Creates the default cache backend from {@code bus.cache.*}.
@@ -91,7 +102,6 @@ public class CacheConfiguration {
      */
     @Bean("defaultCache")
     @Primary
-    @ConditionalOnProperty(prefix = GeniusBuilder.CACHE, name = "type")
     @ConditionalOnMissingBean(name = "defaultCache")
     public CacheX<String, Object> defaultCache(Factory factory) {
         return factory.initialize(this.properties);
@@ -100,42 +110,33 @@ public class CacheConfiguration {
     /**
      * Creates the {@link AspectjCacheProxy} bean.
      * <p>
-     * Returns {@code null} when no cache backend is configured, leaving caching inactive.
+     * Uses the named default backend when no explicit cache map is supplied.
      * </p>
      *
-     * @param factory              cache factory
-     * @param defaultCacheProvider optional default cache provider
-     * @return configured proxy, or {@code null} if no configuration is present
+     * @param factory      cache factory
+     * @param defaultCache named default cache backend
+     * @return configured proxy
      * @throws IllegalArgumentException on unknown type values or missing required properties
      */
     @Bean
+    @ConditionalOnMissingBean(AspectjCacheProxy.class)
     public AspectjCacheProxy cacheConfigurer(
             Factory factory,
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider) {
+            @Qualifier("defaultCache") CacheX<String, Object> defaultCache) {
         try {
             Map<String, CacheX> caches = this.properties.getMap();
             if (MapKit.isEmpty(caches)) {
-                CacheX<String, Object> backend = defaultCacheProvider.getIfAvailable();
-                if (backend == null && factory.hasBackend(this.properties)) {
-                    backend = factory.initialize(this.properties);
-                }
-                if (backend != null) {
-                    caches = Map.of("default", backend);
-                }
+                caches = Map.of("default", defaultCache);
             }
 
-            JdbcProperties providerCfg = this.properties.getProvider();
+            CacheProperties.Collector providerCfg = this.properties.getProvider();
             boolean hasCollector = providerCfg != null && StringKit.isNotEmpty(providerCfg.getKey());
-
-            if (MapKit.isEmpty(caches)) {
-                return null;
-            }
 
             Context context = Context.newConfig(caches);
             if (hasCollector) {
                 context.setCollector(createCollector(providerCfg));
             }
-            return new AspectjCacheProxy(context);
+            return new AspectjCacheProxy(Module.instance(context));
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -149,7 +150,13 @@ public class CacheConfiguration {
         }
     }
 
-    private Collector createCollector(JdbcProperties cfg) {
+    /**
+     * Collects non-null cache backend specifications in stable order.
+     *
+     * @param cfg cache configuration to adapt
+     * @return the cache collector backed by the selected factory
+     */
+    private Collector createCollector(CacheProperties.Collector cfg) {
         if (cfg == null || StringKit.isEmpty(cfg.getKey())) {
             return null;
         }

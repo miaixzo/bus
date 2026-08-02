@@ -19,15 +19,19 @@
 */
 package org.miaixz.bus.starter.dubbo;
 
-import jakarta.annotation.Resource;
-
+import org.apache.dubbo.config.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for Apache Dubbo.
+ * Configures Apache Dubbo service scanning from the bound Starter properties.
  * <p>
  * This class enables the {@link DubboProperties}, which in turn configures the necessary Dubbo beans for the
  * application context.
@@ -37,20 +41,95 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { DubboProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.DUBBO, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.apache.dubbo.config.ApplicationConfig")
+@ConditionalOnProperty(prefix = GeniusBuilder.DUBBO, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class DubboConfiguration {
 
     /**
-     * Constructs a new DubboConfiguration instance.
+     * Bound dubbo configuration properties.
      */
-    public DubboConfiguration() {
-        // No initialization required.
+    private final DubboProperties properties;
+
+    /**
+     * Stores the Dubbo scanning policy used to create framework configuration Beans.
+     *
+     * @param properties bound configuration properties
+     */
+    public DubboConfiguration(DubboProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * Injected Dubbo configuration properties.
+     * Creates the Dubbo application configuration bean.
+     *
+     * @return the configured Dubbo application settings
      */
-    @Resource
-    DubboProperties properties;
+    @Bean
+    @ConditionalOnMissingBean(ApplicationConfig.class)
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".application")
+    public ApplicationConfig applicationConfig() {
+        return new ApplicationConfig();
+    }
+
+    /**
+     * Creates the Dubbo provider configuration bean.
+     *
+     * @return the configured Dubbo provider settings
+     */
+    @Bean
+    @ConditionalOnMissingBean(ProviderConfig.class)
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".provider")
+    public ProviderConfig providerConfig() {
+        return new ProviderConfig();
+    }
+
+    /**
+     * Creates the Dubbo monitor configuration bean.
+     *
+     * @return the configured Dubbo monitor settings
+     */
+    @Bean
+    @ConditionalOnMissingBean(MonitorConfig.class)
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".monitor")
+    public MonitorConfig monitorConfig() {
+        return new MonitorConfig();
+    }
+
+    /**
+     * Creates the Dubbo consumer configuration bean.
+     *
+     * @return the configured Dubbo consumer settings
+     */
+    @Bean
+    @ConditionalOnMissingBean(ConsumerConfig.class)
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".consumer")
+    public ConsumerConfig consumerConfig() {
+        return new ConsumerConfig();
+    }
+
+    /**
+     * Creates the Dubbo registry configuration bean.
+     *
+     * @return the configured Dubbo registry settings
+     */
+    @Bean
+    @ConditionalOnMissingBean(RegistryConfig.class)
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".registry")
+    public RegistryConfig registryConfig() {
+        return new RegistryConfig();
+    }
+
+    /**
+     * Creates the Dubbo protocol configuration bean.
+     *
+     * @return the configured Dubbo protocol settings
+     */
+    @Bean
+    @ConditionalOnMissingBean(ProtocolConfig.class)
+    @ConfigurationProperties(prefix = GeniusBuilder.DUBBO + ".protocol")
+    public ProtocolConfig protocolConfig() {
+        return new ProtocolConfig();
+    }
 
 }

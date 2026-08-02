@@ -22,15 +22,15 @@ package org.miaixz.bus.starter.auth;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.cache.Options;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Authorization configuration properties.
@@ -43,22 +43,32 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @Getter
-@Setter
 @ConfigurationProperties(prefix = GeniusBuilder.AUTH)
-public class AuthProperties {
+public final class AuthProperties {
 
     /**
-     * Constructs a new AuthProperties instance.
+     * Binds immutable authorization provider and cache settings from {@code bus.auth}.
+     *
+     * @param enabled whether authorization integration is enabled
+     * @param type    provider configuration grouped by authorization registry type
+     * @param cache   cache backend settings used by authorization services
      */
-    public AuthProperties() {
-        // No initialization required.
+    public AuthProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
+        this.enabled = enabled;
+        this.type = type == null ? Map.of() : Map.copyOf(type);
+        this.cache = cache;
     }
+
+    /**
+     * Whether the auth integration is enabled.
+     */
+    private final boolean enabled;
 
     /**
      * A map of authorization provider configurations, where the key is the provider {@link Registry} type and the value
      * is the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private final Map<Registry, Context> type;
 
     /**
      * Nested cache backend options for the authorization module.
@@ -68,6 +78,11 @@ public class AuthProperties {
      * </p>
      */
     @NestedConfigurationProperty
-    private Options cache;
+    private final Options cache;
+
+    @Override
+    public String toString() {
+        return "AuthProperties[enabled=" + this.enabled + ", providerCount=" + this.type.size() + ", cache=<masked>]";
+    }
 
 }

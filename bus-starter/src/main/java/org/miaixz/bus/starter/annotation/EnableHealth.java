@@ -28,9 +28,8 @@ import org.miaixz.bus.starter.health.HealthConfiguration;
 /**
  * Enables application health monitoring and management features.
  * <p>
- * This annotation imports the {@link HealthConfiguration}, which sets up beans for gathering system metrics (CPU,
- * memory, etc.) and provides REST endpoints for liveness ({@code /broken}, {@code /correct}) and readiness
- * ({@code /accept}, {@code /refuse}) probes, which are essential for container orchestration platforms like Kubernetes.
+ * This annotation imports the {@link HealthConfiguration}, which observes Spring Boot availability events and exposes
+ * selected system metrics through Spring Boot's standard health infrastructure when it is available.
  *
  * @author Kimi Liu
  * @since Java 21+

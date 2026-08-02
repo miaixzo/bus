@@ -19,46 +19,48 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import jakarta.annotation.Resource;
-
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pay.Complex;
-import org.miaixz.bus.pay.cache.PayCache;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for the integrated payment service. This class sets up the necessary beans for the payment
- * functionality based on the provided properties.
+ * Configures the integrated payment service. This class sets up the necessary beans for the payment functionality based
+ * on the provided properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { PayProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.PAY, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.pay.Provider")
+@ConditionalOnProperty(prefix = GeniusBuilder.PAY, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class PayConfiguration {
 
     /**
-     * Constructs a new PayConfiguration instance.
+     * Bound pay configuration properties.
      */
-    public PayConfiguration() {
-        // No initialization required.
-    }
+    private final PayProperties properties;
 
     /**
-     * Injected payment configuration properties.
+     * Stores the payment-provider definitions used to construct the payment registry and service.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    private PayProperties properties;
+    public PayConfiguration(PayProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates the {@link PayService} bean.
@@ -67,10 +69,10 @@ public class PayConfiguration {
      * @param cache   The payment cache instance.
      * @return A new instance of {@link PayService}.
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     @ConditionalOnBean(Complex.class)
     @ConditionalOnMissingBean(PayService.class)
-    public PayService payProviderFactory(Complex complex, @Qualifier("payCache") CacheX<String, Object> cache) {
+    PayService payService(Complex complex, @Qualifier("payCache") CacheX<String, Object> cache) {
         return new PayService(this.properties, complex, cache);
     }
 
@@ -81,27 +83,19 @@ public class PayConfiguration {
      * <ul>
      * <li>If {@code bus.pay.cache.*} configures a concrete backend type, create a pay-specific cache through
      * {@link Factory}.</li>
-     * <li>If {@code bus.pay.cache.type=default} or no pay-specific backend is configured, reuse the shared
-     * {@code defaultCache} bean when available.</li>
-     * <li>If neither pay nor global cache is configured, fall back to {@link PayCache#INSTANCE}.</li>
+     * <li>If no pay-specific backend is configured, create a Context-local memory cache.</li>
      * </ul>
      *
-     * @param defaultCacheProvider shared default cache provider
-     * @param factoryProvider      optional shared cache factory provider
      * @return payment cache implementation
-     *
      */
     @Bean("payCache")
     @ConditionalOnBean(Complex.class)
     @ConditionalOnMissingBean(name = "payCache")
-    public CacheX<String, Object> payCache(
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider,
-            ObjectProvider<Factory> factoryProvider) {
+    public CacheX<String, Object> payCache() {
         if (hasPayBackend()) {
-            return factoryProvider.getIfAvailable(Factory::new).initialize(this.properties.getCache());
+            return new Factory().initialize(this.properties.getCache());
         }
-        CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
-        return defaultCache != null ? defaultCache : PayCache.INSTANCE;
+        return new MemoryCache<>();
     }
 
     /**

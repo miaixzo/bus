@@ -20,110 +20,166 @@
 package org.miaixz.bus.starter.image;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for image processing and analysis, particularly for DICOM.
+ * Immutable image processing and DICOM server properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.IMAGE)
-public class ImageProperties {
+public final class ImageProperties {
 
     /**
-     * Constructs a new ImageProperties instance.
+     * Whether the image integration is enabled.
      */
-    public ImageProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Whether native OpenCV integration is enabled.
+     */
+    private final boolean opencv;
+    /**
+     * Remote DICOM server connection settings.
+     */
+    private final boolean server;
+    /**
+     * Local directory used for DICOM input and intermediate files.
+     */
+    private final String dcmDir;
+    /**
+     * Local directory used for rendered image output.
+     */
+    private final String imgDir;
+    /**
+     * DICOM peer node definitions keyed by logical name.
+     */
+    private final Node node;
+
+    /**
+     * Creates validated image properties.
+     *
+     * @param enabled whether image integration is enabled
+     * @param opencv  whether OpenCV processing is enabled
+     * @param server  whether the DICOM server is enabled
+     * @param dcmDir  DICOM storage directory
+     * @param imgDir  converted image storage directory
+     * @param node    DICOM node options
+     */
+    public ImageProperties(@DefaultValue("false") boolean enabled, @DefaultValue("false") boolean opencv,
+            @DefaultValue("false") boolean server, String dcmDir, String imgDir, @DefaultValue Node node) {
+        Node effectiveNode = node == null ? new Node() : node;
+        if (effectiveNode.port() != 0 && (effectiveNode.port() < 1 || effectiveNode.port() > 65535)) {
+            throw new IllegalArgumentException("bus.image.node.port must be in 1..65535");
+        }
+        if (opencv && blank(imgDir)) {
+            throw new IllegalArgumentException("bus.image.img-dir is required when OpenCV is enabled");
+        }
+        if (server && (blank(dcmDir) || blank(effectiveNode.host()) || effectiveNode.port() < 1
+                || blank(effectiveNode.aeTitle()) || blank(effectiveNode.sopClasses())
+                || blank(effectiveNode.sopClassesUID()) || blank(effectiveNode.sopClassesTCS()))) {
+            throw new IllegalArgumentException(
+                    "DICOM server requires dcm-dir, host, port, ae-title and all three SOP resource paths");
+        }
+        this.enabled = enabled;
+        this.opencv = opencv;
+        this.server = server;
+        this.dcmDir = dcmDir;
+        this.imgDir = imgDir;
+        this.node = effectiveNode;
     }
 
     /**
-     * Configuration for the DICOM node/server.
-     */
-    private Node node = new Node();
-
-    /**
-     * Whether to enable OpenCV for advanced image processing tasks.
-     */
-    private boolean opencv;
-
-    /**
-     * Whether to enable the DICOM server functionality.
-     */
-    private boolean server;
-
-    /**
-     * The directory path for saving original DICOM (.dcm) files.
-     */
-    private String dcmDir;
-
-    /**
-     * The directory path for saving converted image files (e.g., JPEG, PNG).
-     */
-    private String imgDir;
-
-    /**
-     * Nested class for DICOM server (node) information.
+     * Returns whether a configuration string is absent or blank.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param value configuration string
+     * @return {@code true} when the string is absent or blank
      */
-    @Getter
-    @Setter
-    public class Node {
+    private static boolean blank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    /**
+     * DICOM node configuration.
+     *
+     * @param host          network host
+     * @param port          network port
+     * @param aeTitle       ae title
+     * @param negociation   content-negotiation settings
+     * @param sopClasses    sop classes
+     * @param sopClassesUID sop classes uid
+     * @param sopClassesTCS sop classes tcs
+     */
+    public record Node(String host, int port, String aeTitle, boolean negociation, String sopClasses,
+            String sopClassesUID, String sopClassesTCS) {
 
         /**
-         * Constructs a new Node instance.
+         * Creates empty disabled-server defaults.
          */
         public Node() {
-            // No initialization required.
+            this(null, 0, null, false, null, null, null);
         }
 
         /**
-         * The hostname or IP address of the DICOM server.
+         * Exposes the remote DICOM peer host name or address.
+         *
+         * @return node host
          */
-        private String host;
+        public String getHost() {
+            return host;
+        }
 
         /**
-         * The port number of the DICOM server.
+         * Exposes the remote DICOM peer listening port.
+         *
+         * @return node port
          */
-        private String port;
+        public int getPort() {
+            return port;
+        }
 
         /**
-         * The Application Entity (AE) title of the DICOM server.
+         * Exposes the DICOM application entity title used for association negotiation.
+         *
+         * @return application entity title
          */
-        private String aeTitle;
+        public String getAeTitle() {
+            return aeTitle;
+        }
 
         /**
-         * Whether to enable negotiation of transfer syntax by UID or name.
+         * Returns the configured DICOM service-object pair class names.
+         *
+         * @return SOP classes resource
          */
-        private boolean negociation;
+        public String getSopClasses() {
+            return sopClasses;
+        }
 
         /**
-         * Specifies the SOP classes and transfer syntaxes by their UID or name. Corresponds to the
-         * {@code sop-classes.properties} file.
+         * Returns the configured DICOM service-object pair class UIDs.
+         *
+         * @return SOP class UID resource
          */
-        private String sopClasses;
+        public String getSopClassesUID() {
+            return sopClassesUID;
+        }
 
         /**
-         * Defines related general-purpose SOP classes according to DICOM Part 4, B.3.1.4. Corresponds to the
-         * {@code sop-classes-uid.properties} file.
+         * Returns the configured transfer syntaxes for the service-object pair classes.
+         *
+         * @return SOP transfer capabilities resource
          */
-        private String sopClassesUID;
-
-        /**
-         * Extended storage transfer capabilities for SOP classes and transfer syntaxes. Corresponds to the
-         * {@code sop-classes-tcs.properties} file.
-         */
-        private String sopClassesTCS;
-
+        public String getSopClassesTCS() {
+            return sopClassesTCS;
+        }
     }
 
 }

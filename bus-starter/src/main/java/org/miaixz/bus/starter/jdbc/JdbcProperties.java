@@ -19,147 +19,111 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for Druid DataSource.
+ * Immutable Bus dynamic-datasource properties bound only from {@code bus.jdbc}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
-@ConfigurationProperties(prefix = GeniusBuilder.DATASOURCE)
-public class JdbcProperties {
+@Validated
+@ConfigurationProperties(prefix = GeniusBuilder.JDBC)
+public final class JdbcProperties {
 
     /**
-     * Constructs a new JdbcProperties instance.
+     * Whether the jdbc integration is enabled.
      */
-    public JdbcProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Routing key of the data source selected when no explicit key is active.
+     */
+    private final String primary;
+    /**
+     * Data source definitions keyed by their routing names.
+     */
+    private final Map<String, DataSourceSpec> datasources;
+
+    /**
+     * Creates and validates JDBC properties.
+     *
+     * @param enabled     whether Bus dynamic JDBC is enabled
+     * @param primary     primary datasource name
+     * @param datasources named datasource specifications
+     */
+    public JdbcProperties(@DefaultValue("false") boolean enabled, String primary,
+            @DefaultValue Map<String, DataSourceSpec> datasources) {
+        LinkedHashMap<String, DataSourceSpec> normalized = new LinkedHashMap<>();
+        if (datasources != null) {
+            datasources.forEach((name, spec) -> {
+                String key = name == null ? Normal.EMPTY : name.trim();
+                if (key.isEmpty() || spec == null || normalized.putIfAbsent(key, spec) != null) {
+                    throw new IllegalArgumentException("bus.jdbc.datasources requires unique nonblank names and specs");
+                }
+            });
+        }
+        String normalizedPrimary = primary == null ? null : primary.trim();
+        if (enabled && (normalized.isEmpty() || normalizedPrimary == null || normalizedPrimary.isEmpty()
+                || !normalized.containsKey(normalizedPrimary))) {
+            throw new IllegalArgumentException("Enabled bus.jdbc requires datasources and a matching primary name");
+        }
+        this.enabled = enabled;
+        this.primary = normalizedPrimary;
+        this.datasources = Map.copyOf(normalized);
     }
 
     /**
-     * The name of the data source.
+     * One immutable datasource specification.
+     *
+     * @param url             service endpoint URL
+     * @param username        authentication username
+     * @param password        authentication password
+     * @param driverClassName driver class name
+     * @param type            data source implementation or pool type
+     * @param properties      bound feature configuration properties
      */
-    private String name;
+    public record DataSourceSpec(String url, String username, String password, String driverClassName, String type,
+            Map<String, Object> properties) {
 
-    /**
-     * The connection URL for the data source.
-     */
-    private String url;
+        /**
+         * Validates a datasource specification and defensively copies vendor properties.
+         */
+        public DataSourceSpec {
+            if (blank(url) || blank(driverClassName) || blank(type)) {
+                throw new IllegalArgumentException("Datasource url, driver-class-name and type are required");
+            }
+            properties = properties == null ? Map.of() : Map.copyOf(properties);
+        }
 
-    /**
-     * The username for the database.
-     */
-    private String username;
+        /**
+         * Returns whether a data source property is absent or blank.
+         *
+         * @param value data source property
+         * @return {@code true} when the property is absent or blank
+         */
+        private static boolean blank(String value) {
+            return value == null || value.isBlank();
+        }
 
-    /**
-     * The password for the database.
-     */
-    private String password;
-
-    /**
-     * The type of the connection pool (e.g., com.alibaba.druid.pool.DruidDataSource).
-     */
-    private String type;
-
-    /**
-     * The fully qualified name of the JDBC driver.
-     */
-    private String driverClassName;
-
-    /**
-     * Filters for monitoring and statistics (e.g., stat, wall, log4j).
-     */
-    private String filters;
-
-    /**
-     * The minimum number of idle connections in the pool.
-     */
-    private String minIdle;
-
-    /**
-     * The minimum time a connection can be idle before it is eligible for eviction (default: 30 minutes).
-     */
-    private String minEvictableIdleTimeMillis;
-
-    /**
-     * The maximum time a connection can be idle before it is eligible for eviction (default: 7 hours).
-     */
-    private String maxEvictableIdleTimeMillis;
-
-    /**
-     * The SQL query used to validate connections.
-     */
-    private String validationFilter;
-
-    /**
-     * Whether to cache PreparedStatements.
-     */
-    private boolean poolPreparedStatements;
-
-    /**
-     * The maximum number of open PreparedStatements to cache.
-     */
-    private String maxOpenPreparedStatements;
-
-    /**
-     * The interval in milliseconds for the evictor thread to run and check for idle connections.
-     */
-    private String timeBetweenEvictionRunsMillis;
-
-    /**
-     * The maximum number of active connections in the pool.
-     */
-    private int maxActive;
-
-    /**
-     * The initial number of connections to create when the pool is started.
-     */
-    private int initialSize;
-
-    /**
-     * The maximum time in milliseconds to wait for a connection when the pool is full.
-     */
-    private int maxWait;
-
-    /**
-     * Recommended to be true for security and reliability. It checks if a connection is valid before borrowing it if it
-     * has been idle for longer than timeBetweenEvictionRunsMillis.
-     */
-    private boolean testWhileIdle;
-
-    /**
-     * Whether to validate the connection with validationFilter when borrowing it from the pool. Can impact performance.
-     */
-    private boolean testOnBorrow;
-
-    /**
-     * Whether to validate the connection with validationFilter when returning it to the pool. Can impact performance.
-     */
-    private boolean testOnReturn;
-
-    /**
-     * The private key for decrypting data source information.
-     */
-    private String privateKey;
-
-    /**
-     * A unique key to identify this data source in a multi-data-source configuration.
-     */
-    private String key;
-
-    /**
-     * A list of properties for configuring multiple data sources.
-     */
-    private List<JdbcProperties> multi;
+        /**
+         * @return safe diagnostic text
+         */
+        @Override
+        public String toString() {
+            return "DataSourceSpec[url=" + url + ", username=***, password=***, driverClassName=" + driverClassName
+                    + ", type=" + type + ", properties=" + properties.keySet() + "]";
+        }
+    }
 
 }

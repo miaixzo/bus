@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Fabric communication service support.
+ * Activates TCP and WebSocket fabric services and binds their transport properties. This non-exported package contains
+ * Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -18,10 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides Vortex gateway configuration and Spring Boot integration.
- * <p>
- * This package contains auto-configuration classes, property bindings, and beans for setting up the Vortex reactive
- * gateway in Spring Boot applications.
+ * Activates bus-vortex integration and binds its server properties. This non-exported package contains Starter assembly
+ * rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

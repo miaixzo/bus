@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.notify;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -77,17 +78,17 @@ import org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class NotifyService {
+public final class NotifyService implements AutoCloseable {
 
     /**
      * Cache for storing registered notification components. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private final Map<Registry, Context> cache = new ConcurrentHashMap<>();
 
     /**
      * Notification configuration properties, containing settings for various notification components.
      */
-    public NotifyProperties properties;
+    private final NotifyProperties properties;
 
     /**
      * Constructs an instance of the notification service provider with the specified configuration properties.
@@ -95,7 +96,7 @@ public class NotifyService {
      * @param properties The notification configuration properties (must not be null).
      */
     public NotifyService(NotifyProperties properties) {
-        this.properties = properties;
+        this.properties = Objects.requireNonNull(properties, "properties");
     }
 
     /**
@@ -106,11 +107,12 @@ public class NotifyService {
      * @param context  The context of the notification component (must not be null).
      * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry registry, Context context) {
-        if (CACHE.containsKey(registry)) {
+    public void register(Registry registry, Context context) {
+        Objects.requireNonNull(registry, "registry");
+        Objects.requireNonNull(context, "context");
+        if (this.cache.putIfAbsent(registry, context) != null) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
-        CACHE.putIfAbsent(registry, context);
     }
 
     /**
@@ -123,7 +125,8 @@ public class NotifyService {
      */
     public Provider require(Registry registry) {
         // Get the notification component context from the cache
-        Context context = CACHE.get(registry);
+        Objects.requireNonNull(registry, "registry");
+        Context context = this.cache.get(registry);
         // If not in the cache, get it from the properties
         if (ObjectKit.isEmpty(context)) {
             context = this.properties.getType().get(registry);
@@ -189,6 +192,14 @@ public class NotifyService {
                 // If no matching notification type is found, throw an exception
                 throw new InternalException(ErrorCode._100803.getValue());
         }
+    }
+
+    /**
+     * Clears all notification channel configuration owned by this application context.
+     */
+    @Override
+    public void close() {
+        this.cache.clear();
     }
 
 }

@@ -86,7 +86,7 @@ public class PlaceHolderHandler implements InvocationHandler {
      * @param proxy  The proxy instance that the method was invoked on.
      * @param method The {@link Method} instance corresponding to the interface method invoked on the proxy instance.
      * @param args   An array of objects containing the values of the arguments passed in the method invocation.
-     * @return The result of the method invocation, with placeholders resolved.
+     * @return the value returned by the invocation after placeholder resolution
      * @throws Throwable if an exception occurs during method invocation or placeholder resolution.
      */
     @Override

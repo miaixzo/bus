@@ -30,7 +30,7 @@ import org.springframework.core.env.Environment;
 public class DefaultPlaceHolderBinder implements PlaceHolderBinder {
 
     /**
-     * Constructs a new {@code DefaultPlaceHolderBinder} instance.
+     * Initializes a stateless binder that delegates placeholder resolution to a supplied Spring environment.
      */
     public DefaultPlaceHolderBinder() {
         // No initialization required.

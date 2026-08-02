@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides Spring-related utility classes and integrations.
+ * Instance-scoped Spring integration facades and context APIs. This root package must not depend on bus-starter or
+ * Starter feature activation.
  *
  * @author Kimi Liu
  * @since Java 21+

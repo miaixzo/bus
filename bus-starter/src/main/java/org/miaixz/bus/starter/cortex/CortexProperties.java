@@ -19,143 +19,165 @@
 */
 package org.miaixz.bus.starter.cortex;
 
+import java.time.Duration;
+
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.cache.Hybrid;
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for Bus Cortex starter wiring.
- * <p>
- * For client-side integrations that talk to a remote Cortex server, a minimal setup typically starts with
- * {@code bus.cortex.server-addr}. The remaining properties tune starter-provisioned cache behavior, watch delivery,
- * bridge wiring, and optional server-side components.
- * </p>
+ * Immutable Cortex starter configuration.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(GeniusBuilder.CORTEX)
-public class CortexProperties {
+public final class CortexProperties {
 
     /**
-     * Constructs a new CortexProperties instance.
+     * Whether the cortex integration is enabled.
      */
-    public CortexProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Cortex server address used by configuration and watch clients.
+     */
+    private final String serverAddr;
+    /**
+     * Logical namespace that isolates Cortex data and watches.
+     */
+    private final String namespace;
+    /**
+     * Whether this application registers itself with Cortex during startup.
+     */
+    private final boolean autoRegister;
+    /**
+     * Whether remote Cortex settings are loaded into the Spring environment.
+     */
+    private final boolean settingEnabled;
+    /**
+     * Whether embedded Cortex server integration is enabled.
+     */
+    private final boolean serverEnabled;
+    /**
+     * Remote configuration group queried by the settings client.
+     */
+    private final String settingGroup;
+    /**
+     * Remote configuration data identifier queried by the settings client.
+     */
+    private final String settingDataId;
+    /**
+     * Maximum number of remote setting versions retained locally.
+     */
+    private final int maxSettingVersions;
+    /**
+     * Maximum active watches permitted within one namespace.
+     */
+    private final int maxWatchesPerNamespace;
+    /**
+     * Inactivity duration after which a watch is expired.
+     */
+    private final Duration watchExpire;
+    /**
+     * Time-to-live applied to locally cached Cortex data.
+     */
+    private final Duration cacheExpire;
+    /**
+     * Cache backend settings used by the Cortex integration.
+     */
+    private final Options cache;
+    /**
+     * Watch delivery and lifecycle settings.
+     */
+    private final Watch watch;
+    /**
+     * External configuration bridge settings.
+     */
+    private final Bridge bridge;
+    /**
+     * Request authorization settings for Cortex operations.
+     */
+    private final Guard guard;
+    /**
+     * Audit event collection and retention settings.
+     */
+    private final Audit audit;
+    /**
+     * Version-history limits and retention settings.
+     */
+    private final Version version;
+
+    /**
+     * Creates Cortex properties after validating limits for caching, watches, bridging, security, and history.
+     *
+     * @param enabled                whether Cortex integration is enabled
+     * @param serverAddr             remote server address
+     * @param namespace              client namespace
+     * @param autoRegister           whether local APIs are registered automatically
+     * @param settingEnabled         whether setting integration is enabled
+     * @param serverEnabled          whether this application hosts Cortex server components
+     * @param settingGroup           default setting group
+     * @param settingDataId          default setting identifier
+     * @param maxSettingVersions     retained setting revision count
+     * @param maxWatchesPerNamespace watch registration limit per namespace
+     * @param watchExpire            watch registration expiry
+     * @param cacheExpire            default Cortex cache expiry
+     * @param cache                  optional cache backend options
+     * @param watch                  watch options
+     * @param bridge                 bridge options
+     * @param guard                  guard options
+     * @param audit                  audit options
+     * @param version                version-registry options
+     */
+    public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue(Normal.EMPTY) String serverAddr,
+            @DefaultValue(Normal.DEFAULT) String namespace, @DefaultValue("true") boolean autoRegister,
+            @DefaultValue("true") boolean settingEnabled, @DefaultValue("false") boolean serverEnabled,
+            @DefaultValue("DEFAULT") String settingGroup, @DefaultValue(Normal.EMPTY) String settingDataId,
+            @DefaultValue("10") int maxSettingVersions, @DefaultValue("1000") int maxWatchesPerNamespace,
+            @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
+            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
+            @DefaultValue Audit audit, @DefaultValue Version version) {
+        if (maxSettingVersions <= 0 || maxWatchesPerNamespace <= 0) {
+            throw new IllegalArgumentException("Cortex version and watch limits must be greater than zero");
+        }
+        if (watchExpire == null || watchExpire.isZero() || watchExpire.isNegative() || cacheExpire == null
+                || cacheExpire.isZero() || cacheExpire.isNegative()) {
+            throw new IllegalArgumentException("Cortex expiry values must be greater than zero");
+        }
+        this.enabled = enabled;
+        this.serverAddr = serverAddr;
+        this.namespace = namespace;
+        this.autoRegister = autoRegister;
+        this.settingEnabled = settingEnabled;
+        this.serverEnabled = serverEnabled;
+        this.settingGroup = settingGroup;
+        this.settingDataId = settingDataId;
+        this.maxSettingVersions = maxSettingVersions;
+        this.maxWatchesPerNamespace = maxWatchesPerNamespace;
+        this.watchExpire = watchExpire;
+        this.cacheExpire = cacheExpire;
+        this.cache = cache;
+        this.watch = watch == null ? new Watch(false) : watch;
+        this.bridge = bridge == null ? new Bridge("pull-only", Normal.EMPTY, 3, Normal.EMPTY) : bridge;
+        this.guard = guard == null ? new Guard(true, new Token()) : guard;
+        this.audit = audit == null ? new Audit(false) : audit;
+        this.version = version == null ? new Version(false) : version;
     }
 
     /**
-     * Enables the Cortex starter.
-     */
-    private boolean enabled = true;
-
-    /**
-     * Optional remote Cortex server address used by client-side integrations.
-     */
-    private String serverAddr = Normal.EMPTY;
-
-    /**
-     * Namespace used by the client.
-     */
-    private String namespace = Normal.DEFAULT;
-
-    /**
-     * Reserved starter flag for automatic self-registration of local API services.
-     */
-    private boolean autoRegister = true;
-
-    /**
-     * Enables setting-related starter wiring and production-store validation paths.
-     */
-    private boolean settingEnabled = true;
-
-    /**
-     * Marks the current application as a server-side Cortex deployment.
-     */
-    private boolean serverEnabled = false;
-
-    /**
-     * Reserved default remote setting group for external bootstrap integrations.
-     */
-    private String settingGroup = "DEFAULT";
-
-    /**
-     * Reserved default remote setting data identifier for external bootstrap integrations.
-     */
-    private String settingDataId = Normal.EMPTY;
-
-    /**
-     * Maximum number of historical {@code setting.item.revision} snapshots retained after publish and rollback
-     * operations.
-     */
-    private int maxSettingVersions = 10;
-
-    /**
-     * Maximum number of watch registrations allowed in a single namespace.
-     */
-    private int maxWatchesPerNamespace = 1000;
-
-    /**
-     * Watch expiration time in milliseconds.
-     */
-    private long watchExpireMs = 86400000L;
-
-    /**
-     * Default expiration time in milliseconds for the starter-provisioned Cortex cache.
-     */
-    private long cacheExpireMs = Hybrid.DEFAULT_EXPIRE_MS;
-
-    /**
-     * Nested cache backend options for Cortex.
-     * <p>
-     * When present, these options are overlaid on top of the Cortex starter defaults so callers may override only a
-     * subset of backend settings under {@code bus.cortex.cache.*}.
-     * </p>
-     */
-    @NestedConfigurationProperty
-    private Options cache;
-
-    /**
-     * Watch-specific starter properties.
-     */
-    private Watch watch = new Watch();
-
-    /**
-     * Bridge-specific starter properties.
-     */
-    private Bridge bridge = new Bridge();
-
-    /**
-     * Guard-specific starter properties.
-     */
-    private Guard guard = new Guard();
-
-    /**
-     * Audit-specific starter properties.
-     */
-    private Audit audit = new Audit();
-
-    /**
-     * Version-registry starter properties.
-     */
-    private Version version = new Version();
-
-    /**
-     * Returns the required server address.
+     * Validates the server addr.
      *
-     * @return trimmed server address
-     * @throws IllegalStateException if {@code bus.cortex.server-addr} is blank
+     * @return required trimmed server address
      */
     public String requireServerAddr() {
         if (StringKit.isBlank(serverAddr)) {
@@ -165,256 +187,206 @@ public class CortexProperties {
     }
 
     /**
-     * Returns the effective namespace.
+     * Validates the namespace.
      *
-     * @return configured namespace or the default namespace when blank
+     * @return configured nonblank namespace
      */
     public String requireNamespace() {
-        return StringKit.isBlank(namespace) ? Normal.DEFAULT : namespace.trim();
+        if (StringKit.isBlank(namespace)) {
+            throw new IllegalStateException("bus.cortex.namespace is required");
+        }
+        return namespace.trim();
     }
 
     /**
-     * Compatibility alias for legacy callers. Prefer {@link #requireNamespace()}.
+     * Validates the max setting versions.
      *
-     * @return configured namespace or the default namespace when blank
-     */
-    public String requireScope() {
-        return requireNamespace();
-    }
-
-    /**
-     * Returns the effective maximum retained {@code setting.item.revision} count.
-     *
-     * @return positive max version count
+     * @return retained setting revision count
      */
     public int requireMaxSettingVersions() {
-        return maxSettingVersions > 0 ? maxSettingVersions : 10;
+        return maxSettingVersions;
     }
 
     /**
-     * Returns the effective watch registration cap.
+     * Validates the max watches per namespace.
      *
-     * @return positive watch cap
+     * @return watch registration limit
      */
     public int requireMaxWatchesPerNamespace() {
-        return maxWatchesPerNamespace > 0 ? maxWatchesPerNamespace : 1000;
+        return maxWatchesPerNamespace;
     }
 
     /**
-     * Returns the effective watch expiration timeout.
+     * Validates the watch expire ms.
      *
-     * @return positive watch expiration in milliseconds
+     * @return watch expiry in milliseconds
      */
     public long requireWatchExpireMs() {
-        return watchExpireMs > 0L ? watchExpireMs : 86400000L;
+        return watchExpire.toMillis();
     }
 
     /**
-     * Returns the configured cache expiration timeout.
+     * Validates the cache expire ms.
      *
-     * @return positive cache expiration in milliseconds
+     * @return cache expiry in milliseconds
      */
     public long requireCacheExpireMs() {
-        return cacheExpireMs > 0L ? cacheExpireMs : Hybrid.DEFAULT_EXPIRE_MS;
+        return cacheExpire.toMillis();
     }
 
     /**
-     * Nested watch properties.
+     * Watch integration options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param loggingEnabled logging enabled
      */
-    @Getter
-    @Setter
-    public static class Watch {
+    public record Watch(boolean loggingEnabled) {
 
         /**
-         * Creates the nested watch-property holder.
+         * Creates watch defaults.
          */
         public Watch() {
-            // No initialization required.
+            this(false);
         }
-
-        /**
-         * Enables registration of the builtin logging watch listener.
-         */
-        private boolean loggingEnabled = false;
-
     }
 
     /**
-     * Nested bridge properties.
+     * Remote bridge options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param mode       configured operating mode
+     * @param url        service endpoint URL
+     * @param maxRetries max retries
+     * @param source     source schema settings
      */
-    @Getter
-    @Setter
-    public static class Bridge {
+    public record Bridge(String mode, String url, int maxRetries, String source) {
 
         /**
-         * Creates the nested bridge-property holder.
+         * Creates and validates bridge options.
          */
-        public Bridge() {
-            // No initialization required.
+        public Bridge {
+            mode = StringKit.isBlank(mode) ? "pull-only" : mode.trim();
+            url = url == null ? Normal.EMPTY : url.trim();
+            source = source == null ? Normal.EMPTY : source.trim();
+            if (maxRetries <= 0) {
+                throw new IllegalArgumentException("bus.cortex.bridge.max-retries must be greater than zero");
+            }
+            if ("push+pull".equalsIgnoreCase(mode) && StringKit.isBlank(url)) {
+                throw new IllegalArgumentException("bus.cortex.bridge.url is required for push+pull mode");
+            }
         }
 
         /**
-         * Bridge synchronization mode. Only {@code push+pull/pull-only} creates the remote bridge bean.
-         */
-        private String mode = "pull-only";
-
-        /**
-         * Remote Vortex bridge base URL.
-         */
-        private String url = Normal.EMPTY;
-
-        /**
-         * Maximum number of delivery retries for bridge pushes.
-         */
-        private int maxRetries = 3;
-
-        /**
-         * Optional event source marker attached to bridge payloads.
-         */
-        private String source = Normal.EMPTY;
-
-        /**
-         * Returns whether the remote bridge should be started.
+         * Indicates whether bidirectional push and pull synchronization is enabled for this bridge.
          *
-         * @return {@code true} when bridge mode is {@code push+pull}
+         * @return whether push and pull synchronization is enabled
          */
         public boolean isPushPullEnabled() {
-            return "push+pull".equalsIgnoreCase(StringKit.trim(mode));
+            return "push+pull".equalsIgnoreCase(mode);
         }
 
         /**
-         * Returns the required bridge URL.
+         * Validates the url.
          *
-         * @return trimmed bridge URL
-         * @throws IllegalStateException if the bridge URL is blank while push+pull mode is enabled
+         * @return required bridge URL
          */
         public String requireUrl() {
-            if (StringKit.isBlank(url)) {
-                throw new IllegalStateException("bus.cortex.bridge.url is required when bridge mode is push+pull");
-            }
-            return url.trim();
+            return url;
         }
 
         /**
-         * Returns the effective retry count.
+         * Validates the max retries.
          *
-         * @return positive retry count
+         * @return validated retry count
          */
         public int requireMaxRetries() {
-            return maxRetries > 0 ? maxRetries : 3;
+            return maxRetries;
         }
 
         /**
-         * Returns the optional bridge source marker.
+         * Resolves the source.
          *
-         * @return trimmed source marker or empty string
+         * @return normalized source marker
          */
         public String resolveSource() {
-            return StringKit.isBlank(source) ? Normal.EMPTY : source.trim();
+            return source;
         }
-
     }
 
     /**
-     * Nested guard properties.
+     * Guard integration options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
+     * @param token   guard token
      */
-    @Getter
-    @Setter
-    public static class Guard {
+    public record Guard(boolean enabled, Token token) {
 
         /**
-         * Creates the nested guard-property holder.
+         * Creates guard defaults.
          */
         public Guard() {
-            // No initialization required.
+            this(true, new Token());
         }
 
         /**
-         * Enables default token guard configuration exposure.
+         * Returns the token.
+         *
+         * @return token guard configuration
          */
-        private boolean enabled = true;
-
-        /**
-         * Default token guard configuration.
-         */
-        private Token token = new Token();
-
+        public Token getToken() {
+            return token;
+        }
     }
 
     /**
-     * Nested token-guard properties.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
+     * Token guard binding type retained for the Cortex guard contract.
      */
-    @Getter
-    @Setter
-    public static class Token extends TokenGuardConfig {
+    public static final class Token extends TokenGuardConfig {
 
         /**
-         * Creates the nested token-property holder.
+         * Creates token guard defaults.
          */
         public Token() {
-            // No initialization required.
+            super();
         }
-
     }
 
     /**
-     * Nested audit properties.
+     * Audit integration options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
      */
-    @Getter
-    @Setter
-    public static class Audit {
+    public record Audit(boolean enabled) {
 
         /**
-         * Creates the nested audit-property holder.
+         * Creates audit defaults.
          */
         public Audit() {
-            // No initialization required.
+            this(false);
         }
-
-        /**
-         * Enables the default audit logger bean.
-         */
-        private boolean enabled = false;
-
     }
 
     /**
-     * Nested version properties.
+     * Version registry options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
      */
-    @Getter
-    @Setter
-    public static class Version {
+    public record Version(boolean enabled) {
 
         /**
-         * Creates the nested version-property holder.
+         * Creates version defaults.
          */
         public Version() {
-            // No initialization required.
+            this(false);
         }
+    }
 
-        /**
-         * Enables the version registry bean.
-         */
-        private boolean enabled = false;
-
+    /**
+     * @return safe diagnostic text
+     */
+    @Override
+    public String toString() {
+        return "CortexProperties[enabled=" + enabled + ", namespace=" + namespace + ", serverEnabled=" + serverEnabled
+                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerNamespace=" + maxWatchesPerNamespace
+                + ", watchExpire=" + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
     }
 
 }

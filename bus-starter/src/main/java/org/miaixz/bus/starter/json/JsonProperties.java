@@ -19,34 +19,77 @@
 */
 package org.miaixz.bus.starter.json;
 
+import java.util.Locale;
+
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Shared JSON provider configuration.
+ * Immutable JSON provider selection properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.JSON)
-public class JsonProperties {
+public final class JsonProperties {
 
     /**
-     * Creates JSON properties with automatic provider selection.
+     * Whether the json integration is enabled.
      */
-    public JsonProperties() {
-        // Retain field defaults for Spring configuration binding.
+    private final boolean enabled;
+    /**
+     * JSON provider selected for the current application context.
+     */
+    private final Provider provider;
+
+    /**
+     * Creates JSON properties.
+     *
+     * @param enabled  whether JSON integration is enabled
+     * @param provider requested provider
+     */
+    public JsonProperties(@DefaultValue("false") boolean enabled, @DefaultValue("AUTO") Provider provider) {
+        this.enabled = enabled;
+        this.provider = provider;
     }
 
     /**
-     * Provider name: auto, fastjson, gson, or jackson.
+     * Supported JSON provider selections.
      */
-    private String provider = "auto";
+    public enum Provider {
+
+        /**
+         * Require exactly one available provider.
+         */
+        AUTO,
+        /**
+         * Fastjson provider.
+         */
+        FASTJSON,
+        /**
+         * Gson provider.
+         */
+        GSON,
+        /**
+         * Jackson provider.
+         */
+        JACKSON;
+
+        /**
+         * Returns the canonical key used to select this JSON Provider.
+         *
+         * @return canonical provider name consumed by the JSON factory
+         */
+        public String key() {
+            return name().toLowerCase(Locale.ROOT);
+        }
+    }
 
 }

@@ -19,34 +19,70 @@
 */
 package org.miaixz.bus.starter.limiter;
 
+import java.time.Duration;
+
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.limiter.Context;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for rate limiting and circuit breaking (downgrading).
- * <p>
- * This class is bound to properties under the prefix specified by {@code GeniusBuilder.LIMITER}. It extends
- * {@link Context}, allowing all properties of the core limiter context to be configured directly in the application's
- * configuration files (e.g., {@code application.yml}).
+ * Immutable limiter starter properties, isolated from the mutable core context.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(GeniusBuilder.LIMITER)
-public class LimiterProperties extends Context {
+public final class LimiterProperties {
 
     /**
-     * Constructs a new LimiterProperties instance.
+     * Whether the limiter integration is enabled.
      */
-    public LimiterProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Retention time for hotspot limiter decisions.
+     */
+    private final Duration hotspotCacheDuration;
+    /**
+     * Whether rejected limiter decisions are written to the log.
+     */
+    private final boolean logger;
+    /**
+     * Supplier implementation used to obtain limiter resources.
+     */
+    private final String supplierClass;
+    /**
+     * Extension settings passed to the selected limiter implementation.
+     */
+    private final String extension;
+
+    /**
+     * Creates validated limiter properties.
+     *
+     * @param enabled              whether limiter integration is enabled
+     * @param hotspotCacheDuration hotspot result cache duration
+     * @param logger               whether limiter logging is enabled
+     * @param supplierClass        custom user-marker supplier class
+     * @param extension            optional extension configuration
+     */
+    public LimiterProperties(@DefaultValue("false") boolean enabled, @DefaultValue("60s") Duration hotspotCacheDuration,
+            @DefaultValue(Normal.TRUE) boolean logger, @DefaultValue(Normal.EMPTY) String supplierClass,
+            String extension) {
+        if (hotspotCacheDuration == null || hotspotCacheDuration.isZero() || hotspotCacheDuration.isNegative()
+                || hotspotCacheDuration.toSeconds() > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("bus.limiter.hotspot-cache-duration must be a positive whole duration");
+        }
+        this.enabled = enabled;
+        this.hotspotCacheDuration = hotspotCacheDuration;
+        this.logger = logger;
+        this.supplierClass = supplierClass == null ? Normal.EMPTY : supplierClass.trim();
+        this.extension = extension;
     }
 
 }

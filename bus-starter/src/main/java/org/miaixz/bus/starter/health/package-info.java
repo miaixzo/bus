@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * HealthStatus check and monitoring support.
+ * Activates system health indicators and application-availability listeners, and binds their reporting properties. This
+ * non-exported package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

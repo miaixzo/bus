@@ -18,11 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bus Cortex starter-side auto-configuration and property binding support.
- * <p>
- * The package is loaded through Spring Boot auto-configuration metadata and exposes one unified {@code bus.cortex.*}
- * configuration surface for registry, setting, watch, and bridge wiring.
- * </p>
+ * Activates bus-cortex integration and binds its endpoint and client properties. This non-exported package contains
+ * Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

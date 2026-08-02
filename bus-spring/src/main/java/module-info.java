@@ -28,11 +28,9 @@ module bus.spring {
     requires java.desktop;
     requires java.management;
 
-    requires bus.cache;
     requires bus.core;
     requires bus.extra;
     requires bus.logger;
-    requires bus.validate;
 
     requires static lombok;
     requires static jakarta.persistence;
@@ -49,13 +47,20 @@ module bus.spring {
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
-    exports org.miaixz.bus.spring.autoproxy;
-    exports org.miaixz.bus.spring.banner;
-    exports org.miaixz.bus.spring.boot;
-    exports org.miaixz.bus.spring.env;
-    exports org.miaixz.bus.spring.http;
-    exports org.miaixz.bus.spring.listener;
-    exports org.miaixz.bus.spring.metrics;
-    exports org.miaixz.bus.spring.options;
+    exports org.miaixz.bus.spring.aop;
+    exports org.miaixz.bus.spring.boot.banner;
+    exports org.miaixz.bus.spring.bean;
+    exports org.miaixz.bus.spring.web;
+    exports org.miaixz.bus.spring.web.advice;
+    exports org.miaixz.bus.spring.web.converter;
+    exports org.miaixz.bus.spring.web.interceptor;
+    exports org.miaixz.bus.spring.web.resolver;
+    exports org.miaixz.bus.spring.web.routing;
+    exports org.miaixz.bus.spring.web.wrapper;
+
+    opens org.miaixz.bus.spring.boot to spring.boot, spring.core;
+    opens org.miaixz.bus.spring.boot.environment to spring.boot;
+    opens org.miaixz.bus.spring.boot.listener to spring.boot;
+    opens org.miaixz.bus.spring.boot.startup to spring.boot;
 
 }

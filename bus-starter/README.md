@@ -1,490 +1,394 @@
-# 🚀 bus-starter: Spring Boot Integration Starter
+# bus-starter
 
-## 📖 Project Introduction
+`bus-starter` is the Spring Boot startup and feature-assembly layer for Bus. It centralizes configuration discovery,
+`bus.*` property binding, conditional feature activation, default Bean registration, third-party client lifecycle, and
+Spring AOT compatibility. Reusable Spring mechanics remain in `bus-spring`; business algorithms remain in their owning
+Bus modules.
 
-bus-starter is a comprehensive Spring Boot integration starter that provides automatic configuration and enablement for various enterprise features through simple annotations. It streamlines the integration of common frameworks and services, allowing developers to enable functionality with minimal configuration.
+## Responsibility boundary
 
-## ✨ Core Features
+The Starter is responsible for:
 
-- **Annotation-Driven**: Enable features with simple `@Enable*` annotations
-- **Auto-Configuration**: Automatic setup of beans and configurations
-- **Modular Design**: Enable only what you need
-- **Zero XML**: Pure Java-based configuration
-- **Enterprise-Ready**: Production-tested integrations
+- Spring Boot configuration discovery;
+- default-enabled shared context infrastructure;
+- opt-in product feature configuration;
+- validated immutable configuration properties;
+- conditional Beans and application override points;
+- third-party client/service creation and destruction;
+- MVC advice, filters, resolvers, and converters selected by configuration;
+- feature-specific AOT and Native Image integration.
 
-## 🚀 Quick Start
+The Starter is not a replacement for the underlying modules. It must not absorb reusable Spring mechanics from
+`bus-spring`, masking algorithms from `bus-sensitive`, logging behavior from `bus-logger`, or domain functionality from
+other Bus components.
 
-### Maven Dependency
+## Dependency
 
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-starter</artifactId>
-    <latestVersion>8.x.x</latestVersion>
+    <version>${revision}</version>
 </dependency>
 ```
 
-## 📝 Usage Examples
+Add the owning Bus module and required third-party library for each feature selected by the application. Optional
+libraries are guarded by classpath conditions so their absence does not prevent unrelated Starter infrastructure from
+loading.
 
-### Example 1: Enable CORS Support
+## Startup model
+
+Spring Boot discovers candidates through:
+
+```text
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+```
+
+Early Boot listeners and environment processors are registered through the single Starter-owned
+`META-INF/spring.factories` file. `bus-spring` supplies their reusable implementations but does not publish a competing
+discovery resource.
+
+The root package contains two primary classes:
+
+| Type | Responsibility |
+|---|---|
+| `GeniusBuilder` | Authoritative compile-time constants for all `bus.*` configuration prefixes. |
+| `GeniusStarter` | Registers shared Spring Bean services and application-context-owned runtime context infrastructure. |
+
+The root package therefore remains meaningful and non-empty.
+
+## Default-enabled infrastructure
+
+Infrastructure required by multiple features is enabled independently from product features:
+
+| Configuration | Default | Disable property | Responsibility |
+|---|---|---|---|
+| `GeniusStarter` | enabled | none | Registers Bean services, environment/provider services, runtime context, and task decorator. |
+| `TaskConfiguration` | enabled when Boot task classes exist | `bus.context.task.enabled=false` | Composes ordered task decorators and propagates runtime context. |
+| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` | Registers context binding for request, async, and error dispatches. |
+
+`GeniusStarter` contributes replaceable defaults for:
+
+- `SpringContext`;
+- `BeanProvider`;
+- `BeanRegistry`;
+- `BeanMetadata`;
+- `EnvironmentResolver`;
+- `ProviderRegistry`;
+- `ContextManager`;
+- `ContextBuilder`;
+- `SpringBuilder`;
+- `ContextDecorator`.
+
+Each uses a concrete `@ConditionalOnMissingBean` contract. Applications can replace one service without replacing the
+entire infrastructure graph.
+
+### Context propagation defaults
+
+`TaskConfiguration` sorts all `TaskDecorator` Beans, removes duplicate instances, ensures one `ContextDecorator`, and
+installs a composite decorator on Spring Boot task executors. `WebConfiguration` registers `ContextBindingFilter` at
+`Ordered.HIGHEST_PRECEDENCE + 10` for `REQUEST`, `ASYNC`, and `ERROR` dispatches.
+
+```yaml
+bus:
+  context:
+    task:
+      enabled: true
+    web:
+      enabled: true
+```
+
+Both switches default to `true` when their required runtime classes are present.
+
+## Feature activation model
+
+Product features are disabled unless their `bus.<feature>.enabled` property is `true`.
+
+| Feature | Import annotation | Property | Main responsibility |
+|---|---|---|---|
+| Auth | `@EnableAuth` | `bus.auth.enabled` | Authentication service and method resolution. |
+| Cache | `@EnableCache` | `bus.cache.enabled` | Cache provider assembly and AspectJ proxy support. |
+| CORS | `@EnableCors` | `bus.cors.enabled` | Validated Servlet MVC CORS policy. |
+| Cortex | `@EnableCortex` | `bus.cortex.enabled` | Cortex registry and integration assembly. |
+| Dubbo | `@EnableDubbo` | `bus.dubbo.enabled` | Apache Dubbo integration. |
+| Elastic | `@EnableElastic` | `bus.elastic.enabled` | Elasticsearch REST client lifecycle. |
+| Fabric | `@EnableFabric` | `bus.fabric.enabled` | TCP and WebSocket quick-service lifecycle. |
+| Health | `@EnableHealth` | `bus.health.enabled` | System health and availability integration. |
+| I18n | `@EnableI18n` | `bus.i18n.enabled` | Message source and Bus i18n adapter. |
+| Image | `@EnableImage` | `bus.image.enabled` | Image and DICOM provider integration. |
+| JDBC | `@EnableJdbc` | `bus.jdbc.enabled` | Validated dynamic data sources and routing. |
+| JSON | `@EnableJson` | `bus.json.enabled` | Application-context JSON provider selection. |
+| Limiter | `@EnableLimiter` | `bus.limiter.enabled` | Limiter scanning and service registration. |
+| Mapper | `@EnableMapper` | `bus.mapper.enabled` | MyBatis mapper scanning, plugins, tenant context, and AOT. |
+| Metrics | `@EnableMetrics` | `bus.metrics.enabled` | Metrics providers and endpoint. |
+| Mongo | `@EnableMongo` | `bus.mongo.enabled` | Mongo client settings customization. |
+| Notify | `@EnableNotify` | `bus.notify.enabled` | Notification registry and service lifecycle. |
+| Office | `@EnableOffice` | `bus.office.enabled` | Document conversion and preview service. |
+| Pay | `@EnablePay` | `bus.pay.enabled` | Payment registry and service. |
+| Sensitive | `@EnableSensitive` | `bus.sensitive.enabled` | Log sanitizer lifecycle and optional MVC body advice. |
+| Storage | `@EnableStorage` | `bus.storage.enabled` | Storage providers, registry, cache, and service. |
+| Tempus | `@EnableTempus` | `bus.tempus.enabled` | Temporal clients, workers, and lifecycle. |
+| Tracer | `@EnableTracer` | `bus.tracer.enabled` | Distributed tracing integration. |
+| Validate | `@EnableValidate` | `bus.validate.enabled` | Method validation and exception advice. |
+| Vortex | `@EnableVortex` | `bus.vortex.enabled` | Reactive routing gateway and asset lifecycle. |
+| Wrapper | `@EnableWrapper` | `bus.wrapper.enabled` | MVC binding, converters, caching, advice, and route prefixes. |
+| ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled` | Apache Curator client lifecycle. |
+
+The annotations import configurations explicitly, but they do not override `@ConditionalOnProperty`. In a Spring Boot
+application, discovery already contributes every candidate, so the property remains the authoritative runtime switch.
+
+## Quick start
 
 ```java
+import org.miaixz.bus.starter.annotation.EnableJson;
+import org.miaixz.bus.starter.annotation.EnableSensitive;
+
 @SpringBootApplication
-@EnableCors
+@EnableJson
+@EnableSensitive
 public class Application {
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
 }
 ```
 
-### Example 2: Enable Response Wrapper
-
-```java
-@SpringBootApplication
-@EnableWrapper
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
+```yaml
+bus:
+  json:
+    enabled: true
+  sensitive:
+    enabled: true
 ```
 
-### Wrapper Compatibility Configuration
+The annotations make selected integrations explicit in application code. The matching properties activate them.
 
-`@EnableWrapper` activates a legacy-compatible request pipeline:
+## Configuration principles
 
-- request body caching for repeated reads
-- automatic resolution of non-simple controller arguments
-- optional synthesized form body when the native body is empty
-- optional input sanitization for parameters and headers
+All feature prefixes come from `GeniusBuilder`; do not duplicate prefix constants in another module. Configuration
+properties validate invalid combinations during binding or Bean creation and defensively copy mutable collections or
+arrays where necessary.
 
-Recommended configuration:
+Common rules:
+
+- every product feature has an `enabled` switch;
+- optional dependencies use class conditions;
+- application overrides use concrete Bean types or documented Bean names;
+- secrets are excluded from diagnostic `toString()` output;
+- timeouts use `Duration` where supported;
+- long-running clients and services declare explicit destroy callbacks;
+- context-owned global registrations are released when the context closes.
+
+## CORS
+
+```yaml
+bus:
+  cors:
+    enabled: true
+    path: "/api/**"
+    allowed-origins:
+      - "https://console.example.com"
+    allowed-headers:
+      - "Authorization"
+      - "Content-Type"
+    allowed-methods:
+      - "GET"
+      - "POST"
+    exposed-headers:
+      - "X-Request-Id"
+    allow-credentials: true
+    max-age: 30m
+```
+
+Wildcard origins cannot be combined with credentials. Arrays are copied defensively. Defaults include GET, POST, PUT,
+OPTIONS, and DELETE, while the feature itself remains disabled until explicitly enabled.
+
+## Sensitive data
+
+```yaml
+bus:
+  sensitive:
+    enabled: true
+    debug: false
+```
+
+The transport-neutral path is always available when enabled:
+
+```text
+Sanitizer -> SensitiveBinding -> bus-logger Executor
+```
+
+`SensitiveBinding` unregisters its sanitizer when the owning application context closes. In Servlet MVC applications,
+the nested `SensitiveConfiguration.ServletConfiguration` additionally contributes request decryption and response
+encryption or masking advice. There is no separate `SensitiveWebConfiguration`.
+
+Encryption keys must come from a protected external configuration source. Diagnostic output masks key material.
+
+## Elasticsearch
+
+```yaml
+bus:
+  elastic:
+    enabled: true
+    hosts: "127.0.0.1:9200"
+    schema: "http"
+    connect-timeout: 6s
+    socket-timeout: 60s
+    connection-request-timeout: 6s
+    max-connect-total: 2000
+    max-connect-per-route: 500
+```
+
+Each host must contain a valid port in the range `1..65535`. Timeouts and connection limits must be positive, and the
+per-route limit cannot exceed the total limit.
+
+## JDBC
+
+```yaml
+bus:
+  jdbc:
+    enabled: true
+    primary: master
+    datasources:
+      master:
+        url: "jdbc:mysql://127.0.0.1:3306/app"
+        username: "app"
+        password: "${APP_DB_PASSWORD}"
+```
+
+`JdbcConfiguration` creates validated data sources, assembles `DynamicDataSource`, and exposes routing infrastructure.
+The configured primary name must identify an available data-source definition. Tenant or routing information should
+come from trusted runtime context rather than request-controlled model fields.
+
+## Mapper
+
+Mapper integration covers:
+
+- deterministic mapper classpath scanning;
+- `MapperFactoryBean` and scanner registration;
+- XML/resource location resolution;
+- ordered plugin construction;
+- tenant identity from `ContextBuilder`;
+- tenant exception advice;
+- AOT Bean factory initialization and runtime hints.
+
+Business code must not overwrite tenant identity through request binding. Custom mapper plugins should use the
+documented provider and interceptor extension points instead of modifying the Starter registry after startup.
+
+## Wrapper capabilities
+
+`bus.wrapper.enabled=true` activates the aggregate wrapper configuration. Child features remain independently
+controlled:
+
+| Capability | Property | Default after Wrapper is enabled |
+|---|---|---|
+| Request-object binding | `bus.wrapper.request-binding.enabled` | `true` |
+| Message converters | `bus.wrapper.message-converters.enabled` | `true` |
+| Bounded body cache | `bus.wrapper.body-cache.enabled` | `false` |
+| Response advice | `bus.wrapper.response-advice.enabled` | `false` |
+| Route prefix | `bus.wrapper.route-prefix.enabled` | `false` |
 
 ```yaml
 bus:
   wrapper:
     enabled: true
-    sanitize-input-values: true
-    synthesize-form-body: true
-    resolve-non-simple-arguments: true
-    wrap-content-types: all
-    include-multipart: true
-```
-
-Compatibility notes:
-
-- `synthesize-form-body=true` preserves the legacy behavior where `CachedBodyRequestWrapper` rebuilds a form body from
-  `parameterMap`, and `ContextBuilder.getParameters()` can reconstruct parameters from that synthesized body.
-- `sanitize-input-values=true` preserves the current wrapper-level HTML escaping for request parameters and headers.
-- `resolve-non-simple-arguments=true` preserves the existing `RequestObjectArgumentResolver` behavior for bare DTO
-  arguments.
-- `wrap-content-types` supports `all`, `json-form`, and `json-only`.
-
-Migration notes:
-
-- Keep the default legacy values for existing projects unless you have explicit regression coverage.
-- New projects can selectively disable legacy behaviors after verifying controller binding and parameter extraction.
-
-### Example 3: Enable MyBatis Mapper
-
-```java
-@SpringBootApplication
-@EnableMapper
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
-
-Mapper configuration remains under the same `bus.mapper.*` keys. The shared option model lives in `bus-mapper` as
-`MapperOptions`; this starter keeps Spring Boot property binding, mapper XML resource resolution, scanner registration,
-and bean lifecycle wiring, so existing YAML does not need migration.
-
-### Example 4: Enable Dubbo RPC
-
-```java
-@SpringBootApplication
-@EnableDubbo
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
-
-### Example 5: Enable Druid Connection Pool
-
-```java
-@SpringBootApplication
-@EnableDruid
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
-
-### Example 6: Enable Druid Monitoring
-
-```java
-@SpringBootApplication
-@EnableDruids
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
-
-### Example 7: Enable Elasticsearch Integration
-
-```java
-@SpringBootApplication
-@EnableElastic
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
-
-### Example 8: Enable Multiple Features
-
-```java
-@SpringBootApplication
-@EnableCors
-@EnableWrapper
-@EnableMapper
-@EnableDubbo
-@EnableCrypto
-@EnableValidate
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-```
-
-## 🔧 Configuration
-
-### Available Annotations
-
-| Annotation | Description | Dependencies |
-|:---|:---|:---|
-| `@EnableCors` | Enable Cross-Origin Resource Sharing | None |
-| `@EnableWrapper` | Enable response wrapper for unified API responses | None |
-| `@EnableMapper` | Enable MyBatis Mapper scanning | MyBatis |
-| `@EnableDruid` | Enable Druid connection pool | Druid |
-| `@EnableDruids` | Enable Druid monitoring (includes @EnableDruid) | Druid |
-| `@EnableDubbo` | Enable Apache Dubbo RPC | Dubbo |
-| `@EnableI18n` | Enable internationalization support | None |
-| `@EnableSensitive` | Enable data masking and encryption | bus-crypto |
-| `@EnableThirdAuth` | Enable third-party authentication (OAuth, etc.) | bus-extra |
-| `@EnableStorage` | Enable OSS storage service | bus-storage |
-| `@EnableValidate` | Enable parameter validation | javax.validation |
-| `@EnableElastic` | Enable Elasticsearch integration | Elasticsearch |
-| `@EnableCrypto` | Enable cryptographic operations | bus-crypto |
-
-### Elasticsearch Configuration
-
-**application.yml**:
-
-```yaml
-extend:
-  elastic:
-    hosts: 192.168.100.126:29200
-    schema: http
-    connect-timeout: 60000
-    socket-timeout: 60000
-    connection-request-timeout: 60000
-    max-connect-total: 2000
-    max-connect-per-route: 500
-```
-
-**Usage in Service**:
-
-```java
-@Service
-public class SearchService {
-
-    @Resource
-    private RestHighLevelClient restHighLevelClient;
-
-    public SearchResponse search(String index, QueryBuilder query) {
-        SearchRequest request = new SearchRequest(index);
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(query);
-        request.source(sourceBuilder);
-
-        return restHighLevelClient.search(request, RequestOptions.DEFAULT);
-    }
-}
-```
-
-### Druid Configuration
-
-**application.yml**:
-
-```yaml
-spring:
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/database
-      username: root
-      password: password
-      initial-size: 5
-      min-idle: 5
-      max-active: 20
-      max-wait: 60000
-      test-while-idle: true
-      validation-query: SELECT 1
-
-# Druid Monitoring (when @EnableDruids is used)
-extend:
-  druid:
-    stat-view-servlet:
+    request-binding:
       enabled: true
-      url-pattern: /druid/*
-      login-username: admin
-      login-password: admin123
-    web-stat-filter:
+    message-converters:
       enabled: true
-      url-pattern: /*
-```
-
-Access Druid monitoring at: `http://localhost:8080/druid`
-
-### Dubbo Configuration
-
-**application.yml**:
-
-```yaml
-spring:
-  application:
-    name: demo-service
-
-dubbo:
-  application:
-    name: ${spring.application.name}
-  registry:
-    address: zookeeper://127.0.0.1:2181
-  protocol:
-    name: dubbo
-    port: 20880
-  scan:
-    base-packages: org.miaixz.demo.service
-```
-
-### CORS Configuration
-
-**application.yml**:
-
-```yaml
-extend:
-  cors:
-    enabled: true
-    allowed-origins: "*"
-    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-    allowed-headers: "*"
-    allow-credentials: true
-    max-age: 3600
-```
-
-## 💡 Best Practices
-
-### 1. Enable Features Selectively
-
-Only enable the features you actually need to reduce startup time and dependencies:
-
-```java
-@SpringBootApplication
-@EnableCors
-@EnableWrapper
-@EnableValidate
-public class Application {
-    // Good: Only what's needed
-}
-```
-
-### 2. Use Profiles for Different Environments
-
-```yaml
-# application-dev.yml
-extend:
-  druid:
-    stat-view-servlet:
-      enabled: true
-
-# application-prod.yml
-extend:
-  druid:
-    stat-view-servlet:
+    body-cache:
+      enabled: false
+    response-advice:
+      enabled: false
+    route-prefix:
       enabled: false
 ```
 
-### 3. Configure Connection Pools Properly
+Request-object binding requires `@RequestObject`, excludes framework and simple scalar types, and does not allow request
+input to replace trusted tenant context. Body caching is bounded; multipart and response diagnostic caching remain
+opt-in.
 
-```yaml
-spring:
-  datasource:
-    druid:
-      initial-size: 5        # Initial connections
-      min-idle: 10           # Minimum idle connections
-      max-active: 100        # Maximum active connections
-      max-wait: 60000        # Max wait time (ms)
-      test-on-borrow: false  # Test on borrow
-      test-on-return: false  # Test on return
-      test-while-idle: true  # Test while idle
-      validation-query: SELECT 1
-```
+## Client and service lifecycle
 
-### 4. Enable Monitoring in Development Only
+The Starter owns the lifecycle of clients and long-running services it creates:
+
+| Feature | Lifecycle examples |
+|---|---|
+| Elastic | REST transport/client close. |
+| Fabric | TCP and WebSocket service start/stop. |
+| Notify, Office, Pay, Storage | Registry/service creation and context cleanup. |
+| Tempus | Client, worker factory, workers, and shutdown. |
+| Vortex | Router graph, server start/stop, and asset lifecycle. |
+| ZooKeeper | Curator client start/close. |
+
+An application-provided replacement Bean owns its own lifecycle unless the replacement contract states otherwise.
+
+## Bean override rules
+
+Prefer replacing the concrete product contract:
 
 ```java
-@Profile("dev")
-@EnableDruids
-public class DevConfig {
-    // Druid monitoring only in dev
+@Bean
+StorageService customStorageService(...) {
+    return new StorageService(...);
 }
 ```
 
-### 5. Use Feature Toggles
+Do not depend on configuration implementation classes from business code. Configuration and property packages are
+opened to Spring for framework access but are not exported as general JPMS APIs. Only
+`org.miaixz.bus.starter.annotation` is exported.
 
-```yaml
-extend:
-  features:
-    crypto: ${CRYPTO_ENABLED:false}
-    storage: ${STORAGE_ENABLED:true}
-```
+## Package layout
 
-## ❓ FAQ
+| Package group | Content |
+|---|---|
+| root | Shared startup infrastructure and property-prefix constants. |
+| `annotation` | Public `@Enable*` annotations. |
+| `context` | Default task and Servlet context propagation. |
+| feature packages | One feature's configuration, properties, services, and lifecycle collaborators. |
+| `wrapper.*` | Independently controlled MVC wrapper capabilities. |
 
-### Q: Do I need to add dependencies for @Enable* annotations?
+There are no `internal` packages. Feature implementation types stay in their current feature package.
 
-A: Yes, some features require additional dependencies:
-- `@EnableMapper` requires MyBatis
-- `@EnableDubbo` requires Dubbo
-- `@EnableElastic` requires Elasticsearch client
-- `@EnableCrypto` requires bus-crypto
+## Security defaults
 
-### Q: Can I use multiple @Enable* annotations together?
+- Product features are opt-in.
+- Credentialed CORS rejects wildcard origins.
+- Sensitive keys and credentials are not exposed by property diagnostics.
+- Request binding does not source authenticated tenant identity from user input.
+- Cached bodies have explicit bounds and multipart caching is opt-in.
+- Logging sanitization is owned by `bus-sensitive`, not `bus-logger`.
+- Context state is isolated per application context and restored after asynchronous execution.
+- Third-party resources are closed with the owning Spring context.
 
-A: Yes! You can combine multiple features:
+## Native Image and AOT
 
-```java
-@EnableCors
-@EnableWrapper
-@EnableMapper
-@EnableDruid
-public class Application { }
-```
+Spring AOT generates most configuration and Bean reflection hints. Checked-in reachability metadata therefore lists only
+exact constructors and dynamically accessed members. Entries and nested member lists are sorted A–Z.
 
-### Q: How do I configure Druid monitoring access control?
+The following broad grants are prohibited:
 
-A: Configure username and password in application.yml:
+- `allDeclaredConstructors` and `allPublicConstructors`;
+- `allDeclaredMethods` and `allPublicMethods`;
+- `allDeclaredFields` and `allPublicFields`.
 
-```yaml
-extend:
-  druid:
-    stat-view-servlet:
-      login-username: admin
-      login-password: ${DRUID_PASSWORD}
-```
+The Abarth metadata audit resolves every configured class, constructor, method, field, proxy, and resource against the
+current runtime model and also enforces ordering.
 
-### Q: What's the difference between @EnableDruid and @EnableDruids?
+## Migration rules
 
-A: `@EnableDruid` enables the Druid connection pool, while `@EnableDruids` enables both the connection pool AND the monitoring web console.
+- Use `XxxConfiguration`; removed `XxxAutoConfiguration` names must not return.
+- Use `ContextState`, `ContextScope`, and `ContextDecorator` for runtime propagation.
+- Use `GeniusBuilder` for Starter property prefixes.
+- Keep reusable mechanics in `bus-spring` and domain behavior in the owning Bus module.
+- Do not introduce an `internal` package under Starter.
+- Override defaults by Bean type or documented Bean name.
+- Keep `AutoConfiguration.imports`, `spring.factories`, module descriptors, and reachability metadata aligned with class
+  renames.
 
-### Q: How do I disable specific features in certain profiles?
+## Verification boundary
 
-A: Use @Profile annotation or configure in profile-specific yml:
-
-```java
-@Profile("!prod")
-@EnableDruids
-public class DevConfig { }
-```
-
-### Q: Can I use @EnableWrapper with custom response format?
-
-A: Yes, configure the wrapper format in application.yml:
-
-```yaml
-extend:
-  wrapper:
-    code-field: code
-    message-field: message
-    data-field: data
-```
-
-## 🔍 Advanced Configuration
-
-### Custom Wrapper Response
-
-```java
-@Configuration
-public class WrapperConfig {
-    @Bean
-    public WrapperAdvisor wrapperAdvisor() {
-        return WrapperAdvisor.builder()
-            .codeFieldName("code")
-            .messageFieldName("message")
-            .dataFieldName("data")
-            .successCode(200)
-            .build();
-    }
-}
-```
-
-### Elasticsearch Client Customization
-
-```java
-@Configuration
-public class ElasticConfig {
-    @Bean
-    public RestHighLevelClient restHighLevelClient() {
-        return new RestHighLevelClient(
-            RestClient.builder(
-                new HttpHost("localhost", 9200, "http")
-            )
-        );
-    }
-}
-```
-
-### Dubbo Provider Configuration
-
-```java
-@Service(version = "1.0.0")
-public class UserServiceImpl implements UserService {
-    @Override
-    public User getUser(String id) {
-        return userMapper.selectById(id);
-    }
-}
-```
-
-```java
-@RestController
-public class UserController {
-    @Reference(version = "1.0.0")
-    private UserService userService;
-}
-```
-
-## 🔄 Version Compatibility
-
-- **Spring Boot**: 2.7.x, 3.x
-- **JDK**: 8, 11, 17, 21+
-- **Spring Framework**: 5.3.x, 6.x
-
-## 📚 Related Modules
-
-- [bus-core](../bus-core): Core utilities and basic functionality
-- [bus-crypto](../bus-crypto): Cryptographic operations
-- [bus-extra](../bus-extra): Extended functionality
-- [bus-storage](../bus-storage): Storage service integration
+Bus contains and runs no tests. Starter integration, binding, lifecycle, module-path, metadata, AOT, and Native Image
+tests are maintained in the sibling Abarth repository. Bus builds must skip tests explicitly.

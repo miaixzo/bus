@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.pay;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.cache.CacheX;
@@ -44,59 +45,44 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayProvider;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class PayService {
+public final class PayService implements AutoCloseable {
 
     /**
      * A cache to store payment provider contexts, keyed by their registry type.
      */
-    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private final Map<Registry, Context> contexts = new ConcurrentHashMap<>();
+
+    /**
+     * Payment clients created for this application context.
+     */
+    private final Map<Registry, Provider<?>> clients = new ConcurrentHashMap<>();
 
     /**
      * Payment configuration properties.
      */
-    public PayProperties properties;
+    private final PayProperties properties;
 
     /**
      * Cache instance for handling caching operations.
      */
-    public CacheX cache;
+    private final CacheX<String, Object> cache;
 
     /**
      * Complex payment parameters.
      */
-    public Complex complex;
+    private final Complex complex;
 
     /**
      * Constructs a new PayService with the given properties.
      *
      * @param properties The payment configuration properties.
+     * @param complex    whether complex expressions are enabled
+     * @param cache      cache settings
      */
-    public PayService(PayProperties properties) {
-        this.properties = properties;
-    }
-
-    /**
-     * Constructs a new PayService with the given properties and complex parameters.
-     *
-     * @param properties The payment configuration properties.
-     * @param complex    The complex payment parameters.
-     */
-    public PayService(PayProperties properties, Complex complex) {
-        this.properties = properties;
-        this.complex = complex;
-    }
-
-    /**
-     * Constructs a new PayService with the given properties, complex parameters, and cache.
-     *
-     * @param properties The payment configuration properties.
-     * @param complex    The complex payment parameters.
-     * @param cache      The cache instance.
-     */
-    public PayService(PayProperties properties, Complex complex, CacheX cache) {
-        this.properties = properties;
-        this.complex = complex;
-        this.cache = cache;
+    public PayService(PayProperties properties, Complex complex, CacheX<String, Object> cache) {
+        this.properties = Objects.requireNonNull(properties, "properties");
+        this.complex = Objects.requireNonNull(complex, "complex");
+        this.cache = Objects.requireNonNull(cache, "cache");
     }
 
     /**
@@ -106,11 +92,12 @@ public class PayService {
      * @param context  The context object for the payment provider.
      * @throws InternalException if a provider with the same registry name is already registered.
      */
-    public static void register(Registry registry, Context context) {
-        if (CACHE.containsKey(registry)) {
+    public void register(Registry registry, Context context) {
+        Objects.requireNonNull(registry, "registry");
+        Objects.requireNonNull(context, "context");
+        if (this.contexts.putIfAbsent(registry, context) != null) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
-        CACHE.putIfAbsent(registry, context);
     }
 
     /**
@@ -121,8 +108,19 @@ public class PayService {
      * @return The {@link Provider} instance.
      * @throws InternalException if the requested provider is not supported or cannot be found.
      */
-    public Provider require(Registry registry) {
-        Context context = CACHE.get(registry);
+    public Provider<?> require(Registry registry) {
+        Objects.requireNonNull(registry, "registry");
+        return this.clients.computeIfAbsent(registry, this::createProvider);
+    }
+
+    /**
+     * Resolves the configured payment provider from the injected registry.
+     *
+     * @param registry Provider registry used for lookup
+     * @return the payment Provider selected for the requested channel
+     */
+    private Provider<?> createProvider(Registry registry) {
+        Context context = this.contexts.get(registry);
         if (ObjectKit.isEmpty(context)) {
             context = this.properties.getType().get(registry);
         }
@@ -147,6 +145,32 @@ public class PayService {
 
             default:
                 throw new InternalException(ErrorCode._100803.getValue());
+        }
+    }
+
+    /**
+     * Closes supported clients and clears all payment state owned by this application context.
+     */
+    @Override
+    public void close() {
+        RuntimeException failure = null;
+        for (Provider<?> client : this.clients.values()) {
+            if (client instanceof AutoCloseable closeable) {
+                try {
+                    closeable.close();
+                } catch (Exception exception) {
+                    if (failure == null) {
+                        failure = new IllegalStateException("Failed to close payment client", exception);
+                    } else {
+                        failure.addSuppressed(exception);
+                    }
+                }
+            }
+        }
+        this.clients.clear();
+        this.contexts.clear();
+        if (failure != null) {
+            throw failure;
         }
     }
 

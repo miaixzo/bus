@@ -44,13 +44,13 @@ public class SocketQuickService {
     private final FabricProperties properties;
 
     /**
-     * Current fabric message handler.
+     * Handler that processes decoded socket Fabric messages.
      */
     @Resource
     private Handler handler;
 
     /**
-     * Current fabric frame codec factory.
+     * Factory that creates codecs for Fabric socket frames.
      */
     @Resource
     private SupplierX<FrameCodec> frameCodec;
@@ -72,7 +72,7 @@ public class SocketQuickService {
     /**
      * Sets the current fabric message handler.
      *
-     * @param handler handler
+     * @param handler message handler to invoke
      */
     public void setHandler(Handler handler) {
         this.handler = handler;
@@ -104,8 +104,13 @@ public class SocketQuickService {
             server = currentServer;
             Logger.info(true, "Starter", "Socket server started on port: {}", socket.getPort());
         } catch (RuntimeException e) {
-            currentServer.close();
+            try {
+                currentServer.close();
+            } catch (RuntimeException rollbackFailure) {
+                e.addSuppressed(rollbackFailure);
+            }
             Logger.error(false, "Starter", "Failed to start socket server", e);
+            throw e;
         }
     }
 
@@ -133,8 +138,8 @@ public class SocketQuickService {
     /**
      * Default handler used when no Spring handler bean is provided.
      *
-     * @param session session
-     * @param message message
+     * @param session active network session
+     * @param message message supplied to this operation
      */
     private static void noop(Session session, Message message) {
         // No-op keeps lifecycle-only starter configurations valid.

@@ -21,14 +21,12 @@ package org.miaixz.bus.starter.annotation;
 
 import java.lang.annotation.*;
 
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.starter.jdbc.JdbcConfiguration;
 import org.miaixz.bus.starter.mapper.MapperConfiguration;
-import org.miaixz.bus.starter.mapper.MapperFactoryBean;
-import org.miaixz.bus.starter.mapper.MapperScannerRegistrar;
 
 /**
  * Enables MyBatis and Mapper framework support.
@@ -45,7 +43,7 @@ import org.miaixz.bus.starter.mapper.MapperScannerRegistrar;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({ JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class })
+@Import(MapperConfiguration.class)
 public @interface EnableMapper {
 
     /**
@@ -121,7 +119,7 @@ public @interface EnableMapper {
      *
      * @return The custom {@link MapperFactoryBean} class.
      */
-    Class<? extends MapperFactoryBean> factoryBean() default MapperFactoryBean.class;
+    Class<? extends MapperFactoryBean> factoryBean() default org.miaixz.bus.starter.mapper.MapperFactoryBean.class;
 
     /**
      * Configuration properties for the generic Mapper, with one property per line. This is often used to configure

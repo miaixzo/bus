@@ -82,10 +82,6 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-core</artifactId>
         </dependency>
         <dependency>
@@ -96,10 +92,6 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-logger</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-validate</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -109,11 +101,6 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

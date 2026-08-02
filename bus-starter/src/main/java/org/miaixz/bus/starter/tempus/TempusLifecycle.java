@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.starter.tempus;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.context.SmartLifecycle;
@@ -31,7 +32,7 @@ import org.miaixz.bus.tempus.temporal.Subscriber;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class TempusLifecycle implements SmartLifecycle {
+public final class TempusLifecycle implements SmartLifecycle {
 
     /**
      * Phase used to start after regular infrastructure beans.
@@ -54,7 +55,7 @@ public class TempusLifecycle implements SmartLifecycle {
      * @param subscriber Temporal subscriber
      */
     public TempusLifecycle(Subscriber subscriber) {
-        this.subscriber = subscriber;
+        this.subscriber = Objects.requireNonNull(subscriber, "subscriber");
     }
 
     /**
@@ -63,7 +64,17 @@ public class TempusLifecycle implements SmartLifecycle {
     @Override
     public void start() {
         if (running.compareAndSet(false, true)) {
-            subscriber.start();
+            try {
+                subscriber.start();
+            } catch (RuntimeException | Error failure) {
+                running.set(false);
+                try {
+                    subscriber.shutdown();
+                } catch (RuntimeException | Error rollbackFailure) {
+                    failure.addSuppressed(rollbackFailure);
+                }
+                throw failure;
+            }
         }
     }
 
@@ -74,6 +85,20 @@ public class TempusLifecycle implements SmartLifecycle {
     public void stop() {
         if (running.compareAndSet(true, false)) {
             subscriber.shutdown();
+        }
+    }
+
+    /**
+     * Stops the subscriber and always notifies the lifecycle processor.
+     *
+     * @param callback lifecycle completion callback
+     */
+    @Override
+    public void stop(Runnable callback) {
+        try {
+            stop();
+        } finally {
+            callback.run();
         }
     }
 

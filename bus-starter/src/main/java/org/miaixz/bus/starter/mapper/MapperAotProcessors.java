@@ -23,14 +23,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.UpdateProvider;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.ReflectionHints;
@@ -53,17 +56,18 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperMethodTypeResolver;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * MyBatis mapper AOT and bean-definition processors.
  * <p>
  * This class groups the Spring AOT-specific infrastructure that used to live inside {@link MapperConfiguration}.
- * Keeping the processors here lets {@code MapperConfiguration} focus on normal mapper auto-configuration while
- * preserving the same bean registration points.
+ * Keeping the processors here lets {@code MapperConfiguration} focus on normal mapper Bean assembly while preserving
+ * the same bean registration points.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -83,7 +87,7 @@ public final class MapperAotProcessors {
      * @author Kimi Liu
      * @since Java 21+
      */
-    static class MyBatisBeanFactoryInitializationAotProcessor
+    public static class MyBatisBeanFactoryInitializationAotProcessor
             implements BeanFactoryInitializationAotProcessor, BeanRegistrationExcludeFilter {
 
         /**
@@ -101,7 +105,7 @@ public final class MapperAotProcessors {
          *
          * @param environment Spring environment used for early mapper property binding
          */
-        MyBatisBeanFactoryInitializationAotProcessor(Environment environment) {
+        public MyBatisBeanFactoryInitializationAotProcessor(Environment environment) {
             this.environment = environment;
             excludeClasses.add(MapperScannerConfigurer.class);
         }
@@ -127,14 +131,18 @@ public final class MapperAotProcessors {
         @Override
         public BeanFactoryInitializationAotContribution processAheadOfTime(
                 ConfigurableListableBeanFactory beanFactory) {
-            String[] beanNames = beanFactory.getBeanNamesForType(MapperFactoryBean.class);
-            if (beanNames.length == 0) {
-                return null;
-            }
             MapperProperties properties = PlaceHolderBinder
                     .bind(this.environment, MapperProperties.class, GeniusBuilder.MAPPER);
             if (properties == null) {
                 properties = new MapperProperties();
+            }
+            List<String> basePackages = normalizeBasePackages(properties.getBasePackage());
+            if (basePackages.isEmpty()) {
+                return null;
+            }
+            String[] beanNames = beanFactory.getBeanNamesForType(MapperFactoryBean.class);
+            if (beanNames.length == 0) {
+                return null;
             }
             MapperLocationResolver.Result mapperLocations = MapperLocationResolver
                     .resolve(properties, new PathMatchingResourcePatternResolver(beanFactory.getBeanClassLoader()));
@@ -153,7 +161,7 @@ public final class MapperAotProcessors {
                             .getPropertyValue("mapperInterface");
                     if (mapperInterface != null && mapperInterface.getValue() != null) {
                         Class<?> mapperInterfaceType = resolveMapperInterface(mapperInterface.getValue());
-                        if (mapperInterfaceType != null) {
+                        if (isConfiguredMapper(mapperInterfaceType, basePackages)) {
                             registerReflectionTypeIfNecessary(mapperInterfaceType, hints);
                             hints.proxies().registerJdkProxy(mapperInterfaceType);
                             registerMapperRelationships(mapperInterfaceType, hints);
@@ -164,9 +172,40 @@ public final class MapperAotProcessors {
         }
 
         /**
+         * Normalizes the base packages.
+         *
+         * @param configuredPackages configured packages
+         * @return normalized, de-duplicated mapper packages in declaration order
+         */
+        private static List<String> normalizeBasePackages(String[] configuredPackages) {
+            if (configuredPackages == null || configuredPackages.length == 0) {
+                return List.of();
+            }
+            return Arrays.stream(configuredPackages)
+                    .filter(packageName -> packageName != null && !packageName.isBlank()).map(String::trim).distinct()
+                    .toList();
+        }
+
+        /**
+         * Tests whether the candidate type is a mapper explicitly included by Starter configuration.
+         *
+         * @param type         candidate mapper interface
+         * @param basePackages base packages
+         * @return whether configured mapper
+         */
+        private static boolean isConfiguredMapper(Class<?> type, List<String> basePackages) {
+            if (type == null || !type.isInterface()) {
+                return false;
+            }
+            String packageName = type.getPackageName();
+            return basePackages.stream().anyMatch(
+                    basePackage -> packageName.equals(basePackage) || packageName.startsWith(basePackage + Symbol.DOT));
+        }
+
+        /**
          * Resolves the mapper interface class stored on a mapper factory bean definition.
          *
-         * @param mapperInterfaceValue mapper interface property value
+         * @param mapperInterfaceValue mapper interface represented as a Class or fully qualified class name
          * @return mapper interface class, or {@code null} when it cannot be loaded
          */
         private Class<?> resolveMapperInterface(Object mapperInterfaceValue) {
@@ -298,7 +337,15 @@ public final class MapperAotProcessors {
      * @author Kimi Liu
      * @since Java 21+
      */
-    static class MyBatisMapperFactoryBeanPostProcessor implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
+    public static class MyBatisMapperFactoryBeanPostProcessor
+            implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
+
+        /**
+         * Initializes the merged-definition hook retained for the mapper factory Bean lifecycle.
+         */
+        MyBatisMapperFactoryBeanPostProcessor() {
+            // No initialization required.
+        }
 
         /**
          * Accepts the configurable bean factory supplied by Spring.
@@ -341,8 +388,15 @@ public final class MapperAotProcessors {
      * @author Kimi Liu
      * @since Java 21+
      */
-    static class MapperInterfaceStringToClassConverter
+    public static class MapperInterfaceStringToClassConverter
             implements org.springframework.beans.factory.config.BeanFactoryPostProcessor {
+
+        /**
+         * Initializes the post-processor that resolves mapper interface class names before Bean creation.
+         */
+        MapperInterfaceStringToClassConverter() {
+            // No initialization required.
+        }
 
         /**
          * Converts mapper factory bean definitions whose {@code mapperInterface} value is a class name string into a

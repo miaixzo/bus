@@ -19,54 +19,55 @@
 */
 package org.miaixz.bus.starter.i18n;
 
-import jakarta.annotation.Resource;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for internationalization (i18n). This class sets up the {@link MessageSource} bean based on the
- * properties defined in {@link I18nProperties}.
+ * Configures internationalization (i18n). This class sets up the {@link MessageSource} bean based on the properties
+ * defined in {@link I18nProperties}.
  * <p>
- * The registered {@link I18nMessage} is also the Spring {@link MessageSource}. This keeps framework-level lookups and
- * direct application lookups on one resolver instead of maintaining separate helper and message-source implementations.
+ * The registered {@link I18nMessage} delegates to the application-owned Spring {@link MessageSource} and uses the Bus
+ * resource bundle configuration only as a fallback.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { I18nProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.I18N, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = GeniusBuilder.I18N, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class I18nConfiguration {
 
     /**
-     * Constructs a new I18nConfiguration instance.
+     * Bound i18n configuration properties.
      */
-    public I18nConfiguration() {
-        // No initialization required.
+    private final I18nProperties properties;
+
+    /**
+     * Stores the message-source properties used by the i18n adapter Bean factories.
+     *
+     * @param properties bound configuration properties
+     */
+    public I18nConfiguration(I18nProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * Injected i18n configuration properties.
-     */
-    @Resource
-    I18nProperties properties;
-
-    /**
-     * Creates the unified i18n bean. It is exposed under Spring's conventional {@code messageSource} bean name while
-     * retaining the concrete {@link I18nMessage} type for direct injection.
+     * Creates the application i18n access adapter.
      *
+     * @param messageSource application-owned Spring message source
      * @return the configured i18n message source
      */
-    @Bean(name = "messageSource")
-    @ConditionalOnMissingBean(name = "messageSource")
-    public I18nMessage messageSource() {
-        return new I18nMessage(this.properties);
+    @Bean
+    @ConditionalOnMissingBean(I18nMessage.class)
+    public I18nMessage i18nMessage(MessageSource messageSource) {
+        return new I18nMessage(messageSource, this.properties);
     }
 
 }

@@ -19,1002 +19,256 @@
 */
 package org.miaixz.bus.spring;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
-
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.util.WebUtils;
-
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.nimble.CaffeineCache;
-import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.entity.Authorize;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.lang.*;
-import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.http.CachedBodyRequestWrapper;
-import org.miaixz.bus.spring.options.WrapperRuntimeOptions;
 
 /**
- * A utility class for convenient operations on HTTP requests, user information, and more.
- * <p>
- * It uses the {@link CacheX} interface for caching, supports lazy initialization and runtime replacement, and provides
- * methods to retrieve parameters from various sources.
+ * Instance facade for framework-neutral authenticated context state.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class ContextBuilder extends WebUtils {
+public final class ContextBuilder {
 
     /**
-     * Constructs a new ContextBuilder instance.
+     * State carrier owned by one application context.
+     */
+    private final ContextManager manager;
+
+    /**
+     * Ordered, side-effect-free authenticated context providers.
+     */
+    private final List<ContextProvider> providers;
+
+    /**
+     * Creates a context facade with an isolated manager and no providers.
      */
     public ContextBuilder() {
-        // No initialization required.
+        this(new ContextManager(), List.of());
     }
 
     /**
-     * Cache implementation for request headers.
-     */
-    private static volatile CacheX<String, Map<String, String>> HEADER_CACHE;
-
-    /**
-     * Cache implementation for request parameters.
-     */
-    private static volatile CacheX<String, Map<String, String>> PARAMETER_CACHE;
-
-    /**
-     * Cache implementation for request bodies.
-     */
-    private static volatile CacheX<String, String> BODY_CACHE;
-
-    /**
-     * The default maximum number of entries for caches.
-     */
-    private static final long DEFAULT_CACHE_SIZE = 1000;
-
-    /**
-     * The default cache expiration time in milliseconds.
-     */
-    private static final long DEFAULT_CACHE_EXPIRE = TimeUnit.SECONDS.toMillis(10);
-
-    /**
-     * The instance of the context provider for user and tenant information.
-     */
-    public static volatile ContextProvider provider;
-
-    /**
-     * Initializes the request context by generating a new request ID and storing it in a ThreadLocal.
-     * <p>
-     * This is a convenience method that should be called at the beginning of each request processing.
-     * </p>
-     */
-    public static void init() {
-        setRequestId();
-    }
-
-    /**
-     * Sets a custom context provider for retrieving user and tenant information.
+     * Creates an application-context-scoped facade.
      *
-     * @param provider The user information provider.
+     * @param manager   isolated state manager
+     * @param providers ordered provider candidates
      */
-    public static void setProvider(ContextProvider provider) {
-        ContextBuilder.provider = provider;
+    public ContextBuilder(ContextManager manager, List<ContextProvider> providers) {
+        this.manager = Objects.requireNonNull(manager, "manager");
+        List<ContextProvider> ordered = new ArrayList<>(providers == null ? List.of() : providers);
+        ordered.sort(Comparator.comparingInt(ContextProvider::getOrder));
+        this.providers = List.copyOf(ordered);
     }
 
     /**
-     * Initializes the request context by generating a new request ID and storing it in a ThreadLocal.
+     * Generates and installs a request correlation identifier.
      */
-    public static void setRequestId() {
+    public void setRequestId() {
         setRequestId(ID.objectId());
     }
 
     /**
-     * Sets the request identifier visible to the current thread.
+     * Installs an explicit request correlation identifier.
      *
-     * @param requestId request correlation identifier
+     * @param requestId request correlation identifier, or {@code null} to clear it
      */
-    public static void setRequestId(@Nullable String requestId) {
-        RuntimeContextSnapshot.setCurrentRequestId(requestId);
+    public void setRequestId(@Nullable String requestId) {
+        ContextState current = this.manager.capture();
+        this.manager.restore(ContextState.of(normalize(requestId), current.getAuthorize()));
     }
 
     /**
-     * Gets the ID for the current request. If it doesn't exist, a new one is generated.
+     * Returns the current request identifier without reading a transport request.
      *
-     * @return The request ID, or null if no request is available.
+     * @return request identifier, or {@code null} when absent
      */
-    public static String getRequestId() {
-        String requestId = RuntimeContextSnapshot.currentRequestId();
-        if (requestId == null) {
-            HttpServletRequest request = getRequest();
-            if (request != null) {
-                requestId = ID.objectId();
-                RuntimeContextSnapshot.setCurrentRequestId(requestId);
-                Logger.debug(true, "Starter", "Request ID: {}", requestId);
-            } else {
-                Logger.debug(true, "Starter", "No request available to generate request ID");
-            }
+    @Nullable
+    public String getRequestId() {
+        return this.manager.capture().getRequestId();
+    }
+
+    /**
+     * Resolves and returns the authenticated subject.
+     *
+     * @return detached authenticated subject, or {@code null} when unavailable
+     */
+    @Nullable
+    public Authorize getAuthorize() {
+        Authorize current = this.manager.capture().getAuthorize();
+        if (current != null) {
+            return current;
         }
-        return requestId;
-    }
-
-    /**
-     * Gets the current {@link HttpServletRequest} object from the {@code RequestContextHolder}.
-     *
-     * @return The {@code HttpServletRequest} object, or null if not available.
-     */
-    public static HttpServletRequest getRequest() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (!(requestAttributes instanceof ServletRequestAttributes)) {
-            return null;
-        }
-        return ((ServletRequestAttributes) requestAttributes).getRequest();
-    }
-
-    /**
-     * Gets the lazily-initialized cache instance for headers, falling back to a memory cache if Caffeine is
-     * unavailable.
-     *
-     * @return The cache instance for request headers.
-     */
-    public static CacheX<String, Map<String, String>> getHeaderCache() {
-        CacheX<String, Map<String, String>> cache = HEADER_CACHE;
-        if (cache == null) {
-            synchronized (ContextBuilder.class) {
-                cache = HEADER_CACHE;
-                if (cache == null) {
-                    try {
-                        cache = new CaffeineCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
-                    } catch (Throwable t) {
-                        Logger.warn(
-                                true,
-                                "Starter",
-                                "Header cache failed to initialize CaffeineCache, falling back to MemoryCache");
-                        cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
-                    }
-                    HEADER_CACHE = cache;
-                }
-            }
-        }
-        return cache;
-    }
-
-    /**
-     * Gets the lazily-initialized cache instance for parameters, falling back to a memory cache if Caffeine is
-     * unavailable.
-     *
-     * @return The cache instance for request parameters.
-     */
-    public static CacheX<String, Map<String, String>> getParameterCache() {
-        CacheX<String, Map<String, String>> cache = PARAMETER_CACHE;
-        if (cache == null) {
-            synchronized (ContextBuilder.class) {
-                cache = PARAMETER_CACHE;
-                if (cache == null) {
-                    try {
-                        cache = new CaffeineCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
-                    } catch (Throwable t) {
-                        Logger.warn(
-                                true,
-                                "Starter",
-                                "Parameter cache failed to initialize CaffeineCache, falling back to MemoryCache");
-                        cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
-                    }
-                    PARAMETER_CACHE = cache;
-                }
-            }
-        }
-        return cache;
-    }
-
-    /**
-     * Gets the lazily-initialized cache instance for JSON request bodies, falling back to a memory cache if Caffeine is
-     * unavailable.
-     *
-     * @return The cache instance for JSON request bodies.
-     */
-    public static CacheX<String, String> getBodyCache() {
-        CacheX<String, String> cache = BODY_CACHE;
-        if (cache == null) {
-            synchronized (ContextBuilder.class) {
-                cache = BODY_CACHE;
-                if (cache == null) {
-                    try {
-                        cache = new CaffeineCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
-                    } catch (Throwable t) {
-                        Logger.warn(
-                                true,
-                                "Starter",
-                                "Content cache failed to initialize CaffeineCache, falling back to MemoryCache");
-                        cache = new MemoryCache<>(DEFAULT_CACHE_SIZE, DEFAULT_CACHE_EXPIRE);
-                    }
-                    BODY_CACHE = cache;
-                }
-            }
-        }
-        return cache;
-    }
-
-    /**
-     * Sets a custom cache implementation for request headers.
-     *
-     * @param cache The cache implementation to use.
-     */
-    public static void setHeaderCache(@NonNull CacheX<String, Map<String, String>> cache) {
-        HEADER_CACHE = cache;
-    }
-
-    /**
-     * Sets a custom cache implementation for request parameters.
-     *
-     * @param cache The cache implementation to use.
-     */
-    public static void setParameterCache(@NonNull CacheX<String, Map<String, String>> cache) {
-        PARAMETER_CACHE = cache;
-    }
-
-    /**
-     * Sets a custom cache implementation for JSON request bodies.
-     *
-     * @param cache The cache implementation to use.
-     */
-    public static void setBodyCache(@NonNull CacheX<String, String> cache) {
-        BODY_CACHE = cache;
-    }
-
-    /**
-     * A generic method to retrieve data from a cache, falling back to a supplier and caching the result if not found.
-     *
-     * @param <T>          The type of the data.
-     * @param requestId    The request ID used as the cache key.
-     * @param dataSupplier A supplier to provide the data if it's not in the cache.
-     * @param cache        The cache instance to use.
-     * @param defaultValue The default value to return if no data is found.
-     * @return The cached data, newly supplied data, or the default value.
-     */
-    private static <T> T getCached(
-            String requestId,
-            SupplierX<T> dataSupplier,
-            CacheX<String, T> cache,
-            T defaultValue) {
-        if (requestId == null) {
-            return defaultValue;
-        }
-        T data = cache.read(requestId);
-        if (data != null) {
-            return data;
-        }
-        data = dataSupplier.get();
-        if (data != null) {
-            cache.write(requestId, data, DEFAULT_CACHE_EXPIRE);
-        }
-        return data != null ? data : defaultValue;
-    }
-
-    /**
-     * Gets all headers from the current HTTP request, using a cache for performance.
-     *
-     * @return A case-insensitive map of request headers.
-     */
-    public static Map<String, String> getHeaders() {
-        String requestId = getRequestId();
-        if (requestId == null) {
-            return new CaseInsensitiveMap<>();
-        }
-        return getCached(requestId, () -> {
-            HttpServletRequest request = getRequest();
-            Map<String, String> headers = new CaseInsensitiveMap<>();
-            if (request != null) {
-                request.getHeaderNames().asIterator().forEachRemaining(name -> {
-                    String value = request.getHeader(name);
-                    if (value != null) {
-                        headers.put(name, value);
-                    }
-                });
-            }
-            return headers;
-        }, getHeaderCache(), new CaseInsensitiveMap<>());
-    }
-
-    /**
-     * Gets all parameters from the current HTTP request, including query string, form data, and form-urlencoded body
-     * content. The results are cached.
-     *
-     * @return A case-insensitive map of request parameters.
-     */
-    public static Map<String, String> getParameters() {
-        String requestId = getRequestId();
-        if (requestId == null) {
-            return new CaseInsensitiveMap<>();
-        }
-        return getCached(requestId, () -> {
-            HttpServletRequest request = getRequest();
-            Map<String, String> parameters = new CaseInsensitiveMap<>();
-            if (request != null) {
-                request.getParameterMap().forEach((key, values) -> {
-                    if (values != null && values.length > 0) {
-                        parameters.put(key, values[0]);
-                    }
-                });
-                if (request instanceof CachedBodyRequestWrapper wrapper) {
-                    String contentType = request.getContentType();
-                    byte[] bodyBytes = wrapper.getBody();
-                    if (WrapperRuntimeOptions.of().isSynthesizeFormBody() && contentType != null
-                            && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED) && bodyBytes != null
-                            && bodyBytes.length > 0) {
-                        String bodyString = new String(bodyBytes, Charset.UTF_8);
-                        Map<String, String[]> urlEncodedParams = parseUrlEncoded(bodyString);
-                        urlEncodedParams.forEach((key, values) -> {
-                            if (values != null && values.length > 0) {
-                                parameters.put(key, values[0]);
-                            }
-                        });
-                    }
-                }
-            }
-            return parameters;
-        }, getParameterCache(), new CaseInsensitiveMap<>());
-    }
-
-    /**
-     * Parses a URL-encoded string into a map of parameters.
-     *
-     * @param urlEncoded The URL-encoded string (e.g., "id=1&name=test").
-     * @return A map where keys are parameter names and values are arrays of parameter values.
-     */
-    private static Map<String, String[]> parseUrlEncoded(String urlEncoded) {
-        Map<String, String[]> paramMap = new HashMap<>();
-        if (StringKit.isEmpty(urlEncoded)) {
-            return paramMap;
-        }
-        String[] pairs = urlEncoded.split(Symbol.AND);
-        for (String pair : pairs) {
-            if (pair.isEmpty()) {
+        Authorize selected = null;
+        for (ContextProvider provider : this.providers) {
+            Authorize candidate = provider.getAuthorize();
+            if (candidate == null) {
                 continue;
             }
-            String[] keyValue = pair.split(Symbol.EQUAL, 2);
-            if (keyValue.length == 2) {
-                paramMap.put(keyValue[0], keyValue[1].split(Symbol.COMMA));
-            } else if (keyValue.length == 1) {
-                paramMap.put(keyValue[0], new String[] { Normal.EMPTY });
+            if (selected == null) {
+                selected = ObjectKit.clone(candidate);
+            } else if (!equivalent(selected, candidate)) {
+                throw new IllegalStateException("Conflicting authenticated context providers");
             }
         }
-        return paramMap;
+        if (selected != null) {
+            setAuthorize(selected);
+        }
+        return selected == null ? null : ObjectKit.clone(selected);
     }
 
     /**
-     * Gets the value of a specified key from a JSON request body. The request body is read once and cached for the
-     * duration of the request.
+     * Installs a defensive copy of the authenticated subject.
      *
-     * @param key The key name to look for in the JSON body.
-     * @return The value associated with the key, or null if not found or if the request is not JSON.
+     * @param authorize authenticated subject, or {@code null} to clear it
      */
-    public static String getValueFromJsonBody(String key) {
-        HttpServletRequest request = getRequest();
-        if (request == null) {
-            Logger.debug(true, "Starter", "No request available for JSON content lookup, key: {}", key);
-            return null;
-        }
-        String contentType = request.getContentType();
-        if (contentType == null || !contentType.startsWith(MediaType.APPLICATION_JSON)) {
-            Logger.debug(true, "Starter", "Request is not JSON, key: {}, contentType: {}", key, contentType);
-            return null;
-        }
-        String requestId = getRequestId();
-        if (requestId == null) {
-            Logger.debug(true, "Starter", "No request ID available for JSON content lookup, key: {}", key);
-            return null;
-        }
-        String cachedBody = getBodyCache().read(requestId);
-        if (cachedBody != null) {
-            return extractValueFromJson(cachedBody, key);
-        }
-        String requestBody;
-        try {
-            if (request instanceof CachedBodyRequestWrapper wrapper) {
-                byte[] bodyBytes = wrapper.getBody();
-                requestBody = (bodyBytes != null && bodyBytes.length > 0) ? new String(bodyBytes, Charset.UTF_8)
-                        : Normal.EMPTY;
-            } else {
-                requestBody = new String(request.getInputStream().readAllBytes(), Charset.UTF_8);
-            }
-        } catch (IOException e) {
-            Logger.error(true, "Starter", "Failed to read JSON content, key: {}", key, e);
-            return null;
-        }
-        if (StringKit.isEmpty(requestBody) || !JsonKit.isJson(requestBody)) {
-            Logger.debug(true, "Starter", "Empty or invalid JSON content, key: {}", key);
-            return null;
-        }
-        getBodyCache().write(requestId, requestBody, DEFAULT_CACHE_EXPIRE);
-        return extractValueFromJson(requestBody, key);
+    public void setAuthorize(@Nullable Authorize authorize) {
+        ContextState current = this.manager.capture();
+        this.manager.restore(ContextState.of(current.getRequestId(), authorize));
     }
 
     /**
-     * Extracts the value of a specified key from a JSON string.
+     * Captures the current immutable state after refreshing authenticated provider state.
      *
-     * @param json The JSON string.
-     * @param key  The key name.
-     * @return The extracted value as a string, or null if not found.
+     * @return detached immutable context state
      */
-    public static String extractValueFromJson(String json, String key) {
-        try {
-            String value = JsonKit.getValue(json, key);
-            if (StringKit.isNotEmpty(value)) {
-                return value;
-            }
-            Map<String, Object> jsonMap = JsonKit.toMap(json);
-            if (jsonMap.containsKey(key)) {
-                return StringKit.toString(jsonMap.get(key));
-            }
-        } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Starter",
-                    e,
-                    "Failed to extract JSON value, key={}, jsonChars={}, exception={}",
-                    key,
-                    json == null ? 0 : json.length(),
-                    e.getClass().getSimpleName());
-        }
+    public ContextState capture() {
+        getAuthorize();
+        return this.manager.capture();
+    }
+
+    /**
+     * Installs a state and returns an idempotent parent-restoring scope.
+     *
+     * @param state context state, or {@code null} for the empty state
+     * @return lexical scope restoring the prior state on close
+     */
+    public ContextScope install(@Nullable ContextState state) {
+        return new ContextScope(this.manager, state);
+    }
+
+    /**
+     * Restores an exact state.
+     *
+     * @param state state to restore, or {@code null} to clear it
+     */
+    public void restore(@Nullable ContextState state) {
+        this.manager.restore(state);
+    }
+
+    /**
+     * Returns the authenticated tenant identifier only.
+     *
+     * @return normalized tenant identifier, or {@code null}
+     */
+    @Nullable
+    public String getTenantId() {
+        Authorize authorize = getAuthorize();
+        return authorize == null ? null : normalize(authorize.getX_tenant_id());
+    }
+
+    /**
+     * Returns no transport credential because this facade never reads raw requests.
+     *
+     * @return always {@code null}
+     */
+    @Nullable
+    public Http.Auth.Credential getCredential() {
         return null;
     }
 
     /**
-     * Gets the value of a specified header.
+     * Returns no raw transport token because this facade never reads raw requests.
      *
-     * @param key The header name.
-     * @return The header value, or null if not found.
+     * @return always {@code null}
      */
     @Nullable
-    public static String getHeaderValue(@Nullable String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        return getHeaders().get(key);
-    }
-
-    /**
-     * Gets the value of a specified request parameter (from query string or form data).
-     *
-     * @param key The parameter name.
-     * @return The parameter value, or null if not found.
-     */
-    @Nullable
-    public static String getParameterValue(@Nullable String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        return getParameters().get(key);
-    }
-
-    /**
-     * Gets the value of a specified key from the JSON request body.
-     *
-     * @param key The key name.
-     * @return The value from the JSON body, or null if not found.
-     */
-    @Nullable
-    public static String getJsonBodyValue(@Nullable String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        return getValueFromJsonBody(key);
-    }
-
-    /**
-     * Gets the value of a specified cookie.
-     *
-     * @param key The cookie name.
-     * @return The cookie value, or null if not found.
-     */
-    @Nullable
-    public static String getCookieValue(@Nullable String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        HttpServletRequest request = getRequest();
-        if (request == null) {
-            Logger.debug(true, "Starter", "No request available for cookie lookup, key: {}", key);
-            return null;
-        }
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            Logger.debug(true, "Starter", "No cookies found for key: {}", key);
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (key.equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
+    public String getToken() {
         return null;
     }
 
     /**
-     * Gets the value of a specified path variable.
+     * Returns no raw API key because this facade never reads raw requests.
      *
-     * @param key The path variable name.
-     * @return The path variable value, or null if not found.
+     * @return always {@code null}
      */
     @Nullable
-    public static String getPathVariable(@Nullable String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        HttpServletRequest request = getRequest();
-        if (request == null) {
-            Logger.debug(true, "Starter", "No request available for path variable lookup, key: {}", key);
-            return null;
-        }
-        Map<String, String> pathVariables = (Map<String, String>) request
-                .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        return (pathVariables != null) ? pathVariables.get(key) : null;
+    public String getApiKey() {
+        return null;
     }
 
     /**
-     * Gets the value of a form field from a multipart request.
-     *
-     * @param key The name of the form field.
-     * @return The value of the field, or null if not found or not a multipart request.
+     * Clears the state owned by this application context.
      */
-    @Nullable
-    public static String getMultipartParameterValue(@Nullable String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        HttpServletRequest request = getRequest();
-        if (request == null) {
-            Logger.debug(true, "Starter", "No request available for multipart lookup, key: {}", key);
-            return null;
-        }
-        if (!isMultipartContent(request)) {
-            Logger.debug(true, "Starter", "Request is not multipart, key: {}", key);
-            return null;
-        }
-        try {
-            for (Part part : request.getParts()) {
-                if (key.equals(part.getName()) && part.getContentType() == null) { // Form field
-                    return new String(part.getInputStream().readAllBytes(), Charset.UTF_8);
+    public void clear() {
+        this.manager.clear();
+    }
+
+    /**
+     * Resets the state owned by this application context.
+     */
+    public void reset() {
+        clear();
+    }
+
+    /**
+     * Compares every declared authenticated subject field without exposing values in errors.
+     *
+     * @param left  first authenticated subject
+     * @param right second authenticated subject
+     * @return {@code true} when all non-static fields are equivalent
+     */
+    private static boolean equivalent(Authorize left, Authorize right) {
+        Class<?> type = Authorize.class;
+        while (type != null && type != Object.class) {
+            for (Field field : type.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                try {
+                    field.setAccessible(true);
+                    Object leftValue = normalizedValue(field.get(left));
+                    Object rightValue = normalizedValue(field.get(right));
+                    if (!Objects.deepEquals(leftValue, rightValue)) {
+                        return false;
+                    }
+                } catch (IllegalAccessException exception) {
+                    throw new IllegalStateException("Unable to compare authenticated context", exception);
                 }
             }
-        } catch (Exception e) {
-            Logger.error(true, "Starter", "Failed to get multipart parameter, key: {}", key, e);
-            return null;
+            type = type.getSuperclass();
         }
-        return null;
+        return true;
     }
 
     /**
-     * Gets a parameter value from a specified source (e.g., header, parameter).
+     * Normalizes identity strings while retaining non-string structured values.
      *
-     * @param key    The key name.
-     * @param source The source to look in (e.g., {@code EnumValue.Params.HEADER}).
-     * @return The parameter value, or null if not found.
+     * @param value authenticated context field value
+     * @return normalized string or unchanged structured value
      */
-    @Nullable
-    public static String getValue(@Nullable String key, @NonNull EnumValue.Params source) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        return switch (source) {
-            case HEADER -> getHeaderValue(key);
-            case PARAMETER -> getParameterValue(key);
-            case JSON_BODY -> getJsonBodyValue(key);
-            case COOKIE -> getCookieValue(key);
-            case PATH_VARIABLE -> getPathVariable(key);
-            case MULTIPART -> getMultipartParameterValue(key);
-            case ALL -> {
-                String value = getHeaderValue(key);
-                if (value == null)
-                    value = getParameterValue(key);
-                if (value == null)
-                    value = getPathVariable(key);
-                if (value == null)
-                    value = getJsonBodyValue(key);
-                if (value == null)
-                    value = getCookieValue(key);
-                if (value == null)
-                    value = getMultipartParameterValue(key);
-                yield value;
-            }
-            default -> null;
-        };
+    private static Object normalizedValue(Object value) {
+        return value instanceof String string ? normalize(string) : value;
     }
 
     /**
-     * Gets an integer value from any source (header, parameter, etc.), with a default value.
+     * Trims identifiers and treats blank input as absent.
      *
-     * @param key          The key name.
-     * @param defaultValue The default value to return if the key is not found or parsing fails.
-     * @return The integer value.
+     * @param value candidate identifier
+     * @return trimmed identifier, or {@code null} when blank
      */
-    public static int getIntValue(@Nullable String key, int defaultValue) {
-        String value = getValue(key, EnumValue.Params.ALL);
-        if (StringKit.isEmpty(value)) {
-            return defaultValue;
-        }
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    e,
-                    "Failed to parse int value, key={}, valueChars={}, exception={}",
-                    key,
-                    value == null ? 0 : value.length(),
-                    e.getClass().getSimpleName());
-            return defaultValue;
-        }
-    }
-
-    /**
-     * Gets a long value from any source, with a default value.
-     *
-     * @param key          The key name.
-     * @param defaultValue The default value.
-     * @return The long value.
-     */
-    public static long getLongValue(@Nullable String key, long defaultValue) {
-        String value = getValue(key, EnumValue.Params.ALL);
-        if (StringKit.isEmpty(value)) {
-            return defaultValue;
-        }
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    e,
-                    "Failed to parse long value, key={}, valueChars={}, exception={}",
-                    key,
-                    value == null ? 0 : value.length(),
-                    e.getClass().getSimpleName());
-            return defaultValue;
-        }
-    }
-
-    /**
-     * Gets a boolean value from any source, with a default value.
-     *
-     * @param key          The key name.
-     * @param defaultValue The default value.
-     * @return The boolean value.
-     */
-    public static boolean getBooleanValue(@Nullable String key, boolean defaultValue) {
-        String value = getValue(key, EnumValue.Params.ALL);
-        return StringKit.isEmpty(value) ? defaultValue : Boolean.parseBoolean(value);
-    }
-
-    /**
-     * Gets a double value from any source, with a default value.
-     *
-     * @param key          The key name.
-     * @param defaultValue The default value.
-     * @return The double value.
-     */
-    public static double getDoubleValue(@Nullable String key, double defaultValue) {
-        String value = getValue(key, EnumValue.Params.ALL);
-        if (StringKit.isEmpty(value)) {
-            return defaultValue;
-        }
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    e,
-                    "Failed to parse double value, key={}, valueChars={}, exception={}",
-                    key,
-                    value == null ? 0 : value.length(),
-                    e.getClass().getSimpleName());
-            return defaultValue;
-        }
-    }
-
-    /**
-     * Gets a value from any source and converts it to the specified type.
-     *
-     * @param key   The key name.
-     * @param clazz The target class type.
-     * @param <T>   The generic type.
-     * @return The converted value, or null if not found or conversion fails.
-     */
-    public static <T> T getValue(@Nullable String key, @NonNull Class<T> clazz) {
-        String value = getValue(key, EnumValue.Params.ALL);
-        if (StringKit.isEmpty(value)) {
-            return null;
-        }
-        try {
-            if (clazz == String.class) {
-                return (T) value;
-            } else if (clazz == Integer.class || clazz == int.class) {
-                return (T) Integer.valueOf(value);
-            } else if (clazz == Long.class || clazz == long.class) {
-                return (T) Long.valueOf(value);
-            } else if (clazz == Boolean.class || clazz == boolean.class) {
-                return (T) Boolean.valueOf(value);
-            } else if (clazz == Double.class || clazz == double.class) {
-                return (T) Double.valueOf(value);
-            } else if (clazz == Float.class || clazz == float.class) {
-                return (T) Float.valueOf(value);
-            } else {
-                return JsonKit.toPojo(value, clazz);
-            }
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    e,
-                    "Failed to convert value to {}, key={}, valueChars={}, exception={}",
-                    clazz.getSimpleName(),
-                    key,
-                    value == null ? 0 : value.length(),
-                    e.getClass().getSimpleName());
-            return null;
-        }
-    }
-
-    /**
-     * Gets a value from the JSON request body and converts it to the specified type.
-     *
-     * @param key   The key name in the JSON body.
-     * @param clazz The target class type.
-     * @param <T>   The generic type.
-     * @return The converted value, or null if not found or conversion fails.
-     */
-    @Nullable
-    public static <T> T getJsonValue(@Nullable String key, @NonNull Class<T> clazz) {
-        String value = getJsonBodyValue(key);
-        if (StringKit.isEmpty(value)) {
-            return null;
-        }
-        try {
-            return JsonKit.toPojo(value, clazz);
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Starter",
-                    e,
-                    "Failed to convert JSON value to {}, key={}, valueChars={}, exception={}",
-                    clazz.getSimpleName(),
-                    key,
-                    value == null ? 0 : value.length(),
-                    e.getClass().getSimpleName());
-            return null;
-        }
-    }
-
-    /**
-     * Gets the authorization information for the current user.
-     * <p>
-     * This method retrieves authorization information in the following priority order:
-     * <ol>
-     * <li>ThreadLocal (set via {@link #setAuthorize(Authorize)}) - highest priority</li>
-     * <li>Custom provider (set via {@link #setProvider(ContextProvider)})</li>
-     * <li>Request headers (x_user_id)</li>
-     * </ol>
-     *
-     * @return The {@link Authorize} object, or null if not available.
-     */
-    public static Authorize getAuthorize() {
-        try {
-            // 1. First, retrieve from ThreadLocal (request-level, highest priority)
-            Authorize authorize = RuntimeContextSnapshot.currentAuthorize();
-            if (authorize != null) {
-                Logger.info(true, "Starter", "Authorize (from ThreadLocal): {}", authorize);
-                return authorize;
-            }
-
-            // 2. Second, retrieve from global provider (for testing or special scenarios)
-            if (provider != null) {
-                authorize = provider.getAuthorize();
-                if (authorize != null) {
-                    Logger.info(true, "Starter", "Authorize (from provider): {}", authorize);
-                    return authorize;
-                }
-            }
-
-            // 3. Finally, parse from headers (fallback logic)
-            String userId = getValue("x_user_id", EnumValue.Params.HEADER);
-            if (StringKit.isEmpty(userId)) {
-                userId = getValue("x_user_id", EnumValue.Params.CONTEXT);
-            }
-            if (StringKit.isEmpty(userId)) {
-                Logger.info(true, "Starter", "No user ID found in headers or context");
-                return null;
-            }
-            return JsonKit.toPojo(UrlDecoder.decode(userId, Charset.UTF_8), Authorize.class);
-        } catch (Exception e) {
-            Logger.info(true, "Starter", "Failed to get authorize");
-            return null;
-        }
-    }
-
-    /**
-     * Sets the authorization information for the current request.
-     * <p>
-     * This method stores the authorization information in a ThreadLocal variable, making it available throughout the
-     * request processing lifecycle.
-     * </p>
-     *
-     * @param authorize The authorization information to set.
-     */
-    public static void setAuthorize(@Nullable Authorize authorize) {
-        RuntimeContextSnapshot.setCurrentAuthorize(authorize);
-    }
-
-    /**
-     * Captures the current generic runtime context.
-     *
-     * @return an immutable context snapshot
-     */
-    public static RuntimeContextSnapshot capture() {
-        return RuntimeContextSnapshot.capture();
-    }
-
-    /**
-     * Installs a context snapshot and returns a scope that restores the parent context when closed.
-     *
-     * @param snapshot snapshot to install
-     * @return the installed context scope
-     */
-    public static RuntimeContextScope install(@Nullable RuntimeContextSnapshot snapshot) {
-        return RuntimeContextScope.open(snapshot);
-    }
-
-    /**
-     * Replaces the current context with a previously captured snapshot.
-     *
-     * @param snapshot snapshot to restore; {@code null} clears the context
-     */
-    public static void restore(@Nullable RuntimeContextSnapshot snapshot) {
-        RuntimeContextSnapshot.replaceCurrent(snapshot);
-    }
-
-    /**
-     * Gets the tenant ID from various sources with a defined priority: custom provider > user authorization object >
-     * header &gt; parameter &gt; JSON body.
-     *
-     * @return The tenant ID, or null if not found.
-     */
-    public static String getTenantId() {
-        return getTenantId(false);
-    }
-
-    /**
-     * Gets the tenant ID using the fixed interoperability protocol.
-     *
-     * @param legacyRequestSources whether legacy request parameter and JSON body sources may be read
-     * @return the tenant ID, or {@code null} if not found
-     */
-    public static String getTenantId(boolean legacyRequestSources) {
-        try {
-            String tenantId = getValue("x_tenant_id", EnumValue.Params.HEADER);
-            if (StringKit.isNotEmpty(tenantId)) {
-                Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
-                return tenantId;
-            }
-            Authorize authorize = getAuthorize();
-            if (authorize != null && StringKit.isNotEmpty(authorize.getX_tenant_id())) {
-                Logger.info(true, "Starter", "Tenant ID: {}", authorize.getX_tenant_id());
-                return authorize.getX_tenant_id();
-            }
-            if (!legacyRequestSources) {
-                return null;
-            }
-            tenantId = getValue("tenant_id", EnumValue.Params.PARAMETER);
-            if (StringKit.isNotEmpty(tenantId)) {
-                Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
-                return tenantId;
-            }
-            tenantId = getValue("tenant_id", EnumValue.Params.JSON_BODY);
-            Logger.info(true, "Starter", "Tenant ID: {}", tenantId);
-            return tenantId;
-        } catch (Exception e) {
-            Logger.info(true, "Starter", "Failed to get tenant ID");
-            return null;
-        }
-    }
-
-    /**
-     * Checks if the request has a "multipart/" content type.
-     *
-     * @param request The HTTP request.
-     * @return {@code true} if it is a multipart request, {@code false} otherwise.
-     */
-    public static boolean isMultipartContent(HttpServletRequest request) {
-        String contentType = request.getContentType();
-        return contentType != null && contentType.toLowerCase().startsWith("multipart/");
-    }
-
-    /**
-     * Clears the context for the current request, removing the request ID, authorization context, and associated cache
-     * entries.
-     */
-    public static void clear() {
-        String requestId = RuntimeContextSnapshot.currentRequestId();
-        if (requestId != null) {
-            getHeaderCache().remove(requestId);
-            getParameterCache().remove(requestId);
-            getBodyCache().remove(requestId);
-            Logger.debug(false, "Starter", "Cleared: {}", requestId);
-        } else {
-            Logger.debug(false, "Starter", "No request ID to clear");
-        }
-        RuntimeContextSnapshot.clearCurrent();
-    }
-
-    /**
-     * Resolves the preferred request credential from current headers and parameters.
-     *
-     * @return The resolved credential, or {@code null} if no supported credential is present.
-     */
-    public static Http.Auth.Credential getCredential() {
-        return Http.Auth.credential(getHeaders(), getParameters());
-    }
-
-    /**
-     * Extracts the authentication token from the incoming request.
-     *
-     * @return The extracted token string, or {@code null} if no token is found.
-     */
-    public static String getToken() {
-        return Http.Auth.token(getHeaders(), getParameters());
-    }
-
-    /**
-     * Searches for an API key in request headers and parameters.
-     *
-     * @return The found API key, or {@code null} if not present.
-     */
-    public static String getApiKey() {
-        return Http.Auth.apiKey(getHeaders(), getParameters());
-    }
-
-    /**
-     * Clears the cache entries for a specific request ID.
-     *
-     * @param requestId The ID of the request whose cache should be cleared.
-     */
-    public static void clear(String requestId) {
-        if (requestId != null) {
-            getHeaderCache().remove(requestId);
-            getParameterCache().remove(requestId);
-            getBodyCache().remove(requestId);
-            Logger.debug(false, "Starter", "Cleared: {}", requestId);
-        }
-    }
-
-    /**
-     * Resets all cache instances to null, for testing or re-initialization.
-     */
-    public static void reset() {
-        HEADER_CACHE = null;
-        PARAMETER_CACHE = null;
-        BODY_CACHE = null;
-        Logger.debug(true, "Starter", "All cache instances reset");
+    private static String normalize(String value) {
+        return StringKit.isBlank(value) ? null : value.trim();
     }
 
 }

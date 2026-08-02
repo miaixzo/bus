@@ -19,59 +19,43 @@
 */
 package org.miaixz.bus.starter.notify;
 
-import jakarta.annotation.Resource;
-
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration class for message notification, responsible for setting up notification-related beans.
+ * Configures notification providers and the application-scoped notification service.
  * <p>
  * This class creates and configures the notification service provider factory, which manages and creates various
  * message notification services.
- *
- * <p>
- * <strong>Usage Example:</strong>
- *
- * <pre>{@code
- * // In application.yml:
- * bus:
- *   notify:
- *     # Notification-related configurations for different providers
- *
- * // In your code:
- * &#64;Autowired
- * private NotifyService notifyService;
- *
- * // Get a specific provider and send a notification
- * Provider emailProvider = notifyService.require(Registry.GENERIC_EDM);
- * // emailProvider.send(...);
- * }</pre>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { NotifyProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.NOTIFY, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.notify.Provider")
+@ConditionalOnProperty(prefix = GeniusBuilder.NOTIFY, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class NotifyConfiguration {
 
     /**
-     * Constructs a new NotifyConfiguration instance.
+     * Bound notify configuration properties.
      */
-    public NotifyConfiguration() {
-        // No initialization required.
-    }
+    private final NotifyProperties properties;
 
     /**
-     * Injected notification configuration properties, containing settings for various notification components.
-     * Automatically injected via the {@link EnableConfigurationProperties} annotation.
+     * Stores the channel definitions used to construct the notification registry and service.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    private NotifyProperties properties;
+    public NotifyConfiguration(NotifyProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates the notification service provider factory bean.
@@ -81,9 +65,9 @@ public class NotifyConfiguration {
      *
      * @return A configured instance of the notification service provider factory.
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean(NotifyService.class)
-    public NotifyService notifyProviderFactory() {
+    NotifyService notifyService() {
         return new NotifyService(this.properties);
     }
 

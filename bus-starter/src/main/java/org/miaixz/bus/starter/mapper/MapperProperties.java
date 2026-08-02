@@ -20,9 +20,10 @@
 package org.miaixz.bus.starter.mapper;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.mapper.runtime.MapperOptions;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Spring Boot configuration properties for MyBatis Mapper.
@@ -35,13 +36,42 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @ConfigurationProperties(prefix = GeniusBuilder.MAPPER)
-public class MapperProperties extends MapperOptions {
+@Validated
+public final class MapperProperties extends MapperOptions {
 
     /**
+     * Whether Mapper integration is enabled.
+     */
+    private boolean enabled;
+
+    /**
+     * Binds Mapper activation and flattened plugin settings without retaining the mutable source map.
+     *
      * Constructs a new MapperProperties instance for Spring Boot property binding.
      */
     public MapperProperties() {
-        // No initialization required.
+        TenantOptions tenant = new TenantOptions();
+        tenant.setEnabled(false);
+        tenant.setRequired(false);
+        setTenant(tenant);
+    }
+
+    /**
+     * Indicates whether Mapper Starter integration is enabled.
+     *
+     * @return whether Mapper integration is enabled
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Sets the enabled.
+     *
+     * @param enabled whether Mapper integration is enabled
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

@@ -70,7 +70,7 @@ import org.springframework.core.annotation.Order;
 public class AspectjValidateProxy {
 
     /**
-     * Constructs a new AspectjValidateProxy instance.
+     * Initializes the stateless validation aspect used for annotated controller and service methods.
      */
     public AspectjValidateProxy() {
         // No initialization required.
@@ -115,7 +115,7 @@ public class AspectjValidateProxy {
      * </p>
      *
      * @param point The join point, which contains information about the target method.
-     * @return The result of the target method's execution.
+     * @return the value returned by the target method
      * @throws Throwable if validation fails or the target method throws an exception.
      */
     @Around("match()")

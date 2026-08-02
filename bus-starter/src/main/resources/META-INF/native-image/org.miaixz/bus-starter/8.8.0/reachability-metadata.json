@@ -1,1019 +1,12 @@
 {
   "reflection": [
     {
-      "type": "com.zaxxer.hikari.HikariConfig",
+      "type": "org.miaixz.bus.starter.auth.AuthConfiguration",
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "addDataSourceProperty",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "addHealthCheckProperty",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "copyStateTo",
-          "parameterTypes": [
-            "com.zaxxer.hikari.HikariConfig"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getCatalog",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionInitSql",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionTestQuery",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSourceClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSourceJNDI",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSourceProperties",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDriverClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExceptionOverrideClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHealthCheckProperties",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHealthCheckRegistry",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIdleTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInitializationFailTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getJdbcUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeepaliveTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLeakDetectionThreshold",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaximumPoolSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxLifetime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMetricRegistry",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMetricsTrackerFactory",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMinimumIdle",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPassword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPoolName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getScheduledExecutor",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSchema",
-          "parameterTypes": []
-        },
-        {
-          "name": "getThreadFactory",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTransactionIsolation",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUsername",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValidationTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAllowPoolSuspension",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAutoCommit",
-          "parameterTypes": []
-        },
-        {
-          "name": "isIsolateInternalQueries",
-          "parameterTypes": []
-        },
-        {
-          "name": "isReadOnly",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRegisterMbeans",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAllowPoolSuspension",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setAutoCommit",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setCatalog",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConnectionInitSql",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConnectionTestQuery",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConnectionTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setDataSource",
-          "parameterTypes": [
-            "javax.sql.DataSource"
-          ]
-        },
-        {
-          "name": "setDataSourceClassName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDataSourceJNDI",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDataSourceProperties",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setDriverClassName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setExceptionOverrideClassName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setHealthCheckProperties",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setHealthCheckRegistry",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setIdleTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setInitializationFailTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setIsolateInternalQueries",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setJdbcUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeepaliveTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setLeakDetectionThreshold",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMaximumPoolSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMaxLifetime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMetricRegistry",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setMetricsTrackerFactory",
-          "parameterTypes": [
-            "com.zaxxer.hikari.metrics.MetricsTrackerFactory"
-          ]
-        },
-        {
-          "name": "setMinimumIdle",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setPassword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPoolName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setReadOnly",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setRegisterMbeans",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setScheduledExecutor",
-          "parameterTypes": [
-            "java.util.concurrent.ScheduledExecutorService"
-          ]
-        },
-        {
-          "name": "setSchema",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setThreadFactory",
-          "parameterTypes": [
-            "java.util.concurrent.ThreadFactory"
-          ]
-        },
-        {
-          "name": "setTransactionIsolation",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUsername",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setValidationTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "validate",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "com.zaxxer.hikari.HikariDataSource",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "com.zaxxer.hikari.HikariConfig"
-          ]
-        },
-        {
-          "name": "addDataSourceProperty",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "addHealthCheckProperty",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "close",
-          "parameterTypes": []
-        },
-        {
-          "name": "copyStateTo",
-          "parameterTypes": [
-            "com.zaxxer.hikari.HikariConfig"
-          ]
-        },
-        {
-          "name": "createConnectionBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "createShardingKeyBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "evictConnection",
-          "parameterTypes": [
-            "java.sql.Connection"
-          ]
-        },
-        {
-          "name": "getCatalog",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnection",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnection",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getConnectionInitSql",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionTestQuery",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSourceClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSourceJNDI",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDataSourceProperties",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDriverClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExceptionOverrideClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHealthCheckProperties",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHealthCheckRegistry",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHikariConfigMXBean",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHikariPoolMXBean",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIdleTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInitializationFailTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getJdbcUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeepaliveTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLeakDetectionThreshold",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLoginTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLogWriter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaximumPoolSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxLifetime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMetricRegistry",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMetricsTrackerFactory",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMinimumIdle",
-          "parameterTypes": []
-        },
-        {
-          "name": "getParentLogger",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPassword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPoolName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getScheduledExecutor",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSchema",
-          "parameterTypes": []
-        },
-        {
-          "name": "getThreadFactory",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTransactionIsolation",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUsername",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValidationTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAllowPoolSuspension",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAutoCommit",
-          "parameterTypes": []
-        },
-        {
-          "name": "isClosed",
-          "parameterTypes": []
-        },
-        {
-          "name": "isIsolateInternalQueries",
-          "parameterTypes": []
-        },
-        {
-          "name": "isReadOnly",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRegisterMbeans",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRunning",
-          "parameterTypes": []
-        },
-        {
-          "name": "isWrapperFor",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAllowPoolSuspension",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setAutoCommit",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setCatalog",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConnectionInitSql",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConnectionTestQuery",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConnectionTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setDataSource",
-          "parameterTypes": [
-            "javax.sql.DataSource"
-          ]
-        },
-        {
-          "name": "setDataSourceClassName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDataSourceJNDI",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDataSourceProperties",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setDriverClassName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setExceptionOverrideClassName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setHealthCheckProperties",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setHealthCheckRegistry",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setIdleTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setInitializationFailTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setIsolateInternalQueries",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setJdbcUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeepaliveTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setLeakDetectionThreshold",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setLoginTimeout",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setLogWriter",
-          "parameterTypes": [
-            "java.io.PrintWriter"
-          ]
-        },
-        {
-          "name": "setMaximumPoolSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMaxLifetime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMetricRegistry",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setMetricsTrackerFactory",
-          "parameterTypes": [
-            "com.zaxxer.hikari.metrics.MetricsTrackerFactory"
-          ]
-        },
-        {
-          "name": "setMinimumIdle",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setPassword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPoolName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setReadOnly",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setRegisterMbeans",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setScheduledExecutor",
-          "parameterTypes": [
-            "java.util.concurrent.ScheduledExecutorService"
-          ]
-        },
-        {
-          "name": "setSchema",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setThreadFactory",
-          "parameterTypes": [
-            "java.util.concurrent.ThreadFactory"
-          ]
-        },
-        {
-          "name": "setTransactionIsolation",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUsername",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setValidationTimeout",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "unwrap",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "validate",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.auth.AuthMethodResolver",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveArgument",
-          "parameterTypes": [
-            "org.springframework.core.MethodParameter",
-            "org.springframework.web.method.support.ModelAndViewContainer",
-            "org.springframework.web.context.request.NativeWebRequest",
-            "org.springframework.web.bind.support.WebDataBinderFactory"
-          ]
-        },
-        {
-          "name": "supportsParameter",
-          "parameterTypes": [
-            "org.springframework.core.MethodParameter"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
+            "org.miaixz.bus.starter.auth.AuthProperties"
           ]
         }
       ]
@@ -1023,421 +16,109 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "org.miaixz.bus.cache.Options"
+          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cache.CacheFactoryProvider",
+      "type": "org.miaixz.bus.starter.auth.AuthService",
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.auth.AuthProperties",
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cache.CacheConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.cache.CacheProperties"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.cache.CacheProperties",
-      "fields": [
+      "methods": [
         {
-          "name": "map"
-        },
-        {
-          "name": "provider"
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "org.springframework.util.unit.DataSize",
+            "java.time.Duration",
+            "java.lang.String",
+            "org.miaixz.bus.cache.Options$Redis",
+            "java.util.Map",
+            "org.miaixz.bus.starter.cache.CacheProperties$Collector"
+          ]
         }
-      ],
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.context.TaskConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.context.WebConfiguration",
+      "methods": [
         {
-          "name": "equals",
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cors.CorsConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
           "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExpire",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMap",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNodes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRedis",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExpire",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMap",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "setMaxSize",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setNodes",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setProvider",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.jdbc.JdbcProperties"
-          ]
-        },
-        {
-          "name": "setRedis",
-          "parameterTypes": [
-            "org.miaixz.bus.cache.Options$Redis"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
+            "org.miaixz.bus.starter.cors.CorsProperties"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.cors.CorsProperties",
-      "fields": [
-        {
-          "name": "allowCredentials"
-        },
-        {
-          "name": "allowedHeaders"
-        },
-        {
-          "name": "allowedMethods"
-        },
-        {
-          "name": "allowedOrigins"
-        },
-        {
-          "name": "exposedHeaders"
-        },
-        {
-          "name": "maxAge"
-        },
-        {
-          "name": "path"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAllowCredentials",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAllowedHeaders",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAllowedMethods",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAllowedOrigins",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExposedHeaders",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxAge",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPath",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAllowCredentials",
           "parameterTypes": [
-            "java.lang.Boolean"
-          ]
-        },
-        {
-          "name": "setAllowedHeaders",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setAllowedMethods",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setAllowedOrigins",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setExposedHeaders",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setMaxAge",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setPath",
-          "parameterTypes": [
-            "java.lang.String"
+            "boolean",
+            "java.lang.String",
+            "java.lang.String[]",
+            "java.lang.String[]",
+            "java.lang.String[]",
+            "java.lang.String[]",
+            "boolean",
+            "java.time.Duration"
           ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cortex.CortexConfiguration$TypedRegistryStore",
-      "fields": [
-        {
-          "name": "delegate"
-        },
-        {
-          "name": "type"
-        }
-      ],
+      "type": "org.miaixz.bus.starter.cortex.CortexConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.registry.RegistryStore",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "capabilities",
-          "parameterTypes": []
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "deleteInstance",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "find",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "findByMethodVersion",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "findByRoutes",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "query",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "org.miaixz.bus.cortex.registry.RegistryQuery"
-          ]
-        },
-        {
-          "name": "query",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "org.miaixz.bus.cortex.Vector"
-          ]
-        },
-        {
-          "name": "queryByRoute",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryInstances",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "save",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Assets"
-          ]
-        },
-        {
-          "name": "save",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Assets",
-            "org.miaixz.bus.cortex.Instance"
-          ]
-        },
-        {
-          "name": "saveAll",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "storeCapabilities",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "typed",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Assets"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
+            "org.miaixz.bus.starter.cortex.CortexProperties"
           ]
         }
       ]
@@ -1447,613 +128,25 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Audit",
-      "fields": [
-        {
-          "name": "enabled"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
           "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Bridge",
-      "fields": [
-        {
-          "name": "maxRetries"
-        },
-        {
-          "name": "mode"
-        },
-        {
-          "name": "source"
-        },
-        {
-          "name": "url"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxRetries",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPushPullEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "requireMaxRetries",
-          "parameterTypes": []
-        },
-        {
-          "name": "requireUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "setMaxRetries",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMode",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "token"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getToken",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setToken",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.cortex.CortexProperties$Token"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Token",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getBearerPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCachePrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCookieNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExpireSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeaderNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIssuer",
-          "parameterTypes": []
-        },
-        {
-          "name": "getQueryNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRefreshThresholdSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getScopeExpireSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSecretKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTransports",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAutoRefresh",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "isMultipleSessions",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveExpireSeconds",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setAutoRefresh",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setBearerPrefix",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setCachePrefix",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setCookieNames",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setExpireSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setHeaderNames",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setIssuer",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMultipleSessions",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setQueryNames",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setRefreshThresholdSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setScopeExpireSeconds",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "setSecretKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTransports",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "supports",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.token.TokenTransport"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Version",
-      "fields": [
-        {
-          "name": "enabled"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Watch",
-      "fields": [
-        {
-          "name": "loggingEnabled"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isLoggingEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setLoggingEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "int",
+            "java.time.Duration",
+            "java.time.Duration",
+            "org.miaixz.bus.cache.Options",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Watch",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Bridge",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Guard",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Audit",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Version"
           ]
         }
       ]
@@ -2063,7 +156,9 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.dubbo.DubboProperties"
+          ]
         }
       ]
     },
@@ -2072,138 +167,42 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.elastic.ElasticConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.elastic.ElasticProperties"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.elastic.ElasticProperties",
-      "fields": [
-        {
-          "name": "connectionRequestTimeout"
-        },
-        {
-          "name": "connectTimeout"
-        },
-        {
-          "name": "hosts"
-        },
-        {
-          "name": "maxConnectPerRoute"
-        },
-        {
-          "name": "maxConnectTotal"
-        },
-        {
-          "name": "password"
-        },
-        {
-          "name": "schema"
-        },
-        {
-          "name": "socketTimeout"
-        },
-        {
-          "name": "username"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionRequestTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHostList",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHosts",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxConnectPerRoute",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxConnectTotal",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPassword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSchema",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSocketTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUsername",
-          "parameterTypes": []
-        },
-        {
-          "name": "setConnectionRequestTimeout",
           "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "int",
             "int"
-          ]
-        },
-        {
-          "name": "setConnectTimeout",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setHosts",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMaxConnectPerRoute",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMaxConnectTotal",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setPassword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSchema",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSocketTimeout",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setUsername",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         }
       ]
@@ -2213,16 +212,6 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "socketQuickService",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.fabric.FabricProperties"
-          ]
-        },
-        {
-          "name": "webSocketQuickService",
           "parameterTypes": [
             "org.miaixz.bus.starter.fabric.FabricProperties"
           ]
@@ -2231,200 +220,14 @@
     },
     {
       "type": "org.miaixz.bus.starter.fabric.FabricProperties",
-      "fields": [
-        {
-          "name": "dns"
-        },
-        {
-          "name": "socket"
-        },
-        {
-          "name": "websocket"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDns",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSocket",
-          "parameterTypes": []
-        },
-        {
-          "name": "getWebsocket",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDns",
           "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.starter.fabric.FabricProperties$Socket",
+            "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket",
             "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
-          ]
-        },
-        {
-          "name": "setSocket",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.fabric.FabricProperties$Socket"
-          ]
-        },
-        {
-          "name": "setWebsocket",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns",
-      "fields": [
-        {
-          "name": "cache"
-        },
-        {
-          "name": "enabled"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "isCache",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCache",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "host"
-        },
-        {
-          "name": "port"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHost",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPort",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setHost",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPort",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "host"
-        },
-        {
-          "name": "path"
-        },
-        {
-          "name": "port"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHost",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPath",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPort",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setHost",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPath",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPort",
-          "parameterTypes": [
-            "int"
           ]
         }
       ]
@@ -2437,14 +240,6 @@
           "parameterTypes": [
             "org.miaixz.bus.starter.fabric.FabricProperties"
           ]
-        },
-        {
-          "name": "start",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
-          "parameterTypes": []
         }
       ]
     },
@@ -2456,19 +251,11 @@
           "parameterTypes": [
             "org.miaixz.bus.starter.fabric.FabricProperties"
           ]
-        },
-        {
-          "name": "start",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
-          "parameterTypes": []
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.health.AvailabilityListener",
+      "type": "org.miaixz.bus.starter.GeniusStarter",
       "methods": [
         {
           "name": "<init>",
@@ -2477,117 +264,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.health.HealthConfiguration$EnableHealthCondition",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "matches",
-          "parameterTypes": [
-            "org.springframework.context.annotation.ConditionContext",
-            "org.springframework.core.type.AnnotatedTypeMetadata"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.health.HealthController",
+      "type": "org.miaixz.bus.starter.health.HealthConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.health.HealthService"
+            "org.miaixz.bus.starter.health.HealthProperties"
           ]
-        },
-        {
-          "name": "accept",
-          "parameterTypes": []
-        },
-        {
-          "name": "broken",
-          "parameterTypes": []
-        },
-        {
-          "name": "correct",
-          "parameterTypes": []
-        },
-        {
-          "name": "healthz",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "refuse",
-          "parameterTypes": []
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.health.HealthProperties",
-      "fields": [
-        {
-          "name": "type"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "setType",
           "parameterTypes": [
-            "java.lang.String"
+            "boolean",
+            "java.util.List"
           ]
         }
       ]
@@ -2597,199 +291,21 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.i18n.I18nMessage",
-      "fields": [
-        {
-          "name": "properties"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.starter.i18n.I18nProperties"
-          ]
-        },
-        {
-          "name": "baseNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object[]",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object[]",
-            "java.lang.String",
-            "java.util.Locale"
-          ]
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object[]",
-            "java.util.Locale"
-          ]
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": [
-            "org.springframework.context.MessageSourceResolvable",
-            "java.util.Locale"
-          ]
-        },
-        {
-          "name": "getParentMessageSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveCode",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Locale"
-          ]
-        },
-        {
-          "name": "resolveMessage",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Locale"
-          ]
-        },
-        {
-          "name": "setAlwaysUseMessageFormat",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setCommonMessages",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setParentMessageSource",
-          "parameterTypes": [
-            "org.springframework.context.MessageSource"
-          ]
-        },
-        {
-          "name": "setUseCodeAsDefaultMessage",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "toI18n",
-          "parameterTypes": [
-            "java.util.Locale"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.i18n.I18nProperties",
-      "fields": [
-        {
-          "name": "baseNames"
-        },
-        {
-          "name": "defaultEncoding"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBaseNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefaultEncoding",
-          "parameterTypes": []
-        },
-        {
-          "name": "setBaseNames",
           "parameterTypes": [
+            "boolean",
+            "java.lang.String",
             "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setDefaultEncoding",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         }
       ]
@@ -2799,778 +315,83 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.image.ImageProperties",
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.image.ImageProperties",
-      "fields": [
-        {
-          "name": "dcmDir"
-        },
-        {
-          "name": "imgDir"
-        },
-        {
-          "name": "node"
-        },
-        {
-          "name": "opencv"
-        },
-        {
-          "name": "server"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDcmDir",
-          "parameterTypes": []
-        },
-        {
-          "name": "getImgDir",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isOpencv",
-          "parameterTypes": []
-        },
-        {
-          "name": "isServer",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDcmDir",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setImgDir",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNode",
-          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
             "org.miaixz.bus.starter.image.ImageProperties$Node"
           ]
-        },
-        {
-          "name": "setOpencv",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setServer",
-          "parameterTypes": [
-            "boolean"
-          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.image.ImageProperties$Node",
-      "fields": [
-        {
-          "name": "aeTitle"
-        },
-        {
-          "name": "host"
-        },
-        {
-          "name": "negociation"
-        },
-        {
-          "name": "port"
-        },
-        {
-          "name": "sopClasses"
-        },
-        {
-          "name": "sopClassesTCS"
-        },
-        {
-          "name": "sopClassesUID"
-        }
-      ],
+      "type": "org.miaixz.bus.starter.jdbc.JdbcConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.image.ImageProperties"
-          ]
-        },
-        {
-          "name": "getAeTitle",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHost",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPort",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSopClasses",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSopClassesTCS",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSopClassesUID",
-          "parameterTypes": []
-        },
-        {
-          "name": "isNegociation",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAeTitle",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setHost",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNegociation",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPort",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSopClasses",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSopClassesTCS",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSopClassesUID",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.jdbc.AspectjJdbcProxy",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.jdbc.DataSourceHolder",
-      "fields": [
-        {
-          "name": "COLUMN_SCHEMA_CHAIN"
-        },
-        {
-          "name": "TABLE_SCHEMA_CHAIN"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefault",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "remove",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDefault",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.jdbc.DynamicDataSource",
-      "fields": [
-        {
-          "name": "INSTANCE"
-        },
-        {
-          "name": "keySet"
-        },
-        {
-          "name": "lock"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "addDataSource",
-          "parameterTypes": [
-            "java.lang.String",
-            "javax.sql.DataSource"
-          ]
-        },
-        {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
-          "name": "containsKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "createConnectionBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "createShardingKeyBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "determineCurrentLookupKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getAllDataSources",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnection",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnection",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getCurrentDataSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLoginTimeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLogWriter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getParentLogger",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResolvedDataSources",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResolvedDefaultDataSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isWrapperFor",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDataSourceLookup",
-          "parameterTypes": [
-            "org.springframework.jdbc.datasource.lookup.DataSourceLookup"
-          ]
-        },
-        {
-          "name": "setDefaultTargetDataSource",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setLenientFallback",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setLoginTimeout",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setLogWriter",
-          "parameterTypes": [
-            "java.io.PrintWriter"
-          ]
-        },
-        {
-          "name": "setTargetDataSources",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "unwrap",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
+            "org.miaixz.bus.starter.jdbc.JdbcProperties"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.jdbc.JdbcProperties",
-      "fields": [
-        {
-          "name": "driverClassName"
-        },
-        {
-          "name": "filters"
-        },
-        {
-          "name": "initialSize"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "maxActive"
-        },
-        {
-          "name": "maxEvictableIdleTimeMillis"
-        },
-        {
-          "name": "maxOpenPreparedStatements"
-        },
-        {
-          "name": "maxWait"
-        },
-        {
-          "name": "minEvictableIdleTimeMillis"
-        },
-        {
-          "name": "minIdle"
-        },
-        {
-          "name": "multi"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "password"
-        },
-        {
-          "name": "poolPreparedStatements"
-        },
-        {
-          "name": "privateKey"
-        },
-        {
-          "name": "testOnBorrow"
-        },
-        {
-          "name": "testOnReturn"
-        },
-        {
-          "name": "testWhileIdle"
-        },
-        {
-          "name": "timeBetweenEvictionRunsMillis"
-        },
-        {
-          "name": "type"
-        },
-        {
-          "name": "url"
-        },
-        {
-          "name": "username"
-        },
-        {
-          "name": "validationFilter"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDriverClassName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFilters",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInitialSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxActive",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxEvictableIdleTimeMillis",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxOpenPreparedStatements",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxWait",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMinEvictableIdleTimeMillis",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMinIdle",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMulti",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPassword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrivateKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTimeBetweenEvictionRunsMillis",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUsername",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValidationFilter",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPoolPreparedStatements",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTestOnBorrow",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTestOnReturn",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTestWhileIdle",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDriverClassName",
           "parameterTypes": [
-            "java.lang.String"
+            "boolean",
+            "java.lang.String",
+            "java.util.Map"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.json.JsonConfiguration",
+      "methods": [
         {
-          "name": "setFilters",
+          "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
+            "org.miaixz.bus.starter.json.JsonProperties"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.json.JsonProperties",
+      "methods": [
         {
-          "name": "setInitialSize",
+          "name": "<init>",
           "parameterTypes": [
-            "int"
+            "boolean",
+            "org.miaixz.bus.starter.json.JsonProperties$Provider"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.limiter.LimiterConfiguration",
+      "methods": [
         {
-          "name": "setKey",
+          "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMaxActive",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMaxEvictableIdleTimeMillis",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMaxOpenPreparedStatements",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMaxWait",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMinEvictableIdleTimeMillis",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMinIdle",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMulti",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPassword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPoolPreparedStatements",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPrivateKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTestOnBorrow",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setTestOnReturn",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setTestWhileIdle",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setTimeBetweenEvictionRunsMillis",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUsername",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setValidationFilter",
-          "parameterTypes": [
-            "java.lang.String"
+            "org.miaixz.bus.starter.limiter.LimiterProperties"
           ]
         }
       ]
@@ -3580,1187 +401,38 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
           "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtension",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSupplier",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isLogger",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExtension",
-          "parameterTypes": [
+            "boolean",
+            "java.time.Duration",
+            "boolean",
+            "java.lang.String",
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "setLogger",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setSupplier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.limiter.LimiterScanner",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "lambda$postProcessAfterInitialization$0",
-          "parameterTypes": [
-            "java.util.concurrent.atomic.AtomicBoolean",
-            "java.lang.reflect.Method"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "postProcessAfterInitialization",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessAfterInstantiation",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessBeforeInitialization",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessBeforeInstantiation",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessProperties",
-          "parameterTypes": [
-            "org.springframework.beans.PropertyValues",
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "searchAnnotation",
-          "parameterTypes": [
-            "java.lang.reflect.Method",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.limiter.LimiterService",
-      "fields": [
-        {
-          "name": "context"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.limiter.Context"
           ]
-        },
-        {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors$MapperInterfaceStringToClassConverter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "postProcessBeanFactory",
-          "parameterTypes": [
-            "org.springframework.beans.factory.config.ConfigurableListableBeanFactory"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors$MyBatisBeanFactoryInitializationAotProcessor",
-      "fields": [
-        {
-          "name": "excludeClasses"
-        }
-      ],
-      "methods": [
-        {
-          "name": "$deserializeLambda$",
-          "parameterTypes": [
-            "java.lang.invoke.SerializedLambda"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isExcludedFromAotProcessing",
-          "parameterTypes": [
-            "org.springframework.beans.factory.support.RegisteredBean"
-          ]
-        },
-        {
-          "name": "lambda$processAheadOfTime$0",
-          "parameterTypes": [
-            "java.lang.String[]",
-            "org.springframework.beans.factory.config.ConfigurableListableBeanFactory",
-            "org.springframework.aot.generate.GenerationContext",
-            "org.springframework.beans.factory.aot.BeanFactoryInitializationCode"
-          ]
-        },
-        {
-          "name": "lambda$registerMapperRelationships$0",
-          "parameterTypes": [
-            "org.springframework.aot.hint.RuntimeHints",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "lambda$registerReflectionTypeIfNecessary$0",
-          "parameterTypes": [
-            "org.springframework.aot.hint.ReflectionHints",
-            "java.lang.reflect.Constructor"
-          ]
-        },
-        {
-          "name": "lambda$registerReflectionTypeIfNecessary$1",
-          "parameterTypes": [
-            "org.springframework.aot.hint.ReflectionHints",
-            "java.lang.reflect.Method"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "processAheadOfTime",
-          "parameterTypes": [
-            "org.springframework.beans.factory.config.ConfigurableListableBeanFactory"
-          ]
-        },
-        {
-          "name": "registerMapperRelationships",
-          "parameterTypes": [
-            "java.lang.Class",
-            "org.springframework.aot.hint.RuntimeHints"
-          ]
-        },
-        {
-          "name": "registerReflectionTypeIfNecessary",
-          "parameterTypes": [
-            "java.lang.Class",
-            "org.springframework.aot.hint.RuntimeHints"
-          ]
-        },
-        {
-          "name": "registerSqlProviderTypes",
-          "parameterTypes": [
-            "java.lang.reflect.Method",
-            "org.springframework.aot.hint.RuntimeHints",
-            "java.lang.Class",
-            "org.miaixz.bus.core.center.function.FunctionX[]"
-          ]
-        },
-        {
-          "name": "resolveMapperInterface",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperAotProcessors$MyBatisMapperFactoryBeanPostProcessor",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "postProcessAfterInitialization",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessBeforeInitialization",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postProcessMergedBeanDefinition",
-          "parameterTypes": [
-            "org.springframework.beans.factory.support.RootBeanDefinition",
-            "java.lang.Class",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "resetBeanDefinition",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setBeanFactory",
-          "parameterTypes": [
-            "org.springframework.beans.factory.BeanFactory"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperClassPathScanner",
-      "fields": [
-        {
-          "name": "annotationClass"
-        },
-        {
-          "name": "mapperBuilderBeanName"
-        },
-        {
-          "name": "mapperFactoryBean"
-        },
-        {
-          "name": "markerInterface"
-        },
-        {
-          "name": "sqlSessionFactory"
-        },
-        {
-          "name": "sqlSessionFactoryBeanName"
-        },
-        {
-          "name": "sqlSessionTemplate"
-        },
-        {
-          "name": "sqlSessionTemplateBeanName"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.springframework.beans.factory.support.BeanDefinitionRegistry"
-          ]
-        },
-        {
-          "name": "addExcludeFilter",
-          "parameterTypes": [
-            "org.springframework.core.type.filter.TypeFilter"
-          ]
-        },
-        {
-          "name": "addIncludeFilter",
-          "parameterTypes": [
-            "org.springframework.core.type.filter.TypeFilter"
-          ]
-        },
-        {
-          "name": "checkCandidate",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.springframework.beans.factory.config.BeanDefinition"
-          ]
-        },
-        {
-          "name": "clearCache",
-          "parameterTypes": []
-        },
-        {
-          "name": "doScan",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "findCandidateComponents",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getBeanDefinitionDefaults",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEnvironment",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMetadataReaderFactory",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRegistry",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResourceLoader",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isCandidateComponent",
-          "parameterTypes": [
-            "org.springframework.beans.factory.annotation.AnnotatedBeanDefinition"
-          ]
-        },
-        {
-          "name": "lambda$registerFilters$0",
-          "parameterTypes": [
-            "org.springframework.core.type.classreading.MetadataReader",
-            "org.springframework.core.type.classreading.MetadataReaderFactory"
-          ]
-        },
-        {
-          "name": "lambda$registerFilters$1",
-          "parameterTypes": [
-            "org.springframework.core.type.classreading.MetadataReader",
-            "org.springframework.core.type.classreading.MetadataReaderFactory"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "processBeanDefinitions",
-          "parameterTypes": [
-            "java.util.Set"
-          ]
-        },
-        {
-          "name": "registerFilters",
-          "parameterTypes": []
-        },
-        {
-          "name": "resetFilters",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "scan",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setAnnotationClass",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "setAutowireCandidatePatterns",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setBeanDefinitionDefaults",
-          "parameterTypes": [
-            "org.springframework.beans.factory.support.BeanDefinitionDefaults"
-          ]
-        },
-        {
-          "name": "setBeanNameGenerator",
-          "parameterTypes": [
-            "org.springframework.beans.factory.support.BeanNameGenerator"
-          ]
-        },
-        {
-          "name": "setEnvironment",
-          "parameterTypes": [
-            "org.springframework.core.env.Environment"
-          ]
-        },
-        {
-          "name": "setIncludeAnnotationConfig",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setMapperBuilderBeanName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMapperFactoryBean",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mapper.MapperFactoryBean"
-          ]
-        },
-        {
-          "name": "setMarkerInterface",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "setMetadataReaderFactory",
-          "parameterTypes": [
-            "org.springframework.core.type.classreading.MetadataReaderFactory"
-          ]
-        },
-        {
-          "name": "setResourceLoader",
-          "parameterTypes": [
-            "org.springframework.core.io.ResourceLoader"
-          ]
-        },
-        {
-          "name": "setResourcePattern",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setScopedProxyMode",
-          "parameterTypes": [
-            "org.springframework.context.annotation.ScopedProxyMode"
-          ]
-        },
-        {
-          "name": "setScopeMetadataResolver",
-          "parameterTypes": [
-            "org.springframework.context.annotation.ScopeMetadataResolver"
-          ]
-        },
-        {
-          "name": "setSqlSessionFactory",
-          "parameterTypes": [
-            "org.apache.ibatis.session.SqlSessionFactory"
-          ]
-        },
-        {
-          "name": "setSqlSessionFactoryBeanName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSqlSessionTemplate",
-          "parameterTypes": [
-            "org.mybatis.spring.SqlSessionTemplate"
-          ]
-        },
-        {
-          "name": "setSqlSessionTemplateBeanName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.mapper.MapperConfiguration",
-      "fields": [
-        {
-          "name": "configurationCustomizersProvider"
-        },
-        {
-          "name": "environment"
-        },
-        {
-          "name": "mapperResourceResolver"
-        },
-        {
-          "name": "properties"
-        },
-        {
-          "name": "resourceLoader"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
-          "name": "configurationCustomizers",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "mapperInterfaceStringToClassConverter",
-          "parameterTypes": []
-        },
-        {
-          "name": "mapperResourceResolver",
-          "parameterTypes": []
-        },
-        {
-          "name": "myBatisBeanFactoryInitializationAotProcessor",
-          "parameterTypes": []
-        },
-        {
-          "name": "myBatisMapperFactoryBeanPostProcessor",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMapperLocations",
-          "parameterTypes": []
-        },
-        {
-          "name": "sqlSessionFactory",
-          "parameterTypes": [
-            "javax.sql.DataSource",
-            "org.springframework.beans.factory.config.ConfigurableListableBeanFactory"
-          ]
-        },
-        {
-          "name": "sqlSessionTemplate",
-          "parameterTypes": [
-            "org.apache.ibatis.session.SqlSessionFactory"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperConfiguration$SpringBootVFS",
-      "fields": [
-        {
-          "name": "resourceResolver"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.mapper.MapperConfiguration"
+            "org.springframework.core.env.Environment",
+            "org.springframework.core.io.ResourceLoader",
+            "org.miaixz.bus.starter.mapper.MapperProperties",
+            "org.springframework.beans.factory.ObjectProvider"
           ]
-        },
-        {
-          "name": "addImplClass",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isValid",
-          "parameterTypes": []
-        },
-        {
-          "name": "list",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "list",
-          "parameterTypes": [
-            "java.net.URL",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperFactoryBean",
-      "fields": [
-        {
-          "name": "mapperInterface"
-        },
-        {
-          "name": "OBJECT_TYPE_ATTRIBUTE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
-          "name": "checkDaoConfig",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMapperInterface",
-          "parameterTypes": []
-        },
-        {
-          "name": "getObject",
-          "parameterTypes": []
-        },
-        {
-          "name": "getObjectType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSqlSession",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSqlSessionFactory",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSqlSessionTemplate",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isSingleton",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setMapperInterface",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "setSqlSessionFactory",
-          "parameterTypes": [
-            "org.apache.ibatis.session.SqlSessionFactory"
-          ]
-        },
-        {
-          "name": "setSqlSessionTemplate",
-          "parameterTypes": [
-            "org.mybatis.spring.SqlSessionTemplate"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mapper.MapperPluginBuilder$ResolvedSchemaDataSource",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "javax.sql.DataSource",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "dataSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "holderKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
         }
       ]
     },
@@ -4770,854 +442,38 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getAudit",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAutoDelimitKeywords",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBasePackage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConfigLocation",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConfiguration",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConfigurationProperties",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExecutorType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMapperLocations",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOperation",
-          "parameterTypes": []
-        },
-        {
-          "name": "getParams",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPopulate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getReasonable",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSchema",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSupportMethodsArguments",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTenant",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTypeAliasesPackage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTypeAliasesSuperType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTypeHandlersPackage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVisible",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isCheckConfigLocation",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolve",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "resolve",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions"
-          ]
-        },
-        {
-          "name": "resolveSchemaOptions",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions"
-          ]
-        },
-        {
-          "name": "resolveSchemaOptions",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setAudit",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$AuditOptions"
-          ]
-        },
-        {
-          "name": "setAutoDelimitKeywords",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setBasePackage",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setCheckConfigLocation",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setConfigLocation",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setConfiguration",
-          "parameterTypes": [
-            "org.apache.ibatis.session.Configuration"
-          ]
-        },
-        {
-          "name": "setConfigurationProperties",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "setExecutorType",
-          "parameterTypes": [
-            "org.apache.ibatis.session.ExecutorType"
-          ]
-        },
-        {
-          "name": "setMapperLocations",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setOperation",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$OperationOptions"
-          ]
-        },
-        {
-          "name": "setParams",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPopulate",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$PopulateOptions"
-          ]
-        },
-        {
-          "name": "setPrefix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$PrefixOptions"
-          ]
-        },
-        {
-          "name": "setReasonable",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSchema",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions"
-          ]
-        },
-        {
-          "name": "setSupportMethodsArguments",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTenant",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$TenantOptions"
-          ]
-        },
-        {
-          "name": "setTypeAliasesPackage",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTypeAliasesSuperType",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "setTypeHandlersPackage",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setVisible",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$VisibleOptions"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.mapper.MapperScannerRegistrar",
-      "fields": [
-        {
-          "name": "environment"
-        },
-        {
-          "name": "resourceLoader"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "registerBeanDefinitions",
-          "parameterTypes": [
-            "org.springframework.core.type.AnnotationMetadata",
-            "org.springframework.beans.factory.support.BeanDefinitionRegistry"
-          ]
-        },
-        {
-          "name": "registerBeanDefinitions",
-          "parameterTypes": [
-            "org.springframework.core.type.AnnotationMetadata",
-            "org.springframework.beans.factory.support.BeanDefinitionRegistry",
-            "org.springframework.beans.factory.support.BeanNameGenerator"
-          ]
-        },
-        {
-          "name": "setEnvironment",
-          "parameterTypes": [
-            "org.springframework.core.env.Environment"
-          ]
-        },
-        {
-          "name": "setResourceLoader",
-          "parameterTypes": [
-            "org.springframework.core.io.ResourceLoader"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsEndpoint",
+      "type": "org.miaixz.bus.starter.metrics.MetricsConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.starter.metrics.MetricsProperties"
           ]
-        },
-        {
-          "name": "scrape",
-          "parameterTypes": []
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.metrics.MetricsProperties",
-      "fields": [
-        {
-          "name": "cardinality"
-        },
-        {
-          "name": "cortex"
-        },
-        {
-          "name": "endpoint"
-        },
-        {
-          "name": "health"
-        },
-        {
-          "name": "http"
-        },
-        {
-          "name": "jvm"
-        },
-        {
-          "name": "path"
-        },
-        {
-          "name": "provider"
-        },
-        {
-          "name": "rateWindow"
-        },
-        {
-          "name": "slo"
-        },
-        {
-          "name": "system"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCardinality",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCortex",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPath",
-          "parameterTypes": []
-        },
-        {
-          "name": "getProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRateWindow",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSlo",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEndpoint",
-          "parameterTypes": []
-        },
-        {
-          "name": "isHealth",
-          "parameterTypes": []
-        },
-        {
-          "name": "isHttp",
-          "parameterTypes": []
-        },
-        {
-          "name": "isJvm",
-          "parameterTypes": []
-        },
-        {
-          "name": "isSystem",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCardinality",
           "parameterTypes": [
-            "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality"
-          ]
-        },
-        {
-          "name": "setCortex",
-          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Endpoint",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
+            "java.util.List",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex"
-          ]
-        },
-        {
-          "name": "setEndpoint",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setHealth",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setHttp",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setJvm",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPath",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setProvider",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setRateWindow",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow"
-          ]
-        },
-        {
-          "name": "setSlo",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setSystem",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
-      "fields": [
-        {
-          "name": "defaultMax"
-        },
-        {
-          "name": "denyList"
-        },
-        {
-          "name": "rules"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefaultMax",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDenyList",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRules",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDefaultMax",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setDenyList",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setRules",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$CardinalityRule",
-      "fields": [
-        {
-          "name": "max"
-        },
-        {
-          "name": "policy"
-        },
-        {
-          "name": "tag"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMax",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPolicy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTag",
-          "parameterTypes": []
-        },
-        {
-          "name": "setMax",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setPolicy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTag",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "intervalSeconds"
-        },
-        {
-          "name": "namespace"
-        },
-        {
-          "name": "serverAddr"
-        },
-        {
-          "name": "serviceId"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNamespace",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServerAddr",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServiceId",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setIntervalSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setNamespace",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setServerAddr",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setServiceId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "tickIntervalSeconds"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTickIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setTickIntervalSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$SloDefinition",
-      "fields": [
-        {
-          "name": "metric"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "percentile"
-        },
-        {
-          "name": "target"
-        },
-        {
-          "name": "thresholdMs"
-        },
-        {
-          "name": "type"
-        },
-        {
-          "name": "windowMinutes"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMetric",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPercentile",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTarget",
-          "parameterTypes": []
-        },
-        {
-          "name": "getThresholdMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getWindowMinutes",
-          "parameterTypes": []
-        },
-        {
-          "name": "setMetric",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPercentile",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "setTarget",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "setThresholdMs",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setWindowMinutes",
-          "parameterTypes": [
-            "int"
           ]
         }
       ]
@@ -5627,487 +483,25 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.mongo.MongoProperties"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.mongo.MongoProperties",
-      "fields": [
-        {
-          "name": "cluster"
-        },
-        {
-          "name": "connectionPool"
-        },
-        {
-          "name": "heartbeatSocket"
-        },
-        {
-          "name": "server"
-        },
-        {
-          "name": "socket"
-        },
-        {
-          "name": "ssl"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCluster",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionPool",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeartbeatSocket",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServer",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSocket",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSsl",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCluster",
           "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Cluster"
-          ]
-        },
-        {
-          "name": "setConnectionPool",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Connection"
-          ]
-        },
-        {
-          "name": "setHeartbeatSocket",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Socket"
-          ]
-        },
-        {
-          "name": "setServer",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Server"
-          ]
-        },
-        {
-          "name": "setSocket",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.mongo.MongoProperties$Socket"
-          ]
-        },
-        {
-          "name": "setSsl",
-          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.starter.mongo.MongoProperties$Socket",
+            "org.miaixz.bus.starter.mongo.MongoProperties$Socket",
+            "org.miaixz.bus.starter.mongo.MongoProperties$Cluster",
+            "org.miaixz.bus.starter.mongo.MongoProperties$Server",
+            "org.miaixz.bus.starter.mongo.MongoProperties$Connection",
             "org.miaixz.bus.starter.mongo.MongoProperties$Ssl"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Cluster",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Connection",
-      "fields": [
-        {
-          "name": "maintenanceFrequencyMilliSeconds"
-        },
-        {
-          "name": "maintenanceInitialDelayMilliSeconds"
-        },
-        {
-          "name": "maxConnectionIdleTimeMilliSeconds"
-        },
-        {
-          "name": "maxConnectionLifeTimeMilliSeconds"
-        },
-        {
-          "name": "maxSize"
-        },
-        {
-          "name": "maxWaitTimeMilliSeconds"
-        },
-        {
-          "name": "minSize"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "canEqual",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getMaintenanceFrequencyMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaintenanceInitialDelayMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxConnectionIdleTimeMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxConnectionLifeTimeMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxWaitTimeMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMinSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "setMaintenanceFrequencyMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMaintenanceInitialDelayMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMaxConnectionIdleTimeMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMaxConnectionLifeTimeMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMaxSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setMaxWaitTimeMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMinSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Server",
-      "fields": [
-        {
-          "name": "heartbeatFrequencyMilliSeconds"
-        },
-        {
-          "name": "minHeartbeatFrequencyMilliSeconds"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "canEqual",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getHeartbeatFrequencyMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMinHeartbeatFrequencyMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "setHeartbeatFrequencyMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setMinHeartbeatFrequencyMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Socket",
-      "fields": [
-        {
-          "name": "connectTimeoutMilliSeconds"
-        },
-        {
-          "name": "readTimeoutMilliSeconds"
-        },
-        {
-          "name": "receiveBufferSize"
-        },
-        {
-          "name": "sendBufferSize"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "canEqual",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getConnectTimeoutMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getReadTimeoutMilliSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getReceiveBufferSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSendBufferSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "setConnectTimeoutMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setReadTimeoutMilliSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setReceiveBufferSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setSendBufferSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Ssl",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "invalidHostNameAllowed"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "canEqual",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "isInvalidHostNameAllowed",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setInvalidHostNameAllowed",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.Nexus",
-      "fields": [
-        {
-          "name": "FEATURES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "matches",
-          "parameterTypes": [
-            "org.springframework.context.annotation.ConditionContext",
-            "org.springframework.core.type.AnnotatedTypeMetadata"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -6117,11 +511,9 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyProviderFactory",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.notify.NotifyProperties"
+          ]
         }
       ]
     },
@@ -6130,7 +522,21 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.notify.NotifyService",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.notify.NotifyProperties"
+          ]
         }
       ]
     },
@@ -6139,7 +545,9 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.office.OfficeProperties"
+          ]
         }
       ]
     },
@@ -6148,7 +556,33 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.office.OfficeService",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.office.Registry",
+            "org.miaixz.bus.office.Provider",
+            "org.miaixz.bus.office.Provider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.pay.PayConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.pay.PayProperties"
+          ]
         }
       ]
     },
@@ -6157,7 +591,35 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "org.miaixz.bus.cache.Options"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.pay.PayService",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.pay.PayProperties",
+            "org.miaixz.bus.pay.Complex",
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveBinding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Sanitizer"
+          ]
         }
       ]
     },
@@ -6171,708 +633,37 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveConfiguration$ServletConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.sensitive.SensitiveProperties"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties",
-      "fields": [
-        {
-          "name": "debug"
-        },
-        {
-          "name": "decrypt"
-        },
-        {
-          "name": "encrypt"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDecrypt",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEncrypt",
-          "parameterTypes": []
-        },
-        {
-          "name": "isDebug",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDebug",
           "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt",
+            "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt",
             "boolean"
           ]
-        },
-        {
-          "name": "setDecrypt",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt"
-          ]
-        },
-        {
-          "name": "setEncrypt",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt"
-          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt",
-      "fields": [
-        {
-          "name": "key"
-        },
-        {
-          "name": "type"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt",
-      "fields": [
-        {
-          "name": "key"
-        },
-        {
-          "name": "type"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": []
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice",
-      "fields": [
-        {
-          "name": "properties"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "addAttributes",
-          "parameterTypes": [
-            "org.springframework.ui.Model"
-          ]
-        },
-        {
-          "name": "afterBodyRead",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.springframework.http.HttpInputMessage",
-            "org.springframework.core.MethodParameter",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "authorizedException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.AuthorizedException"
-          ]
-        },
-        {
-          "name": "beforeBodyRead",
-          "parameterTypes": [
-            "org.springframework.http.HttpInputMessage",
-            "org.springframework.core.MethodParameter",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "businessException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.BusinessException"
-          ]
-        },
-        {
-          "name": "crontabException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.CrontabException"
-          ]
-        },
-        {
-          "name": "defaultException",
-          "parameterTypes": [
-            "java.lang.Exception"
-          ]
-        },
-        {
-          "name": "defaultExceptionHandler",
-          "parameterTypes": [
-            "java.lang.Exception"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "handleBindException",
-          "parameterTypes": [
-            "org.springframework.validation.BindException"
-          ]
-        },
-        {
-          "name": "handleBodyValidException",
-          "parameterTypes": [
-            "org.springframework.web.bind.MethodArgumentNotValidException"
-          ]
-        },
-        {
-          "name": "handleEmptyBody",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.springframework.http.HttpInputMessage",
-            "org.springframework.core.MethodParameter",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "httpMediaTypeNotSupportedException",
-          "parameterTypes": [
-            "org.springframework.web.HttpMediaTypeNotSupportedException"
-          ]
-        },
-        {
-          "name": "httpRequestMethodNotSupportedException",
-          "parameterTypes": [
-            "org.springframework.web.HttpRequestMethodNotSupportedException"
-          ]
-        },
-        {
-          "name": "initBinder",
-          "parameterTypes": [
-            "org.springframework.web.bind.WebDataBinder"
-          ]
-        },
-        {
-          "name": "internalException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.InternalException"
-          ]
-        },
-        {
-          "name": "noHandlerFoundException",
-          "parameterTypes": [
-            "org.springframework.web.servlet.NoHandlerFoundException"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "relevantException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.RelevantException"
-          ]
-        },
-        {
-          "name": "signatureException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.SignatureException"
-          ]
-        },
-        {
-          "name": "supports",
-          "parameterTypes": [
-            "org.springframework.core.MethodParameter",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "uncheckedException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.UncheckedException"
-          ]
-        },
-        {
-          "name": "validateException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.ValidateException"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.Object",
-            "boolean"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.normal.Errors"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.normal.Errors",
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice$InputMessage",
-      "fields": [
-        {
-          "name": "body"
-        },
-        {
-          "name": "headers"
-        }
-      ],
+      "type": "org.miaixz.bus.starter.storage.StorageConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice",
-            "org.springframework.http.HttpInputMessage",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getBody",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeaders",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.sensitive.SensitiveResponseBodyAdvice",
-      "fields": [
-        {
-          "name": "properties"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "addAttributes",
-          "parameterTypes": [
-            "org.springframework.ui.Model"
-          ]
-        },
-        {
-          "name": "authorizedException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.AuthorizedException"
-          ]
-        },
-        {
-          "name": "beforeBodyWrite",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.springframework.core.MethodParameter",
-            "org.springframework.http.MediaType",
-            "java.lang.Class",
-            "org.springframework.http.server.ServerHttpRequest",
-            "org.springframework.http.server.ServerHttpResponse"
-          ]
-        },
-        {
-          "name": "businessException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.BusinessException"
-          ]
-        },
-        {
-          "name": "crontabException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.CrontabException"
-          ]
-        },
-        {
-          "name": "defaultException",
-          "parameterTypes": [
-            "java.lang.Exception"
-          ]
-        },
-        {
-          "name": "defaultExceptionHandler",
-          "parameterTypes": [
-            "java.lang.Exception"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrivacyMap",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "handleBindException",
-          "parameterTypes": [
-            "org.springframework.validation.BindException"
-          ]
-        },
-        {
-          "name": "handleBodyValidException",
-          "parameterTypes": [
-            "org.springframework.web.bind.MethodArgumentNotValidException"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "httpMediaTypeNotSupportedException",
-          "parameterTypes": [
-            "org.springframework.web.HttpMediaTypeNotSupportedException"
-          ]
-        },
-        {
-          "name": "httpRequestMethodNotSupportedException",
-          "parameterTypes": [
-            "org.springframework.web.HttpRequestMethodNotSupportedException"
-          ]
-        },
-        {
-          "name": "initBinder",
-          "parameterTypes": [
-            "org.springframework.web.bind.WebDataBinder"
-          ]
-        },
-        {
-          "name": "internalException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.InternalException"
-          ]
-        },
-        {
-          "name": "noHandlerFoundException",
-          "parameterTypes": [
-            "org.springframework.web.servlet.NoHandlerFoundException"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "processObject",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.magic.annotation.Sensitive",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "relevantException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.RelevantException"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "signatureException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.SignatureException"
-          ]
-        },
-        {
-          "name": "supports",
-          "parameterTypes": [
-            "org.springframework.core.MethodParameter",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "uncheckedException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.UncheckedException"
-          ]
-        },
-        {
-          "name": "validateException",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.exception.ValidateException"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.Object",
-            "boolean"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.normal.Errors"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "org.miaixz.bus.core.basic.normal.Errors",
-            "java.lang.Object"
+            "org.miaixz.bus.starter.storage.StorageProperties"
           ]
         }
       ]
@@ -6882,297 +673,54 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "org.miaixz.bus.cache.Options"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.storage.StorageService",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.storage.StorageProperties",
+            "org.miaixz.bus.cache.CacheX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.tempus.TempusConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.tempus.TempusProperties"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.tempus.TempusLifecycle",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.Subscriber"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.tempus.TempusProperties",
-      "fields": [
-        {
-          "name": "enabled"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "defaults",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getBinding",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnection",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEndpoint",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIdentity",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxConcurrent",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNamespace",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRuntime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStableKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTaskQueue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getWorkflowId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getWorkflowType",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "isWorkerReconnectEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "resolveActivityHeartbeatTimeoutSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveActivityRetryBackoffCoefficient",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveActivityRetryInitialIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveActivityRetryMaxAttempts",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveActivityRetryMaxIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveActivityScheduleToStartMinutes",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveActivityStartToCloseHours",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMaxActivityTaskPollers",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMaxConcurrent",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMaxTaskQueueActivitiesPerSecond",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMaxWorkerActivitiesPerSecond",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMaxWorkflowTaskPollers",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveMaxWorkflowThreadCount",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveShutdownAwaitSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkerHealthFailureThreshold",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkerHealthIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkerHealthProbeTimeoutSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkerReconnectInitialBackoffSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkerReconnectMaxBackoffSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkflowCacheSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkflowExecutionTimeoutDays",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkflowRunTimeoutHours",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveWorkflowTaskTimeoutMinutes",
-          "parameterTypes": []
-        },
-        {
-          "name": "setBinding",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Binding"
-          ]
-        },
-        {
-          "name": "setConnection",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Connection"
-          ]
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setEndpoint",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setIdentity",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMaxConcurrent",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setNamespace",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setRuntime",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions$Runtime"
-          ]
-        },
-        {
-          "name": "setStableKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTaskQueue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setWorkerReconnectEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setWorkflowId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setWorkflowType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -7181,7 +729,9 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "org.miaixz.bus.starter.tracer.TracerProperties"
+          ]
         }
       ]
     },
@@ -7190,16 +740,9 @@
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.validate.AutoValidateAdvice",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean"
+          ]
         }
       ]
     },
@@ -7213,6 +756,17 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.vortex.VortexConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.vortex.VortexProperties"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.vortex.VortexProperties",
       "methods": [
         {
@@ -7222,796 +776,149 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties$Assets",
-      "fields": [
+      "type": "org.miaixz.bus.starter.wrapper.advice.ResponseAdviceConfiguration",
+      "methods": [
         {
-          "name": "fullCalibrationIntervalSeconds"
-        },
-        {
-          "name": "fullCalibrationOnStartup"
-        },
-        {
-          "name": "incrementalRefreshIntervalSeconds"
-        },
-        {
-          "name": "modifiedOverlapMs"
-        },
-        {
-          "name": "refreshEnabled"
-        },
-        {
-          "name": "refreshStartupDelaySeconds"
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.wrapper.advice.ResponseAdviceProperties"
+          ]
         }
-      ],
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.advice.ResponseAdviceProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.binding.RequestBindingConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.binding.RequestBindingProperties",
+      "methods": [
         {
-          "name": "getFullCalibrationIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIncrementalRefreshIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifiedOverlapMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRefreshStartupDelaySeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "isFullCalibrationOnStartup",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRefreshEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setFullCalibrationIntervalSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setFullCalibrationOnStartup",
+          "name": "<init>",
           "parameterTypes": [
             "boolean"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.body.BodyCacheConfiguration",
+      "methods": [
         {
-          "name": "setIncrementalRefreshIntervalSeconds",
+          "name": "<init>",
           "parameterTypes": [
-            "int"
+            "org.miaixz.bus.starter.wrapper.body.BodyCacheProperties"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.body.BodyCacheProperties",
+      "methods": [
         {
-          "name": "setModifiedOverlapMs",
+          "name": "<init>",
           "parameterTypes": [
-            "long"
+            "boolean",
+            "org.springframework.util.unit.DataSize",
+            "org.springframework.util.unit.DataSize",
+            "boolean",
+            "boolean"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.converter.MessageConverterConfiguration",
+      "methods": [
         {
-          "name": "setRefreshEnabled",
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.converter.MessageConverterProperties",
+      "methods": [
+        {
+          "name": "<init>",
           "parameterTypes": [
             "boolean"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration",
+      "methods": [
         {
-          "name": "setRefreshStartupDelaySeconds",
+          "name": "<init>",
           "parameterTypes": [
-            "int"
+            "org.miaixz.bus.spring.web.routing.RoutePrefixProperties"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.wrapper.WrapperConfiguration",
-      "fields": [
-        {
-          "name": "properties"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "forwardedHeaderFilter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExceptionHandlerExceptionResolver",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRequestMappingHandlerAdapter",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRequestMappingHandlerMapping",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "jsonMessageConverter",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.json.SelectedJsonProvider"
-          ]
-        },
-        {
-          "name": "jsonWebMvcConfigurer",
-          "parameterTypes": [
-            "org.springframework.beans.factory.ObjectProvider"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "registrationBodyCacheFilter",
-          "parameterTypes": [
-            "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
-          ]
-        },
-        {
-          "name": "requestHandler",
-          "parameterTypes": []
-        },
-        {
-          "name": "requestWebMvcConfigurer",
-          "parameterTypes": [
-            "org.miaixz.bus.spring.http.SentinelRequestHandler",
-            "org.miaixz.bus.spring.options.WrapperRuntimeOptions"
-          ]
-        },
-        {
-          "name": "textWebMvcConfigurer",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "wrapperRuntimeOptions",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.wrapper.WrapperConfiguration$RequestMappingHandler",
-      "fields": [
-        {
-          "name": "BEST_MATCHING_HANDLER_ATTRIBUTE"
-        },
-        {
-          "name": "BEST_MATCHING_PATTERN_ATTRIBUTE"
-        },
-        {
-          "name": "HIGHEST_PRECEDENCE"
-        },
-        {
-          "name": "INTROSPECT_TYPE_LEVEL_MAPPING"
-        },
-        {
-          "name": "LOOKUP_PATH"
-        },
-        {
-          "name": "LOWEST_PRECEDENCE"
-        },
-        {
-          "name": "MATRIX_VARIABLES_ATTRIBUTE"
-        },
-        {
-          "name": "PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE"
-        },
-        {
-          "name": "PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE"
-        },
-        {
-          "name": "this$0"
-        },
-        {
-          "name": "URI_TEMPLATE_VARIABLES_ATTRIBUTE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.wrapper.WrapperConfiguration"
-          ]
-        },
-        {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getApplicationContext",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBuilderConfiguration",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getContentNegotiationManager",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCorsConfigurationSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCorsProcessor",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefaultHandler",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHandler",
-          "parameterTypes": [
-            "jakarta.servlet.http.HttpServletRequest"
-          ]
-        },
-        {
-          "name": "getHandlerMethods",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHandlerMethodsForMappingName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getMappingForMethod",
-          "parameterTypes": [
-            "java.lang.reflect.Method",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "getNamingStrategy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrder",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPathMatcher",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPathPrefixes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPatternParser",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUrlPathHelper",
-          "parameterTypes": []
-        },
-        {
-          "name": "handlerMethodsInitialized",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "match",
-          "parameterTypes": [
-            "jakarta.servlet.http.HttpServletRequest",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "registerMapping",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object",
-            "java.lang.reflect.Method"
-          ]
-        },
-        {
-          "name": "registerMapping",
-          "parameterTypes": [
-            "org.springframework.web.servlet.mvc.method.RequestMappingInfo",
-            "java.lang.Object",
-            "java.lang.reflect.Method"
-          ]
-        },
-        {
-          "name": "setAlwaysUseFullPath",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setApplicationContext",
-          "parameterTypes": [
-            "org.springframework.context.ApplicationContext"
-          ]
-        },
-        {
-          "name": "setBeanName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setContentNegotiationManager",
-          "parameterTypes": [
-            "org.springframework.web.accept.ContentNegotiationManager"
-          ]
-        },
-        {
-          "name": "setCorsConfigurations",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "setCorsConfigurationSource",
-          "parameterTypes": [
-            "org.springframework.web.cors.CorsConfigurationSource"
-          ]
-        },
-        {
-          "name": "setCorsProcessor",
-          "parameterTypes": [
-            "org.springframework.web.cors.CorsProcessor"
-          ]
-        },
-        {
-          "name": "setDefaultHandler",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setDetectHandlerMethodsInAncestorContexts",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setEmbeddedValueResolver",
-          "parameterTypes": [
-            "org.springframework.util.StringValueResolver"
-          ]
-        },
-        {
-          "name": "setHandlerMethodMappingNamingStrategy",
-          "parameterTypes": [
-            "org.springframework.web.servlet.handler.HandlerMethodMappingNamingStrategy"
-          ]
-        },
-        {
-          "name": "setInterceptors",
-          "parameterTypes": [
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "setOrder",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setPathMatcher",
-          "parameterTypes": [
-            "org.springframework.util.PathMatcher"
-          ]
-        },
-        {
-          "name": "setPathPrefixes",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "setPatternParser",
-          "parameterTypes": [
-            "org.springframework.web.util.pattern.PathPatternParser"
-          ]
-        },
-        {
-          "name": "setRemoveSemicolonContent",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setServletContext",
-          "parameterTypes": [
-            "jakarta.servlet.ServletContext"
-          ]
-        },
-        {
-          "name": "setUrlDecode",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setUrlPathHelper",
-          "parameterTypes": [
-            "org.springframework.web.util.UrlPathHelper"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "unregisterMapping",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "usesPathPatterns",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.wrapper.WrapperProperties",
-      "fields": [
-        {
-          "name": "autoType"
-        },
-        {
-          "name": "basePackages"
-        },
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "includeMultipart"
-        },
-        {
-          "name": "initParameters"
-        },
-        {
-          "name": "inStorage"
-        },
-        {
-          "name": "order"
-        },
-        {
-          "name": "prefix"
-        },
-        {
-          "name": "resolveNonSimpleArguments"
-        },
-        {
-          "name": "sanitizeInputValues"
-        },
-        {
-          "name": "servletNames"
-        },
-        {
-          "name": "synthesizeFormBody"
-        },
-        {
-          "name": "wrapContentTypes"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAutoType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAutoTypeExpression",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBasePackages",
-          "parameterTypes": []
-        },
-        {
-          "name": "getInitParameters",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrder",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServletNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getWrapContentTypes",
-          "parameterTypes": []
-        },
-        {
-          "name": "isIncludeMultipart",
-          "parameterTypes": []
-        },
-        {
-          "name": "isInStorage",
-          "parameterTypes": []
-        },
-        {
-          "name": "isResolveNonSimpleArguments",
-          "parameterTypes": []
-        },
-        {
-          "name": "isSanitizeInputValues",
-          "parameterTypes": []
-        },
-        {
-          "name": "isSynthesizeFormBody",
-          "parameterTypes": []
-        },
-        {
-          "name": "runtimeOptions",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAutoType",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setBasePackages",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setEnabled",
           "parameterTypes": [
             "boolean"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.zookeeper.ZookeeperConfiguration",
+      "methods": [
         {
-          "name": "setIncludeMultipart",
+          "name": "<init>",
           "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setInitParameters",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "setInStorage",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setOrder",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setPrefix",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setResolveNonSimpleArguments",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setSanitizeInputValues",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setServletNames",
-          "parameterTypes": [
-            "java.util.Set"
-          ]
-        },
-        {
-          "name": "setSynthesizeFormBody",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setWrapContentTypes",
-          "parameterTypes": [
-            "java.lang.String"
+            "org.miaixz.bus.starter.zookeeper.ZookeeperProperties"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.starter.zookeeper.ZookeeperProperties",
-      "fields": [
-        {
-          "name": "baseSleepTimeMs"
-        },
-        {
-          "name": "connectionTimeoutMs"
-        },
-        {
-          "name": "connectString"
-        },
-        {
-          "name": "maxRetries"
-        },
-        {
-          "name": "namespace"
-        },
-        {
-          "name": "sessionTimeoutMs"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBaseSleepTimeMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectionTimeoutMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "getConnectString",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMaxRetries",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNamespace",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSessionTimeoutMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "setBaseSleepTimeMs",
           "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setConnectionTimeoutMs",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setConnectString",
-          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "int",
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "setMaxRetries",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setNamespace",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSessionTimeoutMs",
-          "parameterTypes": [
-            "int"
           ]
         }
       ]
@@ -8019,7 +926,13 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/spring/**"
+      "glob": "META-INF/spring-configuration-metadata.json"
+    },
+    {
+      "glob": "META-INF/spring.factories"
+    },
+    {
+      "glob": "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
     }
   ]
 }

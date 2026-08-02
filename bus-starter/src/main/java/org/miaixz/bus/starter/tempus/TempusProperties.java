@@ -23,8 +23,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
 
 /**
@@ -38,8 +39,9 @@ import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
  */
 @Getter
 @Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.TEMPUS)
-public class TempusProperties extends WorkflowBindingOptions {
+public final class TempusProperties extends WorkflowBindingOptions {
 
     /**
      * Whether the Temporal worker is enabled.
@@ -51,6 +53,56 @@ public class TempusProperties extends WorkflowBindingOptions {
      */
     public TempusProperties() {
         super();
+    }
+
+    /**
+     * Validates connection, binding, timeout, retry, and worker bounds after binding.
+     */
+    public void validate() {
+        if (blank(getEndpoint()) || blank(getNamespace()) || blank(getTaskQueue())) {
+            throw new IllegalArgumentException("Enabled bus.tempus requires endpoint, namespace and task-queue");
+        }
+        Runtime runtime = getRuntime();
+        if (runtime.getWorkflow().getExecutionTimeoutDays() <= 0 || runtime.getWorkflow().getRunTimeoutHours() <= 0
+                || runtime.getWorkflow().getTaskTimeoutMinutes() <= 0
+                || runtime.getActivity().getStartToCloseHours() <= 0
+                || runtime.getActivity().getScheduleToStartMinutes() <= 0
+                || runtime.getActivity().getHeartbeatTimeoutSeconds() <= 0
+                || runtime.getRetry().getInitialIntervalSeconds() <= 0
+                || runtime.getRetry().getMaxIntervalSeconds() <= 0 || runtime.getRetry().getMaxAttempts() <= 0
+                || runtime.getRetry().getBackoffCoefficient() <= 0D || runtime.getWorker().getMaxConcurrent() <= 0
+                || runtime.getWorker().getMaxWorkflowTaskPollers() <= 0
+                || runtime.getWorker().getMaxActivityTaskPollers() <= 0
+                || runtime.getWorker().getWorkflowCacheSize() <= 0
+                || runtime.getWorker().getMaxWorkflowThreadCount() <= 0
+                || runtime.getRecovery().getHealthIntervalSeconds() <= 0
+                || runtime.getRecovery().getHealthFailureThreshold() <= 0
+                || runtime.getRecovery().getReconnectInitialBackoffSeconds() <= 0
+                || runtime.getRecovery().getReconnectMaxBackoffSeconds() <= 0
+                || runtime.getRecovery().getHealthProbeTimeoutSeconds() <= 0
+                || runtime.getRecovery().getShutdownAwaitSeconds() <= 0) {
+            throw new IllegalArgumentException(
+                    "bus.tempus timeouts, retry limits and worker capacities must be positive");
+        }
+    }
+
+    /**
+     * Returns whether a configuration string is absent or blank.
+     *
+     * @param value configuration string
+     * @return {@code true} when the string is absent or blank
+     */
+    private static boolean blank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    /**
+     * @return masked diagnostic representation
+     */
+    @Override
+    public String toString() {
+        return "TempusProperties[enabled=" + enabled + ", endpoint=" + getEndpoint() + ", namespace=" + getNamespace()
+                + ", taskQueue=" + getTaskQueue() + ", credentials=***]";
     }
 
 }

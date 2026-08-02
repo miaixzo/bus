@@ -19,17 +19,14 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.dialect.DialectRegistry;
 
 /**
  * A dynamic, routing data source that extends {@link AbstractRoutingDataSource}.
@@ -45,39 +42,35 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     /**
      * A set containing the keys of all registered data sources.
      */
-    private static final Set<Object> keySet = new LinkedHashSet<>();
+    private final Set<Object> keySet = new LinkedHashSet<>();
 
     /**
-     * A lock object for thread-safe singleton initialization.
+     * Target data sources owned by this routing bean.
      */
-    private static final byte[] lock = Normal.EMPTY_BYTE_ARRAY;
+    private final Map<Object, Object> targetDataSources = new LinkedHashMap<>();
 
     /**
-     * The volatile singleton instance of the DynamicDataSource.
+     * Primary data source key owned by this routing bean.
      */
-    private static volatile DynamicDataSource INSTANCE;
+    private String primary;
 
     /**
-     * Private constructor to support the singleton pattern.
+     * Creates an independent dynamic data source bean.
      */
-    private DynamicDataSource() {
+    public DynamicDataSource() {
         // No initialization required.
     }
 
     /**
-     * Returns the singleton instance of the DynamicDataSource.
+     * Sets the primary data source key for this routing bean.
      *
-     * @return The singleton {@code DynamicDataSource} instance.
+     * @param primary configured primary key
      */
-    public static synchronized DynamicDataSource getInstance() {
-        if (null == INSTANCE) {
-            synchronized (lock) {
-                if (null == INSTANCE) {
-                    INSTANCE = new DynamicDataSource();
-                }
-            }
+    public void setPrimary(String primary) {
+        if (primary == null || primary.isBlank()) {
+            throw new IllegalArgumentException("Primary data source key must not be blank");
         }
-        return INSTANCE;
+        this.primary = primary.trim();
     }
 
     /**
@@ -91,30 +84,32 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      */
     @Override
     protected Object determineCurrentLookupKey() {
-        String key = DataSourceHolder.getKey();
-        if (!keySet.contains(key)) {
-            Logger.warn(true, "Starter", "Unable to locate datasource by key '{}'. Default will be used.", key);
+        String key = DataSourceHolder.getCurrentKey();
+        if (key == null) {
+            return this.primary;
         }
-        Logger.debug(true, "Starter", "Datasource lookup key resolved: key={}", key);
+        if (!this.keySet.contains(key)) {
+            throw new IllegalStateException("Unable to locate datasource by key '" + key + "'");
+        }
         return key;
     }
 
     /**
-     * Populates the internal set of data source keys after properties are set. This method uses reflection to access
-     * the underlying map of resolved data sources.
+     * Populates the bean-local set of registered keys after data source resolution.
      */
     @Override
     public void afterPropertiesSet() {
-        super.afterPropertiesSet();
-        try {
-            Field sourceMapField = AbstractRoutingDataSource.class.getDeclaredField("resolvedDataSources");
-            sourceMapField.setAccessible(true);
-            Map<Object, javax.sql.DataSource> sourceMap = (Map<Object, javax.sql.DataSource>) sourceMapField.get(this);
-            keySet.addAll(sourceMap.keySet());
-            sourceMapField.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new InternalException(e);
+        if (this.primary == null || !this.targetDataSources.containsKey(this.primary)) {
+            throw new IllegalStateException("Primary data source key is not registered");
         }
+        super.setTargetDataSources(this.targetDataSources);
+        super.setDefaultTargetDataSource(this.targetDataSources.get(this.primary));
+        super.setLenientFallback(false);
+        super.afterPropertiesSet();
+        this.keySet.clear();
+        this.keySet.addAll(getResolvedDataSources().keySet());
+        getResolvedDataSources()
+                .forEach((key, dataSource) -> DialectRegistry.initializeDialect(String.valueOf(key), dataSource));
     }
 
     /**
@@ -124,26 +119,23 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      */
     @Override
     public void setTargetDataSources(Map<Object, Object> map) {
-        super.setTargetDataSources(map);
-        keySet.addAll(map.keySet());
-        this.afterPropertiesSet();
+        this.targetDataSources.clear();
+        this.targetDataSources.putAll(map);
+        this.keySet.clear();
+        this.keySet.addAll(this.targetDataSources.keySet());
+        super.setTargetDataSources(this.targetDataSources);
     }
 
     /**
-     * Retrieves a map of all configured target data sources. This method uses reflection to access the private
-     * {@code targetDataSources} field.
+     * Retrieves the mutable backing map of all configured target data sources.
+     * <p>
+     * The live-map behavior is retained for compatibility. Call {@link #afterPropertiesSet()} after direct mutations,
+     * or prefer {@link #addDataSource(String, javax.sql.DataSource)} and {@link #remove(String)}.
      *
      * @return A map of all data sources.
      */
     public Map<Object, Object> getAllDataSources() {
-        try {
-            Field targetDataSourcesField = AbstractRoutingDataSource.class.getDeclaredField("targetDataSources");
-            targetDataSourcesField.setAccessible(true);
-            return (Map<Object, Object>) targetDataSourcesField.get(this);
-        } catch (Exception e) {
-            Logger.error(false, "Starter", "Failed to get all datasources", e);
-            return new HashMap<>();
-        }
+        return Map.copyOf(this.targetDataSources);
     }
 
     /**
@@ -154,11 +146,8 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * @param dataSource The data source instance to add.
      */
     public synchronized void addDataSource(String key, javax.sql.DataSource dataSource) {
-        Map<Object, Object> targetDataSources = getAllDataSources();
-        targetDataSources.put(key, dataSource);
-        super.setTargetDataSources(targetDataSources);
-        super.afterPropertiesSet();
-        keySet.add(key);
+        this.targetDataSources.put(key, dataSource);
+        afterPropertiesSet();
     }
 
     /**
@@ -168,7 +157,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * @return {@code true} if the key exists, {@code false} otherwise.
      */
     public boolean containsKey(String key) {
-        return keySet.contains(key);
+        return this.keySet.contains(key);
     }
 
     /**
@@ -176,12 +165,12 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      *
      * @param key The key of the data source to remove.
      */
-    public void remove(String key) {
-        Map<Object, Object> targetDataSources = getAllDataSources();
-        targetDataSources.remove(key);
-        keySet.remove(key);
-        super.setTargetDataSources(targetDataSources);
-        super.afterPropertiesSet();
+    public synchronized void remove(String key) {
+        if (this.primary.equals(key)) {
+            throw new IllegalArgumentException("Primary data source cannot be removed");
+        }
+        this.targetDataSources.remove(key);
+        afterPropertiesSet();
     }
 
     /**

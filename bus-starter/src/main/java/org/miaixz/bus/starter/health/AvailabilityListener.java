@@ -24,7 +24,6 @@ import org.springframework.boot.availability.AvailabilityState;
 import org.springframework.boot.availability.LivenessState;
 import org.springframework.boot.availability.ReadinessState;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
 import org.miaixz.bus.logger.Logger;
 
@@ -38,11 +37,10 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Component
 public class AvailabilityListener {
 
     /**
-     * Constructs a new AvailabilityListener instance.
+     * Initializes the listener that records Spring Boot liveness and readiness transitions.
      */
     public AvailabilityListener() {
         // No initialization required.
@@ -66,18 +64,16 @@ public class AvailabilityListener {
     public void onStateChange(AvailabilityChangeEvent<? extends AvailabilityState> event) {
         AvailabilityState state = event.getState();
         long timestamp = event.getTimestamp();
-        String stateName = state.toString();
-
         if (state == ReadinessState.ACCEPTING_TRAFFIC) {
-            Logger.debug(false, "Starter", "Health system is ready to accept traffic at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Starter", "Health system is ready to accept traffic at {}", timestamp);
         } else if (state == ReadinessState.REFUSING_TRAFFIC) {
-            Logger.debug(false, "Starter", "Health system is refusing traffic at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Starter", "Health system is refusing traffic at {}", timestamp);
         } else if (state == LivenessState.BROKEN) {
-            Logger.debug(false, "Starter", "Health system is in a broken state at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Starter", "Health system is in a broken state at {}", timestamp);
         } else if (state == LivenessState.CORRECT) {
-            Logger.debug(false, "Starter", "Health system is in a correct state at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Starter", "Health system is in a correct state at {}", timestamp);
         } else {
-            Logger.warn(false, "Starter", "Health unknown availability state detected at {}: {}", timestamp, stateName);
+            Logger.debug(false, "Starter", "Ignored unsupported application availability event at {}", timestamp);
         }
     }
 

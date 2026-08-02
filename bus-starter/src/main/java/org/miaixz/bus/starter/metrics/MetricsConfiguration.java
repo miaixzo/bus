@@ -23,10 +23,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.HealthMetrics;
 import org.miaixz.bus.metrics.builtin.CacheMetricsAdapter;
@@ -36,13 +37,13 @@ import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityPolicy;
 import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
 import org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
 /**
- * Spring Boot auto-configuration for bus-metrics. Imported via {@link org.miaixz.bus.starter.annotation.EnableMetrics}
- * through {@code @Import}.
+ * Configures bus-metrics providers, guards, collectors, and management endpoint. It is imported through
+ * {@link org.miaixz.bus.starter.annotation.EnableMetrics}.
  * <p>
  * When {@code bus-health} is on the classpath, {@link HealthMetrics} is used for system/JVM metrics (JNA-backed,
  * hardware-accurate). Otherwise falls back to {@link JvmMetrics} and {@link SystemMetrics} (JVM MXBean-backed).
@@ -51,37 +52,41 @@ import io.micrometer.core.instrument.MeterRegistry;
  * @since Java 21+
  */
 @EnableConfigurationProperties(MetricsProperties.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.METRICS, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = GeniusBuilder.METRICS, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class MetricsConfiguration {
 
     /**
-     * Constructs a new MetricsConfiguration instance.
+     * Bound metrics configuration properties.
      */
-    public MetricsConfiguration() {
-        // No initialization required.
+    private final MetricsProperties properties;
+
+    /**
+     * Stores the metrics policy used by provider, guard, collector, and endpoint Bean factories.
+     *
+     * @param properties bound configuration properties
+     */
+    public MetricsConfiguration(MetricsProperties properties) {
+        this.properties = properties;
     }
 
     /**
      * Creates the native metrics provider.
      *
-     * @param props metrics properties
      * @return native metrics provider
      */
     @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "native", matchIfMissing = true)
-    public Provider metricsProvider(MetricsProperties props) {
-        applyCardinalityGuard(props.getCardinality());
+    @ConditionalOnMissingBean({ Provider.class, MeterRegistry.class })
+    public Provider metricsProvider() {
+        applyCardinalityGuard(this.properties.getCardinality());
         Provider provider = new NativeProvider();
-        Metrics.setProvider(provider);
-        registerBuiltinMetrics(props);
+        registerBuiltinMetrics(this.properties);
         return provider;
     }
 
     /**
      * Creates the Micrometer-backed metrics provider.
      *
-     * @param props    metrics properties
      * @param registry Micrometer meter registry
      * @return Micrometer-backed metrics provider
      */
@@ -89,12 +94,10 @@ public class MetricsConfiguration {
     @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean(Provider.class)
     @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
-    @ConditionalOnProperty(prefix = "bus.metrics", name = "provider", havingValue = "micrometer")
-    public Provider micrometerProvider(MetricsProperties props, io.micrometer.core.instrument.MeterRegistry registry) {
-        applyCardinalityGuard(props.getCardinality());
+    public Provider micrometerProvider(io.micrometer.core.instrument.MeterRegistry registry) {
+        applyCardinalityGuard(this.properties.getCardinality());
         Provider provider = new MicrometerProvider(registry);
-        Metrics.setProvider(provider);
-        registerBuiltinMetrics(props);
+        registerBuiltinMetrics(this.properties);
         return provider;
     }
 
@@ -118,18 +121,24 @@ public class MetricsConfiguration {
     /**
      * Creates the metrics scrape endpoint.
      *
-     * @param props metrics properties
      * @return metrics endpoint
+     * @param provider provider instance
      */
     @Bean
-    @ConditionalOnProperty(prefix = "bus.metrics", name = "endpoint", havingValue = "true", matchIfMissing = true)
-    public MetricsEndpoint metricsEndpoint(MetricsProperties props) {
-        return new MetricsEndpoint(props);
+    @ConditionalOnBean(Provider.class)
+    @ConditionalOnMissingBean(MetricsEndpoint.class)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnProperty(prefix = GeniusBuilder.METRICS
+            + ".endpoint", name = "enabled", havingValue = "true", matchIfMissing = false)
+    public MetricsEndpoint metricsEndpoint(Provider provider) {
+        return new MetricsEndpoint(this.properties, provider);
     }
 
     /**
      * Registers system/JVM builtin metrics. Prefers bus-health (JNA-backed, more accurate) when available on the
      * classpath. Falls back to MXBean-based metrics when bus-health is absent.
+     *
+     * @param props meter registry properties
      */
     private void registerBuiltinMetrics(MetricsProperties props) {
         boolean healthOnClasspath = isHealthAvailable();
@@ -147,6 +156,11 @@ public class MetricsConfiguration {
         }
     }
 
+    /**
+     * Tests whether the optional health subsystem is present and enabled for metric collection.
+     *
+     * @return whether health available
+     */
     private static boolean isHealthAvailable() {
         try {
             Class.forName("org.miaixz.bus.health.Platform");
@@ -156,6 +170,11 @@ public class MetricsConfiguration {
         }
     }
 
+    /**
+     * Applies the cardinality guard.
+     *
+     * @param cardinality metric cardinality settings
+     */
     private void applyCardinalityGuard(MetricsProperties.Cardinality cardinality) {
         CardinalityGuard.setDefaultMax(cardinality.getDefaultMax());
         for (String key : cardinality.getDenyList()) {

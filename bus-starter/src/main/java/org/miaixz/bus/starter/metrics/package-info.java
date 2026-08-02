@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Observability and metrics auto-configuration support.
+ * Activates metrics collection and its management endpoint, and binds cardinality and service-level objectives. This
+ * non-exported package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

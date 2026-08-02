@@ -1,0 +1,263 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.spring.boot.environment;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.boot.EnvironmentPostProcessor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.PropertySourceLoader;
+import org.springframework.core.Ordered;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.SpringFactoriesLoader;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.SetKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+
+/**
+ * An {@link EnvironmentPostProcessor} implementation that loads configuration properties based on defined scenes.
+ * <p>
+ * This post-processor allows for dynamic loading of configuration files (e.g., {@code application-dev.yml}) based on a
+ * {@code bus.scenes} property in the environment. It searches for scene-specific configuration files in the
+ * {@code classpath:/bus-scenes/} directory.
+ *
+ * @author Kimi Liu
+ * @since Java 21+
+ */
+public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+
+    /**
+     * Initializes the post-processor that loads scene-specific property resources during environment preparation.
+     */
+    public ScenesEnvironmentPostProcessor() {
+        // No initialization required.
+    }
+
+    /**
+     * Post-processes the environment to load scene-specific configuration properties.
+     * <p>
+     * It retrieves the {@code bus.scenes} property, and if present, loads corresponding configuration files (e.g.,
+     * {@code classpath:/bus-scenes/sceneName.yml}) and adds them to the environment's property sources.
+     * </p>
+     *
+     * @param environment The configurable environment.
+     * @param application The Spring application instance.
+     */
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        if (!environment.getProperty(EnvironmentKeys.SCENES_ENABLED, Boolean.class, false)) {
+            return;
+        }
+        ResourceLoader resourceLoader = application.getResourceLoader();
+        resourceLoader = (resourceLoader != null) ? resourceLoader : new DefaultResourceLoader();
+        List<PropertySourceLoader> propertySourceLoaders = SpringFactoriesLoader
+                .loadFactories(PropertySourceLoader.class, getClass().getClassLoader());
+        String scenesValue = environment.getProperty(EnvironmentKeys.BUS_SCENES);
+        if (!StringKit.hasText(scenesValue)) {
+            return;
+        }
+        Set<String> scenes = SetKit.of(scenesValue);
+        List<SceneConfigDataReference> sceneConfigDataReferences = scenesResources(
+                resourceLoader,
+                propertySourceLoaders,
+                scenes);
+
+        Logger.info(false, "Starter", "Env configs for scenes {} enable", scenes);
+        processAndApply(sceneConfigDataReferences, environment);
+
+    }
+
+    /**
+     * Returns the order value for this post-processor.
+     * <p>
+     * This ensures that scene-specific configurations are loaded with a higher precedence than default configurations
+     * but after other core environment post-processors.
+     * </p>
+     *
+     * @return the precedence used to load scene properties before later environment processors
+     */
+    @Override
+    public int getOrder() {
+        return Ordered.LOWEST_PRECEDENCE - 100;
+    }
+
+    /**
+     * Locates scene-specific configuration resources.
+     *
+     * @param resourceLoader        The resource loader to use.
+     * @param propertySourceLoaders A list of property source loaders.
+     * @param scenes                A set of scene names.
+     * @return A list of {@link SceneConfigDataReference} objects for found resources.
+     */
+    private List<SceneConfigDataReference> scenesResources(
+            ResourceLoader resourceLoader,
+            List<PropertySourceLoader> propertySourceLoaders,
+            Set<String> scenes) {
+        List<SceneConfigDataReference> resources = new ArrayList<>();
+        if (scenes != null && !scenes.isEmpty()) {
+            scenes.forEach(scene -> propertySourceLoaders.forEach(psl -> {
+                for (String extension : psl.getFileExtensions()) {
+                    if (!scene.matches("[A-Za-z0-9_-]+")) {
+                        return;
+                    }
+                    String location = Normal.CLASSPATH + Symbol.SLASH + EnvironmentKeys.BUS_SCENES_PATH + Symbol.SLASH
+                            + scene + Symbol.DOT + extension;
+                    Resource resource = resourceLoader.getResource(location);
+                    if (resource.exists()) {
+                        resources.add(new SceneConfigDataReference(location, resource, psl));
+                    }
+                }
+            }));
+        }
+        return resources;
+    }
+
+    /**
+     * Processes and applies all scene configuration property sources to the {@link ConfigurableEnvironment}.
+     *
+     * @param sceneConfigDataReferences A list of scene configuration data references.
+     * @param environment               The configurable environment to which properties will be added.
+     * @throws IllegalStateException if an I/O error occurs while loading scene config data.
+     */
+    private void processAndApply(
+            List<SceneConfigDataReference> sceneConfigDataReferences,
+            ConfigurableEnvironment environment) {
+        List<PropertySource<?>> loaded = new ArrayList<>();
+        try {
+            for (SceneConfigDataReference sceneConfigDataReference : sceneConfigDataReferences) {
+                List<PropertySource<?>> propertySources = sceneConfigDataReference.propertySourceLoader
+                        .load(sceneConfigDataReference.getName(), sceneConfigDataReference.getResource());
+                if (propertySources != null) {
+                    loaded.addAll(propertySources);
+                }
+            }
+        } catch (IOException exception) {
+            Logger.warn(
+                    false,
+                    "Starter",
+                    "Scene configuration load failed: exception={}",
+                    exception.getClass().getSimpleName());
+            return;
+        }
+        loaded.forEach(environment.getPropertySources()::addLast);
+    }
+
+    /**
+     * A simple data class to hold a reference to a scene-specific configuration resource along with its name and the
+     * {@link PropertySourceLoader} capable of loading it.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    private static class SceneConfigDataReference {
+
+        /**
+         * Logical name used for the loaded property source.
+         */
+        private String name;
+        /**
+         * Resource containing scene-specific configuration.
+         */
+        private Resource resource;
+        /**
+         * Loader selected for the resource file extension.
+         */
+        private PropertySourceLoader propertySourceLoader;
+
+        /**
+         * Constructs a new {@code SceneConfigDataReference}.
+         *
+         * @param name                 The name of the configuration resource.
+         * @param resource             The {@link Resource} object pointing to the configuration file.
+         * @param propertySourceLoader The {@link PropertySourceLoader} to use for this resource.
+         */
+        public SceneConfigDataReference(String name, Resource resource, PropertySourceLoader propertySourceLoader) {
+            this.name = name;
+            this.resource = resource;
+            this.propertySourceLoader = propertySourceLoader;
+        }
+
+        /**
+         * Gets the resource object.
+         *
+         * @return The {@link Resource} object.
+         */
+        public Resource getResource() {
+            return resource;
+        }
+
+        /**
+         * Sets the resource object.
+         *
+         * @param resource The {@link Resource} object to set.
+         */
+        public void setResource(Resource resource) {
+            this.resource = resource;
+        }
+
+        /**
+         * Gets the property source loader.
+         *
+         * @return The {@link PropertySourceLoader} instance.
+         */
+        public PropertySourceLoader getPropertySourceLoader() {
+            return propertySourceLoader;
+        }
+
+        /**
+         * Sets the property source loader.
+         *
+         * @param propertySourceLoader The {@link PropertySourceLoader} instance to set.
+         */
+        public void setPropertySourceLoader(PropertySourceLoader propertySourceLoader) {
+            this.propertySourceLoader = propertySourceLoader;
+        }
+
+        /**
+         * Gets the name of the configuration resource.
+         *
+         * @return The name of the resource.
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * Sets the name of the configuration resource.
+         *
+         * @param name The name to set.
+         */
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+
+}

@@ -22,39 +22,52 @@ package org.miaixz.bus.starter.notify;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Registry;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for the message notification service.
- * <p>
- * This class binds properties from the configuration file by default. It can also be configured dynamically through
- * setter methods (e.g., from a database).
+ * Immutable notification channel properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.NOTIFY)
-public class NotifyProperties {
+public final class NotifyProperties {
 
     /**
-     * Constructs a new NotifyProperties instance.
+     * Whether the notify integration is enabled.
      */
-    public NotifyProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Notification channel definitions grouped by provider type.
+     */
+    private final Map<Registry, Context> type;
+
+    /**
+     * Binds immutable notification channel definitions and normalizes an absent provider map to an empty map.
+     *
+     * @param enabled whether notification integration is enabled
+     * @param type    uniquely named provider configurations whose credentials are external references
+     */
+    public NotifyProperties(@DefaultValue("false") boolean enabled, @DefaultValue Map<Registry, Context> type) {
+        this.enabled = enabled;
+        this.type = type == null ? Map.of() : Map.copyOf(type);
     }
 
     /**
-     * A map of notification provider configurations, where the key is the provider {@link Registry} type and the value
-     * is the {@link Context} containing the specific configuration for that provider.
+     * @return masked diagnostic representation
      */
-    private Map<Registry, Context> type;
+    @Override
+    public String toString() {
+        return "NotifyProperties[enabled=" + enabled + ", channels=" + type.size() + ", credentials=***]";
+    }
 
 }

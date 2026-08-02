@@ -19,33 +19,101 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import org.miaixz.bus.mapper.Holder;
-
 /**
- * A thread-local holder for the key of the current data source.
+ * Holds only the explicit routing key for the current thread.
  * <p>
- * This class extends {@link Holder} to provide a specific context for managing the data source key on a per-thread
- * basis. It is used by the dynamic data source routing mechanism to determine which data source to use for the current
- * operation.
+ * The default data source belongs to each routing data source instance and is intentionally not stored here.
  *
- * <p>
- * The key is set by an aspect (e.g., {@link AspectjJdbcProxy}) before a method execution and cleared afterward. The
- * {@link DynamicDataSource} then retrieves this key to select the appropriate data source.
- *
- * <p>
- * This class can be extended for further customization if needed.
- *
- * @param <T> The generic type parameter, which is part of the extended {@link Holder} class.
  * @author Kimi Liu
  * @since Java 21+
  */
-public class DataSourceHolder<T> extends Holder<T> {
+public final class DataSourceHolder {
 
     /**
-     * Constructs a new DataSourceHolder instance.
+     * Thread-local stack containing nested data source keys.
      */
-    public DataSourceHolder() {
+    private static final ThreadLocal<String> CURRENT_KEY = new ThreadLocal<>();
+
+    /**
+     * Prevents instantiation of this thread-local data source holder.
+     */
+    private DataSourceHolder() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the explicitly selected routing key.
+     *
+     * @return current key, or {@code null} when the instance default must be used
+     */
+    public static String getCurrentKey() {
+        return CURRENT_KEY.get();
+    }
+
+    /**
+     * Selects an explicit routing key for the current thread.
+     *
+     * @param key routing key
+     */
+    public static void setKey(String key) {
+        if (key == null) {
+            remove();
+        } else {
+            CURRENT_KEY.set(key);
+        }
+    }
+
+    /**
+     * Removes the explicit routing key from the current thread.
+     */
+    public static void remove() {
+        CURRENT_KEY.remove();
+    }
+
+    /**
+     * Opens a nested routing scope.
+     *
+     * @param key explicit key for this scope
+     * @return scope that restores the exact parent state
+     */
+    public static Scope scope(String key) {
+        return new Scope(key);
+    }
+
+    /**
+     * Idempotent nested routing scope.
+     */
+    public static final class Scope implements AutoCloseable {
+
+        /**
+         * Data source key that was active before this scope was opened.
+         */
+        private final String previous;
+
+        /**
+         * Ensures restoration occurs at most once.
+         */
+        private boolean closed;
+
+        /**
+         * Creates a scope that restores the previous data source key when closed.
+         *
+         * @param key lookup key
+         */
+        private Scope(String key) {
+            this.previous = CURRENT_KEY.get();
+            setKey(key);
+        }
+
+        @Override
+        public void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            setKey(previous);
+        }
+
     }
 
 }

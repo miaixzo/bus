@@ -37,6 +37,9 @@ import org.springframework.util.Assert;
  */
 public class AnnotationWrapper<A extends Annotation> {
 
+    /**
+     * Annotation contract exposed by the generated proxy.
+     */
     private final Class<A> clazz;
 
     /**

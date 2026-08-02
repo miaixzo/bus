@@ -21,42 +21,48 @@ package org.miaixz.bus.starter.cors;
 
 import java.util.Arrays;
 
-import jakarta.annotation.Resource;
-
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for CORS (Cross-Origin Resource Sharing) support. This class enables and configures the CORS
- * filter based on the properties defined in {@link CorsProperties}.
+ * Configures CORS (Cross-Origin Resource Sharing) support. This class enables and configures the CORS filter based on
+ * the properties defined in {@link CorsProperties}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { CorsProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.CORS, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.springframework.web.cors.CorsConfigurationSource")
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@ConditionalOnProperty(prefix = GeniusBuilder.CORS, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class CorsConfiguration {
 
     /**
-     * Constructs a new CorsConfiguration instance.
+     * Bound cors configuration properties.
      */
-    public CorsConfiguration() {
-        // No initialization required.
-    }
+    private final CorsProperties properties;
 
     /**
-     * Injected CORS configuration properties.
+     * Stores the origin, method, header, and credential policy used by the CORS filter.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    CorsProperties properties;
+    public CorsConfiguration(CorsProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates and configures the {@link CorsFilter} bean. This bean is conditional and will only be created if no other
@@ -65,7 +71,7 @@ public class CorsConfiguration {
      * @return The configured {@link CorsFilter}.
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(CorsFilter.class)
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(this.properties.getPath(), buildConfig());
@@ -79,6 +85,11 @@ public class CorsConfiguration {
      * @return The configured {@link org.springframework.web.cors.CorsConfiguration} instance.
      */
     private org.springframework.web.cors.CorsConfiguration buildConfig() {
+        if (Boolean.TRUE.equals(this.properties.getAllowCredentials())
+                && Arrays.asList(this.properties.getAllowedOrigins()).contains(Symbol.STAR)) {
+            throw new IllegalStateException(
+                    "bus.cors.allowed-origins must not contain '*' when bus.cors.allow-credentials=true");
+        }
         org.springframework.web.cors.CorsConfiguration corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList(this.properties.getAllowedOrigins()));
         corsConfiguration.setAllowedHeaders(Arrays.asList(this.properties.getAllowedHeaders()));

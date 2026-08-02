@@ -19,23 +19,26 @@
 */
 package org.miaixz.bus.starter.limiter;
 
-import jakarta.annotation.Resource;
+import java.util.List;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.limiter.Context;
 import org.miaixz.bus.limiter.Supplier;
 import org.miaixz.bus.limiter.nimble.FallbackProvider;
 import org.miaixz.bus.limiter.nimble.MethodProvider;
 import org.miaixz.bus.limiter.nimble.RequestProvider;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for the rate limiting and circuit breaking framework.
+ * Configures limiter definition scanning and the application-scoped limiter service.
  * <p>
  * This class sets up the necessary beans for the limiter functionality, including the core service, strategy providers,
  * and the annotation scanner.
@@ -44,18 +47,24 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { LimiterProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.LIMITER, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.limiter.Provider")
+@ConditionalOnProperty(prefix = GeniusBuilder.LIMITER, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class LimiterConfiguration {
 
     /**
-     * Constructs a new LimiterConfiguration instance.
+     * Bound limiter configuration properties.
      */
-    public LimiterConfiguration() {
-        // No initialization required.
-    }
+    private final LimiterProperties properties;
 
-    @Resource
-    private LimiterProperties properties;
+    /**
+     * Stores the limiter scanning and runtime policy used by the service Bean.
+     *
+     * @param properties bound configuration properties
+     */
+    public LimiterConfiguration(LimiterProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates the {@link LimiterService} bean, which initializes the global limiter context.
@@ -65,7 +74,12 @@ public class LimiterConfiguration {
     @Bean
     @ConditionalOnMissingBean(LimiterService.class)
     public LimiterService limiterService() {
-        return new LimiterService(this.properties);
+        Context context = new Context();
+        context.setSeconds(Math.toIntExact(this.properties.getHotspotCacheDuration().toSeconds()));
+        context.setLogger(this.properties.isLogger());
+        context.setSupplier(this.properties.getSupplierClass());
+        context.setExtension(this.properties.getExtension());
+        return new LimiterService(context);
     }
 
     /**
@@ -80,7 +94,7 @@ public class LimiterConfiguration {
     @ConditionalOnMissingBean(RequestProvider.class)
     public RequestProvider requestProvider() {
         RequestProvider strategy = new RequestProvider();
-        String implClassName = this.properties.getSupplier();
+        String implClassName = this.properties.getSupplierClass();
         // Check if a custom user identifier provider is specified.
         if (StringKit.isNotEmpty(implClassName)) {
             Supplier instance = ReflectKit.newInstance(implClassName);
@@ -123,7 +137,7 @@ public class LimiterConfiguration {
     @Bean
     @ConditionalOnMissingBean(LimiterScanner.class)
     public LimiterScanner scanner() {
-        return new LimiterScanner();
+        return new LimiterScanner(List.of());
     }
 
 }

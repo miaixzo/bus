@@ -21,401 +21,258 @@ package org.miaixz.bus.spring.boot;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.bootstrap.ConfigurableBootstrapContext;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.logging.LoggerConfiguration;
 import org.springframework.boot.logging.LoggingSystem;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.metrics.BaseMetrics;
-import org.miaixz.bus.spring.metrics.ChildrenMetrics;
-import org.miaixz.bus.spring.metrics.ModuleMetrics;
+import org.miaixz.bus.spring.boot.environment.EnvironmentKeys;
+import org.miaixz.bus.spring.boot.startup.BaseMetrics;
+import org.miaixz.bus.spring.boot.startup.ChildrenMetrics;
+import org.miaixz.bus.spring.boot.startup.ModuleMetrics;
+import org.miaixz.bus.spring.boot.startup.StartupReporter;
+import org.miaixz.bus.spring.boot.startup.StartupReporterProcessor;
+import org.miaixz.bus.spring.boot.startup.StartupStages;
 
 /**
- * Implements {@link org.springframework.boot.SpringApplicationRunListener} and {@link ApplicationListener} to calculate
- * and report startup stage times.
- * <p>
- * This class monitors and records the time taken for various stages during the Spring application startup process,
- * including JVM startup, environment preparation, and context initialization. It provides performance metrics for
- * analyzing application startup performance.
+ * Collects startup statistics after the environment explicitly enables the feature.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener,
-        ApplicationListener<ApplicationStartedEvent>, Ordered {
+public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener, Ordered {
 
     /**
-     * The Spring Boot application instance.
+     * Bean name for the startup reporter.
      */
-    private final org.springframework.boot.SpringApplication application;
-
+    private static final String REPORTER_BEAN_NAME = "busStartupReporter";
     /**
-     * The component responsible for collecting and reporting startup costs.
+     * Bean name for the startup reporter processor.
      */
-    private final StartupReporter startupReporter;
+    private static final String PROCESSOR_BEAN_NAME = "busStartupReporterProcessor";
+    /**
+     * Bean name for the startup lifecycle component.
+     */
+    private static final String LIFECYCLE_BEAN_NAME = "busStartupSmartLifecycle";
 
     /**
-     * Startup metrics for the JVM starting stage. Records the time from JVM launch until the {@code starting} method of
-     * this listener completes.
+     * Guards the one-time evaluation of the startup reporting switch.
+     */
+    private final AtomicBoolean activationChecked = new AtomicBoolean();
+    /**
+     * Guards the one-time registration of startup reporting components.
+     */
+    private final AtomicBoolean componentsRegistered = new AtomicBoolean();
+    /**
+     * Guards completion of the startup report.
+     */
+    private final AtomicBoolean reportCompleted = new AtomicBoolean();
+
+    /**
+     * Reporter allocated after startup metrics are enabled.
+     */
+    private StartupReporter startupReporter;
+    /**
+     * Metrics for JVM startup before Spring Boot begins.
      */
     private BaseMetrics jvmStartingStage;
-
     /**
-     * Startup metrics for the environment preparation stage. Records the time from the completion of the
-     * {@code started} method until the {@code environmentPrepared} method completes.
+     * Metrics for Spring environment preparation.
      */
     private BaseMetrics environmentPrepareStage;
-
     /**
-     * Startup metrics for the application context preparation stage. Records the time from the completion of the
-     * {@code environmentPrepared} method until the {@code contextPrepared} method completes.
+     * Metrics for application-context preparation and its child phases.
      */
     private ChildrenMetrics<BaseMetrics> applicationContextPrepareStage;
-
     /**
-     * Startup metrics for the application context loading stage. Records the time from the completion of the
-     * {@code contextPrepared} method until the {@code contextLoaded} method completes.
+     * Metrics for application-context loading.
      */
     private BaseMetrics applicationContextLoadStage;
 
     /**
-     * Constructs a new {@code SpringApplicationRunListener}.
+     * Creates a listener without allocating startup statistics.
      *
-     * @param springApplication The Spring application instance.
+     * @param application Spring Boot application
      */
-    public SpringApplicationRunListener(org.springframework.boot.SpringApplication springApplication) {
-        this.application = springApplication;
-        this.startupReporter = new StartupReporter();
-        Logger.debug(
-                false,
-                "Starter",
-                "Initialized SpringApplicationRunListener for application: {}",
-                springApplication.getMainApplicationClass());
+    public SpringApplicationRunListener(org.springframework.boot.SpringApplication application) {
+        // Spring Boot requires this constructor signature for run-listener discovery.
+        // No initialization required.
     }
 
     /**
-     * Callback method invoked when the application is starting.
-     * <p>
-     * Records the start and end times of the JVM starting stage and calculates the elapsed time.
-     * </p>
+     * Performs no work because the environment and the feature switch are not available yet.
      *
-     * @param bootstrapContext The configurable bootstrap context.
+     * @param bootstrapContext bootstrap context
      */
     @Override
     public void starting(ConfigurableBootstrapContext bootstrapContext) {
-        jvmStartingStage = new BaseMetrics();
-        jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
-        jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
-        jvmStartingStage.setEndTime(System.currentTimeMillis());
-        Logger.debug(false, "Starter", "Spring JVM starting stage completed in {} ms", jvmStartingStage.getCost());
+        // Startup collection is intentionally deferred until environmentPrepared.
     }
 
-    /**
-     * Callback method invoked when the environment is prepared.
-     * <p>
-     * Records the start and end times of the environment preparation stage, calculates the elapsed time, and sets the
-     * application name. It also binds the {@link StartupReporter} to the environment and registers it in the bootstrap
-     * context.
-     * </p>
-     *
-     * @param bootstrapContext The configurable bootstrap context.
-     * @param environment      The configurable environment.
-     */
     @Override
     public void environmentPrepared(
             ConfigurableBootstrapContext bootstrapContext,
             ConfigurableEnvironment environment) {
-        if (jvmStartingStage == null) {
-            jvmStartingStage = new BaseMetrics();
-            jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
-            jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
-            jvmStartingStage.setEndTime(System.currentTimeMillis());
+        if (!activationChecked.compareAndSet(false, true)
+                || !environment.getProperty(EnvironmentKeys.STARTUP_ENABLED, Boolean.class, false)) {
+            return;
         }
 
-        environmentPrepareStage = new BaseMetrics();
-        environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
-        environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
-        environmentPrepareStage.setEndTime(System.currentTimeMillis());
+        long enabledAt = System.currentTimeMillis();
+        StartupReporter reporter = new StartupReporter(ManagementFactory.getRuntimeMXBean().getStartTime());
+        reporter.setAppName(environment.getProperty(EnvironmentKeys.APPLICATION_NAME));
+        reporter.bindToStartupReporter(environment);
+        startupReporter = reporter;
 
-        // Set the application name and bind to the startup reporter
-        startupReporter.setAppName(environment.getProperty(GeniusBuilder.APP_NAME));
-        startupReporter.bindToStartupReporter(environment);
-
-        // Register the startup reporter to the bootstrap context
-        bootstrapContext.register(StartupReporter.class, key -> startupReporter);
-
-        // Attempt to set BufferingApplicationStartup (if available)
-        try {
-            Class.forName("org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup");
-            application.setApplicationStartup(
-                    new org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup(
-                            startupReporter.bufferSize));
-        } catch (ClassNotFoundException e) {
-            Logger.debug(
-                    false,
-                    "Starter",
-                    "Spring bufferingApplicationStartup not available, skipping startup metrics");
-        }
+        jvmStartingStage = stage(
+                StartupStages.JVM_STARTING_STAGE,
+                ManagementFactory.getRuntimeMXBean().getStartTime(),
+                enabledAt);
+        environmentPrepareStage = stage(StartupStages.ENVIRONMENT_PREPARE_STAGE, enabledAt, enabledAt);
+        bootstrapContext.registerIfAbsent(StartupReporter.class, key -> reporter);
     }
 
-    /**
-     * Callback method invoked when the application context is prepared.
-     * <p>
-     * Records the start and end times of the application context preparation stage, calculates the elapsed time, and
-     * adds initializer statistics collected from {@link org.miaixz.bus.spring.boot.SpringApplication}.
-     * </p>
-     *
-     * @param context The configurable application context.
-     */
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
-        if (environmentPrepareStage == null) {
-            if (jvmStartingStage == null) {
-                jvmStartingStage = new BaseMetrics();
-                jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
-                jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
-                jvmStartingStage.setEndTime(System.currentTimeMillis());
-            }
-            environmentPrepareStage = new BaseMetrics();
-            environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
-            environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
-            environmentPrepareStage.setEndTime(System.currentTimeMillis());
-
-            ConfigurableEnvironment environment = context.getEnvironment();
-            startupReporter.setAppName(environment.getProperty(GeniusBuilder.APP_NAME));
-            startupReporter.bindToStartupReporter(environment);
-
-            try {
-                Class.forName("org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup");
-                application.setApplicationStartup(
-                        new org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup(
-                                startupReporter.bufferSize));
-            } catch (ClassNotFoundException e) {
-                Logger.debug(
-                        false,
-                        "Starter",
-                        "Spring bufferingApplicationStartup not available, skipping startup metrics");
-            }
+        if (!isEnabled()) {
+            return;
         }
-
-        applicationContextPrepareStage = new ChildrenMetrics<>();
-        applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
-        applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
-        applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
-        context.setApplicationStartup(application.getApplicationStartup());
-
-        // If it's a custom SpringApplication, get initializer statistics
-        if (application instanceof org.miaixz.bus.spring.boot.SpringApplication springApplication) {
-            List<BaseMetrics> statisticsList = springApplication.getInitializerStartupStatList();
-            applicationContextPrepareStage.setChildren(new ArrayList<>(statisticsList));
-            statisticsList.clear();
-        }
-
-        Logger.debug(
-                false,
-                "Starter",
-                "Spring application context preparation stage completed in {} ms",
-                applicationContextPrepareStage.getCost());
+        applicationContextPrepareStage = new ChildrenMetrics<>(StartupStages.APPLICATION_CONTEXT_PREPARE_STAGE,
+                environmentPrepareStage.getEndTime(), System.currentTimeMillis(), List.of());
     }
 
-    /**
-     * Callback method invoked when the application context is loaded.
-     * <p>
-     * Records the start and end times of the application context loading stage, calculates the elapsed time, and
-     * registers the {@link StartupReporterProcessor} and {@link SpringSmartLifecycle} beans.
-     * </p>
-     *
-     * @param context The configurable application context.
-     */
     @Override
     public void contextLoaded(ConfigurableApplicationContext context) {
-        if (applicationContextPrepareStage == null) {
-            if (environmentPrepareStage == null) {
-                if (jvmStartingStage == null) {
-                    jvmStartingStage = new BaseMetrics();
-                    jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
-                    jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
-                    jvmStartingStage.setEndTime(System.currentTimeMillis());
-                }
-                environmentPrepareStage = new BaseMetrics();
-                environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
-                environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
-                environmentPrepareStage.setEndTime(System.currentTimeMillis());
-            }
-            applicationContextPrepareStage = new ChildrenMetrics<>();
-            applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
-            applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
-            applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
+        if (!isEnabled() || applicationContextPrepareStage == null) {
+            return;
         }
-
-        applicationContextLoadStage = new BaseMetrics();
-        applicationContextLoadStage.setName(GeniusBuilder.APPLICATION_CONTEXT_LOAD_STAGE);
-        applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
-        applicationContextLoadStage.setEndTime(System.currentTimeMillis());
-
-        // Register StartupReporterProcessor and StartupReporter
-        context.getBeanFactory().addBeanPostProcessor(new StartupReporterProcessor(startupReporter));
-        context.getBeanFactory().registerSingleton("STARTUP_REPORTER_BEAN", startupReporter);
-
-        // Register SpringSmartLifecycle processor
-        SpringSmartLifecycle springSmartLifecycle = new SpringSmartLifecycle(startupReporter);
-        springSmartLifecycle.setApplicationContext(context);
-        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIFECYCLE", springSmartLifecycle);
-
-        Logger.debug(
-                false,
-                "Starter",
-                "Spring application context loading stage completed in {} ms",
-                applicationContextLoadStage.getCost());
+        applicationContextLoadStage = stage(
+                StartupStages.APPLICATION_CONTEXT_LOAD_STAGE,
+                applicationContextPrepareStage.getEndTime(),
+                System.currentTimeMillis());
+        registerComponents(context);
     }
 
-    /**
-     * Callback method invoked when the application has started.
-     * <p>
-     * Records the start and end times of the application refresh stage, calculates the elapsed time, adds all stage
-     * statistics to the {@link StartupReporter}, and marks the application boot as finished.
-     * </p>
-     *
-     * @param context   The configurable application context.
-     * @param timeTaken The total time taken for the application to start.
-     */
     @Override
     public void started(ConfigurableApplicationContext context, Duration timeTaken) {
-        if (applicationContextLoadStage == null) {
-            if (applicationContextPrepareStage == null) {
-                if (environmentPrepareStage == null) {
-                    if (jvmStartingStage == null) {
-                        jvmStartingStage = new BaseMetrics();
-                        jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
-                        jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
-                        jvmStartingStage.setEndTime(System.currentTimeMillis());
-                    }
-                    environmentPrepareStage = new BaseMetrics();
-                    environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
-                    environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
-                    environmentPrepareStage.setEndTime(System.currentTimeMillis());
-                }
-                applicationContextPrepareStage = new ChildrenMetrics<>();
-                applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
-                applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
-                applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
-            }
-            applicationContextLoadStage = new BaseMetrics();
-            applicationContextLoadStage.setName(GeniusBuilder.APPLICATION_CONTEXT_LOAD_STAGE);
-            applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
-            applicationContextLoadStage.setEndTime(System.currentTimeMillis());
+        if (!isEnabled() || applicationContextLoadStage == null || !reportCompleted.compareAndSet(false, true)) {
+            return;
         }
 
-        // Get application refresh stage statistics
-        BaseMetrics refreshStage = startupReporter.getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+        BaseMetrics refreshStage = startupReporter.getStageByName(StartupStages.APPLICATION_CONTEXT_REFRESH_STAGE);
         ChildrenMetrics<ModuleMetrics> applicationRefreshStage;
-        if (refreshStage instanceof ChildrenMetrics<?>) {
-            ChildrenMetrics<ModuleMetrics> typedStage = (ChildrenMetrics<ModuleMetrics>) refreshStage;
+        if (refreshStage instanceof ChildrenMetrics<?> childrenMetrics) {
+            ChildrenMetrics<ModuleMetrics> typedStage = (ChildrenMetrics<ModuleMetrics>) childrenMetrics;
             applicationRefreshStage = typedStage;
         } else {
-            applicationRefreshStage = new ChildrenMetrics<>();
-            applicationRefreshStage.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+            long refreshEndTime = System.currentTimeMillis();
+            ModuleMetrics rootModule = new ModuleMetrics(SpringSmartLifecycle.ROOT_MODULE_NAME,
+                    applicationContextLoadStage.getEndTime(), refreshEndTime, Thread.currentThread().getName(),
+                    List.of());
+            applicationRefreshStage = new ChildrenMetrics<>(StartupStages.APPLICATION_CONTEXT_REFRESH_STAGE,
+                    applicationContextLoadStage.getEndTime(), refreshEndTime, List.of(rootModule));
             startupReporter.addCommonStartupStat(applicationRefreshStage);
         }
 
-        // Set time information for the refresh stage
-        applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
-        if (applicationRefreshStage.getEndTime() == 0) {
-            applicationRefreshStage.setEndTime(System.currentTimeMillis());
-        }
-        applicationRefreshStage
-                .setCost(Math.max(0, applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime()));
-
-        // Set time information for the root module
-        if (applicationRefreshStage.getChildren().isEmpty()) {
-            ModuleMetrics rootModule = new ModuleMetrics();
-            rootModule.setName(SpringSmartLifecycle.ROOT_MODULE_NAME);
-            rootModule.setEndTime(applicationRefreshStage.getEndTime());
-            rootModule.setThreadName(Thread.currentThread().getName());
-            applicationRefreshStage.addChild(rootModule);
-        }
-        ModuleMetrics rootModule = applicationRefreshStage.getChildren().get(0);
-        rootModule.setStartTime(applicationRefreshStage.getStartTime());
-        if (rootModule.getEndTime() == 0) {
-            rootModule.setEndTime(applicationRefreshStage.getEndTime());
-        }
-        rootModule.setCost(Math.max(0, rootModule.getEndTime() - rootModule.getStartTime()));
-
-        // Add all stage statistics to the startup reporter
         startupReporter.addCommonStartupStat(jvmStartingStage);
         startupReporter.addCommonStartupStat(environmentPrepareStage);
         startupReporter.addCommonStartupStat(applicationContextPrepareStage);
         startupReporter.addCommonStartupStat(applicationContextLoadStage);
-
-        // Mark application boot as finished
         startupReporter.applicationBootFinish();
-
-        // Log the application started message
         Logger.info(false, "Starter", "Spring " + getStartedMessage(context, timeTaken));
     }
 
-    /**
-     * Handles {@link ApplicationStartedEvent} events.
-     *
-     * @param event The application started event.
-     */
-    @Override
-    public void onApplicationEvent(ApplicationStartedEvent event) {
-        Logger.debug(
-                false,
-                "Starter",
-                "Spring received ApplicationStartedEvent for application: {}",
-                application.getMainApplicationClass());
-    }
-
-    /**
-     * Returns the order value for this listener.
-     *
-     * @return The order value, where a lower value indicates higher priority.
-     */
     @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE - 10;
     }
 
     /**
-     * Generates a message indicating that the application has started.
-     * <p>
-     * Constructs a message containing the application name, config name, active profiles, effective logging level, and
-     * total startup time.
-     * </p>
+     * Indicates whether startup metric collection was enabled by the prepared environment.
      *
-     * @param context            The configurable application context.
-     * @param timeTakenToStartup The total time taken for the application to start.
-     * @return The formatted application started message string.
+     * @return whether enabled
      */
-    private String getStartedMessage(ConfigurableApplicationContext context, Duration timeTakenToStartup) {
-        StringBuilder message = new StringBuilder();
-        message.append("Started");
+    private boolean isEnabled() {
+        return startupReporter != null;
+    }
 
+    /**
+     * Creates timing metrics for one startup stage.
+     *
+     * @param name      stage name
+     * @param startTime stage start time in milliseconds
+     * @param endTime   stage end time in milliseconds
+     * @return startup stage metrics
+     */
+    private BaseMetrics stage(String name, long startTime, long endTime) {
+        return new BaseMetrics(name, startTime, endTime);
+    }
+
+    /**
+     * Registers the components.
+     *
+     * @param context owning application context
+     */
+    private void registerComponents(ConfigurableApplicationContext context) {
+        if (!componentsRegistered.compareAndSet(false, true)) {
+            return;
+        }
+        ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+        if (!contains(beanFactory, REPORTER_BEAN_NAME, StartupReporter.class)) {
+            beanFactory.registerSingleton(REPORTER_BEAN_NAME, startupReporter);
+        }
+        if (!contains(beanFactory, PROCESSOR_BEAN_NAME, StartupReporterProcessor.class)) {
+            StartupReporterProcessor processor = new StartupReporterProcessor(startupReporter);
+            beanFactory.addBeanPostProcessor(processor);
+            beanFactory.registerSingleton(PROCESSOR_BEAN_NAME, processor);
+        }
+        if (!contains(beanFactory, LIFECYCLE_BEAN_NAME, SpringSmartLifecycle.class)) {
+            SpringSmartLifecycle lifecycle = new SpringSmartLifecycle(startupReporter,
+                    applicationContextLoadStage.getEndTime());
+            lifecycle.setApplicationContext(context);
+            beanFactory.registerSingleton(LIFECYCLE_BEAN_NAME, lifecycle);
+        }
+    }
+
+    /**
+     * Returns whether a compatible component is already registered.
+     *
+     * @param beanFactory target Bean factory
+     * @param name        expected Bean name
+     * @param type        required component type
+     * @return {@code true} when the name or type is already registered
+     */
+    private boolean contains(ConfigurableListableBeanFactory beanFactory, String name, Class<?> type) {
+        return beanFactory.containsBean(name) || beanFactory.getBeanNamesForType(type, false, false).length > 0;
+    }
+
+    /**
+     * Returns the started message.
+     *
+     * @param context   owning application context
+     * @param timeTaken time taken
+     * @return the started message
+     */
+    private String getStartedMessage(ConfigurableApplicationContext context, Duration timeTaken) {
+        StringBuilder message = new StringBuilder("Started");
         ConfigurableEnvironment environment = context.getEnvironment();
-        String appName = StringKit.defaultIfEmpty(environment.getProperty("spring.application.name"), "unknown");
-        message.append(" - App Name: ").append(appName);
-
-        String configName = StringKit.defaultIfEmpty(environment.getProperty("spring.config.name"), "application");
-        message.append(" - Config Name: ").append(configName);
-
+        message.append(" - App Name: ")
+                .append(StringKit.defaultIfEmpty(environment.getProperty(EnvironmentKeys.APPLICATION_NAME), "unknown"));
+        message.append(" - Config Name: ")
+                .append(StringKit.defaultIfEmpty(environment.getProperty("spring.config.name"), "application"));
         String[] activeProfiles = environment.getActiveProfiles();
         message.append(" - Active Profiles: ")
                 .append(activeProfiles.length > 0 ? String.join(", ", activeProfiles) : "none");
 
-        // Get logging level
-        String logging = environment.getProperty(GeniusBuilder.LOGGING_LEVEL);
+        String logging = environment.getProperty(EnvironmentKeys.LOGGING_LEVEL);
         if (!StringKit.hasText(logging)) {
             LoggingSystem loggingSystem = context.getBean(LoggingSystem.class);
             for (LoggerConfiguration config : loggingSystem.getLoggerConfigurations()) {
@@ -425,16 +282,10 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
                 }
             }
         }
-
         if (StringKit.hasText(logging)) {
-            message.append(" with [").append(logging).append("]");
+            message.append(" with [").append(logging).append(']');
         }
-
-        message.append(" in ");
-        message.append(timeTakenToStartup.toMillis() / 1000.0);
-        message.append(" seconds");
-
-        return message.toString();
+        return message.append(" in ").append(timeTaken.toMillis() / 1000.0).append(" seconds").toString();
     }
 
 }

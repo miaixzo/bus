@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Distributed tracing support.
+ * Activates distributed tracing and binds its runtime switch. This non-exported package contains Starter assembly
+ * rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

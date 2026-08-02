@@ -42,7 +42,7 @@ public class WebSocketQuickService {
     private final FabricProperties properties;
 
     /**
-     * Current fabric message handler.
+     * Handler that processes decoded WebSocket Fabric messages.
      */
     @Resource
     private Handler handler;
@@ -64,7 +64,7 @@ public class WebSocketQuickService {
     /**
      * Sets the current fabric message handler.
      *
-     * @param handler handler
+     * @param handler message handler to invoke
      */
     public void setHandler(final Handler handler) {
         this.handler = handler;
@@ -86,8 +86,13 @@ public class WebSocketQuickService {
             server = currentServer;
             Logger.info(true, "Starter", "WebSocket server started on port: {}", websocket.getPort());
         } catch (final RuntimeException e) {
-            currentServer.close();
+            try {
+                currentServer.close();
+            } catch (final RuntimeException rollbackFailure) {
+                e.addSuppressed(rollbackFailure);
+            }
             Logger.error(false, "Starter", "Failed to start WebSocket server", e);
+            throw e;
         }
     }
 
@@ -115,8 +120,8 @@ public class WebSocketQuickService {
     /**
      * Default handler used when no Spring handler bean is provided.
      *
-     * @param session session
-     * @param message message
+     * @param session active network session
+     * @param message message supplied to this operation
      */
     private static void noop(final Session session, final Message message) {
         // No-op keeps lifecycle-only starter configurations valid.

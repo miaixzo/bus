@@ -20,31 +20,36 @@
 package org.miaixz.bus.starter.tracer;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for distributed tracing.
- * <p>
- * This class is a placeholder for future properties related to distributed tracing, such as trace propagation formats,
- * sampling rates, and exporter configurations.
+ * Distributed tracing activation properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.TRACER)
-public class TracerProperties {
+public final class TracerProperties {
 
     /**
-     * Constructs a new TracerProperties instance.
+     * Whether the tracer integration is enabled.
      */
-    public TracerProperties() {
-        // No initialization required.
+    private final boolean enabled;
+
+    /**
+     * Binds immutable tracing settings and normalizes absent provider maps to an empty map.
+     *
+     * @param enabled whether tracing integration is enabled
+     */
+    public TracerProperties(@DefaultValue("false") boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

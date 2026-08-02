@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.spring;
 
+import org.springframework.core.Ordered;
+
 import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.lang.annotation.Nullable;
 
 /**
  * An interface for providing authenticated request context information.
@@ -30,15 +33,27 @@ import org.miaixz.bus.core.basic.entity.Authorize;
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface ContextProvider {
+public interface ContextProvider extends Ordered {
 
     /**
-     * Gets the authenticated authorization information for the current user.
+     * Gets the authenticated authorization information for the current user. Implementations must be side-effect free
+     * and must not consume or mutate transport input.
      *
      * @return An {@link Authorize} object, or null if not available.
      */
+    @Nullable
     default Authorize getAuthorize() {
         return null;
+    }
+
+    /**
+     * Orders providers before the first side-effect-free authorization resolution pass.
+     *
+     * @return lowest precedence unless an implementation declares a stronger priority
+     */
+    @Override
+    default int getOrder() {
+        return Ordered.LOWEST_PRECEDENCE;
     }
 
 }

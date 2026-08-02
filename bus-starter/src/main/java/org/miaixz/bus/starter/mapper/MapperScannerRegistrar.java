@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.EnvironmentAware;
@@ -40,8 +41,8 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
 
 /**
@@ -56,7 +57,7 @@ import org.miaixz.bus.starter.annotation.EnableMapper;
 public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     /**
-     * Constructs a new MapperScannerRegistrar instance.
+     * Initializes the registrar before Spring supplies its resource loader and environment callbacks.
      */
     public MapperScannerRegistrar() {
         // No initialization required.
@@ -139,9 +140,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
         // Sets the custom MapperFactoryBean class.
         Class<? extends MapperFactoryBean> mapperFactoryBeanClass = annoAttrs.getClass("factoryBean");
-        if (!MapperFactoryBean.class.equals(mapperFactoryBeanClass)) {
-            scanner.setMapperFactoryBean(ReflectKit.newInstanceIfPossible(mapperFactoryBeanClass));
-        }
+        scanner.setMapperFactoryBeanClass(mapperFactoryBeanClass);
 
         // Sets the bean names for SqlSessionTemplate and SqlSessionFactory.
         scanner.setSqlSessionTemplateBeanName(annoAttrs.getString("sqlSessionTemplateRef"));

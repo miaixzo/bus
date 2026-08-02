@@ -19,19 +19,18 @@
 */
 package org.miaixz.bus.starter.tempus;
 
-import jakarta.annotation.Resource;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableTempus;
-import org.miaixz.bus.starter.json.JsonConfiguration;
-import org.miaixz.bus.starter.json.SelectedJsonProvider;
 import org.miaixz.bus.tempus.temporal.Publisher;
 import org.miaixz.bus.tempus.temporal.Subscriber;
 import org.miaixz.bus.tempus.temporal.worker.CachingWorkflowConnector;
@@ -49,7 +48,7 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBind
 import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager;
 
 /**
- * Temporal framework auto-configuration.
+ * Configures Temporal clients, workers, publishers, and subscribers.
  * <p>
  * Imported through {@link EnableTempus}; registers core Temporal beans including clients, workers, publishers, and
  * subscribers.
@@ -61,35 +60,39 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
  * @since Java 21+
  */
 @EnableConfigurationProperties(TempusProperties.class)
-@Import(JsonConfiguration.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.tempus.temporal.Publisher")
+@ConditionalOnSingleCandidate(JsonProvider.class)
+@ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class TempusConfiguration {
 
     /**
-     * Creates Temporal auto-configuration.
+     * Bound tempus configuration properties.
      */
-    public TempusConfiguration() {
-        // No initialization required.
-    }
+    private final TempusProperties properties;
 
     /**
-     * Temporal configuration properties used to build default framework beans.
+     * Stores and validates the Temporal properties used by all workflow Bean factories.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    private TempusProperties properties;
+    public TempusConfiguration(TempusProperties properties) {
+        this.properties = properties;
+        this.properties.validate();
+    }
 
     /**
      * Creates a {@link WorkflowTransport}.
      * <p>
      * Skipped when the application registers a custom {@code WorkflowTransport} bean.
      *
-     * @param selectedJsonProvider application-wide JSON provider selection
+     * @param jsonProvider Context-local JSON provider
      * @return default Temporal workflow transport
      */
     @Bean
-    @ConditionalOnMissingBean
-    public WorkflowTransport workflowTransport(SelectedJsonProvider selectedJsonProvider) {
-        return new DefaultWorkflowTransport(selectedJsonProvider.provider());
+    @ConditionalOnMissingBean(WorkflowTransport.class)
+    public WorkflowTransport workflowTransport(JsonProvider jsonProvider) {
+        return new DefaultWorkflowTransport(jsonProvider);
     }
 
     /**
@@ -100,8 +103,8 @@ public class TempusConfiguration {
      * @param transport workflow transport used to create underlying service stubs
      * @return caching workflow connector
      */
-    @Bean
-    @ConditionalOnMissingBean
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(WorkflowConnector.class)
     @ConditionalOnBean(WorkflowTransport.class)
     public WorkflowConnector workflowConnector(WorkflowTransport transport) {
         return new CachingWorkflowConnector(transport);
@@ -115,7 +118,7 @@ public class TempusConfiguration {
      * @return workflow ID generator based on the default UUID strategy
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(WorkflowIdGenerator.class)
     public WorkflowIdGenerator workflowIdGenerator() {
         return new WorkflowIdGenerator() {
         };
@@ -129,7 +132,7 @@ public class TempusConfiguration {
      * @return default retry options factory
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(RetryOptionsFactory.class)
     public RetryOptionsFactory retryOptionsFactory() {
         return new DefaultRetryOptionsFactory();
     }
@@ -144,7 +147,7 @@ public class TempusConfiguration {
      * @return default workflow options factory
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(WorkflowOptionsFactory.class)
     public WorkflowOptionsFactory workflowOptionsFactory(
             WorkflowIdGenerator generator,
             RetryOptionsFactory retryOptionsFactory) {
@@ -161,14 +164,14 @@ public class TempusConfiguration {
      * @param binding   publisher binding configuration
      * @return workflow publisher manager
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     @ConditionalOnBean({ WorkflowConnector.class, WorkflowOptionsFactory.class, WorkflowPublisherBinding.class })
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(Publisher.class)
     public Publisher publisherManager(
             WorkflowConnector connector,
             WorkflowOptionsFactory factory,
             WorkflowPublisherBinding binding) {
-        return new WorkflowPublisherManager(connector, factory, binding, properties);
+        return new WorkflowPublisherManager(connector, factory, binding, this.properties);
     }
 
     /**
@@ -184,14 +187,13 @@ public class TempusConfiguration {
      * @return workflow subscriber manager
      */
     @Bean(destroyMethod = "shutdown")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(Subscriber.class)
     @ConditionalOnBean({ WorkflowSubscriberBinding.class, WorkflowTransport.class, WorkflowOptionsFactory.class })
-    @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true")
     public Subscriber subscriberManager(
             WorkflowSubscriberBinding binding,
             WorkflowTransport transport,
             WorkflowOptionsFactory factory) {
-        return new WorkflowSubscriberManager(binding, transport, factory, properties);
+        return new WorkflowSubscriberManager(binding, transport, factory, this.properties);
     }
 
     /**
@@ -201,10 +203,9 @@ public class TempusConfiguration {
      * @return Temporal lifecycle component
      */
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(TempusLifecycle.class)
     @ConditionalOnBean(Subscriber.class)
-    @ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true")
-    public TempusLifecycle tempusLifecycle(Subscriber subscriber) {
+    TempusLifecycle tempusLifecycle(Subscriber subscriber) {
         return new TempusLifecycle(subscriber);
     }
 

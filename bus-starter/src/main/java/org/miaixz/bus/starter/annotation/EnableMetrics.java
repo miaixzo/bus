@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.starter.metrics.MetricsConfiguration;
 
 /**
- * Enables bus-metrics metric collection and auto-configuration.
+ * Enables bus-metrics metric collection and imports its Starter Bean configuration.
  *
  * @author Kimi Liu
  * @since Java 21+

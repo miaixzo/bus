@@ -18,10 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides Spring Framework annotations for the Bus framework.
+ * Provides Spring annotation inspection and placeholder binding, together with the {@code RequestObject} marker used
+ * by request argument resolution. This package must not depend on bus-starter.
  * <p>
- * This package contains custom annotations used throughout the Bus framework for Spring integration, including
- * conditional annotations, enable annotations, and other stereotype annotations.
+ * The wrapper types expose merged annotation metadata, while the binder types resolve annotation attributes against
+ * the Spring environment.
  *
  * @author Kimi Liu
  * @since Java 21+
