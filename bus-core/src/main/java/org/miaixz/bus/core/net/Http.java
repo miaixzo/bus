@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * HTTP protocol constants, conventional endpoint contracts, and framework-independent authentication helpers.
@@ -1295,7 +1296,7 @@ public final class Http {
         /**
          * Bearer authentication scheme prefix, including the separating space.
          */
-        public static final String BEARER_PREFIX = BEARER + " ";
+        public static final String BEARER_PREFIX = BEARER + Symbol.SPACE;
 
         /**
          * Metadata label used for credentials without an explicit authorization scheme.

@@ -62,7 +62,7 @@ public final class CertificatePin {
      * Restricts construction to the static certificate pin operations defined by this class.
      */
     private CertificatePin() {
-        // Utility class.
+        // No initialization required.
     }
 
     /**

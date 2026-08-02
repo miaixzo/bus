@@ -1680,4 +1680,5 @@ public final class ConnectionPool implements AutoCloseable {
                 || value instanceof BigDecimal || value instanceof Duration || value instanceof Timeout
                 || value instanceof Enum<?>;
     }
+
 }

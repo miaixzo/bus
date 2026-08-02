@@ -60970,14 +60970,14 @@
           "parameterTypes": []
         },
         {
+          "name": "createMpps",
+          "parameterTypes": []
+        },
+        {
           "name": "createMPPS",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
-        },
-        {
-          "name": "createMpps",
-          "parameterTypes": []
         },
         {
           "name": "createMpps",
@@ -61116,15 +61116,15 @@
           ]
         },
         {
+          "name": "updateMpps",
+          "parameterTypes": []
+        },
+        {
           "name": "updateMPPS",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.Attributes",
             "org.miaixz.bus.image.galaxy.data.Attributes"
           ]
-        },
-        {
-          "name": "updateMpps",
-          "parameterTypes": []
         }
       ]
     },

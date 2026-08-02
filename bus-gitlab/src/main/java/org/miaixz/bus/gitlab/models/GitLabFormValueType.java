@@ -46,4 +46,5 @@ public enum GitLabFormValueType {
      * The map git lab form value type.
      */
     MAP;
+
 }

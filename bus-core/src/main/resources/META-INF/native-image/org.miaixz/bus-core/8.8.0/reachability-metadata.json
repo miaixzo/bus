@@ -19299,12 +19299,6 @@
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator"
       },
-      "glob": ""
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator"
-      },
       "glob": "META-INF"
     },
     {

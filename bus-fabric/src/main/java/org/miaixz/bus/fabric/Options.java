@@ -308,7 +308,6 @@ public final class Options {
      * @param name external option name
      * @return registered typed key
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static Key<?> resolve(final String name) {
         final String checked = validateKey(name);
         final Class<?> type = KEY_TYPES.get(checked);
