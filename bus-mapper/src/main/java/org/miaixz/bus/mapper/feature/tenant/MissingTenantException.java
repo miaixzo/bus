@@ -17,28 +17,25 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.mapper;
-
-import org.apache.ibatis.session.Configuration;
+package org.miaixz.bus.mapper.feature.tenant;
 
 /**
- * A callback interface for customizing the MyBatis {@link Configuration} object that is auto-configured by this
- * starter.
+ * Signals that required tenant isolation has no authenticated tenant identifier.
  * <p>
- * Beans of this type will be automatically detected and their {@link #customize(Configuration)} method will be called
- * before the {@link org.apache.ibatis.session.SqlSessionFactory} is created.
+ * The exception deliberately carries no request, credential, authorization, or persistence context.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@FunctionalInterface
-public interface MyBatisConfigCustomizer {
+public final class MissingTenantException extends IllegalStateException {
+
+    private static final long serialVersionUID = 2854009395911422101L;
 
     /**
-     * Customizes the given {@link Configuration} object.
-     *
-     * @param configuration The {@link Configuration} object to be customized.
+     * Creates the fixed, value-free missing-tenant failure.
      */
-    void customize(Configuration configuration);
+    public MissingTenantException() {
+        super("Authenticated tenant is required but unavailable");
+    }
 
 }

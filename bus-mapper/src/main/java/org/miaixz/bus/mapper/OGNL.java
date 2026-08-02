@@ -77,7 +77,7 @@ import org.miaixz.bus.mapper.parsing.ClassField;
 public class OGNL {
 
     /**
-     * Constructs a new OGNL instance.
+     * Initializes the expression helper used to inspect mapper parameters and evaluate dynamic conditions.
      */
     public OGNL() {
         // No initialization required.
@@ -367,10 +367,10 @@ public class OGNL {
                 Matcher matcher = CLASS_PATTERN.matcher(serializedLambda.getInstantiatedMethodType());
                 String implClass;
                 if (matcher.find()) {
-                    implClass = matcher.group("cls").replaceAll("/", "\\.");
+                    implClass = matcher.group("cls").replaceAll(Symbol.SLASH, "\\.");
                 } else {
                     // Fallback to implementation class
-                    implClass = serializedLambda.getImplClass().replaceAll("/", "\\.");
+                    implClass = serializedLambda.getImplClass().replaceAll(Symbol.SLASH, "\\.");
                 }
 
                 // Use class loading cache
@@ -565,7 +565,7 @@ public class OGNL {
      */
     public static String removeEscapeCharacter(String text) {
         Assert.notNull(text, "Text cannot be null");
-        return text.replaceAll("\"", "").replaceAll("'", "");
+        return text.replaceAll(Symbol.DOUBLE_QUOTES, Normal.EMPTY).replaceAll(Symbol.SINGLE_QUOTE, Normal.EMPTY);
     }
 
     /**
@@ -861,14 +861,14 @@ public class OGNL {
             // Skip empty lines
             if (!trimmed.isEmpty()) {
                 if (formatted.length() > 0) {
-                    formatted.append(" ");
+                    formatted.append(Symbol.SPACE);
                 }
                 formatted.append(trimmed);
             }
         }
 
         // Replace multiple spaces with single space
-        return formatted.toString().replaceAll("\\s+", " ");
+        return formatted.toString().replaceAll("\\s+", Symbol.SPACE);
     }
 
     /**

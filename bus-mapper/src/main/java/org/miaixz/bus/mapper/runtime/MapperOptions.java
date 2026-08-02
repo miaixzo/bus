@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.mapper.runtime;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +28,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.mapper.Charter.Isolation;
 import org.miaixz.bus.mapper.Charter.Schema;
 
 /**
@@ -50,7 +47,7 @@ import org.miaixz.bus.mapper.Charter.Schema;
 public class MapperOptions {
 
     /**
-     * Constructs a new MapperOptions instance with the default schema options.
+     * Initializes mapper runtime options with the defaults declared by each feature group.
      */
     public MapperOptions() {
         // No initialization required.
@@ -141,6 +138,11 @@ public class MapperOptions {
      * Operation safety configuration used to enable or disable the unsafe SQL guard.
      */
     private OperationOptions operation;
+
+    /**
+     * Structured pagination configuration. Legacy top-level pagination fields remain supported.
+     */
+    private PageOptions page;
 
     /**
      * Tenant configuration used to set a default tenant column and ignored tables or mappers.
@@ -234,7 +236,7 @@ public class MapperOptions {
     public static class OperationOptions {
 
         /**
-         * Constructs a new OperationOptions instance.
+         * Initializes SQL operation handling with its declared enablement and safety defaults.
          */
         public OperationOptions() {
             // No initialization required.
@@ -253,6 +255,51 @@ public class MapperOptions {
     }
 
     /**
+     * Pagination options with datasource-scope compatible fields.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @Getter
+    @Setter
+    public static class PageOptions {
+
+        /**
+         * Creates pagination options with the documented defaults.
+         */
+        public PageOptions() {
+            // Default values are declared on the fields below.
+            // No initialization required.
+        }
+
+        /**
+         * Whether the pagination handler is enabled.
+         */
+        private boolean enabled = true;
+
+        /**
+         * Whether out-of-range page numbers are normalized.
+         */
+        private boolean reasonable;
+
+        /**
+         * Whether mapper method arguments may supply pagination values.
+         */
+        private boolean supportMethodsArguments;
+
+        /**
+         * Pagination parameter-name mapping.
+         */
+        private String params;
+
+        /**
+         * Whether SQL keywords used as columns are automatically delimited.
+         */
+        private String autoDelimitKeywords;
+
+    }
+
+    /**
      * Tenant options.
      * <p>
      * These options provide starter-friendly defaults for the mapper tenant handler. Runtime tenant values can still be
@@ -266,7 +313,7 @@ public class MapperOptions {
     public static class TenantOptions {
 
         /**
-         * Constructs a new TenantOptions instance.
+         * Initializes tenant isolation with its declared column, exclusion, and enforcement defaults.
          */
         public TenantOptions() {
             // No initialization required.
@@ -275,7 +322,17 @@ public class MapperOptions {
         /**
          * Enable/disable tenant handler (default: true).
          */
-        private boolean enabled = true;
+        private boolean enabled = false;
+
+        /**
+         * Whether absence of an authenticated tenant must fail instead of omitting tenant filtering.
+         */
+        private boolean required = false;
+
+        /**
+         * Tenant isolation strategy.
+         */
+        private Isolation mode = Isolation.COLUMN;
 
         /**
          * Tenant column name used when no provider-specific tenant configuration is supplied.
@@ -292,6 +349,11 @@ public class MapperOptions {
          */
         private String ignoreMappers;
 
+        /**
+         * Whether rewritten tenant SQL may be cached.
+         */
+        private boolean enableSqlCache = true;
+
     }
 
     /**
@@ -307,7 +369,7 @@ public class MapperOptions {
     public static class AuditOptions {
 
         /**
-         * Constructs a new AuditOptions instance.
+         * Initializes audit handling with its declared enablement and field defaults.
          */
         public AuditOptions() {
             // No initialization required.
@@ -358,7 +420,7 @@ public class MapperOptions {
     public static class PopulateOptions {
 
         /**
-         * Constructs a new PopulateOptions instance.
+         * Initializes automatic field population with its declared enablement defaults.
          */
         public PopulateOptions() {
             // No initialization required.
@@ -404,7 +466,7 @@ public class MapperOptions {
     public static class VisibleOptions {
 
         /**
-         * Constructs a new VisibleOptions instance.
+         * Initializes row visibility filtering with its declared enablement defaults.
          */
         public VisibleOptions() {
             // No initialization required.
@@ -435,7 +497,7 @@ public class MapperOptions {
     public static class PrefixOptions {
 
         /**
-         * Constructs a new PrefixOptions instance.
+         * Initializes table prefix handling with its declared enablement defaults.
          */
         public PrefixOptions() {
             // No initialization required.
@@ -472,7 +534,7 @@ public class MapperOptions {
     public static class SchemaOptions {
 
         /**
-         * Constructs a new SchemaOptions instance.
+         * Initializes schema management with its declared enablement and package defaults.
          */
         public SchemaOptions() {
             // No initialization required.

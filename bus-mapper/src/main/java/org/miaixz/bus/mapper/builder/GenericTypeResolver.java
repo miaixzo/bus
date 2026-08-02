@@ -71,7 +71,7 @@ public class GenericTypeResolver {
     private static final Map<Method, Map<Type, Type[]>> RESOLVED_PARAM_TYPES_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Creates a generic type resolver.
+     * Initializes the resolver used to derive concrete mapper return types from generic method signatures.
      */
     public GenericTypeResolver() {
         // No initialization required.

@@ -17,13 +17,28 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.mapper.provider;
+
+import org.apache.ibatis.session.Configuration;
+
 /**
- * Provides Spring MVC server-side HTTP integration.
+ * A callback interface for customizing the MyBatis {@link Configuration} object that is auto-configured by this
+ * starter.
  * <p>
- * This package contains request and response body wrappers, argument resolvers, message converter registrars,
- * interceptors, filters, response advice, and focused {@code WebMvcConfigurer} implementations.
+ * Beans of this type will be automatically detected and their {@link #customize(Configuration)} method will be called
+ * before the {@link org.apache.ibatis.session.SqlSessionFactory} is created.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.spring.http;
+@FunctionalInterface
+public interface MyBatisConfigCustomizer {
+
+    /**
+     * Customizes the given {@link Configuration} object.
+     *
+     * @param configuration The {@link Configuration} object to be customized.
+     */
+    void customize(Configuration configuration);
+
+}

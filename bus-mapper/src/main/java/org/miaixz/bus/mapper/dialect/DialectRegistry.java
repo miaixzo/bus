@@ -23,7 +23,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -144,7 +143,7 @@ public final class DialectRegistry {
     }
 
     /**
-     * Prevents instantiation of the dialect registry.
+     * Prevents instantiation of this global database dialect lookup registry.
      */
     private DialectRegistry() {
         // No initialization required.
@@ -295,7 +294,7 @@ public final class DialectRegistry {
      *
      * <p>
      * This method determines the current datasource key from {@link Holder#getKey()} and returns the corresponding
-     * dialect from the cache. If not cached, it will attempt to detect from DynamicDataSource (if available).
+     * dialect from the cache populated explicitly by the data-source owner.
      * </p>
      *
      * <p>
@@ -306,66 +305,7 @@ public final class DialectRegistry {
      */
     public static Dialect getDialect() {
         String dsKey = Holder.getKey();
-        return DS_KEY_CACHE.computeIfAbsent(dsKey, DialectRegistry::detectDialectFromKey);
-    }
-
-    /**
-     * Detects dialect for a specific datasource key.
-     *
-     * @param dsKey the datasource key
-     * @return the detected dialect
-     */
-    private static Dialect detectDialectFromKey(String dsKey) {
-        try {
-            // Try to get DataSource from DynamicDataSource (if available)
-            DataSource dataSource = getDataSource(dsKey);
-            if (dataSource != null) {
-                return getDialect(dataSource);
-            }
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Mapper",
-                    e,
-                    "Mapper operation failed: provider={}, exception={}",
-                    "DialectRegistry",
-                    e.getClass().getSimpleName());
-            // Ignore: DynamicDataSource may not be available
-        }
-        return UNKNOWN;
-    }
-
-    /**
-     * Gets DataSource by key from DynamicDataSource (if available).
-     *
-     * @param dsKey the datasource key
-     * @return the DataSource, or null if not found
-     */
-    private static DataSource getDataSource(String dsKey) {
-        try {
-            // Try to load DynamicDataSource class (may not be available in all environments)
-            Class<?> ddsClass = Class.forName("org.miaixz.bus.starter.jdbc.DynamicDataSource");
-            Object instance = ddsClass.getMethod("getInstance").invoke(null);
-            if (instance != null) {
-                Map<Object, Object> dataSources = (Map<Object, Object>) ddsClass.getMethod("getAllDataSources")
-                        .invoke(instance);
-
-                Object ds = dataSources.get(dsKey);
-                if (ds instanceof DataSource) {
-                    return (DataSource) ds;
-                }
-            }
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Mapper",
-                    e,
-                    "Mapper operation failed: provider={}, exception={}",
-                    "DialectRegistry",
-                    e.getClass().getSimpleName());
-            // DynamicDataSource not available
-        }
-        return null;
+        return dsKey == null ? UNKNOWN : DS_KEY_CACHE.getOrDefault(dsKey, UNKNOWN);
     }
 
     /**

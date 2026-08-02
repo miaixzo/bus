@@ -65,7 +65,7 @@ public class MapperPluginFactory {
     private static final String DEFAULT_KEY = "default";
 
     /**
-     * Constructs a new MapperPluginFactory instance.
+     * Initializes the factory that assembles mapper interceptors from immutable runtime options.
      */
     public MapperPluginFactory() {
         // No initialization required.
@@ -97,16 +97,16 @@ public class MapperPluginFactory {
     public static MybatisInterceptor build(MapperOptions options, MapperPluginProviders providers) {
         List<MapperHandler> handlers = new ArrayList<>();
         if (options != null) {
-            Properties resolved = MapperOptions.resolve(options);
+            Properties resolved = effectiveProperties(options);
             // Handler execution order is critical. The order determines the SQL modification sequence.
             // Execution order: Operation Check -> Table Prefix -> Tenant Vector -> Visible Vector -> Populate
             // -> Pagination -> Audit.
-            configureOperation(options, handlers);
+            configureOperation(options, resolved, handlers);
             configurePrefix(options, providers, resolved, handlers);
             configureTenant(options, providers, resolved, handlers);
             configureVisible(options, providers, resolved, handlers);
             configurePopulate(options, providers, resolved, handlers);
-            configurePagination(options, handlers);
+            configurePagination(options, resolved, handlers);
             configureAudit(options, providers, resolved, handlers);
         }
 
@@ -122,19 +122,17 @@ public class MapperPluginFactory {
      * {@code bus.mapper.operation.enabled}. It is enabled by default.
      *
      * @param options  mapper runtime options
+     * @param resolved flattened datasource configuration
      * @param handlers handler list to update
      */
-    private static void configureOperation(MapperOptions options, List<MapperHandler> handlers) {
+    private static void configureOperation(MapperOptions options, Properties resolved, List<MapperHandler> handlers) {
         MapperOptions.OperationOptions operationOptions = options.getOperation();
-        if (operationOptions != null && !operationOptions.isEnabled()) {
-            Logger.info(false, "Mapper", "Operation handler is disabled by configuration");
-            return;
-        }
 
         OperationHandler<?> handler = new OperationHandler<>();
         if (operationOptions != null) {
             handler.setStrictMode(operationOptions.isStrictMode());
         }
+        handler.setProperties(resolved);
         handlers.add(handler);
         Logger.debug(false, "Mapper", "Operation handler configured successfully");
     }
@@ -142,29 +140,15 @@ public class MapperPluginFactory {
     /**
      * Configures MyBatis pagination and adds the {@link PageHandler}.
      * <p>
-     * Pagination uses top-level mapper options, not per-datasource configuration. Pagination settings are global across
-     * all datasources.
+     * Pagination configuration is resolved per datasource while preserving legacy top-level defaults.
      *
      * @param options  mapper runtime options
+     * @param resolved flattened datasource configuration
      * @param handlers handler list to update
      */
-    private static void configurePagination(MapperOptions options, List<MapperHandler> handlers) {
-        Properties props = new Properties();
-        if (StringKit.isNotEmpty(options.getAutoDelimitKeywords())) {
-            props.setProperty(Args.PAGE_AUTO_DELIMIT_KEYWORDS, options.getAutoDelimitKeywords());
-        }
-        if (StringKit.isNotEmpty(options.getReasonable())) {
-            props.setProperty(Args.PAGE_REASONABLE, options.getReasonable());
-        }
-        if (StringKit.isNotEmpty(options.getSupportMethodsArguments())) {
-            props.setProperty(Args.PAGE_SUPPORT_METHOD_ARGUMENTS, options.getSupportMethodsArguments());
-        }
-        if (StringKit.isNotEmpty(options.getParams())) {
-            props.setProperty(Args.PAGE_PARAMS, options.getParams());
-        }
-
+    private static void configurePagination(MapperOptions options, Properties resolved, List<MapperHandler> handlers) {
         PageHandler<?> pageHandler = new PageHandler<>();
-        pageHandler.setProperties(props);
+        pageHandler.setProperties(resolved);
         handlers.add(pageHandler);
         Logger.debug(false, "Mapper", "Pagination handler configured");
     }
@@ -194,18 +178,15 @@ public class MapperPluginFactory {
             List<MapperHandler> handlers) {
         MapperOptions.TenantOptions tenantOptions = options.getTenant();
         MapperOptions.PrefixOptions prefixOptions = options.getPrefix();
-        if (tenantOptions != null && !tenantOptions.isEnabled()) {
-            Logger.info(false, "Mapper", "Tenant handler is disabled by configuration");
-            return;
-        }
-
         boolean hasSimplifiedConfig = tenantOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved);
-        if (!hasSimplifiedConfig && !hasConfigFile) {
+        boolean hasConfigFile = hasConfiguration(resolved, Args.TENANT_KEY);
+        boolean hasProvider = providers != null && providers.getTenantProvider() != null;
+        if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
         }
 
         Properties props = new Properties();
+        props.putAll(resolved);
         if (hasSimplifiedConfig) {
             Logger.debug(false, "Mapper", "Loading tenant config from simplified YAML configuration");
             props.setProperty(
@@ -221,9 +202,6 @@ public class MapperPluginFactory {
                         DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
                         prefixOptions.getPrefix());
             }
-        } else {
-            Logger.debug(false, "Mapper", "Loading tenant config from configuration file");
-            props.putAll(resolved);
         }
 
         TenantProvider provider = providers != null ? providers.getTenantProvider() : null;
@@ -232,7 +210,9 @@ public class MapperPluginFactory {
             TenantConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using tenant config from Provider.getConfig()");
-                handlers.add(new TenantHandler<>(withTablePrefix(providerConfig, props)));
+                TenantHandler<?> handler = new TenantHandler<>(withTablePrefix(providerConfig, props));
+                handler.setActivationProperties(props);
+                handlers.add(handler);
                 return;
             }
             props.put(Args.PROVIDER_KEY, provider);
@@ -295,18 +275,15 @@ public class MapperPluginFactory {
             Properties resolved,
             List<MapperHandler> handlers) {
         MapperOptions.PopulateOptions populateOptions = options.getPopulate();
-        if (populateOptions != null && !populateOptions.isEnabled()) {
-            Logger.info(false, "Mapper", "Populate handler is disabled by configuration");
-            return;
-        }
-
         boolean hasSimplifiedConfig = populateOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved);
-        if (!hasSimplifiedConfig && !hasConfigFile) {
+        boolean hasConfigFile = hasConfiguration(resolved, Args.POPULATE_KEY);
+        boolean hasProvider = providers != null && providers.getPopulateProvider() != null;
+        if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
         }
 
         Properties props = new Properties();
+        props.putAll(resolved);
         if (hasSimplifiedConfig) {
             Logger.debug(false, "Mapper", "Loading populate config from simplified YAML configuration");
             props.setProperty(
@@ -321,9 +298,6 @@ public class MapperPluginFactory {
             props.setProperty(
                     DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIER,
                     String.valueOf(populateOptions.isModifier()));
-        } else {
-            Logger.debug(false, "Mapper", "Loading populate config from configuration file");
-            props.putAll(resolved);
         }
 
         PopulateProvider provider = providers != null ? providers.getPopulateProvider() : null;
@@ -332,7 +306,9 @@ public class MapperPluginFactory {
             PopulateConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using populate config from Provider.getConfig()");
-                handlers.add(new PopulateHandler<>(providerConfig));
+                PopulateHandler<?> handler = new PopulateHandler<>(providerConfig);
+                handler.setActivationProperties(props);
+                handlers.add(handler);
                 return;
             }
             props.put(Args.PROVIDER_KEY, provider);
@@ -369,18 +345,15 @@ public class MapperPluginFactory {
             Properties resolved,
             List<MapperHandler> handlers) {
         MapperOptions.VisibleOptions visibleOptions = options.getVisible();
-        if (visibleOptions != null && !visibleOptions.isEnabled()) {
-            Logger.info(false, "Mapper", "Visible handler is disabled by configuration");
-            return;
-        }
-
         boolean hasSimplifiedConfig = visibleOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved);
-        if (!hasSimplifiedConfig && !hasConfigFile) {
+        boolean hasConfigFile = hasConfiguration(resolved, Args.VISIBLE_KEY);
+        boolean hasProvider = providers != null && providers.getVisibleProvider() != null;
+        if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
         }
 
         Properties props = new Properties();
+        props.putAll(resolved);
         if (hasSimplifiedConfig) {
             Logger.debug(false, "Mapper", "Loading visible config from simplified YAML configuration");
             if (StringKit.isNotEmpty(visibleOptions.getIgnore())) {
@@ -388,9 +361,6 @@ public class MapperPluginFactory {
                         DEFAULT_KEY + Symbol.DOT + Args.VISIBLE_KEY + Symbol.DOT + Args.PROP_IGNORE,
                         visibleOptions.getIgnore());
             }
-        } else {
-            Logger.debug(false, "Mapper", "Loading visible config from configuration file");
-            props.putAll(resolved);
         }
 
         VisibleProvider provider = providers != null ? providers.getVisibleProvider() : null;
@@ -399,7 +369,9 @@ public class MapperPluginFactory {
             VisibleConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using visible config from Provider.getConfig()");
-                handlers.add(new VisibleHandler<>(providerConfig));
+                VisibleHandler<?> handler = new VisibleHandler<>(providerConfig);
+                handler.setActivationProperties(props);
+                handlers.add(handler);
                 return;
             }
             props.put(Args.PROVIDER_KEY, provider);
@@ -436,18 +408,15 @@ public class MapperPluginFactory {
             Properties resolved,
             List<MapperHandler> handlers) {
         MapperOptions.PrefixOptions prefixOptions = options.getPrefix();
-        if (prefixOptions != null && !prefixOptions.isEnabled()) {
-            Logger.info(false, "Mapper", "Prefix handler is disabled by configuration");
-            return;
-        }
-
         boolean hasSimplifiedConfig = prefixOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved);
-        if (!hasSimplifiedConfig && !hasConfigFile) {
+        boolean hasConfigFile = hasConfiguration(resolved, Args.TABLE_KEY);
+        boolean hasProvider = providers != null && providers.getPrefixProvider() != null;
+        if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
         }
 
         Properties props = new Properties();
+        props.putAll(resolved);
         if (hasSimplifiedConfig) {
             Logger.debug(false, "Mapper", "Loading prefix config from simplified YAML configuration");
             if (StringKit.isNotEmpty(prefixOptions.getPrefix())) {
@@ -460,9 +429,6 @@ public class MapperPluginFactory {
                         DEFAULT_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.PROP_IGNORE,
                         prefixOptions.getIgnore());
             }
-        } else {
-            Logger.debug(false, "Mapper", "Loading prefix config from configuration file");
-            props.putAll(resolved);
         }
 
         TablePrefixProvider provider = providers != null ? providers.getPrefixProvider() : null;
@@ -471,7 +437,9 @@ public class MapperPluginFactory {
             TablePrefixConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using prefix config from Provider.getConfig()");
-                handlers.add(new TablePrefixHandler(providerConfig));
+                TablePrefixHandler handler = new TablePrefixHandler(providerConfig);
+                handler.setActivationProperties(props);
+                handlers.add(handler);
                 return;
             }
             props.put(Args.PROVIDER_KEY, provider);
@@ -508,18 +476,15 @@ public class MapperPluginFactory {
             Properties resolved,
             List<MapperHandler> handlers) {
         MapperOptions.AuditOptions auditOptions = options.getAudit();
-        if (auditOptions != null && !auditOptions.isEnabled()) {
-            Logger.info(false, "Mapper", "Audit handler is disabled by configuration");
-            return;
-        }
-
         boolean hasSimplifiedConfig = auditOptions != null;
-        boolean hasConfigFile = hasConfiguration(resolved);
-        if (!hasSimplifiedConfig && !hasConfigFile) {
+        boolean hasConfigFile = hasConfiguration(resolved, Args.AUDIT_KEY);
+        boolean hasProvider = providers != null && providers.getAuditProvider() != null;
+        if (!hasSimplifiedConfig && !hasConfigFile && !hasProvider) {
             return;
         }
 
         Properties props = new Properties();
+        props.putAll(resolved);
         if (hasSimplifiedConfig) {
             Logger.debug(false, "Mapper", "Loading audit config from simplified YAML configuration");
             props.setProperty(
@@ -537,9 +502,6 @@ public class MapperPluginFactory {
             props.setProperty(
                     DEFAULT_KEY + Symbol.DOT + Args.AUDIT_KEY + Symbol.DOT + Args.AUDIT_PRINT_CONSOLE,
                     String.valueOf(auditOptions.isPrintConsole()));
-        } else {
-            Logger.debug(false, "Mapper", "Loading audit config from configuration file");
-            props.putAll(resolved);
         }
 
         AuditProvider provider = providers != null ? providers.getAuditProvider() : null;
@@ -548,7 +510,9 @@ public class MapperPluginFactory {
             AuditConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using audit config from Provider.getConfig()");
-                handlers.add(new AuditHandler<>(providerConfig));
+                AuditHandler<?> handler = new AuditHandler<>(providerConfig);
+                handler.setActivationProperties(props);
+                handlers.add(handler);
                 return;
             }
             props.put(Args.PROVIDER_KEY, provider);
@@ -562,13 +526,101 @@ public class MapperPluginFactory {
     }
 
     /**
+     * Combines complete datasource properties with top-level global defaults without discarding either source.
+     * Datasource entries remain highest priority; top-level values replace matching shared fields one field at a time.
+     *
+     * @param options mapper runtime options
+     * @return flattened effective properties
+     */
+    private static Properties effectiveProperties(MapperOptions options) {
+        Properties properties = MapperOptions.resolve(options);
+        MapperOptions.OperationOptions operation = options.getOperation();
+        if (operation != null) {
+            shared(properties, Args.OPERATION_KEY, Args.PROP_ENABLED, operation.isEnabled());
+            shared(properties, Args.OPERATION_KEY, Args.OPERATION_STRICT_MODE, operation.isStrictMode());
+        }
+
+        MapperOptions.PageOptions page = options.getPage();
+        if (page != null) {
+            shared(properties, Args.PAGE_KEY, Args.PROP_ENABLED, page.isEnabled());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_REASONABLE, page.isReasonable());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_SUPPORT_METHOD_ARGUMENTS, page.isSupportMethodsArguments());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_PARAMS, page.getParams());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_AUTO_DELIMIT_KEYWORDS, page.getAutoDelimitKeywords());
+        } else {
+            shared(properties, Args.PAGE_KEY, Args.PAGE_REASONABLE, options.getReasonable());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_SUPPORT_METHOD_ARGUMENTS, options.getSupportMethodsArguments());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_PARAMS, options.getParams());
+            shared(properties, Args.PAGE_KEY, Args.PAGE_AUTO_DELIMIT_KEYWORDS, options.getAutoDelimitKeywords());
+        }
+
+        MapperOptions.PrefixOptions prefix = options.getPrefix();
+        if (prefix != null) {
+            shared(properties, Args.TABLE_KEY, Args.PROP_ENABLED, prefix.isEnabled());
+            shared(properties, Args.TABLE_KEY, Args.TABLE_PREFIX, prefix.getPrefix());
+            shared(properties, Args.TABLE_KEY, Args.PROP_IGNORE, prefix.getIgnore());
+        }
+        MapperOptions.TenantOptions tenant = options.getTenant();
+        if (tenant != null) {
+            shared(properties, Args.TENANT_KEY, Args.PROP_ENABLED, tenant.isEnabled());
+            shared(properties, Args.TENANT_KEY, Args.TENANT_MODE, tenant.getMode());
+            shared(properties, Args.TENANT_KEY, Args.TENANT_COLUMN, tenant.getColumn());
+            shared(properties, Args.TENANT_KEY, Args.PROP_IGNORE, tenant.getIgnore());
+            shared(properties, Args.TENANT_KEY, Args.TENANT_IGNORE_MAPPERS, tenant.getIgnoreMappers());
+            shared(properties, Args.TENANT_KEY, Args.TENANT_ENABLE_SQL_CACHE, tenant.isEnableSqlCache());
+        }
+        MapperOptions.PopulateOptions populate = options.getPopulate();
+        if (populate != null) {
+            shared(properties, Args.POPULATE_KEY, Args.PROP_ENABLED, populate.isEnabled());
+            shared(properties, Args.POPULATE_KEY, Args.POPULATE_CREATED, populate.isCreated());
+            shared(properties, Args.POPULATE_KEY, Args.POPULATE_MODIFIED, populate.isModified());
+            shared(properties, Args.POPULATE_KEY, Args.POPULATE_CREATOR, populate.isCreator());
+            shared(properties, Args.POPULATE_KEY, Args.POPULATE_MODIFIER, populate.isModifier());
+        }
+        MapperOptions.VisibleOptions visible = options.getVisible();
+        if (visible != null) {
+            shared(properties, Args.VISIBLE_KEY, Args.PROP_ENABLED, visible.isEnabled());
+            shared(properties, Args.VISIBLE_KEY, Args.PROP_IGNORE, visible.getIgnore());
+        }
+        MapperOptions.AuditOptions audit = options.getAudit();
+        if (audit != null) {
+            shared(properties, Args.AUDIT_KEY, Args.PROP_ENABLED, audit.isEnabled());
+            shared(properties, Args.AUDIT_KEY, Args.AUDIT_SLOW_SQL_THRESHOLD, audit.getSlowSqlThreshold());
+            shared(properties, Args.AUDIT_KEY, Args.AUDIT_LOG_PARAMETERS, audit.isLogParameters());
+            shared(properties, Args.AUDIT_KEY, Args.AUDIT_LOG_RESULTS, audit.isLogResults());
+            shared(properties, Args.AUDIT_KEY, Args.AUDIT_LOG_ALL_SQL, audit.isLogAllSql());
+            shared(properties, Args.AUDIT_KEY, Args.AUDIT_PRINT_CONSOLE, audit.isPrintConsole());
+        }
+        return properties;
+    }
+
+    /**
+     * Writes a non-empty top-level option into the shared fallback scope.
+     *
+     * @param properties flattened mapper properties to update
+     * @param scope      handler configuration scope
+     * @param name       setting name
+     * @param value      configured value, possibly {@code null}
+     */
+    private static void shared(Properties properties, String scope, String name, Object value) {
+        if (value != null && (!(value instanceof String text) || StringKit.isNotEmpty(text))) {
+            properties.setProperty(Args.SHARED_KEY + Symbol.DOT + scope + Symbol.DOT + name, String.valueOf(value));
+        }
+    }
+
+    /**
      * Returns whether the flattened mapper configuration contains any handler configuration.
      *
      * @param properties flattened mapper properties
+     * @param scope      handler configuration scope
      * @return {@code true} when the properties contain at least one entry
      */
-    private static boolean hasConfiguration(Properties properties) {
-        return properties != null && !properties.isEmpty();
+    private static boolean hasConfiguration(Properties properties, String scope) {
+        if (properties == null || scope == null) {
+            return false;
+        }
+        String marker = Symbol.DOT + scope + Symbol.DOT;
+        return properties.stringPropertyNames().stream().anyMatch(key -> key.contains(marker));
     }
 
 }

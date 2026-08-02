@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class Args {
 
     /**
-     * Constructs a new Args instance.
+     * Initializes the mapper argument helper used to resolve and normalize statement parameters.
      */
     public Args() {
         // No initialization required.
@@ -45,6 +45,16 @@ public class Args {
      * Shared (global) configuration prefix for cross-datasource settings.
      */
     public static final String SHARED_KEY = "shared";
+
+    /**
+     * Operation safety configuration scope.
+     */
+    public static final String OPERATION_KEY = "operation";
+
+    /**
+     * Pagination configuration scope.
+     */
+    public static final String PAGE_KEY = "page";
 
     /**
      * Configuration key for table-related settings (prefix, ignore).
@@ -80,6 +90,36 @@ public class Args {
      * Tenant property key: column.
      */
     public static final String TENANT_COLUMN = "column";
+
+    /**
+     * Common feature enabled property.
+     */
+    public static final String PROP_ENABLED = "enabled";
+
+    /**
+     * Operation strict-mode property.
+     */
+    public static final String OPERATION_STRICT_MODE = "strictMode";
+
+    /**
+     * Tenant isolation mode property.
+     */
+    public static final String TENANT_MODE = "mode";
+
+    /**
+     * Tenant ignored mapper property.
+     */
+    public static final String TENANT_IGNORE_MAPPERS = "ignoreMappers";
+
+    /**
+     * Tenant SQL-cache property.
+     */
+    public static final String TENANT_ENABLE_SQL_CACHE = "enableSqlCache";
+
+    /**
+     * Tenant property key: whether an authenticated tenant is mandatory.
+     */
+    public static final String TENANT_REQUIRED = "required";
 
     /**
      * Default column name for tenant ID.
