@@ -111,8 +111,7 @@ public final class RoutePrefixHandlerMapping extends RequestMappingHandlerMappin
             return Normal.EMPTY;
         }
         String suffix = packageName.substring(basePackage.length()).replace(Symbol.C_DOT, Symbol.C_SLASH);
-        return suffix.isEmpty() ? Normal.EMPTY
-                : (suffix.startsWith(Symbol.SLASH) ? suffix : Symbol.SLASH + suffix);
+        return suffix.isEmpty() ? Normal.EMPTY : (suffix.startsWith(Symbol.SLASH) ? suffix : Symbol.SLASH + suffix);
     }
 
 }

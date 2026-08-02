@@ -18,11 +18,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides Spring annotation inspection and placeholder binding, together with the {@code RequestObject} marker used
- * by request argument resolution. This package must not depend on bus-starter.
+ * Provides Spring annotation inspection and placeholder binding, together with the {@code RequestObject} marker used by
+ * request argument resolution. This package must not depend on bus-starter.
  * <p>
- * The wrapper types expose merged annotation metadata, while the binder types resolve annotation attributes against
- * the Spring environment.
+ * The wrapper types expose merged annotation metadata, while the binder types resolve annotation attributes against the
+ * Spring environment.
  *
  * @author Kimi Liu
  * @since Java 21+

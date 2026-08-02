@@ -60,6 +60,7 @@ public final class SentinelRequestHandler implements HandlerInterceptor {
      * Application-context-scoped runtime context facade.
      */
     private final ContextBuilder contextBuilder;
+
     /**
      * Creates a request audit interceptor with Context-scoped correlation state.
      *

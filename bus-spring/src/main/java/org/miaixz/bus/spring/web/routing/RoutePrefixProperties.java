@@ -57,7 +57,8 @@ public final class RoutePrefixProperties {
     private final boolean inStorage;
 
     /**
-     * Creates route-prefix properties by normalizing the prefix and removing duplicate package roots in encounter order.
+     * Creates route-prefix properties by normalizing the prefix and removing duplicate package roots in encounter
+     * order.
      *
      * @param enabled      whether the feature is enabled
      * @param prefix       route prefix
