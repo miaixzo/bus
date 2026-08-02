@@ -45,6 +45,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
@@ -66,60 +67,36 @@ import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
 
 /**
- * Configures MyBatis runtime Beans and GraalVM Native Image support.
+ * Configures MyBatis runtime beans and GraalVM Native Image support.
  * <p>
- * This class handles both:
+ * This configuration performs two related tasks:
  * <ul>
- * <li><strong>JVM Runtime:</strong> Creates MyBatis core beans (SqlSessionFactory, SqlSessionTemplate)</li>
- * <li><strong>GraalVM Native Image:</strong> Registers AOT hints for Mapper discovery and entity type resolution</li>
+ * <li>Creates the {@link SqlSessionFactory} and {@link SqlSessionTemplate} runtime beans.</li>
+ * <li>Exposes AOT processors that register Mapper proxies, provider methods, entity types, and XML resources.</li>
  * </ul>
  * <p>
- * <strong>JVM Mode Behavior:</strong>
- * <ul>
- * <li>Imports {@code MapperConfiguration} through {@code EnableMapper}</li>
- * <li>Creates SqlSessionFactory and SqlSessionTemplate beans</li>
- * <li>AOT processors are instantiated but not executed (Spring ignores BeanFactoryInitializationAotProcessor in
- * JVM)</li>
- * <li>Bean post-processors from {@code MapperAotProcessors} handle any String-based mapperInterface gracefully</li>
- * <li>No runtime overhead - only infrastructure beans</li>
- * </ul>
- * <p>
- * <strong>Native Image Compilation Behavior:</strong>
- * <ul>
- * <li>Spring AOT discovers and processes this configuration</li>
- * <li>{@code MapperAotProcessors} mapper hint processor executes dynamically</li>
- * <li>Scans for all MapperFactoryBean definitions</li>
- * <li>Registers JDK proxies for Mapper interfaces</li>
- * <li>Analyzes method signatures to extract entity types</li>
- * <li>Registers SQL Provider classes from annotations</li>
- * <li>Generates reflection metadata into native image binary</li>
- * </ul>
- * <p>
- * <strong>Native Image Runtime Behavior:</strong>
- * <ul>
- * <li>Creates SqlSessionFactory and SqlSessionTemplate (same as JVM)</li>
- * <li>{@code MapperAotProcessors} fixes AOT-generated mapper definitions</li>
- * <li>Uses pre-compiled reflection metadata from native-image compilation</li>
- * <li>All Mapper methods work with zero reflection overhead</li>
- * </ul>
+ * Mapper scanning is imported from {@link MapperScannerRegistrar} for both annotation activation and
+ * {@code bus.mapper.enabled=true}. Optional customizers and plugin providers are obtained from the Spring container;
+ * the Mapper integration never owns JDBC routing state.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { MapperProperties.class })
 @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
+@Import(MapperScannerRegistrar.class)
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 @ConditionalOnEnabled(annotation = EnableMapper.class, prefix = GeniusBuilder.MAPPER)
 public class MapperConfiguration implements InitializingBean {
 
     /**
-     * Environment dependency used by this component.
+     * Spring environment used for property and profile resolution.
      */
     private final Environment environment;
 
     /**
-     * Resource loader dependency used by this component.
+     * Resource loader used for MyBatis configuration, mapper XML, and VFS resources.
      */
     private final ResourceLoader resourceLoader;
 
@@ -180,11 +157,11 @@ public class MapperConfiguration implements InitializingBean {
     /**
      * Creates the {@link SqlSessionFactory} bean.
      *
-     * @param dataSource  The primary data source.
-     * @param beanFactory The Spring bean factory used by mapper plugin configuration.
-     * @return The configured {@link SqlSessionFactory}.
-     * @throws Exception if an error occurs during factory creation.
+     * @param dataSource   primary data source
+     * @param beanFactory  Spring bean factory used by Mapper plugin configuration
      * @param beanProvider Spring Bean provider
+     * @return configured {@link SqlSessionFactory}
+     * @throws Exception if factory creation or schema initialization fails
      */
     @Bean
     @ConditionalOnMissingBean(SqlSessionFactory.class)
@@ -428,7 +405,7 @@ public class MapperConfiguration implements InitializingBean {
         private final ResourcePatternResolver resourceResolver;
 
         /**
-         * Constructs the SpringBootVFS, initializing the resource resolver.
+         * Initializes the VFS with a resolver bound to the current application class loader.
          */
         public SpringBootVFS() {
             this.resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());

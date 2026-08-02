@@ -78,7 +78,7 @@ import org.miaixz.bus.notify.nimble.yunpian.YunpianSmsProvider;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class NotifyService implements AutoCloseable {
+public class NotifyService implements AutoCloseable {
 
     /**
      * Cache for storing registered notification components. Uses {@link ConcurrentHashMap} for thread safety.

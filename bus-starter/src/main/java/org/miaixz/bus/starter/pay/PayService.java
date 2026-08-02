@@ -45,7 +45,7 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayProvider;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class PayService implements AutoCloseable {
+public class PayService implements AutoCloseable {
 
     /**
      * A cache to store payment provider contexts, keyed by their registry type.

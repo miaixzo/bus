@@ -36,7 +36,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.TRACER)
-public final class TracerProperties {
+public class TracerProperties {
 
     /**
      * Whether the tracer integration is enabled.

@@ -38,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.JSON)
-public final class JsonProperties {
+public class JsonProperties {
 
     /**
      * Whether the json integration is enabled.

@@ -36,11 +36,11 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.ClassUtils;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.builder.MapperEntityResolver;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
@@ -59,6 +59,7 @@ import org.miaixz.bus.mapper.runtime.MapperPluginFactory;
 import org.miaixz.bus.mapper.runtime.MapperPluginProviders;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.spring.bean.BeanProvider;
+import org.miaixz.bus.spring.jdbc.DataSourceHolder;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -139,10 +140,10 @@ public final class MapperPluginBuilder {
      * @param properties     mapper properties
      * @param environment    Spring environment used by package scanning
      * @param resourceLoader Spring resource loader used by package scanning
-     * @param dataSource     primary datasource
+     * @param dataSource     primary data source
      * @param beanFactory    bean factory used to discover mapper definitions
+     * @param beanProvider   Spring Bean provider
      * @throws Exception if schema initialization fails
-     * @param beanProvider Spring Bean provider
      */
     public static void configureSqlSessionFactory(
             SqlSessionFactoryBean factory,
@@ -173,14 +174,15 @@ public final class MapperPluginBuilder {
      * configuration is present. The schema provider is kept in the same holder so schema initialization follows the
      * same extension model as the other mapper plugins and can be enabled by provider configuration.
      *
-     * @param properties mapper properties bound from the Spring environment
-     * @return provider holder passed to the pure mapper plugin factory
      * @param beanProvider Spring Bean provider
+     * @param properties   mapper properties bound from the Spring environment
+     * @return provider holder passed to the pure Mapper plugin factory
      */
     private static MapperPluginProviders resolvePluginProviders(
             MapperProperties properties,
             BeanProvider beanProvider) {
         MapperPluginProviders providers = new MapperPluginProviders();
+        providers.setDatasourceKeyProvider(DataSourceHolder::getKey);
         if (properties == null) {
             return providers;
         }
@@ -233,9 +235,9 @@ public final class MapperPluginBuilder {
      * Provider discovery may run before a Spring context is available in direct builder use. In that case the missing
      * container is treated the same as a missing optional provider.
      *
+     * @param beanProvider Spring Bean provider
      * @param providerType provider type to inspect
      * @return {@code true} when at least one matching provider bean is registered
-     * @param beanProvider Spring Bean provider
      */
     private static boolean hasProviderBean(BeanProvider beanProvider, Class<?> providerType) {
         if (beanProvider == null) {
@@ -252,11 +254,11 @@ public final class MapperPluginBuilder {
      * Resolves the effective table prefix configuration for schema initialization.
      * <p>
      * Prefix configuration follows the same provider and property resolution path used by the table prefix plugin, so
-     * schema DDL generation observes both global and datasource-specific table prefix settings.
+     * schema DDL generation observes both global and database-specific table prefix settings.
      *
      * @param properties         mapper properties
      * @param providers          provider holder
-     * @param datasourceKey      datasource key
+     * @param datasourceKey      data source key
      * @param resolvedProperties flattened mapper configuration properties
      * @return table prefix configuration, or {@code null}
      */
@@ -285,7 +287,7 @@ public final class MapperPluginBuilder {
         }
         if (prefixOptions != null) {
             String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-            String defaultPrefix = Holder.getDefault() + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+            String defaultPrefix = Normal.DEFAULT + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
             if (StringKit.isNotEmpty(prefixOptions.getPrefix())
                     && !prefixProperties.containsKey(sharedPrefix + Args.TABLE_PREFIX)) {
                 prefixProperties.setProperty(sharedPrefix + Args.TABLE_PREFIX, prefixOptions.getPrefix());
@@ -303,7 +305,7 @@ public final class MapperPluginBuilder {
                 prefixProperties.setProperty(defaultPrefix + Args.PROP_IGNORE, prefixOptions.getIgnore());
             }
         }
-        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Holder.getDefault();
+        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Normal.DEFAULT;
         return TablePrefixHandler.resolveConfig(key, prefixProperties, provider);
     }
 
@@ -366,22 +368,21 @@ public final class MapperPluginBuilder {
                 schemaDataSource.dataSource(),
                 beanFactory,
                 null,
-                schemaDataSource.holderKey(),
                 resolvedProperties,
                 schemaProperties,
                 schemaConfig);
     }
 
     /**
-     * Runs schema initialization for every datasource namespace that declares effective schema configuration.
+     * Runs schema initialization for every database namespace that declares effective schema configuration.
      *
      * @param properties         mapper properties
      * @param providers          provider holder
      * @param schemaProvider     schema provider
      * @param environment        Spring environment used by package scanning
      * @param resourceLoader     Spring resource loader used by package scanning
-     * @param primaryDataSource  primary data source supplied to mapper Bean assembly
-     * @param beanFactory        bean factory used for named datasource lookup
+     * @param primaryDataSource  primary data source supplied to Mapper bean assembly
+     * @param beanFactory        bean factory used for named data source lookup
      * @param resolvedProperties flattened mapper configuration properties
      * @param namespaceSchemas   namespace schema configurations keyed by namespace name
      * @throws Exception if schema initialization fails
@@ -423,7 +424,6 @@ public final class MapperPluginBuilder {
                     schemaDataSource.dataSource(),
                     beanFactory,
                     namespaceName,
-                    schemaDataSource.holderKey(),
                     resolvedProperties,
                     schemaProperties,
                     schemaConfig);
@@ -431,21 +431,20 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Runs one schema initialization pass for a datasource target.
+     * Runs one schema initialization pass for a data source target.
      * <p>
      * Entity classes are collected from mapper generic declarations, configured entity packages, and the optional
-     * {@link SchemaProvider}. The datasource key is exposed through {@link Holder} while initialization runs so
-     * provider lookups and table prefix resolution use the same routing context as normal mapper execution.
+     * {@link SchemaProvider}. Provider lookups and table prefix resolution receive the namespace explicitly and do not
+     * mutate Mapper runtime context.
      *
      * @param properties         mapper properties
      * @param providers          provider holder
      * @param schemaProvider     schema provider
      * @param environment        Spring environment used by package scanning
      * @param resourceLoader     Spring resource loader used by package scanning
-     * @param dataSource         datasource used for metadata reads and DDL execution
+     * @param dataSource         data source used for metadata reads and DDL execution
      * @param beanFactory        bean factory used to discover mapper definitions
      * @param namespaceName      namespace name, or {@code null} for the legacy global configuration
-     * @param holderKey          datasource key temporarily exposed through {@link Holder}
      * @param resolvedProperties flattened mapper configuration properties
      * @param schemaProperties   schema options
      * @param schemaConfig       schema runtime configuration
@@ -460,7 +459,6 @@ public final class MapperPluginBuilder {
             DataSource dataSource,
             ConfigurableListableBeanFactory beanFactory,
             String namespaceName,
-            String holderKey,
             Properties resolvedProperties,
             MapperOptions.SchemaOptions schemaProperties,
             SchemaConfig schemaConfig) throws Exception {
@@ -483,43 +481,30 @@ public final class MapperPluginBuilder {
                 schemaConfig.mode(),
                 schemaConfig.datasourceKey(),
                 entityClasses.size());
-        String previousKey = Holder.getKey();
-        boolean restorePreviousKey = !Objects.equals(previousKey, Holder.getDefault());
-        try {
-            if (StringKit.isNotEmpty(holderKey)) {
-                Holder.setKey(holderKey);
-            }
-            SchemaReport report = new EntitySchemaInitializer()
-                    .initialize(dataSource, entityClasses, schemaConfig, tablePrefixConfig);
-            Logger.info(
-                    false,
-                    "Starter",
-                    "Mapper schema initialization finished: namespace={}, executedSqlCount={}, skippedSqlCount={}, failedDiffCount={}",
-                    namespaceName,
-                    report.executedSqls().size(),
-                    report.skippedSqls().size(),
-                    report.failedDiffs().size());
-        } finally {
-            if (restorePreviousKey) {
-                Holder.setKey(previousKey);
-            } else {
-                Holder.remove();
-            }
-        }
+        SchemaReport report = new EntitySchemaInitializer()
+                .initialize(dataSource, entityClasses, schemaConfig, tablePrefixConfig);
+        Logger.info(
+                false,
+                "Starter",
+                "Mapper schema initialization finished: namespace={}, executedSqlCount={}, skippedSqlCount={}, failedDiffCount={}",
+                namespaceName,
+                report.executedSqls().size(),
+                report.skippedSqls().size(),
+                report.failedDiffs().size());
     }
 
     /**
-     * Resolves the target datasource and holder key used by schema initialization.
+     * Resolves the target data source used by schema initialization.
      * <p>
-     * When {@code schema.datasourceKey} is empty, namespace initialization uses the namespace name as the holder key.
-     * Named {@link DataSource} beans are preferred when present; otherwise the primary datasource is used with
-     * {@link Holder} set to the resolved key so routing datasources can select the target internally.
+     * When {@code schema.datasourceKey} is empty, the namespace name becomes the configuration lookup key. A named
+     * {@link DataSource} bean matching that key is preferred; otherwise schema initialization uses the primary data
+     * source. This method never changes JDBC routing state.
      *
      * @param primaryDataSource data source supplied to mapper Bean assembly
-     * @param beanFactory       bean factory used for named datasource lookup
+     * @param beanFactory       bean factory used for named data source lookup
      * @param namespaceName     namespace name, or {@code null} for global schema initialization
      * @param schemaConfig      schema runtime configuration
-     * @return schema initialization target datasource and holder key
+     * @return schema initialization target data source
      */
     private static ResolvedSchemaDataSource resolveSchemaInitializationTarget(
             DataSource primaryDataSource,
@@ -533,30 +518,30 @@ public final class MapperPluginBuilder {
         }
         schemaConfig.datasourceKey(datasourceKey);
         if (StringKit.isEmpty(datasourceKey)) {
-            return new ResolvedSchemaDataSource(primaryDataSource, null);
+            return new ResolvedSchemaDataSource(primaryDataSource);
         }
         DataSource namedDataSource = resolveNamedDataSource(beanFactory, datasourceKey);
         if (namedDataSource != null) {
-            return new ResolvedSchemaDataSource(namedDataSource, datasourceKey);
+            return new ResolvedSchemaDataSource(namedDataSource);
         }
         if (!explicit) {
             Logger.info(
                     true,
                     "Starter",
-                    "Mapper namespace schema datasource uses Holder routing: namespace={}, datasourceKey={}, reason={}",
+                    "Mapper namespace schema initialization uses primary datasource: namespace={}, datasourceKey={}, reason={}",
                     namespaceName,
                     datasourceKey,
                     "noNamedBean");
         }
-        return new ResolvedSchemaDataSource(primaryDataSource, datasourceKey);
+        return new ResolvedSchemaDataSource(primaryDataSource);
     }
 
     /**
-     * Finds a datasource bean by name.
+     * Finds a data source bean by name.
      *
-     * @param beanFactory   bean factory used for named datasource lookup
-     * @param datasourceKey datasource key
-     * @return datasource, or {@code null} when unavailable
+     * @param beanFactory   bean factory used for named data source lookup
+     * @param datasourceKey data source key
+     * @return data source, or {@code null} when unavailable
      */
     private static DataSource resolveNamedDataSource(
             ConfigurableListableBeanFactory beanFactory,
@@ -575,7 +560,7 @@ public final class MapperPluginBuilder {
      * Resolves the effective schema runtime configuration.
      * <p>
      * The mapper options are converted first, then {@link SchemaProvider#getConfig(String)} can override the runtime
-     * configuration for the resolved datasource key. Provider-returned configuration is copied before the datasource
+     * configuration for the resolved data source key. Provider-returned configuration is copied before the data source
      * key is filled to avoid mutating user-owned instances.
      *
      * @param provider         schema provider
@@ -677,11 +662,11 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Resolves schema datasource key from explicit configuration or namespace name.
+     * Resolves the schema data source key from explicit configuration or the namespace name.
      *
      * @param schemaConfig  schema runtime configuration
      * @param namespaceName namespace name
-     * @return datasource key
+     * @return data source key
      */
     private static String resolveSchemaDatasourceKey(SchemaConfig schemaConfig, String namespaceName) {
         String datasourceKey = StringKit.trim(schemaConfig.datasourceKey());
@@ -692,7 +677,7 @@ public final class MapperPluginBuilder {
      * Resolves entity classes from the optional schema provider.
      *
      * @param provider      schema provider
-     * @param datasourceKey datasource key
+     * @param datasourceKey data source key
      * @return entity classes, never {@code null}
      */
     private static Collection<Class<?>> resolveProviderEntityClasses(SchemaProvider provider, String datasourceKey) {
@@ -878,12 +863,11 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Resolved datasource target for one schema initialization pass.
+     * Resolved data source target for one schema initialization pass.
      *
-     * @param dataSource datasource used for metadata reads and DDL execution
-     * @param holderKey  datasource key exposed to mapper providers while initialization runs
+     * @param dataSource data source used for metadata reads and DDL execution
      */
-    private record ResolvedSchemaDataSource(DataSource dataSource, String holderKey) {
+    private record ResolvedSchemaDataSource(DataSource dataSource) {
 
     }
 
@@ -893,10 +877,10 @@ public final class MapperPluginBuilder {
      * A missing provider is normal for most applications, so lookup failures are treated as absence rather than startup
      * errors.
      *
+     * @param beanProvider Spring Bean provider
      * @param providerType provider type to resolve
      * @param <T>          provider type
      * @return provider bean, or {@code null} when none is available
-     * @param beanProvider Spring Bean provider
      */
     private static <T> T provider(BeanProvider beanProvider, Class<T> providerType) {
         if (beanProvider == null) {

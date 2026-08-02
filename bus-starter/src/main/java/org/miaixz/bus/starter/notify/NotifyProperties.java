@@ -40,7 +40,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.NOTIFY)
-public final class NotifyProperties {
+public class NotifyProperties {
 
     /**
      * Whether the notify integration is enabled.

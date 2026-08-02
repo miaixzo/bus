@@ -38,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.WRAPPER_REQUEST_BINDING)
-public final class RequestBindingProperties {
+public class RequestBindingProperties {
 
     /**
      * Whether the request binding integration is enabled.

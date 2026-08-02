@@ -33,7 +33,7 @@ import org.miaixz.bus.mapper.feature.tenant.MissingTenantException;
  * @since Java 21+
  */
 @RestControllerAdvice
-public final class TenantExceptionAdvice {
+public class TenantExceptionAdvice {
 
     /**
      * Initializes stateless exception advice for requests that lack an authenticated tenant.

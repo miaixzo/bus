@@ -21,19 +21,15 @@ package org.miaixz.bus.starter.annotation;
 
 import java.lang.annotation.*;
 
-import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.annotation.AliasFor;
 
 import org.miaixz.bus.starter.dubbo.DubboConfiguration;
 
 /**
  * Enables Apache Dubbo support.
  * <p>
- * This is a convenience annotation that acts as a shortcut for {@code @EnableDubboConfig}, {@code @DubboComponentScan},
- * and {@code @Import(DubboConfiguration.class)}. It allows for the configuration and scanning of Dubbo components
- * within a Spring application.
+ * This annotation activates Dubbo configuration and delegates component scanning to the Starter configuration so
+ * annotation-based and property-based activation share the same registration path.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -42,43 +38,22 @@ import org.miaixz.bus.starter.dubbo.DubboConfiguration;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-@EnableDubboConfig
-@DubboComponentScan
 @Import(DubboConfiguration.class)
 public @interface EnableDubbo {
 
     /**
-     * Alias for {@link DubboComponentScan#basePackages()}.
-     * <p>
      * Base packages to scan for annotated {@code @DubboService} classes.
-     * </p>
      *
      * @return The base packages to scan.
      */
-    @AliasFor(annotation = DubboComponentScan.class, attribute = "basePackages")
     String[] basePackages() default {};
 
     /**
-     * Alias for {@link DubboComponentScan#basePackageClasses()}.
-     * <p>
      * Type-safe alternative to {@link #basePackages()} for specifying the packages to scan. The package of each class
      * specified will be scanned.
-     * </p>
      *
      * @return Classes from the base packages to scan.
      */
-    @AliasFor(annotation = DubboComponentScan.class, attribute = "basePackageClasses")
     Class<?>[] basePackageClasses() default {};
-
-    /**
-     * Alias for {@link EnableDubboConfig#multiple()}.
-     * <p>
-     * Indicates whether to allow binding to multiple Spring Beans.
-     * </p>
-     *
-     * @return {@code true} if multiple bindings are allowed, {@code false} otherwise. Defaults to {@code true}.
-     */
-    @AliasFor(annotation = EnableDubboConfig.class, attribute = "multiple")
-    boolean multiple() default true;
 
 }

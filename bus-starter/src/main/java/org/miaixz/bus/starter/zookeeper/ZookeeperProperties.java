@@ -39,7 +39,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.ZOOKEEPER)
-public final class ZookeeperProperties {
+public class ZookeeperProperties {
 
     /**
      * Whether the zookeeper integration is enabled.

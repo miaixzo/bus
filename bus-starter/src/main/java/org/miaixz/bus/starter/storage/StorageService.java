@@ -68,7 +68,7 @@ import org.miaixz.bus.storage.nimble.*;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class StorageService implements AutoCloseable {
+public class StorageService implements AutoCloseable {
 
     /**
      * Cache for storing registered storage component contexts. Uses {@link ConcurrentHashMap} for thread safety.

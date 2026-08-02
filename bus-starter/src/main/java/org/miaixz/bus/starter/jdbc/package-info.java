@@ -18,8 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Activates dynamic JDBC data-source routing and annotation-driven switching, and binds data-source definitions. This
- * non-exported package contains Starter assembly rather than public business APIs.
+ * Connects reusable Spring JDBC infrastructure to Starter Bean assembly. The package contains only
+ * {@code JdbcConfiguration} and its immutable {@code JdbcDescriptor}; datasource resolution, creation, routing, and
+ * route scope remain in {@code org.miaixz.bus.spring.jdbc}.
  *
  * @author Kimi Liu
  * @since Java 21+

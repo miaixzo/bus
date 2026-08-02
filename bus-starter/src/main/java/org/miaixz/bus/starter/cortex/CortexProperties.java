@@ -42,7 +42,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(GeniusBuilder.CORTEX)
-public final class CortexProperties {
+public class CortexProperties {
 
     /**
      * Whether the cortex integration is enabled.
@@ -339,7 +339,7 @@ public final class CortexProperties {
     /**
      * Token guard binding type retained for the Cortex guard contract.
      */
-    public static final class Token extends TokenGuardConfig {
+    public static class Token extends TokenGuardConfig {
 
         /**
          * Creates token guard defaults.

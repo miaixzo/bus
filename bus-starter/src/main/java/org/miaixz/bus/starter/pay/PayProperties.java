@@ -45,7 +45,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.PAY)
-public final class PayProperties {
+public class PayProperties {
 
     /**
      * Binds immutable payment provider and cache settings from {@code bus.pay}.

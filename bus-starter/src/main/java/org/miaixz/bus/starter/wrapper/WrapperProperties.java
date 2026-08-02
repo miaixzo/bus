@@ -38,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.WRAPPER)
-public final class WrapperProperties {
+public class WrapperProperties {
 
     /**
      * Whether the wrapper integration is enabled.

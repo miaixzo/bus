@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.EnvironmentAware;
@@ -36,6 +37,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -48,8 +50,8 @@ import org.miaixz.bus.starter.annotation.EnableMapper;
 /**
  * An {@link ImportBeanDefinitionRegistrar} that handles the registration of mapper interfaces.
  * <p>
- * This class is triggered by the {@link EnableMapper} annotation. It configures and launches a
- * {@link MapperClassPathScanner} to discover and register mapper interfaces as Spring beans.
+ * This class is imported by {@link MapperConfiguration}. It configures and launches a {@link MapperClassPathScanner}
+ * for both annotation-based and property-based feature activation.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -74,43 +76,19 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     private Environment environment;
 
     /**
-     * Default implementation of the {@code registerBeanDefinitions} method. This is part of the
-     * {@link ImportBeanDefinitionRegistrar} interface.
-     * <p>
-     * This implementation simply delegates to the default method in the interface and is provided for compatibility.
-     * </p>
-     *
-     * @param importingClassMetadata  The annotation metadata of the importing class.
-     * @param registry                The bean definition registry.
-     * @param importBeanNameGenerator The bean name generator.
-     */
-    @Override
-    public void registerBeanDefinitions(
-            AnnotationMetadata importingClassMetadata,
-            BeanDefinitionRegistry registry,
-            BeanNameGenerator importBeanNameGenerator) {
-        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(
-                importingClassMetadata,
-                registry,
-                importBeanNameGenerator);
-    }
-
-    /**
-     * Registers bean definitions for mapper interfaces based on the {@link EnableMapper} annotation metadata.
+     * Registers mapper interfaces using annotation attributes first and configuration properties second.
      *
      * <p>
      * It creates a {@link MapperClassPathScanner}, configures it with attributes from {@link EnableMapper}, gathers the
      * base packages, and performs the bean definition scan.
      * </p>
      *
-     * @param annotationMetadata The annotation metadata of the importing class, typically having the
-     *                           {@link EnableMapper} annotation.
-     * @param registry           The bean definition registry.
+     * @param annotationMetadata metadata of the importing mapper configuration
+     * @param registry           current Bean definition registry
      */
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes annoAttrs = AnnotationAttributes
-                .fromMap(annotationMetadata.getAnnotationAttributes(EnableMapper.class.getName()));
+        AnnotationAttributes annotationAttributes = findEnableMapperAttributes(registry);
         MapperClassPathScanner scanner = new MapperClassPathScanner(registry);
 
         // Set the resource loader if available (required in Spring 3.1+).
@@ -118,41 +96,44 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             scanner.setResourceLoader(resourceLoader);
         }
 
-        // Configure the scanner from the annotation attributes.
+        Class<? extends Annotation> annotationClass = Annotation.class;
+        Class<?> markerInterface = Class.class;
+        Class<? extends BeanNameGenerator> generatorClass = BeanNameGenerator.class;
+        Class<? extends MapperFactoryBean> mapperFactoryBeanClass = org.miaixz.bus.starter.mapper.MapperFactoryBean.class;
+        String sqlSessionTemplateRef = Normal.EMPTY;
+        String sqlSessionFactoryRef = Normal.EMPTY;
+        List<String> basePackage = new ArrayList<>();
 
-        // Sets the annotation that the scanner searches for.
-        Class<? extends Annotation> annotationClass = annoAttrs.getClass("annotationClass");
+        // Annotation attributes take precedence over the corresponding configuration properties.
+        if (annotationAttributes != null) {
+            annotationClass = annotationAttributes.getClass("annotationClass");
+            markerInterface = annotationAttributes.getClass("markerInterface");
+            generatorClass = annotationAttributes.getClass("nameGenerator");
+            mapperFactoryBeanClass = annotationAttributes.getClass("factoryBean");
+            sqlSessionTemplateRef = annotationAttributes.getString("sqlSessionTemplateRef");
+            sqlSessionFactoryRef = annotationAttributes.getString("sqlSessionFactoryRef");
+            basePackage.addAll(Arrays.asList(annotationAttributes.getStringArray("value")));
+            basePackage.addAll(Arrays.asList(annotationAttributes.getStringArray("basePackage")));
+            for (Class<?> clazz : annotationAttributes.getClassArray("basePackageClasses")) {
+                basePackage.add(ClassKit.getPackageName(clazz));
+            }
+        }
+
         if (!Annotation.class.equals(annotationClass)) {
             scanner.setAnnotationClass(annotationClass);
         }
 
-        // Sets the marker interface that the scanner searches for.
-        Class<?> markerInterface = annoAttrs.getClass("markerInterface");
         if (!Class.class.equals(markerInterface)) {
             scanner.setMarkerInterface(markerInterface);
         }
 
-        // Sets the bean name generator.
-        Class<? extends BeanNameGenerator> generatorClass = annoAttrs.getClass("nameGenerator");
         if (!BeanNameGenerator.class.equals(generatorClass)) {
             scanner.setBeanNameGenerator(ReflectKit.newInstanceIfPossible(generatorClass));
         }
 
-        // Sets the custom MapperFactoryBean class.
-        Class<? extends MapperFactoryBean> mapperFactoryBeanClass = annoAttrs.getClass("factoryBean");
         scanner.setMapperFactoryBeanClass(mapperFactoryBeanClass);
-
-        // Sets the bean names for SqlSessionTemplate and SqlSessionFactory.
-        scanner.setSqlSessionTemplateBeanName(annoAttrs.getString("sqlSessionTemplateRef"));
-        scanner.setSqlSessionFactoryBeanName(annoAttrs.getString("sqlSessionFactoryRef"));
-
-        // Gather base packages to scan from the annotation's attributes.
-        List<String> basePackage = new ArrayList<>();
-        basePackage.addAll(Arrays.asList(annoAttrs.getStringArray("value")));
-        basePackage.addAll(Arrays.asList(annoAttrs.getStringArray("basePackage")));
-        for (Class<?> clazz : annoAttrs.getClassArray("basePackageClasses")) {
-            basePackage.add(ClassKit.getPackageName(clazz));
-        }
+        scanner.setSqlSessionTemplateBeanName(sqlSessionTemplateRef);
+        scanner.setSqlSessionFactoryBeanName(sqlSessionFactoryRef);
 
         // If no base packages are specified in the annotation, check properties.
         if (CollKit.isEmpty(basePackage)) {
@@ -183,6 +164,26 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
                 "Mapper scanner registration finished: basePackageCount={}, mapperBeanCount={}",
                 basePackage.size(),
                 beanDefinitions.size());
+    }
+
+    /**
+     * Finds the mapper enable annotation declared by an application source.
+     *
+     * @param registry current Bean definition registry
+     * @return merged annotation attributes, or {@code null} when properties activated the feature
+     */
+    private static AnnotationAttributes findEnableMapperAttributes(BeanDefinitionRegistry registry) {
+        for (String beanName : registry.getBeanDefinitionNames()) {
+            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition) {
+                AnnotationMetadata metadata = definition.getMetadata();
+                if (metadata.hasAnnotation(EnableMapper.class.getName())
+                        || metadata.hasMetaAnnotation(EnableMapper.class.getName())) {
+                    return AnnotationAttributes
+                            .fromMap(metadata.getAnnotationAttributes(EnableMapper.class.getName(), false));
+                }
+            }
+        }
+        return null;
     }
 
     /**

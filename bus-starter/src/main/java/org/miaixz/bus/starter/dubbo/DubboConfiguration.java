@@ -26,6 +26,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
@@ -43,6 +44,7 @@ import org.miaixz.bus.starter.annotation.EnableDubbo;
  */
 @EnableConfigurationProperties(value = { DubboProperties.class })
 @Configuration(proxyBeanMethods = false)
+@Import(DubboScannerRegistrar.class)
 @ConditionalOnClass(name = "org.apache.dubbo.config.ApplicationConfig")
 @ConditionalOnEnabled(annotation = EnableDubbo.class, prefix = GeniusBuilder.DUBBO)
 public class DubboConfiguration {

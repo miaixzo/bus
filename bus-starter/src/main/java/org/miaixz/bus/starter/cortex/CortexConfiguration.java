@@ -100,7 +100,6 @@ import org.miaixz.bus.starter.annotation.EnableCortex;
 @EnableConfigurationProperties(CortexProperties.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.cortex.Cortex")
-@ConditionalOnBean(Factory.class)
 @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX)
 public class CortexConfiguration {
 
@@ -125,13 +124,14 @@ public class CortexConfiguration {
      * back to {@code bus.cache.*}. When neither prefix is present, Cortex falls back to its starter defaults.
      * </p>
      *
-     * @param factory     shared cache factory
-     * @param environment Spring environment used for property binding
+     * @param factoryProvider optional shared cache factory provider
+     * @param environment     Spring environment used for property binding
      * @return default Cortex cache
      */
     @Bean("cortexCache")
     @ConditionalOnMissingBean(name = "cortexCache")
-    public CacheX<String, Object> cortexCache(Factory factory, Environment environment) {
+    public CacheX<String, Object> cortexCache(ObjectProvider<Factory> factoryProvider, Environment environment) {
+        Factory factory = factoryProvider.getIfAvailable(Factory::new);
         if (hasCortexCacheConfiguration(environment)) {
             return factory.initializeExtended(bindCortexCacheProperties(environment));
         }

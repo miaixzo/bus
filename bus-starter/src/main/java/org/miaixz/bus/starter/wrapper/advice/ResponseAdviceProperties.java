@@ -38,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.WRAPPER_RESPONSE_ADVICE)
-public final class ResponseAdviceProperties {
+public class ResponseAdviceProperties {
 
     /**
      * Whether the response advice integration is enabled.

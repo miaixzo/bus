@@ -37,7 +37,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @ConfigurationProperties(prefix = GeniusBuilder.MAPPER)
 @Validated
-public final class MapperProperties extends MapperOptions {
+public class MapperProperties extends MapperOptions {
 
     /**
      * Whether Mapper integration is enabled.

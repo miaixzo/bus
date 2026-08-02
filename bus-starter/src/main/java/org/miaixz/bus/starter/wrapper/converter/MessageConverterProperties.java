@@ -38,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.WRAPPER_MESSAGE_CONVERTERS)
-public final class MessageConverterProperties {
+public class MessageConverterProperties {
 
     /**
      * Whether the message converter integration is enabled.

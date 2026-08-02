@@ -41,7 +41,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.MONGO)
-public final class MongoProperties {
+public class MongoProperties {
 
     /**
      * Whether the mongo integration is enabled.

@@ -42,7 +42,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(GeniusBuilder.HEALTH)
-public final class HealthProperties {
+public class HealthProperties {
 
     /**
      * Whether the health integration is enabled.

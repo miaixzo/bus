@@ -41,7 +41,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.ELASTIC)
-public final class ElasticProperties {
+public class ElasticProperties {
 
     /**
      * HTTP scheme used when no Elasticsearch scheme is configured.

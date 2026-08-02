@@ -45,7 +45,7 @@ import org.miaixz.bus.storage.Registry;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.STORAGE)
-public final class StorageProperties {
+public class StorageProperties {
 
     /**
      * Binds immutable storage provider and cache settings from {@code bus.storage}.
