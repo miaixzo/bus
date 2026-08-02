@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Charset;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class TextWebMvcConfigurer implements MessageConverterRegistrar {
+public class TextWebMvcConfigurer implements MessageConverterRegistrar {
 
     /**
      * Creates the text MVC configurer.

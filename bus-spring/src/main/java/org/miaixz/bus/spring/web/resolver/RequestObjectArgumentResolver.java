@@ -45,7 +45,7 @@ import org.miaixz.bus.spring.web.RequestContext;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RequestObjectArgumentResolver implements HandlerMethodArgumentResolver {
+public class RequestObjectArgumentResolver implements HandlerMethodArgumentResolver {
 
     /**
      * Accessor for parameters and body data of the active request.

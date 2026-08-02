@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class JsonWebMvcConfigurer implements WebMvcConfigurer {
+public class JsonWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
      * Converter registrars supplied by the application context.

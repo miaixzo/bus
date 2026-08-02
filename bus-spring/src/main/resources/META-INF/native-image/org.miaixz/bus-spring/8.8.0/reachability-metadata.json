@@ -64,6 +64,23 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.jdbc.DataSourceDefinition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -28,7 +28,7 @@ package org.miaixz.bus.spring;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextScope implements AutoCloseable {
+public class ContextScope implements AutoCloseable {
 
     /**
      * State visible before this scope was installed.

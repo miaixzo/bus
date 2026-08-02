@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextBuilder {
+public class ContextBuilder {
 
     /**
      * State carrier owned by one application context.

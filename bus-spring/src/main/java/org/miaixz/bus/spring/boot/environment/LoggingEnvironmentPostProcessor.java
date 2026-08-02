@@ -35,7 +35,7 @@ import org.springframework.core.env.MapPropertySource;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
      * Initializes the post-processor that contributes Bus logging defaults without overriding user properties.

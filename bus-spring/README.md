@@ -42,6 +42,7 @@ Spring APIs are required and activation will be provided by the application.
 | `annotation` | Merged annotation handling, placeholder binding, wrapper annotations, and `@RequestObject`. |
 | `aop` | Reusable auto-proxy infrastructure with Bean-name exclusions. |
 | `bean` | Focused Bean lookup, registration, metadata, environment, context, and provider services. |
+| `jdbc` | Reusable datasource resolution, pool creation, dynamic routing, route scope, annotation, and advice. |
 | `web` | Root Servlet request access and context-binding filter. |
 | `web.advice` | Reusable MVC response advice base implementation. |
 | `web.converter` | JSON/text converters, type matching, registration, and MVC configurers. |
@@ -63,6 +64,16 @@ The root package intentionally remains populated. `ContextBuilder`, `ContextMana
 annotation priority over the corresponding property, while leaving concrete annotations and property prefixes to the
 consuming Starter module. Its `name` member defaults to `enabled`, `matchIfMissing` defaults to `false`, and the
 condition can guard either a configuration type or an individual Bean method.
+
+## JDBC datasource infrastructure
+
+`org.miaixz.bus.spring.jdbc.DataSource` is the public Spring contract for selecting a datasource at a service boundary.
+Its value must identify a resolved datasource route. `DataSourceResolver`, `DataSourceDefinition`, and
+`DataSourceMapping` resolve an ordered list of compatible property prefixes into one validated mapping;
+`DataSourceFactory` creates the configured pools;
+`DynamicDataSource` performs routing; and `DataSourceHolder` supplies exact nested route scopes. `AspectjJdbcProxy`
+interprets the annotation before transaction advice obtains a connection. These types are independent of Mapper and
+Starter assembly. `bus-starter` supplies only the supported prefix order, default pool type, and Spring Beans.
 
 ## Runtime context model
 

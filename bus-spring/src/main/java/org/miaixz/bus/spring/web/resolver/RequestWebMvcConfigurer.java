@@ -31,7 +31,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RequestWebMvcConfigurer implements WebMvcConfigurer {
+public class RequestWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
      * Request-binding options shared with the argument resolver.

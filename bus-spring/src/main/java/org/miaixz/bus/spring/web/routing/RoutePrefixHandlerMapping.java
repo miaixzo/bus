@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
+public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
 
     /**
      * Bound route prefix handler mapping configuration properties.

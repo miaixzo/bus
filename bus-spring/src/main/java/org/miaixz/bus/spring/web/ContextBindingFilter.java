@@ -44,7 +44,7 @@ import org.miaixz.bus.spring.ContextState;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextBindingFilter implements Filter {
+public class ContextBindingFilter implements Filter {
 
     /**
      * Request attribute carrying immutable context state across dispatches.

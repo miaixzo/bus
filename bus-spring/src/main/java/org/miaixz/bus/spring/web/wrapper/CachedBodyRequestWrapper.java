@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
+public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * Complete bounded request body.
@@ -134,7 +134,7 @@ public final class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
     /**
      * Signals that an unknown-length request crossed its configured body limit.
      */
-    public static final class PayloadTooLargeException extends IOException {
+    public static class PayloadTooLargeException extends IOException {
 
         /**
          * Creates an exception for a body crossing its configured limit.

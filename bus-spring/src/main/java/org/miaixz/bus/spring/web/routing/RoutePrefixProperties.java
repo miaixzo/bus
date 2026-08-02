@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
  */
 @Validated
 @ConfigurationProperties(prefix = "bus.wrapper.route-prefix")
-public final class RoutePrefixProperties {
+public class RoutePrefixProperties {
 
     /**
      * Whether the route prefix integration is enabled.

@@ -27,6 +27,7 @@ module bus.spring {
 
     requires java.desktop;
     requires java.management;
+    requires java.sql;
 
     requires bus.core;
     requires bus.extra;
@@ -42,8 +43,10 @@ module bus.spring {
     requires static spring.boot.webmvc;
     requires static spring.context;
     requires static spring.core;
+    requires static spring.jdbc;
     requires static spring.web;
     requires static spring.webmvc;
+    requires static org.aspectj.weaver;
 
     exports org.miaixz.bus.spring;
     exports org.miaixz.bus.spring.annotation;
@@ -51,6 +54,7 @@ module bus.spring {
     exports org.miaixz.bus.spring.boot.banner;
     exports org.miaixz.bus.spring.boot.condition;
     exports org.miaixz.bus.spring.bean;
+    exports org.miaixz.bus.spring.jdbc;
     exports org.miaixz.bus.spring.web;
     exports org.miaixz.bus.spring.web.advice;
     exports org.miaixz.bus.spring.web.converter;

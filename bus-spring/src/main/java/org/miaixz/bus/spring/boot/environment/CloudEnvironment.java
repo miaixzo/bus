@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CloudEnvironment {
+public class CloudEnvironment {
 
     /**
      * Environment containing the bootstrap flag.

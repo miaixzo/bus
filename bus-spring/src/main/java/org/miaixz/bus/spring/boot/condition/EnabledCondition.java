@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class EnabledCondition extends SpringBootCondition {
+public class EnabledCondition extends SpringBootCondition {
 
     /**
      * Creates an annotation-first feature condition.

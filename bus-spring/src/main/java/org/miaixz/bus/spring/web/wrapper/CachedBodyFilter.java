@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CachedBodyFilter implements Filter {
+public class CachedBodyFilter implements Filter {
 
     /**
      * Immutable cache policy for this filter.

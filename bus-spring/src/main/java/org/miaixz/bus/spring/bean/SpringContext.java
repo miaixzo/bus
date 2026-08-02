@@ -34,7 +34,7 @@ import org.springframework.context.event.ContextClosedEvent;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SpringContext implements ApplicationListener<ContextClosedEvent>, AutoCloseable {
+public class SpringContext implements ApplicationListener<ContextClosedEvent>, AutoCloseable {
 
     /**
      * Context reference released when the owning context closes.

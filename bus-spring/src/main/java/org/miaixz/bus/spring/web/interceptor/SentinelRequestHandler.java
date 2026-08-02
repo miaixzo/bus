@@ -39,7 +39,7 @@ import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SentinelRequestHandler implements HandlerInterceptor {
+public class SentinelRequestHandler implements HandlerInterceptor {
 
     /**
      * Request attribute storing the handler start timestamp.

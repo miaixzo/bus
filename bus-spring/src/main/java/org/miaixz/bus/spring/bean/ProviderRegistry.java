@@ -34,7 +34,7 @@ import org.miaixz.bus.core.Provider;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ProviderRegistry implements ApplicationListener<ContextClosedEvent>, AutoCloseable {
+public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>, AutoCloseable {
 
     /**
      * Application context that owns this registry.

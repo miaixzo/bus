@@ -38,7 +38,7 @@ import org.miaixz.bus.core.net.MediaType;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
+public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * Bounded diagnostic byte cache.

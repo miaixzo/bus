@@ -32,7 +32,7 @@ import org.miaixz.bus.core.net.MediaType;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class BodyCacheOptions {
+public class BodyCacheOptions {
 
     /**
      * Default maximum cached request size in bytes.

@@ -48,7 +48,7 @@ import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RequestContext {
+public class RequestContext {
 
     /**
      * Initializes a request accessor that stores all derived values on the active Servlet request.

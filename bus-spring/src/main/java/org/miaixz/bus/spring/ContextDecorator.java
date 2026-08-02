@@ -28,7 +28,7 @@ import org.springframework.core.task.TaskDecorator;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextDecorator implements TaskDecorator, Ordered {
+public class ContextDecorator implements TaskDecorator, Ordered {
 
     /**
      * Context facade used to capture and install state.

@@ -22,6 +22,7 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它提供可复用的
 | `annotation` | 合并注解检查、占位符绑定及 `@RequestObject`。 |
 | `aop` | 可复用的 Spring AOP 基础设施。 |
 | `bean` | Context 内 Bean 查询、注册、元数据、环境及 Provider 服务。 |
+| `jdbc` | 可复用的数据源解析、连接池创建、动态路由、路由作用域、注解和切面。 |
 | `web` | 请求访问和 Servlet 上下文绑定根类型。 |
 | `web.advice` | 可复用的 MVC Response Advice。 |
 | `web.converter` | HTTP Message Converter 及注册接口。 |
@@ -42,6 +43,15 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它提供可复用的
 `boot.condition` 提供 `@ConditionalOnEnabled` 和 `EnabledCondition`，统一保证显式启用注解的优先级高于对应
 配置项；具体启用注解和属性前缀仍由使用它的 Starter 模块定义。`name` 默认为 `enabled`，`matchIfMissing`
 默认为 `false`，并同时支持 Configuration 类型和单个 Bean 方法。
+
+## JDBC 数据源基础设施
+
+`org.miaixz.bus.spring.jdbc.DataSource` 是 Service 层选择数据源的公共 Spring 契约，注解值必须对应已解析的
+数据源路由。`DataSourceResolver`、`DataSourceDefinition` 和 `DataSourceMapping` 将有序配置前缀解析为一个
+经过校验的数据源映射；`DataSourceFactory` 创建连接池；`DynamicDataSource` 执行路由；`DataSourceHolder` 提供可
+精确恢复的嵌套路由作用域；
+`AspectjJdbcProxy` 在事务取得连接前解释注解。这些类型不依赖 Mapper 和 Starter 装配，`bus-starter` 只提供
+支持的前缀顺序、默认连接池类型和 Spring Bean 装配。
 
 ## 运行时上下文
 
