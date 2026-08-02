@@ -61,7 +61,9 @@ import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.provider.MyBatisConfigCustomizer;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.bean.BeanProvider;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableMapper;
 
 /**
  * Configures MyBatis runtime Beans and GraalVM Native Image support.
@@ -106,9 +108,9 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @EnableConfigurationProperties(value = { MapperProperties.class })
 @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.MAPPER, name = "enabled", havingValue = "true", matchIfMissing = false)
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
+@ConditionalOnEnabled(annotation = EnableMapper.class, prefix = GeniusBuilder.MAPPER)
 public class MapperConfiguration implements InitializingBean {
 
     /**

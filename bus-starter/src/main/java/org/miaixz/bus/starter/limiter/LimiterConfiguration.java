@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,9 @@ import org.miaixz.bus.limiter.Supplier;
 import org.miaixz.bus.limiter.nimble.FallbackProvider;
 import org.miaixz.bus.limiter.nimble.MethodProvider;
 import org.miaixz.bus.limiter.nimble.RequestProvider;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableLimiter;
 
 /**
  * Configures limiter definition scanning and the application-scoped limiter service.
@@ -49,7 +50,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(value = { LimiterProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.limiter.Provider")
-@ConditionalOnProperty(prefix = GeniusBuilder.LIMITER, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableLimiter.class, prefix = GeniusBuilder.LIMITER)
 public class LimiterConfiguration {
 
     /**

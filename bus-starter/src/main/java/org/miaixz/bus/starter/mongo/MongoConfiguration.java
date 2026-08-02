@@ -24,14 +24,15 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.mongodb.autoconfigure.MongoClientSettingsBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableMongo;
 
 /**
  * Configures MongoDB client settings from validated Bus properties.
@@ -48,7 +49,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = { "com.mongodb.client.MongoClient",
         "org.springframework.boot.mongodb.autoconfigure.MongoClientSettingsBuilderCustomizer" })
-@ConditionalOnProperty(prefix = GeniusBuilder.MONGO, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableMongo.class, prefix = GeniusBuilder.MONGO)
 public class MongoConfiguration {
 
     /**

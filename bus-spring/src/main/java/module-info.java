@@ -49,6 +49,7 @@ module bus.spring {
     exports org.miaixz.bus.spring.annotation;
     exports org.miaixz.bus.spring.aop;
     exports org.miaixz.bus.spring.boot.banner;
+    exports org.miaixz.bus.spring.boot.condition;
     exports org.miaixz.bus.spring.bean;
     exports org.miaixz.bus.spring.web;
     exports org.miaixz.bus.spring.web.advice;

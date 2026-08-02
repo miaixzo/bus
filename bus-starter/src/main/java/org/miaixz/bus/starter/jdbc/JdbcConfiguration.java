@@ -29,7 +29,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -47,7 +46,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableJdbc;
 
 /**
  * Configures dynamic JDBC data sources and annotation-driven routing.
@@ -61,8 +62,8 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @ConditionalOnClass(value = { HikariDataSource.class })
 @EnableConfigurationProperties(value = { JdbcProperties.class })
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.JDBC, name = "enabled", havingValue = "true", matchIfMissing = false)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
+@ConditionalOnEnabled(annotation = EnableJdbc.class, prefix = GeniusBuilder.JDBC)
 public class JdbcConfiguration {
 
     /**

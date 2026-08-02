@@ -81,7 +81,9 @@ import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 import org.miaixz.bus.cortex.version.VersionRegistry;
 import org.miaixz.bus.cortex.version.VersionStore;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableCortex;
 
 /**
  * Configures Bus Cortex clients, registries, watches, and optional embedded server integration.
@@ -98,8 +100,8 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(CortexProperties.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.cortex.Cortex")
-@ConditionalOnProperty(prefix = GeniusBuilder.CORTEX, name = "enabled", havingValue = "true", matchIfMissing = false)
 @ConditionalOnBean(Factory.class)
+@ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX)
 public class CortexConfiguration {
 
     /**

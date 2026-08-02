@@ -22,7 +22,6 @@ package org.miaixz.bus.starter.image;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,9 @@ import org.miaixz.bus.image.Efforts;
 import org.miaixz.bus.image.Node;
 import org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.miaixz.bus.image.plugin.StoreSCP;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableImage;
 
 /**
  * Configures image processing and DICOM server integration.
@@ -50,7 +51,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(value = { ImageProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.image.Centre")
-@ConditionalOnProperty(prefix = GeniusBuilder.IMAGE, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableImage.class, prefix = GeniusBuilder.IMAGE)
 public class ImageConfiguration {
 
     /**

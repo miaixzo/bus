@@ -78,6 +78,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-sensitive](bus-sensitive)| Sensitive data masking, providing annotation-based/rule-based data obfuscation solutions |
 | [√]    | [bus-setting](bus-setting)    | Configuration management tool, supporting multi-environment configuration/dynamic refresh/encrypted storage |
 | [√]    | [bus-shade](bus-shade)        | Code generator, one-click generation of basic code like Entity/Service/Mapper |
+| [√]    | [bus-spring](bus-spring)      | Shared Spring and Spring Boot integration infrastructure                |
 | [√]    | [bus-starter](bus-starter)    | SpringBoot starter, auto-assembly of core components and configurations |
 | [√]    | [bus-storage](bus-storage)    | Object storage service, supporting storage solutions like Alibaba Cloud OSS/Tencent Cloud COS/MinIO |
 | [√]    | [bus-tempus](bus-tempus)      | Distributed task scheduling, supporting CRON expressions and cluster task coordination |

@@ -1,8 +1,8 @@
 # bus-spring
 
 `bus-spring` 是 Bus 可复用的 Spring 集成层，提供 ApplicationContext 级 Bean 访问、运行时上下文传播、
-Spring Boot 生命周期支持和通用 Web 基础设施。它保持被动：功能选择、属性条件和应用启动装配均由
-`bus-starter` 负责。
+Spring Boot 生命周期支持和通用 Web 基础设施。它提供可复用的条件机制，但不决定具体功能：启用注解、属性
+前缀、功能选择和应用启动装配均由 `bus-starter` 负责。
 
 ## 依赖
 
@@ -31,12 +31,17 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它保持被动：功
 | `web.wrapper` | 有界 Request/Response Body Wrapper。 |
 | `boot` | Spring Boot RunListener 和生命周期基础类型。 |
 | `boot.banner` | Banner 选择与渲染。 |
+| `boot.condition` | 注解优先的通用 Spring Boot 启用条件。 |
 | `boot.environment` | 早期 EnvironmentPostProcessor。 |
 | `boot.listener` | Spring Boot 和 Spring Cloud 早期 Listener。 |
 | `boot.startup` | 启动阶段测量与报告。 |
 
 根 Package 有意保持非空。`ContextBuilder`、`ContextManager`、`ContextProvider`、`ContextState`、
 `ContextScope`、`ContextDecorator` 和 `SpringBuilder` 是稳定的根级能力。
+
+`boot.condition` 提供 `@ConditionalOnEnabled` 和 `EnabledCondition`，统一保证显式启用注解的优先级高于对应
+配置项；具体启用注解和属性前缀仍由使用它的 Starter 模块定义。`name` 默认为 `enabled`，`matchIfMissing`
+默认为 `false`，并同时支持 Configuration 类型和单个 Bean 方法。
 
 ## 运行时上下文
 

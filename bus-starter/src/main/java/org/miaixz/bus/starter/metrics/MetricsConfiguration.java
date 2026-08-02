@@ -37,7 +37,9 @@ import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityPolicy;
 import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
 import org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableMetrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
@@ -53,7 +55,7 @@ import io.micrometer.core.instrument.MeterRegistry;
  */
 @EnableConfigurationProperties(MetricsProperties.class)
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.METRICS, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableMetrics.class, prefix = GeniusBuilder.METRICS)
 public class MetricsConfiguration {
 
     /**

@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.starter.pay.PayConfiguration;
 
 /**
- * Imports payment configuration while retaining the {@code bus.pay.enabled=true} guard.
+ * Enables payment configuration regardless of the value assigned to {@code bus.pay.enabled}.
  *
  * @author Kimi Liu
  * @since Java 21+

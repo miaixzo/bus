@@ -102,7 +102,9 @@ Both switches default to `true` when their required runtime classes are present.
 
 ## Feature activation model
 
-Product features are disabled unless their `bus.<feature>.enabled` property is `true`.
+Product features use one deterministic activation order: an explicit `@EnableXxx` annotation always enables its
+feature, including when `bus.<feature>.enabled=false`; without the annotation, the feature is enabled only when its
+`bus.<feature>.enabled` property is `true`. If neither activation source is present, the feature remains disabled.
 
 | Feature | Import annotation | Property | Main responsibility |
 |---|---|---|---|
@@ -134,8 +136,9 @@ Product features are disabled unless their `bus.<feature>.enabled` property is `
 | Wrapper | `@EnableWrapper` | `bus.wrapper.enabled` | MVC binding, converters, caching, advice, and route prefixes. |
 | ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled` | Apache Curator client lifecycle. |
 
-The annotations import configurations explicitly, but they do not override `@ConditionalOnProperty`. In a Spring Boot
-application, discovery already contributes every candidate, so the property remains the authoritative runtime switch.
+Each annotation imports the feature configuration directly. The shared `@ConditionalOnEnabled` rule from
+`bus-spring` accepts that explicit annotation before evaluating `bus.<feature>.enabled` as the secondary source. Both
+activation paths therefore reach the same feature configuration without creating a parallel implementation.
 
 ## Quick start
 

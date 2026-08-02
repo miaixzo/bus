@@ -22,13 +22,13 @@ package org.miaixz.bus.starter.tempus;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableTempus;
 import org.miaixz.bus.tempus.temporal.Publisher;
@@ -54,7 +54,7 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
  * subscribers.
  * <p>
  * All beans are protected by {@code @ConditionalOnMissingBean}, allowing applications to override default
- * implementations. The subscriber worker starts only when {@code bus.tempus.enabled=true}.
+ * implementations. The subscriber worker starts when the Tempus feature is active.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -63,7 +63,7 @@ import org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberMana
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.tempus.temporal.Publisher")
 @ConditionalOnSingleCandidate(JsonProvider.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.TEMPUS, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableTempus.class, prefix = GeniusBuilder.TEMPUS)
 public class TempusConfiguration {
 
     /**

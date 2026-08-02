@@ -21,12 +21,13 @@ package org.miaixz.bus.starter.notify;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableNotify;
 
 /**
  * Configures notification providers and the application-scoped notification service.
@@ -40,7 +41,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(value = { NotifyProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.notify.Provider")
-@ConditionalOnProperty(prefix = GeniusBuilder.NOTIFY, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableNotify.class, prefix = GeniusBuilder.NOTIFY)
 public class NotifyConfiguration {
 
     /**

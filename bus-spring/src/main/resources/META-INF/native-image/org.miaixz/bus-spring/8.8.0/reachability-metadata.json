@@ -1,6 +1,15 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.spring.boot.condition.EnabledCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor",
       "methods": [
         {

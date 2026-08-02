@@ -78,6 +78,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-sensitive](bus-sensitive) | 敏感数据脱敏，提供注解式/规则式数据遮蔽方案                         |
 | [√]  | [bus-setting](bus-setting)     | 配置管理工具，支持多环境配置/动态刷新/加密存储                       |
 | [√]  | [bus-shade](bus-shade)         | 代码生成器，一键生成Entity/Service/Mapper等基础代码           |
+| [√]  | [bus-spring](bus-spring)       | Spring 与 Spring Boot 通用集成基础设施                       |
 | [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                      |
 | [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案              |
 | [√]  | [bus-tempus](bus-tempus)       | 分布式任务调度，支持CRON表达式及集群任务协调                       |

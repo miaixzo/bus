@@ -32,12 +32,13 @@ Package 仅定向开放给 Spring 基础设施。
 | `TaskConfiguration` | Task 相关类存在时开启 | `bus.context.task.enabled=false` | 在 Spring Boot TaskExecutor 中传播运行时上下文。 |
 | `WebConfiguration` | Servlet 应用中开启 | `bus.context.web.enabled=false` | 为 Request、Async、Error Dispatch 注册 `ContextBindingFilter`。 |
 
-这三个基础 Configuration 与产品功能不同。产品功能只有在对应 `bus.<feature>.enabled` 显式为 `true` 时才会
-启用。
+这三个基础 Configuration 与产品功能不同。产品功能采用固定优先级：显式 `@EnableXxx` 始终启用对应功能，
+即使 `bus.<feature>.enabled=false` 也不能关闭它；未声明注解时，只有配置项为 `true` 才启用；两者都不存在时
+保持禁用。
 
 ## 功能启用
 
-| 功能 | Import 注解 | 必需属性 | 主要集成内容 |
+| 功能 | 最高优先级注解 | 次级配置项 | 主要集成内容 |
 |---|---|---|---|
 | Auth | `@EnableAuth` | `bus.auth.enabled=true` | `bus-auth` |
 | Cache | `@EnableCache` | `bus.cache.enabled=true` | `bus-cache` |
@@ -67,9 +68,9 @@ Package 仅定向开放给 Spring 基础设施。
 | Wrapper | `@EnableWrapper` | `bus.wrapper.enabled=true` | 五项独立 MVC 能力 |
 | ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled=true` | Apache Curator Client |
 
-注解负责显式 Import 功能 Configuration，但不会绕过该 Configuration 的 `@ConditionalOnProperty`。在 Spring
-Boot 应用中，发现资源已经提供所有候选 Configuration，因此属性是最终运行开关。可以使用注解明确表达所选
-集成，但对应属性仍必须为 `true`。
+注解直接 Import 功能 Configuration。`bus-spring` 提供的统一 `@ConditionalOnEnabled` 规则优先接受显式注解，
+只有未发现注解时才把 `bus.<feature>.enabled` 作为次级启用来源。两条启用路径始终落到同一个功能
+Configuration，不会产生第二套实现。
 
 ```java
 @SpringBootApplication

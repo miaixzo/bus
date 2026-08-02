@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.starter.zookeeper.ZookeeperConfiguration;
 
 /**
- * Imports ZooKeeper configuration while retaining the {@code bus.zookeeper.enabled=true} guard.
+ * Enables ZooKeeper configuration regardless of the value assigned to {@code bus.zookeeper.enabled}.
  *
  * @author Kimi Liu
  * @since Java 21+

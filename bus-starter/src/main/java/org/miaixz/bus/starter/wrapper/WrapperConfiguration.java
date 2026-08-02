@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableWrapper;
 import org.miaixz.bus.starter.wrapper.advice.ResponseAdviceConfiguration;
 import org.miaixz.bus.starter.wrapper.binding.RequestBindingConfiguration;
 import org.miaixz.bus.starter.wrapper.body.BodyCacheConfiguration;
@@ -39,9 +40,9 @@ import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(WrapperProperties.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.WRAPPER, name = "enabled", havingValue = "true", matchIfMissing = false)
 @Import({ BodyCacheConfiguration.class, RequestBindingConfiguration.class, MessageConverterConfiguration.class,
         ResponseAdviceConfiguration.class, RoutePrefixConfiguration.class })
+@ConditionalOnEnabled(annotation = EnableWrapper.class, prefix = GeniusBuilder.WRAPPER)
 public class WrapperConfiguration {
 
     /**

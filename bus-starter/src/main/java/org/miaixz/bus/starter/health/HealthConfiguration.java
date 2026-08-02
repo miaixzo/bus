@@ -21,14 +21,15 @@ package org.miaixz.bus.starter.health;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.health.Provider;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableHealth;
 
 /**
  * Configures application health indicators and availability monitoring.
@@ -44,7 +45,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = { "org.miaixz.bus.health.Provider",
         "org.springframework.boot.health.contributor.HealthIndicator" })
-@ConditionalOnProperty(prefix = GeniusBuilder.HEALTH, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableHealth.class, prefix = GeniusBuilder.HEALTH)
 public class HealthConfiguration {
 
     /**

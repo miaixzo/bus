@@ -2,8 +2,8 @@
 
 `bus-spring` is the reusable Spring integration layer for Bus. It provides application-context-owned Bean services,
 runtime context capture and propagation, Spring Boot lifecycle utilities, annotation helpers, and reusable Servlet MVC
-infrastructure. The module supplies mechanics, not product-feature activation; conditional assembly and configuration
-properties belong to `bus-starter`.
+infrastructure. The module supplies reusable condition mechanics, not product-feature decisions; concrete enable
+annotations, property prefixes, conditional assembly, and configuration properties belong to `bus-starter`.
 
 ## Responsibility boundary
 
@@ -12,7 +12,7 @@ bus-spring                              bus-starter
 -----------------------------------     -----------------------------------
 Spring and Web integration mechanics    discovery and startup assembly
 context capture/install/restore         bus.* configuration properties
-Bean and environment services           @ConditionalOnProperty decisions
+Bean, environment, and condition APIs   feature activation decisions
 Boot listener implementations           default Bean declarations
 request/converter/wrapper primitives     feature-specific integration
 ```
@@ -51,12 +51,18 @@ Spring APIs are required and activation will be provided by the application.
 | `web.wrapper` | Bounded request/response body caching wrappers and filter. |
 | `boot` | Spring Boot run listener and smart lifecycle base class. |
 | `boot.banner` | Text, image, and version banner selection and rendering. |
+| `boot.condition` | Reusable annotation-first Spring Boot activation condition. |
 | `boot.environment` | Early Spring, logging, scenes, and cloud environment processors. |
 | `boot.listener` | Spring Boot and Spring Cloud configuration listeners. |
 | `boot.startup` | Startup stages, metrics, reporters, and Bean post-processing. |
 
 The root package intentionally remains populated. `ContextBuilder`, `ContextManager`, `ContextProvider`, `ContextState`,
 `ContextScope`, `ContextDecorator`, and `SpringBuilder` are stable public capabilities rather than an empty namespace.
+
+`boot.condition` provides `@ConditionalOnEnabled` and `EnabledCondition`. The condition gives an explicit enable
+annotation priority over the corresponding property, while leaving concrete annotations and property prefixes to the
+consuming Starter module. Its `name` member defaults to `enabled`, `matchIfMissing` defaults to `false`, and the
+condition can guard either a configuration type or an individual Bean method.
 
 ## Runtime context model
 

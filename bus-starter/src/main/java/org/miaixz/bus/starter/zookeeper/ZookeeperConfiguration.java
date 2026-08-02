@@ -25,12 +25,13 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableZookeeper;
 
 /**
  * Configures the Apache Curator ZooKeeper client.
@@ -44,7 +45,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(ZookeeperProperties.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.apache.curator.framework.CuratorFramework")
-@ConditionalOnProperty(prefix = GeniusBuilder.ZOOKEEPER, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableZookeeper.class, prefix = GeniusBuilder.ZOOKEEPER)
 public class ZookeeperConfiguration {
 
     /**
