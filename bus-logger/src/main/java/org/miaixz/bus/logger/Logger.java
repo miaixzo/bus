@@ -438,19 +438,9 @@ public class Logger {
      * @param format    provider-compatible message format
      * @param arguments message arguments
      */
-    private static void write(
-            Provider provider,
-            Level level,
-            Throwable throwable,
-            String format,
-            Object... arguments) {
+    private static void write(Provider provider, Level level, Throwable throwable, String format, Object... arguments) {
         Loggable loggable = Executor.process(new Loggable(level, throwable, format, arguments));
-        provider.log(
-                FQCN,
-                loggable.level(),
-                loggable.throwable(),
-                loggable.format(),
-                loggable.arguments());
+        provider.log(FQCN, loggable.level(), loggable.throwable(), loggable.format(), loggable.arguments());
     }
 
     /**

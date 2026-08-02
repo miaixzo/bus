@@ -794,8 +794,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      */
     private boolean isCountMappedStatement(MappedStatement ms) {
         Map<String, String> currentParams = settings().params();
-        String countSuffix = currentParams.containsKey("count")
-                ? Symbol.UNDERLINE + currentParams.get("count")
+        String countSuffix = currentParams.containsKey("count") ? Symbol.UNDERLINE + currentParams.get("count")
                 : Symbol.UNDERLINE + "COUNT";
         return ms != null && ms.getId().endsWith(countSuffix);
     }
