@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
@@ -33,7 +34,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.Holder;
 
 /**
  * Registry for database dialects, providing automatic detection and caching.
@@ -44,8 +44,9 @@ import org.miaixz.bus.mapper.Holder;
  * </p>
  *
  * <p>
- * For multi-datasource scenarios, this registry also caches dialects per datasource key to support dynamic datasource
- * switching.
+ * For applications with multiple data sources, this registry also caches dialects by data source key. The effective key
+ * is obtained through a read-only provider owned by the data-access integration; this registry neither selects nor
+ * stores a routed data source.
  * </p>
  *
  * <p>
@@ -62,7 +63,7 @@ import org.miaixz.bus.mapper.Holder;
  * // Detection from JDBC URL
  * Dialect dialect = DialectRegistry.getDialectByUrl("jdbc:mysql://localhost:3306/test");
  *
- * // Multi-datasource: get dialect for current thread's datasource
+ * // Obtain the dialect associated with the effective JDBC data source key
  * Dialect dialect = DialectRegistry.getDialect();
  *
  * // Register custom dialect
@@ -93,13 +94,18 @@ public final class DialectRegistry {
     private static final ConcurrentMap<String, Dialect> URL_CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Datasource key to Dialect cache for multi-datasource scenarios.
+     * Cache of dialects indexed by data source key.
      * <p>
-     * This cache is used when the application uses dynamic datasource switching via {@link Holder#setKey(String)}. The
-     * dialect is resolved based on the current datasource key.
+     * This cache is used when a data-access integration supplies its selected key. The dialect is resolved from that
+     * key without copying data source state into Mapper runtime context.
      * </p>
      */
     private static final ConcurrentMap<String, Dialect> DS_KEY_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Read-only provider installed by the data-access integration for its effective routing key.
+     */
+    private static volatile Supplier<String> keyProvider;
 
     /**
      * Default/unknown dialect (singleton)
@@ -290,34 +296,44 @@ public final class DialectRegistry {
     }
 
     /**
-     * Gets the database dialect for the current datasource.
+     * Returns the dialect associated with the effective JDBC data source key.
      *
      * <p>
-     * This method determines the current datasource key from {@link Holder#getKey()} and returns the corresponding
-     * dialect from the cache populated explicitly by the data-source owner.
+     * The key is read from the provider installed by the data-access integration. The corresponding dialect must have
+     * been registered through {@link #initializeDialect(String, DataSource)}.
      * </p>
      *
      * <p>
-     * This is the recommended method for multi-datasource scenarios with dynamic datasource switching.
+     * This method only observes the effective key and does not participate in data source routing.
      * </p>
      *
-     * @return the database dialect, or {@link #UNKNOWN} if not found
+     * @return the registered dialect, or {@link #UNKNOWN} when no key or dialect is available
      */
     public static Dialect getDialect() {
-        String dsKey = Holder.getKey();
+        Supplier<String> provider = keyProvider;
+        String dsKey = provider == null ? null : provider.get();
         return dsKey == null ? UNKNOWN : DS_KEY_CACHE.getOrDefault(dsKey, UNKNOWN);
     }
 
     /**
-     * Initializes the dialect for a specific datasource key.
+     * Installs the read-only provider used to obtain the effective data source key.
+     *
+     * @param provider data source key provider owned by the data-access integration
+     */
+    public static void setKeyProvider(Supplier<String> provider) {
+        keyProvider = provider;
+    }
+
+    /**
+     * Detects and registers the dialect for a data source key.
      *
      * <p>
      * This method detects the dialect from the given DataSource and caches it for the specified datasource key. Should
      * be called during application startup for each configured datasource.
      * </p>
      *
-     * @param dsKey      the datasource key (e.g., "master", "slave", "tenant_001")
-     * @param dataSource the datasource
+     * @param dsKey      data source key, for example {@code master}, {@code slave}, or {@code tenant_001}
+     * @param dataSource data source used for dialect detection
      */
     public static void initializeDialect(String dsKey, DataSource dataSource) {
         if (dsKey != null && dataSource != null) {

@@ -40,7 +40,6 @@ import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
@@ -114,12 +113,12 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     private boolean supportMethodsArguments = false;
 
     /**
-     * Flattened datasource-scoped pagination configuration.
+     * Flattened pagination configuration containing global and database-specific entries.
      */
     private Properties properties;
 
     /**
-     * Creates a new PageHandler with default settings.
+     * Initializes pagination handling with the default SQL pagination builder.
      */
     public PageHandler() {
         this.paginationBuilder = new PageBuilder();
@@ -824,9 +823,9 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     }
 
     /**
-     * Resolves immutable pagination settings for the current datasource.
+     * Resolves immutable pagination settings for the effective JDBC data source key.
      *
-     * @return current datasource pagination settings
+     * @return pagination settings for the current statement execution
      */
     private PageSettings settings() {
         if (properties == null) {
@@ -852,7 +851,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     }
 
     /**
-     * Finds one pagination setting using datasource, shared and legacy-default precedence.
+     * Finds a pagination setting using database-specific, shared, then legacy-default precedence.
      *
      * @param name     setting name
      * @param fallback fallback value when no configured value exists
@@ -860,13 +859,10 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      */
     private String find(String name, String fallback) {
         String suffix = Symbol.DOT + Args.PAGE_KEY + Symbol.DOT + name;
-        String key = Holder.getKey();
+        String key = getDatasourceKey();
         String value = properties.getProperty(key + suffix);
         if (value == null) {
             value = properties.getProperty(Args.SHARED_KEY + suffix);
-        }
-        if (value == null && Holder.getDefault() != null) {
-            value = properties.getProperty(Holder.getDefault() + suffix);
         }
         if (value == null) {
             value = properties.getProperty("default" + suffix, fallback);

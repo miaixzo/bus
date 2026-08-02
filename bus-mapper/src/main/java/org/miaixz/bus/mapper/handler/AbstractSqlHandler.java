@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.handler;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -33,6 +34,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -44,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractSqlHandler {
 
     /**
-     * Constructs a new AbstractSqlHandler instance.
+     * Initializes common SQL interception state for a concrete handler.
      */
     public AbstractSqlHandler() {
         // No initialization required.
@@ -79,6 +81,33 @@ public abstract class AbstractSqlHandler {
      * A cache for the results of SQL parser annotation checks, keyed by the MappedStatement ID or class name.
      */
     private static final Map<String, Boolean> SQL_PARSER_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Read-only provider for the effective JDBC data source key.
+     */
+    private Supplier<String> datasourceKeyProvider;
+
+    /**
+     * Installs the data source key provider owned by the data-access integration.
+     * <p>
+     * The handler invokes this provider when resolving database-specific Mapper settings. It does not retain a data
+     * source or participate in routing.
+     *
+     * @param provider effective data source key provider
+     */
+    public void setDatasourceKeyProvider(Supplier<String> provider) {
+        this.datasourceKeyProvider = provider;
+    }
+
+    /**
+     * Returns the effective JDBC data source key for configuration lookup.
+     *
+     * @return effective data source key, or {@code default} when the provider supplies no key
+     */
+    protected String getDatasourceKey() {
+        String key = datasourceKeyProvider == null ? null : datasourceKeyProvider.get();
+        return StringKit.isEmpty(key) ? "default" : key;
+    }
 
     /**
      * Checks if a `SqlParser` annotation is present for the given {@link MetaObject}.
