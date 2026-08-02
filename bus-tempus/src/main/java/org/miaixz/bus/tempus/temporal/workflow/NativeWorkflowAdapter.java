@@ -48,7 +48,7 @@ import io.temporal.workflow.DynamicWorkflow;
 import io.temporal.workflow.Workflow;
 
 /**
- * Adapts Temporal workflow and activity registration for native-image friendly Jackson 3 only runtimes.
+ * Adapts Temporal workflow and activity registration for native-image runtimes without Jackson 2.
  * <p>
  * Temporal SDK 1.35 still contains several internal metadata paths that directly reference Jackson 2 classes. This
  * adapter keeps the public Temporal worker model unchanged while routing workflow and activity registration through

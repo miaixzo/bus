@@ -19,21 +19,21 @@
 */
 package org.miaixz.bus.starter.zookeeper;
 
-import jakarta.annotation.Resource;
-
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for the Apache Curator ZooKeeper client.
+ * Configures the Apache Curator ZooKeeper client.
  * <p>
  * This class enables {@link ZookeeperProperties} and creates a {@link CuratorFramework} bean, which is the main entry
  * point for interacting with ZooKeeper.
@@ -42,18 +42,24 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(ZookeeperProperties.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.ZOOKEEPER, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.apache.curator.framework.CuratorFramework")
+@ConditionalOnProperty(prefix = GeniusBuilder.ZOOKEEPER, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class ZookeeperConfiguration {
 
     /**
-     * Constructs a new {@code ZookeeperConfiguration} instance.
+     * Bound zookeeper configuration properties.
      */
-    public ZookeeperConfiguration() {
-        // No initialization required.
-    }
+    private final ZookeeperProperties properties;
 
-    @Resource
-    private ZookeeperProperties properties;
+    /**
+     * Stores the connection and retry policy used to construct the Curator client.
+     *
+     * @param properties bound configuration properties
+     */
+    public ZookeeperConfiguration(ZookeeperProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates and configures the {@link CuratorFramework} client bean.

@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides core implementations for Spring Boot starter functionalities.
+ * Non-exported starter infrastructure containing GeniusBuilder and GeniusStarter. It is discovery infrastructure, not a
+ * public business API or component-scan root.
  *
  * @author Kimi Liu
  * @since Java 21+

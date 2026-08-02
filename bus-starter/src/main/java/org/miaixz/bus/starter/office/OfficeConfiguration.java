@@ -19,18 +19,22 @@
 */
 package org.miaixz.bus.starter.office;
 
-import jakarta.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.office.Provider;
+import org.miaixz.bus.office.Registry;
 import org.miaixz.bus.office.builtin.LocalOfficeProvider;
 import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for online document preview.
+ * Configures online document preview and conversion services.
  * <p>
  * This class enables the {@link OfficeProperties} and configures the necessary beans for both local and online document
  * conversion, conditional on their presence in the classpath.
@@ -40,20 +44,72 @@ import org.miaixz.bus.spring.GeniusBuilder;
  */
 @ConditionalOnClass({ LocalOfficeProvider.class, OnlineOfficeProvider.class })
 @EnableConfigurationProperties(value = { OfficeProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.OFFICE, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = GeniusBuilder.OFFICE, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class OfficeConfiguration {
 
     /**
-     * Constructs a new OfficeConfiguration instance.
+     * Bound office configuration properties.
      */
-    public OfficeConfiguration() {
-        // No initialization required.
+    private final OfficeProperties properties;
+
+    /**
+     * Stores the document-provider definitions used to construct the Office registry and service.
+     *
+     * @param properties bound configuration properties
+     */
+    public OfficeConfiguration(OfficeProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * Injected office configuration properties.
+     * Creates the provider registry owned by the current application context.
+     *
+     * @return the context-local Office registry
      */
-    @Resource
-    private OfficeProperties properties;
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(Registry.class)
+    public Registry officeRegistry() {
+        return new Registry();
+    }
+
+    /**
+     * Creates the default local conversion provider.
+     *
+     * @return local conversion provider
+     */
+    @Bean("localOfficeProvider")
+    @ConditionalOnMissingBean(name = "localOfficeProvider")
+    public Provider localOfficeProvider() {
+        return new LocalOfficeProvider();
+    }
+
+    /**
+     * Creates the default online conversion provider.
+     *
+     * @return online conversion provider
+     */
+    @Bean("onlineOfficeProvider")
+    @ConditionalOnMissingBean(name = "onlineOfficeProvider")
+    public Provider onlineOfficeProvider() {
+        return new OnlineOfficeProvider();
+    }
+
+    /**
+     * Registers the context-local Office providers in the context-local registry.
+     *
+     * @param registry       context-local registry
+     * @param localProvider  local conversion provider
+     * @param onlineProvider online conversion provider
+     * @return provider registration adapter
+     */
+    @Bean
+    @ConditionalOnMissingBean(OfficeService.class)
+    OfficeService officeService(
+            Registry registry,
+            @Qualifier("localOfficeProvider") Provider localProvider,
+            @Qualifier("onlineOfficeProvider") Provider onlineProvider) {
+        return new OfficeService(registry, localProvider, onlineProvider);
+    }
 
 }

@@ -75,7 +75,7 @@ final class MapperOptionsResolver {
             + Symbol.BRACKET_RIGHT + Symbol.PLUS;
 
     /**
-     * Prevents instantiation.
+     * Prevents instantiation of this mapper option normalization utility.
      */
     private MapperOptionsResolver() {
         // No initialization required.
@@ -224,7 +224,7 @@ final class MapperOptionsResolver {
      * @return namespace name, or {@code null} when the key is not namespace-scoped
      */
     private static String namespaceName(String key) {
-        int dot = key == null ? -1 : key.indexOf('.');
+        int dot = key == null ? -1 : key.indexOf(Symbol.C_DOT);
         if (dot <= 0) {
             return null;
         }
@@ -233,10 +233,10 @@ final class MapperOptionsResolver {
             return null;
         }
         String path = key.substring(dot + 1);
-        int pathDot = path.indexOf('.');
+        int pathDot = path.indexOf(Symbol.C_DOT);
         String scope = pathDot < 0 ? path : path.substring(0, pathDot);
         return switch (scope) {
-            case Args.TABLE_KEY, Args.TENANT_KEY, Args.POPULATE_KEY, Args.VISIBLE_KEY, Args.AUDIT_KEY, SCHEMA_SCOPE -> namespaceName;
+            case Args.OPERATION_KEY, Args.PAGE_KEY, Args.TABLE_KEY, Args.TENANT_KEY, Args.POPULATE_KEY, Args.VISIBLE_KEY, Args.AUDIT_KEY, SCHEMA_SCOPE -> namespaceName;
             default -> null;
         };
     }

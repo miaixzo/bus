@@ -20,32 +20,36 @@
 package org.miaixz.bus.starter.office;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for office document preview and conversion.
- * <p>
- * This class is intended to hold all settings related to the office functionality. While currently a placeholder, it
- * can be extended to include properties such as LibreOffice/OpenOffice installation paths, conversion timeouts, thread
- * pool sizes, and other operational parameters.
+ * Office integration activation properties; provider details remain owned by bus-office.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.OFFICE)
-public class OfficeProperties {
+public final class OfficeProperties {
 
     /**
-     * Constructs a new OfficeProperties instance.
+     * Whether the office integration is enabled.
      */
-    public OfficeProperties() {
-        // No initialization required.
+    private final boolean enabled;
+
+    /**
+     * Binds immutable office provider settings and normalizes absent provider maps to an empty map.
+     *
+     * @param enabled whether Office integration is enabled
+     */
+    public OfficeProperties(@DefaultValue("false") boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

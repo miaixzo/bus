@@ -701,6 +701,29 @@
     },
     {
       "type": "org.miaixz.bus.cortex.bridge.VortexBridge",
+      "fields": [
+        {
+          "name": "claimedCount"
+        },
+        {
+          "name": "deadCount"
+        },
+        {
+          "name": "deliveredCount"
+        },
+        {
+          "name": "droppedCount"
+        },
+        {
+          "name": "failedAttemptCount"
+        },
+        {
+          "name": "lastError"
+        },
+        {
+          "name": "running"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -895,6 +918,38 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.batch.BatchOperation",
+      "fields": [
+        {
+          "name": "conflictPolicy"
+        },
+        {
+          "name": "continueOnError"
+        },
+        {
+          "name": "dryRun"
+        },
+        {
+          "name": "entries"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "operationType"
+        },
+        {
+          "name": "operator"
+        },
+        {
+          "name": "parallelism"
+        },
+        {
+          "name": "requestId"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1004,6 +1059,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.batch.BatchOperation$ConflictPolicy",
+      "fields": [
+        {
+          "name": "FAIL_FAST"
+        },
+        {
+          "name": "OVERWRITE"
+        },
+        {
+          "name": "SKIP"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1026,6 +1092,20 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.batch.BatchOperation$OperationType",
+      "fields": [
+        {
+          "name": "DEREGISTER"
+        },
+        {
+          "name": "REGISTER"
+        },
+        {
+          "name": "UPDATE"
+        },
+        {
+          "name": "UPSERT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1048,6 +1128,38 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.batch.BatchResult",
+      "fields": [
+        {
+          "name": "deletedCount"
+        },
+        {
+          "name": "elapsedMs"
+        },
+        {
+          "name": "errors"
+        },
+        {
+          "name": "failCount"
+        },
+        {
+          "name": "insertedCount"
+        },
+        {
+          "name": "skippedCount"
+        },
+        {
+          "name": "successCount"
+        },
+        {
+          "name": "total"
+        },
+        {
+          "name": "updatedCount"
+        },
+        {
+          "name": "warnings"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1185,6 +1297,26 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.batch.BatchResult$Failure",
+      "fields": [
+        {
+          "name": "errorMessage"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1418,6 +1550,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.Label",
+      "fields": [
+        {
+          "name": "category"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1581,6 +1724,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.Selector",
+      "fields": [
+        {
+          "name": "key"
+        },
+        {
+          "name": "op"
+        },
+        {
+          "name": "values"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1654,6 +1808,20 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.Selector$Op",
+      "fields": [
+        {
+          "name": "EQ"
+        },
+        {
+          "name": "IN"
+        },
+        {
+          "name": "NEQ"
+        },
+        {
+          "name": "NOTIN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1816,9 +1984,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.Change"
     },
     {
       "type": "org.miaixz.bus.cortex.Cortex",
@@ -2120,9 +2285,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.Curator"
-    },
-    {
       "type": "org.miaixz.bus.cortex.guard.CortexGuard",
       "methods": [
         {
@@ -2147,6 +2309,50 @@
     },
     {
       "type": "org.miaixz.bus.cortex.guard.GuardContext",
+      "fields": [
+        {
+          "name": "action"
+        },
+        {
+          "name": "apiKey"
+        },
+        {
+          "name": "app_id"
+        },
+        {
+          "name": "assetId"
+        },
+        {
+          "name": "attributes"
+        },
+        {
+          "name": "domain"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "policy"
+        },
+        {
+          "name": "profile_id"
+        },
+        {
+          "name": "resourceId"
+        },
+        {
+          "name": "resourceType"
+        },
+        {
+          "name": "tenantId"
+        },
+        {
+          "name": "token"
+        },
+        {
+          "name": "userId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2315,6 +2521,20 @@
     },
     {
       "type": "org.miaixz.bus.cortex.guard.GuardDecision",
+      "fields": [
+        {
+          "name": "allowed"
+        },
+        {
+          "name": "code"
+        },
+        {
+          "name": "details"
+        },
+        {
+          "name": "message"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2364,6 +2584,23 @@
     },
     {
       "type": "org.miaixz.bus.cortex.guard.GuardPolicy",
+      "fields": [
+        {
+          "name": "ANONYMOUS"
+        },
+        {
+          "name": "CREDENTIAL"
+        },
+        {
+          "name": "CREDENTIAL_PERMISSION"
+        },
+        {
+          "name": "CREDENTIAL_PERMISSION_LICENSE"
+        },
+        {
+          "name": "MOCK"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2424,10 +2661,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.guard.GuardStrategy"
-    },
-    {
       "type": "org.miaixz.bus.cortex.guard.token.TokenCredential",
+      "fields": [
+        {
+          "name": "bearer"
+        },
+        {
+          "name": "carrierName"
+        },
+        {
+          "name": "transport"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2477,6 +2725,50 @@
     },
     {
       "type": "org.miaixz.bus.cortex.guard.token.TokenGuardConfig",
+      "fields": [
+        {
+          "name": "autoRefresh"
+        },
+        {
+          "name": "bearerPrefix"
+        },
+        {
+          "name": "cachePrefix"
+        },
+        {
+          "name": "cookieNames"
+        },
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "expireSeconds"
+        },
+        {
+          "name": "headerNames"
+        },
+        {
+          "name": "issuer"
+        },
+        {
+          "name": "multipleSessions"
+        },
+        {
+          "name": "queryNames"
+        },
+        {
+          "name": "refreshThresholdSeconds"
+        },
+        {
+          "name": "scopeExpireSeconds"
+        },
+        {
+          "name": "secretKey"
+        },
+        {
+          "name": "transports"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2638,6 +2930,11 @@
     },
     {
       "type": "org.miaixz.bus.cortex.guard.token.TokenGuardStrategy",
+      "fields": [
+        {
+          "name": "config"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2659,6 +2956,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.guard.token.TokenTransport",
+      "fields": [
+        {
+          "name": "COOKIE"
+        },
+        {
+          "name": "HEADER"
+        },
+        {
+          "name": "QUERY"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2800,6 +3108,74 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Instance",
+      "fields": [
+        {
+          "name": "app_id"
+        },
+        {
+          "name": "fingerprint"
+        },
+        {
+          "name": "healthPath"
+        },
+        {
+          "name": "healthSource"
+        },
+        {
+          "name": "healthy"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "lastHeartbeatAt"
+        },
+        {
+          "name": "lastProbeAt"
+        },
+        {
+          "name": "lastStatus"
+        },
+        {
+          "name": "lease"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "pid"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "serviceId"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "stateChangedAt"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "weight"
+        }
+      ],
       "methods": [
         {
           "name": "$default$healthy",
@@ -3216,9 +3592,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.Keying"
-    },
-    {
       "type": "org.miaixz.bus.cortex.Keying$RegistrySpec",
       "methods": [
         {
@@ -3504,9 +3877,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.Listener"
-    },
-    {
       "type": "org.miaixz.bus.cortex.magic.AuditLogger",
       "methods": [
         {
@@ -3683,10 +4053,63 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.magic.event.CortexChangeLogStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.magic.event.CortexChangeRecord",
+      "fields": [
+        {
+          "name": "action"
+        },
+        {
+          "name": "claimedBy"
+        },
+        {
+          "name": "claimedUntil"
+        },
+        {
+          "name": "created"
+        },
+        {
+          "name": "deadReason"
+        },
+        {
+          "name": "domain"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "idempotencyKey"
+        },
+        {
+          "name": "lastError"
+        },
+        {
+          "name": "modified"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "nextRetryAt"
+        },
+        {
+          "name": "payload"
+        },
+        {
+          "name": "resourceId"
+        },
+        {
+          "name": "resourceType"
+        },
+        {
+          "name": "retryCount"
+        },
+        {
+          "name": "sequence"
+        },
+        {
+          "name": "status"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3876,6 +4299,23 @@
     },
     {
       "type": "org.miaixz.bus.cortex.magic.event.CortexChangeStatus",
+      "fields": [
+        {
+          "name": "CLAIMED"
+        },
+        {
+          "name": "DEAD"
+        },
+        {
+          "name": "DELIVERED"
+        },
+        {
+          "name": "FAILED"
+        },
+        {
+          "name": "PENDING"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3970,13 +4410,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics"
-    },
-    {
-      "type": "org.miaixz.bus.cortex.magic.runtime.CortexLifecycle"
-    },
-    {
       "type": "org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot",
+      "fields": [
+        {
+          "name": "component"
+        },
+        {
+          "name": "lastError"
+        },
+        {
+          "name": "metrics"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "updatedAt"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4036,6 +4487,23 @@
     },
     {
       "type": "org.miaixz.bus.cortex.magic.state.InstanceState",
+      "fields": [
+        {
+          "name": "DOWN"
+        },
+        {
+          "name": "MAINTENANCE"
+        },
+        {
+          "name": "STARTING"
+        },
+        {
+          "name": "UNKNOWN"
+        },
+        {
+          "name": "UP"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4058,6 +4526,38 @@
     },
     {
       "type": "org.miaixz.bus.cortex.magic.state.InstanceStateHistory",
+      "fields": [
+        {
+          "name": "durationMs"
+        },
+        {
+          "name": "fingerprint"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "operator"
+        },
+        {
+          "name": "reason"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "timestamp"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4437,6 +4937,11 @@
     },
     {
       "type": "org.miaixz.bus.cortex.magic.watch.WatchManager$OverflowStrategy",
+      "fields": [
+        {
+          "name": "DROP_LATEST"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4459,6 +4964,59 @@
     },
     {
       "type": "org.miaixz.bus.cortex.magic.watch.WatchSubscription",
+      "fields": [
+        {
+          "name": "createdAt"
+        },
+        {
+          "name": "dispatchCount"
+        },
+        {
+          "name": "dispatchTail"
+        },
+        {
+          "name": "droppedCount"
+        },
+        {
+          "name": "expiresAt"
+        },
+        {
+          "name": "failureCount"
+        },
+        {
+          "name": "lastAccess"
+        },
+        {
+          "name": "lastDeliveredAt"
+        },
+        {
+          "name": "lastDroppedAt"
+        },
+        {
+          "name": "lastError"
+        },
+        {
+          "name": "lastEventAt"
+        },
+        {
+          "name": "lastSequence"
+        },
+        {
+          "name": "listener"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "peakPendingCount"
+        },
+        {
+          "name": "pendingCount"
+        },
+        {
+          "name": "vector"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4754,12 +5312,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.Prober"
-    },
-    {
-      "type": "org.miaixz.bus.cortex.Registry"
-    },
-    {
       "type": "org.miaixz.bus.cortex.registry.AbstractRegistry",
       "methods": [
         {
@@ -4849,12 +5401,6 @@
         },
         {
           "name": "defaultKey",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.Keying"
-          ]
-        },
-        {
-          "name": "defaultRouteKey",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Keying"
           ]
@@ -5997,9 +6543,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.registry.api.ApiRegistryStore"
     },
     {
       "type": "org.miaixz.bus.cortex.registry.DefaultRegistryBatchExecutor",
@@ -7197,9 +7740,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.registry.mcp.McpRegistryStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.registry.MetadataCodec",
       "methods": [
         {
@@ -8304,9 +8844,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.registry.prompt.PromptRegistryStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.registry.RegistryAssets",
       "methods": [
         {
@@ -8379,9 +8916,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.registry.RegistryBatchExecutor"
-    },
-    {
       "type": "org.miaixz.bus.cortex.registry.RegistryBatchLookup",
       "methods": [
         {
@@ -8433,12 +8967,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.registry.RegistryBatchOperations"
-    },
-    {
-      "type": "org.miaixz.bus.cortex.registry.RegistryBatchResolver"
     },
     {
       "type": "org.miaixz.bus.cortex.registry.RegistryChange",
@@ -9276,10 +9804,45 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.registry.RegistryOperations"
-    },
-    {
       "type": "org.miaixz.bus.cortex.registry.RegistryQuery",
+      "fields": [
+        {
+          "name": "app_id"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "includeDisabled"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "selectors"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9409,6 +9972,26 @@
     },
     {
       "type": "org.miaixz.bus.cortex.registry.RegistryRefreshScope",
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "includeDisabled"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "refreshMode"
+        },
+        {
+          "name": "requestId"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9667,6 +10250,38 @@
     },
     {
       "type": "org.miaixz.bus.cortex.registry.RegistrySnapshot",
+      "fields": [
+        {
+          "name": "assets"
+        },
+        {
+          "name": "checksum"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "since"
+        },
+        {
+          "name": "snapshotId"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "summary"
+        },
+        {
+          "name": "timestamp"
+        },
+        {
+          "name": "types"
+        },
+        {
+          "name": "watermark"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9775,10 +10390,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.registry.RegistryStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.registry.RegistryWatchScope",
+      "fields": [
+        {
+          "name": "eventTypes"
+        },
+        {
+          "name": "maxPending"
+        },
+        {
+          "name": "query"
+        },
+        {
+          "name": "requestId"
+        },
+        {
+          "name": "source"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10045,6 +10674,11 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Setting",
+      "fields": [
+        {
+          "name": "description"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10106,6 +10740,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.app.App",
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "profile_ids"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10198,10 +10843,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.app.AppStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.binding.Binding",
+      "fields": [
+        {
+          "name": "item_id"
+        },
+        {
+          "name": "ref_id"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10304,10 +10957,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.binding.BindingStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.binding.BindingType",
+      "fields": [
+        {
+          "name": "APP"
+        },
+        {
+          "name": "PROFILE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10731,9 +11389,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.curator.ItemSourceAdapter"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.curator.ItemValueResolver",
       "methods": [
         {
@@ -11013,9 +11668,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayPublisher"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService",
       "methods": [
         {
@@ -11109,6 +11761,23 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.GrayRequestContext",
+      "fields": [
+        {
+          "name": "clientIp"
+        },
+        {
+          "name": "headers"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "tenant"
+        },
+        {
+          "name": "userId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11246,6 +11915,41 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.GrayRule",
+      "fields": [
+        {
+          "name": "grayContent"
+        },
+        {
+          "name": "headerKey"
+        },
+        {
+          "name": "headerValue"
+        },
+        {
+          "name": "ipList"
+        },
+        {
+          "name": "ipRange"
+        },
+        {
+          "name": "labelKey"
+        },
+        {
+          "name": "labelValue"
+        },
+        {
+          "name": "percentage"
+        },
+        {
+          "name": "tenant"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "userId"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11518,6 +12222,29 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.GrayType",
+      "fields": [
+        {
+          "name": "HEADER"
+        },
+        {
+          "name": "IP_LIST"
+        },
+        {
+          "name": "IP_RANGE"
+        },
+        {
+          "name": "LABEL"
+        },
+        {
+          "name": "PERCENTAGE"
+        },
+        {
+          "name": "TENANT"
+        },
+        {
+          "name": "USER"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11540,6 +12267,53 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.Item",
+      "fields": [
+        {
+          "name": "app_ids"
+        },
+        {
+          "name": "checksum"
+        },
+        {
+          "name": "content"
+        },
+        {
+          "name": "data_id"
+        },
+        {
+          "name": "encrypted"
+        },
+        {
+          "name": "exposure"
+        },
+        {
+          "name": "extension"
+        },
+        {
+          "name": "format"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "profile_ids"
+        },
+        {
+          "name": "rule"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "spec"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11954,6 +12728,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.ItemExposure",
+      "fields": [
+        {
+          "name": "INTERNAL"
+        },
+        {
+          "name": "PUBLIC"
+        },
+        {
+          "name": "SECRET"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11980,6 +12765,20 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.ItemFormat",
+      "fields": [
+        {
+          "name": "JSON"
+        },
+        {
+          "name": "PROPERTIES"
+        },
+        {
+          "name": "TEXT"
+        },
+        {
+          "name": "YAML"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12036,6 +12835,20 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.ItemQuery",
+      "fields": [
+        {
+          "name": "data_id"
+        },
+        {
+          "name": "fallbackValue"
+        },
+        {
+          "name": "preferOverlay"
+        },
+        {
+          "name": "requestContext"
+        }
+      ],
       "methods": [
         {
           "name": "$default$preferOverlay",
@@ -12192,6 +13005,38 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.ItemScope",
+      "fields": [
+        {
+          "name": "app_id"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "includeDeleted"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "profile_id"
+        },
+        {
+          "name": "requestId"
+        },
+        {
+          "name": "selectors"
+        }
+      ],
       "methods": [
         {
           "name": "$default$limit",
@@ -12414,9 +13259,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.item.ItemWatcher",
       "methods": [
         {
@@ -12433,6 +13275,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevision",
+      "fields": [
+        {
+          "name": "diff"
+        },
+        {
+          "name": "item_id"
+        },
+        {
+          "name": "revert"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12527,9 +13380,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.revision.ItemRevisionStore"
     },
     {
       "type": "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
@@ -12747,6 +13597,14 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.namespace.Namespace",
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12827,10 +13685,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.namespace.NamespaceStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.profile.Profile",
+      "fields": [
+        {
+          "name": "builtin"
+        },
+        {
+          "name": "code"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "order"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12939,9 +13808,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.profile.ProfileStore"
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec",
       "methods": [
         {
@@ -12965,9 +13831,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.secret.SecretCodec"
     },
     {
       "type": "org.miaixz.bus.cortex.setting.secret.SecretMasker",
@@ -12995,9 +13858,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.SettingEnforcer"
     },
     {
       "type": "org.miaixz.bus.cortex.setting.SettingEnforcerGuardStrategy",
@@ -13177,6 +14037,29 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Status",
+      "fields": [
+        {
+          "name": "details"
+        },
+        {
+          "name": "healthy"
+        },
+        {
+          "name": "latencyMs"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "timestamp"
+        }
+      ],
       "methods": [
         {
           "name": "$default$details",
@@ -13424,6 +14307,38 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Trait",
+      "fields": [
+        {
+          "name": "BATCH"
+        },
+        {
+          "name": "CACHE"
+        },
+        {
+          "name": "DELETE"
+        },
+        {
+          "name": "DURABLE"
+        },
+        {
+          "name": "EVICT"
+        },
+        {
+          "name": "INSTANCES"
+        },
+        {
+          "name": "QUERY"
+        },
+        {
+          "name": "REBUILD"
+        },
+        {
+          "name": "ROLLBACK_METADATA"
+        },
+        {
+          "name": "ROUTE_QUERY"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -13451,6 +14366,44 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Type",
+      "fields": [
+        {
+          "name": "API"
+        },
+        {
+          "name": "APP"
+        },
+        {
+          "name": "BINDING"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "ITEM"
+        },
+        {
+          "name": "ITEM_REVISION"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "MCP"
+        },
+        {
+          "name": "NAMESPACE"
+        },
+        {
+          "name": "PROFILE"
+        },
+        {
+          "name": "PROMPT"
+        },
+        {
+          "name": "VERSION"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -13582,6 +14535,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Type$Domain",
+      "fields": [
+        {
+          "name": "REGISTRY"
+        },
+        {
+          "name": "SETTING"
+        },
+        {
+          "name": "VERSION"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -13604,6 +14568,47 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Vector",
+      "fields": [
+        {
+          "name": "app_id"
+        },
+        {
+          "name": "includeDisabled"
+        },
+        {
+          "name": "labels"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "method"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "purpose"
+        },
+        {
+          "name": "refresh"
+        },
+        {
+          "name": "requestId"
+        },
+        {
+          "name": "selectors"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "watch"
+        }
+      ],
       "methods": [
         {
           "name": "$default$limit",
@@ -14079,6 +15084,23 @@
     },
     {
       "type": "org.miaixz.bus.cortex.version.ReleaseArtifact",
+      "fields": [
+        {
+          "name": "artifactType"
+        },
+        {
+          "name": "checksum"
+        },
+        {
+          "name": "payloadRef"
+        },
+        {
+          "name": "resourceId"
+        },
+        {
+          "name": "resourceType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14138,6 +15160,17 @@
     },
     {
       "type": "org.miaixz.bus.cortex.version.ReleaseTrack",
+      "fields": [
+        {
+          "name": "BETA"
+        },
+        {
+          "name": "CANARY"
+        },
+        {
+          "name": "STABLE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14270,6 +15303,29 @@
     },
     {
       "type": "org.miaixz.bus.cortex.version.VersionAssets$Meta",
+      "fields": [
+        {
+          "name": "artifact"
+        },
+        {
+          "name": "changelog"
+        },
+        {
+          "name": "compatibleRange"
+        },
+        {
+          "name": "releasedAt"
+        },
+        {
+          "name": "semver"
+        },
+        {
+          "name": "supportUntil"
+        },
+        {
+          "name": "versionStatus"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14528,6 +15584,35 @@
     },
     {
       "type": "org.miaixz.bus.cortex.version.VersionRecord",
+      "fields": [
+        {
+          "name": "artifacts"
+        },
+        {
+          "name": "created"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "published"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "track"
+        },
+        {
+          "name": "version"
+        },
+        {
+          "name": "versionStatus"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14765,6 +15850,20 @@
     },
     {
       "type": "org.miaixz.bus.cortex.version.VersionStatus",
+      "fields": [
+        {
+          "name": "ACTIVE"
+        },
+        {
+          "name": "DEPRECATED"
+        },
+        {
+          "name": "DISABLED"
+        },
+        {
+          "name": "DRAFT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -14834,6 +15933,53 @@
     },
     {
       "type": "org.miaixz.bus.cortex.Watch",
+      "fields": [
+        {
+          "name": "added"
+        },
+        {
+          "name": "errorMessage"
+        },
+        {
+          "name": "eventType"
+        },
+        {
+          "name": "namespace_id"
+        },
+        {
+          "name": "previousSequence"
+        },
+        {
+          "name": "removed"
+        },
+        {
+          "name": "sequence"
+        },
+        {
+          "name": "snapshot"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "summary"
+        },
+        {
+          "name": "timestamp"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "updated"
+        },
+        {
+          "name": "vector"
+        },
+        {
+          "name": "watchId"
+        }
+      ],
       "methods": [
         {
           "name": "$default$added",

@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.starter.image;
 
-import jakarta.annotation.Resource;
-
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -34,10 +35,10 @@ import org.miaixz.bus.image.Efforts;
 import org.miaixz.bus.image.Node;
 import org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.miaixz.bus.image.plugin.StoreSCP;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for DICOM image processing.
+ * Configures image processing and DICOM server integration.
  * <p>
  * This class sets up the DICOM Store SCP (Service Class Provider) as a Spring bean, based on the settings provided in
  * {@link ImageProperties}. It conditionally initializes OpenCV and the DICOM server itself.
@@ -47,27 +48,31 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { ImageProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.IMAGE, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.image.Centre")
+@ConditionalOnProperty(prefix = GeniusBuilder.IMAGE, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class ImageConfiguration {
 
     /**
-     * Constructs a new ImageConfiguration instance.
+     * Bound image configuration properties.
      */
-    public ImageConfiguration() {
-        // No initialization required.
+    private final ImageProperties properties;
+
+    /**
+     * Efforts dependency used by this component.
+     */
+    private final Efforts efforts;
+
+    /**
+     * Stores the image properties and resolves the optional DICOM efforts provider.
+     *
+     * @param properties      bound feature configuration properties
+     * @param effortsProvider efforts provider
+     */
+    public ImageConfiguration(ImageProperties properties, ObjectProvider<Efforts> effortsProvider) {
+        this.properties = properties;
+        this.efforts = effortsProvider.getIfAvailable();
     }
-
-    /**
-     * Injected image configuration properties.
-     */
-    @Resource
-    ImageProperties properties;
-
-    /**
-     * Injected Efforts bean, likely for handling DICOM processing tasks.
-     */
-    @Resource
-    Efforts efforts;
 
     /**
      * Creates and configures the DICOM Store SCP bean, represented by the {@link Centre} class.
@@ -79,22 +84,9 @@ public class ImageConfiguration {
      * @return A configured {@link Centre} instance.
      * @throws NullPointerException if essential server properties (aeTitle, host, port) are missing.
      */
-    @Bean(initMethod = "start", destroyMethod = "stop")
+    @Bean(destroyMethod = "stop")
     @ConditionalOnMissingBean(Centre.class)
-    @ConditionalOnProperty(prefix = "bus.image", name = "server", havingValue = "true")
-    public Centre onStoreSCP() {
-        if (this.properties.isOpencv()) {
-            new OpenCVNativeLoader().init();
-        }
-        if (StringKit.isEmpty(this.properties.getNode().getAeTitle())) {
-            throw new NullPointerException("The aeTitle cannot be null.");
-        }
-        if (StringKit.isEmpty(this.properties.getNode().getHost())) {
-            throw new NullPointerException("The host cannot be null.");
-        }
-        if (StringKit.isEmpty(this.properties.getNode().getPort())) {
-            throw new NullPointerException("The port cannot be null.");
-        }
+    public Centre centre() {
         Args args = new Args();
         if (StringKit.isNotEmpty(this.properties.getNode().getSopClasses())) {
             args.setSopClasses(
@@ -108,11 +100,45 @@ public class ImageConfiguration {
             args.setSopClassesUID(
                     ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesUID(), ImageConfiguration.class));
         }
-        return Centre.builder().args(args).efforts(efforts)
-                .node(
-                        new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(),
-                                Integer.parseInt(this.properties.getNode().getPort())))
-                .storeSCP(new StoreSCP(this.properties.getDcmDir())).build();
+        Centre.CentreBuilder<?, ?> builder = Centre.builder().args(args).efforts(this.efforts)
+                .storeSCP(new StoreSCP(this.properties.getDcmDir()));
+        if (this.properties.isServer()) {
+            validateServerProperties();
+            builder.node(
+                    new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(),
+                            this.properties.getNode().getPort()));
+        }
+        Centre centre = builder.build();
+        try {
+            if (this.properties.isOpencv()) {
+                OpenCVNativeLoader.loader();
+            }
+            if (this.properties.isServer()) {
+                centre.start();
+                if (!centre.isRunning()) {
+                    throw new IllegalStateException("Failed to start the DICOM service");
+                }
+            }
+            return centre;
+        } catch (RuntimeException | Error exception) {
+            centre.stop();
+            throw exception;
+        }
+    }
+
+    /**
+     * Validates the server properties.
+     */
+    private void validateServerProperties() {
+        if (StringKit.isEmpty(this.properties.getNode().getAeTitle())) {
+            throw new IllegalStateException("The aeTitle cannot be null");
+        }
+        if (StringKit.isEmpty(this.properties.getNode().getHost())) {
+            throw new IllegalStateException("The host cannot be null");
+        }
+        if (this.properties.getNode().getPort() < 1) {
+            throw new IllegalStateException("The port cannot be null");
+        }
     }
 
 }

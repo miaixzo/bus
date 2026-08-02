@@ -1,0 +1,60 @@
+{
+  "reflection": [
+    {
+      "type": "org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.environment.ScenesEnvironmentPostProcessor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.environment.SpringEnvironmentPostProcessor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.listener.SpringBootConfigListener",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.listener.SpringCloudConfigListener",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.boot.SpringApplicationRunListener",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.boot.SpringApplication"
+          ]
+        }
+      ]
+    }
+  ]
+}

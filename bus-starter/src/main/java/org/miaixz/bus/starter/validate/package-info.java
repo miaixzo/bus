@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Parameter validation support.
+ * Activates annotation-driven method validation through Spring AOP and exposes validation failures as controller
+ * advice. This non-exported package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

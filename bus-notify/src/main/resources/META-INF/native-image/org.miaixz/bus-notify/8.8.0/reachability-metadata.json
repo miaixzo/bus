@@ -1,10 +1,18 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.notify.Builder"
-    },
-    {
       "type": "org.miaixz.bus.notify.Builder$Type",
+      "fields": [
+        {
+          "name": "CUSTOM"
+        },
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "REDIS"
+        }
+      ],
       "methods": [
         {
           "name": "toString",
@@ -24,6 +32,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.cache.NotifyCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "clear",
@@ -82,6 +95,26 @@
     },
     {
       "type": "org.miaixz.bus.notify.Context",
+      "fields": [
+        {
+          "name": "appKey"
+        },
+        {
+          "name": "appSecret"
+        },
+        {
+          "name": "corpId"
+        },
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "extension"
+        },
+        {
+          "name": "nonce"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -208,10 +241,42 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.notify.magic.ErrorCode"
-    },
-    {
       "type": "org.miaixz.bus.notify.magic.Notice",
+      "fields": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "extend"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "params"
+        },
+        {
+          "name": "receive"
+        },
+        {
+          "name": "sender"
+        },
+        {
+          "name": "signature"
+        },
+        {
+          "name": "subject"
+        },
+        {
+          "name": "template"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "url"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -331,6 +396,14 @@
     },
     {
       "type": "org.miaixz.bus.notify.magic.Notice$Mode",
+      "fields": [
+        {
+          "name": "BATCH"
+        },
+        {
+          "name": "SINGLE"
+        }
+      ],
       "methods": [
         {
           "name": "valueOf",
@@ -434,6 +507,23 @@
     },
     {
       "type": "org.miaixz.bus.notify.magic.Notice$Type",
+      "fields": [
+        {
+          "name": "FILE"
+        },
+        {
+          "name": "HTML"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "TEXT"
+        },
+        {
+          "name": "VOICE"
+        }
+      ],
       "methods": [
         {
           "name": "valueOf",
@@ -491,6 +581,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.aliyun.AliyunNotice",
+      "fields": [
+        {
+          "name": "playTimes"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -685,6 +780,14 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.ctyun.CtyunNotice",
+      "fields": [
+        {
+          "name": "action"
+        },
+        {
+          "name": "templateName"
+        }
+      ],
       "methods": [
         {
           "name": "$default$action",
@@ -775,6 +878,29 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkNotice",
+      "fields": [
+        {
+          "name": "agentId"
+        },
+        {
+          "name": "deptIdList"
+        },
+        {
+          "name": "msg"
+        },
+        {
+          "name": "toAllUser"
+        },
+        {
+          "name": "token"
+        },
+        {
+          "name": "userIdList"
+        },
+        {
+          "name": "whiteList"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -918,6 +1044,17 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.dingtalk.DingTalkProvider",
+      "fields": [
+        {
+          "name": "accessToken"
+        },
+        {
+          "name": "refreshTokenTime"
+        },
+        {
+          "name": "tokenTimeOut"
+        }
+      ],
       "methods": [
         {
           "name": "getToken",
@@ -959,6 +1096,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.emay.EmayNotice",
+      "fields": [
+        {
+          "name": "requestUrl"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -1025,10 +1167,72 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.notify.nimble.generic.GenericEmailProvider"
-    },
-    {
       "type": "org.miaixz.bus.notify.nimble.generic.GenericNotice",
+      "fields": [
+        {
+          "name": "attachments"
+        },
+        {
+          "name": "auth"
+        },
+        {
+          "name": "bccs"
+        },
+        {
+          "name": "ccs"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "connectionTimeout"
+        },
+        {
+          "name": "content"
+        },
+        {
+          "name": "debug"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "pass"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "socketFactoryClass"
+        },
+        {
+          "name": "socketFactoryFallback"
+        },
+        {
+          "name": "socketFactoryPort"
+        },
+        {
+          "name": "splitlongparameters"
+        },
+        {
+          "name": "sslEnable"
+        },
+        {
+          "name": "startttlsEnable"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "useGlobalSession"
+        },
+        {
+          "name": "user"
+        }
+      ],
       "methods": [
         {
           "name": "$default$socketFactoryClass",
@@ -1690,6 +1894,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.tencent.TencentNotice",
+      "fields": [
+        {
+          "name": "smsAppId"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -1752,6 +1961,20 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.unisms.UniNotice",
+      "fields": [
+        {
+          "name": "maxRetries"
+        },
+        {
+          "name": "retryInterval"
+        },
+        {
+          "name": "simple"
+        },
+        {
+          "name": "templateName"
+        }
+      ],
       "methods": [
         {
           "name": "$default$simple",
@@ -1874,6 +2097,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice",
+      "fields": [
+        {
+          "name": "token"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -1897,6 +2125,20 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.upyun.UpyunNotice$MessageId",
+      "fields": [
+        {
+          "name": "error_code"
+        },
+        {
+          "name": "message_id"
+        },
+        {
+          "name": "mobile"
+        },
+        {
+          "name": "msg_id"
+        }
+      ],
       "methods": [
         {
           "name": "getError_code",
@@ -2067,6 +2309,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.yunpian.YunpianNotice",
+      "fields": [
+        {
+          "name": "apikey"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2129,6 +2376,11 @@
     },
     {
       "type": "org.miaixz.bus.notify.nimble.zhutong.ZhutongNotice",
+      "fields": [
+        {
+          "name": "templateName"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2210,10 +2462,78 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.notify.Provider"
-    },
-    {
       "type": "org.miaixz.bus.notify.Registry",
+      "fields": [
+        {
+          "name": "ALIYUN_EDM"
+        },
+        {
+          "name": "ALIYUN_SMS"
+        },
+        {
+          "name": "ALIYUN_VMS"
+        },
+        {
+          "name": "BAIDU_SMS"
+        },
+        {
+          "name": "CLOOPEN_SMS"
+        },
+        {
+          "name": "CTYUN_SMS"
+        },
+        {
+          "name": "DINGTALK"
+        },
+        {
+          "name": "EMAY_SMS"
+        },
+        {
+          "name": "GENERIC_EDM"
+        },
+        {
+          "name": "HUAWEI_SMS"
+        },
+        {
+          "name": "JDCLOUD_SMS"
+        },
+        {
+          "name": "JPUSH_SMS"
+        },
+        {
+          "name": "NETEASE_SMS"
+        },
+        {
+          "name": "QINIU_SMS"
+        },
+        {
+          "name": "TENCENT_SMS"
+        },
+        {
+          "name": "UNI_SMS"
+        },
+        {
+          "name": "UPYUN_SMS"
+        },
+        {
+          "name": "WECHAT_CP"
+        },
+        {
+          "name": "WECHAT_KF"
+        },
+        {
+          "name": "WECHAT_MINI"
+        },
+        {
+          "name": "WECHAT_MP"
+        },
+        {
+          "name": "YUNPIAN_SMS"
+        },
+        {
+          "name": "ZHUTONG_SMS"
+        }
+      ],
       "methods": [
         {
           "name": "valueOf",
@@ -2227,6 +2547,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

@@ -28,10 +28,8 @@ import org.miaixz.bus.starter.sensitive.SensitiveConfiguration;
 /**
  * Enables data desensitization and encryption/decryption features.
  * <p>
- * This annotation imports the {@link SensitiveConfiguration}, which sets up the necessary
- * {@link org.miaixz.bus.starter.sensitive.SensitiveRequestBodyAdvice} and
- * {@link org.miaixz.bus.starter.sensitive.SensitiveResponseBodyAdvice} to handle automatic processing of sensitive data
- * in Spring MVC controllers.
+ * This annotation imports {@link SensitiveConfiguration}, which activates structured log sanitization and adds request
+ * and response advice when the application uses Servlet MVC.
  *
  * @author Kimi Liu
  * @since Java 21+

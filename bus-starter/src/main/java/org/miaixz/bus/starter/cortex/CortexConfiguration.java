@@ -23,24 +23,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.annotation.Resource;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.Hybrid;
 import org.miaixz.bus.cache.Options;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.bridge.VortexBridge;
@@ -81,11 +81,10 @@ import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 import org.miaixz.bus.cortex.version.VersionRegistry;
 import org.miaixz.bus.cortex.version.VersionStore;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.cache.CacheFactoryProvider;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for Bus Cortex starter wiring.
+ * Configures Bus Cortex clients, registries, watches, and optional embedded server integration.
  * <p>
  * The starter exposes the shared bus-cortex components, then initializes the static {@link Cortex} facade so
  * application code and Spring-managed beans resolve the same handles. Starter defaults come from
@@ -97,22 +96,25 @@ import org.miaixz.bus.starter.cache.CacheFactoryProvider;
  * @since Java 21+
  */
 @EnableConfigurationProperties(CortexProperties.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.CORTEX, name = "enabled", havingValue = "true", matchIfMissing = true)
-@Import(CacheFactoryProvider.class)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.cortex.Cortex")
+@ConditionalOnProperty(prefix = GeniusBuilder.CORTEX, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnBean(Factory.class)
 public class CortexConfiguration {
 
     /**
-     * Constructs a new CortexConfiguration instance.
+     * Bound cortex configuration properties.
      */
-    public CortexConfiguration() {
-        // No initialization required.
-    }
+    private final CortexProperties properties;
 
     /**
-     * Injected cache configuration properties.
+     * Stores the Cortex client, server, cache, watch, guard, and audit policies used by the Bean factories.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    CortexProperties properties;
+    public CortexConfiguration(CortexProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates the default Cortex cache through the shared cache factory.
@@ -144,6 +146,7 @@ public class CortexConfiguration {
      * @return watch manager
      */
     @Bean
+    @ConditionalOnMissingBean(WatchManager.class)
     public WatchManager watchManager(@Qualifier("cortexCache") CacheX cache) {
         return new WatchManager(cache(cache), properties.requireMaxWatchesPerNamespace(),
                 properties.requireWatchExpireMs());
@@ -177,6 +180,7 @@ public class CortexConfiguration {
      * @return secret masker
      */
     @Bean
+    @ConditionalOnMissingBean(SecretMasker.class)
     public SecretMasker secretMasker() {
         return new SecretMasker();
     }
@@ -187,6 +191,7 @@ public class CortexConfiguration {
      * @return secret codec
      */
     @Bean
+    @ConditionalOnMissingBean(SecretCodec.class)
     public SecretCodec secretCodec() {
         return new NoOpSecretCodec();
     }
@@ -197,6 +202,7 @@ public class CortexConfiguration {
      * @return token guard config
      */
     @Bean
+    @ConditionalOnMissingBean(TokenGuardConfig.class)
     @ConditionalOnProperty(prefix = "bus.cortex.guard", name = "enabled", havingValue = "true", matchIfMissing = true)
     public TokenGuardConfig tokenGuardConfig() {
         return properties.getGuard().getToken();
@@ -247,6 +253,7 @@ public class CortexConfiguration {
      * @return audit logger
      */
     @Bean
+    @ConditionalOnMissingBean(AuditLogger.class)
     @ConditionalOnProperty(prefix = "bus.cortex.audit", name = "enabled", havingValue = "true")
     public AuditLogger auditLogger(@Qualifier("cortexCache") CacheX cache) {
         return new AuditLogger(cache(cache));
@@ -259,6 +266,7 @@ public class CortexConfiguration {
      * @return logging watch listener
      */
     @Bean
+    @ConditionalOnMissingBean(LoggingWatchListener.class)
     @ConditionalOnProperty(prefix = "bus.cortex.watch", name = "enabled", havingValue = "true")
     public LoggingWatchListener loggingWatchListener(WatchManager watchManager) {
         LoggingWatchListener listener = new LoggingWatchListener();
@@ -374,6 +382,7 @@ public class CortexConfiguration {
      * @return registry refresh service
      */
     @Bean
+    @ConditionalOnMissingBean(RegistryRefreshService.class)
     public RegistryRefreshService registryRefreshService(Cortex.Runtime runtime) {
         return new RegistryRefreshService((ApiRegistry) runtime.api(), (McpRegistry) runtime.mcp(),
                 (PromptRegistry) runtime.prompt());
@@ -390,6 +399,7 @@ public class CortexConfiguration {
      * @return registry admin service
      */
     @Bean
+    @ConditionalOnMissingBean(RegistryControlService.class)
     public RegistryControlService registryAdminService(
             Cortex.Runtime runtime,
             ObjectProvider<CortexGuard> cortexGuard,
@@ -408,6 +418,7 @@ public class CortexConfiguration {
      * @return bridge listener
      */
     @Bean(name = "cortexBinding", destroyMethod = "close")
+    @ConditionalOnMissingBean(VortexBridge.class)
     @ConditionalOnProperty(prefix = "bus.cortex.bridge", name = "mode", havingValue = "push+pull")
     public VortexBridge vortexBridge() {
         CortexProperties.Bridge bridge = properties.getBridge();
@@ -469,6 +480,7 @@ public class CortexConfiguration {
      * @return curator application service
      */
     @Bean
+    @ConditionalOnMissingBean(ItemCuratorService.class)
     public ItemCuratorService settingCuratorService(
             StoreBackedItemStore settingStore,
             ItemRevisionStore revisionStore,
@@ -499,6 +511,7 @@ public class CortexConfiguration {
      * @return runtime overlay service
      */
     @Bean
+    @ConditionalOnMissingBean(RuntimeItemOverlayService.class)
     public RuntimeItemOverlayService runtimeSettingOverlayService(
             @Qualifier("cortexCache") CacheX cache,
             WatchManager watchManager,
@@ -517,6 +530,7 @@ public class CortexConfiguration {
      * @return default curator implementation
      */
     @Bean
+    @ConditionalOnMissingBean(Curator.class)
     public Curator curator(
             ItemCuratorService settingCuratorService,
             WatchManager watchManager,
@@ -534,6 +548,7 @@ public class CortexConfiguration {
      * @return setting query service
      */
     @Bean
+    @ConditionalOnMissingBean(ItemQueryService.class)
     public ItemQueryService settingQueryService(
             ItemCuratorService settingCuratorService,
             SecretMasker secretMasker,
@@ -548,6 +563,7 @@ public class CortexConfiguration {
      * @return setting export service
      */
     @Bean
+    @ConditionalOnMissingBean(ItemExportService.class)
     public ItemExportService settingExportService(ItemCuratorService settingCuratorService) {
         return new ItemExportService(settingCuratorService);
     }
@@ -563,6 +579,7 @@ public class CortexConfiguration {
      * @return Cortex runtime bundle
      */
     @Bean
+    @ConditionalOnMissingBean(Cortex.Runtime.class)
     public Cortex.Runtime cortexRuntime(
             ApiRegistry apiRegistry,
             McpRegistry mcpRegistry,
@@ -574,17 +591,6 @@ public class CortexConfiguration {
             return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, optionalVersionRegistry, curator);
         }
         return Cortex.runtime(apiRegistry, mcpRegistry, promptRegistry, curator);
-    }
-
-    /**
-     * Binds the assembled registries and curator interface into the static Cortex facade.
-     *
-     * @param runtime Cortex runtime bundle
-     * @return lifecycle handle that clears the static facade when the Spring context stops
-     */
-    @Bean(destroyMethod = "close")
-    public Cortex.RuntimeHandle cortexRuntimeHandle(Cortex.Runtime runtime) {
-        return Cortex.bind(runtime);
     }
 
     /**
@@ -669,7 +675,7 @@ public class CortexConfiguration {
         String[] keys = { "type", "max-size", "expire", "nodes", "redis.host", "redis.port", "redis.password",
                 "redis.timeout", "redis.max-active", "redis.max-idle", "redis.min-idle", "redis.nodes" };
         for (String key : keys) {
-            if (binder.bind(prefix + "." + key, Bindable.of(String.class)).isBound()) {
+            if (binder.bind(prefix + Symbol.DOT + key, Bindable.of(String.class)).isBound()) {
                 return true;
             }
         }
@@ -766,7 +772,7 @@ public class CortexConfiguration {
          * Deletes one registry entry from the shared durable store.
          *
          * @param type      asset type
-         * @param namespace namespace
+         * @param namespace logical registry namespace
          * @param id        durable entry identifier
          */
         @Override
@@ -778,7 +784,7 @@ public class CortexConfiguration {
          * Deletes one runtime instance snapshot from the shared durable store.
          *
          * @param type        asset type
-         * @param namespace   namespace
+         * @param namespace   logical registry namespace
          * @param method      method name
          * @param version     version identifier
          * @param fingerprint instance fingerprint
@@ -798,7 +804,7 @@ public class CortexConfiguration {
          * Finds one registry entry and converts it to the expected typed view.
          *
          * @param type      asset type
-         * @param namespace namespace
+         * @param namespace logical registry namespace
          * @param id        durable entry identifier
          * @return typed asset, or {@code null} when absent or incompatible
          */
@@ -811,7 +817,7 @@ public class CortexConfiguration {
          * Finds one registry entry by method and version and converts it to the expected typed view.
          *
          * @param type      asset type
-         * @param namespace namespace
+         * @param namespace logical registry namespace
          * @param method    method name
          * @param version   version identifier
          * @return typed asset, or {@code null} when absent or incompatible
@@ -848,7 +854,7 @@ public class CortexConfiguration {
          * Queries runtime instance snapshots for the given service identity.
          *
          * @param type      asset type
-         * @param namespace namespace
+         * @param namespace logical registry namespace
          * @param method    method name
          * @param version   version identifier
          * @return matching runtime instances

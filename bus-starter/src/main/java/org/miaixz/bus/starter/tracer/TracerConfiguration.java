@@ -19,15 +19,18 @@
 */
 package org.miaixz.bus.starter.tracer;
 
-import jakarta.annotation.Resource;
-
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.tracer.Tracer;
 
 /**
- * Auto-configuration for distributed tracing.
+ * Configures the application-scoped distributed tracer.
  * <p>
  * This class enables the {@link TracerProperties}, which will hold the configuration for the tracing system. It serves
  * as the entry point for setting up tracing-related beans.
@@ -36,20 +39,34 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { TracerProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.TRACER, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.tracer.Tracer")
+@ConditionalOnProperty(prefix = GeniusBuilder.TRACER, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class TracerConfiguration {
 
     /**
-     * Constructs a new TracerConfiguration instance.
+     * Bound tracer configuration properties.
      */
-    public TracerConfiguration() {
-        // No initialization required.
+    private final TracerProperties properties;
+
+    /**
+     * Stores the tracing activation properties for the application-scoped tracer.
+     *
+     * @param properties bound configuration properties
+     */
+    public TracerConfiguration(TracerProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * Injected distributed tracing configuration properties.
+     * Creates the Context-local tracer.
+     *
+     * @return the configured tracing facade
      */
-    @Resource
-    private TracerProperties properties;
+    @Bean
+    @ConditionalOnMissingBean(Tracer.class)
+    public Tracer tracer() {
+        return new Tracer();
+    }
 
 }

@@ -19,36 +19,59 @@
 */
 package org.miaixz.bus.starter.health;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.builtin.TID;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for health status endpoints.
+ * Immutable health endpoint properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(GeniusBuilder.HEALTH)
-public class HealthProperties {
+public final class HealthProperties {
 
     /**
-     * Constructs a new HealthProperties instance.
+     * Whether the health integration is enabled.
      */
-    public HealthProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Health detail identifiers exposed by the Bus health indicator.
+     */
+    private final List<String> details;
+
+    /**
+     * Creates validated health properties.
+     *
+     * @param enabled whether health integration is enabled
+     * @param details ordered health detail identifiers
+     */
+    public HealthProperties(@DefaultValue("false") boolean enabled, @DefaultValue List<String> details) {
+        Set<String> normalized = new LinkedHashSet<>();
+        if (details != null) {
+            for (String detail : details) {
+                String value = detail == null ? Normal.EMPTY : detail.trim();
+                if (value.isEmpty() || (!TID.ALL.equals(value) && !TID.ALL_TID.contains(value))) {
+                    throw new IllegalArgumentException("Unknown bus.health.details TID: " + detail);
+                }
+                normalized.add(value);
+            }
+        }
+        this.enabled = enabled;
+        this.details = List.copyOf(normalized);
     }
-
-    /**
-     * The default type of health information to return when no 'tid' parameter is specified. This can be a single value
-     * or a comma-separated list of values from {@link TID}. For example: "cpu,memory,diskstore".
-     */
-    private String type;
 
 }

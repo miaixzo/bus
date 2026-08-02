@@ -45,6 +45,29 @@
     },
     {
       "type": "org.miaixz.bus.sensitive.Context",
+      "fields": [
+        {
+          "name": "allFieldList"
+        },
+        {
+          "name": "beanClass"
+        },
+        {
+          "name": "currentField"
+        },
+        {
+          "name": "currentObject"
+        },
+        {
+          "name": "entry"
+        },
+        {
+          "name": "extension"
+        },
+        {
+          "name": "shield"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -186,27 +209,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.Condition"
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.Entry"
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.NShield"
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.Privacy"
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.Sensitive"
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.Shield"
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.magic.annotation.Strategy"
-    },
-    {
       "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider",
       "methods": [
         {
@@ -335,9 +337,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.nimble.ConditionProvider"
     },
     {
       "type": "org.miaixz.bus.sensitive.nimble.DafaultProvider",
@@ -473,9 +472,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.sensitive.nimble.StrategyProvider"
-    },
-    {
       "type": "org.miaixz.bus.sensitive.Provider",
       "methods": [
         {
@@ -606,6 +602,15 @@
           "parameterTypes": [
             "org.miaixz.bus.core.lang.EnumValue$Masking"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.sensitive.Sanitizer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     }

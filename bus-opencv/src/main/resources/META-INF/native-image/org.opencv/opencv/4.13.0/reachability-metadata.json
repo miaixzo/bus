@@ -5419,9 +5419,6 @@
       ]
     },
     {
-      "type": "org.opencv.core.Mat$Atable"
-    },
-    {
       "type": "org.opencv.core.Mat$AtableBase",
       "methods": [
         {
@@ -17661,9 +17658,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.opencv.osgi.OpenCVInterface"
     },
     {
       "type": "org.opencv.osgi.OpenCVNativeLoader",

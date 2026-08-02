@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Cache management support.
+ * Activates annotation-driven cache interception and binds cache integration properties. This non-exported package
+ * contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -429,14 +429,14 @@ public enum Protocol {
         int implicitPort = -1; // Default implicit port
 
         // Check for protocol and set implicit port
-        int protocolIndex = address.indexOf("://");
+        int protocolIndex = address.indexOf(Symbol.COLON + Symbol.FORWARDSLASH);
         if (protocolIndex >= 0) {
             String protocol = address.substring(0, protocolIndex);
             hostPortPart = address.substring(protocolIndex + 3); // Part after "://"
 
-            if ("http".equalsIgnoreCase(protocol)) {
+            if (Protocol.HTTP.name.equalsIgnoreCase(protocol)) {
                 implicitPort = Port._80.getPort();
-            } else if ("https".equalsIgnoreCase(protocol)) {
+            } else if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
                 implicitPort = Port._443.getPort();
             }
             // You could add more implicit ports here, e.g., "ws" -> 80, "wss" -> 443

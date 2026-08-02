@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Traffic and rate limiting control.
+ * Activates rate-limiter definition scanning and exposes the application-scoped limiter service. This non-exported
+ * package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

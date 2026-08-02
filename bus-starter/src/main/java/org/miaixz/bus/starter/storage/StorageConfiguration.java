@@ -19,30 +19,29 @@
 */
 package org.miaixz.bus.starter.storage;
 
-import jakarta.annotation.Resource;
-
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.storage.cache.StorageCache;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration class for storage services.
+ * Configures storage providers and the application-scoped storage service.
  *
  * <p>
  * This class is responsible for creating and configuring the following main components:
  *
  * <ul>
  * <li>{@link StorageService} - A factory for creating various storage service providers.</li>
- * <li>{@link CacheX} - The caching implementation for storage, defaulting to {@link StorageCache}.</li>
+ * <li>{@link CacheX} - The Context-local caching implementation for storage.</li>
  * </ul>
  *
  * <pre>
@@ -66,22 +65,24 @@ import org.miaixz.bus.storage.cache.StorageCache;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { StorageProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.STORAGE, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.storage.Provider")
+@ConditionalOnProperty(prefix = GeniusBuilder.STORAGE, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class StorageConfiguration {
 
     /**
-     * Constructs a new StorageConfiguration instance.
+     * Bound storage configuration properties.
      */
-    public StorageConfiguration() {
-        // No initialization required.
-    }
+    private final StorageProperties properties;
 
     /**
-     * Storage configuration properties, which include settings for various storage providers. This is automatically
-     * injected by Spring Boot via the {@link EnableConfigurationProperties} annotation.
+     * Stores the provider definitions used to construct the storage registry and service.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    private StorageProperties properties;
+    public StorageConfiguration(StorageProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Creates the primary {@link StorageService} bean.
@@ -95,9 +96,9 @@ public class StorageConfiguration {
      * @param cachex The caching implementation, used for storing file metadata and other temporary data.
      * @return A fully configured {@code StorageService} instance.
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean(StorageService.class)
-    public StorageService storageService(@Qualifier("storageCache") CacheX<String, Object> cachex) {
+    StorageService storageService(@Qualifier("storageCache") CacheX<String, Object> cachex) {
         return new StorageService(this.properties, cachex);
     }
 
@@ -108,25 +109,18 @@ public class StorageConfiguration {
      * <ul>
      * <li>If {@code bus.storage.cache.*} configures a concrete backend type, create a storage-specific cache through
      * {@link Factory}.</li>
-     * <li>If {@code bus.storage.cache.type=default} or no storage-specific backend is configured, reuse the shared
-     * {@code defaultCache} bean when available.</li>
-     * <li>If neither storage nor global cache is configured, fall back to {@link StorageCache#INSTANCE}.</li>
+     * <li>If no storage-specific backend is configured, create a Context-local memory cache.</li>
      * </ul>
      *
-     * @param defaultCacheProvider shared default cache provider
-     * @param factoryProvider      optional shared cache factory provider
      * @return storage cache implementation
      */
     @Bean("storageCache")
     @ConditionalOnMissingBean(name = "storageCache")
-    public CacheX<String, Object> storageCache(
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider,
-            ObjectProvider<Factory> factoryProvider) {
+    public CacheX<String, Object> storageCache() {
         if (hasStorageBackend()) {
-            return factoryProvider.getIfAvailable(Factory::new).initialize(this.properties.getCache());
+            return new Factory().initialize(this.properties.getCache());
         }
-        CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
-        return defaultCache != null ? defaultCache : StorageCache.INSTANCE;
+        return new MemoryCache<>();
     }
 
     /**

@@ -23,8 +23,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.magic.Performance;
 
@@ -36,20 +37,26 @@ import org.miaixz.bus.vortex.magic.Performance;
  */
 @Getter
 @Setter
+@Validated
 @ConfigurationProperties(GeniusBuilder.VORTEX)
-public class VortexProperties {
+public final class VortexProperties {
 
     /**
-     * Creates an empty Vortex configuration property holder.
+     * Initializes Vortex properties with the documented transport and asset-refresh defaults.
      */
     public VortexProperties() {
         // No initialization required.
     }
 
     /**
+     * Whether Vortex integration is enabled.
+     */
+    private boolean enabled;
+
+    /**
      * The service port, specifying the port number the server listens on.
      */
-    private int port;
+    private int port = 8765;
 
     /**
      * The service path, specifying the access path for the server.
@@ -79,6 +86,34 @@ public class VortexProperties {
     private Assets assets = new Assets();
 
     /**
+     * Validates network, timeout, connection, cache, and refresh limits after binding.
+     */
+    public void validate() {
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("bus.vortex.port must be in 1..65535");
+        }
+        if (performance == null || performance.getStreamingRequestThreshold() <= 0
+                || performance.getMaxRequestSize() <= 0 || performance.getMaxMultipartRequestSize() <= 0
+                || performance.getStreamingRequestThreshold() > performance.getMaxRequestSize()
+                || performance.getMaxConnections() <= 0 || performance.getPendingAcquireTimeoutSeconds() <= 0
+                || performance.getPendingAcquireMaxCount() < 0 || performance.getOutboundRetryBackoffMillis() <= 0
+                || performance.getOutboundRetryMaxBackoffMillis() < performance.getOutboundRetryBackoffMillis()
+                || performance.getOutboundMaxIdleSeconds() <= 0 || performance.getOutboundMaxLifeMinutes() <= 0
+                || performance.getOutboundEvictSeconds() <= 0 || performance.getMaxProducerCacheSize() <= 0
+                || performance.getCacheSize() <= 0 || performance.getCacheExpireMs() <= 0
+                || performance.getSyncIntervalSeconds() <= 0 || performance.getStartupDelaySeconds() < 0
+                || performance.getTimestampToleranceMinutes() <= 0) {
+            throw new IllegalArgumentException("bus.vortex performance limits and timeouts are invalid");
+        }
+        if (assets == null || assets.getIncrementalRefreshIntervalSeconds() <= 0
+                || assets.getFullCalibrationIntervalSeconds() <= 0 || assets.getModifiedOverlapMs() <= 0
+                || assets.getRefreshStartupDelaySeconds() < 0 || assets.getSlugMethod() == null
+                || assets.getSlugMethod().isBlank()) {
+            throw new IllegalArgumentException("bus.vortex.assets refresh limits and slug-method are invalid");
+        }
+    }
+
+    /**
      * Asset registry refresh settings.
      *
      * @author Kimi Liu
@@ -89,7 +124,7 @@ public class VortexProperties {
     public static class Assets {
 
         /**
-         * Constructs a new {@code Assets} instance.
+         * Initializes asset refresh settings with refresh enabled and the default interval.
          */
         public Assets() {
             // No initialization required.

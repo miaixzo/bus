@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Internationalization (i18n) support.
+ * Activates internationalized message resolution and binds message-source properties. This non-exported package
+ * contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * ElasticSearch integration support.
+ * Activates Elasticsearch client integration and binds connection properties. This non-exported package contains
+ * Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

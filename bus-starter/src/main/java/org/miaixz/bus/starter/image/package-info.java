@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Graphics and image processing support.
+ * Activates image processing and DICOM server integration and binds their runtime properties. This non-exported package
+ * contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * ZooKeeper distributed coordination support.
+ * Activates ZooKeeper client integration and binds connection, retry, and namespace properties. This non-exported
+ * package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

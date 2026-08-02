@@ -22,13 +22,14 @@ package org.miaixz.bus.starter.storage;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.cache.Options;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Registry;
 
@@ -42,27 +43,47 @@ import org.miaixz.bus.storage.Registry;
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.STORAGE)
-public class StorageProperties {
+public final class StorageProperties {
 
     /**
-     * Constructs a new StorageProperties instance.
+     * Binds immutable storage provider and cache settings from {@code bus.storage}.
+     *
+     * @param enabled whether storage integration is enabled
+     * @param type    provider configuration grouped by storage registry type
+     * @param cache   cache backend settings used by storage services
      */
-    public StorageProperties() {
-        // No initialization required.
+    public StorageProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
+        this.enabled = enabled;
+        this.type = type == null ? Map.of() : Map.copyOf(type);
+        this.cache = cache;
     }
+
+    /**
+     * Whether storage integration is enabled.
+     */
+    private final boolean enabled;
 
     /**
      * A map of storage provider configurations, where the key is the provider {@link Registry} type and the value is
      * the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private final Map<Registry, Context> type;
 
     /**
      * Nested configuration for caching options related to the storage service.
      */
     @NestedConfigurationProperty
-    private Options cache;
+    private final Options cache;
+
+    /**
+     * @return masked diagnostic representation
+     */
+    @Override
+    public String toString() {
+        return "StorageProperties[enabled=" + enabled + ", channels=" + type.size()
+                + ", endpoints=validated, buckets=validated, credentials=***, cache=***]";
+    }
 
 }

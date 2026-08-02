@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Integrated payment support.
+ * Activates payment providers and exposes the application-scoped payment service. This non-exported package contains
+ * Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

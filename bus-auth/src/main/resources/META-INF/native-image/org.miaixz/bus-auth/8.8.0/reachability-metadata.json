@@ -52,6 +52,14 @@
     },
     {
       "type": "org.miaixz.bus.auth.Builder",
+      "fields": [
+        {
+          "name": "baseUrl"
+        },
+        {
+          "name": "params"
+        }
+      ],
       "methods": [
         {
           "name": "build",
@@ -136,6 +144,11 @@
     },
     {
       "type": "org.miaixz.bus.auth.cache.AuthCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "clear",
@@ -227,10 +240,66 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.Complex"
-    },
-    {
       "type": "org.miaixz.bus.auth.Context",
+      "fields": [
+        {
+          "name": "clientId"
+        },
+        {
+          "name": "clientSecret"
+        },
+        {
+          "name": "deviceId"
+        },
+        {
+          "name": "endpoint"
+        },
+        {
+          "name": "extension"
+        },
+        {
+          "name": "extId"
+        },
+        {
+          "name": "flag"
+        },
+        {
+          "name": "ignoreRedirectUri"
+        },
+        {
+          "name": "ignoreState"
+        },
+        {
+          "name": "kid"
+        },
+        {
+          "name": "lang"
+        },
+        {
+          "name": "loginType"
+        },
+        {
+          "name": "pkce"
+        },
+        {
+          "name": "prefix"
+        },
+        {
+          "name": "redirectUri"
+        },
+        {
+          "name": "scopes"
+        },
+        {
+          "name": "teamId"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "unionId"
+        }
+      ],
       "methods": [
         {
           "name": "$default$lang",
@@ -574,6 +643,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.Endpoint",
+      "fields": [
+        {
+          "name": "AUTHORIZE"
+        },
+        {
+          "name": "REFRESH"
+        },
+        {
+          "name": "REVOKE"
+        },
+        {
+          "name": "TOKEN"
+        },
+        {
+          "name": "USERINFO"
+        }
+      ],
       "methods": [
         {
           "name": "valueOf",
@@ -589,6 +675,71 @@
     },
     {
       "type": "org.miaixz.bus.auth.magic.Authorization",
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "deviceId"
+        },
+        {
+          "name": "expireIn"
+        },
+        {
+          "name": "idToken"
+        },
+        {
+          "name": "macAlgorithm"
+        },
+        {
+          "name": "macKey"
+        },
+        {
+          "name": "oauthCallbackConfirmed"
+        },
+        {
+          "name": "oauthToken"
+        },
+        {
+          "name": "oauthTokenSecret"
+        },
+        {
+          "name": "openId"
+        },
+        {
+          "name": "refresh"
+        },
+        {
+          "name": "refreshExpireIn"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "screenName"
+        },
+        {
+          "name": "snapshotUser"
+        },
+        {
+          "name": "token"
+        },
+        {
+          "name": "token_type"
+        },
+        {
+          "name": "uid"
+        },
+        {
+          "name": "unionId"
+        },
+        {
+          "name": "userId"
+        },
+        {
+          "name": "username"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -956,6 +1107,38 @@
     },
     {
       "type": "org.miaixz.bus.auth.magic.Callback",
+      "fields": [
+        {
+          "name": "anonymous_code"
+        },
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "authorization_code"
+        },
+        {
+          "name": "code"
+        },
+        {
+          "name": "device_id"
+        },
+        {
+          "name": "error"
+        },
+        {
+          "name": "oauth_token"
+        },
+        {
+          "name": "oauth_verifier"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "user"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -1147,6 +1330,50 @@
     },
     {
       "type": "org.miaixz.bus.auth.magic.Claims",
+      "fields": [
+        {
+          "name": "avatar"
+        },
+        {
+          "name": "blog"
+        },
+        {
+          "name": "company"
+        },
+        {
+          "name": "email"
+        },
+        {
+          "name": "gender"
+        },
+        {
+          "name": "location"
+        },
+        {
+          "name": "nickname"
+        },
+        {
+          "name": "rawJson"
+        },
+        {
+          "name": "remark"
+        },
+        {
+          "name": "snapshotUser"
+        },
+        {
+          "name": "source"
+        },
+        {
+          "name": "token"
+        },
+        {
+          "name": "username"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -1401,9 +1628,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.magic.ErrorCode"
-    },
-    {
       "type": "org.miaixz.bus.auth.magic.ErrorCode$Toutiao",
       "methods": [
         {
@@ -1416,6 +1640,20 @@
     },
     {
       "type": "org.miaixz.bus.auth.metric.JWT",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "header"
+        },
+        {
+          "name": "payload"
+        },
+        {
+          "name": "signer"
+        }
+      ],
       "methods": [
         {
           "name": "addHeaders",
@@ -1730,9 +1968,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.metric.jwt.JWTRegister"
-    },
-    {
       "type": "org.miaixz.bus.auth.metric.jwt.JWTVerifier",
       "methods": [
         {
@@ -1862,6 +2097,11 @@
     },
     {
       "type": "org.miaixz.bus.auth.metric.jwt.signature.HMacJWTSigner",
+      "fields": [
+        {
+          "name": "charset"
+        }
+      ],
       "methods": [
         {
           "name": "getAlgorithm",
@@ -1889,9 +2129,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.metric.jwt.signature.JWTSigner"
     },
     {
       "type": "org.miaixz.bus.auth.metric.jwt.signature.JWTSignerBuilder",
@@ -2087,6 +2324,11 @@
     },
     {
       "type": "org.miaixz.bus.auth.metric.jwt.signature.RSAJWTSigner",
+      "fields": [
+        {
+          "name": "charset"
+        }
+      ],
       "methods": [
         {
           "name": "getAlgorithm",
@@ -2127,12 +2369,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.metric.LDAP"
-    },
-    {
-      "type": "org.miaixz.bus.auth.metric.OIDC"
     },
     {
       "type": "org.miaixz.bus.auth.nimble.AbstractProvider",
@@ -2374,6 +2610,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.amazon.AmazonScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "R_EMAILADDRESS"
+        },
+        {
+          "name": "R_LITEPROFILE"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "W_MEMBER_SOCIAL"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -2401,6 +2654,11 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.apple.AppleProvider",
+      "fields": [
+        {
+          "name": "privateKey"
+        }
+      ],
       "methods": [
         {
           "name": "build",
@@ -2438,6 +2696,14 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.apple.AppleProvider$AppleUserInfo",
+      "fields": [
+        {
+          "name": "email"
+        },
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "canEqual",
@@ -2483,6 +2749,14 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.apple.AppleProvider$AppleUsername",
+      "fields": [
+        {
+          "name": "firstName"
+        },
+        {
+          "name": "lastName"
+        }
+      ],
       "methods": [
         {
           "name": "canEqual",
@@ -2528,6 +2802,20 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.apple.AppleScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "NAME"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -2552,9 +2840,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.auth.nimble.AuthorizeScope"
     },
     {
       "type": "org.miaixz.bus.auth.nimble.baidu.BaiduProvider",
@@ -2611,6 +2896,29 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.baidu.BaiduScope",
+      "fields": [
+        {
+          "name": "BASIC"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "HAO123"
+        },
+        {
+          "name": "NETDISK"
+        },
+        {
+          "name": "PUBLIC"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SUPER_MSG"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -2679,6 +2987,32 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.coding.CodingScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "PROJECT"
+        },
+        {
+          "name": "PROJECT_DEPOT"
+        },
+        {
+          "name": "PROJECT_WIKI"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "USER"
+        },
+        {
+          "name": "USER_EMAIL"
+        },
+        {
+          "name": "USER_PHONE"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -2741,9 +3075,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.nimble.dingtalk.DingTalkAccountProvider"
-    },
-    {
       "type": "org.miaixz.bus.auth.nimble.dingtalk.DingTalkProvider",
       "methods": [
         {
@@ -2774,6 +3105,20 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.dingtalk.DingTalkScope",
+      "fields": [
+        {
+          "name": "corpid"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -2896,6 +3241,89 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.douyin.DouyinScope",
+      "fields": [
+        {
+          "name": "AWEME_SHARE"
+        },
+        {
+          "name": "DATA_EXTERNAL_ITEM"
+        },
+        {
+          "name": "DATA_EXTERNAL_USER"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "DISCOVERY_ENT"
+        },
+        {
+          "name": "FANS_DATA"
+        },
+        {
+          "name": "FANS_LIST"
+        },
+        {
+          "name": "FOLLOWING_LIST"
+        },
+        {
+          "name": "HOTSEARCH"
+        },
+        {
+          "name": "IM_SHARE"
+        },
+        {
+          "name": "LOGIN_ID"
+        },
+        {
+          "name": "MOBILE"
+        },
+        {
+          "name": "MOBILE_ALERT"
+        },
+        {
+          "name": "notes"
+        },
+        {
+          "name": "POI_SEARCH"
+        },
+        {
+          "name": "RENEW_REFRESH_TOKEN"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SHARE_WITH_SOURCE"
+        },
+        {
+          "name": "STAR_AUTHOR_SCORE_DISPLAY"
+        },
+        {
+          "name": "STAR_TOP_SCORE_DISPLAY"
+        },
+        {
+          "name": "STAR_TOPS"
+        },
+        {
+          "name": "USER_INFO"
+        },
+        {
+          "name": "VIDEO_CREATE"
+        },
+        {
+          "name": "VIDEO_DATA"
+        },
+        {
+          "name": "VIDEO_DELETE"
+        },
+        {
+          "name": "VIDEO_LIST"
+        },
+        {
+          "name": "VIDEO_SEARCH"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3035,6 +3463,59 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.facebook.FacebookScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "GROUPS_ACCESS_MEMBER_INFO"
+        },
+        {
+          "name": "PUBLIC_PROFILE"
+        },
+        {
+          "name": "PUBLISH_TO_GROUPS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "USER_AGE_RANGE"
+        },
+        {
+          "name": "USER_BIRTHDAY"
+        },
+        {
+          "name": "USER_FRIENDS"
+        },
+        {
+          "name": "USER_GENDER"
+        },
+        {
+          "name": "USER_HOMETOWN"
+        },
+        {
+          "name": "USER_LIKES"
+        },
+        {
+          "name": "USER_LINK"
+        },
+        {
+          "name": "USER_LOCATION"
+        },
+        {
+          "name": "USER_PHOTOS"
+        },
+        {
+          "name": "USER_POSTS"
+        },
+        {
+          "name": "USER_VIDEOS"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3149,6 +3630,32 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.figma.FigmaScope",
+      "fields": [
+        {
+          "name": "COMMENTS"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "DEV_RESOURCES"
+        },
+        {
+          "name": "FILE_CONTENT"
+        },
+        {
+          "name": "LIBRARY_ANALYTICS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "VARIABLES"
+        },
+        {
+          "name": "WEBHOOKS"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3205,6 +3712,47 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.gitee.GiteeScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAILS"
+        },
+        {
+          "name": "ENTERPRISES"
+        },
+        {
+          "name": "GISTS"
+        },
+        {
+          "name": "GROUPS"
+        },
+        {
+          "name": "HOOK"
+        },
+        {
+          "name": "ISSUES"
+        },
+        {
+          "name": "KEYS"
+        },
+        {
+          "name": "NOTES"
+        },
+        {
+          "name": "PROJECTS"
+        },
+        {
+          "name": "PULL_REQUESTS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "USER_INFO"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3262,6 +3810,101 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.github.GithubScope",
+      "fields": [
+        {
+          "name": "ADMIN_GPG_KEY"
+        },
+        {
+          "name": "ADMIN_ORG"
+        },
+        {
+          "name": "ADMIN_PUBLIC_KEY"
+        },
+        {
+          "name": "DELETE_PACKAGES"
+        },
+        {
+          "name": "DELETE_REPO"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "GIST"
+        },
+        {
+          "name": "NOTIFICATIONS"
+        },
+        {
+          "name": "PUBLIC_REPO"
+        },
+        {
+          "name": "READ_DISCUSSION"
+        },
+        {
+          "name": "READ_GPG_KEY"
+        },
+        {
+          "name": "READ_ORG"
+        },
+        {
+          "name": "READ_PACKAGES"
+        },
+        {
+          "name": "READ_PUBLIC_KEY"
+        },
+        {
+          "name": "READ_REPO_HOOK"
+        },
+        {
+          "name": "READ_USER"
+        },
+        {
+          "name": "REPO_DEPLOYMENT"
+        },
+        {
+          "name": "REPO_INVITE"
+        },
+        {
+          "name": "REPO_STATUS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SECURITY_EVENTS"
+        },
+        {
+          "name": "USER"
+        },
+        {
+          "name": "USER_EMAIL"
+        },
+        {
+          "name": "USER_FOLLOW"
+        },
+        {
+          "name": "WORKFLOW"
+        },
+        {
+          "name": "WRITE_DISCUSSION"
+        },
+        {
+          "name": "WRITE_GPG_KEY"
+        },
+        {
+          "name": "WRITE_ORG"
+        },
+        {
+          "name": "WRITE_PACKAGES"
+        },
+        {
+          "name": "WRITE_PUBLIC_KEY"
+        },
+        {
+          "name": "WRITE_REPO_HOOK"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3318,6 +3961,47 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.gitlab.GitlabScope",
+      "fields": [
+        {
+          "name": "API"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "PROFILE"
+        },
+        {
+          "name": "READ_API"
+        },
+        {
+          "name": "READ_REGISTRY"
+        },
+        {
+          "name": "READ_REPOSITORY"
+        },
+        {
+          "name": "READ_USER"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SUDO"
+        },
+        {
+          "name": "WRITE_REGISTRY"
+        },
+        {
+          "name": "WRITE_REPOSITORY"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3380,6 +4064,788 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.google.GoogleScope",
+      "fields": [
+        {
+          "name": "ACTIVITY"
+        },
+        {
+          "name": "ADEXCHANGE_BUYER"
+        },
+        {
+          "name": "ADMIN_DATATRANSFER"
+        },
+        {
+          "name": "ADMIN_DATATRANSFER_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_CUSTOMER"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_CUSTOMER_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DEVICE_CHROMEOS"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DEVICE_CHROMEOS_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DEVICE_MOBILE"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DEVICE_MOBILE_ACTION"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DEVICE_MOBILE_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DOMAIN"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_DOMAIN_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_GROUP"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_GROUP_MEMBER"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_GROUP_MEMBER_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_GROUP_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_NOTIFICATIONS"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_ORGUNIT"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_ORGUNIT_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_RESOURCE_CALENDAR"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_RESOURCE_CALENDAR_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_ROLEMANAGEMENT"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_ROLEMANAGEMENT_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USER"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USER_ALIAS"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USER_ALIAS_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USER_READONLY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USER_SECURITY"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USERSCHEMA"
+        },
+        {
+          "name": "ADMIN_DIRECTORY_USERSCHEMA_READONLY"
+        },
+        {
+          "name": "ADMIN_REPORTS_AUDIT_READONLY"
+        },
+        {
+          "name": "ADMIN_REPORTS_USAGE_READONLY"
+        },
+        {
+          "name": "ADSENSE"
+        },
+        {
+          "name": "ADSENSE_READONLY"
+        },
+        {
+          "name": "ADSENSEHOST"
+        },
+        {
+          "name": "ANALYTICS"
+        },
+        {
+          "name": "ANALYTICS_EDIT"
+        },
+        {
+          "name": "ANALYTICS_MANAGE_USERS"
+        },
+        {
+          "name": "ANALYTICS_MANAGE_USERS_READONLY"
+        },
+        {
+          "name": "ANALYTICS_PROVISION"
+        },
+        {
+          "name": "ANALYTICS_READONLY"
+        },
+        {
+          "name": "ANALYTICS_USER_DELETION"
+        },
+        {
+          "name": "ANDROIDENTERPRISE"
+        },
+        {
+          "name": "ANDROIDMANAGEMENT"
+        },
+        {
+          "name": "ANDROIDPUBLISHER"
+        },
+        {
+          "name": "APPENGINE_ADMIN"
+        },
+        {
+          "name": "APPS_ALERTS"
+        },
+        {
+          "name": "APPS_GROUPS_MIGRATION"
+        },
+        {
+          "name": "APPS_GROUPS_SETTINGS"
+        },
+        {
+          "name": "APPS_LICENSING"
+        },
+        {
+          "name": "APPS_ORDER"
+        },
+        {
+          "name": "APPS_ORDER_READONLY"
+        },
+        {
+          "name": "BIGQUERY"
+        },
+        {
+          "name": "BIGQUERY_INSERTDATA"
+        },
+        {
+          "name": "BIGQUERY_READONLY"
+        },
+        {
+          "name": "BIGTABLE_ADMIN"
+        },
+        {
+          "name": "BIGTABLE_ADMIN_CLUSTER"
+        },
+        {
+          "name": "BIGTABLE_ADMIN_INSTANCE"
+        },
+        {
+          "name": "BIGTABLE_ADMIN_TABLE"
+        },
+        {
+          "name": "BLOGGER"
+        },
+        {
+          "name": "BLOGGER_READONLY"
+        },
+        {
+          "name": "BOOKS"
+        },
+        {
+          "name": "CALENDAR"
+        },
+        {
+          "name": "CALENDAR_EVENTS"
+        },
+        {
+          "name": "CALENDAR_EVENTS_READONLY"
+        },
+        {
+          "name": "CALENDAR_FEEDS"
+        },
+        {
+          "name": "CALENDAR_READONLY"
+        },
+        {
+          "name": "CALENDAR_SETTINGS_READONLY"
+        },
+        {
+          "name": "CLASSROOM_ANNOUNCEMENTS"
+        },
+        {
+          "name": "CLASSROOM_ANNOUNCEMENTS_READONLY"
+        },
+        {
+          "name": "CLASSROOM_COURSES"
+        },
+        {
+          "name": "CLASSROOM_COURSES_READONLY"
+        },
+        {
+          "name": "CLASSROOM_COURSEWORK_ME"
+        },
+        {
+          "name": "CLASSROOM_COURSEWORK_ME_READONLY"
+        },
+        {
+          "name": "CLASSROOM_COURSEWORK_STUDENTS"
+        },
+        {
+          "name": "CLASSROOM_COURSEWORK_STUDENTS_READONLY"
+        },
+        {
+          "name": "CLASSROOM_GUARDIANLINKS_ME_READONLY"
+        },
+        {
+          "name": "CLASSROOM_GUARDIANLINKS_STUDENTS"
+        },
+        {
+          "name": "CLASSROOM_GUARDIANLINKS_STUDENTS_READONLY"
+        },
+        {
+          "name": "CLASSROOM_PROFILE_EMAILS"
+        },
+        {
+          "name": "CLASSROOM_PROFILE_PHOTOS"
+        },
+        {
+          "name": "CLASSROOM_PUSH_NOTIFICATIONS"
+        },
+        {
+          "name": "CLASSROOM_ROSTERS"
+        },
+        {
+          "name": "CLASSROOM_ROSTERS_READONLY"
+        },
+        {
+          "name": "CLASSROOM_STUDENT_SUBMISSIONS_ME_READONLY"
+        },
+        {
+          "name": "CLASSROOM_STUDENT_SUBMISSIONS_STUDENTS_READONLY"
+        },
+        {
+          "name": "CLASSROOM_TOPICS"
+        },
+        {
+          "name": "CLASSROOM_TOPICS_READONLY"
+        },
+        {
+          "name": "CLOUD_BIGTABLE_ADMIN"
+        },
+        {
+          "name": "CLOUD_BIGTABLE_ADMIN_CLUSTER"
+        },
+        {
+          "name": "CLOUD_BIGTABLE_ADMIN_TABLE"
+        },
+        {
+          "name": "CLOUD_DEBUGGER"
+        },
+        {
+          "name": "CLOUD_IDENTITY_GROUPS"
+        },
+        {
+          "name": "CLOUD_IDENTITY_GROUPS_READONLY"
+        },
+        {
+          "name": "CLOUD_LANGUAGE"
+        },
+        {
+          "name": "CLOUD_PLATFORM"
+        },
+        {
+          "name": "CLOUD_PLATFORM_READ_ONLY"
+        },
+        {
+          "name": "CLOUD_SEARCH"
+        },
+        {
+          "name": "CLOUD_SEARCH_DEBUG"
+        },
+        {
+          "name": "CLOUD_SEARCH_INDEXING"
+        },
+        {
+          "name": "CLOUD_SEARCH_QUERY"
+        },
+        {
+          "name": "CLOUD_SEARCH_SETTINGS"
+        },
+        {
+          "name": "CLOUD_SEARCH_SETTINGS_INDEXING"
+        },
+        {
+          "name": "CLOUD_SEARCH_SETTINGS_QUERY"
+        },
+        {
+          "name": "CLOUD_SEARCH_STATS"
+        },
+        {
+          "name": "CLOUD_SEARCH_STATS_INDEXING"
+        },
+        {
+          "name": "CLOUD_TRANSLATION"
+        },
+        {
+          "name": "CLOUD_VISION"
+        },
+        {
+          "name": "CLOUDIOT"
+        },
+        {
+          "name": "CLOUDKMS"
+        },
+        {
+          "name": "CLOUDRUNTIMECONFIG"
+        },
+        {
+          "name": "COMPUTE"
+        },
+        {
+          "name": "COMPUTE_READONLY"
+        },
+        {
+          "name": "CONTACTS"
+        },
+        {
+          "name": "CONTACTS_FEEDS"
+        },
+        {
+          "name": "CONTACTS_OTHER_READONLY"
+        },
+        {
+          "name": "CONTACTS_READONLY"
+        },
+        {
+          "name": "CONTENT"
+        },
+        {
+          "name": "DATASTORE"
+        },
+        {
+          "name": "DDMCONVERSIONS"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "DEVSTORAGE_FULL_CONTROL"
+        },
+        {
+          "name": "DEVSTORAGE_READ_ONLY"
+        },
+        {
+          "name": "DEVSTORAGE_READ_WRITE"
+        },
+        {
+          "name": "DFAREPORTING"
+        },
+        {
+          "name": "DFATRAFFICKING"
+        },
+        {
+          "name": "DIALOGFLOW"
+        },
+        {
+          "name": "DIRECTORY_READONLY"
+        },
+        {
+          "name": "DISPLAY_VIDEO"
+        },
+        {
+          "name": "DOCUMENTS"
+        },
+        {
+          "name": "DOCUMENTS_READONLY"
+        },
+        {
+          "name": "DOUBLECLICKBIDMANAGER"
+        },
+        {
+          "name": "DOUBLECLICKSEARCH"
+        },
+        {
+          "name": "DRIVE"
+        },
+        {
+          "name": "DRIVE_ACTIVITY"
+        },
+        {
+          "name": "DRIVE_ACTIVITY_READONLY"
+        },
+        {
+          "name": "DRIVE_APPDATA"
+        },
+        {
+          "name": "DRIVE_FILE"
+        },
+        {
+          "name": "DRIVE_METADATA"
+        },
+        {
+          "name": "DRIVE_METADATA_READONLY"
+        },
+        {
+          "name": "DRIVE_PHOTOS_READONLY"
+        },
+        {
+          "name": "DRIVE_READONLY"
+        },
+        {
+          "name": "DRIVE_SCRIPTS"
+        },
+        {
+          "name": "EDISCOVERY"
+        },
+        {
+          "name": "EDISCOVERY_READONLY"
+        },
+        {
+          "name": "FIREBASE"
+        },
+        {
+          "name": "FIREBASE_READONLY"
+        },
+        {
+          "name": "FITNESS_ACTIVITY_READ"
+        },
+        {
+          "name": "FITNESS_ACTIVITY_WRITE"
+        },
+        {
+          "name": "FITNESS_BLOOD_GLUCOSE_READ"
+        },
+        {
+          "name": "FITNESS_BLOOD_GLUCOSE_WRITE"
+        },
+        {
+          "name": "FITNESS_BLOOD_PRESSURE_READ"
+        },
+        {
+          "name": "FITNESS_BLOOD_PRESSURE_WRITE"
+        },
+        {
+          "name": "FITNESS_BODY_READ"
+        },
+        {
+          "name": "FITNESS_BODY_TEMPERATURE_READ"
+        },
+        {
+          "name": "FITNESS_BODY_TEMPERATURE_WRITE"
+        },
+        {
+          "name": "FITNESS_BODY_WRITE"
+        },
+        {
+          "name": "FITNESS_LOCATION_READ"
+        },
+        {
+          "name": "FITNESS_LOCATION_WRITE"
+        },
+        {
+          "name": "FITNESS_NUTRITION_READ"
+        },
+        {
+          "name": "FITNESS_NUTRITION_WRITE"
+        },
+        {
+          "name": "FITNESS_OXYGEN_SATURATION_READ"
+        },
+        {
+          "name": "FITNESS_OXYGEN_SATURATION_WRITE"
+        },
+        {
+          "name": "FITNESS_REPRODUCTIVE_HEALTH_READ"
+        },
+        {
+          "name": "FITNESS_REPRODUCTIVE_HEALTH_WRITE"
+        },
+        {
+          "name": "FORMS"
+        },
+        {
+          "name": "FORMS_CURRENTONLY"
+        },
+        {
+          "name": "GAMES"
+        },
+        {
+          "name": "GENOMICS"
+        },
+        {
+          "name": "GMAIL"
+        },
+        {
+          "name": "GMAIL_ADDONS_CURRENT_ACTION_COMPOSE"
+        },
+        {
+          "name": "GMAIL_ADDONS_CURRENT_MESSAGE_ACTION"
+        },
+        {
+          "name": "GMAIL_ADDONS_CURRENT_MESSAGE_METADATA"
+        },
+        {
+          "name": "GMAIL_ADDONS_CURRENT_MESSAGE_READONLY"
+        },
+        {
+          "name": "GMAIL_COMPOSE"
+        },
+        {
+          "name": "GMAIL_INSERT"
+        },
+        {
+          "name": "GMAIL_LABELS"
+        },
+        {
+          "name": "GMAIL_METADATA"
+        },
+        {
+          "name": "GMAIL_MODIFY"
+        },
+        {
+          "name": "GMAIL_READONLY"
+        },
+        {
+          "name": "GMAIL_SEND"
+        },
+        {
+          "name": "GMAIL_SETTINGS_BASIC"
+        },
+        {
+          "name": "GMAIL_SETTINGS_SHARING"
+        },
+        {
+          "name": "GROUPS"
+        },
+        {
+          "name": "INDEXING"
+        },
+        {
+          "name": "JOBS"
+        },
+        {
+          "name": "LOGGING_ADMIN"
+        },
+        {
+          "name": "LOGGING_READ"
+        },
+        {
+          "name": "LOGGING_WRITE"
+        },
+        {
+          "name": "MANUFACTURERCENTER"
+        },
+        {
+          "name": "MONITORING"
+        },
+        {
+          "name": "MONITORING_READ"
+        },
+        {
+          "name": "MONITORING_WRITE"
+        },
+        {
+          "name": "NDEV_CLOUDDNS_READONLY"
+        },
+        {
+          "name": "NDEV_CLOUDDNS_READWRITE"
+        },
+        {
+          "name": "NDEV_CLOUDMAN"
+        },
+        {
+          "name": "NDEV_CLOUDMAN_READONLY"
+        },
+        {
+          "name": "PHOTOSLIBRARY"
+        },
+        {
+          "name": "PHOTOSLIBRARY_APPENDONLY"
+        },
+        {
+          "name": "PHOTOSLIBRARY_READONLY"
+        },
+        {
+          "name": "PHOTOSLIBRARY_READONLY_APPCREATEDDATA"
+        },
+        {
+          "name": "PHOTOSLIBRARY_SHARING"
+        },
+        {
+          "name": "PRESENTATIONS"
+        },
+        {
+          "name": "PRESENTATIONS_READONLY"
+        },
+        {
+          "name": "PUBSUB"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SCRIPT_DEPLOYMENTS"
+        },
+        {
+          "name": "SCRIPT_DEPLOYMENTS_READONLY"
+        },
+        {
+          "name": "SCRIPT_METRICS"
+        },
+        {
+          "name": "SCRIPT_PROCESSES"
+        },
+        {
+          "name": "SCRIPT_PROJECTS"
+        },
+        {
+          "name": "SCRIPT_PROJECTS_READONLY"
+        },
+        {
+          "name": "SERVICE_MANAGEMENT"
+        },
+        {
+          "name": "SERVICE_MANAGEMENT_READONLY"
+        },
+        {
+          "name": "SERVICECONTROL"
+        },
+        {
+          "name": "SITEVERIFICATION"
+        },
+        {
+          "name": "SITEVERIFICATION_VERIFY_ONLY"
+        },
+        {
+          "name": "SOURCE_FULL_CONTROL"
+        },
+        {
+          "name": "SOURCE_READ_ONLY"
+        },
+        {
+          "name": "SOURCE_READ_WRITE"
+        },
+        {
+          "name": "SPANNER_ADMIN"
+        },
+        {
+          "name": "SPANNER_DATA"
+        },
+        {
+          "name": "SPREADSHEETS"
+        },
+        {
+          "name": "SPREADSHEETS_READONLY"
+        },
+        {
+          "name": "SQLSERVICE_ADMIN"
+        },
+        {
+          "name": "STREETVIEWPUBLISH"
+        },
+        {
+          "name": "TAGMANAGER_DELETE_CONTAINERS"
+        },
+        {
+          "name": "TAGMANAGER_EDIT_CONTAINERS"
+        },
+        {
+          "name": "TAGMANAGER_EDIT_CONTAINERVERSIONS"
+        },
+        {
+          "name": "TAGMANAGER_MANAGE_ACCOUNTS"
+        },
+        {
+          "name": "TAGMANAGER_MANAGE_USERS"
+        },
+        {
+          "name": "TAGMANAGER_PUBLISH"
+        },
+        {
+          "name": "TAGMANAGER_READONLY"
+        },
+        {
+          "name": "TASKS"
+        },
+        {
+          "name": "TASKS_READONLY"
+        },
+        {
+          "name": "TRACE_APPEND"
+        },
+        {
+          "name": "USER_ADDRESSES_READ"
+        },
+        {
+          "name": "USER_BIRTHDAY_READ"
+        },
+        {
+          "name": "USER_EMAIL"
+        },
+        {
+          "name": "USER_EMAILS_READ"
+        },
+        {
+          "name": "USER_GENDER_READ"
+        },
+        {
+          "name": "USER_OPENID"
+        },
+        {
+          "name": "USER_ORGANIZATION_READ"
+        },
+        {
+          "name": "USER_PHONENUMBERS_READ"
+        },
+        {
+          "name": "USER_PROFILE"
+        },
+        {
+          "name": "USERINFO_EMAIL"
+        },
+        {
+          "name": "USERINFO_PROFILE"
+        },
+        {
+          "name": "VERIFIEDACCESS"
+        },
+        {
+          "name": "WEBMASTERS"
+        },
+        {
+          "name": "WEBMASTERS_READONLY"
+        },
+        {
+          "name": "YOUTUBE"
+        },
+        {
+          "name": "YOUTUBE_CHANNEL_MEMBERSHIPS_CREATOR"
+        },
+        {
+          "name": "YOUTUBE_FORCE_SSL"
+        },
+        {
+          "name": "YOUTUBE_READONLY"
+        },
+        {
+          "name": "YOUTUBE_UPLOAD"
+        },
+        {
+          "name": "YOUTUBEPARTNER"
+        },
+        {
+          "name": "YOUTUBEPARTNER_CHANNEL_AUDIT"
+        },
+        {
+          "name": "YT_ANALYTICS_MONETARY_READONLY"
+        },
+        {
+          "name": "YT_ANALYTICS_READONLY"
+        }
+      ],
       "methods": [
         {
           "name": "getAdminDirectoryScopes",
@@ -3484,6 +4950,44 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.huawei.HuaweiScope",
+      "fields": [
+        {
+          "name": "ACCOUNTLIST"
+        },
+        {
+          "name": "BASE_PROFILE"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "MOBILE_NUMBER"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SCOPE_DRIVE"
+        },
+        {
+          "name": "SCOPE_DRIVE_APPDATA"
+        },
+        {
+          "name": "SCOPE_DRIVE_FILE"
+        },
+        {
+          "name": "SCOPE_DRIVE_METADATA"
+        },
+        {
+          "name": "SCOPE_DRIVE_METADATA_READONLY"
+        },
+        {
+          "name": "SCOPE_DRIVE_READONLY"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3559,6 +5063,17 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.jd.JdScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SNSAPI_BASE"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3633,6 +5148,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.kujiale.KujialeScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "GET_BUDGET_LIST"
+        },
+        {
+          "name": "GET_DESIGN"
+        },
+        {
+          "name": "GET_USER_INFO"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3701,6 +5233,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.line.LineScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "PROFILE"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3794,6 +5343,68 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.linkedin.LinkedinScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "R_AD_CAMPAIGNS"
+        },
+        {
+          "name": "R_ADS"
+        },
+        {
+          "name": "R_ADS_LEADGEN_AUTOMATION"
+        },
+        {
+          "name": "R_ADS_REPORTING"
+        },
+        {
+          "name": "R_BASICPROFILE"
+        },
+        {
+          "name": "R_EMAILADDRESS"
+        },
+        {
+          "name": "R_LITEPROFILE"
+        },
+        {
+          "name": "R_MEMBER_SOCIAL"
+        },
+        {
+          "name": "R_ORGANIZATION_SOCIAL"
+        },
+        {
+          "name": "RW_AD_CAMPAIGNS"
+        },
+        {
+          "name": "RW_ADS"
+        },
+        {
+          "name": "RW_COMPANY_ADMIN"
+        },
+        {
+          "name": "RW_DMP_SEGMENTS"
+        },
+        {
+          "name": "RW_ORGANIZATION"
+        },
+        {
+          "name": "RW_ORGANIZATION_ADMIN"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "W_MEMBER_SOCIAL"
+        },
+        {
+          "name": "W_ORGANIZATION_SOCIAL"
+        },
+        {
+          "name": "W_SHARE"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -3897,6 +5508,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.mi.MiScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "PHONE_EMAIL"
+        },
+        {
+          "name": "profile"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4005,6 +5633,119 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.microsoft.MicrosoftScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "FILES_READ"
+        },
+        {
+          "name": "FILES_READ_ALL"
+        },
+        {
+          "name": "FILES_READ_SELECTED"
+        },
+        {
+          "name": "FILES_READWRITE"
+        },
+        {
+          "name": "FILES_READWRITE_ALL"
+        },
+        {
+          "name": "FILES_READWRITE_APPFOLDER"
+        },
+        {
+          "name": "FILES_READWRITE_SELECTED"
+        },
+        {
+          "name": "MAIL_READ"
+        },
+        {
+          "name": "MAIL_READ_SHARED"
+        },
+        {
+          "name": "MAIL_READBASIC"
+        },
+        {
+          "name": "MAIL_READWRITE"
+        },
+        {
+          "name": "MAIL_READWRITE_SHARED"
+        },
+        {
+          "name": "MAIL_SEND"
+        },
+        {
+          "name": "MAIL_SEND_SHARED"
+        },
+        {
+          "name": "MAILBOXSETTINGS_READ"
+        },
+        {
+          "name": "MAILBOXSETTINGS_READWRITE"
+        },
+        {
+          "name": "NOTES_CREATE"
+        },
+        {
+          "name": "NOTES_READ"
+        },
+        {
+          "name": "NOTES_READ_ALL"
+        },
+        {
+          "name": "NOTES_READWRITE"
+        },
+        {
+          "name": "NOTES_READWRITE_ALL"
+        },
+        {
+          "name": "OFFLINE_ACCESS"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "ORGCONTACT_READ_ALL"
+        },
+        {
+          "name": "PROFILE"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "USER_EXPORT_ALL"
+        },
+        {
+          "name": "USER_INVITE_ALL"
+        },
+        {
+          "name": "USER_MANAGEIDENTITIES_ALL"
+        },
+        {
+          "name": "USER_READ"
+        },
+        {
+          "name": "USER_READ_ALL"
+        },
+        {
+          "name": "USER_READBASIC_ALL"
+        },
+        {
+          "name": "USER_READWRITE"
+        },
+        {
+          "name": "USER_READWRITE_ALL"
+        },
+        {
+          "name": "USERACTIVITY_READWRITE_CREATEDBYAPP"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4138,6 +5879,140 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.okta.OktaScope",
+      "fields": [
+        {
+          "name": "ADDRESS"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "OFFLINE_ACCESS"
+        },
+        {
+          "name": "OKTA_APPS_MANAGE"
+        },
+        {
+          "name": "OKTA_APPS_READ"
+        },
+        {
+          "name": "OKTA_AUTHORIZATIONSERVERS_MANAGE"
+        },
+        {
+          "name": "OKTA_AUTHORIZATIONSERVERS_READ"
+        },
+        {
+          "name": "OKTA_CLIENTS_MANAGE"
+        },
+        {
+          "name": "OKTA_CLIENTS_READ"
+        },
+        {
+          "name": "OKTA_CLIENTS_REGISTER"
+        },
+        {
+          "name": "OKTA_EVENTHOOKS_MANAGE"
+        },
+        {
+          "name": "OKTA_EVENTHOOKS_READ"
+        },
+        {
+          "name": "OKTA_FACTORS_MANAGE"
+        },
+        {
+          "name": "OKTA_FACTORS_READ"
+        },
+        {
+          "name": "OKTA_GROUPS_MANAGE"
+        },
+        {
+          "name": "OKTA_GROUPS_READ"
+        },
+        {
+          "name": "OKTA_IDPS_MANAGE"
+        },
+        {
+          "name": "OKTA_IDPS_READ"
+        },
+        {
+          "name": "OKTA_INLINEHOOKS_MANAGE"
+        },
+        {
+          "name": "OKTA_INLINEHOOKS_READ"
+        },
+        {
+          "name": "OKTA_LINKEDOBJECTS_MANAGE"
+        },
+        {
+          "name": "OKTA_LINKEDOBJECTS_READ"
+        },
+        {
+          "name": "OKTA_LOGS_READ"
+        },
+        {
+          "name": "OKTA_POLICIES_MANAGE"
+        },
+        {
+          "name": "OKTA_POLICIES_READ"
+        },
+        {
+          "name": "OKTA_ROLES_MANAGE"
+        },
+        {
+          "name": "OKTA_ROLES_READ"
+        },
+        {
+          "name": "OKTA_SCHEMAS_MANAGE"
+        },
+        {
+          "name": "OKTA_SCHEMAS_READ"
+        },
+        {
+          "name": "OKTA_SESSIONS_MANAGE"
+        },
+        {
+          "name": "OKTA_SESSIONS_READ"
+        },
+        {
+          "name": "OKTA_TEMPLATES_MANAGE"
+        },
+        {
+          "name": "OKTA_TEMPLATES_READ"
+        },
+        {
+          "name": "OKTA_TRUSTEDORIGINS_MANAGE"
+        },
+        {
+          "name": "OKTA_TRUSTEDORIGINS_READ"
+        },
+        {
+          "name": "OKTA_USERS_MANAGE"
+        },
+        {
+          "name": "OKTA_USERS_MANAGE_SELF"
+        },
+        {
+          "name": "OKTA_USERS_READ"
+        },
+        {
+          "name": "OKTA_USERS_READ_SELF"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "PHONE"
+        },
+        {
+          "name": "PROFILE"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4241,6 +6116,26 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.pinterest.PinterestScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "READ_PUBLIC"
+        },
+        {
+          "name": "READ_RELATIONSHIPS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "WRITE_PUBLIC"
+        },
+        {
+          "name": "WRITE_RELATIONSHIPS"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4297,6 +6192,26 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.proginn.ProginnScope",
+      "fields": [
+        {
+          "name": "BASIC"
+        },
+        {
+          "name": "cellphone"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "email"
+        },
+        {
+          "name": "realname"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4353,6 +6268,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.qq.QqMiniProvider$JSCode2SessionResponse",
+      "fields": [
+        {
+          "name": "errcode"
+        },
+        {
+          "name": "errmsg"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "session_key"
+        },
+        {
+          "name": "unionid"
+        }
+      ],
       "methods": [
         {
           "name": "canEqual",
@@ -4475,6 +6407,35 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.qq.QqScope",
+      "fields": [
+        {
+          "name": "ADD_ALBUM"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "GET_USER_INFO"
+        },
+        {
+          "name": "GET_VIP_INFO"
+        },
+        {
+          "name": "GET_VIP_RICH_INFO"
+        },
+        {
+          "name": "LIST_ALBUM"
+        },
+        {
+          "name": "LIST_PHOTO"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "UPLOAD_PIC"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4537,6 +6498,26 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.rednote.RednoteMarketiScope",
+      "fields": [
+        {
+          "name": "account_manage"
+        },
+        {
+          "name": "ad_manage"
+        },
+        {
+          "name": "ad_query"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "report_service"
+        },
+        {
+          "name": "scope"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4623,6 +6604,101 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.renren.RenrenScope",
+      "fields": [
+        {
+          "name": "ADMIN_PAGE"
+        },
+        {
+          "name": "CREATE_ALBUM"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "OPERATE_LIKE"
+        },
+        {
+          "name": "PHOTO_UPLOAD"
+        },
+        {
+          "name": "PUBLISH_BLOG"
+        },
+        {
+          "name": "PUBLISH_CHECKIN"
+        },
+        {
+          "name": "PUBLISH_COMMENT"
+        },
+        {
+          "name": "PUBLISH_FEED"
+        },
+        {
+          "name": "PUBLISH_SHARE"
+        },
+        {
+          "name": "READ_USER_ALBUM"
+        },
+        {
+          "name": "READ_USER_BLOG"
+        },
+        {
+          "name": "READ_USER_CHECKIN"
+        },
+        {
+          "name": "READ_USER_COMMENT"
+        },
+        {
+          "name": "READ_USER_FEED"
+        },
+        {
+          "name": "READ_USER_GUESTBOOK"
+        },
+        {
+          "name": "READ_USER_INVITATION"
+        },
+        {
+          "name": "READ_USER_LIKE_HISTORY"
+        },
+        {
+          "name": "READ_USER_MESSAGE"
+        },
+        {
+          "name": "READ_USER_NOTIFICATION"
+        },
+        {
+          "name": "READ_USER_PHOTO"
+        },
+        {
+          "name": "READ_USER_REQUEST"
+        },
+        {
+          "name": "READ_USER_SHARE"
+        },
+        {
+          "name": "READ_USER_STATUS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SEND_INVITATION"
+        },
+        {
+          "name": "SEND_MESSAGE"
+        },
+        {
+          "name": "SEND_NOTIFICATION"
+        },
+        {
+          "name": "SEND_REQUEST"
+        },
+        {
+          "name": "STATUS_UPDATE"
+        },
+        {
+          "name": "WRITE_GUESTBOOK"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4849,12 +6925,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.nimble.router.OAuth2Router"
-    },
-    {
-      "type": "org.miaixz.bus.auth.nimble.router.StandardRouter"
-    },
-    {
       "type": "org.miaixz.bus.auth.nimble.slack.SlackProvider",
       "methods": [
         {
@@ -4903,6 +6973,290 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.slack.SlackScope",
+      "fields": [
+        {
+          "name": "ADMIN"
+        },
+        {
+          "name": "ADMIN_ANALYTICS_READ"
+        },
+        {
+          "name": "ADMIN_APPS_READ"
+        },
+        {
+          "name": "ADMIN_APPS_WRITE"
+        },
+        {
+          "name": "ADMIN_BARRIERS_READ"
+        },
+        {
+          "name": "ADMIN_BARRIERS_WRITE"
+        },
+        {
+          "name": "ADMIN_CONVERSATIONS_READ"
+        },
+        {
+          "name": "ADMIN_CONVERSATIONS_WRITE"
+        },
+        {
+          "name": "ADMIN_INVITES_READ"
+        },
+        {
+          "name": "ADMIN_INVITES_WRITE"
+        },
+        {
+          "name": "ADMIN_TEAMS_READ"
+        },
+        {
+          "name": "ADMIN_TEAMS_WRITE"
+        },
+        {
+          "name": "ADMIN_USERGROUPS_READ"
+        },
+        {
+          "name": "ADMIN_USERGROUPS_WRITE"
+        },
+        {
+          "name": "ADMIN_USERS_READ"
+        },
+        {
+          "name": "ADMIN_USERS_WRITE"
+        },
+        {
+          "name": "APP_MENTIONS_READ"
+        },
+        {
+          "name": "AUDITLOGS_READ"
+        },
+        {
+          "name": "BOT"
+        },
+        {
+          "name": "CALLS_READ"
+        },
+        {
+          "name": "CALLS_WRITE"
+        },
+        {
+          "name": "CHANNELS_HISTORY"
+        },
+        {
+          "name": "CHANNELS_JOIN"
+        },
+        {
+          "name": "CHANNELS_MANAGE"
+        },
+        {
+          "name": "CHANNELS_READ"
+        },
+        {
+          "name": "CHANNELS_WRITE"
+        },
+        {
+          "name": "CHAT_WRITE"
+        },
+        {
+          "name": "CHAT_WRITE_BOT"
+        },
+        {
+          "name": "CHAT_WRITE_CUSTOMIZE"
+        },
+        {
+          "name": "CHAT_WRITE_PUBLIC"
+        },
+        {
+          "name": "CHAT_WRITE_USER"
+        },
+        {
+          "name": "CLIENT"
+        },
+        {
+          "name": "COMMANDS"
+        },
+        {
+          "name": "CONVERSATIONS_HISTORY"
+        },
+        {
+          "name": "CONVERSATIONS_READ"
+        },
+        {
+          "name": "CONVERSATIONS_WRITE"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "DND_READ"
+        },
+        {
+          "name": "DND_WRITE"
+        },
+        {
+          "name": "DND_WRITE_USER"
+        },
+        {
+          "name": "EMOJI_READ"
+        },
+        {
+          "name": "FILES_READ"
+        },
+        {
+          "name": "FILES_WRITE"
+        },
+        {
+          "name": "FILES_WRITE_USER"
+        },
+        {
+          "name": "GROUPS_HISTORY"
+        },
+        {
+          "name": "GROUPS_READ"
+        },
+        {
+          "name": "GROUPS_WRITE"
+        },
+        {
+          "name": "IDENTIFY"
+        },
+        {
+          "name": "IDENTITY_AVATAR"
+        },
+        {
+          "name": "IDENTITY_AVATAR_READ_USER"
+        },
+        {
+          "name": "IDENTITY_BASIC"
+        },
+        {
+          "name": "IDENTITY_EMAIL"
+        },
+        {
+          "name": "IDENTITY_EMAIL_READ_USER"
+        },
+        {
+          "name": "IDENTITY_READ_USER"
+        },
+        {
+          "name": "IDENTITY_TEAM"
+        },
+        {
+          "name": "IDENTITY_TEAM_READ_USER"
+        },
+        {
+          "name": "IM_HISTORY"
+        },
+        {
+          "name": "IM_READ"
+        },
+        {
+          "name": "IM_WRITE"
+        },
+        {
+          "name": "INCOMING_WEBHOOK"
+        },
+        {
+          "name": "LINKS_READ"
+        },
+        {
+          "name": "LINKS_WRITE"
+        },
+        {
+          "name": "MPIM_HISTORY"
+        },
+        {
+          "name": "MPIM_READ"
+        },
+        {
+          "name": "MPIM_WRITE"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "PINS_READ"
+        },
+        {
+          "name": "PINS_WRITE"
+        },
+        {
+          "name": "POST"
+        },
+        {
+          "name": "REACTIONS_READ"
+        },
+        {
+          "name": "REACTIONS_WRITE"
+        },
+        {
+          "name": "READ"
+        },
+        {
+          "name": "REMINDERS_READ"
+        },
+        {
+          "name": "REMINDERS_READ_USER"
+        },
+        {
+          "name": "REMINDERS_WRITE"
+        },
+        {
+          "name": "REMINDERS_WRITE_USER"
+        },
+        {
+          "name": "REMOTE_FILES_READ"
+        },
+        {
+          "name": "REMOTE_FILES_SHARE"
+        },
+        {
+          "name": "REMOTE_FILES_WRITE"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SEARCH_READ"
+        },
+        {
+          "name": "STARS_READ"
+        },
+        {
+          "name": "STARS_WRITE"
+        },
+        {
+          "name": "TEAM_READ"
+        },
+        {
+          "name": "TOKENS_BASIC"
+        },
+        {
+          "name": "USERGROUPS_READ"
+        },
+        {
+          "name": "USERGROUPS_WRITE"
+        },
+        {
+          "name": "USERS_PROFILE_READ"
+        },
+        {
+          "name": "USERS_PROFILE_WRITE"
+        },
+        {
+          "name": "USERS_PROFILE_WRITE_USER"
+        },
+        {
+          "name": "USERS_READ"
+        },
+        {
+          "name": "USERS_READ_EMAIL"
+        },
+        {
+          "name": "USERS_WRITE"
+        },
+        {
+          "name": "WORKFLOW_STEPS_EXECUTE"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -4959,6 +7313,26 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.stackoverflow.StackoverflowScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "NO_EXPIRY"
+        },
+        {
+          "name": "PRIVATE_INFO"
+        },
+        {
+          "name": "read_inbox"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "WRITE_ACCESS"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -5226,6 +7600,65 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.vk.VKScope",
+      "fields": [
+        {
+          "name": "ADS"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "DOCS"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "FRIENDS"
+        },
+        {
+          "name": "GROUPS"
+        },
+        {
+          "name": "MARKET"
+        },
+        {
+          "name": "NOTES"
+        },
+        {
+          "name": "NOTIFICATIONS"
+        },
+        {
+          "name": "PAGES"
+        },
+        {
+          "name": "PERSONAL"
+        },
+        {
+          "name": "PHONE"
+        },
+        {
+          "name": "PHOTOS"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "STATS"
+        },
+        {
+          "name": "STATUS"
+        },
+        {
+          "name": "STORIES"
+        },
+        {
+          "name": "VIDEO"
+        },
+        {
+          "name": "WALL"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -5392,6 +7825,17 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.wechat.ee.WeChatEeWebScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SNSAPI_BASE"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -5448,6 +7892,23 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.wechat.mini.WeChatMiniProvider$JSCode2SessionResponse",
+      "fields": [
+        {
+          "name": "errcode"
+        },
+        {
+          "name": "errmsg"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "session_key"
+        },
+        {
+          "name": "unionid"
+        }
+      ],
       "methods": [
         {
           "name": "canEqual",
@@ -5582,6 +8043,20 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.wechat.mp.WechatMpScope",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "SNSAPI_BASE"
+        },
+        {
+          "name": "SNSAPI_USERINFO"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -5703,6 +8178,41 @@
     },
     {
       "type": "org.miaixz.bus.auth.nimble.weibo.WeiboScope",
+      "fields": [
+        {
+          "name": "ALL"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "DIRECT_MESSAGES_READ"
+        },
+        {
+          "name": "DIRECT_MESSAGES_WRITE"
+        },
+        {
+          "name": "EMAIL"
+        },
+        {
+          "name": "FOLLOW_APP_OFFICIAL_MICROBLOG"
+        },
+        {
+          "name": "FRIENDSHIPS_GROUPS_READ"
+        },
+        {
+          "name": "FRIENDSHIPS_GROUPS_WRITE"
+        },
+        {
+          "name": "INVITATION_WRITE"
+        },
+        {
+          "name": "scope"
+        },
+        {
+          "name": "STATUSES_TO_ME_READ"
+        }
+      ],
       "methods": [
         {
           "name": "getDescription",
@@ -5765,10 +8275,165 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.auth.Provider"
-    },
-    {
       "type": "org.miaixz.bus.auth.Registry",
+      "fields": [
+        {
+          "name": "AFDIAN"
+        },
+        {
+          "name": "ALIPAY"
+        },
+        {
+          "name": "ALIYUN"
+        },
+        {
+          "name": "AMAZON"
+        },
+        {
+          "name": "APPLE"
+        },
+        {
+          "name": "BAIDU"
+        },
+        {
+          "name": "CODING"
+        },
+        {
+          "name": "DINGTALK"
+        },
+        {
+          "name": "DINGTALK_ACCOUNT"
+        },
+        {
+          "name": "DOUYIN"
+        },
+        {
+          "name": "DOUYIN_MINI"
+        },
+        {
+          "name": "ELEME"
+        },
+        {
+          "name": "FACEBOOK"
+        },
+        {
+          "name": "FEISHU"
+        },
+        {
+          "name": "FIGMA"
+        },
+        {
+          "name": "GITEE"
+        },
+        {
+          "name": "GITHUB"
+        },
+        {
+          "name": "GITLAB"
+        },
+        {
+          "name": "GOOGLE"
+        },
+        {
+          "name": "HUAWEI"
+        },
+        {
+          "name": "JD"
+        },
+        {
+          "name": "KUJIALE"
+        },
+        {
+          "name": "LINE"
+        },
+        {
+          "name": "LINKEDIN"
+        },
+        {
+          "name": "MEITUAN"
+        },
+        {
+          "name": "MI"
+        },
+        {
+          "name": "MICROSOFT"
+        },
+        {
+          "name": "MICROSOFT_CN"
+        },
+        {
+          "name": "OIDC"
+        },
+        {
+          "name": "OKTA"
+        },
+        {
+          "name": "OSCHINA"
+        },
+        {
+          "name": "PINTEREST"
+        },
+        {
+          "name": "PROGINN"
+        },
+        {
+          "name": "QQ"
+        },
+        {
+          "name": "QQ_MINI"
+        },
+        {
+          "name": "REDNOTE_MARKET"
+        },
+        {
+          "name": "RENREN"
+        },
+        {
+          "name": "SLACK"
+        },
+        {
+          "name": "STACK_OVERFLOW"
+        },
+        {
+          "name": "TAOBAO"
+        },
+        {
+          "name": "TEAMBITION"
+        },
+        {
+          "name": "TOUTIAO"
+        },
+        {
+          "name": "TWITTER"
+        },
+        {
+          "name": "VK"
+        },
+        {
+          "name": "WECHAT_EE"
+        },
+        {
+          "name": "WECHAT_EE_QRCODE"
+        },
+        {
+          "name": "WECHAT_EE_WEB"
+        },
+        {
+          "name": "WECHAT_MINI"
+        },
+        {
+          "name": "WECHAT_MP"
+        },
+        {
+          "name": "WECHAT_OPEN"
+        },
+        {
+          "name": "WEIBO"
+        },
+        {
+          "name": "XIMALAYA"
+        }
+      ],
       "methods": [
         {
           "name": "from",
@@ -5800,6 +8465,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

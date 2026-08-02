@@ -83,9 +83,9 @@ public class Context {
     private String extension;
 
     /**
-     * Creates a new {@code Context} instance.
+     * Creates an empty mutable context for one sensitive-data operation.
      *
-     * @return this new instance.
+     * @return empty operation context
      */
     public static Context newInstance() {
         return new Context();

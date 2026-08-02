@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * OAuth2 authorization support.
+ * Activates authentication services, resolves protected controller methods, and binds authentication properties. This
+ * non-exported package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

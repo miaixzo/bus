@@ -22,14 +22,14 @@ package org.miaixz.bus.starter.vortex;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.annotation.Resource;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -45,7 +45,7 @@ import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
@@ -84,7 +84,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServer;
 
 /**
- * Auto-configuration for the Vortex gateway.
+ * Configures the Vortex routing gateway and its asset registry lifecycle.
  * <p>
  * This configuration class sets up the complete request processing pipeline for the Vortex API gateway, including:
  * </p>
@@ -119,21 +119,35 @@ import reactor.netty.http.server.HttpServer;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = { "org.miaixz.bus.vortex.Context", "reactor.netty.http.server.HttpServer" })
+@ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class VortexConfiguration {
 
     /**
-     * Creates a Vortex auto-configuration.
+     * Bean name of the HTTP router.
      */
-    public VortexConfiguration() {
-        // No initialization required.
+    private static final String HTTP_ROUTER = "http";
+
+    /**
+     * Bean name of the WebSocket router.
+     */
+    private static final String WS_ROUTER = "ws";
+
+    /**
+     * Stores and validates the Vortex gateway properties before any runtime Bean is created.
+     *
+     * @param properties bound configuration properties
+     */
+    public VortexConfiguration(VortexProperties properties) {
+        this.properties = properties;
+        this.properties.validate();
     }
 
     /**
      * Bound Vortex configuration properties.
      */
-    @Resource
-    private VortexProperties properties;
+    private final VortexProperties properties;
 
     /**
      * Configures the core Vortex request processing component. This method sets up the WebFlux handler, integrates
@@ -151,14 +165,15 @@ public class VortexConfiguration {
      * @return A {@link Vortex} core component instance, including the HTTP server.
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
+    @ConditionalOnMissingBean(Vortex.class)
     public Vortex vortex(
             List<Filter> filters,
             List<Handler> handlers,
-            @Qualifier("http") Router<ServerRequest, ?> httpRouter,
+            @Qualifier(HTTP_ROUTER) Router<ServerRequest, ?> httpRouter,
             @Qualifier("mq") Router<ServerRequest, ?> mqRouter,
             @Qualifier("mcp") Router<ServerRequest, ?> mcpRouter,
             @Qualifier("grpc") Router<ServerRequest, ?> grpcRouter,
-            @Qualifier("ws") Router<ServerRequest, ?> wsRouter,
+            @Qualifier(WS_ROUTER) Router<ServerRequest, ?> wsRouter,
             @Qualifier("llm") Router<ServerRequest, ?> llmRouter,
             @Qualifier("slug") Router<ServerRequest, ?> slugRouter) {
         Holder.of(properties.getPerformance());
@@ -224,6 +239,7 @@ public class VortexConfiguration {
      * @return A new {@link ForwardedHeaderTransformer} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(ForwardedHeaderTransformer.class)
     public ForwardedHeaderTransformer forwardedHeaderTransformer() {
         return new ForwardedHeaderTransformer();
     }
@@ -236,6 +252,7 @@ public class VortexConfiguration {
      * @return A new instance of GrpcRouter.
      */
     @Bean(name = "grpc")
+    @ConditionalOnMissingBean(name = "grpc")
     public Router<ServerRequest, ServerResponse> grpc(GrpcExecutor executor) {
         return new GrpcRouter(executor);
     }
@@ -248,6 +265,7 @@ public class VortexConfiguration {
      * @return A new instance of McpRouter.
      */
     @Bean(name = "mcp")
+    @ConditionalOnMissingBean(name = "mcp")
     public Router<ServerRequest, ServerResponse> mcp(McpExecutor executor) {
         return new McpRouter(executor);
     }
@@ -260,6 +278,7 @@ public class VortexConfiguration {
      * @return A new instance of MqRouter.
      */
     @Bean(name = "mq")
+    @ConditionalOnMissingBean(name = "mq")
     public Router<ServerRequest, ServerResponse> mq(MqExecutor executor) {
         return new MqRouter(executor);
     }
@@ -274,7 +293,8 @@ public class VortexConfiguration {
      * @param executor The RestExecutor instance to be used by the router.
      * @return A new instance of RestRouter.
      */
-    @Bean(name = "http")
+    @Bean(name = HTTP_ROUTER)
+    @ConditionalOnMissingBean(name = HTTP_ROUTER)
     public Router<ServerRequest, ServerResponse> rest(RestExecutor executor) {
         return new RestRouter(executor);
     }
@@ -286,7 +306,8 @@ public class VortexConfiguration {
      * @param executor The WsExecutor instance to be used by the router.
      * @return A new instance of WsRouter.
      */
-    @Bean(name = "ws")
+    @Bean(name = WS_ROUTER)
+    @ConditionalOnMissingBean(name = WS_ROUTER)
     public Router<ServerRequest, ServerResponse> ws(WsExecutor executor) {
         return new WsRouter(executor);
     }
@@ -299,6 +320,7 @@ public class VortexConfiguration {
      * @return A new instance of LlmRouter.
      */
     @Bean(name = "llm")
+    @ConditionalOnMissingBean(name = "llm")
     public Router<ServerRequest, ServerResponse> llm(LlmExecutor executor) {
         return new LlmRouter(executor);
     }
@@ -310,6 +332,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugRouter.
      */
     @Bean(name = "slug")
+    @ConditionalOnMissingBean(name = "slug")
     public Router<ServerRequest, ServerResponse> slug(SlugExecutor executor) {
         return new SlugRouter(executor);
     }
@@ -320,6 +343,7 @@ public class VortexConfiguration {
      * @return A new instance of GrpcExecutor.
      */
     @Bean
+    @ConditionalOnMissingBean(GrpcExecutor.class)
     public GrpcExecutor grpcExecutor() {
         return new GrpcExecutor();
     }
@@ -330,6 +354,7 @@ public class VortexConfiguration {
      * @return A new instance of McpExecutor.
      */
     @Bean
+    @ConditionalOnMissingBean(McpExecutor.class)
     public McpExecutor mcpExecutor() {
         return new McpExecutor();
     }
@@ -343,6 +368,7 @@ public class VortexConfiguration {
      * @return A new instance of MqExecutor with globally configured performance settings
      */
     @Bean
+    @ConditionalOnMissingBean(MqExecutor.class)
     public MqExecutor mqExecutor() {
         return new MqExecutor();
     }
@@ -356,6 +382,7 @@ public class VortexConfiguration {
      * @return A new instance of RestExecutor.
      */
     @Bean
+    @ConditionalOnMissingBean(RestExecutor.class)
     public RestExecutor restExecutor() {
         return new RestExecutor();
     }
@@ -366,6 +393,7 @@ public class VortexConfiguration {
      * @return A new instance of WsExecutor.
      */
     @Bean
+    @ConditionalOnMissingBean(WsExecutor.class)
     public WsExecutor wsExecutor() {
         return new WsExecutor();
     }
@@ -376,6 +404,7 @@ public class VortexConfiguration {
      * @return A new instance of LlmFactory.
      */
     @Bean
+    @ConditionalOnMissingBean(LlmFactory.class)
     public LlmFactory llmProviderFactory() {
         return new LlmFactory();
     }
@@ -387,6 +416,7 @@ public class VortexConfiguration {
      * @return A new instance of LlmExecutor.
      */
     @Bean
+    @ConditionalOnMissingBean(LlmExecutor.class)
     public LlmExecutor llmExecutor(LlmFactory providerFactory) {
         return new LlmExecutor(providerFactory);
     }
@@ -398,6 +428,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugExecutor.
      */
     @Bean
+    @ConditionalOnMissingBean(SlugExecutor.class)
     public SlugExecutor slugExecutor(SlugRouteMatcher matcher) {
         return new SlugExecutor(matcher);
     }
@@ -409,6 +440,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugRouteMatcher.
      */
     @Bean
+    @ConditionalOnMissingBean(SlugRouteMatcher.class)
     public SlugRouteMatcher slugRouteMatcher(AssetsRegistry registry) {
         return new SlugRouteMatcher(registry, properties.getAssets().getSlugMethod());
     }
@@ -460,6 +492,7 @@ public class VortexConfiguration {
      * @return A new instance of RequestStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(RequestStrategy.class)
     public RequestStrategy requestStrategy() {
         return new RequestStrategy();
     }
@@ -470,6 +503,7 @@ public class VortexConfiguration {
      * @return A new instance of RestRequestStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(RestRequestStrategy.class)
     public RestRequestStrategy restRequestStrategy() {
         return new RestRequestStrategy();
     }
@@ -481,6 +515,7 @@ public class VortexConfiguration {
      * @return A new instance of CstRequestStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(CstRequestStrategy.class)
     public CstRequestStrategy cstRequestStrategy() {
         return new CstRequestStrategy();
     }
@@ -491,6 +526,7 @@ public class VortexConfiguration {
      * @return A new instance of McpRequestStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(McpRequestStrategy.class)
     public McpRequestStrategy mcpRequestStrategy() {
         return new McpRequestStrategy();
     }
@@ -502,6 +538,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugRequestStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(SlugRequestStrategy.class)
     public SlugRequestStrategy slugRequestStrategy(SlugRouteMatcher matcher) {
         return new SlugRequestStrategy(matcher);
     }
@@ -514,6 +551,7 @@ public class VortexConfiguration {
      * @return A new instance of VettingStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(VettingStrategy.class)
     public VettingStrategy vettingStrategy() {
         return new VettingStrategy();
     }
@@ -525,6 +563,7 @@ public class VortexConfiguration {
      * @return A new instance of RestVettingStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(RestVettingStrategy.class)
     public RestVettingStrategy restVettingStrategy() {
         return new RestVettingStrategy();
     }
@@ -536,6 +575,7 @@ public class VortexConfiguration {
      * @return A new instance of CstVettingStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(CstVettingStrategy.class)
     public CstVettingStrategy cstVettingStrategy() {
         return new CstVettingStrategy();
     }
@@ -547,6 +587,7 @@ public class VortexConfiguration {
      * @return A new instance of McpVettingStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(McpVettingStrategy.class)
     public McpVettingStrategy mcpVettingStrategy() {
         return new McpVettingStrategy();
     }
@@ -557,6 +598,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugVettingStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(SlugVettingStrategy.class)
     public SlugVettingStrategy slugVettingStrategy() {
         return new SlugVettingStrategy();
     }
@@ -570,6 +612,7 @@ public class VortexConfiguration {
      * @return A new instance of QualifierStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(QualifierStrategy.class)
     public QualifierStrategy qualifierStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
         return new QualifierStrategy(authorizeProvider, assetsRegistry);
     }
@@ -583,6 +626,7 @@ public class VortexConfiguration {
      * @return A new instance of RestQualifierStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(RestQualifierStrategy.class)
     public RestQualifierStrategy restQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {
@@ -597,6 +641,7 @@ public class VortexConfiguration {
      * @return A new instance of CstQualifierStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(CstQualifierStrategy.class)
     public CstQualifierStrategy cstQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {
@@ -612,6 +657,7 @@ public class VortexConfiguration {
      * @return A new instance of McpQualifierStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(McpQualifierStrategy.class)
     public McpQualifierStrategy mcpQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry) {
@@ -626,6 +672,7 @@ public class VortexConfiguration {
      * @return A new instance of SlugQualifierStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(SlugQualifierStrategy.class)
     public SlugQualifierStrategy slugQualifierStrategy(SlugRouteMatcher matcher, AuthorizeProvider authorizeProvider) {
         return new SlugQualifierStrategy(matcher, authorizeProvider);
     }
@@ -637,6 +684,7 @@ public class VortexConfiguration {
      * @return A new instance of LimitStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(LimiterStrategy.class)
     public LimiterStrategy limitStrategy(ObjectProvider<LimiterRegistry> limiterRegistryProvider) {
         return new LimiterStrategy(limiterRegistryProvider.getIfAvailable(LimiterRegistry::new));
     }
@@ -648,6 +696,7 @@ public class VortexConfiguration {
      * @return A new instance of ResponseStrategy.
      */
     @Bean
+    @ConditionalOnMissingBean(ResponseStrategy.class)
     public ResponseStrategy responseStrategy() {
         return new ResponseStrategy();
     }
@@ -661,6 +710,7 @@ public class VortexConfiguration {
      * @return A new instance of StrategyFactory.
      */
     @Bean
+    @ConditionalOnMissingBean(StrategyFactory.class)
     public StrategyFactory strategyFactory(List<Strategy> strategies) {
         return new StrategyFactory(strategies);
     }
@@ -675,6 +725,7 @@ public class VortexConfiguration {
      * @return A new instance of PrimaryFilter.
      */
     @Bean
+    @ConditionalOnMissingBean(PrimaryFilter.class)
     public PrimaryFilter primaryFilter(StrategyFactory strategyFactory) {
         return new PrimaryFilter(strategyFactory);
     }

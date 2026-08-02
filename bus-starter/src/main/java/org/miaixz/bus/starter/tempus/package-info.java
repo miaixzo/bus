@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Temporal workflow engine auto-configuration support.
+ * Activates the Tempus scheduling engine and manages its Spring application-context lifecycle. This non-exported
+ * package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

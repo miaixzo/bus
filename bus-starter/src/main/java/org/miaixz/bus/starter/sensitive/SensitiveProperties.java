@@ -20,101 +20,151 @@
 package org.miaixz.bus.starter.sensitive;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for data desensitization and encryption/decryption.
+ * Immutable sensitive-data crypto properties using an explicit algorithm allowlist.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE)
-public class SensitiveProperties {
+public final class SensitiveProperties {
 
     /**
-     * Constructs a new SensitiveProperties instance.
+     * Whether the sensitive integration is enabled.
      */
-    public SensitiveProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Encryption rules keyed by the protected data category.
+     */
+    private final Encrypt encrypt;
+    /**
+     * Decryption rules keyed by the protected data category.
+     */
+    private final Decrypt decrypt;
+    /**
+     * Whether sensitive processing emits diagnostic events without exposing protected values.
+     */
+    private final boolean debug;
+
+    /**
+     * Creates sensitive-data properties.
+     *
+     * @param enabled whether the feature is enabled
+     * @param encrypt encryption settings
+     * @param decrypt decryption settings
+     * @param debug   whether sensitive-data debugging is enabled
+     */
+    public SensitiveProperties(@DefaultValue("false") boolean enabled, Encrypt encrypt, Decrypt decrypt,
+            @DefaultValue("false") boolean debug) {
+        this.enabled = enabled;
+        this.encrypt = encrypt;
+        this.decrypt = decrypt;
+        this.debug = debug;
     }
 
     /**
-     * Configuration for encryption.
+     * Supported symmetric algorithms.
      */
-    private Encrypt encrypt = new Encrypt();
-
-    /**
-     * Configuration for decryption.
-     */
-    private Decrypt decrypt = new Decrypt();
-
-    /**
-     * Whether to enable debug mode. In debug mode, encryption and decryption might be bypassed.
-     */
-    private boolean debug;
-
-    /**
-     * Nested class for encryption settings.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    @Getter
-    @Setter
-    public static class Encrypt {
-
+    public enum Type {
         /**
-         * Constructs a new Encrypt instance.
+         * AES.
          */
-        public Encrypt() {
-            // No initialization required.
-        }
-
+        AES,
         /**
-         * The encryption key.
+         * DES.
          */
-        private String key;
-
+        DES,
         /**
-         * The encryption algorithm type (e.g., AES, DES).
+         * Chinese SM4.
          */
-        private String type;
-
+        SM4
     }
 
     /**
-     * Nested class for decryption settings.
+     * Encryption configuration; key contains only an external secret reference.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param key  lookup key
+     * @param type allowlisted encryption algorithm
      */
-    @Getter
-    @Setter
-    public static class Decrypt {
+    public record Encrypt(String key, Type type) {
 
         /**
-         * Constructs a new Decrypt instance.
+         * Exposes the external secret reference used for encryption.
+         *
+         * @return secret reference
          */
-        public Decrypt() {
-            // No initialization required.
+        public String getKey() {
+            return key;
         }
 
         /**
-         * The decryption key.
+         * Exposes the allowlisted encryption algorithm name.
+         *
+         * @return allowlisted algorithm name
          */
-        private String key;
+        public String getType() {
+            return type == null ? null : type.name();
+        }
 
         /**
-         * The decryption algorithm type (e.g., AES, DES).
+         * @return masked representation
          */
-        private String type;
+        @Override
+        public String toString() {
+            return "Encrypt[key=***, type=" + type + "]";
+        }
+    }
 
+    /**
+     * Decryption configuration; key contains only an external secret reference.
+     *
+     * @param key  lookup key
+     * @param type allowlisted decryption algorithm
+     */
+    public record Decrypt(String key, Type type) {
+
+        /**
+         * Exposes the external secret reference used for decryption.
+         *
+         * @return secret reference
+         */
+        public String getKey() {
+            return key;
+        }
+
+        /**
+         * Exposes the allowlisted decryption algorithm name.
+         *
+         * @return allowlisted algorithm name
+         */
+        public String getType() {
+            return type == null ? null : type.name();
+        }
+
+        /**
+         * @return masked representation
+         */
+        @Override
+        public String toString() {
+            return "Decrypt[key=***, type=" + type + "]";
+        }
+    }
+
+    /**
+     * @return masked diagnostic representation
+     */
+    @Override
+    public String toString() {
+        return "SensitiveProperties[enabled=" + enabled + ", debug=" + debug + ", encrypt=***, decrypt=***]";
     }
 
 }

@@ -35,9 +35,12 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
@@ -111,6 +114,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     private boolean supportMethodsArguments = false;
 
     /**
+     * Flattened datasource-scoped pagination configuration.
+     */
+    private Properties properties;
+
+    /**
      * Creates a new PageHandler with default settings.
      */
     public PageHandler() {
@@ -140,6 +148,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             return false;
         }
 
+        this.properties = properties;
         // Parse reasonable parameter
         String reasonableStr = properties.getProperty("reasonable");
         if (StringKit.isNotEmpty(reasonableStr)) {
@@ -189,6 +198,9 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      */
     @Override
     public void getBoundSql(StatementHandler statementHandler) {
+        if (!settings().enabled()) {
+            return;
+        }
         // Check if pagination is enabled for this thread
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
@@ -229,6 +241,9 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      */
     @Override
     public void prepare(StatementHandler statementHandler) {
+        if (!settings().enabled()) {
+            return;
+        }
         // Apply pagination SQL modifications
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
@@ -276,12 +291,16 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
+        PageSettings currentSettings = settings();
+        if (!currentSettings.enabled()) {
+            return;
+        }
         // Check if pagination is enabled for this thread
         Pageable pageable = PageContext.getLocalPage();
 
         // If no thread-local pagination, check supportMethodsArguments
         if (pageable == null || pageable.isUnpaged()) {
-            if (supportMethodsArguments && parameter != null) {
+            if (currentSettings.supportMethodsArguments() && parameter != null) {
                 try {
                     pageable = extractPageableFromParameter(parameter);
                     if (pageable != null) {
@@ -363,7 +382,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             }
 
             // Apply reasonable logic if enabled
-            if (reasonable && performCount && total > 0) {
+            if (currentSettings.reasonable() && performCount && total > 0) {
                 Logger.debug(
                         false,
                         "Mapper",
@@ -448,7 +467,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     /**
      * Gets the database dialect for the given executor.
      *
-     * @param executor the executor
+     * @param executor MyBatis executor whose transaction supplies the database connection
      * @return the database dialect
      * @throws SQLException if unable to determine the dialect
      */
@@ -474,10 +493,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         MetaObject metaObject = SystemMetaObject.forObject(parameter);
 
         // Default parameter names - can be configured via paramsMap
-        String pageNoParam = paramsMap.getOrDefault("pageNo", "pageNo");
-        String pageSizeParam = paramsMap.getOrDefault("pageSize", "pageSize");
-        String countParam = paramsMap.getOrDefault("count", "count");
-        String orderByParam = paramsMap.getOrDefault("orderBy", "orderBy");
+        Map<String, String> currentParams = settings().params();
+        String pageNoParam = currentParams.getOrDefault("pageNo", "pageNo");
+        String pageSizeParam = currentParams.getOrDefault("pageSize", "pageSize");
+        String countParam = currentParams.getOrDefault("count", "count");
+        String orderByParam = currentParams.getOrDefault("orderBy", "orderBy");
 
         // Extract page number and page size
         Object pageNoValue = getParamValue(metaObject, pageNoParam);
@@ -569,7 +589,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             // Simple parsing for comma-separated field:direction pairs
             // Example: "name ASC, age DESC, email"
             Sort sort = Sort.unsorted();
-            String[] parts = orderBy.split(",");
+            String[] parts = orderBy.split(Symbol.COMMA);
 
             for (String part : parts) {
                 part = part.trim();
@@ -606,9 +626,9 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     /**
      * Executes a count query to get the total number of elements.
      *
-     * @param executor  the executor
+     * @param executor  MyBatis executor used to run the generated count statement
      * @param ms        the mapped statement
-     * @param parameter the parameter
+     * @param parameter mapper method parameters copied to the count statement
      * @param boundSql  the bound SQL
      * @param dialect   the database dialect
      * @return the total number of elements
@@ -625,8 +645,9 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         // Create count statement ID based on params mapping
         String countStatementId = ms.getId() + "_COUNT";
-        if (paramsMap.containsKey("count")) {
-            countStatementId = ms.getId() + "_" + paramsMap.get("count");
+        Map<String, String> currentParams = settings().params();
+        if (currentParams.containsKey("count")) {
+            countStatementId = ms.getId() + Symbol.UNDERLINE + currentParams.get("count");
         }
 
         // Create count statement
@@ -665,12 +686,12 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     /**
      * Executes a pagination query.
      *
-     * @param executor      the executor
+     * @param executor      MyBatis executor used to run the generated pagination statement
      * @param ms            the mapped statement
-     * @param parameter     the parameter
+     * @param parameter     mapper method parameters copied to the pagination statement
      * @param resultHandler the result handler
      * @param boundSql      the bound SQL
-     * @param pageable      the pageable
+     * @param pageable      requested page bounds and sorting
      * @param dialect       the database dialect
      * @return the paginated results
      * @throws Exception if the pagination query fails
@@ -744,7 +765,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         String[] keyProperties = ms.getKeyProperties();
         if (keyProperties != null) {
-            builder.keyProperty(String.join(",", keyProperties));
+            builder.keyProperty(String.join(Symbol.COMMA, keyProperties));
         }
 
         builder.timeout(ms.getTimeout());
@@ -772,7 +793,10 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * @return {@code true} when the mapped statement is an internal count query
      */
     private boolean isCountMappedStatement(MappedStatement ms) {
-        String countSuffix = paramsMap.containsKey("count") ? "_" + paramsMap.get("count") : "_COUNT";
+        Map<String, String> currentParams = settings().params();
+        String countSuffix = currentParams.containsKey("count")
+                ? Symbol.UNDERLINE + currentParams.get("count")
+                : Symbol.UNDERLINE + "COUNT";
         return ms != null && ms.getId().endsWith(countSuffix);
     }
 
@@ -798,6 +822,69 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             return sql;
         }
         return paginationBuilder.applySort(sql, sort);
+    }
+
+    /**
+     * Resolves immutable pagination settings for the current datasource.
+     *
+     * @return current datasource pagination settings
+     */
+    private PageSettings settings() {
+        if (properties == null) {
+            return new PageSettings(true, reasonable, supportMethodsArguments, Map.copyOf(paramsMap));
+        }
+        boolean enabled = Boolean.parseBoolean(find(Args.PROP_ENABLED, "true"));
+        boolean currentReasonable = Boolean.parseBoolean(find(Args.PAGE_REASONABLE, String.valueOf(reasonable)));
+        boolean currentSupport = Boolean
+                .parseBoolean(find(Args.PAGE_SUPPORT_METHOD_ARGUMENTS, String.valueOf(supportMethodsArguments)));
+        Map<String, String> currentParams = new HashMap<>();
+        String params = find(Args.PAGE_PARAMS, null);
+        if (StringKit.isNotEmpty(params)) {
+            for (String item : params.split("[;|,|&]")) {
+                String[] pair = item.split("[=|:]");
+                if (pair.length == 2) {
+                    currentParams.put(pair[0].trim(), pair[1].trim());
+                }
+            }
+        } else {
+            currentParams.putAll(paramsMap);
+        }
+        return new PageSettings(enabled, currentReasonable, currentSupport, Map.copyOf(currentParams));
+    }
+
+    /**
+     * Finds one pagination setting using datasource, shared and legacy-default precedence.
+     *
+     * @param name     setting name
+     * @param fallback fallback value when no configured value exists
+     * @return resolved setting value
+     */
+    private String find(String name, String fallback) {
+        String suffix = Symbol.DOT + Args.PAGE_KEY + Symbol.DOT + name;
+        String key = Holder.getKey();
+        String value = properties.getProperty(key + suffix);
+        if (value == null) {
+            value = properties.getProperty(Args.SHARED_KEY + suffix);
+        }
+        if (value == null && Holder.getDefault() != null) {
+            value = properties.getProperty(Holder.getDefault() + suffix);
+        }
+        if (value == null) {
+            value = properties.getProperty("default" + suffix, fallback);
+        }
+        return value;
+    }
+
+    /**
+     * Immutable pagination settings resolved for one statement execution.
+     *
+     * @param enabled                 whether pagination is enabled
+     * @param reasonable              whether page numbers are normalized
+     * @param supportMethodsArguments whether mapper arguments may supply pagination
+     * @param params                  immutable pagination parameter mapping
+     */
+    private record PageSettings(boolean enabled, boolean reasonable, boolean supportMethodsArguments,
+            Map<String, String> params) {
     }
 
     /**

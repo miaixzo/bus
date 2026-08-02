@@ -21,7 +21,10 @@ package org.miaixz.bus.mapper.handler;
 
 import java.util.Properties;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Holder;
 
 /**
  * Base class for mapper handlers that resolve datasource-scoped provider configuration.
@@ -44,7 +47,12 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     protected C config;
 
     /**
-     * Constructs a new ScopedProviderHandler instance.
+     * Optional properties used only to apply datasource-scoped enabled flags to an explicit default configuration.
+     */
+    private Properties activationProperties;
+
+    /**
+     * Initializes a scoped Provider handler without a default configuration.
      */
     public ScopedProviderHandler() {
         // No initialization required.
@@ -73,16 +81,45 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
         this.properties = properties;
         String datasourceKey = getDatasourceKey();
         P provider = getProvider(properties, type());
+        if (!enabled(datasourceKey, properties)) {
+            this.config = null;
+            return provider != null || hasScopeConfiguration(properties);
+        }
         if (provider == null && requiresProvider()) {
             onProviderMissing(datasourceKey);
-            return false;
+            return hasScopeConfiguration(properties);
         }
         C resolved = resolve(datasourceKey, properties, provider);
         if (resolved == null) {
-            return false;
+            return hasScopeConfiguration(properties);
         }
         this.config = resolved;
         return true;
+    }
+
+    /**
+     * Applies datasource-scoped activation rules without replacing an explicit default configuration.
+     * <p>
+     * This is used when a provider supplies the highest-priority configuration object while external properties still
+     * need to disable or re-enable the handler for individual datasources.
+     *
+     * @param properties flattened mapper properties containing enabled flags
+     */
+    public void setActivationProperties(Properties properties) {
+        this.activationProperties = properties;
+    }
+
+    /**
+     * Resolves the current configuration while enforcing activation rules attached to an explicit default.
+     *
+     * @return current handler configuration, or {@code null} when disabled for the datasource
+     */
+    @Override
+    protected C current() {
+        if (activationProperties != null && !enabled(getDatasourceKey(), activationProperties)) {
+            return null;
+        }
+        return super.current();
     }
 
     /**
@@ -109,6 +146,46 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
             return null;
         }
         return resolve(datasourceKey, properties, provider);
+    }
+
+    /**
+     * Resolves the common enabled flag with datasource, shared, and legacy-default fallback.
+     *
+     * @param datasourceKey current datasource key
+     * @param properties    flattened mapper configuration
+     * @return {@code true} when this handler is enabled for the datasource
+     */
+    protected boolean enabled(String datasourceKey, Properties properties) {
+        if (properties == null) {
+            return true;
+        }
+        String key = datasourceKey == null || datasourceKey.isBlank() ? Holder.getDefault() : datasourceKey;
+        String suffix = Symbol.DOT + scope() + Symbol.DOT + Args.PROP_ENABLED;
+        String value = properties.getProperty(key + suffix);
+        if (value == null) {
+            value = properties.getProperty(Args.SHARED_KEY + suffix);
+        }
+        if (value == null && Holder.getDefault() != null) {
+            value = properties.getProperty(Holder.getDefault() + suffix);
+        }
+        if (value == null) {
+            value = properties.getProperty("default" + suffix);
+        }
+        return value == null || Boolean.parseBoolean(value);
+    }
+
+    /**
+     * Returns whether any flattened property belongs to this handler scope.
+     *
+     * @param properties flattened mapper configuration
+     * @return {@code true} when at least one scoped property exists
+     */
+    protected boolean hasScopeConfiguration(Properties properties) {
+        if (properties == null) {
+            return false;
+        }
+        String marker = Symbol.DOT + scope() + Symbol.DOT;
+        return properties.stringPropertyNames().stream().anyMatch(key -> key.contains(marker));
     }
 
     /**
@@ -147,7 +224,7 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     }
 
     /**
-     * Handles a missing required provider.
+     * Reports a missing required Provider using the handler's configured failure policy.
      *
      * @param datasourceKey datasource key
      */

@@ -2,6 +2,149 @@
   "reflection": [
     {
       "type": "org.miaixz.bus.pay.Banking",
+      "fields": [
+        {
+          "name": "BK_1001"
+        },
+        {
+          "name": "BK_1002"
+        },
+        {
+          "name": "BK_1003"
+        },
+        {
+          "name": "BK_1004"
+        },
+        {
+          "name": "BK_1005"
+        },
+        {
+          "name": "BK_1006"
+        },
+        {
+          "name": "BK_1009"
+        },
+        {
+          "name": "BK_1010"
+        },
+        {
+          "name": "BK_1020"
+        },
+        {
+          "name": "BK_1021"
+        },
+        {
+          "name": "BK_1022"
+        },
+        {
+          "name": "BK_1024"
+        },
+        {
+          "name": "BK_1025"
+        },
+        {
+          "name": "BK_1026"
+        },
+        {
+          "name": "BK_1027"
+        },
+        {
+          "name": "BK_1054"
+        },
+        {
+          "name": "BK_1056"
+        },
+        {
+          "name": "BK_1066"
+        },
+        {
+          "name": "BK_4036"
+        },
+        {
+          "name": "BK_4051"
+        },
+        {
+          "name": "BK_4052"
+        },
+        {
+          "name": "BK_4072"
+        },
+        {
+          "name": "BK_4076"
+        },
+        {
+          "name": "BK_4108"
+        },
+        {
+          "name": "BK_4113"
+        },
+        {
+          "name": "BK_4115"
+        },
+        {
+          "name": "BK_4150"
+        },
+        {
+          "name": "BK_4153"
+        },
+        {
+          "name": "BK_4156"
+        },
+        {
+          "name": "BK_4157"
+        },
+        {
+          "name": "BK_4166"
+        },
+        {
+          "name": "BK_4216"
+        },
+        {
+          "name": "BK_4217"
+        },
+        {
+          "name": "BK_4752"
+        },
+        {
+          "name": "BK_4753"
+        },
+        {
+          "name": "BK_4755"
+        },
+        {
+          "name": "BK_4756"
+        },
+        {
+          "name": "BK_4758"
+        },
+        {
+          "name": "BK_4761"
+        },
+        {
+          "name": "BK_4763"
+        },
+        {
+          "name": "BK_4764"
+        },
+        {
+          "name": "BK_4766"
+        },
+        {
+          "name": "BK_4767"
+        },
+        {
+          "name": "BK_4769"
+        },
+        {
+          "name": "BK_4778"
+        },
+        {
+          "name": "BK_4836"
+        },
+        {
+          "name": "code"
+        }
+      ],
       "methods": [
         {
           "name": "getCode",
@@ -24,10 +167,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.Builder"
-    },
-    {
       "type": "org.miaixz.bus.pay.cache.PayCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "clear",
@@ -117,6 +262,62 @@
     },
     {
       "type": "org.miaixz.bus.pay.Context",
+      "fields": [
+        {
+          "name": "agentMchId"
+        },
+        {
+          "name": "appId"
+        },
+        {
+          "name": "appKey"
+        },
+        {
+          "name": "appSecret"
+        },
+        {
+          "name": "certMode"
+        },
+        {
+          "name": "certPath"
+        },
+        {
+          "name": "desKey"
+        },
+        {
+          "name": "domain"
+        },
+        {
+          "name": "exParams"
+        },
+        {
+          "name": "groupMchId"
+        },
+        {
+          "name": "mchId"
+        },
+        {
+          "name": "p12"
+        },
+        {
+          "name": "partnerKey"
+        },
+        {
+          "name": "privateKey"
+        },
+        {
+          "name": "publicKey"
+        },
+        {
+          "name": "scopes"
+        },
+        {
+          "name": "slAppId"
+        },
+        {
+          "name": "slMchId"
+        }
+      ],
       "methods": [
         {
           "name": "getAgentMchId",
@@ -301,10 +502,42 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.magic.Callback"
-    },
-    {
       "type": "org.miaixz.bus.pay.magic.Currency",
+      "fields": [
+        {
+          "name": "AUD"
+        },
+        {
+          "name": "CNY"
+        },
+        {
+          "name": "EUR"
+        },
+        {
+          "name": "HKD"
+        },
+        {
+          "name": "JPY"
+        },
+        {
+          "name": "KRW"
+        },
+        {
+          "name": "MOP"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "SGD"
+        },
+        {
+          "name": "TWD"
+        },
+        {
+          "name": "USD"
+        }
+      ],
       "methods": [
         {
           "name": "getName",
@@ -323,10 +556,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.magic.ErrorCode"
-    },
-    {
       "type": "org.miaixz.bus.pay.magic.Message",
+      "fields": [
+        {
+          "name": "body"
+        },
+        {
+          "name": "bodyByte"
+        },
+        {
+          "name": "headers"
+        },
+        {
+          "name": "status"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -434,6 +678,11 @@
     },
     {
       "type": "org.miaixz.bus.pay.magic.Voucher",
+      "fields": [
+        {
+          "name": "appid"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -497,10 +746,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.Matcher"
-    },
-    {
       "type": "org.miaixz.bus.pay.Mode",
+      "fields": [
+        {
+          "name": "SELLER"
+        },
+        {
+          "name": "SERVICE"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "getValue",
@@ -549,14 +806,6 @@
           ]
         },
         {
-          "name": "getKeyManager",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.InputStream"
-          ]
-        },
-        {
           "name": "getScopes",
           "parameterTypes": [
             "java.lang.String",
@@ -568,23 +817,6 @@
           "name": "getScopes",
           "parameterTypes": [
             "org.miaixz.bus.pay.nimble.PayScope[]"
-          ]
-        },
-        {
-          "name": "getSslSocketFactory",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
           ]
         },
         {
@@ -647,22 +879,6 @@
           ]
         },
         {
-          "name": "postTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "postTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "put",
           "parameterTypes": [
             "java.lang.String",
@@ -672,22 +888,6 @@
         },
         {
           "name": "put",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "putTo",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "putTo",
           "parameterTypes": [
             "java.lang.String",
             "java.util.Map",
@@ -1629,6 +1829,56 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.alipay.api.AliPayApi",
+      "fields": [
+        {
+          "name": "APP"
+        },
+        {
+          "name": "BAR_CODE"
+        },
+        {
+          "name": "CANCEL"
+        },
+        {
+          "name": "CLOSE"
+        },
+        {
+          "name": "DOWNLOADBILL"
+        },
+        {
+          "name": "MINAPP"
+        },
+        {
+          "name": "PAGE"
+        },
+        {
+          "name": "QUERY"
+        },
+        {
+          "name": "REFUND"
+        },
+        {
+          "name": "REFUND_DEPOSITBACK_COMPLETED"
+        },
+        {
+          "name": "REFUNDQUERY"
+        },
+        {
+          "name": "SECURITY_CODE"
+        },
+        {
+          "name": "SETTLE"
+        },
+        {
+          "name": "SWEEPPAY"
+        },
+        {
+          "name": "WAP"
+        },
+        {
+          "name": "WAVE_CODE"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -1656,6 +1906,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.api.JdPayApi",
+      "fields": [
+        {
+          "name": "CANCEL_USER_RELATION_URL"
+        },
+        {
+          "name": "CUSTOMER_PAY_URL"
+        },
+        {
+          "name": "FKM_PAY_URL"
+        },
+        {
+          "name": "GET_USER_RELATION_URL"
+        },
+        {
+          "name": "H5_SAVE_ORDER_URL"
+        },
+        {
+          "name": "PC_SAVE_ORDER_URL"
+        },
+        {
+          "name": "QUERY_BAI_TIAO_FQ_URL"
+        },
+        {
+          "name": "QUERY_ORDER_URL"
+        },
+        {
+          "name": "REFUND_URL"
+        },
+        {
+          "name": "REVOKE_URL"
+        },
+        {
+          "name": "UNI_ORDER_URL"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -1683,6 +1968,71 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.CustomerPay",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "bizTp"
+        },
+        {
+          "name": "callbackUrl"
+        },
+        {
+          "name": "currency"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "expireTime"
+        },
+        {
+          "name": "goodsInfo"
+        },
+        {
+          "name": "industryCategoryCode"
+        },
+        {
+          "name": "ip"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "note"
+        },
+        {
+          "name": "notifyUrl"
+        },
+        {
+          "name": "orderType"
+        },
+        {
+          "name": "payMerchant"
+        },
+        {
+          "name": "riskInfo"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "tradeDesc"
+        },
+        {
+          "name": "tradeName"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeTime"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2050,6 +2400,74 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.FkmModel",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "bizTp"
+        },
+        {
+          "name": "currency"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "goodsInfoList"
+        },
+        {
+          "name": "industryCategoryCode"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "note"
+        },
+        {
+          "name": "notifyUrl"
+        },
+        {
+          "name": "orderGoodsNum"
+        },
+        {
+          "name": "payMerchant"
+        },
+        {
+          "name": "receiverInfo"
+        },
+        {
+          "name": "riskInfo"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "termInfo"
+        },
+        {
+          "name": "token"
+        },
+        {
+          "name": "tradeDesc"
+        },
+        {
+          "name": "tradeName"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeTime"
+        },
+        {
+          "name": "vendorId"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2433,6 +2851,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.JdPayRequest",
+      "fields": [
+        {
+          "name": "encrypt"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2512,6 +2941,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.QueryBaiTiao",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2623,6 +3069,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.QueryOrder",
+      "fields": [
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeType"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2750,6 +3213,44 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.Refund",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "cert"
+        },
+        {
+          "name": "currency"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "note"
+        },
+        {
+          "name": "notifyUrl"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "termInfoId"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeTime"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -2989,6 +3490,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.Revoke",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "cert"
+        },
+        {
+          "name": "currency"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "note"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeTime"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -3180,6 +3710,107 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.SaveOrder",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "bizTp"
+        },
+        {
+          "name": "callbackUrl"
+        },
+        {
+          "name": "currency"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "expireTime"
+        },
+        {
+          "name": "goodsInfo"
+        },
+        {
+          "name": "industryCategoryCode"
+        },
+        {
+          "name": "installmentNum"
+        },
+        {
+          "name": "ip"
+        },
+        {
+          "name": "kjInfo"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "note"
+        },
+        {
+          "name": "notifyUrl"
+        },
+        {
+          "name": "orderGoodsNum"
+        },
+        {
+          "name": "orderType"
+        },
+        {
+          "name": "payMerchant"
+        },
+        {
+          "name": "preProduct"
+        },
+        {
+          "name": "receiverInfo"
+        },
+        {
+          "name": "riskInfo"
+        },
+        {
+          "name": "settleCurrency"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "specCardNo"
+        },
+        {
+          "name": "specId"
+        },
+        {
+          "name": "specName"
+        },
+        {
+          "name": "termInfo"
+        },
+        {
+          "name": "tradeDesc"
+        },
+        {
+          "name": "tradeName"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeTime"
+        },
+        {
+          "name": "userId"
+        },
+        {
+          "name": "vendorId"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -3739,6 +4370,104 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.UniOrder",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "bizTp"
+        },
+        {
+          "name": "callbackUrl"
+        },
+        {
+          "name": "currency"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "expireTime"
+        },
+        {
+          "name": "goodsInfo"
+        },
+        {
+          "name": "industryCategoryCode"
+        },
+        {
+          "name": "installmentNum"
+        },
+        {
+          "name": "ip"
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "note"
+        },
+        {
+          "name": "notifyUrl"
+        },
+        {
+          "name": "orderGoodsNum"
+        },
+        {
+          "name": "orderType"
+        },
+        {
+          "name": "payMerchant"
+        },
+        {
+          "name": "preProduct"
+        },
+        {
+          "name": "receiverInfo"
+        },
+        {
+          "name": "riskInfo"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "specCardNo"
+        },
+        {
+          "name": "specId"
+        },
+        {
+          "name": "specName"
+        },
+        {
+          "name": "termInfo"
+        },
+        {
+          "name": "tradeDesc"
+        },
+        {
+          "name": "tradeName"
+        },
+        {
+          "name": "tradeNum"
+        },
+        {
+          "name": "tradeTime"
+        },
+        {
+          "name": "tradeType"
+        },
+        {
+          "name": "userId"
+        },
+        {
+          "name": "vendorId"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -4282,6 +5011,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.jdpay.entity.UserRelation",
+      "fields": [
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "userId"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -4590,6 +5333,26 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.paypal.api.PayPalApi",
+      "fields": [
+        {
+          "name": "CAPTURE_ORDER"
+        },
+        {
+          "name": "CAPTURE_QUERY"
+        },
+        {
+          "name": "CHECKOUT_ORDERS"
+        },
+        {
+          "name": "GET_TOKEN"
+        },
+        {
+          "name": "REFUND"
+        },
+        {
+          "name": "REFUND_QUERY"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -4617,6 +5380,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.paypal.entity.AccessToken",
+      "fields": [
+        {
+          "name": "expiredTime"
+        },
+        {
+          "name": "json"
+        },
+        {
+          "name": "status"
+        }
+      ],
       "methods": [
         {
           "name": "getAccessToken",
@@ -4808,10 +5582,51 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.PayScope"
-    },
-    {
       "type": "org.miaixz.bus.pay.nimble.tenpay.api.TenpayApi",
+      "fields": [
+        {
+          "name": "CLOSE_ORDER_URL"
+        },
+        {
+          "name": "CREATE_READ_PACK_URL"
+        },
+        {
+          "name": "DOWNLOAD_BILL_URL"
+        },
+        {
+          "name": "DOWNLOAD_HB_BILL_URL"
+        },
+        {
+          "name": "DOWNLOAD_TRANSFER_BILL_URL"
+        },
+        {
+          "name": "GET_HB_INFO_URL"
+        },
+        {
+          "name": "GET_TRANSFER_INFO_URL"
+        },
+        {
+          "name": "MICRO_PAY_URL"
+        },
+        {
+          "name": "ORDER_QUERY_URL"
+        },
+        {
+          "name": "ORDER_REFUND_URL"
+        },
+        {
+          "name": "ORDER_REVERSE_URL"
+        },
+        {
+          "name": "REFUND_QUERY_URL"
+        },
+        {
+          "name": "TRANSFER_URL"
+        },
+        {
+          "name": "UNIFIED_ORDER_URL"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -4839,6 +5654,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.CloseOrder",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "total_fee"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -4982,6 +5820,62 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.CreateHb",
+      "fields": [
+        {
+          "name": "act_name"
+        },
+        {
+          "name": "banner_id"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "icon_id"
+        },
+        {
+          "name": "max_value"
+        },
+        {
+          "name": "mch_billno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "mch_name"
+        },
+        {
+          "name": "min_value"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "not_send_msg"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "qqappid"
+        },
+        {
+          "name": "re_openid"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "total_amount"
+        },
+        {
+          "name": "total_num"
+        },
+        {
+          "name": "wishing"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -5301,6 +6195,26 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.DownloadBill",
+      "fields": [
+        {
+          "name": "bill_date"
+        },
+        {
+          "name": "bill_type"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "tar_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -5428,6 +6342,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.DownloadHbBill",
+      "fields": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -5507,6 +6432,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.DownloadTransferBill",
+      "fields": [
+        {
+          "name": "bill_date"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -5602,6 +6541,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.GetHbInfo",
+      "fields": [
+        {
+          "name": "listid"
+        },
+        {
+          "name": "mch_billno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "send_type"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_mch_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -5745,6 +6707,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.GetTransferInfo",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -5856,6 +6835,59 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.MicroPay",
+      "fields": [
+        {
+          "name": "attach"
+        },
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "limit_pay"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "promotion_tag"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "spbill_create_ip"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "trade_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -6159,6 +7191,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.OrderQuery",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -6302,6 +7357,44 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.OrderRefund",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "op_user_id"
+        },
+        {
+          "name": "op_user_passwd"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "refund_account"
+        },
+        {
+          "name": "refund_fee"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -6525,6 +7618,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.OrderReverse",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "op_user_id"
+        },
+        {
+          "name": "op_user_passwd"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -6684,6 +7803,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.RefundQuery",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "refund_id"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -6859,6 +8007,59 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.Transfer",
+      "fields": [
+        {
+          "name": "check_name"
+        },
+        {
+          "name": "check_real_name"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "input_charset"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "memo"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "op_user_id"
+        },
+        {
+          "name": "op_user_passwd"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "re_user_name"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "spbill_create_ip"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "uin"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -7162,6 +8363,68 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.tenpay.entity.UnifiedOrder",
+      "fields": [
+        {
+          "name": "attach"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "contract_code"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "limit_pay"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "mini_app_param"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "promotion_tag"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "spbill_create_ip"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "time_expire"
+        },
+        {
+          "name": "time_start"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "trade_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -7512,9 +8775,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.tenpay.TenpayBuilder"
-    },
-    {
       "type": "org.miaixz.bus.pay.nimble.tenpay.TenpayProvider",
       "methods": [
         {
@@ -7680,6 +8940,56 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.api.UnionPayApi",
+      "fields": [
+        {
+          "name": "ALI_PAY_JS_PAY"
+        },
+        {
+          "name": "AUTH_CODE_TO_OPENID"
+        },
+        {
+          "name": "BILL_AGENT"
+        },
+        {
+          "name": "BILL_BIG_MERCHANT"
+        },
+        {
+          "name": "BILL_MERCHANT"
+        },
+        {
+          "name": "CLOSE"
+        },
+        {
+          "name": "MICRO_PAY"
+        },
+        {
+          "name": "MICRO_PAY_REVERSE"
+        },
+        {
+          "name": "NATIVE"
+        },
+        {
+          "name": "QUERY"
+        },
+        {
+          "name": "REFUND"
+        },
+        {
+          "name": "REFUND_QUERY"
+        },
+        {
+          "name": "UNION_JS_PAY"
+        },
+        {
+          "name": "UNION_PAY_USER_ID"
+        },
+        {
+          "name": "WEI_XIN_APP_PAY"
+        },
+        {
+          "name": "WEI_XIN_JS_PAY"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -7707,6 +9017,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.Apply",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "data"
+        },
+        {
+          "name": "dataSign"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "partner"
+        },
+        {
+          "name": "serviceName"
+        },
+        {
+          "name": "signType"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -7850,6 +9183,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.AuthCodeToOpenId",
+      "fields": [
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -8057,6 +9425,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.BillDownload",
+      "fields": [
+        {
+          "name": "bill_date"
+        },
+        {
+          "name": "bill_type"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -8232,6 +9629,38 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.CloseOrder",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -8423,6 +9852,83 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.MicroPay",
+      "fields": [
+        {
+          "name": "attach"
+        },
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "goods_detail"
+        },
+        {
+          "name": "goods_tag"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_create_ip"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "need_receipt"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "op_device_id"
+        },
+        {
+          "name": "op_shop_id"
+        },
+        {
+          "name": "op_user_id"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "time_expire"
+        },
+        {
+          "name": "time_start"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -8854,6 +10360,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.OrderQuery",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "transaction_id"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -9061,6 +10602,56 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.Refund",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "op_user_id"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "refund_channel"
+        },
+        {
+          "name": "refund_fee"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "transaction_id"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -9348,6 +10939,47 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.RefundQuery",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "refund_id"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "transaction_id"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -9587,6 +11219,38 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.Reverse",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -9778,6 +11442,110 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.UnifiedOrder",
+      "fields": [
+        {
+          "name": "appid"
+        },
+        {
+          "name": "attach"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "buyer_id"
+        },
+        {
+          "name": "buyer_logon_id"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "customer_ip"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "goods_tag"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "is_minipg"
+        },
+        {
+          "name": "is_raw"
+        },
+        {
+          "name": "limit_credit_pay"
+        },
+        {
+          "name": "mch_create_ip"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "need_receipt"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "op_shop_id"
+        },
+        {
+          "name": "op_user_id"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "product_id"
+        },
+        {
+          "name": "qr_code_timeout_express"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_openid"
+        },
+        {
+          "name": "time_expire"
+        },
+        {
+          "name": "time_start"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "user_id"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -10353,6 +12121,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.unionpay.entity.UnionPayUserId",
+      "fields": [
+        {
+          "name": "app_up_identifier"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "groupno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "service"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_agentno"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "user_auth_code"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -10593,6 +12396,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.ReceiverType",
+      "fields": [
+        {
+          "name": "MERCHANT"
+        },
+        {
+          "name": "OPENID"
+        },
+        {
+          "name": "SUB_OPENID"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "WECHATID"
+        }
+      ],
       "methods": [
         {
           "name": "getType",
@@ -10616,6 +12436,26 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.TradeType",
+      "fields": [
+        {
+          "name": "APP"
+        },
+        {
+          "name": "JSAPI"
+        },
+        {
+          "name": "MICROPAY"
+        },
+        {
+          "name": "MWEB"
+        },
+        {
+          "name": "NATIVE"
+        },
+        {
+          "name": "tradeType"
+        }
+      ],
       "methods": [
         {
           "name": "getTradeType",
@@ -10635,6 +12475,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.CouponApi",
+      "fields": [
+        {
+          "name": "QUERY_COUPON_STOCK"
+        },
+        {
+          "name": "QUERY_COUPONS_INFO"
+        },
+        {
+          "name": "SEND_COUPON"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10662,6 +12513,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.CustomDeclareApi",
+      "fields": [
+        {
+          "name": "CUSTOM_DECLARE_ORDER"
+        },
+        {
+          "name": "CUSTOM_DECLARE_QUERY"
+        },
+        {
+          "name": "CUSTOM_DECLARE_RE_DECLARE"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10689,6 +12551,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.DepositApi",
+      "fields": [
+        {
+          "name": "CONSUME"
+        },
+        {
+          "name": "FACE_PAY"
+        },
+        {
+          "name": "MICRO_PAY"
+        },
+        {
+          "name": "ORDER_QUERY"
+        },
+        {
+          "name": "PAY"
+        },
+        {
+          "name": "REFUND"
+        },
+        {
+          "name": "REFUND_QUERY"
+        },
+        {
+          "name": "REVERSE"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10716,6 +12604,47 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.EntrustPayApi",
+      "fields": [
+        {
+          "name": "DELETE_ENTRUST_CONTRACT"
+        },
+        {
+          "name": "ENTRUST_WEB"
+        },
+        {
+          "name": "H5_ENTRUST_WEB"
+        },
+        {
+          "name": "PAP_PAY_APPLY"
+        },
+        {
+          "name": "PARTNER_DELETE_ENTRUST_CONTRACT"
+        },
+        {
+          "name": "PARTNER_ENTRUST_WEB"
+        },
+        {
+          "name": "PARTNER_H5_ENTRUST_WEB"
+        },
+        {
+          "name": "PARTNER_PAP_PAY_APPLY"
+        },
+        {
+          "name": "PARTNER_PRE_ENTRUST_WEB"
+        },
+        {
+          "name": "PARTNER_QUERY_ENTRUST_CONTRACT"
+        },
+        {
+          "name": "PAY_CONTRACT_ORDER"
+        },
+        {
+          "name": "PRE_ENTRUST_WEB"
+        },
+        {
+          "name": "QUERY_ENTRUST_CONTRACT"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10743,6 +12672,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.FacePayApi",
+      "fields": [
+        {
+          "name": "FACE_PAY"
+        },
+        {
+          "name": "FACE_PAY_QUERY"
+        },
+        {
+          "name": "FACE_PAY_REVERSE"
+        },
+        {
+          "name": "GET_AUTH_INFO"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10770,6 +12713,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.MicroMchApi",
+      "fields": [
+        {
+          "name": "ADD_RECOMMEND_CONF"
+        },
+        {
+          "name": "ADD_SUB_DEV_CONFIG"
+        },
+        {
+          "name": "GET_SUBMIT_STATE"
+        },
+        {
+          "name": "GET_UPGRADE_STATE"
+        },
+        {
+          "name": "MODIFY_ARCHIVES"
+        },
+        {
+          "name": "MODIFY_CONTACT_INFO"
+        },
+        {
+          "name": "QUERY_AUTO_WITH_DRAW_BY_DATE"
+        },
+        {
+          "name": "QUERY_SUB_DEV_CONFIG"
+        },
+        {
+          "name": "RE_AUTO_WITH_DRAW_BY_DATE"
+        },
+        {
+          "name": "SUBMIT"
+        },
+        {
+          "name": "SUBMIT_UPGRADE"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10797,6 +12775,59 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.PayApi",
+      "fields": [
+        {
+          "name": "API_V2_SANDBOX"
+        },
+        {
+          "name": "AUTH_CODE_TO_OPENID"
+        },
+        {
+          "name": "CLOSE_ORDER"
+        },
+        {
+          "name": "DOWNLOAD_BILL"
+        },
+        {
+          "name": "DOWNLOAD_FUND_FLOW"
+        },
+        {
+          "name": "GET_SIGN_KEY"
+        },
+        {
+          "name": "MICRO_PAY"
+        },
+        {
+          "name": "ORDER_QUERY"
+        },
+        {
+          "name": "REFUND"
+        },
+        {
+          "name": "REFUND_QUERY"
+        },
+        {
+          "name": "REFUND_QUERY_V2"
+        },
+        {
+          "name": "REFUND_V2"
+        },
+        {
+          "name": "REPORT"
+        },
+        {
+          "name": "REVERSE"
+        },
+        {
+          "name": "SAND_BOX_NEW"
+        },
+        {
+          "name": "SHORT_URL"
+        },
+        {
+          "name": "UNIFIED_ORDER"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10824,6 +12855,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.ProfitSharingApi",
+      "fields": [
+        {
+          "name": "MULTI_PROFIT_SHARING"
+        },
+        {
+          "name": "PROFIT_SHARING"
+        },
+        {
+          "name": "PROFIT_SHARING_ADD_RECEIVER"
+        },
+        {
+          "name": "PROFIT_SHARING_FINISH"
+        },
+        {
+          "name": "PROFIT_SHARING_ORDER_AMOUNT_QUERY"
+        },
+        {
+          "name": "PROFIT_SHARING_QUERY"
+        },
+        {
+          "name": "PROFIT_SHARING_REMOVE_RECEIVER"
+        },
+        {
+          "name": "PROFIT_SHARING_RETURN"
+        },
+        {
+          "name": "PROFIT_SHARING_RETURN_QUERY"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10851,6 +12911,26 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.RedPackApi",
+      "fields": [
+        {
+          "name": "GET_HB_INFO"
+        },
+        {
+          "name": "QUERY_WORK_WX_RED_PACK"
+        },
+        {
+          "name": "SEND_GROUP_RED_PACK"
+        },
+        {
+          "name": "SEND_MINI_PROGRAM_HB"
+        },
+        {
+          "name": "SEND_RED_PACK"
+        },
+        {
+          "name": "SEND_WORK_WX_RED_PACK"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10878,6 +12958,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v2.TransferApi",
+      "fields": [
+        {
+          "name": "GET_PUBLIC_KEY"
+        },
+        {
+          "name": "GET_TRANSFER_BANK_INFO"
+        },
+        {
+          "name": "GET_TRANSFER_INFO"
+        },
+        {
+          "name": "PAY_WWS_TRANS_2_POCKET"
+        },
+        {
+          "name": "QUERY_WWS_TRANS_2_POCKET"
+        },
+        {
+          "name": "TRANSFER"
+        },
+        {
+          "name": "TRANSFER_BANK"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10905,6 +13008,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.Apply4SubApi",
+      "fields": [
+        {
+          "name": "APPLY_4_SUB"
+        },
+        {
+          "name": "GET_APPLY_STATE"
+        },
+        {
+          "name": "GET_APPLY_STATE_BY_ID"
+        },
+        {
+          "name": "GET_MER_OPEN_APPLY_STATE"
+        },
+        {
+          "name": "GET_SETTLEMENT"
+        },
+        {
+          "name": "MER_OPEN_APPLY_CANCEL"
+        },
+        {
+          "name": "MER_OPEN_APPLY_SUBMIT_OR_RESULT"
+        },
+        {
+          "name": "MODIFY_SETTLEMENT"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10932,6 +13061,98 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.BasePayApi",
+      "fields": [
+        {
+          "name": "APP_PAY"
+        },
+        {
+          "name": "BILL_DOWNLOAD"
+        },
+        {
+          "name": "CLOSE_ORDER_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "CODE_PAY"
+        },
+        {
+          "name": "COMBINE_CLOSE_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "COMBINE_QUERY_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "COMBINE_TRANSACTIONS_APP"
+        },
+        {
+          "name": "COMBINE_TRANSACTIONS_H5"
+        },
+        {
+          "name": "COMBINE_TRANSACTIONS_JS"
+        },
+        {
+          "name": "COMBINE_TRANSACTIONS_NATIVE"
+        },
+        {
+          "name": "DOMESTIC_REFUND"
+        },
+        {
+          "name": "DOMESTIC_REFUND_QUERY"
+        },
+        {
+          "name": "FUND_FLOW_BILL"
+        },
+        {
+          "name": "H5_PAY"
+        },
+        {
+          "name": "JS_API_PAY"
+        },
+        {
+          "name": "NATIVE_PAY"
+        },
+        {
+          "name": "ORDER_QUERY_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "ORDER_QUERY_BY_TRANSACTION_ID"
+        },
+        {
+          "name": "PARTNER_APP_PAY"
+        },
+        {
+          "name": "PARTNER_CLOSE_ORDER_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "PARTNER_H5_PAY"
+        },
+        {
+          "name": "PARTNER_JS_API_PAY"
+        },
+        {
+          "name": "PARTNER_NATIVE_PAY"
+        },
+        {
+          "name": "PARTNER_ORDER_QUERY_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "PARTNER_ORDER_QUERY_BY_TRANSACTION_ID"
+        },
+        {
+          "name": "REFUND"
+        },
+        {
+          "name": "REFUND_QUERY_BY_OUT_REFUND_NO"
+        },
+        {
+          "name": "REVERSE_ORDER_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "SUB_MERCHANT_FUND_FLOW_BILL"
+        },
+        {
+          "name": "TRADE_BILL"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10959,6 +13180,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.BrandProfitSharingApi",
+      "fields": [
+        {
+          "name": "BRAND__CONFIGS"
+        },
+        {
+          "name": "FINISH_ORDER"
+        },
+        {
+          "name": "ORDERS"
+        },
+        {
+          "name": "QUERY"
+        },
+        {
+          "name": "RECEIVERS_ADD"
+        },
+        {
+          "name": "RECEIVERS_DELETE"
+        },
+        {
+          "name": "RETURN_ORDERS"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -10986,6 +13230,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.BusinessCircleApi",
+      "fields": [
+        {
+          "name": "BUSINESS_CIRCLE_COMMIT_STATUS"
+        },
+        {
+          "name": "BUSINESS_CIRCLE_PARKING"
+        },
+        {
+          "name": "BUSINESS_CIRCLE_POINTS_NOTIFY"
+        },
+        {
+          "name": "BUSINESS_CIRCLE_USER_AUTHORIZATIONS"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11013,6 +13271,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.ComplaintsApi",
+      "fields": [
+        {
+          "name": "COMPLAINTS_COMPLETE"
+        },
+        {
+          "name": "COMPLAINTS_DETAIL"
+        },
+        {
+          "name": "COMPLAINTS_NEGOTIATION_HISTORY"
+        },
+        {
+          "name": "COMPLAINTS_NOTIFICATION"
+        },
+        {
+          "name": "COMPLAINTS_RESPONSE"
+        },
+        {
+          "name": "COMPLAINTS_V2"
+        },
+        {
+          "name": "IMAGES_UPLOAD"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11040,6 +13321,104 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.CouponApi",
+      "fields": [
+        {
+          "name": "APPLY_REFUND_COUPONS"
+        },
+        {
+          "name": "BUSINESS_COUPON_ASSOCIATE"
+        },
+        {
+          "name": "BUSINESS_COUPON_CALLBACKS"
+        },
+        {
+          "name": "BUSINESS_COUPON_DISASSOCIATE"
+        },
+        {
+          "name": "BUSINESS_COUPON_UPLOAD_CODE"
+        },
+        {
+          "name": "COUPON_DEACTIVATE"
+        },
+        {
+          "name": "COUPON_SUBSIDY_PAY"
+        },
+        {
+          "name": "COUPON_SUBSIDY_PAY_INFO"
+        },
+        {
+          "name": "CREATE_BUSINESS_COUPON"
+        },
+        {
+          "name": "CREATE_COUPON_STOCKS"
+        },
+        {
+          "name": "DOWNLOAD_COUPON_STOCKS_REFUND_FLOW"
+        },
+        {
+          "name": "DOWNLOAD_COUPON_STOCKS_USER_FLOW"
+        },
+        {
+          "name": "MODIFY_BUSINESS_COUPON_INFO"
+        },
+        {
+          "name": "MODIFY_BUSINESS_COUPON_STOCKS_BUDGET"
+        },
+        {
+          "name": "PARTNERSHIPS_BUILD"
+        },
+        {
+          "name": "PARTNERSHIPS_TERMINATE"
+        },
+        {
+          "name": "PAUSE_COUPON_STOCKS"
+        },
+        {
+          "name": "QUERY_BUSINESS_COUPON_STOCKS_INFO"
+        },
+        {
+          "name": "QUERY_BUSINESS_USER_COUPON"
+        },
+        {
+          "name": "QUERY_BUSINESS_USER_COUPON_INFO"
+        },
+        {
+          "name": "QUERY_COUPON_INFO"
+        },
+        {
+          "name": "QUERY_COUPON_ITEMS"
+        },
+        {
+          "name": "QUERY_COUPON_MERCHANTS"
+        },
+        {
+          "name": "QUERY_COUPON_STOCKS"
+        },
+        {
+          "name": "QUERY_COUPON_STOCKS_INFO"
+        },
+        {
+          "name": "QUERY_USER_COUPON"
+        },
+        {
+          "name": "RESTART_COUPON_STOCKS"
+        },
+        {
+          "name": "SEND_BUSINESS_COUPON"
+        },
+        {
+          "name": "SEND_COUPON"
+        },
+        {
+          "name": "SETTING_COUPON_CALLBACKS"
+        },
+        {
+          "name": "START_COUPON_STOCKS"
+        },
+        {
+          "name": "USE_BUSINESS_COUPON"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11067,6 +13446,101 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.EcommerceApi",
+      "fields": [
+        {
+          "name": "APPLY"
+        },
+        {
+          "name": "APPLY_STATE"
+        },
+        {
+          "name": "APPLY_STATE_BY_NO"
+        },
+        {
+          "name": "AVAILABLE_ABROAD_AMOUNTS"
+        },
+        {
+          "name": "CANCEL_SUBSIDIES"
+        },
+        {
+          "name": "CREATE_SUBSIDIES"
+        },
+        {
+          "name": "FUND_FLOW_BILL"
+        },
+        {
+          "name": "FUNDS_TO_OVERSEA"
+        },
+        {
+          "name": "FUNDS_TO_OVERSEA_BILL"
+        },
+        {
+          "name": "FUNDS_TO_OVERSEA_QUERY"
+        },
+        {
+          "name": "MERCHANT_WITHDRAW"
+        },
+        {
+          "name": "MERCHANT_WITHDRAW_QUERY"
+        },
+        {
+          "name": "MERCHANT_WITHDRAW_QUERY_BY_OUT_REQUEST_NO"
+        },
+        {
+          "name": "PROFIT_SHARING_FINISH_ORDER"
+        },
+        {
+          "name": "PROFIT_SHARING_ORDERS"
+        },
+        {
+          "name": "PROFIT_SHARING_QUERY"
+        },
+        {
+          "name": "PROFIT_SHARING_RECEIVERS_ADD"
+        },
+        {
+          "name": "PROFIT_SHARING_RECEIVERS_DELETE"
+        },
+        {
+          "name": "PROFIT_SHARING_RETURN_ORDERS"
+        },
+        {
+          "name": "QUERY_BALANCE"
+        },
+        {
+          "name": "QUERY_END_DAY_BALANCE"
+        },
+        {
+          "name": "QUERY_MERCHANT_BALANCE"
+        },
+        {
+          "name": "QUERY_MERCHANT_END_DAY_BALANCE"
+        },
+        {
+          "name": "QUERY_REFUND"
+        },
+        {
+          "name": "QUERY_REFUNDS_BY_REFUND_NO"
+        },
+        {
+          "name": "REFUNDS"
+        },
+        {
+          "name": "RETURN_ADVANCE_OR_QUERY"
+        },
+        {
+          "name": "RETURN_SUBSIDIES"
+        },
+        {
+          "name": "WITHDRAW"
+        },
+        {
+          "name": "WITHDRAW_BILL"
+        },
+        {
+          "name": "WITHDRAW_QUERY"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11094,6 +13568,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.EduApi",
+      "fields": [
+        {
+          "name": "DELETE_CONTRACTS"
+        },
+        {
+          "name": "PRE_SIGN"
+        },
+        {
+          "name": "QUERY_CONTRACTS_BY_ID"
+        },
+        {
+          "name": "QUERY_CONTRACTS_BY_USER"
+        },
+        {
+          "name": "QUERY_TRANSACTIONS_BY_OUT_TRADE_NO"
+        },
+        {
+          "name": "QUERY_TRANSACTIONS_BY_TRANSACTION_ID"
+        },
+        {
+          "name": "SEND_NOTIFICATION"
+        },
+        {
+          "name": "TRANSACTIONS"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11121,6 +13621,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.GoldPlanApi",
+      "fields": [
+        {
+          "name": "CHANGE_CUSTOM_PAGE_STATUS"
+        },
+        {
+          "name": "CHANGE_GOLD_PLAN_STATUS"
+        },
+        {
+          "name": "CLOSE_ADVERTISING_SHOW"
+        },
+        {
+          "name": "OPEN_ADVERTISING_SHOW"
+        },
+        {
+          "name": "SET_ADVERTISING_INDUSTRY_FILTER"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11148,6 +13665,44 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.InvoiceApi",
+      "fields": [
+        {
+          "name": "CARD_TEMPLATE"
+        },
+        {
+          "name": "INSERT_CARDS"
+        },
+        {
+          "name": "INVOICING"
+        },
+        {
+          "name": "MERCHANT_BASE_INFO"
+        },
+        {
+          "name": "MERCHANT_DEVELOPMENT_CONFIG"
+        },
+        {
+          "name": "MERCHANT_TAX_CODES"
+        },
+        {
+          "name": "QUERY_INVOICE"
+        },
+        {
+          "name": "QUERY_INVOICE_DOWNLOAD_INFO"
+        },
+        {
+          "name": "REVERSE"
+        },
+        {
+          "name": "UPDATE_INVOICE_FILE"
+        },
+        {
+          "name": "USER_TITLE"
+        },
+        {
+          "name": "USER_TITLE_URL"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11175,6 +13730,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.OtherApi",
+      "fields": [
+        {
+          "name": "GET_CERTIFICATES"
+        },
+        {
+          "name": "GET_CERTIFICATES_BY_ALGORITHM_TYPE"
+        },
+        {
+          "name": "MARKETING_UPLOAD_MEDIA"
+        },
+        {
+          "name": "MERCHANT_UPLOAD_MEDIA"
+        },
+        {
+          "name": "MERCHANT_UPLOAD_VIDEO"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11202,6 +13774,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.ParkingApi",
+      "fields": [
+        {
+          "name": "VEHICLE_PARKING"
+        },
+        {
+          "name": "VEHICLE_PARKING_SERVICES_FIND"
+        },
+        {
+          "name": "VEHICLE_TRANSACTION_PARKING"
+        },
+        {
+          "name": "VEHICLE_TRANSACTION_QUERY_BY_OUT_TRADE_NO"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11229,6 +13815,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.PayGiftActivityApi",
+      "fields": [
+        {
+          "name": "PAY_GIFT_ACTIVITY"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_ADD_MERCHANTS"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_DELETE_MERCHANTS"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_INFO"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_LIST"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_QUERY_GOODS"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_QUERY_MERCHANTS"
+        },
+        {
+          "name": "PAY_GIFT_ACTIVITY_TERMINATE"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11256,6 +13868,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.PayrollCardApi",
+      "fields": [
+        {
+          "name": "AUTHENTICATION_LIST"
+        },
+        {
+          "name": "AUTHENTICATION_PRE_ORDER"
+        },
+        {
+          "name": "AUTHENTICATION_RESULT"
+        },
+        {
+          "name": "BATCH_TRANSFER"
+        },
+        {
+          "name": "PRE_ORDER_WITH_AUTH"
+        },
+        {
+          "name": "RELATION"
+        },
+        {
+          "name": "TOKEN"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11283,6 +13918,38 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.PayScoreApi",
+      "fields": [
+        {
+          "name": "PAY_SCORE_PERMISSIONS"
+        },
+        {
+          "name": "PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE"
+        },
+        {
+          "name": "PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE_TERMINATE"
+        },
+        {
+          "name": "PAY_SCORE_PERMISSIONS_OPENID"
+        },
+        {
+          "name": "PAY_SCORE_PERMISSIONS_OPENID_TERMINATE"
+        },
+        {
+          "name": "PAY_SCORE_SERVICE_ORDER"
+        },
+        {
+          "name": "PAY_SCORE_SERVICE_ORDER_CANCEL"
+        },
+        {
+          "name": "PAY_SCORE_SERVICE_ORDER_COMPLETE"
+        },
+        {
+          "name": "PAY_SCORE_SERVICE_ORDER_MODIFY"
+        },
+        {
+          "name": "PAY_SCORE_SERVICE_ORDER_SYNC"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11310,6 +13977,38 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.ProfitSharingApi",
+      "fields": [
+        {
+          "name": "PROFIT_SHARING_BILLS"
+        },
+        {
+          "name": "PROFIT_SHARING_MERCHANT_CONFIGS"
+        },
+        {
+          "name": "PROFIT_SHARING_ORDERS"
+        },
+        {
+          "name": "PROFIT_SHARING_ORDERS_QUERY"
+        },
+        {
+          "name": "PROFIT_SHARING_RECEIVERS_ADD"
+        },
+        {
+          "name": "PROFIT_SHARING_RECEIVERS_DELETE"
+        },
+        {
+          "name": "PROFIT_SHARING_RETURN_ORDERS"
+        },
+        {
+          "name": "PROFIT_SHARING_RETURN_ORDERS_QUERY"
+        },
+        {
+          "name": "PROFIT_SHARING_UNFREEZE"
+        },
+        {
+          "name": "PROFIT_SHARING_UNFREEZE_QUERY"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11337,6 +14036,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.SmartGuideApi",
+      "fields": [
+        {
+          "name": "SMART_GUIDE"
+        },
+        {
+          "name": "SMART_GUIDE_ASSIGN"
+        },
+        {
+          "name": "SMART_GUIDE_UPDATE"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11364,6 +14074,50 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.TransferApi",
+      "fields": [
+        {
+          "name": "MERCHANT_INCOME_RECORDS"
+        },
+        {
+          "name": "PARTNER_INCOME_RECORDS"
+        },
+        {
+          "name": "PARTNER_TRANSFER_QUERY_BY_BATCH_ID"
+        },
+        {
+          "name": "PARTNER_TRANSFER_QUERY_BY_DETAIL_ID"
+        },
+        {
+          "name": "PARTNER_TRANSFER_QUERY_BY_OUT_BATCH_NO"
+        },
+        {
+          "name": "PARTNER_TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO"
+        },
+        {
+          "name": "TRANSFER_BATCHES"
+        },
+        {
+          "name": "TRANSFER_BILL_RECEIPT"
+        },
+        {
+          "name": "TRANSFER_BILL_RECEIPT_QUERY"
+        },
+        {
+          "name": "TRANSFER_ELECTRONIC_RECEIPTS"
+        },
+        {
+          "name": "TRANSFER_QUERY_BY_BATCH_ID"
+        },
+        {
+          "name": "TRANSFER_QUERY_BY_DETAIL_ID"
+        },
+        {
+          "name": "TRANSFER_QUERY_BY_OUT_BATCH_NO"
+        },
+        {
+          "name": "TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11391,6 +14145,11 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.ViolationNotificationApi",
+      "fields": [
+        {
+          "name": "VIOLATION_NOTIFY_URL"
+        }
+      ],
       "methods": [
         {
           "name": "desc",
@@ -11418,6 +14177,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.AuthType",
+      "fields": [
+        {
+          "name": "cert"
+        },
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "RSA"
+        },
+        {
+          "name": "SM2"
+        }
+      ],
       "methods": [
         {
           "name": "getCert",
@@ -11445,6 +14221,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.Receiver",
+      "fields": [
+        {
+          "name": "account"
+        },
+        {
+          "name": "amount"
+        },
+        {
+          "name": "custom_relation"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "relation_type"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -11588,6 +14387,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.AuthCodeToOpenId",
+      "fields": [
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -11731,6 +14553,47 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.AuthInfo",
+      "fields": [
+        {
+          "name": "attach"
+        },
+        {
+          "name": "device_id"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "now"
+        },
+        {
+          "name": "rawdata"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "store_id"
+        },
+        {
+          "name": "store_name"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -11970,6 +14833,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.BatchQueryComment",
+      "fields": [
+        {
+          "name": "begin_time"
+        },
+        {
+          "name": "end_time"
+        },
+        {
+          "name": "limit"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -12129,6 +15018,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.CloseOrder",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -12272,6 +15184,62 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.CustomDeclare",
+      "fields": [
+        {
+          "name": "action_type"
+        },
+        {
+          "name": "cert_id"
+        },
+        {
+          "name": "cert_type"
+        },
+        {
+          "name": "customs"
+        },
+        {
+          "name": "duty"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "mch_customs_no"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "order_fee"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "product_fee"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_order_id"
+        },
+        {
+          "name": "sub_order_no"
+        },
+        {
+          "name": "transaction_id"
+        },
+        {
+          "name": "transport_fee"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -12591,6 +15559,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.DepositConsume",
+      "fields": [
+        {
+          "name": "consume_fee"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -12798,6 +15801,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.DownloadBill",
+      "fields": [
+        {
+          "name": "bill_date"
+        },
+        {
+          "name": "bill_type"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "tar_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -12973,6 +16005,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.DownloadFundFlow",
+      "fields": [
+        {
+          "name": "account_type"
+        },
+        {
+          "name": "bill_date"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "tar_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -13116,6 +16171,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.GetHbInfo",
+      "fields": [
+        {
+          "name": "bill_type"
+        },
+        {
+          "name": "mch_billno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -13227,6 +16299,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.GetPublicKey",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -13322,6 +16408,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.GetTransferInfo",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "partner_trade_no"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -13417,6 +16517,80 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.MicroPay",
+      "fields": [
+        {
+          "name": "attach"
+        },
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "deposit"
+        },
+        {
+          "name": "detail"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "face_code"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "goods_tag"
+        },
+        {
+          "name": "limit_pay"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "receipt"
+        },
+        {
+          "name": "scene_info"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "spbill_create_ip"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "time_expire"
+        },
+        {
+          "name": "time_start"
+        },
+        {
+          "name": "total_fee"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -13832,6 +17006,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.OrderQuery",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "order_id"
+        },
+        {
+          "name": "out_order_no"
+        },
+        {
+          "name": "out_return_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -14039,6 +17248,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.PayBank",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "bank_code"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "enc_bank_no"
+        },
+        {
+          "name": "enc_true_name"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "partner_trade_no"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -14214,6 +17452,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.ProfitSharing",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_order_no"
+        },
+        {
+          "name": "receiver"
+        },
+        {
+          "name": "receivers"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -14421,6 +17694,47 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.ProfitSharingReturn",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "order_id"
+        },
+        {
+          "name": "out_order_no"
+        },
+        {
+          "name": "out_return_no"
+        },
+        {
+          "name": "return_account"
+        },
+        {
+          "name": "return_account_type"
+        },
+        {
+          "name": "return_amount"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -14660,6 +17974,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.QueryTrans2Pocket",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "partner_trade_no"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -14755,6 +18083,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.QueryWorkWxRedPack",
+      "fields": [
+        {
+          "name": "mch_billno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -14850,6 +18192,53 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.Refund",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "refund_account"
+        },
+        {
+          "name": "refund_desc"
+        },
+        {
+          "name": "refund_fee"
+        },
+        {
+          "name": "refund_fee_type"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -15121,6 +18510,41 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.RefundQuery",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "refund_id"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -15328,6 +18752,59 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.Report",
+      "fields": [
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "err_code"
+        },
+        {
+          "name": "err_code_des"
+        },
+        {
+          "name": "execute_time"
+        },
+        {
+          "name": "interface_url"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "result_code"
+        },
+        {
+          "name": "return_code"
+        },
+        {
+          "name": "return_msg"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "time"
+        },
+        {
+          "name": "user_ip"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -15631,6 +19108,32 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.Reverse",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -15790,6 +19293,65 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.SendRedPack",
+      "fields": [
+        {
+          "name": "act_name"
+        },
+        {
+          "name": "amt_type"
+        },
+        {
+          "name": "client_ip"
+        },
+        {
+          "name": "mch_billno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "msgappid"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_way"
+        },
+        {
+          "name": "re_openid"
+        },
+        {
+          "name": "remark"
+        },
+        {
+          "name": "risk_info"
+        },
+        {
+          "name": "scene_id"
+        },
+        {
+          "name": "send_name"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "total_amount"
+        },
+        {
+          "name": "total_num"
+        },
+        {
+          "name": "wishing"
+        },
+        {
+          "name": "wxappid"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -16125,6 +19687,53 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.SendWorkWxRedPack",
+      "fields": [
+        {
+          "name": "act_name"
+        },
+        {
+          "name": "agentid"
+        },
+        {
+          "name": "mch_billno"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "re_openid"
+        },
+        {
+          "name": "remark"
+        },
+        {
+          "name": "scene_id"
+        },
+        {
+          "name": "sender_header_media_id"
+        },
+        {
+          "name": "sender_name"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "total_amount"
+        },
+        {
+          "name": "wishing"
+        },
+        {
+          "name": "workwx_sign"
+        },
+        {
+          "name": "wxappid"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -16396,6 +20005,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.ShortUrl",
+      "fields": [
+        {
+          "name": "long_url"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -16539,6 +20171,59 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.Trans2Pocket",
+      "fields": [
+        {
+          "name": "act_name"
+        },
+        {
+          "name": "agentid"
+        },
+        {
+          "name": "amount"
+        },
+        {
+          "name": "approval_number"
+        },
+        {
+          "name": "approval_type"
+        },
+        {
+          "name": "check_name"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "partner_trade_no"
+        },
+        {
+          "name": "re_user_name"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "spbill_create_ip"
+        },
+        {
+          "name": "workwx_sign"
+        },
+        {
+          "name": "ww_msg_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -16842,6 +20527,44 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.Transfer",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "check_name"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "mch_appid"
+        },
+        {
+          "name": "mchid"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "partner_trade_no"
+        },
+        {
+          "name": "re_user_name"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "spbill_create_ip"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -17065,6 +20788,86 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v2.UnifiedOrder",
+      "fields": [
+        {
+          "name": "attach"
+        },
+        {
+          "name": "body"
+        },
+        {
+          "name": "detail"
+        },
+        {
+          "name": "device_info"
+        },
+        {
+          "name": "fee_type"
+        },
+        {
+          "name": "goods_tag"
+        },
+        {
+          "name": "limit_pay"
+        },
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "nonce_str"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "product_id"
+        },
+        {
+          "name": "profit_sharing"
+        },
+        {
+          "name": "receipt"
+        },
+        {
+          "name": "scene_info"
+        },
+        {
+          "name": "sign"
+        },
+        {
+          "name": "sign_type"
+        },
+        {
+          "name": "spbill_create_ip"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mch_id"
+        },
+        {
+          "name": "sub_openid"
+        },
+        {
+          "name": "time_expire"
+        },
+        {
+          "name": "time_start"
+        },
+        {
+          "name": "total_fee"
+        },
+        {
+          "name": "trade_type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -17512,6 +21315,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.AddReceivers",
+      "fields": [
+        {
+          "name": "account"
+        },
+        {
+          "name": "custom_relation"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "relation_type"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mchid"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -17655,6 +21481,14 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.Amount",
+      "fields": [
+        {
+          "name": "currency"
+        },
+        {
+          "name": "total"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -17718,6 +21552,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.BatchTransferModel",
+      "fields": [
+        {
+          "name": "batch_name"
+        },
+        {
+          "name": "batch_remark"
+        },
+        {
+          "name": "out_batch_no"
+        },
+        {
+          "name": "total_amount"
+        },
+        {
+          "name": "total_num"
+        },
+        {
+          "name": "transfer_detail_list"
+        },
+        {
+          "name": "transfer_scene_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -17861,6 +21718,11 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.Certificate",
+      "fields": [
+        {
+          "name": "data"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -17908,6 +21770,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.CertificateInfo",
+      "fields": [
+        {
+          "name": "effective_time"
+        },
+        {
+          "name": "encrypt_certificate"
+        },
+        {
+          "name": "expire_time"
+        },
+        {
+          "name": "serial_no"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18003,6 +21879,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.Detail",
+      "fields": [
+        {
+          "name": "cost_price"
+        },
+        {
+          "name": "goods_detail"
+        },
+        {
+          "name": "invoice_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18082,6 +21969,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.EncryptCertificate",
+      "fields": [
+        {
+          "name": "algorithm"
+        },
+        {
+          "name": "associated_data"
+        },
+        {
+          "name": "ciphertext"
+        },
+        {
+          "name": "nonce"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18177,6 +22078,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.GoodsDetail",
+      "fields": [
+        {
+          "name": "goods_name"
+        },
+        {
+          "name": "merchant_goods_id"
+        },
+        {
+          "name": "quantity"
+        },
+        {
+          "name": "unit_price"
+        },
+        {
+          "name": "wechatpay_goods_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18288,6 +22206,23 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.H5Info",
+      "fields": [
+        {
+          "name": "app_name"
+        },
+        {
+          "name": "app_url"
+        },
+        {
+          "name": "bundle_id"
+        },
+        {
+          "name": "package_name"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18399,6 +22334,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.Payer",
+      "fields": [
+        {
+          "name": "auth_code"
+        },
+        {
+          "name": "openid"
+        },
+        {
+          "name": "sp_openid"
+        },
+        {
+          "name": "sub_openid"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18494,6 +22443,29 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.ProfitSharing",
+      "fields": [
+        {
+          "name": "mch_id"
+        },
+        {
+          "name": "out_order_no"
+        },
+        {
+          "name": "receivers"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mchid"
+        },
+        {
+          "name": "transaction_id"
+        },
+        {
+          "name": "unfreeze_unsplit"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18637,6 +22609,35 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.Refund",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "funds_account"
+        },
+        {
+          "name": "goods_detail"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "out_refund_no"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "reason"
+        },
+        {
+          "name": "sub_mchid"
+        },
+        {
+          "name": "transaction_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18812,6 +22813,17 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.RefundAmount",
+      "fields": [
+        {
+          "name": "currency"
+        },
+        {
+          "name": "refund"
+        },
+        {
+          "name": "total"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -18891,6 +22903,26 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.RefundGoodsDetail",
+      "fields": [
+        {
+          "name": "goods_name"
+        },
+        {
+          "name": "merchant_goods_id"
+        },
+        {
+          "name": "refund_amount"
+        },
+        {
+          "name": "refund_quantity"
+        },
+        {
+          "name": "unit_price"
+        },
+        {
+          "name": "wechatpay_goods_id"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -19018,6 +23050,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.SceneInfo",
+      "fields": [
+        {
+          "name": "device_id"
+        },
+        {
+          "name": "h5_info"
+        },
+        {
+          "name": "payer_client_ip"
+        },
+        {
+          "name": "store_info"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -19113,6 +23159,14 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.SettleInfo",
+      "fields": [
+        {
+          "name": "profit_sharing"
+        },
+        {
+          "name": "subsidy_amount"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -19176,6 +23230,20 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.StoreInfo",
+      "fields": [
+        {
+          "name": "address"
+        },
+        {
+          "name": "area_code"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -19271,6 +23339,26 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.TransferDetailInput",
+      "fields": [
+        {
+          "name": "openid"
+        },
+        {
+          "name": "out_detail_no"
+        },
+        {
+          "name": "transfer_amount"
+        },
+        {
+          "name": "transfer_remark"
+        },
+        {
+          "name": "user_id_card"
+        },
+        {
+          "name": "user_name"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -19398,6 +23486,62 @@
     },
     {
       "type": "org.miaixz.bus.pay.nimble.wechat.entity.v3.UnifiedOrder",
+      "fields": [
+        {
+          "name": "amount"
+        },
+        {
+          "name": "appid"
+        },
+        {
+          "name": "attach"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "detail"
+        },
+        {
+          "name": "goods_tag"
+        },
+        {
+          "name": "mchid"
+        },
+        {
+          "name": "notify_url"
+        },
+        {
+          "name": "out_trade_no"
+        },
+        {
+          "name": "payer"
+        },
+        {
+          "name": "scene_info"
+        },
+        {
+          "name": "settle_info"
+        },
+        {
+          "name": "sp_appid"
+        },
+        {
+          "name": "sp_mchid"
+        },
+        {
+          "name": "sub_appid"
+        },
+        {
+          "name": "sub_mchid"
+        },
+        {
+          "name": "support_fapiao"
+        },
+        {
+          "name": "time_expire"
+        }
+      ],
       "methods": [
         {
           "name": "builder",
@@ -21431,10 +25575,27 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.Provider"
-    },
-    {
       "type": "org.miaixz.bus.pay.Registry",
+      "fields": [
+        {
+          "name": "ALIPAY"
+        },
+        {
+          "name": "JDPAY"
+        },
+        {
+          "name": "PAYPAL"
+        },
+        {
+          "name": "TENPAY"
+        },
+        {
+          "name": "UNIONPAY"
+        },
+        {
+          "name": "WECHAT"
+        }
+      ],
       "methods": [
         {
           "name": "require",
@@ -21588,6 +25749,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

@@ -14,6 +14,23 @@
     },
     {
       "type": "org.miaixz.bus.extra.captcha.AbstractProvider",
+      "fields": [
+        {
+          "name": "background"
+        },
+        {
+          "name": "font"
+        },
+        {
+          "name": "generator"
+        },
+        {
+          "name": "imageBytes"
+        },
+        {
+          "name": "textAlpha"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -238,9 +255,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.captcha.CaptchaProvider"
-    },
-    {
       "type": "org.miaixz.bus.extra.captcha.provider.CircleProvider",
       "methods": [
         {
@@ -348,6 +362,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.captcha.provider.GifProvider",
+      "fields": [
+        {
+          "name": "maxColor"
+        },
+        {
+          "name": "minColor"
+        },
+        {
+          "name": "quality"
+        },
+        {
+          "name": "repeat"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -652,6 +680,11 @@
     },
     {
       "type": "org.miaixz.bus.extra.captcha.strategy.AbstractStrategy",
+      "fields": [
+        {
+          "name": "length"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -671,9 +704,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.captcha.strategy.CodeStrategy"
     },
     {
       "type": "org.miaixz.bus.extra.captcha.strategy.MathStrategy",
@@ -740,9 +770,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.compress.archiver.Archiver"
-    },
-    {
       "type": "org.miaixz.bus.extra.compress.archiver.SevenZArchiver",
       "methods": [
         {
@@ -766,16 +793,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.compress.archiver.StreamArchiver"
-    },
-    {
-      "type": "org.miaixz.bus.extra.compress.CompressBuilder"
-    },
-    {
-      "type": "org.miaixz.bus.extra.compress.extractor.Extractor"
-    },
-    {
       "type": "org.miaixz.bus.extra.compress.extractor.Seven7EntryInputStream",
+      "fields": [
+        {
+          "name": "readSize"
+        }
+      ],
       "methods": [
         {
           "name": "available",
@@ -836,9 +859,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.compress.extractor.StreamExtractor"
-    },
-    {
       "type": "org.miaixz.bus.extra.emoji.EmojiKit",
       "methods": [
         {
@@ -890,13 +910,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.ftp.CommonsFtp"
-    },
-    {
-      "type": "org.miaixz.bus.extra.ftp.Ftp"
-    },
-    {
       "type": "org.miaixz.bus.extra.ftp.FtpConfig",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "connector"
+        },
+        {
+          "name": "serverLanguageCode"
+        },
+        {
+          "name": "soTimeout"
+        },
+        {
+          "name": "systemKey"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -981,10 +1012,194 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.ftp.SimpleFtpServer"
+      "type": "org.miaixz.bus.extra.ftp.FtpEntry",
+      "fields": [
+        {
+          "name": "accessTime"
+        },
+        {
+          "name": "directory"
+        },
+        {
+          "name": "gid"
+        },
+        {
+          "name": "link"
+        },
+        {
+          "name": "modifiedTime"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "permissions"
+        },
+        {
+          "name": "permissionsText"
+        },
+        {
+          "name": "regularFile"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "uid"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModifiedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPermissions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPermissionsText",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUid",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDirectory",
+          "parameterTypes": []
+        },
+        {
+          "name": "isLink",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRegularFile",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAccessTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setDirectory",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setGid",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setLink",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setModifiedTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPermissions",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setPermissionsText",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRegularFile",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setUid",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
+      "fields": [
+        {
+          "name": "background"
+        },
+        {
+          "name": "delay"
+        },
+        {
+          "name": "dispose"
+        },
+        {
+          "name": "repeat"
+        },
+        {
+          "name": "started"
+        },
+        {
+          "name": "transparent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1138,6 +1353,23 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.gif.GifDecoder",
+      "fields": [
+        {
+          "name": "delay"
+        },
+        {
+          "name": "frameCount"
+        },
+        {
+          "name": "image"
+        },
+        {
+          "name": "loopCount"
+        },
+        {
+          "name": "pixels"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2651,6 +2883,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.Images",
+      "fields": [
+        {
+          "name": "backgroundColor"
+        },
+        {
+          "name": "positionBaseCentre"
+        },
+        {
+          "name": "quality"
+        },
+        {
+          "name": "targetImageType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2946,6 +3192,23 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.ImageText",
+      "fields": [
+        {
+          "name": "alpha"
+        },
+        {
+          "name": "color"
+        },
+        {
+          "name": "font"
+        },
+        {
+          "name": "point"
+        },
+        {
+          "name": "pressText"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3175,6 +3438,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$AlphaInterpolation",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "QUALITY"
+        },
+        {
+          "name": "SPEED"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3202,6 +3479,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Antialias",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "OFF"
+        },
+        {
+          "name": "ON"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3229,6 +3520,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$ColorRender",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "QUALITY"
+        },
+        {
+          "name": "SPEED"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3256,6 +3561,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Dither",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "DISABLE"
+        },
+        {
+          "name": "ENABLE"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3283,6 +3602,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$FractionalMetrics",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "OFF"
+        },
+        {
+          "name": "ON"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3310,6 +3643,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Interpolation",
+      "fields": [
+        {
+          "name": "BICUBIC"
+        },
+        {
+          "name": "BILINEAR"
+        },
+        {
+          "name": "NEAREST_NEIGHBOR"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3337,6 +3684,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$Render",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "QUALITY"
+        },
+        {
+          "name": "SPEED"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3364,6 +3725,20 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$StrokeControl",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "NORMALIZE"
+        },
+        {
+          "name": "PURE"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3391,6 +3766,35 @@
     },
     {
       "type": "org.miaixz.bus.extra.image.RenderHintsBuilder$TextAntialias",
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "GASP"
+        },
+        {
+          "name": "LCD_HBGR"
+        },
+        {
+          "name": "LCD_HRGB"
+        },
+        {
+          "name": "LCD_VBGR"
+        },
+        {
+          "name": "LCD_VRGB"
+        },
+        {
+          "name": "OFF"
+        },
+        {
+          "name": "ON"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3519,9 +3923,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.json.JsonProvider"
-    },
-    {
       "type": "org.miaixz.bus.extra.json.provider.AbstractJsonProvider",
       "methods": [
         {
@@ -3612,13 +4013,42 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.json.provider.GsonProvider"
+      "type": "org.miaixz.bus.extra.json.provider.GsonProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.google.gson.Gson"
+          ]
+        }
+      ]
     },
     {
-      "type": "org.miaixz.bus.extra.json.provider.JacksonProvider"
+      "type": "org.miaixz.bus.extra.json.provider.JacksonProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "tools.jackson.databind.ObjectMapper"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.extra.mail.GlobalMailAccount",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3660,9 +4090,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.mail.InternalMail"
-    },
-    {
       "type": "org.miaixz.bus.extra.mail.Mail",
       "methods": [
         {
@@ -3679,6 +4106,68 @@
     },
     {
       "type": "org.miaixz.bus.extra.mail.MailAccount",
+      "fields": [
+        {
+          "name": "auth"
+        },
+        {
+          "name": "authMechanisms"
+        },
+        {
+          "name": "charset"
+        },
+        {
+          "name": "connectionTimeout"
+        },
+        {
+          "name": "customProperty"
+        },
+        {
+          "name": "debug"
+        },
+        {
+          "name": "encodefilename"
+        },
+        {
+          "name": "from"
+        },
+        {
+          "name": "host"
+        },
+        {
+          "name": "pass"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "socketFactoryClass"
+        },
+        {
+          "name": "socketFactoryFallback"
+        },
+        {
+          "name": "socketFactoryPort"
+        },
+        {
+          "name": "sslEnable"
+        },
+        {
+          "name": "sslProtocols"
+        },
+        {
+          "name": "starttlsEnable"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "writeTimeout"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3981,9 +4470,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.mail.MailKit"
     },
     {
       "type": "org.miaixz.bus.extra.mail.SMTPMessage",
@@ -4612,16 +5098,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.mq.Consumer"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.Message"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.MessageHandler"
-    },
-    {
       "type": "org.miaixz.bus.extra.mq.MQConfig",
+      "fields": [
+        {
+          "name": "brokerUrl"
+        },
+        {
+          "name": "customEngine"
+        },
+        {
+          "name": "properties"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4696,33 +5184,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.mq.MQProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.Producer"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsConsumer$JmsMessage"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProducer"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.jms.JmsProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaConsumer"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProducer"
-    },
-    {
       "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider",
       "methods": [
         {
@@ -4777,10 +5238,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQConsumer"
-    },
-    {
       "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProducer",
+      "fields": [
+        {
+          "name": "exchange"
+        }
+      ],
       "methods": [
         {
           "name": "close",
@@ -4811,12 +5274,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQConsumer"
-    },
-    {
       "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer",
       "methods": [
         {
@@ -4830,9 +5287,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider"
     },
     {
       "type": "org.miaixz.bus.extra.mq.RawMessage",
@@ -4934,15 +5388,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.nlp.NLPProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.nlp.NLPResult"
-    },
-    {
-      "type": "org.miaixz.bus.extra.nlp.NLPWord"
-    },
-    {
       "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisProvider",
       "methods": [
         {
@@ -4961,15 +5406,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.AnalysisWord"
-    },
-    {
-      "type": "org.miaixz.bus.extra.nlp.provider.analysis.SmartcnProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider"
     },
     {
       "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult",
@@ -5147,9 +5583,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider"
     },
     {
       "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult",
@@ -5382,9 +5815,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.pinyin.PinyinProvider"
-    },
-    {
       "type": "org.miaixz.bus.extra.pinyin.provider.bopomofo4j.Bopomofo4JProvider",
       "methods": [
         {
@@ -5431,12 +5861,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.pinyin.provider.jpinyin.JPinyinProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.pinyin.provider.pinyin4j.Pinyin4JProvider"
     },
     {
       "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider",
@@ -5655,12 +6079,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.qrcode.QrDecoder"
-    },
-    {
-      "type": "org.miaixz.bus.extra.qrcode.QrEncoder"
-    },
-    {
       "type": "org.miaixz.bus.extra.qrcode.render.AsciiArtRender",
       "methods": [
         {
@@ -5670,9 +6088,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.qrcode.render.BitMatrixRender"
     },
     {
       "type": "org.miaixz.bus.extra.qrcode.render.ImageRender",
@@ -5699,6 +6114,23 @@
     },
     {
       "type": "org.miaixz.bus.extra.ssh.Connector",
+      "fields": [
+        {
+          "name": "host"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "user"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5794,10 +6226,39 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.ssh.JschKit"
-    },
-    {
       "type": "org.miaixz.bus.extra.ssh.provider.jsch.ChannelType",
+      "fields": [
+        {
+          "name": "AGENT_FORWARDING"
+        },
+        {
+          "name": "DIRECT_TCPIP"
+        },
+        {
+          "name": "EXEC"
+        },
+        {
+          "name": "FORWARDED_TCPIP"
+        },
+        {
+          "name": "SESSION"
+        },
+        {
+          "name": "SFTP"
+        },
+        {
+          "name": "SHELL"
+        },
+        {
+          "name": "SUBSYSTEM"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "X11"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5824,13 +6285,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSession"
-    },
-    {
-      "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp"
-    },
-    {
       "type": "org.miaixz.bus.extra.ssh.provider.jsch.JschSftp$Mode",
+      "fields": [
+        {
+          "name": "APPEND"
+        },
+        {
+          "name": "OVERWRITE"
+        },
+        {
+          "name": "RESUME"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5850,30 +6316,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSession"
-    },
-    {
-      "type": "org.miaixz.bus.extra.ssh.provider.sshj.SshjSftp"
-    },
-    {
-      "type": "org.miaixz.bus.extra.ssh.Session"
-    },
-    {
-      "type": "org.miaixz.bus.extra.ssh.SshjKit"
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlTemplate"
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerTemplate"
     },
     {
       "type": "org.miaixz.bus.extra.template.provider.freemarker.SimpleStringTemplateLoader",
@@ -5953,16 +6395,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider"
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafTemplate"
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.Template"
-    },
-    {
       "type": "org.miaixz.bus.extra.template.TemplateConfig",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "path"
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "resourceMode"
+        },
+        {
+          "name": "useCache"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6057,6 +6507,23 @@
     },
     {
       "type": "org.miaixz.bus.extra.template.TemplateConfig$ResourceMode",
+      "fields": [
+        {
+          "name": "CLASSPATH"
+        },
+        {
+          "name": "COMPOSITE"
+        },
+        {
+          "name": "FILE"
+        },
+        {
+          "name": "STRING"
+        },
+        {
+          "name": "WEB_ROOT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6133,9 +6600,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.template.TemplateProvider"
     }
   ],
   "resources": [

@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Data source support.
+ * Activates dynamic JDBC data-source routing and annotation-driven switching, and binds data-source definitions. This
+ * non-exported package contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

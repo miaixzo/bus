@@ -175,7 +175,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     handleMultipartBody(bodySpec, context, ip, method, path);
                 } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
-                    handleJsonRequestBody(bodySpec, context, ip, method, path);
+                    handleJsonRequestBody(bodySpec, request, context, ip, method, path);
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
                     handleFormRequestBody(bodySpec, context, ip, method, path);
                 } else {
@@ -244,6 +244,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Handles a JSON request body.
      *
      * @param bodySpec The request body specification.
+     * @param request  The current server request.
      * @param context  The request context.
      * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
@@ -251,10 +252,26 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      */
     private void handleJsonRequestBody(
             WebClient.RequestBodySpec bodySpec,
+            ServerRequest request,
             Context context,
             String ip,
             String method,
             String path) {
+        if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))) {
+            MediaType mediaType = request.headers().contentType().orElse(MediaType.APPLICATION_JSON);
+            bodySpec.contentType(mediaType);
+            request.headers().contentLength().ifPresent(length -> bodySpec.contentLength(length));
+            bodySpec.body(BodyInserters.fromDataBuffers(request.exchange().getRequest().getBody()));
+            Logger.info(
+                    true,
+                    "Vortex",
+                    "JSON array content configured: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_JSON_ARRAY",
+                    ip,
+                    method,
+                    path);
+            return;
+        }
+
         Map<String, Object> params = context.getParameters();
         if (!params.isEmpty()) {
             String json = JsonKit.toJsonString(params);

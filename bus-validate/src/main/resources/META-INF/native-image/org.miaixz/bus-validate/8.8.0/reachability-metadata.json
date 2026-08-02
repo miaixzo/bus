@@ -48,6 +48,20 @@
     },
     {
       "type": "org.miaixz.bus.validate.Collector",
+      "fields": [
+        {
+          "name": "criterion"
+        },
+        {
+          "name": "pass"
+        },
+        {
+          "name": "result"
+        },
+        {
+          "name": "target"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -119,6 +133,32 @@
     },
     {
       "type": "org.miaixz.bus.validate.Context",
+      "fields": [
+        {
+          "name": "checker"
+        },
+        {
+          "name": "errcode"
+        },
+        {
+          "name": "exception"
+        },
+        {
+          "name": "fast"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "inside"
+        },
+        {
+          "name": "skip"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -217,108 +257,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.validate.magic.annotation.Array"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Blank"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Chinese"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.CitizenId"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Compare"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Complex"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Date"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Each"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Email"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.English"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Equals"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.False"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Filler"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Group"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.In"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.InEnum"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Inside"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.IntRange"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.IPAddress"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Length"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Mobile"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Multiple"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.NotBlank"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.NotEmpty"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.NotIn"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.NotNull"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Null"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Phone"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Reflect"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Regex"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Size"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.True"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.Valid"
-    },
-    {
-      "type": "org.miaixz.bus.validate.magic.annotation.ValidEx"
-    },
-    {
       "type": "org.miaixz.bus.validate.magic.Checker",
       "methods": [
         {
@@ -387,6 +325,41 @@
     },
     {
       "type": "org.miaixz.bus.validate.magic.Criterion",
+      "fields": [
+        {
+          "name": "annotation"
+        },
+        {
+          "name": "array"
+        },
+        {
+          "name": "clazz"
+        },
+        {
+          "name": "errcode"
+        },
+        {
+          "name": "errmsg"
+        },
+        {
+          "name": "exception"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "name": "group"
+        },
+        {
+          "name": "list"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "param"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1200,6 +1173,20 @@
     },
     {
       "type": "org.miaixz.bus.validate.Verified",
+      "fields": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "name": "list"
+        },
+        {
+          "name": "object"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",

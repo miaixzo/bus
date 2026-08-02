@@ -57,6 +57,11 @@ import org.miaixz.bus.core.lang.Assert;
 public class TenantContext {
 
     /**
+     * Shared snapshot representing the absence of a tenant identifier.
+     */
+    private static final Snapshot EMPTY = new Snapshot(null);
+
+    /**
      * ThreadLocal storage for tenant ID.
      */
     private static final ThreadLocal<String> TENANT_ID = new ThreadLocal<>();
@@ -67,7 +72,7 @@ public class TenantContext {
     private static final ThreadLocal<Boolean> IGNORE = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     /**
-     * Private constructor to prevent instantiation.
+     * Prevents instantiation of this thread-local tenant context utility.
      */
     private TenantContext() {
         // No initialization required.
@@ -102,6 +107,43 @@ public class TenantContext {
     public static void clear() {
         TENANT_ID.remove();
         IGNORE.remove();
+    }
+
+    /**
+     * Captures the current tenant identifier without propagating privileged ignore state.
+     *
+     * @return immutable non-privileged tenant snapshot
+     */
+    public static Snapshot capture() {
+        String tenantId = getTenantId();
+        return tenantId == null ? EMPTY : new Snapshot(tenantId);
+    }
+
+    /**
+     * Installs a tenant snapshot and restores the exact parent context when the returned scope is closed.
+     * <p>
+     * Installation always clears tenant-filter bypass state. The bypass flag is private to the current thread and is
+     * restored only when this lexical scope closes.
+     *
+     * @param snapshot snapshot to install; {@code null} installs an empty tenant context
+     * @return installed tenant scope
+     */
+    public static Scope install(Snapshot snapshot) {
+        return new Scope(snapshot);
+    }
+
+    /**
+     * Applies only the tenant identifier carried by a snapshot.
+     *
+     * @param snapshot snapshot to apply; {@code null} clears the tenant identifier
+     */
+    private static void applyTenant(Snapshot snapshot) {
+        Snapshot target = snapshot == null ? EMPTY : snapshot;
+        if (target.tenantId() == null) {
+            TENANT_ID.remove();
+        } else {
+            TENANT_ID.set(target.tenantId());
+        }
     }
 
     /**
@@ -220,6 +262,97 @@ public class TenantContext {
         } finally {
             setIgnore(originalIgnore);
         }
+    }
+
+    /**
+     * Immutable tenant context snapshot containing no privileged bypass state.
+     *
+     * @param tenantId normalized tenant identifier, or {@code null}
+     */
+    public record Snapshot(String tenantId) {
+
+        /**
+         * Creates a snapshot with a normalized tenant identifier.
+         *
+         * @param tenantId tenant identifier, or {@code null}
+         */
+        public Snapshot {
+            tenantId = tenantId == null || tenantId.isBlank() ? null : tenantId.trim();
+        }
+
+        /**
+         * Returns the shared empty tenant snapshot.
+         *
+         * @return empty tenant snapshot
+         */
+        public static Snapshot empty() {
+            return EMPTY;
+        }
+
+        /**
+         * Tests whether the snapshot contains no tenant identifier.
+         *
+         * @return {@code true} when the tenant identifier is absent
+         */
+        public boolean isEmpty() {
+            return tenantId == null;
+        }
+
+    }
+
+    /**
+     * Lexical tenant context scope with idempotent parent restoration.
+     */
+    public static final class Scope implements AutoCloseable {
+
+        /**
+         * Tenant identifier installed before this scope was opened.
+         */
+        private final String previousTenantId;
+
+        /**
+         * Tenant-filter bypass state installed before this scope was opened.
+         */
+        private final boolean previousIgnore;
+
+        /**
+         * Indicates whether this scope has already restored its parent state.
+         */
+        private boolean closed;
+
+        /**
+         * Opens a non-privileged tenant scope.
+         *
+         * @param snapshot tenant snapshot to install
+         */
+        private Scope(Snapshot snapshot) {
+            this.previousTenantId = getTenantId();
+            this.previousIgnore = isIgnore();
+            applyTenant(snapshot);
+            IGNORE.remove();
+        }
+
+        /**
+         * Restores the exact parent tenant identifier and bypass state once.
+         */
+        @Override
+        public void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            if (previousTenantId == null) {
+                TENANT_ID.remove();
+            } else {
+                TENANT_ID.set(previousTenantId);
+            }
+            if (previousIgnore) {
+                IGNORE.set(Boolean.TRUE);
+            } else {
+                IGNORE.remove();
+            }
+        }
+
     }
 
 }

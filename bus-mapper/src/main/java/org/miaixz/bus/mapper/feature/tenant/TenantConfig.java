@@ -28,6 +28,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Isolation;
 
@@ -118,6 +119,12 @@ public class TenantConfig {
     private final boolean enableSqlCache = true;
 
     /**
+     * Whether absence of an authenticated tenant must fail.
+     */
+    @Builder.Default
+    private boolean required = false;
+
+    /**
      * Tenant ID resolver.
      */
     private final TenantProvider provider;
@@ -179,7 +186,7 @@ public class TenantConfig {
 
         return ignore.stream().anyMatch(
                 ignore -> tableNameWithoutPrefix.equalsIgnoreCase(ignore)
-                        || tableNameWithoutPrefix.matches(ignore.replace("*", ".*")));
+                        || tableNameWithoutPrefix.matches(ignore.replace(Symbol.STAR, Symbol.DOT + Symbol.STAR)));
     }
 
     /**
@@ -207,7 +214,7 @@ public class TenantConfig {
             return false;
         }
         return ignoreMappers.stream()
-                .anyMatch(ignore -> mapperClass.equals(ignore) || mapperClass.endsWith("." + ignore));
+                .anyMatch(ignore -> mapperClass.equals(ignore) || mapperClass.endsWith(Symbol.DOT + ignore));
     }
 
 }

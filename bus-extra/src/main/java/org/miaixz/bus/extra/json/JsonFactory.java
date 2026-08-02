@@ -19,18 +19,38 @@
 */
 package org.miaixz.bus.extra.json;
 
-import org.miaixz.bus.core.instance.Instances;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceConfigurationError;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
+import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
 
 /**
- * Factory for creating JSON provider instances. This factory automatically detects the JSON library introduced by the
- * user (e.g., Jackson, Gson, Fastjson) and creates a corresponding JSON parser.
+ * Factory for creating JSON provider instances. Explicit selection is deterministic; automatic selection is accepted
+ * only when exactly one provider can be instantiated from the current classpath.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 public class JsonFactory {
+
+    /**
+     * Stores the immutable application-wide JSON provider after its first successful resolution or explicit
+     * installation.
+     */
+    private static final AtomicReference<JsonProvider> DEFAULT_PROVIDER = new AtomicReference<>();
+
+    /**
+     * JVM system property used when resolving the provider outside a dependency-injection container.
+     */
+    private static final String PROVIDER_PROPERTY = "bus.json.provider";
 
     /**
      * Constructs a new JsonFactory instance.
@@ -40,13 +60,20 @@ public class JsonFactory {
     }
 
     /**
-     * Retrieves the singleton instance of {@link JsonProvider}. The provider is created based on the first available
-     * JSON library found on the classpath via SPI.
+     * Retrieves the application-wide singleton {@link JsonProvider}.
      *
      * @return The singleton {@link JsonProvider} instance.
      */
     public static JsonProvider get() {
-        return Instances.singletion(JsonFactory.class).of();
+        JsonProvider provider = DEFAULT_PROVIDER.get();
+        if (provider != null) {
+            return provider;
+        }
+        JsonProvider resolved = of(System.getProperty(PROVIDER_PROPERTY, "auto"));
+        if (DEFAULT_PROVIDER.compareAndSet(null, resolved)) {
+            return resolved;
+        }
+        return DEFAULT_PROVIDER.get();
     }
 
     /**
@@ -58,11 +85,100 @@ public class JsonFactory {
      * @throws InternalException if no JSON library (e.g., Jackson, Gson, Fastjson) is found on the classpath.
      */
     public static JsonProvider of() {
-        final JsonProvider engine = NormalSpiLoader.loadFirstAvailable(JsonProvider.class);
-        if (null == engine) {
-            throw new InternalException("No json jar found ! Please add one of it to your project !");
+        return of("auto");
+    }
+
+    /**
+     * Creates a provider with the requested name. Automatic selection is allowed only when exactly one provider can be
+     * instantiated from the current classpath.
+     *
+     * @param requestedProvider provider name, or {@code auto}
+     * @return selected provider
+     */
+    public static JsonProvider of(String requestedProvider) {
+        String requested = normalize(requestedProvider);
+        List<JsonProvider> providers = loadAvailableProviders();
+        if (providers.isEmpty()) {
+            throw new InternalException(
+                    "No JSON provider is available. Add Fastjson2, Gson, or Jackson 3 to the project.");
         }
-        return engine;
+        if (!"auto".equals(requested)) {
+            return providers.stream().filter(provider -> normalize(provider.name()).equals(requested)).findFirst()
+                    .orElseThrow(
+                            () -> new InternalException("JSON provider '" + requested
+                                    + "' is not available. Available providers: " + providerNames(providers)));
+        }
+        if (providers.size() != 1) {
+            throw new InternalException("Multiple JSON providers are available: " + providerNames(providers)
+                    + ". Configure bus.json.provider explicitly.");
+        }
+        return providers.getFirst();
+    }
+
+    /**
+     * Installs the application-wide provider used by {@link #get()} and {@link JsonKit}.
+     *
+     * @param provider selected provider
+     */
+    public static void install(JsonProvider provider) {
+        Objects.requireNonNull(provider, "provider");
+        JsonProvider current = DEFAULT_PROVIDER.get();
+        if (current == provider) {
+            return;
+        }
+        if (current != null || !DEFAULT_PROVIDER.compareAndSet(null, provider)) {
+            current = DEFAULT_PROVIDER.get();
+            if (current != provider) {
+                throw new IllegalStateException("JSON provider is already initialized with " + current.name()
+                        + " and cannot be replaced by " + provider.name());
+            }
+        }
+    }
+
+    /**
+     * Normalizes a configured provider name and maps the Fastjson2 alias to its canonical provider name.
+     *
+     * @param name configured provider name; {@code null} and blank values mean {@code auto}
+     * @return canonical lower-case provider name
+     */
+    private static String normalize(String name) {
+        String normalized = name == null ? "auto" : name.trim().toLowerCase(Locale.ROOT);
+        if (normalized.isEmpty()) {
+            return "auto";
+        }
+        return "fastjson2".equals(normalized) ? "fastjson" : normalized;
+    }
+
+    /**
+     * Returns provider names in deterministic alphabetical order for diagnostics.
+     *
+     * @param providers available providers
+     * @return sorted provider names
+     */
+    private static List<String> providerNames(List<JsonProvider> providers) {
+        return providers.stream().map(JsonProvider::name).sorted().toList();
+    }
+
+    /**
+     * Loads legacy Provider SPI entries independently. Optional JSON engines are intentionally absent from many
+     * applications, so a linkage failure in one entry must not prevent later candidates from being inspected.
+     *
+     * @return providers that can be instantiated from the current runtime classpath
+     */
+    private static List<JsonProvider> loadAvailableProviders() {
+        ServiceLoader<JsonProvider> loader = NormalSpiLoader.loadList(JsonProvider.class);
+        Map<String, JsonProvider> providers = new LinkedHashMap<>();
+        for (String serviceName : loader.getServiceNames()) {
+            try {
+                JsonProvider provider = loader.getService(serviceName);
+                if (provider != null) {
+                    providers.putIfAbsent(normalize(provider.name()), provider);
+                }
+            } catch (RuntimeException | ServiceConfigurationError | LinkageError unavailable) {
+                // An optional engine is not installed or the third-party provider is incompatible.
+            }
+        }
+        return new ArrayList<>(providers.values());
     }
 
 }

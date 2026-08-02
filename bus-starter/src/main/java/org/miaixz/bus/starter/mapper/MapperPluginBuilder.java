@@ -57,9 +57,9 @@ import org.miaixz.bus.mapper.handler.MybatisInterceptor;
 import org.miaixz.bus.mapper.runtime.MapperOptions;
 import org.miaixz.bus.mapper.runtime.MapperPluginFactory;
 import org.miaixz.bus.mapper.runtime.MapperPluginProviders;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.spring.bean.BeanProvider;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Starter adapter for creating mapper plugins and coordinating mapper schema initialization.
@@ -71,7 +71,7 @@ import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class MapperPluginBuilder {
+public final class MapperPluginBuilder {
 
     /**
      * MapperFactoryBean property that stores the mapper interface class.
@@ -84,9 +84,9 @@ public class MapperPluginBuilder {
     private static final String PACKAGE_SPLIT_PATTERN = "[,;\\s]+";
 
     /**
-     * Constructs a new MapperPluginBuilder instance.
+     * Prevents instantiation of this mapper plugin assembly utility.
      */
-    public MapperPluginBuilder() {
+    private MapperPluginBuilder() {
         // No initialization required.
     }
 
@@ -115,7 +115,7 @@ public class MapperPluginBuilder {
      */
     public static MybatisInterceptor build(MapperProperties properties) {
         MapperProperties mapperProperties = properties == null ? new MapperProperties() : properties;
-        return build(mapperProperties, resolvePluginProviders(mapperProperties));
+        return build(mapperProperties, resolvePluginProviders(mapperProperties, null));
     }
 
     /**
@@ -142,6 +142,7 @@ public class MapperPluginBuilder {
      * @param dataSource     primary datasource
      * @param beanFactory    bean factory used to discover mapper definitions
      * @throws Exception if schema initialization fails
+     * @param beanProvider Spring Bean provider
      */
     public static void configureSqlSessionFactory(
             SqlSessionFactoryBean factory,
@@ -149,9 +150,10 @@ public class MapperPluginBuilder {
             Environment environment,
             ResourceLoader resourceLoader,
             DataSource dataSource,
-            ConfigurableListableBeanFactory beanFactory) throws Exception {
+            ConfigurableListableBeanFactory beanFactory,
+            BeanProvider beanProvider) throws Exception {
         MapperProperties mapperProperties = properties == null ? new MapperProperties() : properties;
-        MapperPluginProviders mapperProviders = resolvePluginProviders(mapperProperties);
+        MapperPluginProviders mapperProviders = resolvePluginProviders(mapperProperties, beanProvider);
         if (factory != null) {
             factory.setPlugins(build(mapperProperties, mapperProviders));
         }
@@ -173,31 +175,77 @@ public class MapperPluginBuilder {
      *
      * @param properties mapper properties bound from the Spring environment
      * @return provider holder passed to the pure mapper plugin factory
+     * @param beanProvider Spring Bean provider
      */
-    private static MapperPluginProviders resolvePluginProviders(MapperProperties properties) {
+    private static MapperPluginProviders resolvePluginProviders(
+            MapperProperties properties,
+            BeanProvider beanProvider) {
         MapperPluginProviders providers = new MapperPluginProviders();
         if (properties == null) {
             return providers;
         }
         Properties resolved = MapperOptions.resolve(properties);
-        boolean hasConfigFile = resolved != null && !resolved.isEmpty();
-        if (properties.getTenant() != null || hasConfigFile) {
-            providers.setTenantProvider(provider(TenantProvider.class));
+        if (properties.getTenant() != null || hasScope(resolved, Args.TENANT_KEY)
+                || hasProviderBean(beanProvider, TenantProvider.class)) {
+            providers.setTenantProvider(provider(beanProvider, TenantProvider.class));
         }
-        if (properties.getPrefix() != null || hasConfigFile) {
-            providers.setPrefixProvider(provider(TablePrefixProvider.class));
+        if (properties.getPrefix() != null || hasScope(resolved, Args.TABLE_KEY)
+                || hasProviderBean(beanProvider, TablePrefixProvider.class)) {
+            providers.setPrefixProvider(provider(beanProvider, TablePrefixProvider.class));
         }
-        if (properties.getVisible() != null || hasConfigFile) {
-            providers.setVisibleProvider(provider(VisibleProvider.class));
+        if (properties.getVisible() != null || hasScope(resolved, Args.VISIBLE_KEY)
+                || hasProviderBean(beanProvider, VisibleProvider.class)) {
+            providers.setVisibleProvider(provider(beanProvider, VisibleProvider.class));
         }
-        if (properties.getPopulate() != null || hasConfigFile) {
-            providers.setPopulateProvider(provider(PopulateProvider.class));
+        if (properties.getPopulate() != null || hasScope(resolved, Args.POPULATE_KEY)
+                || hasProviderBean(beanProvider, PopulateProvider.class)) {
+            providers.setPopulateProvider(provider(beanProvider, PopulateProvider.class));
         }
-        if (properties.getAudit() != null || hasConfigFile) {
-            providers.setAuditProvider(provider(AuditProvider.class));
+        if (properties.getAudit() != null || hasScope(resolved, Args.AUDIT_KEY)
+                || hasProviderBean(beanProvider, AuditProvider.class)) {
+            providers.setAuditProvider(provider(beanProvider, AuditProvider.class));
         }
-        providers.setSchemaProvider(provider(SchemaProvider.class));
+        if ((properties.getSchema() != null && properties.getSchema().isEnabled()) || hasScope(resolved, "schema")
+                || hasProviderBean(beanProvider, SchemaProvider.class)) {
+            providers.setSchemaProvider(provider(beanProvider, SchemaProvider.class));
+        }
         return providers;
+    }
+
+    /**
+     * Tests whether flattened mapper properties contain configuration for the requested scope.
+     *
+     * @param properties flattened mapper properties
+     * @param scope      mapper feature scope
+     * @return {@code true} when at least one property belongs to the scope
+     */
+    private static boolean hasScope(Properties properties, String scope) {
+        if (properties == null || scope == null) {
+            return false;
+        }
+        String marker = Symbol.DOT + scope + Symbol.DOT;
+        return properties.stringPropertyNames().stream().anyMatch(key -> key.contains(marker));
+    }
+
+    /**
+     * Tests whether the Spring container exposes a provider bean of the requested type.
+     * <p>
+     * Provider discovery may run before a Spring context is available in direct builder use. In that case the missing
+     * container is treated the same as a missing optional provider.
+     *
+     * @param providerType provider type to inspect
+     * @return {@code true} when at least one matching provider bean is registered
+     * @param beanProvider Spring Bean provider
+     */
+    private static boolean hasProviderBean(BeanProvider beanProvider, Class<?> providerType) {
+        if (beanProvider == null) {
+            return false;
+        }
+        try {
+            return beanProvider.getBeanNamesForType(providerType).length > 0;
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     /**
@@ -332,7 +380,7 @@ public class MapperPluginBuilder {
      * @param schemaProvider     schema provider
      * @param environment        Spring environment used by package scanning
      * @param resourceLoader     Spring resource loader used by package scanning
-     * @param primaryDataSource  primary datasource injected into mapper auto-configuration
+     * @param primaryDataSource  primary data source supplied to mapper Bean assembly
      * @param beanFactory        bean factory used for named datasource lookup
      * @param resolvedProperties flattened mapper configuration properties
      * @param namespaceSchemas   namespace schema configurations keyed by namespace name
@@ -467,7 +515,7 @@ public class MapperPluginBuilder {
      * Named {@link DataSource} beans are preferred when present; otherwise the primary datasource is used with
      * {@link Holder} set to the resolved key so routing datasources can select the target internally.
      *
-     * @param primaryDataSource datasource injected into mapper auto-configuration
+     * @param primaryDataSource data source supplied to mapper Bean assembly
      * @param beanFactory       bean factory used for named datasource lookup
      * @param namespaceName     namespace name, or {@code null} for global schema initialization
      * @param schemaConfig      schema runtime configuration
@@ -690,7 +738,7 @@ public class MapperPluginBuilder {
      * already hold a {@link Class} instance.
      *
      * @param beanFactory          bean factory used to load class names
-     * @param mapperInterfaceValue mapper interface property value
+     * @param mapperInterfaceValue mapper interface represented as a Class or fully qualified class name
      * @return mapper interface class, or {@code null} when it cannot be resolved
      */
     private static Class<?> resolveMapperInterfaceClass(
@@ -848,10 +896,14 @@ public class MapperPluginBuilder {
      * @param providerType provider type to resolve
      * @param <T>          provider type
      * @return provider bean, or {@code null} when none is available
+     * @param beanProvider Spring Bean provider
      */
-    private static <T> T provider(Class<T> providerType) {
+    private static <T> T provider(BeanProvider beanProvider, Class<T> providerType) {
+        if (beanProvider == null) {
+            return null;
+        }
         try {
-            return SpringBuilder.getBean(providerType);
+            return beanProvider.getBean(providerType);
         } catch (Exception e) {
             return null;
         }

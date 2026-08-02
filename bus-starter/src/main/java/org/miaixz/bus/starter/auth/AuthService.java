@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Provider;
 import org.miaixz.bus.auth.Registry;
-import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.afdian.AfDianProvider;
 import org.miaixz.bus.auth.nimble.alipay.AlipayProvider;
@@ -95,7 +94,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * // Create configuration properties
  * AuthProperties properties = new AuthProperties();
  * // Create the authorization service
- * AuthService service = new AuthService(properties);
+ * AuthService service = new AuthService(properties, cache);
  * // Get the GitHub authorization provider
  * Provider provider = service.require(Registry.GITHUB);
  * }</pre>
@@ -103,31 +102,22 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class AuthService {
+public class AuthService implements AutoCloseable {
 
     /**
      * Cache for storing registered authorization components. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private final Map<Registry, Context> contexts = new ConcurrentHashMap<>();
 
     /**
      * Authorization configuration properties, containing settings for various authorization components.
      */
-    public AuthProperties properties;
+    private final AuthProperties properties;
 
     /**
      * Cache interface for storing temporary data during the authorization process.
      */
-    public CacheX cache;
-
-    /**
-     * Constructs an instance of the authorization service provider with the default cache.
-     *
-     * @param properties The authorization configuration properties (must not be null).
-     */
-    public AuthService(AuthProperties properties) {
-        this(properties, AuthCache.INSTANCE);
-    }
+    private final CacheX<String, Object> cache;
 
     /**
      * Constructs an instance of the authorization service provider with a specified cache.
@@ -135,7 +125,7 @@ public class AuthService {
      * @param properties The authorization configuration properties (must not be null).
      * @param cache      The cache implementation to use (must not be null).
      */
-    public AuthService(AuthProperties properties, CacheX cache) {
+    public AuthService(AuthProperties properties, CacheX<String, Object> cache) {
         this.properties = properties;
         this.cache = cache;
     }
@@ -148,11 +138,11 @@ public class AuthService {
      * @param context  The context of the authorization component (must not be null).
      * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry registry, Context context) {
-        if (CACHE.containsKey(registry)) {
+    public void register(Registry registry, Context context) {
+        if (contexts.containsKey(registry)) {
             throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
-        CACHE.putIfAbsent(registry, context);
+        contexts.putIfAbsent(registry, context);
     }
 
     /**
@@ -165,7 +155,7 @@ public class AuthService {
      */
     public Provider require(Registry registry) {
         // Get the authorization component context from the cache
-        Context context = CACHE.get(registry);
+        Context context = contexts.get(registry);
         // If not in the cache, get it from the properties
         if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(registry);
@@ -309,6 +299,14 @@ public class AuthService {
                 // If no matching authorization type is found, throw an exception
                 throw new InternalException(ErrorCode._100803.getValue());
         }
+    }
+
+    /**
+     * Clears only the authorization contexts owned by this service instance.
+     */
+    @Override
+    public void close() {
+        contexts.clear();
     }
 
 }

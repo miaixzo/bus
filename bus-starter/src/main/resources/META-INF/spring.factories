@@ -15,17 +15,15 @@
 # limitations under the License.                                            #
 #                                                                           #
 #############################################################################
-# Spring Application Run Listeners
+
 org.springframework.boot.SpringApplicationRunListener=\
   org.miaixz.bus.spring.boot.SpringApplicationRunListener
 
-# Application Listeners
 org.springframework.context.ApplicationListener=\
-  org.miaixz.bus.spring.listener.SpringCloudConfigListener,\
-  org.miaixz.bus.spring.listener.SpringBootConfigListener
+  org.miaixz.bus.spring.boot.listener.SpringCloudConfigListener,\
+  org.miaixz.bus.spring.boot.listener.SpringBootConfigListener
 
-# Environment Post Processors
 org.springframework.boot.EnvironmentPostProcessor=\
-  org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor,\
-  org.miaixz.bus.spring.env.LoggingEnvironmentPostProcessor,\
-  org.miaixz.bus.spring.env.ScenesEnvironmentPostProcessor
+  org.miaixz.bus.spring.boot.environment.SpringEnvironmentPostProcessor,\
+  org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor,\
+  org.miaixz.bus.spring.boot.environment.ScenesEnvironmentPostProcessor

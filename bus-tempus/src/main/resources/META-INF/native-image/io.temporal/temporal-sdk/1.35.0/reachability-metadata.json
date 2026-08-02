@@ -2650,12 +2650,6 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "io.temporal.client.WorkflowClientOptions$1"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
             "io.temporal.client.WorkflowClientOptions"
           ]
         },
@@ -2663,6 +2657,12 @@
           "name": "<init>",
           "parameterTypes": [
             "io.temporal.client.WorkflowClientOptions",
+            "io.temporal.client.WorkflowClientOptions$1"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
             "io.temporal.client.WorkflowClientOptions$1"
           ]
         },

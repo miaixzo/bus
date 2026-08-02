@@ -75,10 +75,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.beans.ColumnType"
-    },
-    {
       "type": "org.miaixz.bus.shade.beans.DateType",
+      "fields": [
+        {
+          "name": "ONLY_DATE"
+        },
+        {
+          "name": "SQL_PACK"
+        },
+        {
+          "name": "TIME_PACK"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -101,6 +109,110 @@
     },
     {
       "type": "org.miaixz.bus.shade.beans.MySQLColumnType",
+      "fields": [
+        {
+          "name": "BASE_BOOLEAN"
+        },
+        {
+          "name": "BASE_BYTE"
+        },
+        {
+          "name": "BASE_CHAR"
+        },
+        {
+          "name": "BASE_DOUBLE"
+        },
+        {
+          "name": "BASE_FLOAT"
+        },
+        {
+          "name": "BASE_INT"
+        },
+        {
+          "name": "BASE_LONG"
+        },
+        {
+          "name": "BASE_SHORT"
+        },
+        {
+          "name": "BIG_DECIMAL"
+        },
+        {
+          "name": "BIG_INTEGER"
+        },
+        {
+          "name": "BLOB"
+        },
+        {
+          "name": "BOOLEAN"
+        },
+        {
+          "name": "BYTE"
+        },
+        {
+          "name": "BYTE_ARRAY"
+        },
+        {
+          "name": "CHARACTER"
+        },
+        {
+          "name": "CLOB"
+        },
+        {
+          "name": "DATE"
+        },
+        {
+          "name": "DATE_SQL"
+        },
+        {
+          "name": "DOUBLE"
+        },
+        {
+          "name": "FLOAT"
+        },
+        {
+          "name": "INTEGER"
+        },
+        {
+          "name": "LOCAL_DATE"
+        },
+        {
+          "name": "LOCAL_DATE_TIME"
+        },
+        {
+          "name": "LOCAL_TIME"
+        },
+        {
+          "name": "LONG"
+        },
+        {
+          "name": "OBJECT"
+        },
+        {
+          "name": "pkg"
+        },
+        {
+          "name": "SHORT"
+        },
+        {
+          "name": "STRING"
+        },
+        {
+          "name": "TIME"
+        },
+        {
+          "name": "TIMESTAMP"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "YEAR"
+        },
+        {
+          "name": "YEAR_MONTH"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -177,6 +289,23 @@
     },
     {
       "type": "org.miaixz.bus.shade.beans.PropertyInfo",
+      "fields": [
+        {
+          "name": "column"
+        },
+        {
+          "name": "comment"
+        },
+        {
+          "name": "javaType"
+        },
+        {
+          "name": "jdbcType"
+        },
+        {
+          "name": "property"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -236,6 +365,80 @@
     },
     {
       "type": "org.miaixz.bus.shade.beans.TableEntity",
+      "fields": [
+        {
+          "name": "agile"
+        },
+        {
+          "name": "author"
+        },
+        {
+          "name": "cis"
+        },
+        {
+          "name": "controllerUrl"
+        },
+        {
+          "name": "createTime"
+        },
+        {
+          "name": "database"
+        },
+        {
+          "name": "entityComment"
+        },
+        {
+          "name": "entityName"
+        },
+        {
+          "name": "entityUrl"
+        },
+        {
+          "name": "idJdbcType"
+        },
+        {
+          "name": "idType"
+        },
+        {
+          "name": "isDubbo"
+        },
+        {
+          "name": "isSwagger"
+        },
+        {
+          "name": "mapperUrl"
+        },
+        {
+          "name": "mapperXmlUrl"
+        },
+        {
+          "name": "objectName"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "project"
+        },
+        {
+          "name": "serviceImplUrl"
+        },
+        {
+          "name": "serviceUrl"
+        },
+        {
+          "name": "table"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "name": "user"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -519,13 +722,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.beans.TypeConvert"
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricKey"
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.algorithm.AsymmetricSecureKey",
+      "fields": [
+        {
+          "name": "privateKey"
+        },
+        {
+          "name": "publicKey"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -561,10 +766,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.safety.algorithm.Key"
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.algorithm.SecureKey",
+      "fields": [
+        {
+          "name": "algorithm"
+        },
+        {
+          "name": "ivsize"
+        },
+        {
+          "name": "keysize"
+        },
+        {
+          "name": "password"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -653,10 +869,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricKey"
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey",
+      "fields": [
+        {
+          "name": "secretKey"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -789,12 +1007,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.archive.ZipDecryptorProvider"
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.archive.ZipEncryptorProvider"
     },
     {
       "type": "org.miaixz.bus.shade.safety.archive.ZipRegexComplex",
@@ -1208,12 +1420,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.boot.BootDecryptorProvider"
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.boot.BootEncryptorProvider"
     },
     {
       "type": "org.miaixz.bus.shade.safety.boot.BootJarArchiveEntry",
@@ -2483,12 +2689,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarDecryptorProvider"
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.boot.jar.JarEncryptorProvider"
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.boot.jar.JarLauncher",
       "methods": [
         {
@@ -2991,9 +3191,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.safety.Complex"
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.complex.AllComplex",
       "methods": [
         {
@@ -3120,9 +3317,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.safety.Injector"
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.Launcher",
       "methods": [
         {
@@ -3132,12 +3326,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.provider.DecryptorProvider"
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.provider.EncryptorProvider"
     },
     {
       "type": "org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider",
@@ -3528,6 +3716,32 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.Config",
+      "fields": [
+        {
+          "name": "dataSource"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "engineConfig"
+        },
+        {
+          "name": "organization"
+        },
+        {
+          "name": "organizationUrl"
+        },
+        {
+          "name": "produceConfig"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3699,6 +3913,14 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.AbstractDatabaseQuery",
+      "fields": [
+        {
+          "name": "connection"
+        },
+        {
+          "name": "dataSource"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3773,6 +3995,89 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn",
+      "fields": [
+        {
+          "name": "bufferLength"
+        },
+        {
+          "name": "charOctetLength"
+        },
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "isAutoincrement"
+        },
+        {
+          "name": "isGeneratedcolumn"
+        },
+        {
+          "name": "isNullable"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "numPrecRadix"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "scopeCatalog"
+        },
+        {
+          "name": "scopeSchema"
+        },
+        {
+          "name": "scopeTable"
+        },
+        {
+          "name": "sourceDataType"
+        },
+        {
+          "name": "sqlDataType"
+        },
+        {
+          "name": "sqlDatetimeSub"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4052,6 +4357,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4110,6 +4420,26 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbPrimaryKey",
+      "fields": [
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "keySeq"
+        },
+        {
+          "name": "pkName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4179,6 +4509,38 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbTable",
+      "fields": [
+        {
+          "name": "refGeneration"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "selfReferencingColName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "tableType"
+        },
+        {
+          "name": "typeCat"
+        },
+        {
+          "name": "typeName"
+        },
+        {
+          "name": "typeSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4287,10 +4649,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQuery"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory",
+      "fields": [
+        {
+          "name": "dataSource"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4320,6 +4684,47 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType",
+      "fields": [
+        {
+          "name": "CACHEDB"
+        },
+        {
+          "name": "DB2"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "H2"
+        },
+        {
+          "name": "implClass"
+        },
+        {
+          "name": "MARIADB"
+        },
+        {
+          "name": "MYSQL"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "ORACLE"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "POSTGRE_SQL"
+        },
+        {
+          "name": "SQL_SERVER"
+        },
+        {
+          "name": "SQL_SERVER2005"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4439,6 +4844,89 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbColumn",
+      "fields": [
+        {
+          "name": "bufferLength"
+        },
+        {
+          "name": "charOctetLength"
+        },
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "isAutoIncrement"
+        },
+        {
+          "name": "isGeneratedColumn"
+        },
+        {
+          "name": "isNullable"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "numPrecRadix"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "scopeCatalog"
+        },
+        {
+          "name": "scopeSchema"
+        },
+        {
+          "name": "scopeTable"
+        },
+        {
+          "name": "sourceDataType"
+        },
+        {
+          "name": "sqlDataType"
+        },
+        {
+          "name": "sqlDatetimeSub"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4718,6 +5206,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4776,6 +5269,26 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbPrimaryKey",
+      "fields": [
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "keySeq"
+        },
+        {
+          "name": "pkName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4845,6 +5358,38 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariadbTable",
+      "fields": [
+        {
+          "name": "refGeneration"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "selfReferencingColName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "tableType"
+        },
+        {
+          "name": "typeCat"
+        },
+        {
+          "name": "typeName"
+        },
+        {
+          "name": "typeSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4954,6 +5499,89 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlColumn",
+      "fields": [
+        {
+          "name": "bufferLength"
+        },
+        {
+          "name": "charOctetLength"
+        },
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "isAutoIncrement"
+        },
+        {
+          "name": "isGeneratedColumn"
+        },
+        {
+          "name": "isNullable"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "numPrecRadix"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "scopeCatalog"
+        },
+        {
+          "name": "scopeSchema"
+        },
+        {
+          "name": "scopeTable"
+        },
+        {
+          "name": "sourceDataType"
+        },
+        {
+          "name": "sqlDataType"
+        },
+        {
+          "name": "sqlDatetimeSub"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5233,6 +5861,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5291,6 +5924,26 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlPrimaryKey",
+      "fields": [
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "keySeq"
+        },
+        {
+          "name": "pkName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5360,6 +6013,38 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlTable",
+      "fields": [
+        {
+          "name": "refGeneration"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "selfReferencingColName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "tableType"
+        },
+        {
+          "name": "typeCat"
+        },
+        {
+          "name": "typeName"
+        },
+        {
+          "name": "typeSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5469,6 +6154,89 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleColumn",
+      "fields": [
+        {
+          "name": "bufferLength"
+        },
+        {
+          "name": "charOctetLength"
+        },
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "isAutoIncrement"
+        },
+        {
+          "name": "isGeneratedColumn"
+        },
+        {
+          "name": "isNullable"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "numPrecRadix"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "scopeCatalog"
+        },
+        {
+          "name": "scopeSchema"
+        },
+        {
+          "name": "scopeTable"
+        },
+        {
+          "name": "sourceDataType"
+        },
+        {
+          "name": "sqlDataType"
+        },
+        {
+          "name": "sqlDatetimeSub"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5748,6 +6516,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5810,6 +6583,23 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.oracle.OraclePrimaryKey",
+      "fields": [
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "keySeq"
+        },
+        {
+          "name": "pkName"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5869,6 +6659,23 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleTable",
+      "fields": [
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "tableType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5963,6 +6770,89 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlColumn",
+      "fields": [
+        {
+          "name": "bufferLength"
+        },
+        {
+          "name": "charOctetLength"
+        },
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "isAutoIncrement"
+        },
+        {
+          "name": "isGeneratedColumn"
+        },
+        {
+          "name": "isNullable"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "numPrecRadix"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "scopeCatalog"
+        },
+        {
+          "name": "scopeSchema"
+        },
+        {
+          "name": "scopeTable"
+        },
+        {
+          "name": "sourceDataType"
+        },
+        {
+          "name": "sqlDataType"
+        },
+        {
+          "name": "sqlDatetimeSub"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6242,6 +7132,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6300,6 +7195,26 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlPrimaryKey",
+      "fields": [
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "keySeq"
+        },
+        {
+          "name": "pkName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6369,6 +7284,38 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlTable",
+      "fields": [
+        {
+          "name": "refGeneration"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "selfReferencingColName"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "tableType"
+        },
+        {
+          "name": "typeCat"
+        },
+        {
+          "name": "typeName"
+        },
+        {
+          "name": "typeSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6478,6 +7425,89 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerColumn",
+      "fields": [
+        {
+          "name": "bufferLength"
+        },
+        {
+          "name": "charOctetLength"
+        },
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "isAutoIncrement"
+        },
+        {
+          "name": "isGeneratedColumn"
+        },
+        {
+          "name": "isNullable"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "numPrecRadix"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "scopeCatalog"
+        },
+        {
+          "name": "scopeSchema"
+        },
+        {
+          "name": "scopeTable"
+        },
+        {
+          "name": "sourceDataType"
+        },
+        {
+          "name": "sqlDataType"
+        },
+        {
+          "name": "sqlDatetimeSub"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6757,6 +7787,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6815,6 +7850,23 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerPrimaryKey",
+      "fields": [
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "keySeq"
+        },
+        {
+          "name": "pkName"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6874,6 +7926,23 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerTable",
+      "fields": [
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "tableCat"
+        },
+        {
+          "name": "tableName"
+        },
+        {
+          "name": "tableSchem"
+        },
+        {
+          "name": "tableType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6933,6 +8002,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.engine.AbstractEngine",
+      "fields": [
+        {
+          "name": "engineConfig"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6968,6 +8042,26 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.engine.EngineConfig",
+      "fields": [
+        {
+          "name": "customTemplate"
+        },
+        {
+          "name": "fileName"
+        },
+        {
+          "name": "fileOutputDir"
+        },
+        {
+          "name": "fileType"
+        },
+        {
+          "name": "openOutputDir"
+        },
+        {
+          "name": "produceType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7105,6 +8199,11 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.engine.EngineFactory",
+      "fields": [
+        {
+          "name": "engineConfig"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7128,6 +8227,26 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.engine.EngineFileType",
+      "fields": [
+        {
+          "name": "desc"
+        },
+        {
+          "name": "fileSuffix"
+        },
+        {
+          "name": "HTML"
+        },
+        {
+          "name": "MD"
+        },
+        {
+          "name": "templateNamePrefix"
+        },
+        {
+          "name": "WORD"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7182,13 +8301,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.engine.FreemarkerEngine"
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.engine.TemplateEngine"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.engine.TemplateType",
+      "fields": [
+        {
+          "name": "FREEMARKER"
+        },
+        {
+          "name": "implClass"
+        },
+        {
+          "name": "suffix"
+        },
+        {
+          "name": "templateDir"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7260,9 +8387,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.execute.Execute"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.execute.ProduceExecute",
       "methods": [
         {
@@ -7279,6 +8403,14 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.mapping.FieldMethod",
+      "fields": [
+        {
+          "name": "field"
+        },
+        {
+          "name": "method"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7344,19 +8476,42 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.mapping.MappingField"
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.mapping.MappingListField"
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.metadata.Column"
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.metadata.ColumnLength"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.metadata.ColumnSchema",
+      "fields": [
+        {
+          "name": "columnDef"
+        },
+        {
+          "name": "columnLength"
+        },
+        {
+          "name": "columnName"
+        },
+        {
+          "name": "columnSize"
+        },
+        {
+          "name": "columnType"
+        },
+        {
+          "name": "decimalDigits"
+        },
+        {
+          "name": "nullable"
+        },
+        {
+          "name": "ordinalPosition"
+        },
+        {
+          "name": "primaryKey"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "typeName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7475,10 +8630,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.metadata.Database"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema",
+      "fields": [
+        {
+          "name": "database"
+        },
+        {
+          "name": "tables"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7508,6 +8668,23 @@
     },
     {
       "type": "org.miaixz.bus.shade.screw.metadata.DataSchema",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "organization"
+        },
+        {
+          "name": "organizationUrl"
+        },
+        {
+          "name": "title"
+        },
+        {
+          "name": "version"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7582,13 +8759,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.metadata.PrimaryKey"
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.metadata.Table"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.metadata.TableSchema",
+      "fields": [
+        {
+          "name": "columns"
+        },
+        {
+          "name": "remarks"
+        },
+        {
+          "name": "tableName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -7685,10 +8867,27 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.process.Process"
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.process.ProcessConfig",
+      "fields": [
+        {
+          "name": "designatedTableName"
+        },
+        {
+          "name": "designatedTablePrefix"
+        },
+        {
+          "name": "designatedTableSuffix"
+        },
+        {
+          "name": "ignoreTableName"
+        },
+        {
+          "name": "ignoreTablePrefix"
+        },
+        {
+          "name": "ignoreTableSuffix"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",

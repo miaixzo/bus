@@ -40,7 +40,7 @@ import org.miaixz.bus.mapper.builder.TableSchemaChain;
 public class Holder<T> implements org.miaixz.bus.core.Holder<T> {
 
     /**
-     * Constructs a new Holder instance.
+     * Initializes the mapper runtime holder that exposes ordered schema and parameter processing chains.
      */
     public Holder() {
         // No initialization required.
@@ -102,6 +102,18 @@ public class Holder<T> implements org.miaixz.bus.core.Holder<T> {
     }
 
     /**
+     * Gets only the data source key explicitly installed for the current thread.
+     * <p>
+     * Unlike {@link #getKey()}, this method does not substitute the default key. It is intended for callers that must
+     * distinguish an inherited explicit routing choice from the absence of a routing choice.
+     *
+     * @return explicit current key, or {@code null} when no key is installed
+     */
+    public static String getCurrentKey() {
+        return DATA_SOURCE_KEY.get();
+    }
+
+    /**
      * Sets the data source key for the current thread.
      * <p>
      * This method should be called before performing a database operation to specify which data source to use. The set
@@ -124,6 +136,16 @@ public class Holder<T> implements org.miaixz.bus.core.Holder<T> {
      */
     public static void remove() {
         DATA_SOURCE_KEY.remove();
+    }
+
+    /**
+     * Installs a data source key for a lexical scope and restores the exact parent state when closed.
+     *
+     * @param key data source key; {@code null} removes the explicit key for this scope
+     * @return nested data source scope
+     */
+    public static Scope scope(String key) {
+        return new Scope(key);
     }
 
     /**
@@ -150,6 +172,56 @@ public class Holder<T> implements org.miaixz.bus.core.Holder<T> {
      */
     public static String getDefault() {
         return DEFAULT_KEY;
+    }
+
+    /**
+     * Lexical data source key scope with idempotent parent restoration.
+     * <p>
+     * The scope records the explicit parent key rather than the default fallback, allowing nested scopes to restore
+     * precisely whether the parent had an explicit key installed.
+     */
+    public static final class Scope implements AutoCloseable {
+
+        /**
+         * Explicit data source key that was installed before this scope was opened.
+         */
+        private final String previous;
+
+        /**
+         * Indicates whether this scope has already restored its parent state.
+         */
+        private boolean closed;
+
+        /**
+         * Opens a scope with the requested explicit data source key.
+         *
+         * @param key data source key; {@code null} clears the explicit key within this scope
+         */
+        private Scope(String key) {
+            this.previous = DATA_SOURCE_KEY.get();
+            if (key == null) {
+                DATA_SOURCE_KEY.remove();
+            } else {
+                DATA_SOURCE_KEY.set(key);
+            }
+        }
+
+        /**
+         * Restores the explicit parent key once; subsequent calls have no effect.
+         */
+        @Override
+        public void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            if (previous == null) {
+                DATA_SOURCE_KEY.remove();
+            } else {
+                DATA_SOURCE_KEY.set(previous);
+            }
+        }
+
     }
 
 }

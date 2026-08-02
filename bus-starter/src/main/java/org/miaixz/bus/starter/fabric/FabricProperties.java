@@ -20,149 +20,186 @@
 package org.miaixz.bus.starter.fabric;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for fabric communication services.
- * <p>
- * This class binds properties from the configuration file (e.g., {@code application.yml}) under the prefix
- * {@code bus.fabric}. Protocol-specific settings are grouped under nested sections such as {@code socket},
- * {@code websocket}, and {@code dns}.
+ * Immutable fabric communication service properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.FABRIC)
-public class FabricProperties {
+public final class FabricProperties {
 
     /**
-     * Constructs a new FabricProperties instance.
+     * Whether the fabric integration is enabled.
      */
-    public FabricProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * TCP socket server endpoint settings.
+     */
+    private final Socket socket;
+    /**
+     * WebSocket server endpoint settings.
+     */
+    private final WebSocket websocket;
+    /**
+     * DNS service settings and cache integration options.
+     */
+    private final Dns dns;
+
+    /**
+     * Composes the independently configurable TCP socket, WebSocket, and DNS service settings.
+     *
+     * @param enabled   whether fabric integration is enabled
+     * @param socket    socket server options
+     * @param websocket WebSocket server options
+     * @param dns       DNS integration options
+     */
+    public FabricProperties(@DefaultValue("false") boolean enabled, @DefaultValue Socket socket,
+            @DefaultValue WebSocket websocket, @DefaultValue Dns dns) {
+        this.enabled = enabled;
+        this.socket = socket == null ? new Socket() : socket;
+        this.websocket = websocket == null ? new WebSocket() : websocket;
+        this.dns = dns == null ? new Dns() : dns;
     }
 
     /**
-     * Socket server settings.
-     */
-    private Socket socket = new Socket();
-
-    /**
-     * WebSocket server settings.
-     */
-    private WebSocket websocket = new WebSocket();
-
-    /**
-     * DNS settings reserved for fabric resolver integration.
-     */
-    private Dns dns = new Dns();
-
-    /**
-     * Socket server properties.
+     * Socket server options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
+     * @param host    network host
+     * @param port    network port
      */
-    @Getter
-    @Setter
-    public static class Socket {
+    public record Socket(boolean enabled, String host, int port) {
 
         /**
-         * Constructs a new Socket instance.
+         * Creates socket defaults.
          */
         public Socket() {
-            // No initialization required.
+            this(true, "0.0.0.0", 7890);
         }
 
         /**
-         * Whether the socket server is enabled.
+         * Validates socket options.
          */
-        private boolean enabled = true;
+        public Socket {
+            validateEndpoint(enabled, host, port, null, "socket");
+        }
 
         /**
-         * Host on which the socket server will listen.
+         * Exposes the network interface on which the TCP socket server listens.
+         *
+         * @return listening host
          */
-        private String host = "0.0.0.0";
+        public String getHost() {
+            return host;
+        }
 
         /**
-         * Port on which the socket server will listen.
+         * Exposes the TCP socket server listening port.
+         *
+         * @return listening port
          */
-        private int port = 7890;
-
+        public int getPort() {
+            return port;
+        }
     }
 
     /**
-     * WebSocket server properties.
+     * WebSocket server options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
+     * @param host    network host
+     * @param port    network port
+     * @param path    configured path
      */
-    @Getter
-    @Setter
-    public static class WebSocket {
+    public record WebSocket(boolean enabled, String host, int port, String path) {
 
         /**
-         * Constructs a new WebSocket instance.
+         * Creates WebSocket defaults.
          */
         public WebSocket() {
-            // No initialization required.
+            this(false, "0.0.0.0", 7891, "/ws");
         }
 
         /**
-         * Whether the WebSocket server is enabled.
+         * Validates WebSocket options.
          */
-        private boolean enabled;
+        public WebSocket {
+            validateEndpoint(enabled, host, port, path, "websocket");
+        }
 
         /**
-         * Host on which the WebSocket server will listen.
+         * Exposes the network interface on which the WebSocket server listens.
+         *
+         * @return listening host
          */
-        private String host = "0.0.0.0";
+        public String getHost() {
+            return host;
+        }
 
         /**
-         * Port on which the WebSocket server will listen.
+         * Exposes the WebSocket server listening port.
+         *
+         * @return listening port
          */
-        private int port = 7891;
+        public int getPort() {
+            return port;
+        }
 
         /**
-         * WebSocket upgrade path.
+         * Exposes the HTTP upgrade path accepted by the WebSocket server.
+         *
+         * @return upgrade path
          */
-        private String path = "/ws";
-
+        public String getPath() {
+            return path;
+        }
     }
 
     /**
-     * DNS properties reserved for fabric resolver integration.
+     * DNS integration options.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled whether the feature is enabled
+     * @param cache   cache settings
      */
-    @Getter
-    @Setter
-    public static class Dns {
+    public record Dns(boolean enabled, boolean cache) {
 
         /**
-         * Constructs a new Dns instance.
+         * Creates DNS defaults.
          */
         public Dns() {
-            // No initialization required.
+            this(false, true);
         }
+    }
 
-        /**
-         * Whether fabric DNS integration is enabled.
-         */
-        private boolean enabled;
-
-        /**
-         * Whether DNS cache support is enabled.
-         */
-        private boolean cache = true;
-
+    /**
+     * Validates the endpoint.
+     *
+     * @param enabled whether the feature is enabled
+     * @param host    network host
+     * @param port    network port
+     * @param path    configured path
+     * @param name    logical name
+     */
+    private static void validateEndpoint(boolean enabled, String host, int port, String path, String name) {
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("bus.fabric." + name + ".port must be in 1..65535");
+        }
+        if (enabled && (host == null || host.isBlank())) {
+            throw new IllegalArgumentException("bus.fabric." + name + ".host is required when enabled");
+        }
+        if (enabled && path != null && path.isBlank()) {
+            throw new IllegalArgumentException("bus.fabric." + name + ".path is required when enabled");
+        }
     }
 
 }

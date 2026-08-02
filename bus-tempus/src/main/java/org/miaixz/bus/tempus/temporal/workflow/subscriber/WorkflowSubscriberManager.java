@@ -503,17 +503,17 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                 Logger.info(
                         false,
                         "Tempus",
-                        "Temporal Jackson3 worker created with sticky task queue disabled and async workflow poller enabled: taskQueue={}",
+                        "Temporal worker created with sticky task queue disabled and async workflow poller enabled: taskQueue={}",
                         taskQueue);
                 return worker;
             } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException("Failed to create Temporal Jackson3 worker", e);
+                throw new IllegalStateException("Failed to create Temporal worker", e);
             }
         }
     }
 
     /**
-     * Reads a Temporal SDK field needed by the Jackson3 worker creation path.
+     * Reads a Temporal SDK field needed by the native-friendly worker creation path.
      */
     private Object field(Object target, String name) throws ReflectiveOperationException {
         Field field = target.getClass().getDeclaredField(name);

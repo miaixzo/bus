@@ -10,13 +10,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.setting.Factory"
-    },
-    {
-      "type": "org.miaixz.bus.setting.Format"
-    },
-    {
       "type": "org.miaixz.bus.setting.format.AbstractFormatter",
+      "fields": [
+        {
+          "name": "commentElementFormatter"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -90,9 +89,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.format.ElementFormatter"
     },
     {
       "type": "org.miaixz.bus.setting.format.PropertyFormatter",
@@ -180,6 +176,26 @@
     },
     {
       "type": "org.miaixz.bus.setting.Loader",
+      "fields": [
+        {
+          "name": "assignFlag"
+        },
+        {
+          "name": "commentElementFormatterSupplier"
+        },
+        {
+          "name": "propertyElementFormatterSupplier"
+        },
+        {
+          "name": "sectionElementFormatterSupplier"
+        },
+        {
+          "name": "valueEditor"
+        },
+        {
+          "name": "varRegex"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -335,9 +351,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.Loader$ValueEditor"
     },
     {
       "type": "org.miaixz.bus.setting.magic.AbstractSetting",
@@ -652,6 +665,17 @@
     },
     {
       "type": "org.miaixz.bus.setting.magic.Profile",
+      "fields": [
+        {
+          "name": "charset"
+        },
+        {
+          "name": "profile"
+        },
+        {
+          "name": "useVar"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -708,10 +732,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.setting.magic.ProxyList"
-    },
-    {
       "type": "org.miaixz.bus.setting.nimble.ini.AbstractElement",
+      "fields": [
+        {
+          "name": "comment"
+        },
+        {
+          "name": "originalValue"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -931,12 +963,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniComment"
-    },
-    {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniCommentCreator"
-    },
-    {
       "type": "org.miaixz.bus.setting.nimble.ini.IniCommentService",
       "methods": [
         {
@@ -970,16 +996,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniElement"
-    },
-    {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniProperty"
-    },
-    {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyCreator"
-    },
-    {
       "type": "org.miaixz.bus.setting.nimble.ini.IniPropertyService",
+      "fields": [
+        {
+          "name": "key"
+        },
+        {
+          "name": "section"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1064,12 +1089,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniSection"
-    },
-    {
-      "type": "org.miaixz.bus.setting.nimble.ini.IniSectionCreator"
     },
     {
       "type": "org.miaixz.bus.setting.nimble.ini.IniSectionService",
@@ -1712,6 +1731,14 @@
     },
     {
       "type": "org.miaixz.bus.setting.Setting",
+      "fields": [
+        {
+          "name": "groupedMap"
+        },
+        {
+          "name": "logIfNull"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",

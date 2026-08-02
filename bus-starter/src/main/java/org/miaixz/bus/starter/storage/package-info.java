@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Object storage service support.
+ * Activates object-storage providers and exposes the application-scoped storage service. This non-exported package
+ * contains Starter assembly rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

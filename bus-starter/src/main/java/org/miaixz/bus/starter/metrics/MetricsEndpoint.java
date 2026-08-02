@@ -25,16 +25,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.metrics.Metrics;
+import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter;
-import org.miaixz.bus.spring.ContextBuilder;
 
 /**
  * Exposes the Prometheus-format metrics scrape endpoint at {@code /metricz}.
  * <p>
  * Intentionally NOT annotated with {@code @Controller} or {@code @Component}: this class must never be picked up by
  * component scanning. It is registered as a bean exclusively by {@link MetricsConfiguration#metricsEndpoint} when
- * {@code @EnableMetrics} is active and {@code bus.metrics.endpoint=true} (the default).
+ * {@code @EnableMetrics} is active and {@code bus.metrics.endpoint.enabled=true}.
  * <p>
  * Spring MVC detects this class as a handler because {@code RequestMappingHandlerMapping.isHandler()} checks for a
  * class-level {@code @RequestMapping} in addition to {@code @Controller}.
@@ -45,15 +44,25 @@ import org.miaixz.bus.spring.ContextBuilder;
 @RequestMapping
 public class MetricsEndpoint {
 
+    /**
+     * Bound metrics endpoint configuration properties.
+     */
     private final MetricsProperties properties;
+
+    /**
+     * Provider used to collect application metrics for the endpoint.
+     */
+    private final Provider provider;
 
     /**
      * Creates a metrics endpoint.
      *
      * @param properties metrics properties
+     * @param provider   provider owned by the current application context
      */
-    public MetricsEndpoint(MetricsProperties properties) {
+    public MetricsEndpoint(MetricsProperties properties, Provider provider) {
         this.properties = properties;
+        this.provider = provider;
     }
 
     /**
@@ -64,10 +73,8 @@ public class MetricsEndpoint {
     @ResponseBody
     @GetMapping(path = "${bus.metrics.path:/metricz}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String scrape() {
-        Logger.debug(true, "Starter", "request header snapshot: endpoint={}", this.properties.getPath());
-        Logger.debug(true, "Starter", "Request headers: headers={}", ContextBuilder.getHeaders());
-        Logger.debug(true, "Starter", "Request parameters: parameters={}", ContextBuilder.getParameters());
-        PrometheusExporter exporter = new PrometheusExporter(Metrics.getProvider());
+        Logger.debug(true, "Starter", "Metrics scrape requested: endpoint={}", this.properties.getPath());
+        PrometheusExporter exporter = new PrometheusExporter(this.provider);
         return exporter.scrape();
     }
 

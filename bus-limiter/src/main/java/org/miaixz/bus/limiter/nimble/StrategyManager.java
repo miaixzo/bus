@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Logger;
 public class StrategyManager {
 
     /**
-     * Constructs a new StrategyManager instance.
+     * Initializes the manager that resolves and caches limiter strategy Providers by strategy mode.
      */
     public StrategyManager() {
         // No initialization required.
@@ -74,6 +74,13 @@ public class StrategyManager {
      */
     public static Provider get(StrategyMode strategyMode) {
         return map.get(strategyMode);
+    }
+
+    /**
+     * Clears all registered strategy providers.
+     */
+    public static void clear() {
+        map.clear();
     }
 
 }

@@ -19,119 +19,151 @@
 */
 package org.miaixz.bus.starter.cache;
 
+import java.time.Duration;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.util.unit.DataSize;
+import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Options;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.starter.jdbc.JdbcProperties;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Starter-side configuration properties for the cache system.
- * <p>
- * Binds to the {@code bus.cache.*} namespace in {@code application.yml}. Two independent concerns are configured here:
- * </p>
- * <ol>
- * <li><b>Cache storage backend</b> — where data is stored (inherited from {@link Options}, including
- * {@link Options.Redis}).</li>
- * <li><b>Collector backend</b> — where hit/miss statistics are stored ({@link JdbcProperties}).</li>
- * </ol>
- *
- * <p>
- * Example — Redis single-node with Prometheus metrics:
- * </p>
- *
- * <pre>{@code
- * bus:
- *   cache:
- *     type: redis
- *     redis:
- *       host: 192.168.1.10
- *       port: 6379
- *       password: secret
- *     provider:
- *       key: bus
- * }</pre>
- *
- * <p>
- * Example — Redis Cluster with MySQL metrics:
- * </p>
- *
- * <pre>{@code
- * bus:
- *   cache:
- *     type: redis-cluster
- *     redis:
- *       nodes: 192.168.1.1:6379,192.168.1.2:6379,192.168.1.3:6379
- *       password: secret
- *     provider:
- *       type: mysql
- *       url: jdbc:mysql://localhost:3306/cache_db
- *       username: root
- *       password: root123
- * }</pre>
- *
- * <p>
- * Example — Caffeine with in-memory metrics:
- * </p>
- *
- * <pre>{@code
- * bus:
- *   cache:
- *     type: caffeine
- *     max-size: 5000
- *     expire: 600000
- *     provider:
- *       type: memory
- * }</pre>
+ * Immutable starter-side cache configuration bound from {@code bus.cache}.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.CACHE)
-public class CacheProperties extends Options {
+public final class CacheProperties extends Options {
 
     /**
-     * Constructs a new CacheProperties instance.
+     * Whether the cache integration is enabled.
      */
-    public CacheProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Maximum number of entries retained by the cache backend.
+     */
+    private final DataSize capacity;
+    /**
+     * Time-to-live applied to cache entries.
+     */
+    private final Duration expiry;
+    /**
+     * Named cache definitions keyed by logical cache name.
+     */
+    private final Map<String, CacheX> map;
+    /**
+     * Cache provider selected when no named override applies.
+     */
+    private final Collector provider;
+
+    /**
+     * Creates validated cache properties and initializes the core cache options.
+     *
+     * @param enabled  whether cache integration is enabled
+     * @param type     backend type
+     * @param capacity maximum in-process cache capacity
+     * @param expiry   default cache expiry
+     * @param nodes    memcached node list
+     * @param redis    Redis connection options
+     * @param map      explicitly supplied named cache instances
+     * @param provider cache metrics collector configuration
+     */
+    public CacheProperties(@DefaultValue("false") boolean enabled, String type,
+            @DefaultValue("10000B") DataSize capacity, @DefaultValue("1h") Duration expiry, String nodes,
+            @DefaultValue Options.Redis redis, Map<String, CacheX> map, @DefaultValue Collector provider) {
+        if (capacity == null || capacity.toBytes() <= 0) {
+            throw new IllegalArgumentException("bus.cache.capacity must be greater than zero");
+        }
+        if (expiry == null || expiry.isZero() || expiry.isNegative()) {
+            throw new IllegalArgumentException("bus.cache.expiry must be greater than zero");
+        }
+        this.enabled = enabled;
+        this.capacity = capacity;
+        this.expiry = expiry;
+        this.map = map == null ? Map.of() : Map.copyOf(map);
+        this.provider = provider == null ? new Collector(null, null, null, null) : provider;
+        setType(type);
+        setMaxSize(capacity.toBytes());
+        setExpire(expiry.toMillis());
+        setNodes(nodes);
+        setRedis(redis == null ? new Options.Redis() : redis);
     }
 
     /**
-     * Named {@link CacheX} instances for advanced multi-cache scenarios.
-     * <p>
-     * Because {@link CacheX} is an interface, this map <strong>cannot</strong> be bound from YAML. Provide it
-     * programmatically via {@code @Bean}. When present, it takes precedence over the auto-configured backend defined by
-     * {@link Options#getType()}.
-     * </p>
+     * Collects non-null cache backend specifications in stable order.
+     *
+     * Cache statistics collector configuration.
+     *
+     * @param key      lookup key
+     * @param url      service endpoint URL
+     * @param username authentication username
+     * @param password authentication password
      */
-    private Map<String, CacheX> map;
+    public record Collector(String key, String url, String username, String password) {
+
+        /**
+         * Exposes the provider-specific cache identifier.
+         *
+         * @return collector backend key
+         */
+        public String getKey() {
+            return key;
+        }
+
+        /**
+         * Exposes the remote cache service endpoint.
+         *
+         * @return JDBC URL
+         */
+        public String getUrl() {
+            return url;
+        }
+
+        /**
+         * Exposes the username used to authenticate with the cache service.
+         *
+         * @return credential username reference
+         */
+        public String getUsername() {
+            return username;
+        }
+
+        /**
+         * Exposes the password used to authenticate with the cache service.
+         *
+         * @return credential password reference
+         */
+        public String getPassword() {
+            return password;
+        }
+
+        /**
+         * @return masked diagnostic text
+         */
+        @Override
+        public String toString() {
+            return "Collector[key=" + key + ", url=" + url + ", username=***, password=***]";
+        }
+    }
 
     /**
-     * Hit/miss statistics backend configuration.
-     * <p>
-     * {@link JdbcProperties} {@code key} field selects the metrics backend:
-     * <ul>
-     * <li>{@code memory} — in-process, resets on restart</li>
-     * <li>{@code h2} — embedded H2 database</li>
-     * <li>{@code mysql} — MySQL via JDBC</li>
-     * <li>{@code postgresql} — PostgreSQL via JDBC</li>
-     * <li>{@code sqlite} — embedded SQLite database</li>
-     * <li>{@code bus} — bridges to bus-metrics (Prometheus / Micrometer / OTel), backend determined by
-     * {@code bus.metrics.provider} configuration</li>
-     * </ul>
-     * Connection pool fields ({@code url}, {@code username}, {@code password}, {@code maxActive}, etc.) apply to
-     * JDBC-backed metrics types.
-     * </p>
+     * Returns a diagnostic representation without credentials or provider details.
+     *
+     * @return safe diagnostic text
      */
-    private JdbcProperties provider = new JdbcProperties();
+    @Override
+    public String toString() {
+        return "CacheProperties[enabled=" + enabled + ", capacity=" + capacity + ", expiry=" + expiry + ", namedCaches="
+                + map.size() + ", provider=***]";
+    }
 
 }

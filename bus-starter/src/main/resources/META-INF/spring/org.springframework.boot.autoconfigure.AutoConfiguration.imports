@@ -15,4 +15,34 @@
 # limitations under the License.                                            #
 #                                                                           #
 #############################################################################
-org.miaixz.bus.spring.SpringHolder
+
+org.miaixz.bus.starter.GeniusStarter
+org.miaixz.bus.starter.context.WebConfiguration
+org.miaixz.bus.starter.context.TaskConfiguration
+org.miaixz.bus.starter.auth.AuthConfiguration
+org.miaixz.bus.starter.cache.CacheConfiguration
+org.miaixz.bus.starter.cors.CorsConfiguration
+org.miaixz.bus.starter.cortex.CortexConfiguration
+org.miaixz.bus.starter.dubbo.DubboConfiguration
+org.miaixz.bus.starter.elastic.ElasticConfiguration
+org.miaixz.bus.starter.fabric.FabricConfiguration
+org.miaixz.bus.starter.health.HealthConfiguration
+org.miaixz.bus.starter.i18n.I18nConfiguration
+org.miaixz.bus.starter.image.ImageConfiguration
+org.miaixz.bus.starter.jdbc.JdbcConfiguration
+org.miaixz.bus.starter.json.JsonConfiguration
+org.miaixz.bus.starter.limiter.LimiterConfiguration
+org.miaixz.bus.starter.mapper.MapperConfiguration
+org.miaixz.bus.starter.metrics.MetricsConfiguration
+org.miaixz.bus.starter.mongo.MongoConfiguration
+org.miaixz.bus.starter.notify.NotifyConfiguration
+org.miaixz.bus.starter.office.OfficeConfiguration
+org.miaixz.bus.starter.pay.PayConfiguration
+org.miaixz.bus.starter.sensitive.SensitiveConfiguration
+org.miaixz.bus.starter.storage.StorageConfiguration
+org.miaixz.bus.starter.tempus.TempusConfiguration
+org.miaixz.bus.starter.tracer.TracerConfiguration
+org.miaixz.bus.starter.validate.ValidateConfiguration
+org.miaixz.bus.starter.vortex.VortexConfiguration
+org.miaixz.bus.starter.wrapper.WrapperConfiguration
+org.miaixz.bus.starter.zookeeper.ZookeeperConfiguration

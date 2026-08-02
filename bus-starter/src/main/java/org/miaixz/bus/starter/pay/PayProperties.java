@@ -22,15 +22,16 @@ package org.miaixz.bus.starter.pay;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Configuration properties for the integrated payment service.
@@ -42,22 +43,33 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.PAY)
-public class PayProperties {
+public final class PayProperties {
 
     /**
-     * Constructs a new PayProperties instance.
+     * Binds immutable payment provider and cache settings from {@code bus.pay}.
+     *
+     * @param enabled whether payment integration is enabled
+     * @param type    provider configuration grouped by payment registry type
+     * @param cache   cache backend settings used by payment services
      */
-    public PayProperties() {
-        // No initialization required.
+    public PayProperties(@DefaultValue("false") boolean enabled, Map<Registry, Context> type, Options cache) {
+        this.enabled = enabled;
+        this.type = type == null ? Map.of() : Map.copyOf(type);
+        this.cache = cache;
     }
+
+    /**
+     * Whether payment integration is enabled.
+     */
+    private final boolean enabled;
 
     /**
      * A map of payment provider configurations, where the key is the payment provider {@link Registry} type and the
      * value is the {@link Context} containing the specific configuration for that provider.
      */
-    private Map<Registry, Context> type;
+    private final Map<Registry, Context> type;
 
     /**
      * Nested cache backend options for the payment module.
@@ -67,6 +79,14 @@ public class PayProperties {
      * </p>
      */
     @NestedConfigurationProperty
-    private Options cache;
+    private final Options cache;
+
+    /**
+     * @return masked diagnostic representation
+     */
+    @Override
+    public String toString() {
+        return "PayProperties[enabled=" + enabled + ", channels=" + type.size() + ", cache=***, credentials=***]";
+    }
 
 }

@@ -99,7 +99,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
     /**
      * The factory bean used to create mapper instances.
      */
-    private MapperFactoryBean<?> mapperFactoryBean = new MapperFactoryBean<>();
+    private Class<? extends org.mybatis.spring.mapper.MapperFactoryBean> mapperFactoryBeanClass = MapperFactoryBean.class;
 
     /**
      * Constructs a new MapperClassPathScanner.
@@ -161,20 +161,27 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
      */
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
+        String[] configuredPackages = basePackages == null ? new String[0]
+                : Arrays.stream(basePackages).filter(StringKit::isNotBlank).map(String::trim).distinct()
+                        .toArray(String[]::new);
+        if (configuredPackages.length == 0) {
+            Logger.debug(false, "Starter", "Mapper classpath scan skipped because no base package is configured");
+            return Set.of();
+        }
         Logger.debug(
                 true,
                 "Starter",
                 "Mapper classpath scan started: basePackageCount={}, basePackages={}",
-                basePackages == null ? 0 : basePackages.length,
-                Arrays.toString(basePackages));
-        Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
+                configuredPackages.length,
+                Arrays.toString(configuredPackages));
+        Set<BeanDefinitionHolder> beanDefinitions = super.doScan(configuredPackages);
 
         if (beanDefinitions.isEmpty()) {
             Logger.warn(
                     false,
                     "Starter",
                     "No MyBatis mapper found in '{}' package. Please check configuration",
-                    Arrays.toString(basePackages));
+                    Arrays.toString(configuredPackages));
         } else {
             processBeanDefinitions(beanDefinitions);
         }
@@ -183,7 +190,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
                 false,
                 "Starter",
                 "Mapper classpath scan finished: basePackageCount={}, mapperBeanCount={}",
-                basePackages == null ? 0 : basePackages.length,
+                configuredPackages.length,
                 beanDefinitions.size());
         return beanDefinitions;
     }
@@ -292,7 +299,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
             String beanClassName = definition.getBeanClassName();
             // The mapper interface is the original class of the bean, but the actual bean class is MapperFactoryBean.
             // definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName);
-            definition.setBeanClass(this.mapperFactoryBean.getClass());
+            definition.setBeanClass(this.mapperFactoryBeanClass);
             definition.getPropertyValues().add("mapperInterface", beanClassName);
 
             // Set the generic mapper builder if specified.
@@ -385,10 +392,11 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
     /**
      * Sets the MapperFactoryBean to be used by the scanner.
      *
-     * @param mapperFactoryBean The MapperFactoryBean instance.
+     * @param mapperFactoryBeanClass The MapperFactoryBean class.
      */
-    public void setMapperFactoryBean(MapperFactoryBean<?> mapperFactoryBean) {
-        this.mapperFactoryBean = mapperFactoryBean != null ? mapperFactoryBean : new MapperFactoryBean<>();
+    public void setMapperFactoryBeanClass(
+            Class<? extends org.mybatis.spring.mapper.MapperFactoryBean> mapperFactoryBeanClass) {
+        this.mapperFactoryBeanClass = mapperFactoryBeanClass != null ? mapperFactoryBeanClass : MapperFactoryBean.class;
     }
 
     /**

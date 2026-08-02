@@ -81,6 +81,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-auth</artifactId>
             <optional>true</optional>
@@ -104,6 +109,10 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-extra</artifactId>
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
@@ -167,6 +176,10 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-storage</artifactId>
             <optional>true</optional>
         </dependency>
@@ -197,18 +210,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -268,6 +271,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-health</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aspectj</artifactId>
             <optional>true</optional>
         </dependency>
@@ -297,5 +305,24 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <proc>full</proc>
+                    <annotationProcessorPaths combine.children="append">
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>4.1.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

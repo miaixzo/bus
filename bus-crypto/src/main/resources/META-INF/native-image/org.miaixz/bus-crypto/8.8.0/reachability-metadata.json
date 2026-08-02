@@ -1,9 +1,6 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.crypto.Builder"
-    },
-    {
       "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto",
       "methods": [
         {
@@ -17,6 +14,17 @@
     },
     {
       "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric",
+      "fields": [
+        {
+          "name": "lock"
+        },
+        {
+          "name": "privateKey"
+        },
+        {
+          "name": "publicKey"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -86,6 +94,23 @@
     },
     {
       "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto",
+      "fields": [
+        {
+          "name": "algorithmParameterSpec"
+        },
+        {
+          "name": "cipher"
+        },
+        {
+          "name": "decryptBlockSize"
+        },
+        {
+          "name": "encryptBlockSize"
+        },
+        {
+          "name": "random"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -242,13 +267,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Decryptor"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Encryptor"
-    },
-    {
       "type": "org.miaixz.bus.crypto.builtin.asymmetric.KeyType",
+      "fields": [
+        {
+          "name": "PrivateKey"
+        },
+        {
+          "name": "PublicKey"
+        },
+        {
+          "name": "SecretKey"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -275,7 +308,197 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.Certificate"
+      "type": "org.miaixz.bus.crypto.builtin.Certificate",
+      "fields": [
+        {
+          "name": "fileName"
+        },
+        {
+          "name": "issuer"
+        },
+        {
+          "name": "issuerCN"
+        },
+        {
+          "name": "issuerO"
+        },
+        {
+          "name": "notAfter"
+        },
+        {
+          "name": "notBefore"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "publicKey"
+        },
+        {
+          "name": "self"
+        },
+        {
+          "name": "serial"
+        },
+        {
+          "name": "subject"
+        },
+        {
+          "name": "subjectCN"
+        },
+        {
+          "name": "subjectO"
+        },
+        {
+          "name": "version"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFileName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssuer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssuerCN",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIssuerO",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNotAfter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNotBefore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSelf",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSerial",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubject",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubjectCN",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSubjectO",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFileName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIssuer",
+          "parameterTypes": [
+            "java.security.Principal"
+          ]
+        },
+        {
+          "name": "setIssuerCN",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setIssuerO",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNotAfter",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setNotBefore",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPublicKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSelf",
+          "parameterTypes": [
+            "java.security.cert.X509Certificate"
+          ]
+        },
+        {
+          "name": "setSerial",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSubject",
+          "parameterTypes": [
+            "java.security.Principal"
+          ]
+        },
+        {
+          "name": "setSubjectCN",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSubjectO",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.crypto.builtin.Certificate$CertificateBuilder",
@@ -393,6 +616,17 @@
     },
     {
       "type": "org.miaixz.bus.crypto.builtin.digest.Digester",
+      "fields": [
+        {
+          "name": "digestCount"
+        },
+        {
+          "name": "salt"
+        },
+        {
+          "name": "saltPosition"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -600,15 +834,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCHMac"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.BCMac"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.CBCBlockCipherMac"
-    },
-    {
       "type": "org.miaixz.bus.crypto.builtin.digest.mac.JCEMac",
       "methods": [
         {
@@ -674,9 +899,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.Mac"
-    },
-    {
       "type": "org.miaixz.bus.crypto.builtin.digest.mac.MacFactory",
       "methods": [
         {
@@ -699,9 +921,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.digest.mac.SM4Mac"
     },
     {
       "type": "org.miaixz.bus.crypto.builtin.SaltMagic",
@@ -788,6 +1007,20 @@
     },
     {
       "type": "org.miaixz.bus.crypto.builtin.symmetric.Crypto",
+      "fields": [
+        {
+          "name": "algorithmParameterSpec"
+        },
+        {
+          "name": "cipher"
+        },
+        {
+          "name": "random"
+        },
+        {
+          "name": "secretKey"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -983,12 +1216,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.symmetric.Decryptor"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.symmetric.Encryptor"
-    },
-    {
       "type": "org.miaixz.bus.crypto.builtin.TlsHandshake",
       "methods": [
         {
@@ -1160,6 +1387,11 @@
     },
     {
       "type": "org.miaixz.bus.crypto.center.Argon2",
+      "fields": [
+        {
+          "name": "hashLength"
+        }
+      ],
       "methods": [
         {
           "name": "digest",
@@ -1216,9 +1448,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.center.ASN1"
     },
     {
       "type": "org.miaixz.bus.crypto.center.BCrypt",
@@ -1522,6 +1751,17 @@
     },
     {
       "type": "org.miaixz.bus.crypto.center.FPE$FPEMode",
+      "fields": [
+        {
+          "name": "FF1"
+        },
+        {
+          "name": "FF3_1"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1602,6 +1842,11 @@
     },
     {
       "type": "org.miaixz.bus.crypto.center.HOTP",
+      "fields": [
+        {
+          "name": "passwordLength"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1654,6 +1899,11 @@
     },
     {
       "type": "org.miaixz.bus.crypto.center.Mac",
+      "fields": [
+        {
+          "name": "engine"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1969,6 +2219,11 @@
     },
     {
       "type": "org.miaixz.bus.crypto.center.Sign",
+      "fields": [
+        {
+          "name": "signature"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2103,9 +2358,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.center.SM2"
     },
     {
       "type": "org.miaixz.bus.crypto.center.SM3",
@@ -2430,6 +2682,11 @@
     },
     {
       "type": "org.miaixz.bus.crypto.center.TOTP",
+      "fields": [
+        {
+          "name": "timeStep"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2538,18 +2795,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.Cipher"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.Cipher$Parameters"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.cipher.BCCipher"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.cipher.BCCipher$BCParameters"
-    },
-    {
       "type": "org.miaixz.bus.crypto.cipher.JceCipher",
       "methods": [
         {
@@ -2654,9 +2899,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.Factory"
-    },
-    {
       "type": "org.miaixz.bus.crypto.Holder",
       "methods": [
         {
@@ -2680,9 +2922,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.Keeper"
-    },
-    {
       "type": "org.miaixz.bus.crypto.nimble.AESProvider",
       "methods": [
         {
@@ -2704,12 +2943,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleProvider"
-    },
-    {
-      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider"
     },
     {
       "type": "org.miaixz.bus.crypto.nimble.DESProvider",
@@ -2828,6 +3061,32 @@
     },
     {
       "type": "org.miaixz.bus.crypto.Padding",
+      "fields": [
+        {
+          "name": "ISO10126Padding"
+        },
+        {
+          "name": "NoPadding"
+        },
+        {
+          "name": "OAEPPadding"
+        },
+        {
+          "name": "PKCS1Padding"
+        },
+        {
+          "name": "PKCS5Padding"
+        },
+        {
+          "name": "PKCS7Padding"
+        },
+        {
+          "name": "SSL3Padding"
+        },
+        {
+          "name": "ZeroPadding"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2847,9 +3106,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.Provider"
     },
     {
       "type": "org.miaixz.bus.crypto.Registry",

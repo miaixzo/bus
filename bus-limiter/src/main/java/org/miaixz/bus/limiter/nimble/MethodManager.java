@@ -38,7 +38,7 @@ import org.miaixz.bus.logger.Logger;
 public class MethodManager {
 
     /**
-     * Constructs a new MethodManager instance.
+     * Initializes the manager that records limiter strategy metadata for intercepted methods.
      */
     public MethodManager() {
         // No initialization required.
@@ -89,6 +89,13 @@ public class MethodManager {
      */
     public static boolean contain(String name) {
         return map.containsKey(name);
+    }
+
+    /**
+     * Clears all registered method metadata.
+     */
+    public static void clear() {
+        map.clear();
     }
 
 }

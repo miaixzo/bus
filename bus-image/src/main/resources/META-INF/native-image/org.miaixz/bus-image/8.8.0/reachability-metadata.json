@@ -95,6 +95,53 @@
     },
     {
       "type": "org.miaixz.bus.image.Args",
+      "fields": [
+        {
+          "name": "acceptedCallingAETitles"
+        },
+        {
+          "name": "bindCallingAet"
+        },
+        {
+          "name": "editors"
+        },
+        {
+          "name": "identityAC"
+        },
+        {
+          "name": "identityRQ"
+        },
+        {
+          "name": "informationModel"
+        },
+        {
+          "name": "negociation"
+        },
+        {
+          "name": "option"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "proxy"
+        },
+        {
+          "name": "queryOptions"
+        },
+        {
+          "name": "sopClasses"
+        },
+        {
+          "name": "sopClassesTCS"
+        },
+        {
+          "name": "sopClassesUID"
+        },
+        {
+          "name": "tsuidOrder"
+        }
+      ],
       "methods": [
         {
           "name": "$default$priority",
@@ -1491,6 +1538,26 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.DeIdentifier$Option",
+      "fields": [
+        {
+          "name": "BasicApplicationConfidentialityProfile"
+        },
+        {
+          "name": "RetainDeviceIdentityOption"
+        },
+        {
+          "name": "RetainInstitutionIdentityOption"
+        },
+        {
+          "name": "RetainLongitudinalTemporalInformationFullDatesOption"
+        },
+        {
+          "name": "RetainPatientIDHashOption"
+        },
+        {
+          "name": "RetainUIDsOption"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1545,9 +1612,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.builtin.DicomFiles$Callback"
-    },
-    {
       "type": "org.miaixz.bus.image.builtin.ESoundex",
       "methods": [
         {
@@ -1567,6 +1631,14 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.FilesetInfo",
+      "fields": [
+        {
+          "name": "descriptorFile"
+        },
+        {
+          "name": "descriptorFileCharset"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1653,9 +1725,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.builtin.FuzzyString"
-    },
-    {
       "type": "org.miaixz.bus.image.builtin.HashUIDMapper",
       "methods": [
         {
@@ -1724,6 +1793,32 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.hp.HangingProtocolFilter",
+      "fields": [
+        {
+          "name": "GREATER_OR_EQUAL"
+        },
+        {
+          "name": "GREATER_THAN"
+        },
+        {
+          "name": "LESS_OR_EQUAL"
+        },
+        {
+          "name": "LESS_THAN"
+        },
+        {
+          "name": "MEMBER_OF"
+        },
+        {
+          "name": "NOT_MEMBER_OF"
+        },
+        {
+          "name": "RANGE_EXCL"
+        },
+        {
+          "name": "RANGE_INCL"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1807,9 +1902,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.builtin.hp.HpComparator"
-    },
-    {
       "type": "org.miaixz.bus.image.builtin.hp.ImagePlaneSelector",
       "methods": [
         {
@@ -1833,6 +1925,14 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.hp.RelativeTime",
+      "fields": [
+        {
+          "name": "units"
+        },
+        {
+          "name": "values"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1904,6 +2004,35 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.hp.RelativeTime$Units",
+      "fields": [
+        {
+          "name": "chronoUnit"
+        },
+        {
+          "name": "codeString"
+        },
+        {
+          "name": "DAYS"
+        },
+        {
+          "name": "HOURS"
+        },
+        {
+          "name": "MINUTES"
+        },
+        {
+          "name": "MONTHS"
+        },
+        {
+          "name": "SECONDS"
+        },
+        {
+          "name": "WEEKS"
+        },
+        {
+          "name": "YEARS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1936,6 +2065,20 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.hp.SortingDirection",
+      "fields": [
+        {
+          "name": "codeString"
+        },
+        {
+          "name": "DECREASING"
+        },
+        {
+          "name": "INCREASING"
+        },
+        {
+          "name": "sign"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1974,6 +2117,17 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.hp.SortingOperation",
+      "fields": [
+        {
+          "name": "ALONG_AXIS"
+        },
+        {
+          "name": "BY_ACQ_TIME"
+        },
+        {
+          "name": "codeString"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -2554,6 +2708,26 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.ldap.LdapDicomConfiguration",
+      "fields": [
+        {
+          "name": "configurationCN"
+        },
+        {
+          "name": "configurationDN"
+        },
+        {
+          "name": "configurationRoot"
+        },
+        {
+          "name": "extended"
+        },
+        {
+          "name": "pkiUser"
+        },
+        {
+          "name": "userCertificate"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -3938,6 +4112,14 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.MultiframeExtractor",
+      "fields": [
+        {
+          "name": "instanceNumberFormat"
+        },
+        {
+          "name": "preserveSeriesInstanceUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4072,6 +4254,59 @@
     },
     {
       "type": "org.miaixz.bus.image.builtin.MultiframeExtractor$Impl",
+      "fields": [
+        {
+          "name": "BreastTomosynthesisImageStorage"
+        },
+        {
+          "name": "EnhancedCTImageExtractor"
+        },
+        {
+          "name": "EnhancedMRImageExtractor"
+        },
+        {
+          "name": "EnhancedPETImageExtractor"
+        },
+        {
+          "name": "EnhancedXAImageExtractor"
+        },
+        {
+          "name": "EnhancedXRFImageExtractor"
+        },
+        {
+          "name": "MultiFrameGrayscaleByteSecondaryCaptureImageExtractor"
+        },
+        {
+          "name": "MultiFrameGrayscaleWordSecondaryCaptureImageExtractor"
+        },
+        {
+          "name": "MultiFrameTrueColorSecondaryCaptureImageExtractor"
+        },
+        {
+          "name": "NuclearMedicineImageExtractor"
+        },
+        {
+          "name": "OphthalmicTomographyImageStorage"
+        },
+        {
+          "name": "RTImageExtractor"
+        },
+        {
+          "name": "UltrasoundMultiFrameImageExtractor"
+        },
+        {
+          "name": "XRay3DAngiographicImageExtractor"
+        },
+        {
+          "name": "XRay3DCraniofacialImageStorage"
+        },
+        {
+          "name": "XRayAngiographicImageExtractor"
+        },
+        {
+          "name": "XRayRadiofluoroscopicImageExtractor"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4187,9 +4422,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.builtin.UIDMapper"
-    },
-    {
       "type": "org.miaixz.bus.image.builtin.YesNo",
       "methods": [
         {
@@ -4200,6 +4432,29 @@
     },
     {
       "type": "org.miaixz.bus.image.Centre",
+      "fields": [
+        {
+          "name": "args"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "efforts"
+        },
+        {
+          "name": "executor"
+        },
+        {
+          "name": "node"
+        },
+        {
+          "name": "scheduledExecutor"
+        },
+        {
+          "name": "storeSCP"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -4391,6 +4646,152 @@
     },
     {
       "type": "org.miaixz.bus.image.Device",
+      "fields": [
+        {
+          "name": "arcDevExt"
+        },
+        {
+          "name": "associationHandler"
+        },
+        {
+          "name": "associationMonitor"
+        },
+        {
+          "name": "authorizedNodeCertificates"
+        },
+        {
+          "name": "connectionMonitor"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "deviceSerialNumber"
+        },
+        {
+          "name": "deviceUID"
+        },
+        {
+          "name": "dimseRQHandler"
+        },
+        {
+          "name": "executor"
+        },
+        {
+          "name": "installed"
+        },
+        {
+          "name": "institutionAddresses"
+        },
+        {
+          "name": "institutionalDepartmentNames"
+        },
+        {
+          "name": "institutionCodes"
+        },
+        {
+          "name": "institutionNames"
+        },
+        {
+          "name": "issuerOfAccessionNumber"
+        },
+        {
+          "name": "issuerOfAdmissionID"
+        },
+        {
+          "name": "issuerOfContainerIdentifier"
+        },
+        {
+          "name": "issuerOfPatientID"
+        },
+        {
+          "name": "issuerOfServiceEpisodeID"
+        },
+        {
+          "name": "issuerOfSpecimenIdentifier"
+        },
+        {
+          "name": "keycloakClients"
+        },
+        {
+          "name": "keyStoreKeyPin"
+        },
+        {
+          "name": "keyStoreKeyPinProperty"
+        },
+        {
+          "name": "keyStorePin"
+        },
+        {
+          "name": "keyStorePinProperty"
+        },
+        {
+          "name": "keyStoreType"
+        },
+        {
+          "name": "keyStoreURL"
+        },
+        {
+          "name": "limitAssociationsInitiatedBy"
+        },
+        {
+          "name": "limitOpenAssociations"
+        },
+        {
+          "name": "manufacturer"
+        },
+        {
+          "name": "manufacturerModelName"
+        },
+        {
+          "name": "orderFillerIdentifier"
+        },
+        {
+          "name": "orderPlacerIdentifier"
+        },
+        {
+          "name": "primaryDeviceTypes"
+        },
+        {
+          "name": "relatedDeviceRefs"
+        },
+        {
+          "name": "roleSelectionNegotiationLenient"
+        },
+        {
+          "name": "scheduledExecutor"
+        },
+        {
+          "name": "softwareVersions"
+        },
+        {
+          "name": "stationName"
+        },
+        {
+          "name": "thisNodeCertificates"
+        },
+        {
+          "name": "timeZoneOfDevice"
+        },
+        {
+          "name": "trustStorePin"
+        },
+        {
+          "name": "trustStorePinProperty"
+        },
+        {
+          "name": "trustStoreType"
+        },
+        {
+          "name": "trustStoreURL"
+        },
+        {
+          "name": "vendorData"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5344,6 +5745,77 @@
     },
     {
       "type": "org.miaixz.bus.image.Dimse",
+      "fields": [
+        {
+          "name": "C_CANCEL_RQ"
+        },
+        {
+          "name": "C_ECHO_RQ"
+        },
+        {
+          "name": "C_ECHO_RSP"
+        },
+        {
+          "name": "C_FIND_RQ"
+        },
+        {
+          "name": "C_FIND_RSP"
+        },
+        {
+          "name": "C_GET_RQ"
+        },
+        {
+          "name": "C_GET_RSP"
+        },
+        {
+          "name": "C_MOVE_RQ"
+        },
+        {
+          "name": "C_MOVE_RSP"
+        },
+        {
+          "name": "C_STORE_RQ"
+        },
+        {
+          "name": "C_STORE_RSP"
+        },
+        {
+          "name": "N_ACTION_RQ"
+        },
+        {
+          "name": "N_ACTION_RSP"
+        },
+        {
+          "name": "N_CREATE_RQ"
+        },
+        {
+          "name": "N_CREATE_RSP"
+        },
+        {
+          "name": "N_DELETE_RQ"
+        },
+        {
+          "name": "N_DELETE_RSP"
+        },
+        {
+          "name": "N_EVENT_REPORT_RQ"
+        },
+        {
+          "name": "N_EVENT_REPORT_RSP"
+        },
+        {
+          "name": "N_GET_RQ"
+        },
+        {
+          "name": "N_GET_RSP"
+        },
+        {
+          "name": "N_SET_RQ"
+        },
+        {
+          "name": "N_SET_RSP"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -5509,9 +5981,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.Efforts"
     },
     {
       "type": "org.miaixz.bus.image.Format",
@@ -6014,13 +6483,57 @@
         {
           "name": "apply",
           "parameterTypes": [
-            "java.lang.String"
+            "java.lang.Object"
           ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.image.Format$Type",
+      "fields": [
+        {
+          "name": "choice"
+        },
+        {
+          "name": "date"
+        },
+        {
+          "name": "hash"
+        },
+        {
+          "name": "md5"
+        },
+        {
+          "name": "none"
+        },
+        {
+          "name": "number"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "rnd"
+        },
+        {
+          "name": "slice"
+        },
+        {
+          "name": "time"
+        },
+        {
+          "name": "uid"
+        },
+        {
+          "name": "upper"
+        },
+        {
+          "name": "urlencoded"
+        },
+        {
+          "name": "uuid"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6061,10 +6574,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.CancelListener"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.CountingInputStream",
+      "fields": [
+        {
+          "name": "count"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6126,6 +6641,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.CountingOutputStream",
+      "fields": [
+        {
+          "name": "count"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -6155,6 +6675,32 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.Attributes",
+      "fields": [
+        {
+          "name": "defaultTimeZone"
+        },
+        {
+          "name": "itemPosition"
+        },
+        {
+          "name": "length"
+        },
+        {
+          "name": "parent"
+        },
+        {
+          "name": "parentSequencePrivateCreator"
+        },
+        {
+          "name": "parentSequenceTag"
+        },
+        {
+          "name": "properties"
+        },
+        {
+          "name": "readOnly"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -8618,6 +9164,12 @@
         {
           "name": "validate",
           "parameterTypes": [
+            "org.miaixz.bus.image.IOD"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
             "org.miaixz.bus.image.IOD$DataElement",
             "org.miaixz.bus.image.galaxy.data.ValidationResult"
           ]
@@ -8628,12 +9180,6 @@
             "org.miaixz.bus.image.IOD$DataElement",
             "org.miaixz.bus.image.galaxy.data.ValidationResult",
             "java.util.Map"
-          ]
-        },
-        {
-          "name": "validate",
-          "parameterTypes": [
-            "org.miaixz.bus.image.IOD"
           ]
         },
         {
@@ -8684,10 +9230,8 @@
             "int"
           ]
         }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.image.galaxy.data.AttributesCoercion"
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.AttributeSelector",
@@ -8828,6 +9372,38 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.BinaryValueType",
+      "fields": [
+        {
+          "name": "BYTE"
+        },
+        {
+          "name": "DOUBLE"
+        },
+        {
+          "name": "FLOAT"
+        },
+        {
+          "name": "INT"
+        },
+        {
+          "name": "LONG"
+        },
+        {
+          "name": "SHORT"
+        },
+        {
+          "name": "TAG"
+        },
+        {
+          "name": "UINT"
+        },
+        {
+          "name": "ULONG"
+        },
+        {
+          "name": "USHORT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9160,6 +9736,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.BulkData",
+      "fields": [
+        {
+          "name": "length"
+        },
+        {
+          "name": "offset"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9300,10 +9884,8 @@
             "org.miaixz.bus.image.galaxy.data.VR"
           ]
         }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.image.galaxy.data.BulkData$Creator"
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.BulkDataWithPrefix",
@@ -9326,6 +9908,20 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.Code",
+      "fields": [
+        {
+          "name": "codeMeaning"
+        },
+        {
+          "name": "codeValue"
+        },
+        {
+          "name": "codingSchemeDesignator"
+        },
+        {
+          "name": "codingSchemeVersion"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9709,6 +10305,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.ElementDictionary",
+      "fields": [
+        {
+          "name": "privateCreator"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9778,6 +10379,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.Fragments",
+      "fields": [
+        {
+          "name": "readOnly"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9935,6 +10541,23 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.HL7Separator",
+      "fields": [
+        {
+          "name": "COMPONENT"
+        },
+        {
+          "name": "ESCAPE"
+        },
+        {
+          "name": "FIELD"
+        },
+        {
+          "name": "REPETITION"
+        },
+        {
+          "name": "SUBCOMPONENT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -9983,6 +10606,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.IDWithIssuer",
+      "fields": [
+        {
+          "name": "identifierTypeCode"
+        },
+        {
+          "name": "issuer"
+        },
+        {
+          "name": "typeOfPatientID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10159,6 +10793,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.Issuer",
+      "fields": [
+        {
+          "name": "localNamespaceEntityID"
+        },
+        {
+          "name": "universalEntityID"
+        },
+        {
+          "name": "universalEntityIDType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10686,6 +11331,23 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.PersonName$Component",
+      "fields": [
+        {
+          "name": "FamilyName"
+        },
+        {
+          "name": "GivenName"
+        },
+        {
+          "name": "MiddleName"
+        },
+        {
+          "name": "NamePrefix"
+        },
+        {
+          "name": "NameSuffix"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10708,6 +11370,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.PersonName$Group",
+      "fields": [
+        {
+          "name": "Alphabetic"
+        },
+        {
+          "name": "Ideographic"
+        },
+        {
+          "name": "Phonetic"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -10876,6 +11549,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.Sequence",
+      "fields": [
+        {
+          "name": "parent"
+        },
+        {
+          "name": "readOnly"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11007,6 +11688,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.SequenceValueType",
+      "fields": [
+        {
+          "name": "SQ"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11241,9 +11927,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.galaxy.data.SequenceVisitor"
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.SeriesInstanceReference",
@@ -11579,6 +12262,71 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet$Codec",
+      "fields": [
+        {
+          "name": "bytesPerChar"
+        },
+        {
+          "name": "escSeq0"
+        },
+        {
+          "name": "escSeq1"
+        },
+        {
+          "name": "GB18030"
+        },
+        {
+          "name": "GB2312"
+        },
+        {
+          "name": "ISO_646"
+        },
+        {
+          "name": "ISO_8859_1"
+        },
+        {
+          "name": "ISO_8859_2"
+        },
+        {
+          "name": "ISO_8859_3"
+        },
+        {
+          "name": "ISO_8859_4"
+        },
+        {
+          "name": "ISO_8859_5"
+        },
+        {
+          "name": "ISO_8859_6"
+        },
+        {
+          "name": "ISO_8859_7"
+        },
+        {
+          "name": "ISO_8859_8"
+        },
+        {
+          "name": "ISO_8859_9"
+        },
+        {
+          "name": "JIS_X_201"
+        },
+        {
+          "name": "JIS_X_208"
+        },
+        {
+          "name": "JIS_X_212"
+        },
+        {
+          "name": "KS_X_1001"
+        },
+        {
+          "name": "TIS_620"
+        },
+        {
+          "name": "UTF_8"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11714,6 +12462,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet$G0G1",
+      "fields": [
+        {
+          "name": "Both"
+        },
+        {
+          "name": "G0"
+        },
+        {
+          "name": "G1"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -11819,6 +12578,41 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.StringValueType",
+      "fields": [
+        {
+          "name": "ASCII"
+        },
+        {
+          "name": "DA"
+        },
+        {
+          "name": "DS"
+        },
+        {
+          "name": "DT"
+        },
+        {
+          "name": "IS"
+        },
+        {
+          "name": "PN"
+        },
+        {
+          "name": "STRING"
+        },
+        {
+          "name": "temporalType"
+        },
+        {
+          "name": "TEXT"
+        },
+        {
+          "name": "TM"
+        },
+        {
+          "name": "UR"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12105,6 +12899,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.TemporalType",
+      "fields": [
+        {
+          "name": "DA"
+        },
+        {
+          "name": "DT"
+        },
+        {
+          "name": "TM"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12190,6 +12995,23 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.UpdatePolicy",
+      "fields": [
+        {
+          "name": "MERGE"
+        },
+        {
+          "name": "OVERWRITE"
+        },
+        {
+          "name": "PRESERVE"
+        },
+        {
+          "name": "REPLACE"
+        },
+        {
+          "name": "SUPPLEMENT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12378,6 +13200,26 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.ValidationResult$Invalid",
+      "fields": [
+        {
+          "name": "Code"
+        },
+        {
+          "name": "Item"
+        },
+        {
+          "name": "MultipleItems"
+        },
+        {
+          "name": "Value"
+        },
+        {
+          "name": "VM"
+        },
+        {
+          "name": "VR"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -12412,9 +13254,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.galaxy.data.Value"
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.ValueSelector",
@@ -12487,13 +13326,114 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.data.ValueType"
-    },
-    {
-      "type": "org.miaixz.bus.image.galaxy.data.Visitor"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.data.VR",
+      "fields": [
+        {
+          "name": "AE"
+        },
+        {
+          "name": "AS"
+        },
+        {
+          "name": "AT"
+        },
+        {
+          "name": "CS"
+        },
+        {
+          "name": "DA"
+        },
+        {
+          "name": "DS"
+        },
+        {
+          "name": "DT"
+        },
+        {
+          "name": "FD"
+        },
+        {
+          "name": "FL"
+        },
+        {
+          "name": "inlineBinary"
+        },
+        {
+          "name": "IS"
+        },
+        {
+          "name": "LO"
+        },
+        {
+          "name": "LT"
+        },
+        {
+          "name": "OB"
+        },
+        {
+          "name": "OD"
+        },
+        {
+          "name": "OF"
+        },
+        {
+          "name": "OL"
+        },
+        {
+          "name": "OV"
+        },
+        {
+          "name": "OW"
+        },
+        {
+          "name": "PN"
+        },
+        {
+          "name": "SH"
+        },
+        {
+          "name": "SL"
+        },
+        {
+          "name": "SQ"
+        },
+        {
+          "name": "SS"
+        },
+        {
+          "name": "ST"
+        },
+        {
+          "name": "SV"
+        },
+        {
+          "name": "TM"
+        },
+        {
+          "name": "UC"
+        },
+        {
+          "name": "UI"
+        },
+        {
+          "name": "UL"
+        },
+        {
+          "name": "UN"
+        },
+        {
+          "name": "UR"
+        },
+        {
+          "name": "US"
+        },
+        {
+          "name": "UT"
+        },
+        {
+          "name": "UV"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -27488,6 +28428,29 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.EditorContext",
+      "fields": [
+        {
+          "name": "abort"
+        },
+        {
+          "name": "abortMessage"
+        },
+        {
+          "name": "destinationNode"
+        },
+        {
+          "name": "maskArea"
+        },
+        {
+          "name": "properties"
+        },
+        {
+          "name": "sourceNode"
+        },
+        {
+          "name": "tsuid"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -27570,6 +28533,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.EditorContext$Abort",
+      "fields": [
+        {
+          "name": "CONNECTION_EXCEPTION"
+        },
+        {
+          "name": "FILE_EXCEPTION"
+        },
+        {
+          "name": "NONE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -27592,6 +28566,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.ImageParam",
+      "fields": [
+        {
+          "name": "parentSeqTags"
+        },
+        {
+          "name": "tag"
+        },
+        {
+          "name": "values"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -27642,6 +28627,20 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.ImageProgress",
+      "fields": [
+        {
+          "name": "attributes"
+        },
+        {
+          "name": "cancel"
+        },
+        {
+          "name": "lastFailed"
+        },
+        {
+          "name": "processedFile"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -27759,6 +28758,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor",
+      "fields": [
+        {
+          "name": "bulkDataDescriptorID"
+        },
+        {
+          "name": "excludeDefaults"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -27880,12 +28887,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.io.BulkDataCreator"
-    },
-    {
-      "type": "org.miaixz.bus.image.galaxy.io.BulkDataDescriptor"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.io.Bzip2FileDetector",
       "methods": [
         {
@@ -27909,6 +28910,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter",
+      "fields": [
+        {
+          "name": "bulkDataCreator"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -28143,10 +29149,33 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.io.ImageInputHandler"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.io.ImageInputStream",
+      "fields": [
+        {
+          "name": "allocateLimit"
+        },
+        {
+          "name": "bulkDataCreator"
+        },
+        {
+          "name": "bulkDataDescriptor"
+        },
+        {
+          "name": "excludeBulkData"
+        },
+        {
+          "name": "fileMetaInformation"
+        },
+        {
+          "name": "includeBulkData"
+        },
+        {
+          "name": "includeBulkDataURI"
+        },
+        {
+          "name": "preamble"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -28706,6 +29735,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.io.ImageInputStream$IncludeBulkData",
+      "fields": [
+        {
+          "name": "NO"
+        },
+        {
+          "name": "URI"
+        },
+        {
+          "name": "YES"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -28728,6 +29768,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.io.ImageOutputStream",
+      "fields": [
+        {
+          "name": "bigEndian"
+        },
+        {
+          "name": "explicitVR"
+        },
+        {
+          "name": "preamble"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -29047,9 +30098,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.io.SAXTransformer$SetupTransformer"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.io.SAXTransformerFactoryHolder",
       "methods": [
         {
@@ -29060,6 +30108,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.io.SAXWriter",
+      "fields": [
+        {
+          "name": "includeKeyword"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -29275,6 +30328,17 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.io.XSLTAttributesCoercion",
+      "fields": [
+        {
+          "name": "includeKeyword"
+        },
+        {
+          "name": "includeNameSpaceDeclaration"
+        },
+        {
+          "name": "setupTransformer"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -29348,6 +30412,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.LimitedInputStream",
+      "fields": [
+        {
+          "name": "remaining"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -29401,6 +30470,26 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ArchiveParameters",
+      "fields": [
+        {
+          "name": "additionalParameters"
+        },
+        {
+          "name": "archiveID"
+        },
+        {
+          "name": "baseURL"
+        },
+        {
+          "name": "httpTags"
+        },
+        {
+          "name": "overrideDicomTagIDList"
+        },
+        {
+          "name": "webLogin"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -29487,6 +30576,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.HttpTag",
+      "fields": [
+        {
+          "name": "key"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -29564,6 +30661,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ImageDirReader",
+      "fields": [
+        {
+          "name": "file"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30129,6 +31231,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.Manifest",
+      "fields": [
+        {
+          "name": "patients"
+        },
+        {
+          "name": "uid"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30266,6 +31376,29 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ManifestInstance",
+      "fields": [
+        {
+          "name": "directDownloadFile"
+        },
+        {
+          "name": "graphicModel"
+        },
+        {
+          "name": "imageComments"
+        },
+        {
+          "name": "instanceNumber"
+        },
+        {
+          "name": "sopClassUID"
+        },
+        {
+          "name": "sopInstanceUID"
+        },
+        {
+          "name": "transferSyntaxUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30421,6 +31554,29 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ManifestPatient",
+      "fields": [
+        {
+          "name": "issuerOfPatientID"
+        },
+        {
+          "name": "patientBirthDate"
+        },
+        {
+          "name": "patientBirthTime"
+        },
+        {
+          "name": "patientID"
+        },
+        {
+          "name": "patientName"
+        },
+        {
+          "name": "patientSex"
+        },
+        {
+          "name": "studies"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30543,6 +31699,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ManifestQueryResult",
+      "fields": [
+        {
+          "name": "viewerMessage"
+        },
+        {
+          "name": "wadoParameters"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30579,6 +31743,32 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ManifestSeries",
+      "fields": [
+        {
+          "name": "instances"
+        },
+        {
+          "name": "modality"
+        },
+        {
+          "name": "seriesDescription"
+        },
+        {
+          "name": "seriesInstanceUID"
+        },
+        {
+          "name": "seriesNumber"
+        },
+        {
+          "name": "thumbnail"
+        },
+        {
+          "name": "wadoCompression"
+        },
+        {
+          "name": "wadoTransferSyntaxUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30737,6 +31927,29 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ManifestStudy",
+      "fields": [
+        {
+          "name": "accessionNumber"
+        },
+        {
+          "name": "referringPhysicianName"
+        },
+        {
+          "name": "studyDate"
+        },
+        {
+          "name": "studyDescription"
+        },
+        {
+          "name": "studyID"
+        },
+        {
+          "name": "studyInstanceUID"
+        },
+        {
+          "name": "studyTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30946,6 +32159,26 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ManifestXml$Level",
+      "fields": [
+        {
+          "name": "FRAME"
+        },
+        {
+          "name": "INSTANCE"
+        },
+        {
+          "name": "PATIENT"
+        },
+        {
+          "name": "SERIES"
+        },
+        {
+          "name": "STUDY"
+        },
+        {
+          "name": "tagName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -30977,6 +32210,11 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.MultipartInputStream",
+      "fields": [
+        {
+          "name": "boundary"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31112,10 +32350,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.media.MultipartParser$Handler"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.media.RecordFactory",
+      "fields": [
+        {
+          "name": "privateRecordKeys"
+        },
+        {
+          "name": "recordKeys"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31216,6 +32459,116 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.RecordType",
+      "fields": [
+        {
+          "name": "ASSESSMENT"
+        },
+        {
+          "name": "CURVE"
+        },
+        {
+          "name": "ENCAP_DOC"
+        },
+        {
+          "name": "FIDUCIAL"
+        },
+        {
+          "name": "HANGING_PROTOCOL"
+        },
+        {
+          "name": "HL7_STRUC_DOC"
+        },
+        {
+          "name": "IMAGE"
+        },
+        {
+          "name": "IMPLANT"
+        },
+        {
+          "name": "IMPLANT_ASSY"
+        },
+        {
+          "name": "IMPLANT_GROUP"
+        },
+        {
+          "name": "KEY_OBJECT_DOC"
+        },
+        {
+          "name": "MEASUREMENT"
+        },
+        {
+          "name": "OVERLAY"
+        },
+        {
+          "name": "PALETTE"
+        },
+        {
+          "name": "PATIENT"
+        },
+        {
+          "name": "PLAN"
+        },
+        {
+          "name": "PRESENTATION"
+        },
+        {
+          "name": "PRIVATE"
+        },
+        {
+          "name": "RAW_DATA"
+        },
+        {
+          "name": "REGISTRATION"
+        },
+        {
+          "name": "RT_DOSE"
+        },
+        {
+          "name": "RT_PLAN"
+        },
+        {
+          "name": "RT_STRUCTURE_SET"
+        },
+        {
+          "name": "RT_TREAT_RECORD"
+        },
+        {
+          "name": "SERIES"
+        },
+        {
+          "name": "SPECTROSCOPY"
+        },
+        {
+          "name": "SR_DOCUMENT"
+        },
+        {
+          "name": "STEREOMETRIC"
+        },
+        {
+          "name": "STORED_PRINT"
+        },
+        {
+          "name": "STUDY"
+        },
+        {
+          "name": "SURFACE"
+        },
+        {
+          "name": "SURFACE_SCAN"
+        },
+        {
+          "name": "TRACT"
+        },
+        {
+          "name": "VALUE_MAP"
+        },
+        {
+          "name": "VOI_LUT"
+        },
+        {
+          "name": "WAVEFORM"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31335,6 +32688,23 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.ViewerMessage$Level",
+      "fields": [
+        {
+          "name": "displayName"
+        },
+        {
+          "name": "ERROR"
+        },
+        {
+          "name": "INFO"
+        },
+        {
+          "name": "WARN"
+        },
+        {
+          "name": "xmlValue"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31377,6 +32747,14 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.media.WadoParameters",
+      "fields": [
+        {
+          "name": "requireOnlySOPInstanceUID"
+        },
+        {
+          "name": "wadoRS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31505,10 +32883,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.ProgressListener"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.ProgressStatus",
+      "fields": [
+        {
+          "name": "COMPLETED"
+        },
+        {
+          "name": "FAILED"
+        },
+        {
+          "name": "WARNING"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31625,9 +33011,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.galaxy.SupplierEx"
-    },
-    {
       "type": "org.miaixz.bus.image.galaxy.TeeInputStream",
       "methods": [
         {
@@ -31653,6 +33036,17 @@
     },
     {
       "type": "org.miaixz.bus.image.IOD",
+      "fields": [
+        {
+          "name": "condition"
+        },
+        {
+          "name": "lineNumber"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31785,6 +33179,20 @@
     },
     {
       "type": "org.miaixz.bus.image.IOD$DataElement",
+      "fields": [
+        {
+          "name": "condition"
+        },
+        {
+          "name": "lineNumber"
+        },
+        {
+          "name": "valueNumber"
+        },
+        {
+          "name": "values"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31853,6 +33261,20 @@
     },
     {
       "type": "org.miaixz.bus.image.IOD$DataElementType",
+      "fields": [
+        {
+          "name": "TYPE_0"
+        },
+        {
+          "name": "TYPE_1"
+        },
+        {
+          "name": "TYPE_2"
+        },
+        {
+          "name": "TYPE_3"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -31875,6 +33297,11 @@
     },
     {
       "type": "org.miaixz.bus.image.IOD$MemberOf",
+      "fields": [
+        {
+          "name": "values"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32167,6 +33594,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.api.AttributeCoercion",
+      "fields": [
+        {
+          "name": "commonName"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32335,6 +33767,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.api.ConfigurationCache",
+      "fields": [
+        {
+          "name": "staleTimeout"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32378,6 +33815,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.api.ConfigurationChanges",
+      "fields": [
+        {
+          "name": "verbose"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32445,6 +33887,17 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.api.ConfigurationChanges$ChangeType",
+      "fields": [
+        {
+          "name": "C"
+        },
+        {
+          "name": "D"
+        },
+        {
+          "name": "U"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32567,10 +34020,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.api.DicomConfiguration"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.api.DicomConfiguration$Option",
+      "fields": [
+        {
+          "name": "CONFIGURATION_CHANGES"
+        },
+        {
+          "name": "CONFIGURATION_CHANGES_VERBOSE"
+        },
+        {
+          "name": "PRESERVE_CERTIFICATE"
+        },
+        {
+          "name": "PRESERVE_VENDOR_DATA"
+        },
+        {
+          "name": "REGISTER"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -32590,15 +34057,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.api.IApplicationEntityCache"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.api.IDeviceCache"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.api.IWebApplicationCache"
     },
     {
       "type": "org.miaixz.bus.image.metric.api.WebApplicationCache",
@@ -32626,6 +34084,20 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.Association",
+      "fields": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "requestor"
+        },
+        {
+          "name": "serialNo"
+        },
+        {
+          "name": "state"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33692,6 +35164,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.AssociationHandler",
+      "fields": [
+        {
+          "name": "userIdNegotiator"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -33729,15 +35206,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.AssociationListener"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.AssociationMonitor"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.CancelRQHandler"
     },
     {
       "type": "org.miaixz.bus.image.metric.Commands",
@@ -34004,6 +35472,119 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.Connection",
+      "fields": [
+        {
+          "name": "abortTimeout"
+        },
+        {
+          "name": "acceptTimeout"
+        },
+        {
+          "name": "backlog"
+        },
+        {
+          "name": "bindAddress"
+        },
+        {
+          "name": "blacklist"
+        },
+        {
+          "name": "clientBindAddress"
+        },
+        {
+          "name": "commonName"
+        },
+        {
+          "name": "connectTimeout"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "httpProxy"
+        },
+        {
+          "name": "idleTimeout"
+        },
+        {
+          "name": "installed"
+        },
+        {
+          "name": "listener"
+        },
+        {
+          "name": "maxOpsInvoked"
+        },
+        {
+          "name": "maxOpsPerformed"
+        },
+        {
+          "name": "packPDV"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "protocol"
+        },
+        {
+          "name": "rebindNeeded"
+        },
+        {
+          "name": "receiveBufferSize"
+        },
+        {
+          "name": "receivePDULength"
+        },
+        {
+          "name": "releaseTimeout"
+        },
+        {
+          "name": "requestTimeout"
+        },
+        {
+          "name": "responseTimeout"
+        },
+        {
+          "name": "retrieveTimeout"
+        },
+        {
+          "name": "retrieveTimeoutTotal"
+        },
+        {
+          "name": "sendBufferSize"
+        },
+        {
+          "name": "sendPDULength"
+        },
+        {
+          "name": "sendTimeout"
+        },
+        {
+          "name": "socketCloseDelay"
+        },
+        {
+          "name": "storeTimeout"
+        },
+        {
+          "name": "tcpNoDelay"
+        },
+        {
+          "name": "tlsCipherSuites"
+        },
+        {
+          "name": "tlsEndpointIdentificationAlgorithm"
+        },
+        {
+          "name": "tlsNeedClientAuth"
+        },
+        {
+          "name": "tlsProtocols"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34598,6 +36179,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.Connection$EndpointIdentificationAlgorithm",
+      "fields": [
+        {
+          "name": "HTTPS"
+        },
+        {
+          "name": "LDAPS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34635,6 +36224,26 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.Connection$Protocol",
+      "fields": [
+        {
+          "name": "DICOM"
+        },
+        {
+          "name": "HL7"
+        },
+        {
+          "name": "HL7_MLLP2"
+        },
+        {
+          "name": "HTTP"
+        },
+        {
+          "name": "SYSLOG_TLS"
+        },
+        {
+          "name": "SYSLOG_UDP"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34668,9 +36277,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.DataWriter"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.DataWriterAdapter",
       "methods": [
         {
@@ -34699,13 +36305,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.DimseRQHandler"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.DimseRSP"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.DimseRSPHandler",
+      "fields": [
+        {
+          "name": "canceled"
+        },
+        {
+          "name": "stopOnPending"
+        },
+        {
+          "name": "timeout"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34767,10 +36378,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.Editable"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.FutureDimseRSP",
+      "fields": [
+        {
+          "name": "autoCancel"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -34861,13 +36474,24 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.hl7.api.HL7Configuration"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.hl7.api.IHL7ApplicationCache"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.hl7.Delimiter",
+      "fields": [
+        {
+          "name": "component"
+        },
+        {
+          "name": "escape"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "name": "repeat"
+        },
+        {
+          "name": "subcomponent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35182,6 +36806,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.HL7Parser",
+      "fields": [
+        {
+          "name": "delimiters"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35284,6 +36913,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.HL7Segment",
+      "fields": [
+        {
+          "name": "encodingCharacters"
+        },
+        {
+          "name": "fieldSeparator"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35911,6 +37548,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.MLLPRelease",
+      "fields": [
+        {
+          "name": "MLLP1"
+        },
+        {
+          "name": "MLLP2"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35951,6 +37596,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.net.DefaultHL7Service",
+      "fields": [
+        {
+          "name": "messageTypes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -35966,6 +37616,32 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.net.HL7Application",
+      "fields": [
+        {
+          "name": "acceptedMessageTypes"
+        },
+        {
+          "name": "acceptedSendingApplications"
+        },
+        {
+          "name": "applicationClusters"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "installed"
+        },
+        {
+          "name": "optionalMSHFields"
+        },
+        {
+          "name": "otherApplicationNames"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -36276,6 +37952,26 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo",
+      "fields": [
+        {
+          "name": "applicationClusters"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "hl7ApplicationName"
+        },
+        {
+          "name": "hl7OtherApplicationName"
+        },
+        {
+          "name": "installed"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -36380,9 +38076,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.hl7.net.HL7ConnectionMonitor"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension",
       "methods": [
         {
@@ -36483,10 +38176,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.hl7.net.HL7MessageListener"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.hl7.net.HL7ProtocolHandler",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -36561,9 +38256,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.hl7.net.HL7Service"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.hl7.net.HL7ServiceRegistry",
       "methods": [
         {
@@ -36595,6 +38287,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message",
+      "fields": [
+        {
+          "name": "serialNo"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -36685,9 +38382,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.json.ConfigurationDelegate"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.json.hl7.JsonHL7Configuration",
       "methods": [
         {
@@ -36760,9 +38454,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.json.hl7.JsonHL7ConfigurationExtension"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.json.imageio.JsonImageReaderConfiguration",
       "methods": [
         {
@@ -36809,9 +38500,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.json.JsonConfiguration"
     },
     {
       "type": "org.miaixz.bus.image.metric.json.JsonConfigurationExtension",
@@ -36864,12 +38552,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.json.JSONReader"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.json.JSONReader$Callback"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.json.JSONReader$Element",
       "methods": [
         {
@@ -36918,9 +38600,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.json.JSONWriter"
     },
     {
       "type": "org.miaixz.bus.image.metric.ldap.LdapCompressionRulesConfiguration",
@@ -37155,6 +38834,38 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.net.ApplicationEntity",
+      "fields": [
+        {
+          "name": "applicationClusters"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "dimseRQHandler"
+        },
+        {
+          "name": "hl7ApplicationName"
+        },
+        {
+          "name": "installed"
+        },
+        {
+          "name": "roleSelectionNegotiationLenient"
+        },
+        {
+          "name": "shareTransferCapabilitiesFromAETitle"
+        },
+        {
+          "name": "supportedCharacterSets"
+        },
+        {
+          "name": "vendorData"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -37627,6 +39338,32 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.net.ApplicationEntityInfo",
+      "fields": [
+        {
+          "name": "applicationClusters"
+        },
+        {
+          "name": "associationAcceptor"
+        },
+        {
+          "name": "associationInitiator"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "hl7ApplicationName"
+        },
+        {
+          "name": "installed"
+        },
+        {
+          "name": "otherAETitle"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -37733,10 +39470,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.net.ConnectionMonitor"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.net.DeviceExtension",
+      "fields": [
+        {
+          "name": "device"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -37768,6 +39507,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.net.DeviceService",
+      "fields": [
+        {
+          "name": "device"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -37812,13 +39556,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.net.DeviceServiceInterface"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.net.IdentityNegotiator"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.net.ImageProtocolHandler",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -37875,6 +39618,32 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.net.KeycloakClient",
+      "fields": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "keycloakClientID"
+        },
+        {
+          "name": "keycloakClientSecret"
+        },
+        {
+          "name": "keycloakGrantType"
+        },
+        {
+          "name": "keycloakRealm"
+        },
+        {
+          "name": "keycloakServerURL"
+        },
+        {
+          "name": "password"
+        },
+        {
+          "name": "userID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38004,6 +39773,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.net.KeycloakClient$GrantType",
+      "fields": [
+        {
+          "name": "client_credentials"
+        },
+        {
+          "name": "password"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38023,9 +39800,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.net.Listener"
     },
     {
       "type": "org.miaixz.bus.image.metric.net.NoPresentationException",
@@ -38115,6 +39889,47 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.net.State",
+      "fields": [
+        {
+          "name": "Sta1"
+        },
+        {
+          "name": "Sta10"
+        },
+        {
+          "name": "Sta11"
+        },
+        {
+          "name": "Sta12"
+        },
+        {
+          "name": "Sta13"
+        },
+        {
+          "name": "Sta2"
+        },
+        {
+          "name": "Sta3"
+        },
+        {
+          "name": "Sta4"
+        },
+        {
+          "name": "Sta5"
+        },
+        {
+          "name": "Sta6"
+        },
+        {
+          "name": "Sta7"
+        },
+        {
+          "name": "Sta8"
+        },
+        {
+          "name": "Sta9"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38241,9 +40056,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.net.TCPProtocolHandler"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.net.UDPListener",
       "methods": [
         {
@@ -38268,10 +40080,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.net.UDPProtocolHandler"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.pdu.AAbort",
+      "fields": [
+        {
+          "name": "reason"
+        },
+        {
+          "name": "source"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38339,6 +40156,17 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.pdu.AAssociateRJ",
+      "fields": [
+        {
+          "name": "reason"
+        },
+        {
+          "name": "result"
+        },
+        {
+          "name": "source"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38427,6 +40255,44 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.pdu.AAssociateRQAC",
+      "fields": [
+        {
+          "name": "applicationContext"
+        },
+        {
+          "name": "calledAET"
+        },
+        {
+          "name": "callingAET"
+        },
+        {
+          "name": "identityAC"
+        },
+        {
+          "name": "identityRQ"
+        },
+        {
+          "name": "implClassUID"
+        },
+        {
+          "name": "implVersionName"
+        },
+        {
+          "name": "maxOpsInvoked"
+        },
+        {
+          "name": "maxOpsPerformed"
+        },
+        {
+          "name": "maxPDULength"
+        },
+        {
+          "name": "protocolVersion"
+        },
+        {
+          "name": "reservedBytes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38759,6 +40625,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.pdu.IdentityAC",
+      "fields": [
+        {
+          "name": "serverResponse"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -38788,6 +40659,17 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.pdu.IdentityRQ",
+      "fields": [
+        {
+          "name": "primaryField"
+        },
+        {
+          "name": "secondaryField"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -39402,6 +41284,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.pdu.PresentationContext",
+      "fields": [
+        {
+          "name": "result"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -39521,6 +41408,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.Property",
+      "fields": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "value"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -39587,6 +41482,20 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.QueryOption",
+      "fields": [
+        {
+          "name": "DATETIME"
+        },
+        {
+          "name": "FUZZY"
+        },
+        {
+          "name": "RELATIONAL"
+        },
+        {
+          "name": "TIMEZONE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -39886,6 +41795,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.service.BasicQueryTask",
+      "fields": [
+        {
+          "name": "optionalKeysNotSupported"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -39938,6 +41852,23 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.service.BasicRetrieveTask",
+      "fields": [
+        {
+          "name": "canceled"
+        },
+        {
+          "name": "completed"
+        },
+        {
+          "name": "failed"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "warning"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40100,9 +42031,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.service.ImageService"
     },
     {
       "type": "org.miaixz.bus.image.metric.service.ImageServiceException",
@@ -40306,6 +42234,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.service.InstanceLocator",
+      "fields": [
+        {
+          "name": "object"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40334,6 +42267,23 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.service.QueryRetrieveLevel",
+      "fields": [
+        {
+          "name": "FRAME"
+        },
+        {
+          "name": "IMAGE"
+        },
+        {
+          "name": "PATIENT"
+        },
+        {
+          "name": "SERIES"
+        },
+        {
+          "name": "STUDY"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40385,6 +42335,20 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.service.QueryRetrieveLevel2",
+      "fields": [
+        {
+          "name": "IMAGE"
+        },
+        {
+          "name": "PATIENT"
+        },
+        {
+          "name": "SERIES"
+        },
+        {
+          "name": "STUDY"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40489,13 +42453,18 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.metric.service.QueryTask"
-    },
-    {
-      "type": "org.miaixz.bus.image.metric.service.RetrieveTask"
-    },
-    {
       "type": "org.miaixz.bus.image.metric.StorageOptions",
+      "fields": [
+        {
+          "name": "digitalSignatureSupport"
+        },
+        {
+          "name": "elementCoercion"
+        },
+        {
+          "name": "levelOfSupport"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40567,6 +42536,20 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.StorageOptions$DigitalSignatureSupport",
+      "fields": [
+        {
+          "name": "LEVEL_1"
+        },
+        {
+          "name": "LEVEL_2"
+        },
+        {
+          "name": "LEVEL_3"
+        },
+        {
+          "name": "UNSPECIFIED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40595,6 +42578,17 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.StorageOptions$ElementCoercion",
+      "fields": [
+        {
+          "name": "NO"
+        },
+        {
+          "name": "UNSPECIFIED"
+        },
+        {
+          "name": "YES"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40623,6 +42617,20 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.StorageOptions$LevelOfSupport",
+      "fields": [
+        {
+          "name": "LEVEL_0"
+        },
+        {
+          "name": "LEVEL_1"
+        },
+        {
+          "name": "LEVEL_2"
+        },
+        {
+          "name": "UNSPECIFIED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40683,6 +42691,26 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.TransferCapability",
+      "fields": [
+        {
+          "name": "commonName"
+        },
+        {
+          "name": "queryOptions"
+        },
+        {
+          "name": "role"
+        },
+        {
+          "name": "sopClass"
+        },
+        {
+          "name": "storageOptions"
+        },
+        {
+          "name": "transferSyntaxes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40806,6 +42834,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.TransferCapability$Role",
+      "fields": [
+        {
+          "name": "SCP"
+        },
+        {
+          "name": "SCU"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -40858,6 +42894,29 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.web.DicomStowConfig",
+      "fields": [
+        {
+          "name": "connectTimeout"
+        },
+        {
+          "name": "contentType"
+        },
+        {
+          "name": "headers"
+        },
+        {
+          "name": "httpVersion"
+        },
+        {
+          "name": "requestUrl"
+        },
+        {
+          "name": "threadPoolSize"
+        },
+        {
+          "name": "userAgent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -41076,6 +43135,14 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.web.MultipartBody",
+      "fields": [
+        {
+          "name": "boundary"
+        },
+        {
+          "name": "parts"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -41305,6 +43372,11 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.web.Payload$EmptyPayload",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -41372,6 +43444,41 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.WebApplication",
+      "fields": [
+        {
+          "name": "applicationClusters"
+        },
+        {
+          "name": "applicationName"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "installed"
+        },
+        {
+          "name": "keycloakClient"
+        },
+        {
+          "name": "keycloakClientID"
+        },
+        {
+          "name": "properties"
+        },
+        {
+          "name": "serviceClasses"
+        },
+        {
+          "name": "servicePath"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -41571,6 +43678,86 @@
     },
     {
       "type": "org.miaixz.bus.image.metric.WebApplication$ServiceClass",
+      "fields": [
+        {
+          "name": "AGFA_BLOB"
+        },
+        {
+          "name": "AI_CHAT"
+        },
+        {
+          "name": "DCM_ARC"
+        },
+        {
+          "name": "DCM_ARC_AET"
+        },
+        {
+          "name": "DCM_ARC_AET_DIFF"
+        },
+        {
+          "name": "DOCUMENTATION"
+        },
+        {
+          "name": "ELASTICSEARCH"
+        },
+        {
+          "name": "FHIR"
+        },
+        {
+          "name": "GRAFANA"
+        },
+        {
+          "name": "J4C_ROUTER"
+        },
+        {
+          "name": "MOVE"
+        },
+        {
+          "name": "MOVE_MATCHING"
+        },
+        {
+          "name": "MPPS_RS"
+        },
+        {
+          "name": "MWL_RS"
+        },
+        {
+          "name": "PAM"
+        },
+        {
+          "name": "PROMETHEUS"
+        },
+        {
+          "name": "QIDO_COUNT"
+        },
+        {
+          "name": "QIDO_RS"
+        },
+        {
+          "name": "REJECT"
+        },
+        {
+          "name": "STOW_RS"
+        },
+        {
+          "name": "UPS_MATCHING"
+        },
+        {
+          "name": "UPS_RS"
+        },
+        {
+          "name": "WADO_RS"
+        },
+        {
+          "name": "WADO_URI"
+        },
+        {
+          "name": "WORKFLOW_MANAGER"
+        },
+        {
+          "name": "XDS_RS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -41984,7 +44171,8 @@
             "float[]"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.image.nimble.CIELabColorSpace$LazyHolder",
@@ -41996,10 +44184,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.codec.CacheImageOutputStream",
+      "fields": [
+        {
+          "name": "imageDescriptor"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -42059,6 +44249,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.CompressionRule",
+      "fields": [
+        {
+          "name": "commonName"
+        },
+        {
+          "name": "imageWriteParams"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -42413,6 +44611,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.Compressor$FlushlessMemoryCacheImageOutputStream",
+      "fields": [
+        {
+          "name": "imageDescriptor"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -42589,6 +44792,44 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.ImageDescriptor",
+      "fields": [
+        {
+          "name": "bitsAllocated"
+        },
+        {
+          "name": "bitsCompressed"
+        },
+        {
+          "name": "bitsStored"
+        },
+        {
+          "name": "bodyPartExamined"
+        },
+        {
+          "name": "columns"
+        },
+        {
+          "name": "embeddedOverlays"
+        },
+        {
+          "name": "frames"
+        },
+        {
+          "name": "pixelRepresentation"
+        },
+        {
+          "name": "planarConfiguration"
+        },
+        {
+          "name": "rows"
+        },
+        {
+          "name": "samples"
+        },
+        {
+          "name": "sopClassUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -42789,6 +45030,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.ImageReaderFactory$ImageReaderParam",
+      "fields": [
+        {
+          "name": "imageReadParams"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -42830,6 +45076,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.ImageWriterFactory",
+      "fields": [
+        {
+          "name": "patchJPEGLS"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -42930,6 +45181,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.ImageWriterFactory$ImageWriterParam",
+      "fields": [
+        {
+          "name": "imageWriteParams"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43061,6 +45317,26 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.JPEGLSCodingParam",
+      "fields": [
+        {
+          "name": "maxVal"
+        },
+        {
+          "name": "offset"
+        },
+        {
+          "name": "reset"
+        },
+        {
+          "name": "t1"
+        },
+        {
+          "name": "t2"
+        },
+        {
+          "name": "t3"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43135,6 +45411,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser",
+      "fields": [
+        {
+          "name": "codeStreamPosition"
+        },
+        {
+          "name": "params"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43320,6 +45604,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser$JPEGParams",
+      "fields": [
+        {
+          "name": "rgb"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43367,9 +45656,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser$Params"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser$Segment",
       "methods": [
         {
@@ -43383,6 +45669,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS",
+      "fields": [
+        {
+          "name": "ISO2JAI"
+        },
+        {
+          "name": "ISO2JAI_IF_APP_OR_COM"
+        },
+        {
+          "name": "JAI2ISO"
+        },
+        {
+          "name": "JAI2ISO_IF_NO_APP_OR_COM"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43539,6 +45839,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.SOFSegment",
+      "fields": [
+        {
+          "name": "numComponents"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43607,6 +45912,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.jpeg.SOSSegment",
+      "fields": [
+        {
+          "name": "numComponents"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -43725,6 +46035,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.mp4.MP4Parser",
+      "fields": [
+        {
+          "name": "creationTime"
+        },
+        {
+          "name": "modificationTime"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -44062,6 +46380,41 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.codec.Transcoder",
+      "fields": [
+        {
+          "name": "closeInputStream"
+        },
+        {
+          "name": "closeOutputStream"
+        },
+        {
+          "name": "deleteBulkDataFiles"
+        },
+        {
+          "name": "encapsulatedPixelDataValueTotalLength"
+        },
+        {
+          "name": "fileMetaInformation"
+        },
+        {
+          "name": "imageDescriptor"
+        },
+        {
+          "name": "includeFileMetaInformation"
+        },
+        {
+          "name": "includeImplementationVersionName"
+        },
+        {
+          "name": "nullifyPixelData"
+        },
+        {
+          "name": "pixelDataBulkDataURI"
+        },
+        {
+          "name": "retainFileMetaInformation"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -44472,10 +46825,57 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.codec.Transcoder$Handler"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.codec.TransferSyntaxType",
+      "fields": [
+        {
+          "name": "DEFLATED"
+        },
+        {
+          "name": "JPEG_2000"
+        },
+        {
+          "name": "JPEG_BASELINE"
+        },
+        {
+          "name": "JPEG_EXTENDED"
+        },
+        {
+          "name": "JPEG_LOSSLESS"
+        },
+        {
+          "name": "JPEG_LS"
+        },
+        {
+          "name": "JPEG_PROGRESSIVE"
+        },
+        {
+          "name": "JPEG_SPECTRAL"
+        },
+        {
+          "name": "JPIP"
+        },
+        {
+          "name": "maxBitsStored"
+        },
+        {
+          "name": "MPEG"
+        },
+        {
+          "name": "NATIVE"
+        },
+        {
+          "name": "pixeldataEncapsulated"
+        },
+        {
+          "name": "planarConfiguration"
+        },
+        {
+          "name": "RLE"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -44546,9 +46946,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.codec.XPEGParser"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.ColorModelFactory",
       "methods": [
         {
@@ -44600,6 +46997,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.ColorSubsampling",
+      "fields": [
+        {
+          "name": "YBR_XXX_420"
+        },
+        {
+          "name": "YBR_XXX_422"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -44716,6 +47121,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.geometry.GeometryOfSlice",
+      "fields": [
+        {
+          "name": "column"
+        },
+        {
+          "name": "dimensions"
+        },
+        {
+          "name": "row"
+        },
+        {
+          "name": "sliceThickness"
+        },
+        {
+          "name": "voxelSpacing"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -44929,6 +47351,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.geometry.ImageOrientation$ColorPairType",
+      "fields": [
+        {
+          "name": "BLUE_GREEN"
+        },
+        {
+          "name": "BLUE_RED"
+        },
+        {
+          "name": "RED_GREEN"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -44951,6 +47387,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.geometry.ImageOrientation$Plan",
+      "fields": [
+        {
+          "name": "CORONAL"
+        },
+        {
+          "name": "OBLIQUE"
+        },
+        {
+          "name": "SAGITTAL"
+        },
+        {
+          "name": "TRANSVERSE"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45181,9 +47634,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.geometry.Orientation"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.geometry.PatientOrientation",
       "methods": [
         {
@@ -45256,6 +47706,17 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.geometry.PatientOrientation$Axis",
+      "fields": [
+        {
+          "name": "X"
+        },
+        {
+          "name": "Y"
+        },
+        {
+          "name": "Z"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45278,6 +47739,32 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.geometry.PatientOrientation$Biped",
+      "fields": [
+        {
+          "name": "A"
+        },
+        {
+          "name": "color"
+        },
+        {
+          "name": "F"
+        },
+        {
+          "name": "fullName"
+        },
+        {
+          "name": "H"
+        },
+        {
+          "name": "L"
+        },
+        {
+          "name": "P"
+        },
+        {
+          "name": "R"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45320,6 +47807,32 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.geometry.PatientOrientation$Quadruped",
+      "fields": [
+        {
+          "name": "CD"
+        },
+        {
+          "name": "color"
+        },
+        {
+          "name": "CR"
+        },
+        {
+          "name": "D"
+        },
+        {
+          "name": "fullName"
+        },
+        {
+          "name": "LE"
+        },
+        {
+          "name": "RT"
+        },
+        {
+          "name": "V"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45539,10 +48052,30 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.ICCProfile$ColorSpaceFactory"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.ICCProfile$Option",
+      "fields": [
+        {
+          "name": "adobergb"
+        },
+        {
+          "name": "colorModel"
+        },
+        {
+          "name": "no"
+        },
+        {
+          "name": "none"
+        },
+        {
+          "name": "rommrgb"
+        },
+        {
+          "name": "srgb"
+        },
+        {
+          "name": "yes"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45606,13 +48139,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.ImageContentHash"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.ImageContentHash$AlgorithmFactory"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.ImageMetaData",
+      "fields": [
+        {
+          "name": "fileMetaInformation"
+        },
+        {
+          "name": "transferSyntaxUID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45683,12 +48218,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.ImageOutputData"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.ImageReader"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.ImageReaderSpi",
       "methods": [
         {
@@ -45717,6 +48246,59 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.ImageReadParam",
+      "fields": [
+        {
+          "name": "applyPixelPadding"
+        },
+        {
+          "name": "applyWindowLevelToColorImage"
+        },
+        {
+          "name": "fillOutsideLutRange"
+        },
+        {
+          "name": "inverseLut"
+        },
+        {
+          "name": "keepRgbForLossyJpeg"
+        },
+        {
+          "name": "levelMax"
+        },
+        {
+          "name": "levelMin"
+        },
+        {
+          "name": "overlayActivationMask"
+        },
+        {
+          "name": "overlayColor"
+        },
+        {
+          "name": "overlayGrayscaleValue"
+        },
+        {
+          "name": "presentationState"
+        },
+        {
+          "name": "releaseImageAfterProcessing"
+        },
+        {
+          "name": "voiLUTIndex"
+        },
+        {
+          "name": "voiLutShape"
+        },
+        {
+          "name": "windowCenter"
+        },
+        {
+          "name": "windowIndex"
+        },
+        {
+          "name": "windowWidth"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -45953,10 +48535,33 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.ImageRendering"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.JpegWriteParam",
+      "fields": [
+        {
+          "name": "compressionQuality"
+        },
+        {
+          "name": "compressionRatioFactor"
+        },
+        {
+          "name": "nearLosslessError"
+        },
+        {
+          "name": "pointTransform"
+        },
+        {
+          "name": "prediction"
+        },
+        {
+          "name": "sourceRegion"
+        },
+        {
+          "name": "transferSyntaxUid"
+        },
+        {
+          "name": "type"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46051,6 +48656,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.KernelData",
+      "fields": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "height"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "width"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46140,6 +48762,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.KernelData$KernelType",
+      "fields": [
+        {
+          "name": "EDGE_DETECTION"
+        },
+        {
+          "name": "IDENTITY"
+        },
+        {
+          "name": "SHARPENING"
+        },
+        {
+          "name": "SMOOTHING"
+        },
+        {
+          "name": "SPECIAL_EFFECT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46218,6 +48857,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.LookupTableFactory",
+      "fields": [
+        {
+          "name": "modalityLUT"
+        },
+        {
+          "name": "presentationLUT"
+        },
+        {
+          "name": "windowCenter"
+        },
+        {
+          "name": "windowWidth"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46460,6 +49113,32 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.mpr.AxisDirection",
+      "fields": [
+        {
+          "name": "AXIAL"
+        },
+        {
+          "name": "axisX"
+        },
+        {
+          "name": "axisY"
+        },
+        {
+          "name": "axisZ"
+        },
+        {
+          "name": "CORONAL"
+        },
+        {
+          "name": "invertedDirection"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "SAGITTAL"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46539,6 +49218,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.mpr.MipProjection",
+      "fields": [
+        {
+          "name": "MAX"
+        },
+        {
+          "name": "MEAN"
+        },
+        {
+          "name": "MIN"
+        },
+        {
+          "name": "NONE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46688,6 +49381,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.mpr.MprGeometryModule$MprThicknessType",
+      "fields": [
+        {
+          "name": "SLAB"
+        },
+        {
+          "name": "THIN"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -46710,6 +49411,32 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.mpr.Volume",
+      "fields": [
+        {
+          "name": "axisX"
+        },
+        {
+          "name": "axisY"
+        },
+        {
+          "name": "axisZ"
+        },
+        {
+          "name": "channels"
+        },
+        {
+          "name": "origin"
+        },
+        {
+          "name": "pixelRatio"
+        },
+        {
+          "name": "signed"
+        },
+        {
+          "name": "size"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -47267,6 +49994,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.mpr.Voxel",
+      "fields": [
+        {
+          "name": "values"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -47318,6 +50050,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.FileStreamSegment",
+      "fields": [
+        {
+          "name": "filePath"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -47348,12 +50085,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer$MaskData"
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer$Range",
@@ -47388,12 +50119,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageAnalyzer$Statistics"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageConversion"
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.ImageCV",
@@ -48289,10 +51014,51 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageIOHandler"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.ImageParameters",
+      "fields": [
+        {
+          "name": "bands"
+        },
+        {
+          "name": "bigEndian"
+        },
+        {
+          "name": "bitOffset"
+        },
+        {
+          "name": "bitsPerSample"
+        },
+        {
+          "name": "bytesPerLine"
+        },
+        {
+          "name": "dataOffset"
+        },
+        {
+          "name": "dataType"
+        },
+        {
+          "name": "format"
+        },
+        {
+          "name": "height"
+        },
+        {
+          "name": "initSignedData"
+        },
+        {
+          "name": "jpegMarker"
+        },
+        {
+          "name": "samplesPerPixel"
+        },
+        {
+          "name": "signedData"
+        },
+        {
+          "name": "width"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48465,13 +51231,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageSize"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.ImageTransformer"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.J2kImageWriteParam",
+      "fields": [
+        {
+          "name": "compressionRatiofactor"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48503,6 +51268,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.JPEGImageWriteParam",
+      "fields": [
+        {
+          "name": "pointTransform"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48536,6 +51306,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.JPEGLSImageWriteParam",
+      "fields": [
+        {
+          "name": "nearLossless"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48561,6 +51336,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.JXLImageWriteParam",
+      "fields": [
+        {
+          "name": "decodingSpeed"
+        },
+        {
+          "name": "effort"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48872,6 +51655,35 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.ColorLut",
+      "fields": [
+        {
+          "name": "BLUE"
+        },
+        {
+          "name": "byteLut"
+        },
+        {
+          "name": "FLAG"
+        },
+        {
+          "name": "GRAY"
+        },
+        {
+          "name": "GREEN"
+        },
+        {
+          "name": "HUE"
+        },
+        {
+          "name": "IMAGE"
+        },
+        {
+          "name": "MULTICOLOR"
+        },
+        {
+          "name": "RED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48936,6 +51748,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.ColorLut$Channel",
+      "fields": [
+        {
+          "name": "BLUE"
+        },
+        {
+          "name": "GREEN"
+        },
+        {
+          "name": "index"
+        },
+        {
+          "name": "RED"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -48963,6 +51789,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.DefaultWlPresentation",
+      "fields": [
+        {
+          "name": "pixelPadding"
+        },
+        {
+          "name": "presentationState"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49005,6 +51839,38 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.LutParameters",
+      "fields": [
+        {
+          "name": "applyPadding"
+        },
+        {
+          "name": "bitsOutput"
+        },
+        {
+          "name": "bitsStored"
+        },
+        {
+          "name": "intercept"
+        },
+        {
+          "name": "inversePaddingMLUT"
+        },
+        {
+          "name": "outputSigned"
+        },
+        {
+          "name": "paddingMaxValue"
+        },
+        {
+          "name": "paddingMinValue"
+        },
+        {
+          "name": "signed"
+        },
+        {
+          "name": "slope"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49119,6 +51985,17 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.LutShape",
+      "fields": [
+        {
+          "name": "explanation"
+        },
+        {
+          "name": "function"
+        },
+        {
+          "name": "lookup"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49190,6 +52067,26 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.LutShape$Function",
+      "fields": [
+        {
+          "name": "description"
+        },
+        {
+          "name": "LINEAR"
+        },
+        {
+          "name": "LOG"
+        },
+        {
+          "name": "LOG_INV"
+        },
+        {
+          "name": "SIGMOID"
+        },
+        {
+          "name": "SIGMOID_NORM"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49221,6 +52118,26 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule",
+      "fields": [
+        {
+          "name": "lut"
+        },
+        {
+          "name": "lutExplanation"
+        },
+        {
+          "name": "lutType"
+        },
+        {
+          "name": "rescaleIntercept"
+        },
+        {
+          "name": "rescaleSlope"
+        },
+        {
+          "name": "rescaleType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49286,10 +52203,21 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.lut.PresentationStateLut"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.PresetWindowLevel",
+      "fields": [
+        {
+          "name": "keyCode"
+        },
+        {
+          "name": "level"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "window"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49456,6 +52384,26 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.VoiLutModule",
+      "fields": [
+        {
+          "name": "lut"
+        },
+        {
+          "name": "lutExplanation"
+        },
+        {
+          "name": "voiLutFunction"
+        },
+        {
+          "name": "windowCenter"
+        },
+        {
+          "name": "windowCenterWidthExplanation"
+        },
+        {
+          "name": "windowWidth"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49501,6 +52449,35 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.lut.WindLevelParameters",
+      "fields": [
+        {
+          "name": "allowWinLevelOnColorImage"
+        },
+        {
+          "name": "fillOutsideLutRange"
+        },
+        {
+          "name": "inverseLut"
+        },
+        {
+          "name": "level"
+        },
+        {
+          "name": "levelMax"
+        },
+        {
+          "name": "levelMin"
+        },
+        {
+          "name": "lutShape"
+        },
+        {
+          "name": "pixelPadding"
+        },
+        {
+          "name": "window"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49558,13 +52535,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.lut.WlParams"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.lut.WlPresentation"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.MemoryStreamSegment",
+      "fields": [
+        {
+          "name": "cache"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -49595,9 +52571,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.NativeImageReader"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.NativeJ2kImageReaderSpi",
       "methods": [
         {
@@ -49623,9 +52596,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriter"
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.NativeJ2kImageWriterSpi",
@@ -49686,9 +52656,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriter"
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.NativeJLSImageWriterSpi",
@@ -49759,9 +52726,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriter"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.NativeJPEGImageWriterSpi",
       "methods": [
         {
@@ -49826,9 +52790,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriter"
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.NativeJXLImageWriterSpi",
@@ -49932,9 +52893,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.op.MaskArea"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader",
       "methods": [
         {
@@ -49995,12 +52953,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.opencv.PlanarImage"
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.opencv.seg.ContourTopology"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.opencv.seg.Region",
       "methods": [
         {
@@ -50028,6 +52980,38 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.seg.RegionAttributes",
+      "fields": [
+        {
+          "name": "color"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "filled"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "interiorOpacity"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "lineThickness"
+        },
+        {
+          "name": "numberOfPixels"
+        },
+        {
+          "name": "type"
+        },
+        {
+          "name": "visible"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -50214,6 +53198,11 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.seg.Segment",
+      "fields": [
+        {
+          "name": "children"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -50358,6 +53347,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.SegmentedImageStream",
+      "fields": [
+        {
+          "name": "file"
+        },
+        {
+          "name": "imageDescriptor"
+        },
+        {
+          "name": "segmentLengths"
+        },
+        {
+          "name": "segmentPositions"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -50400,6 +53403,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.SOFSegment",
+      "fields": [
+        {
+          "name": "components"
+        },
+        {
+          "name": "lines"
+        },
+        {
+          "name": "marker"
+        },
+        {
+          "name": "samplePrecision"
+        },
+        {
+          "name": "samplesPerLine"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -50444,6 +53464,17 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.opencv.StreamSegment",
+      "fields": [
+        {
+          "name": "imageDescriptor"
+        },
+        {
+          "name": "segLength"
+        },
+        {
+          "name": "segPosition"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -50519,9 +53550,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.OverlayData"
     },
     {
       "type": "org.miaixz.bus.image.nimble.Overlays",
@@ -50966,6 +53994,47 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.Photometric",
+      "fields": [
+        {
+          "name": "inverse"
+        },
+        {
+          "name": "monochrome"
+        },
+        {
+          "name": "MONOCHROME1"
+        },
+        {
+          "name": "MONOCHROME2"
+        },
+        {
+          "name": "PALETTE_COLOR"
+        },
+        {
+          "name": "RGB"
+        },
+        {
+          "name": "subSampled"
+        },
+        {
+          "name": "YBR_FULL"
+        },
+        {
+          "name": "YBR_FULL_422"
+        },
+        {
+          "name": "YBR_ICT"
+        },
+        {
+          "name": "YBR_PARTIAL_420"
+        },
+        {
+          "name": "YBR_PARTIAL_422"
+        },
+        {
+          "name": "YBR_RCT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -51104,6 +54173,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.PresentationLutObject",
+      "fields": [
+        {
+          "name": "overlays"
+        },
+        {
+          "name": "prLut"
+        },
+        {
+          "name": "prLutExplanation"
+        },
+        {
+          "name": "shutterOverlays"
+        },
+        {
+          "name": "voiLUT"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -51299,6 +54385,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.reader.ImageioMetaData",
+      "fields": [
+        {
+          "name": "attributes"
+        },
+        {
+          "name": "fileMetaInformation"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -51348,6 +54442,17 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.reader.ImageioReader",
+      "fields": [
+        {
+          "name": "height"
+        },
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "width"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -51690,6 +54795,41 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.reader.ImageioReadParam",
+      "fields": [
+        {
+          "name": "addAutoWindow"
+        },
+        {
+          "name": "autoWindowing"
+        },
+        {
+          "name": "ignorePresentationLUTShape"
+        },
+        {
+          "name": "overlayActivationMask"
+        },
+        {
+          "name": "overlayGrayscaleValue"
+        },
+        {
+          "name": "overlayRGBValue"
+        },
+        {
+          "name": "preferWindow"
+        },
+        {
+          "name": "presentationState"
+        },
+        {
+          "name": "windowCenter"
+        },
+        {
+          "name": "windowIndex"
+        },
+        {
+          "name": "windowWidth"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -51823,6 +54963,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.reader.RLEImageioReader",
+      "fields": [
+        {
+          "name": "height"
+        },
+        {
+          "name": "width"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52009,9 +55157,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.RGBImageVoiLut"
     },
     {
       "type": "org.miaixz.bus.image.nimble.RGBImageVoiLut$InflateSegmentedLut",
@@ -52377,10 +55522,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.nimble.stream.BytesWithImageDescriptor"
-    },
-    {
       "type": "org.miaixz.bus.image.nimble.stream.EncapsulatedPixelDataImageInputStream",
+      "fields": [
+        {
+          "name": "endOfStream"
+        },
+        {
+          "name": "imageDescriptor"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52563,6 +55713,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.stream.ImageAdapter$AdaptTransferSyntax",
+      "fields": [
+        {
+          "name": "compressionRatioFactor"
+        },
+        {
+          "name": "jpegQuality"
+        },
+        {
+          "name": "original"
+        },
+        {
+          "name": "requested"
+        },
+        {
+          "name": "suitable"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52631,6 +55798,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.stream.ImageFileInputStream",
+      "fields": [
+        {
+          "name": "metadata"
+        },
+        {
+          "name": "path"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52700,9 +55875,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.stream.ImageReaderDescriptor"
     },
     {
       "type": "org.miaixz.bus.image.nimble.stream.OutputStreamAdapter",
@@ -52814,6 +55986,23 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream",
+      "fields": [
+        {
+          "name": "curSegment"
+        },
+        {
+          "name": "fragments"
+        },
+        {
+          "name": "imageDescriptor"
+        },
+        {
+          "name": "lastSegment"
+        },
+        {
+          "name": "stream"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -52921,6 +56110,32 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.TranscodeParam",
+      "fields": [
+        {
+          "name": "format"
+        },
+        {
+          "name": "jpegCompressionQuality"
+        },
+        {
+          "name": "maskMap"
+        },
+        {
+          "name": "outputFmi"
+        },
+        {
+          "name": "outputTsuid"
+        },
+        {
+          "name": "preserveRawImage"
+        },
+        {
+          "name": "readParam"
+        },
+        {
+          "name": "writeJpegParam"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53030,6 +56245,29 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.Transcoder$Format",
+      "fields": [
+        {
+          "name": "BMP"
+        },
+        {
+          "name": "HDR"
+        },
+        {
+          "name": "JP2"
+        },
+        {
+          "name": "JPEG"
+        },
+        {
+          "name": "PNG"
+        },
+        {
+          "name": "PNM"
+        },
+        {
+          "name": "TIF"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53057,6 +56295,62 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.Unit",
+      "fields": [
+        {
+          "name": "abbreviation"
+        },
+        {
+          "name": "CENTIMETER"
+        },
+        {
+          "name": "factorToMeters"
+        },
+        {
+          "name": "FEET"
+        },
+        {
+          "name": "fullName"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "INCH"
+        },
+        {
+          "name": "KILOMETER"
+        },
+        {
+          "name": "METER"
+        },
+        {
+          "name": "MICROINCH"
+        },
+        {
+          "name": "MICROMETER"
+        },
+        {
+          "name": "MILE"
+        },
+        {
+          "name": "MILLIINCH"
+        },
+        {
+          "name": "MILLIMETER"
+        },
+        {
+          "name": "NANOMETER"
+        },
+        {
+          "name": "PIXEL"
+        },
+        {
+          "name": "system"
+        },
+        {
+          "name": "YARD"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53206,6 +56500,20 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.Unit$UnitSystem",
+      "fields": [
+        {
+          "name": "DIGITAL"
+        },
+        {
+          "name": "displayName"
+        },
+        {
+          "name": "IMPERIAL"
+        },
+        {
+          "name": "METRIC"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53237,6 +56545,17 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.VOILUTFunction",
+      "fields": [
+        {
+          "name": "LINEAR"
+        },
+        {
+          "name": "LINEAR_EXACT"
+        },
+        {
+          "name": "SIGMOID"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53259,6 +56578,14 @@
     },
     {
       "type": "org.miaixz.bus.image.nimble.YBR",
+      "fields": [
+        {
+          "name": "FULL"
+        },
+        {
+          "name": "PARTIAL"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53324,6 +56651,23 @@
     },
     {
       "type": "org.miaixz.bus.image.Node",
+      "fields": [
+        {
+          "name": "aet"
+        },
+        {
+          "name": "hostname"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "port"
+        },
+        {
+          "name": "validateHostname"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -53462,6 +56806,89 @@
     },
     {
       "type": "org.miaixz.bus.image.Option",
+      "fields": [
+        {
+          "name": "acceptTimeout"
+        },
+        {
+          "name": "backlog"
+        },
+        {
+          "name": "cipherSuites"
+        },
+        {
+          "name": "connectTimeout"
+        },
+        {
+          "name": "idleTimeout"
+        },
+        {
+          "name": "keyPass"
+        },
+        {
+          "name": "keystorePass"
+        },
+        {
+          "name": "keystoreType"
+        },
+        {
+          "name": "keystoreURL"
+        },
+        {
+          "name": "maxOpsInvoked"
+        },
+        {
+          "name": "maxOpsPerformed"
+        },
+        {
+          "name": "maxPdulenRcv"
+        },
+        {
+          "name": "maxPdulenSnd"
+        },
+        {
+          "name": "packPDV"
+        },
+        {
+          "name": "releaseTimeout"
+        },
+        {
+          "name": "requestTimeout"
+        },
+        {
+          "name": "responseTimeout"
+        },
+        {
+          "name": "retrieveTimeout"
+        },
+        {
+          "name": "socloseDelay"
+        },
+        {
+          "name": "sorcvBuffer"
+        },
+        {
+          "name": "sosndBuffer"
+        },
+        {
+          "name": "tcpNoDelay"
+        },
+        {
+          "name": "tlsNeedClientAuth"
+        },
+        {
+          "name": "tlsProtocols"
+        },
+        {
+          "name": "truststorePass"
+        },
+        {
+          "name": "truststoreType"
+        },
+        {
+          "name": "truststoreURL"
+        }
+      ],
       "methods": [
         {
           "name": "$default$backlog",
@@ -54182,6 +57609,23 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.CGetForward",
+      "fields": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "keys"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "streamSCU"
+        },
+        {
+          "name": "streamSCUService"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -54488,6 +57932,29 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.CGetForward$InformationModel",
+      "fields": [
+        {
+          "name": "ColorPalette"
+        },
+        {
+          "name": "CompositeInstanceRoot"
+        },
+        {
+          "name": "HangingProtocol"
+        },
+        {
+          "name": "PatientRoot"
+        },
+        {
+          "name": "PatientStudyOnly"
+        },
+        {
+          "name": "StudyRoot"
+        },
+        {
+          "name": "WithoutBulkData"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -54600,6 +58067,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Dcm2Dcm",
+      "fields": [
+        {
+          "name": "legacy"
+        },
+        {
+          "name": "maxThreads"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -54701,6 +58176,41 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Dcm2Jpg",
+      "fields": [
+        {
+          "name": "autoWindowing"
+        },
+        {
+          "name": "frame"
+        },
+        {
+          "name": "ignorePresentationLUTShape"
+        },
+        {
+          "name": "overlayActivationMask"
+        },
+        {
+          "name": "overlayGrayscaleValue"
+        },
+        {
+          "name": "overlayRGBValue"
+        },
+        {
+          "name": "preferWindow"
+        },
+        {
+          "name": "readImage"
+        },
+        {
+          "name": "windowCenter"
+        },
+        {
+          "name": "windowIndex"
+        },
+        {
+          "name": "windowWidth"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -54868,9 +58378,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.plugin.Dcm2Jpg$ReadImage"
-    },
-    {
       "type": "org.miaixz.bus.image.plugin.Dcm2Json",
       "methods": [
         {
@@ -54931,6 +58438,35 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Dcm2Pdf$FileType",
+      "fields": [
+        {
+          "name": "CDA"
+        },
+        {
+          "name": "DOC_BZIP2"
+        },
+        {
+          "name": "fileExt"
+        },
+        {
+          "name": "GENOZIP"
+        },
+        {
+          "name": "MTL"
+        },
+        {
+          "name": "OBJ"
+        },
+        {
+          "name": "PDF"
+        },
+        {
+          "name": "STL"
+        },
+        {
+          "name": "VCF_BZIP2"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -54988,6 +58524,20 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Dcm2Xml",
+      "fields": [
+        {
+          "name": "includeBulkData"
+        },
+        {
+          "name": "includeKeyword"
+        },
+        {
+          "name": "includeNamespaceDeclaration"
+        },
+        {
+          "name": "indent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55085,6 +58635,20 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.DcmDir",
+      "fields": [
+        {
+          "name": "checkDuplicate"
+        },
+        {
+          "name": "file"
+        },
+        {
+          "name": "inUse"
+        },
+        {
+          "name": "width"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55295,6 +58859,11 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.DcmDump",
+      "fields": [
+        {
+          "name": "width"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55402,6 +58971,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.DcmLdap",
+      "fields": [
+        {
+          "name": "deviceName"
+        },
+        {
+          "name": "deviceType"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55527,6 +59104,11 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Emf2sf",
+      "fields": [
+        {
+          "name": "frames"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55588,6 +59170,23 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.FindSCU",
+      "fields": [
+        {
+          "name": "cancelAfter"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "keys"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "state"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55776,6 +59375,38 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.FindSCU$InformationModel",
+      "fields": [
+        {
+          "name": "ColorPalette"
+        },
+        {
+          "name": "cuid"
+        },
+        {
+          "name": "HangingProtocol"
+        },
+        {
+          "name": "MWL"
+        },
+        {
+          "name": "PatientRoot"
+        },
+        {
+          "name": "PatientStudyOnly"
+        },
+        {
+          "name": "StudyRoot"
+        },
+        {
+          "name": "UPSPull"
+        },
+        {
+          "name": "UPSQuery"
+        },
+        {
+          "name": "UPSWatch"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55875,6 +59506,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.FixLO2UN$Dest",
+      "fields": [
+        {
+          "name": "DIRECTORY"
+        },
+        {
+          "name": "FILE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -55911,6 +59550,26 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.GetSCU",
+      "fields": [
+        {
+          "name": "cancelAfter"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "keys"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "totalSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56083,6 +59742,32 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.GetSCU$InformationModel",
+      "fields": [
+        {
+          "name": "ColorPalette"
+        },
+        {
+          "name": "CompositeInstanceRoot"
+        },
+        {
+          "name": "cuid"
+        },
+        {
+          "name": "HangingProtocol"
+        },
+        {
+          "name": "PatientRoot"
+        },
+        {
+          "name": "PatientStudyOnly"
+        },
+        {
+          "name": "StudyRoot"
+        },
+        {
+          "name": "WithoutBulkData"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56111,6 +59796,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.HL72Xml",
+      "fields": [
+        {
+          "name": "includeNamespaceDeclaration"
+        },
+        {
+          "name": "indent"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56158,6 +59851,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.HL7Pdq",
+      "fields": [
+        {
+          "name": "receivingApplication"
+        },
+        {
+          "name": "sendingApplication"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56220,6 +59921,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.HL7Pix",
+      "fields": [
+        {
+          "name": "receivingApplication"
+        },
+        {
+          "name": "sendingApplication"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56276,6 +59985,17 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.HL7Rcv",
+      "fields": [
+        {
+          "name": "conn"
+        },
+        {
+          "name": "device"
+        },
+        {
+          "name": "useUUIDForFilename"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56405,6 +60125,11 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.IanSCP",
+      "fields": [
+        {
+          "name": "status"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56438,6 +60163,29 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.IanSCU",
+      "fields": [
+        {
+          "name": "availability"
+        },
+        {
+          "name": "refPpsCUID"
+        },
+        {
+          "name": "refPpsIUID"
+        },
+        {
+          "name": "retrieveAET"
+        },
+        {
+          "name": "retrieveUID"
+        },
+        {
+          "name": "retrieveURI"
+        },
+        {
+          "name": "retrieveURL"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56560,6 +60308,20 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Jpg2Dcm",
+      "fields": [
+        {
+          "name": "contentType"
+        },
+        {
+          "name": "fragmentLength"
+        },
+        {
+          "name": "noAPPn"
+        },
+        {
+          "name": "photo"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56640,6 +60402,17 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Jpg2Dcm$ContentType",
+      "fields": [
+        {
+          "name": "IMAGE_JPEG"
+        },
+        {
+          "name": "VIDEO_MP4"
+        },
+        {
+          "name": "VIDEO_MPEG"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56706,6 +60479,11 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Json2Dcm",
+      "fields": [
+        {
+          "name": "includeBulkData"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -56894,6 +60672,26 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.MoveSCU",
+      "fields": [
+        {
+          "name": "cancelAfter"
+        },
+        {
+          "name": "destination"
+        },
+        {
+          "name": "keys"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "releaseEager"
+        },
+        {
+          "name": "state"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57012,6 +60810,29 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.MoveSCU$InformationModel",
+      "fields": [
+        {
+          "name": "ColorPalette"
+        },
+        {
+          "name": "CompositeInstanceRoot"
+        },
+        {
+          "name": "cuid"
+        },
+        {
+          "name": "HangingProtocol"
+        },
+        {
+          "name": "PatientRoot"
+        },
+        {
+          "name": "PatientStudyOnly"
+        },
+        {
+          "name": "StudyRoot"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57040,6 +60861,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.MppsSCP",
+      "fields": [
+        {
+          "name": "mppsNCreateIOD"
+        },
+        {
+          "name": "mppsNSetIOD"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57087,6 +60916,29 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.MppsSCU",
+      "fields": [
+        {
+          "name": "archiveRequested"
+        },
+        {
+          "name": "codes"
+        },
+        {
+          "name": "discontinuationReason"
+        },
+        {
+          "name": "finalStatus"
+        },
+        {
+          "name": "newPPSID"
+        },
+        {
+          "name": "protocolName"
+        },
+        {
+          "name": "rspHandlerFactory"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57289,9 +61141,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.plugin.MppsSCU$RSPHandlerFactory"
-    },
-    {
       "type": "org.miaixz.bus.image.plugin.Pdf2Dcm",
       "methods": [
         {
@@ -57340,6 +61189,35 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Pdf2Dcm$FileContentType",
+      "fields": [
+        {
+          "name": "CDA"
+        },
+        {
+          "name": "DOC_BZIP2"
+        },
+        {
+          "name": "GENOZIP"
+        },
+        {
+          "name": "MTL"
+        },
+        {
+          "name": "OBJ"
+        },
+        {
+          "name": "PDF"
+        },
+        {
+          "name": "sampleMetadataFile"
+        },
+        {
+          "name": "STL"
+        },
+        {
+          "name": "VCF_BZIP2"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57399,6 +61277,17 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StgCmtSCU",
+      "fields": [
+        {
+          "name": "keepAlive"
+        },
+        {
+          "name": "splitTag"
+        },
+        {
+          "name": "status"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57522,6 +61411,29 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StoreSCP",
+      "fields": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "efforts"
+        },
+        {
+          "name": "progress"
+        },
+        {
+          "name": "receiveDelays"
+        },
+        {
+          "name": "responseDelays"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "storageDir"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57642,6 +61554,26 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StoreSCU",
+      "fields": [
+        {
+          "name": "filesScanned"
+        },
+        {
+          "name": "priority"
+        },
+        {
+          "name": "rspHandlerFactory"
+        },
+        {
+          "name": "state"
+        },
+        {
+          "name": "tmpFile"
+        },
+        {
+          "name": "totalSize"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57812,9 +61744,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.plugin.StoreSCU$RSPHandlerFactory"
-    },
-    {
       "type": "org.miaixz.bus.image.plugin.StowRS",
       "methods": [
         {
@@ -57825,6 +61754,20 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StowRS$CompressedPixelData",
+      "fields": [
+        {
+          "name": "JPEG"
+        },
+        {
+          "name": "MP4"
+        },
+        {
+          "name": "MPEG"
+        },
+        {
+          "name": "parser"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57861,6 +61804,74 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StowRS$FileContentType",
+      "fields": [
+        {
+          "name": "bulkdataTypeTag"
+        },
+        {
+          "name": "CDA"
+        },
+        {
+          "name": "DOC_BZIP2"
+        },
+        {
+          "name": "GENOZIP"
+        },
+        {
+          "name": "GIF"
+        },
+        {
+          "name": "J2C"
+        },
+        {
+          "name": "JP2"
+        },
+        {
+          "name": "JPEG"
+        },
+        {
+          "name": "JPH"
+        },
+        {
+          "name": "JPHC"
+        },
+        {
+          "name": "mediaType"
+        },
+        {
+          "name": "MP4"
+        },
+        {
+          "name": "MPEG"
+        },
+        {
+          "name": "MTL"
+        },
+        {
+          "name": "OBJ"
+        },
+        {
+          "name": "PDF"
+        },
+        {
+          "name": "PNG"
+        },
+        {
+          "name": "QUICKTIME"
+        },
+        {
+          "name": "SLA"
+        },
+        {
+          "name": "STL"
+        },
+        {
+          "name": "STL_BINARY"
+        },
+        {
+          "name": "VCF_BZIP2"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57910,6 +61921,17 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StowRS$StowChunk",
+      "fields": [
+        {
+          "name": "scanned"
+        },
+        {
+          "name": "size"
+        },
+        {
+          "name": "tmpFile"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57943,6 +61965,20 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StowRS$StowRSBulkdata",
+      "fields": [
+        {
+          "name": "bulkdataFile"
+        },
+        {
+          "name": "bulkdataFilePath"
+        },
+        {
+          "name": "fileLength"
+        },
+        {
+          "name": "parser"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -57975,12 +62011,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileConsumer"
-    },
-    {
-      "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileFunction"
-    },
-    {
       "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileVisitor",
       "methods": [
         {
@@ -58001,6 +62031,23 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.StreamSCU",
+      "fields": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "numberOfSuboperations"
+        },
+        {
+          "name": "options"
+        },
+        {
+          "name": "rspHandlerFactory"
+        },
+        {
+          "name": "state"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -58183,10 +62230,15 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.plugin.StreamSCU$RSPHandlerFactory"
-    },
-    {
       "type": "org.miaixz.bus.image.plugin.Tpl2Xml",
+      "fields": [
+        {
+          "name": "indent"
+        },
+        {
+          "name": "outDir"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -58244,6 +62296,23 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Tpl2Xml$DictionaryElement",
+      "fields": [
+        {
+          "name": "keyword"
+        },
+        {
+          "name": "tag"
+        },
+        {
+          "name": "value"
+        },
+        {
+          "name": "vm"
+        },
+        {
+          "name": "vr"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -58294,6 +62363,26 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.UpsSCU",
+      "fields": [
+        {
+          "name": "changeState"
+        },
+        {
+          "name": "keys"
+        },
+        {
+          "name": "requestCancel"
+        },
+        {
+          "name": "subscriptionAction"
+        },
+        {
+          "name": "tags"
+        },
+        {
+          "name": "xmlFile"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -58396,6 +62485,35 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.UpsSCU$Operation",
+      "fields": [
+        {
+          "name": "actionTypeID"
+        },
+        {
+          "name": "changeState"
+        },
+        {
+          "name": "create"
+        },
+        {
+          "name": "get"
+        },
+        {
+          "name": "negotiatingSOPClassUID"
+        },
+        {
+          "name": "receive"
+        },
+        {
+          "name": "requestCancel"
+        },
+        {
+          "name": "subscriptionAction"
+        },
+        {
+          "name": "update"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -58437,9 +62555,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.image.plugin.UpsSCU$RSPHandlerFactory"
     },
     {
       "type": "org.miaixz.bus.image.plugin.WadoRS",
@@ -58582,6 +62697,14 @@
     },
     {
       "type": "org.miaixz.bus.image.plugin.Xml2Dcm",
+      "fields": [
+        {
+          "name": "includeBulkData"
+        },
+        {
+          "name": "lenient"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -58719,6 +62842,38 @@
     },
     {
       "type": "org.miaixz.bus.image.Status",
+      "fields": [
+        {
+          "name": "bytesSize"
+        },
+        {
+          "name": "dicomMatchingKeys"
+        },
+        {
+          "name": "dicomRSP"
+        },
+        {
+          "name": "endTransferDateTime"
+        },
+        {
+          "name": "errorMessage"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "progress"
+        },
+        {
+          "name": "startConnectionDateTime"
+        },
+        {
+          "name": "startTransferDateTime"
+        },
+        {
+          "name": "status"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -59052,6 +63207,17 @@
     },
     {
       "type": "org.miaixz.bus.image.Tag$Type",
+      "fields": [
+        {
+          "name": "PRIVATE"
+        },
+        {
+          "name": "PRIVATE_CREATOR"
+        },
+        {
+          "name": "STANDARD"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -59080,6 +63246,1556 @@
     },
     {
       "type": "org.miaixz.bus.image.UID",
+      "fields": [
+        {
+          "name": "AbstractMultiDimensionalImageModel"
+        },
+        {
+          "name": "AcquisitionContextSRStorage"
+        },
+        {
+          "name": "AdvancedBlendingPresentationStateStorage"
+        },
+        {
+          "name": "AmbulatoryECGWaveformStorage"
+        },
+        {
+          "name": "ArterialPulseWaveformStorage"
+        },
+        {
+          "name": "AudioSRStorageTrial"
+        },
+        {
+          "name": "AudioWaveformRealTimeCommunication"
+        },
+        {
+          "name": "AutorefractionMeasurementsStorage"
+        },
+        {
+          "name": "BasicAnnotationBox"
+        },
+        {
+          "name": "BasicColorImageBox"
+        },
+        {
+          "name": "BasicColorPrintManagementMeta"
+        },
+        {
+          "name": "BasicFilmBox"
+        },
+        {
+          "name": "BasicFilmSession"
+        },
+        {
+          "name": "BasicGrayscaleImageBox"
+        },
+        {
+          "name": "BasicGrayscalePrintManagementMeta"
+        },
+        {
+          "name": "BasicPrintImageOverlayBox"
+        },
+        {
+          "name": "BasicStructuredDisplayStorage"
+        },
+        {
+          "name": "BasicStudyContentNotification"
+        },
+        {
+          "name": "BasicTextSRStorage"
+        },
+        {
+          "name": "BasicVoiceAudioWaveformStorage"
+        },
+        {
+          "name": "BlendingSoftcopyPresentationStateStorage"
+        },
+        {
+          "name": "BodyPositionWaveformStorage"
+        },
+        {
+          "name": "BreastImagingRelevantPatientInformationQuery"
+        },
+        {
+          "name": "BreastProjectionXRayImageStorageForPresentation"
+        },
+        {
+          "name": "BreastProjectionXRayImageStorageForProcessing"
+        },
+        {
+          "name": "BreastTomosynthesisImageStorage"
+        },
+        {
+          "name": "CardiacElectrophysiologyWaveformStorage"
+        },
+        {
+          "name": "CardiacRelevantPatientInformationQuery"
+        },
+        {
+          "name": "CArmPhotonElectronRadiationRecordStorage"
+        },
+        {
+          "name": "CArmPhotonElectronRadiationStorage"
+        },
+        {
+          "name": "ChestCADSRStorage"
+        },
+        {
+          "name": "ColonCADSRStorage"
+        },
+        {
+          "name": "ColorPaletteQueryRetrieveInformationModelFind"
+        },
+        {
+          "name": "ColorPaletteQueryRetrieveInformationModelGet"
+        },
+        {
+          "name": "ColorPaletteQueryRetrieveInformationModelMove"
+        },
+        {
+          "name": "ColorPaletteStorage"
+        },
+        {
+          "name": "ColorSoftcopyPresentationStateStorage"
+        },
+        {
+          "name": "CompositeInstanceRetrieveWithoutBulkDataGet"
+        },
+        {
+          "name": "CompositeInstanceRootRetrieveGet"
+        },
+        {
+          "name": "CompositeInstanceRootRetrieveMove"
+        },
+        {
+          "name": "CompositingPlanarMPRVolumetricPresentationStateStorage"
+        },
+        {
+          "name": "Comprehensive3DSRStorage"
+        },
+        {
+          "name": "ComprehensiveSRStorage"
+        },
+        {
+          "name": "ComprehensiveSRStorageTrial"
+        },
+        {
+          "name": "ComputedRadiographyImageStorage"
+        },
+        {
+          "name": "ConfocalMicroscopyImageStorage"
+        },
+        {
+          "name": "ConfocalMicroscopyTiledPyramidalImageStorage"
+        },
+        {
+          "name": "ContentAssessmentResultsStorage"
+        },
+        {
+          "name": "CornealTopographyMapStorage"
+        },
+        {
+          "name": "CTDefinedProcedureProtocolStorage"
+        },
+        {
+          "name": "CTImageStorage"
+        },
+        {
+          "name": "CTPerformedProcedureProtocolStorage"
+        },
+        {
+          "name": "DC"
+        },
+        {
+          "name": "DCM"
+        },
+        {
+          "name": "DCMUID"
+        },
+        {
+          "name": "DefinedProcedureProtocolInformationModelFind"
+        },
+        {
+          "name": "DefinedProcedureProtocolInformationModelGet"
+        },
+        {
+          "name": "DefinedProcedureProtocolInformationModelMove"
+        },
+        {
+          "name": "DeflatedExplicitVRLittleEndian"
+        },
+        {
+          "name": "DeformableSpatialRegistrationStorage"
+        },
+        {
+          "name": "DermoscopicPhotographyImageStorage"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "DetachedInterpretationManagement"
+        },
+        {
+          "name": "DetachedPatientManagement"
+        },
+        {
+          "name": "DetachedPatientManagementMeta"
+        },
+        {
+          "name": "DetachedResultsManagement"
+        },
+        {
+          "name": "DetachedResultsManagementMeta"
+        },
+        {
+          "name": "DetachedStudyManagement"
+        },
+        {
+          "name": "DetachedStudyManagementMeta"
+        },
+        {
+          "name": "DetachedVisitManagement"
+        },
+        {
+          "name": "DetailSRStorageTrial"
+        },
+        {
+          "name": "dicomAETitle"
+        },
+        {
+          "name": "dicomApplicationCluster"
+        },
+        {
+          "name": "DICOMApplicationContext"
+        },
+        {
+          "name": "dicomAssociationAcceptor"
+        },
+        {
+          "name": "dicomAssociationInitiator"
+        },
+        {
+          "name": "dicomAuthorizedNodeCertificateReference"
+        },
+        {
+          "name": "dicomConfigurationRoot"
+        },
+        {
+          "name": "DICOMContentMappingResource"
+        },
+        {
+          "name": "dicomDescription"
+        },
+        {
+          "name": "dicomDevice"
+        },
+        {
+          "name": "dicomDeviceName"
+        },
+        {
+          "name": "dicomDeviceSerialNumber"
+        },
+        {
+          "name": "dicomDevicesRoot"
+        },
+        {
+          "name": "dicomHostname"
+        },
+        {
+          "name": "dicomInstalled"
+        },
+        {
+          "name": "dicomInstitutionAddress"
+        },
+        {
+          "name": "dicomInstitutionDepartmentName"
+        },
+        {
+          "name": "dicomInstitutionName"
+        },
+        {
+          "name": "dicomIssuerOfPatientID"
+        },
+        {
+          "name": "dicomManufacturer"
+        },
+        {
+          "name": "dicomManufacturerModelName"
+        },
+        {
+          "name": "dicomNetworkAE"
+        },
+        {
+          "name": "dicomNetworkConnection"
+        },
+        {
+          "name": "dicomNetworkConnectionReference"
+        },
+        {
+          "name": "dicomPort"
+        },
+        {
+          "name": "dicomPreferredCalledAETitle"
+        },
+        {
+          "name": "dicomPreferredCallingAETitle"
+        },
+        {
+          "name": "dicomPrimaryDeviceType"
+        },
+        {
+          "name": "dicomRelatedDeviceReference"
+        },
+        {
+          "name": "dicomSoftwareVersion"
+        },
+        {
+          "name": "dicomSOPClass"
+        },
+        {
+          "name": "dicomStationName"
+        },
+        {
+          "name": "dicomSupportedCharacterSet"
+        },
+        {
+          "name": "dicomThisNodeCertificateReference"
+        },
+        {
+          "name": "dicomTLSCyphersuite"
+        },
+        {
+          "name": "dicomTransferCapability"
+        },
+        {
+          "name": "dicomTransferRole"
+        },
+        {
+          "name": "dicomTransferSyntax"
+        },
+        {
+          "name": "dicomUniqueAETitle"
+        },
+        {
+          "name": "dicomUniqueAETitlesRegistryRoot"
+        },
+        {
+          "name": "dicomVendorData"
+        },
+        {
+          "name": "DICOS2DAITStorage"
+        },
+        {
+          "name": "DICOS3DAITStorage"
+        },
+        {
+          "name": "DICOSCTImageStorage"
+        },
+        {
+          "name": "DICOSDigitalXRayImageStorageForPresentation"
+        },
+        {
+          "name": "DICOSDigitalXRayImageStorageForProcessing"
+        },
+        {
+          "name": "DICOSQuadrupoleResonanceStorage"
+        },
+        {
+          "name": "DICOSThreatDetectionReportStorage"
+        },
+        {
+          "name": "DigitalIntraOralXRayImageStorageForPresentation"
+        },
+        {
+          "name": "DigitalIntraOralXRayImageStorageForProcessing"
+        },
+        {
+          "name": "DigitalMammographyXRayImageStorageForPresentation"
+        },
+        {
+          "name": "DigitalMammographyXRayImageStorageForProcessing"
+        },
+        {
+          "name": "DigitalXRayImageStorageForPresentation"
+        },
+        {
+          "name": "DigitalXRayImageStorageForProcessing"
+        },
+        {
+          "name": "DisplaySystem"
+        },
+        {
+          "name": "DisplaySystemInstance"
+        },
+        {
+          "name": "EddyCurrentImageStorage"
+        },
+        {
+          "name": "EddyCurrentMultiFrameImageStorage"
+        },
+        {
+          "name": "ElectromyogramWaveformStorage"
+        },
+        {
+          "name": "ElectrooculogramWaveformStorage"
+        },
+        {
+          "name": "EncapsulatedCDAStorage"
+        },
+        {
+          "name": "EncapsulatedMTLStorage"
+        },
+        {
+          "name": "EncapsulatedOBJStorage"
+        },
+        {
+          "name": "EncapsulatedPDFStorage"
+        },
+        {
+          "name": "EncapsulatedSTLStorage"
+        },
+        {
+          "name": "EncapsulatedUncompressedExplicitVRLittleEndian"
+        },
+        {
+          "name": "EnhancedContinuousRTImageStorage"
+        },
+        {
+          "name": "EnhancedCTImageStorage"
+        },
+        {
+          "name": "EnhancedMRColorImageStorage"
+        },
+        {
+          "name": "EnhancedMRImageStorage"
+        },
+        {
+          "name": "EnhancedPETImageStorage"
+        },
+        {
+          "name": "EnhancedRTImageStorage"
+        },
+        {
+          "name": "EnhancedSRStorage"
+        },
+        {
+          "name": "EnhancedUSVolumeStorage"
+        },
+        {
+          "name": "EnhancedXAImageStorage"
+        },
+        {
+          "name": "EnhancedXRayRadiationDoseSRStorage"
+        },
+        {
+          "name": "EnhancedXRFImageStorage"
+        },
+        {
+          "name": "ExplicitVRBigEndian"
+        },
+        {
+          "name": "ExplicitVRLittleEndian"
+        },
+        {
+          "name": "ExtensibleSRStorage"
+        },
+        {
+          "name": "FallPalette"
+        },
+        {
+          "name": "General32bitECGWaveformStorage"
+        },
+        {
+          "name": "GeneralAudioWaveformStorage"
+        },
+        {
+          "name": "GeneralECGWaveformStorage"
+        },
+        {
+          "name": "GeneralPurposePerformedProcedureStep"
+        },
+        {
+          "name": "GeneralPurposeScheduledProcedureStep"
+        },
+        {
+          "name": "GeneralPurposeWorklistInformationModelFind"
+        },
+        {
+          "name": "GeneralPurposeWorklistManagementMeta"
+        },
+        {
+          "name": "GeneralRelevantPatientInformationQuery"
+        },
+        {
+          "name": "GenericImplantTemplateInformationModelFind"
+        },
+        {
+          "name": "GenericImplantTemplateInformationModelGet"
+        },
+        {
+          "name": "GenericImplantTemplateInformationModelMove"
+        },
+        {
+          "name": "GenericImplantTemplateStorage"
+        },
+        {
+          "name": "GrayscalePlanarMPRVolumetricPresentationStateStorage"
+        },
+        {
+          "name": "GrayscaleSoftcopyPresentationStateStorage"
+        },
+        {
+          "name": "HangingProtocolInformationModelFind"
+        },
+        {
+          "name": "HangingProtocolInformationModelGet"
+        },
+        {
+          "name": "HangingProtocolInformationModelMove"
+        },
+        {
+          "name": "HangingProtocolStorage"
+        },
+        {
+          "name": "HardcopyColorImageStorage"
+        },
+        {
+          "name": "HardcopyGrayscaleImageStorage"
+        },
+        {
+          "name": "HemodynamicWaveformStorage"
+        },
+        {
+          "name": "HEVCM10P51"
+        },
+        {
+          "name": "HEVCMP51"
+        },
+        {
+          "name": "HotIronPalette"
+        },
+        {
+          "name": "HotMetalBluePalette"
+        },
+        {
+          "name": "HTJ2K"
+        },
+        {
+          "name": "HTJ2KLossless"
+        },
+        {
+          "name": "HTJ2KLosslessRPCL"
+        },
+        {
+          "name": "I11"
+        },
+        {
+          "name": "IBSI"
+        },
+        {
+          "name": "ImageOverlayBox"
+        },
+        {
+          "name": "ImplantAssemblyTemplateInformationModelFind"
+        },
+        {
+          "name": "ImplantAssemblyTemplateInformationModelGet"
+        },
+        {
+          "name": "ImplantAssemblyTemplateInformationModelMove"
+        },
+        {
+          "name": "ImplantAssemblyTemplateStorage"
+        },
+        {
+          "name": "ImplantationPlanSRStorage"
+        },
+        {
+          "name": "ImplantTemplateGroupInformationModelFind"
+        },
+        {
+          "name": "ImplantTemplateGroupInformationModelGet"
+        },
+        {
+          "name": "ImplantTemplateGroupInformationModelMove"
+        },
+        {
+          "name": "ImplantTemplateGroupStorage"
+        },
+        {
+          "name": "ImplicitVRLittleEndian"
+        },
+        {
+          "name": "InstanceAvailabilityNotification"
+        },
+        {
+          "name": "IntraocularLensCalculationsStorage"
+        },
+        {
+          "name": "IntravascularOpticalCoherenceTomographyImageStorageForPresentation"
+        },
+        {
+          "name": "IntravascularOpticalCoherenceTomographyImageStorageForProcessing"
+        },
+        {
+          "name": "InventoryCreation"
+        },
+        {
+          "name": "InventoryFind"
+        },
+        {
+          "name": "InventoryGet"
+        },
+        {
+          "name": "InventoryMove"
+        },
+        {
+          "name": "InventoryStorage"
+        },
+        {
+          "name": "ITIS_TSN"
+        },
+        {
+          "name": "JPEG2000"
+        },
+        {
+          "name": "JPEG2000Lossless"
+        },
+        {
+          "name": "JPEG2000MC"
+        },
+        {
+          "name": "JPEG2000MCLossless"
+        },
+        {
+          "name": "JPEGBaseline8Bit"
+        },
+        {
+          "name": "JPEGExtended12Bit"
+        },
+        {
+          "name": "JPEGExtended35"
+        },
+        {
+          "name": "JPEGExtendedHierarchical1618"
+        },
+        {
+          "name": "JPEGExtendedHierarchical1719"
+        },
+        {
+          "name": "JPEGFullProgressionHierarchical2426"
+        },
+        {
+          "name": "JPEGFullProgressionHierarchical2527"
+        },
+        {
+          "name": "JPEGFullProgressionNonHierarchical1012"
+        },
+        {
+          "name": "JPEGFullProgressionNonHierarchical1113"
+        },
+        {
+          "name": "JPEGLossless"
+        },
+        {
+          "name": "JPEGLosslessHierarchical28"
+        },
+        {
+          "name": "JPEGLosslessHierarchical29"
+        },
+        {
+          "name": "JPEGLosslessNonHierarchical15"
+        },
+        {
+          "name": "JPEGLosslessSV1"
+        },
+        {
+          "name": "JPEGLSLossless"
+        },
+        {
+          "name": "JPEGLSNearLossless"
+        },
+        {
+          "name": "JPEGSpectralSelectionHierarchical2022"
+        },
+        {
+          "name": "JPEGSpectralSelectionHierarchical2123"
+        },
+        {
+          "name": "JPEGSpectralSelectionNonHierarchical68"
+        },
+        {
+          "name": "JPEGSpectralSelectionNonHierarchical79"
+        },
+        {
+          "name": "JPIPHTJ2KReferenced"
+        },
+        {
+          "name": "JPIPHTJ2KReferencedDeflate"
+        },
+        {
+          "name": "JPIPReferenced"
+        },
+        {
+          "name": "JPIPReferencedDeflate"
+        },
+        {
+          "name": "KeratometryMeasurementsStorage"
+        },
+        {
+          "name": "KeyObjectSelectionDocumentStorage"
+        },
+        {
+          "name": "LegacyConvertedEnhancedCTImageStorage"
+        },
+        {
+          "name": "LegacyConvertedEnhancedMRImageStorage"
+        },
+        {
+          "name": "LegacyConvertedEnhancedPETImageStorage"
+        },
+        {
+          "name": "LensometryMeasurementsStorage"
+        },
+        {
+          "name": "MA"
+        },
+        {
+          "name": "MacularGridThicknessAndVolumeReportStorage"
+        },
+        {
+          "name": "MammographyCADSRStorage"
+        },
+        {
+          "name": "MAYONRISBSASRG"
+        },
+        {
+          "name": "MediaCreationManagement"
+        },
+        {
+          "name": "MediaStorageDirectoryStorage"
+        },
+        {
+          "name": "MGI"
+        },
+        {
+          "name": "MicroscopyBulkSimpleAnnotationsStorage"
+        },
+        {
+          "name": "ModalityPerformedProcedureStep"
+        },
+        {
+          "name": "ModalityPerformedProcedureStepNotification"
+        },
+        {
+          "name": "ModalityPerformedProcedureStepRetrieve"
+        },
+        {
+          "name": "ModalityWorklistInformationModelFind"
+        },
+        {
+          "name": "MPEG2MPHL"
+        },
+        {
+          "name": "MPEG2MPHLF"
+        },
+        {
+          "name": "MPEG2MPML"
+        },
+        {
+          "name": "MPEG2MPMLF"
+        },
+        {
+          "name": "MPEG4HP41"
+        },
+        {
+          "name": "MPEG4HP41BD"
+        },
+        {
+          "name": "MPEG4HP41BDF"
+        },
+        {
+          "name": "MPEG4HP41F"
+        },
+        {
+          "name": "MPEG4HP422D"
+        },
+        {
+          "name": "MPEG4HP422DF"
+        },
+        {
+          "name": "MPEG4HP423D"
+        },
+        {
+          "name": "MPEG4HP423DF"
+        },
+        {
+          "name": "MPEG4HP42STEREO"
+        },
+        {
+          "name": "MPEG4HP42STEREOF"
+        },
+        {
+          "name": "MRImageStorage"
+        },
+        {
+          "name": "MRImageStorageZeroPadded"
+        },
+        {
+          "name": "MRSpectroscopyStorage"
+        },
+        {
+          "name": "MultichannelRespiratoryWaveformStorage"
+        },
+        {
+          "name": "MultiFrameGrayscaleByteSecondaryCaptureImageStorage"
+        },
+        {
+          "name": "MultiFrameGrayscaleWordSecondaryCaptureImageStorage"
+        },
+        {
+          "name": "MultiFrameSingleBitSecondaryCaptureImageStorage"
+        },
+        {
+          "name": "MultiFrameTrueColorSecondaryCaptureImageStorage"
+        },
+        {
+          "name": "MultipleVolumeRenderingVolumetricPresentationStateStorage"
+        },
+        {
+          "name": "NativeDICOMModel"
+        },
+        {
+          "name": "NuclearMedicineImageStorage"
+        },
+        {
+          "name": "NuclearMedicineImageStorageRetired"
+        },
+        {
+          "name": "NYUMCCG"
+        },
+        {
+          "name": "OphthalmicAxialMeasurementsStorage"
+        },
+        {
+          "name": "OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage"
+        },
+        {
+          "name": "OphthalmicOpticalCoherenceTomographyEnFaceImageStorage"
+        },
+        {
+          "name": "OphthalmicPhotography16BitImageStorage"
+        },
+        {
+          "name": "OphthalmicPhotography8BitImageStorage"
+        },
+        {
+          "name": "OphthalmicThicknessMapStorage"
+        },
+        {
+          "name": "OphthalmicTomographyImageStorage"
+        },
+        {
+          "name": "OphthalmicVisualFieldStaticPerimetryMeasurementsStorage"
+        },
+        {
+          "name": "Papyrus3ImplicitVRLittleEndian"
+        },
+        {
+          "name": "ParametricMapStorage"
+        },
+        {
+          "name": "PatientRadiationDoseSRStorage"
+        },
+        {
+          "name": "PatientRootQueryRetrieveInformationModelFind"
+        },
+        {
+          "name": "PatientRootQueryRetrieveInformationModelGet"
+        },
+        {
+          "name": "PatientRootQueryRetrieveInformationModelMove"
+        },
+        {
+          "name": "PatientStudyOnlyQueryRetrieveInformationModelFind"
+        },
+        {
+          "name": "PatientStudyOnlyQueryRetrieveInformationModelGet"
+        },
+        {
+          "name": "PatientStudyOnlyQueryRetrieveInformationModelMove"
+        },
+        {
+          "name": "PerformedImagingAgentAdministrationSRStorage"
+        },
+        {
+          "name": "PET20StepPalette"
+        },
+        {
+          "name": "PETPalette"
+        },
+        {
+          "name": "PhotoacousticImageStorage"
+        },
+        {
+          "name": "PlannedImagingAgentAdministrationSRStorage"
+        },
+        {
+          "name": "PositronEmissionTomographyImageStorage"
+        },
+        {
+          "name": "PresentationLUT"
+        },
+        {
+          "name": "Printer"
+        },
+        {
+          "name": "PrinterConfigurationRetrieval"
+        },
+        {
+          "name": "PrinterConfigurationRetrievalInstance"
+        },
+        {
+          "name": "PrinterInstance"
+        },
+        {
+          "name": "PrintJob"
+        },
+        {
+          "name": "PrintQueueInstance"
+        },
+        {
+          "name": "PrintQueueManagement"
+        },
+        {
+          "name": "PrivateAgfaArrivalTransaction"
+        },
+        {
+          "name": "PrivateAgfaBasicAttributePresentationState"
+        },
+        {
+          "name": "PrivateAgfaDictationTransaction"
+        },
+        {
+          "name": "PrivateAgfaReportApprovalTransaction"
+        },
+        {
+          "name": "PrivateAgfaReportTranscriptionTransaction"
+        },
+        {
+          "name": "PrivateEncapsulatedBzip2DocumentStorage"
+        },
+        {
+          "name": "PrivateEncapsulatedBzip2VCFStorage"
+        },
+        {
+          "name": "PrivateEncapsulatedGenozipStorage"
+        },
+        {
+          "name": "PrivateERADPracticeBuilderReportDictationStorage"
+        },
+        {
+          "name": "PrivateERADPracticeBuilderReportTextStorage"
+        },
+        {
+          "name": "PrivateFujiCRImageStorage"
+        },
+        {
+          "name": "PrivateGE3DModelStorage"
+        },
+        {
+          "name": "PrivateGECollageStorage"
+        },
+        {
+          "name": "PrivateGEDicomCTImageInfoObject"
+        },
+        {
+          "name": "PrivateGEDicomDisplayImageInfoObject"
+        },
+        {
+          "name": "PrivateGEDicomMRImageInfoObject"
+        },
+        {
+          "name": "PrivateGEeNTEGRAProtocolOrNMGenieStorage"
+        },
+        {
+          "name": "PrivateGEPETRawDataStorage"
+        },
+        {
+          "name": "PrivateGERTPlanStorage"
+        },
+        {
+          "name": "PrivatePhilips3DObjectStorage"
+        },
+        {
+          "name": "PrivatePhilips3DObjectStorageRetired"
+        },
+        {
+          "name": "PrivatePhilips3DPresentationStateStorage"
+        },
+        {
+          "name": "PrivatePhilipsCompositeObjectStorage"
+        },
+        {
+          "name": "PrivatePhilipsCTSyntheticImageStorage"
+        },
+        {
+          "name": "PrivatePhilipsCXImageStorage"
+        },
+        {
+          "name": "PrivatePhilipsCXSyntheticImageStorage"
+        },
+        {
+          "name": "PrivatePhilipsHPLive3D01Storage"
+        },
+        {
+          "name": "PrivatePhilipsHPLive3D02Storage"
+        },
+        {
+          "name": "PrivatePhilipsLiveRunStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRCardioAnalysisStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRCardioAnalysisStorageRetired"
+        },
+        {
+          "name": "PrivatePhilipsMRCardioProfileStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRCardioStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRCardioStorageRetired"
+        },
+        {
+          "name": "PrivatePhilipsMRColorImageStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRExamcardStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRSeriesDataStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRSpectrumStorage"
+        },
+        {
+          "name": "PrivatePhilipsMRSyntheticImageStorage"
+        },
+        {
+          "name": "PrivatePhilipsPerfusionImageStorage"
+        },
+        {
+          "name": "PrivatePhilipsPerfusionStorage"
+        },
+        {
+          "name": "PrivatePhilipsReconstructionStorage"
+        },
+        {
+          "name": "PrivatePhilipsRunStorage"
+        },
+        {
+          "name": "PrivatePhilipsSpecialisedXAStorage"
+        },
+        {
+          "name": "PrivatePhilipsSurfaceStorage"
+        },
+        {
+          "name": "PrivatePhilipsSurfaceStorageRetired"
+        },
+        {
+          "name": "PrivatePhilipsVolumeSetStorage"
+        },
+        {
+          "name": "PrivatePhilipsVolumeStorage"
+        },
+        {
+          "name": "PrivatePhilipsVolumeStorageRetired"
+        },
+        {
+          "name": "PrivatePhilipsVRMLStorage"
+        },
+        {
+          "name": "PrivatePhilipsXRayMFStorage"
+        },
+        {
+          "name": "PrivatePixelMedFloatingPointImageStorage"
+        },
+        {
+          "name": "PrivatePixelMedLegacyConvertedEnhancedCTImageStorage"
+        },
+        {
+          "name": "PrivatePixelMedLegacyConvertedEnhancedMRImageStorage"
+        },
+        {
+          "name": "PrivatePixelMedLegacyConvertedEnhancedPETImageStorage"
+        },
+        {
+          "name": "PrivatePMODMultiFrameImageStorage"
+        },
+        {
+          "name": "PrivateSiemensAXFrameSetsStorage"
+        },
+        {
+          "name": "PrivateSiemensCSANonImageStorage"
+        },
+        {
+          "name": "PrivateSiemensCTMRVolumeStorage"
+        },
+        {
+          "name": "PrivateTomTecAnnotationStorage"
+        },
+        {
+          "name": "PrivateToshibaUSImageStorage"
+        },
+        {
+          "name": "ProceduralEventLogging"
+        },
+        {
+          "name": "ProceduralEventLoggingInstance"
+        },
+        {
+          "name": "ProcedureLogStorage"
+        },
+        {
+          "name": "ProductCharacteristicsQuery"
+        },
+        {
+          "name": "ProtocolApprovalInformationModelFind"
+        },
+        {
+          "name": "ProtocolApprovalInformationModelGet"
+        },
+        {
+          "name": "ProtocolApprovalInformationModelMove"
+        },
+        {
+          "name": "ProtocolApprovalStorage"
+        },
+        {
+          "name": "PseudoColorSoftcopyPresentationStateStorage"
+        },
+        {
+          "name": "PUBCHEM_CID"
+        },
+        {
+          "name": "PullPrintRequest"
+        },
+        {
+          "name": "PullStoredPrintManagementMeta"
+        },
+        {
+          "name": "RADELEMENT"
+        },
+        {
+          "name": "RadiopharmaceuticalRadiationDoseSRStorage"
+        },
+        {
+          "name": "RawDataStorage"
+        },
+        {
+          "name": "RealWorldValueMappingStorage"
+        },
+        {
+          "name": "ReferencedColorPrintManagementMeta"
+        },
+        {
+          "name": "ReferencedGrayscalePrintManagementMeta"
+        },
+        {
+          "name": "ReferencedImageBox"
+        },
+        {
+          "name": "RenditionSelectionDocumentRealTimeCommunication"
+        },
+        {
+          "name": "RepositoryQuery"
+        },
+        {
+          "name": "RespiratoryWaveformStorage"
+        },
+        {
+          "name": "RFC2557MIMEEncapsulation"
+        },
+        {
+          "name": "RLELossless"
+        },
+        {
+          "name": "RO"
+        },
+        {
+          "name": "RoboticArmRadiationStorage"
+        },
+        {
+          "name": "RoboticRadiationRecordStorage"
+        },
+        {
+          "name": "RoutineScalpElectroencephalogramWaveformStorage"
+        },
+        {
+          "name": "RRID"
+        },
+        {
+          "name": "RTBeamsDeliveryInstructionStorage"
+        },
+        {
+          "name": "RTBeamsDeliveryInstructionStorageTrial"
+        },
+        {
+          "name": "RTBeamsTreatmentRecordStorage"
+        },
+        {
+          "name": "RTBrachyApplicationSetupDeliveryInstructionStorage"
+        },
+        {
+          "name": "RTBrachyTreatmentRecordStorage"
+        },
+        {
+          "name": "RTConventionalMachineVerification"
+        },
+        {
+          "name": "RTConventionalMachineVerificationTrial"
+        },
+        {
+          "name": "RTDoseStorage"
+        },
+        {
+          "name": "RTImageStorage"
+        },
+        {
+          "name": "RTIonBeamsTreatmentRecordStorage"
+        },
+        {
+          "name": "RTIonMachineVerification"
+        },
+        {
+          "name": "RTIonMachineVerificationTrial"
+        },
+        {
+          "name": "RTIonPlanStorage"
+        },
+        {
+          "name": "RTPatientPositionAcquisitionInstructionStorage"
+        },
+        {
+          "name": "RTPhysicianIntentStorage"
+        },
+        {
+          "name": "RTPlanStorage"
+        },
+        {
+          "name": "RTRadiationRecordSetStorage"
+        },
+        {
+          "name": "RTRadiationSalvageRecordStorage"
+        },
+        {
+          "name": "RTRadiationSetDeliveryInstructionStorage"
+        },
+        {
+          "name": "RTRadiationSetStorage"
+        },
+        {
+          "name": "RTSegmentAnnotationStorage"
+        },
+        {
+          "name": "RTStructureSetStorage"
+        },
+        {
+          "name": "RTTreatmentPreparationStorage"
+        },
+        {
+          "name": "RTTreatmentSummaryRecordStorage"
+        },
+        {
+          "name": "SecondaryCaptureImageStorage"
+        },
+        {
+          "name": "SegmentationStorage"
+        },
+        {
+          "name": "SegmentedVolumeRenderingVolumetricPresentationStateStorage"
+        },
+        {
+          "name": "SimplifiedAdultEchoSRStorage"
+        },
+        {
+          "name": "SleepElectroencephalogramWaveformStorage"
+        },
+        {
+          "name": "SMPTEST211020UncompressedInterlacedActiveVideo"
+        },
+        {
+          "name": "SMPTEST211020UncompressedProgressiveActiveVideo"
+        },
+        {
+          "name": "SMPTEST211030PCMDigitalAudio"
+        },
+        {
+          "name": "SpatialFiducialsStorage"
+        },
+        {
+          "name": "SpatialRegistrationStorage"
+        },
+        {
+          "name": "SpectaclePrescriptionReportStorage"
+        },
+        {
+          "name": "SpringPalette"
+        },
+        {
+          "name": "StandaloneCurveStorage"
+        },
+        {
+          "name": "StandaloneModalityLUTStorage"
+        },
+        {
+          "name": "StandaloneOverlayStorage"
+        },
+        {
+          "name": "StandalonePETCurveStorage"
+        },
+        {
+          "name": "StandaloneVOILUTStorage"
+        },
+        {
+          "name": "StereometricRelationshipStorage"
+        },
+        {
+          "name": "Storage"
+        },
+        {
+          "name": "StorageCommitmentPullModel"
+        },
+        {
+          "name": "StorageCommitmentPullModelInstance"
+        },
+        {
+          "name": "StorageCommitmentPushModel"
+        },
+        {
+          "name": "StorageCommitmentPushModelInstance"
+        },
+        {
+          "name": "StorageManagementInstance"
+        },
+        {
+          "name": "StoredPrintStorage"
+        },
+        {
+          "name": "StudyComponentManagement"
+        },
+        {
+          "name": "StudyRootQueryRetrieveInformationModelFind"
+        },
+        {
+          "name": "StudyRootQueryRetrieveInformationModelGet"
+        },
+        {
+          "name": "StudyRootQueryRetrieveInformationModelMove"
+        },
+        {
+          "name": "SubjectiveRefractionMeasurementsStorage"
+        },
+        {
+          "name": "SubstanceAdministrationLogging"
+        },
+        {
+          "name": "SubstanceAdministrationLoggingInstance"
+        },
+        {
+          "name": "SubstanceApprovalQuery"
+        },
+        {
+          "name": "SummerPalette"
+        },
+        {
+          "name": "SurfaceScanMeshStorage"
+        },
+        {
+          "name": "SurfaceScanPointCloudStorage"
+        },
+        {
+          "name": "SurfaceSegmentationStorage"
+        },
+        {
+          "name": "TextSRStorageTrial"
+        },
+        {
+          "name": "TomotherapeuticRadiationRecordStorage"
+        },
+        {
+          "name": "TomotherapeuticRadiationStorage"
+        },
+        {
+          "name": "TractographyResultsStorage"
+        },
+        {
+          "name": "TwelveLeadECGWaveformStorage"
+        },
+        {
+          "name": "UBERON"
+        },
+        {
+          "name": "uid"
+        },
+        {
+          "name": "UltrasoundImageStorage"
+        },
+        {
+          "name": "UltrasoundImageStorageRetired"
+        },
+        {
+          "name": "UltrasoundMultiFrameImageStorage"
+        },
+        {
+          "name": "UltrasoundMultiFrameImageStorageRetired"
+        },
+        {
+          "name": "UnifiedProcedureStepEvent"
+        },
+        {
+          "name": "UnifiedProcedureStepEventTrial"
+        },
+        {
+          "name": "UnifiedProcedureStepPull"
+        },
+        {
+          "name": "UnifiedProcedureStepPullTrial"
+        },
+        {
+          "name": "UnifiedProcedureStepPush"
+        },
+        {
+          "name": "UnifiedProcedureStepPushTrial"
+        },
+        {
+          "name": "UnifiedProcedureStepQuery"
+        },
+        {
+          "name": "UnifiedProcedureStepWatch"
+        },
+        {
+          "name": "UnifiedProcedureStepWatchTrial"
+        },
+        {
+          "name": "UnifiedWorklistAndProcedureStep"
+        },
+        {
+          "name": "UnifiedWorklistAndProcedureStepTrial"
+        },
+        {
+          "name": "UNS"
+        },
+        {
+          "name": "UPSFilteredGlobalSubscriptionInstance"
+        },
+        {
+          "name": "UPSGlobalSubscriptionInstance"
+        },
+        {
+          "name": "UTC"
+        },
+        {
+          "name": "VariableModalityLUTSoftcopyPresentationStateStorage"
+        },
+        {
+          "name": "Verification"
+        },
+        {
+          "name": "VideoEndoscopicImageRealTimeCommunication"
+        },
+        {
+          "name": "VideoEndoscopicImageStorage"
+        },
+        {
+          "name": "VideoMicroscopicImageStorage"
+        },
+        {
+          "name": "VideoPhotographicImageRealTimeCommunication"
+        },
+        {
+          "name": "VideoPhotographicImageStorage"
+        },
+        {
+          "name": "VisualAcuityMeasurementsStorage"
+        },
+        {
+          "name": "VLEndoscopicImageStorage"
+        },
+        {
+          "name": "VLImageStorageTrial"
+        },
+        {
+          "name": "VLMicroscopicImageStorage"
+        },
+        {
+          "name": "VLMultiFrameImageStorageTrial"
+        },
+        {
+          "name": "VLPhotographicImageStorage"
+        },
+        {
+          "name": "VLSlideCoordinatesMicroscopicImageStorage"
+        },
+        {
+          "name": "VLWholeSlideMicroscopyImageStorage"
+        },
+        {
+          "name": "VOILUTBox"
+        },
+        {
+          "name": "VolumeRenderingVolumetricPresentationStateStorage"
+        },
+        {
+          "name": "WaveformStorageTrial"
+        },
+        {
+          "name": "WideFieldOphthalmicPhotography3DCoordinatesImageStorage"
+        },
+        {
+          "name": "WideFieldOphthalmicPhotographyStereographicProjectionImageStorage"
+        },
+        {
+          "name": "WinterPalette"
+        },
+        {
+          "name": "XADefinedProcedureProtocolStorage"
+        },
+        {
+          "name": "XAPerformedProcedureProtocolStorage"
+        },
+        {
+          "name": "XAXRFGrayscaleSoftcopyPresentationStateStorage"
+        },
+        {
+          "name": "XMLEncoding"
+        },
+        {
+          "name": "XRay3DAngiographicImageStorage"
+        },
+        {
+          "name": "XRay3DCraniofacialImageStorage"
+        },
+        {
+          "name": "XRayAngiographicBiPlaneImageStorage"
+        },
+        {
+          "name": "XRayAngiographicImageStorage"
+        },
+        {
+          "name": "XRayRadiationDoseSRStorage"
+        },
+        {
+          "name": "XRayRadiofluoroscopicImageStorage"
+        },
+        {
+          "name": "ZeissOPTFile"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -59258,42 +64974,9 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.xml.sax.ContentHandler"
-    },
-    {
-      "type": "org.xml.sax.DTDHandler"
-    },
-    {
-      "type": "org.xml.sax.EntityResolver"
-    },
-    {
-      "type": "org.xml.sax.ErrorHandler"
-    },
-    {
-      "type": "org.xml.sax.helpers.DefaultHandler"
     }
   ],
   "resources": [
-    {
-      "glob": "ldap.properties"
-    },
-    {
-      "glob": "META-INF/services/java.nio.file.spi.FileTypeDetector"
-    },
-    {
-      "glob": "META-INF/services/javax.imageio.spi.ImageReaderSpi"
-    },
-    {
-      "glob": "META-INF/services/javax.imageio.spi.ImageWriterSpi"
-    },
-    {
-      "glob": "META-INF/services/org.miaixz.bus.image.galaxy.data.ElementDictionary"
-    },
-    {
-      "glob": "org/miaixz/bus/image/**"
-    },
     {
       "condition": {
         "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
@@ -59311,6 +64994,24 @@
         "typeReached": "org.miaixz.bus.image.nimble.ICCProfile$Option"
       },
       "glob": "org/miaixz/bus/image/nimble/sRGB.icc"
+    },
+    {
+      "glob": "ldap.properties"
+    },
+    {
+      "glob": "META-INF/services/java.nio.file.spi.FileTypeDetector"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageReaderSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageWriterSpi"
+    },
+    {
+      "glob": "META-INF/services/org.miaixz.bus.image.galaxy.data.ElementDictionary"
+    },
+    {
+      "glob": "org/miaixz/bus/image/**"
     }
   ]
 }

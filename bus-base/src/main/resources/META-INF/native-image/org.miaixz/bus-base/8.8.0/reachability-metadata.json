@@ -1,9 +1,6 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.base.advice.BaseAdvice"
-    },
-    {
       "type": "org.miaixz.bus.base.entity.BaseEntity",
       "methods": [
         {
@@ -56,9 +53,6 @@
       }
     },
     {
-      "type": "org.miaixz.bus.base.mapper.BaseMapper"
-    },
-    {
       "type": {
         "proxy": [
           "org.miaixz.bus.base.mapper.Mapper"
@@ -66,17 +60,11 @@
       }
     },
     {
-      "type": "org.miaixz.bus.base.mapper.Mapper"
-    },
-    {
       "type": {
         "proxy": [
           "org.miaixz.bus.base.mapper.SharedMapper"
         ]
       }
-    },
-    {
-      "type": "org.miaixz.bus.base.mapper.SharedMapper"
     },
     {
       "type": "org.miaixz.bus.base.service.AbstractService",
@@ -364,9 +352,6 @@
       }
     },
     {
-      "type": "org.miaixz.bus.base.service.BaseService"
-    },
-    {
       "type": "org.miaixz.bus.base.service.DefaultService",
       "methods": [
         {
@@ -381,9 +366,6 @@
           "org.miaixz.bus.base.service.SharedService"
         ]
       }
-    },
-    {
-      "type": "org.miaixz.bus.base.service.SharedService"
     },
     {
       "type": "org.miaixz.bus.base.spring.BaseController",
@@ -436,6 +418,5 @@
         }
       ]
     }
-  ],
-  "resources": []
+  ]
 }

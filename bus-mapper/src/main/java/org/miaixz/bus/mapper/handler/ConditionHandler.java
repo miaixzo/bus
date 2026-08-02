@@ -58,7 +58,7 @@ import org.miaixz.bus.mapper.parsing.SqlSource;
 public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
-     * Constructs a new ConditionHandler instance.
+     * Initializes the handler that evaluates mapper feature conditions against runtime properties.
      */
     public ConditionHandler() {
         // No initialization required.
@@ -154,6 +154,15 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
             }
 
             String datasourceKey = key;
+            if (!enabled(datasourceKey, currentProperties)) {
+                Logger.debug(
+                        false,
+                        "Mapper",
+                        "Datasource configuration is disabled: scope={}, datasource={}",
+                        scope(),
+                        datasourceKey);
+                return null;
+            }
             DerivedConfigKey cacheKey = new DerivedConfigKey(scope(), datasourceKey, currentProperties);
             C derived = derivedConfigCache.computeIfAbsent(
                     cacheKey,
@@ -248,7 +257,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
      * Get provider from properties for the specified type.
      *
      * @param <P>           the provider type
-     * @param properties    the properties
+     * @param properties    mapper settings containing condition feature entries
      * @param providerClass the provider class
      * @return the provider instance, or null if not found
      */
@@ -261,6 +270,17 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
             return providerClass.cast(object);
         }
         return null;
+    }
+
+    /**
+     * Tests whether this handler is enabled for the current datasource.
+     *
+     * @param datasourceKey current datasource key
+     * @param properties    flattened mapper properties
+     * @return {@code true} by default
+     */
+    protected boolean enabled(String datasourceKey, Properties properties) {
+        return true;
     }
 
     /**

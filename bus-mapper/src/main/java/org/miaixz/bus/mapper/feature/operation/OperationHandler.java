@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.operation;
 
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
@@ -33,6 +34,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.mapper.handler.MapperHandler;
 
@@ -53,7 +56,7 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
 public class OperationHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
     /**
-     * Constructs a new OperationHandler instance.
+     * Initializes the SQL operation handler that classifies statements before mapper processing.
      */
     public OperationHandler() {
         // No initialization required.
@@ -99,6 +102,23 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
     private boolean strictMode = true;
 
     /**
+     * Flattened datasource-scoped operation configuration.
+     */
+    private Properties properties;
+
+    /**
+     * Installs flattened mapper configuration used for per-datasource safety settings.
+     *
+     * @param properties flattened mapper configuration
+     * @return {@code true} when configuration is available
+     */
+    @Override
+    public boolean setProperties(Properties properties) {
+        this.properties = properties;
+        return properties != null;
+    }
+
+    /**
      * Returns the execution order for the operation safety handler in the mapper interceptor chain.
      *
      * @return the handler order value
@@ -116,6 +136,9 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
      */
     @Override
     public void prepare(StatementHandler statementHandler) {
+        if (!currentEnabled()) {
+            return;
+        }
         MetaObject metaObject = getMetaObject(statementHandler);
         MappedStatement ms = getMappedStatement(metaObject);
         SqlCommandType sct = ms.getSqlCommandType();
@@ -149,7 +172,7 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
         }
 
         // In strict mode, check for trivial WHERE clauses
-        if (strictMode) {
+        if (currentStrictMode()) {
             if (TRIVIAL_WHERE_PATTERN.matcher(normalizedSql).find()
                     || NULL_WHERE_PATTERN.matcher(normalizedSql).find()) {
                 String operation = commandType == SqlCommandType.DELETE ? "deletion" : "update operation";
@@ -184,6 +207,50 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
         sql = WHITESPACE_PATTERN.matcher(sql).replaceAll(Symbol.SPACE);
 
         return sql.trim();
+    }
+
+    /**
+     * Resolves whether operation protection is enabled for the current datasource.
+     *
+     * @return {@code true} when the current datasource enables protection
+     */
+    private boolean currentEnabled() {
+        return Boolean.parseBoolean(find(Args.PROP_ENABLED, "true"));
+    }
+
+    /**
+     * Resolves strict-mode behavior for the current datasource.
+     *
+     * @return {@code true} when trivial WHERE clauses must be rejected
+     */
+    private boolean currentStrictMode() {
+        return Boolean.parseBoolean(find(Args.OPERATION_STRICT_MODE, String.valueOf(strictMode)));
+    }
+
+    /**
+     * Finds one operation setting using datasource, shared and legacy-default precedence.
+     *
+     * @param name     setting name
+     * @param fallback fallback value when no configured value exists
+     * @return resolved setting value
+     */
+    private String find(String name, String fallback) {
+        if (properties == null) {
+            return fallback;
+        }
+        String key = Holder.getKey();
+        String suffix = Symbol.DOT + Args.OPERATION_KEY + Symbol.DOT + name;
+        String value = properties.getProperty(key + suffix);
+        if (value == null) {
+            value = properties.getProperty(Args.SHARED_KEY + suffix);
+        }
+        if (value == null && Holder.getDefault() != null) {
+            value = properties.getProperty(Holder.getDefault() + suffix);
+        }
+        if (value == null) {
+            value = properties.getProperty("default" + suffix, fallback);
+        }
+        return value;
     }
 
 }

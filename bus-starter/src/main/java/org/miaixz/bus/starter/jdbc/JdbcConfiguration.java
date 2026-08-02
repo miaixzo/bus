@@ -20,15 +20,15 @@
 package org.miaixz.bus.starter.jdbc;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
-import jakarta.annotation.Resource;
-
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
@@ -39,24 +39,18 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import org.miaixz.bus.core.center.map.BeanMap;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for data sources.
+ * Configures dynamic JDBC data sources and annotation-driven routing.
  * <p>
  * This class configures the primary data source and any additional data sources, setting up a {@link DynamicDataSource}
  * to handle routing. It also provides support for encrypted credentials and configures a transaction manager.
@@ -66,23 +60,24 @@ import org.miaixz.bus.spring.GeniusBuilder;
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
 @EnableConfigurationProperties(value = { JdbcProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.DATASOURCE, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = GeniusBuilder.JDBC, name = "enabled", havingValue = "true", matchIfMissing = false)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
-@Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {
 
     /**
-     * Constructs a new JdbcConfiguration instance.
+     * Bound jdbc configuration properties.
      */
-    public JdbcConfiguration() {
-        // No initialization required.
-    }
+    private final JdbcProperties properties;
 
     /**
-     * Injected JDBC configuration properties.
+     * Stores the data-source definitions used to create dynamic JDBC routing infrastructure.
+     *
+     * @param properties bound configuration properties
      */
-    @Resource
-    JdbcProperties properties;
+    public JdbcConfiguration(JdbcProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Aliases for mapping common data source properties.
@@ -96,6 +91,18 @@ public class JdbcConfiguration {
     }
 
     /**
+     * Creates dynamic data source routing advice only after the routing data source is present.
+     *
+     * @return dynamic data source aspect
+     */
+    @Bean
+    @ConditionalOnBean(DynamicDataSource.class)
+    @ConditionalOnMissingBean(AspectjJdbcProxy.class)
+    public AspectjJdbcProxy aspectjJdbcProxy() {
+        return new AspectjJdbcProxy();
+    }
+
+    /**
      * Creates and configures the dynamic data source bean.
      * <p>
      * This method initializes the default data source and any additional data sources defined in the configuration. It
@@ -106,36 +113,21 @@ public class JdbcConfiguration {
      */
     @Bean
     @Primary
+    @ConditionalOnMissingBean(DataSource.class)
     public DynamicDataSource dataSource() {
-        Map<String, Object> defaultConfig = beanToMap(this.properties);
-        DataSource defaultDatasource = bind(defaultConfig);
-        Map<Object, Object> sourceMap = new HashMap<>();
-        sourceMap.put(this.properties.getName(), defaultDatasource);
-        DataSourceHolder.setKey(this.properties.getName());
+        DataSourceHolder.remove();
+        try {
+            Map<Object, Object> sourceMap = new LinkedHashMap<>();
+            this.properties.getDatasources().forEach((name, spec) -> sourceMap.put(name, bind(toMap(spec))));
 
-        if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
-            Logger.info(false, "Starter", "DataSource enable support for multiple data sources");
-            List<JdbcProperties> list = this.properties.getMulti();
-            for (JdbcProperties prop : list) {
-                Map<String, Object> config = beanToMap(prop);
-                if ((boolean) config.getOrDefault("extend", Boolean.TRUE)) {
-                    Map<String, Object> mergedConfig = new HashMap<>(defaultConfig);
-                    mergedConfig.putAll(config);
-                    config = mergedConfig;
-                }
-                sourceMap.put(config.get("name").toString(), bind(config));
-            }
+            DynamicDataSource dataSource = new DynamicDataSource();
+            dataSource.setPrimary(this.properties.getPrimary());
+            dataSource.setTargetDataSources(sourceMap);
+            return dataSource;
+        } finally {
+            // Bean initialization must never leave a routing key on the bootstrap thread.
+            DataSourceHolder.remove();
         }
-
-        DynamicDataSource dataSource = DynamicDataSource.getInstance();
-        dataSource.setDefaultTargetDataSource(defaultDatasource);
-        dataSource.setTargetDataSources(sourceMap);
-        dataSource.afterPropertiesSet();
-
-        // Set the default data source name in the context holder
-        DataSourceHolder.setDefault(this.properties.getName());
-
-        return dataSource;
     }
 
     /**
@@ -145,6 +137,7 @@ public class JdbcConfiguration {
      * @return A {@link DataSourceTransactionManager} instance.
      */
     @Bean
+    @ConditionalOnMissingBean(type = "org.springframework.transaction.PlatformTransactionManager")
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
@@ -176,30 +169,16 @@ public class JdbcConfiguration {
      * is configured.
      * </p>
      *
-     * @param bean The bean to convert.
-     * @param <T>  The type of the bean.
+     * @param spec immutable data source specification to convert
      * @return A map representation of the bean's properties.
      */
-    private <T> Map<String, Object> beanToMap(T bean) {
-        Map<String, Object> map = new HashMap<>();
-        if (null != bean) {
-            BeanMap beanMap = BeanMap.of(bean);
-            for (String key : beanMap.keySet()) {
-                Object value = beanMap.get(key);
-                if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
-                    Logger.info(true, "Starter", "DataSource the database connection is securely enabled");
-                    if ("url".equals(key) || "username".equals(key) || "password".equals(key)) {
-                        value = Builder.decrypt(
-                                Algorithm.AES.getValue(),
-                                this.properties.getPrivateKey(),
-                                value.toString(),
-                                Charset.UTF_8);
-                        beanMap.put(key, value);
-                    }
-                }
-                map.put(StringKit.toString(key), value);
-            }
-        }
+    private Map<String, Object> toMap(JdbcProperties.DataSourceSpec spec) {
+        Map<String, Object> map = new HashMap<>(spec.properties());
+        map.put("url", spec.url());
+        map.put("username", spec.username());
+        map.put("password", spec.password());
+        map.put("driverClassName", spec.driverClassName());
+        map.put("type", spec.type());
         return map;
     }
 

@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Charter.Isolation;
 import org.miaixz.bus.mapper.Context;
 import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
@@ -126,8 +127,8 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
      * Resolves tenant configuration from properties for a specific datasource.
      *
      * @param datasourceKey the datasource key
-     * @param properties    the properties
-     * @param provider      the tenant provider
+     * @param properties    mapper settings containing shared and datasource-specific tenant entries
+     * @param provider      tenant identifier provider, or {@code null} to use {@link TenantContext}
      * @return the tenant configuration, or null if tenant feature is not configured
      */
     @Override
@@ -161,6 +162,21 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         String tablePrefix = properties.getProperty(
                 dsTablePrefix + Args.TABLE_PREFIX,
                 properties.getProperty(sharedTablePrefix + Args.TABLE_PREFIX, Normal.EMPTY));
+        String modeValue = properties.getProperty(
+                dsTenantPrefix + Args.TENANT_MODE,
+                properties.getProperty(sharedTenantPrefix + Args.TENANT_MODE, Isolation.COLUMN.name()));
+        Isolation mode = Isolation.valueOf(modeValue.trim().toUpperCase(java.util.Locale.ROOT));
+        String ignoreMappersStr = properties.getProperty(
+                dsTenantPrefix + Args.TENANT_IGNORE_MAPPERS,
+                properties.getProperty(sharedTenantPrefix + Args.TENANT_IGNORE_MAPPERS, Normal.EMPTY));
+        boolean enableSqlCache = Boolean.parseBoolean(
+                properties.getProperty(
+                        dsTenantPrefix + Args.TENANT_ENABLE_SQL_CACHE,
+                        properties.getProperty(sharedTenantPrefix + Args.TENANT_ENABLE_SQL_CACHE, "true")));
+        boolean required = Boolean.parseBoolean(
+                properties.getProperty(
+                        dsTenantPrefix + Args.TENANT_REQUIRED,
+                        properties.getProperty(sharedTenantPrefix + Args.TENANT_REQUIRED, "false")));
 
         Logger.debug(
                 false,
@@ -171,6 +187,8 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
                 dsTenantPrefix + Args.PROP_IGNORE);
 
         List<String> ignoreTables = Arrays.stream(ignoreTablesStr.split(Symbol.COMMA)).map(String::trim)
+                .filter(ObjectKit::isNotEmpty).collect(Collectors.toList());
+        List<String> ignoreMappers = Arrays.stream(ignoreMappersStr.split(Symbol.COMMA)).map(String::trim)
                 .filter(ObjectKit::isNotEmpty).collect(Collectors.toList());
 
         Logger.debug(
@@ -189,8 +207,8 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
             provider = TenantContext::getTenantId;
         }
 
-        return TenantConfig.builder().column(column).ignore(ignoreTables).tablePrefix(tablePrefix).provider(provider)
-                .build();
+        return TenantConfig.builder().mode(mode).column(column).ignore(ignoreTables).ignoreMappers(ignoreMappers)
+                .tablePrefix(tablePrefix).enableSqlCache(enableSqlCache).required(required).provider(provider).build();
     }
 
     /**
@@ -206,9 +224,9 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
     /**
      * Checks if query should proceed with tenant filtering.
      *
-     * @param executor      the executor
+     * @param executor      MyBatis executor associated with the query
      * @param ms            the mapped statement
-     * @param parameter     the parameter
+     * @param parameter     mapper method parameter object used by the SQL statement
      * @param rowBounds     the row bounds
      * @param resultHandler the result handler
      * @param boundSql      the bound SQL
@@ -249,9 +267,9 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
      * Processes query result and applies tenant filtering.
      *
      * @param result        the query result
-     * @param executor      the executor
+     * @param executor      MyBatis executor associated with the query
      * @param ms            the mapped statement
-     * @param parameter     the parameter
+     * @param parameter     mapper method parameter object used by the SQL statement
      * @param rowBounds     the row bounds
      * @param resultHandler the result handler
      * @param boundSql      the bound SQL
@@ -272,9 +290,9 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
     /**
      * Processes update operation and applies tenant filtering.
      *
-     * @param executor  the executor
+     * @param executor  MyBatis executor associated with the update
      * @param ms        the mapped statement
-     * @param parameter the parameter
+     * @param parameter mapper method parameter object used by the SQL statement
      */
     @Override
     public void update(Executor executor, MappedStatement ms, Object parameter) {
@@ -351,10 +369,10 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         // Only validate tenant ID when we actually need to add it to SQL
         String tenantId = currentConfig.getProvider().getTenantId();
         if (tenantId == null || tenantId.isEmpty()) {
-            // Throw exception without SQL details to avoid duplicate logging
-            throw new IllegalStateException("Tenant ID is required but not found. "
-                    + "Please set tenant ID using TenantContext.setTenantId() before executing database operations. "
-                    + "Mapper: " + mapperId);
+            if (currentConfig.isRequired()) {
+                throw new MissingTenantException();
+            }
+            return;
         }
 
         // Rewrite SQL with actual tenant ID
@@ -403,7 +421,8 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         }
         String whereClause = lowerSql.substring(whereIndex);
         String column = tenantColumn.toLowerCase(java.util.Locale.ROOT);
-        return whereClause.contains(column + " =") || whereClause.contains(column + "=");
+        return whereClause.contains(column + Symbol.SPACE + Symbol.EQUAL)
+                || whereClause.contains(column + Symbol.EQUAL);
     }
 
     /**

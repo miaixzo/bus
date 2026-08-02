@@ -19,12 +19,6 @@
 */
 package org.miaixz.bus.starter.office;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.stereotype.Component;
-
 import org.miaixz.bus.office.Provider;
 import org.miaixz.bus.office.Registry;
 
@@ -37,11 +31,7 @@ import org.miaixz.bus.office.Registry;
  * @author Kimi Liu
  * @since Java 21+
  */
-@Component
-@ConditionalOnClass(name = "org.miaixz.bus.office.Provider")
-@ConditionalOnBean(type = "org.miaixz.bus.office.Provider")
-@RequiredArgsConstructor
-public class OfficeService {
+public final class OfficeService {
 
     /**
      * Constructs the OfficeService and registers the local and online providers.
@@ -50,12 +40,13 @@ public class OfficeService {
      * These providers are then registered with the global {@link Registry}.
      * </p>
      *
+     * @param registry       The registry owned by the current application context.
      * @param localProvider  The provider for local document conversions.
      * @param onlineProvider The provider for online or remote document conversions.
      */
-    public OfficeService(Provider localProvider, Provider onlineProvider) {
-        Registry.getInstance().register(Registry.LOCAL, localProvider);
-        Registry.getInstance().register(Registry.ONLINE, onlineProvider);
+    public OfficeService(Registry registry, Provider localProvider, Provider onlineProvider) {
+        registry.register(Registry.LOCAL, localProvider);
+        registry.register(Registry.ONLINE, onlineProvider);
     }
 
 }

@@ -19,46 +19,75 @@
 */
 package org.miaixz.bus.starter.i18n;
 
+import java.util.LinkedHashSet;
+
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for internationalization (i18n) resource bundles.
+ * Immutable internationalization resource bundle properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(GeniusBuilder.I18N)
-public class I18nProperties {
+public final class I18nProperties {
 
     /**
-     * Constructs a new I18nProperties instance.
+     * Whether the i18n integration is enabled.
      */
-    public I18nProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * Character encoding used when loading message bundles.
+     */
+    private final String defaultEncoding;
+    /**
+     * Ordered message bundle base names searched by Spring.
+     */
+    private final String[] baseNames;
+
+    /**
+     * Normalizes message bundle names and applies the default encoding used by Spring's message source.
+     *
+     * @param enabled         whether i18n integration is enabled
+     * @param defaultEncoding resource bundle encoding
+     * @param baseNames       ordered resource bundle base names
+     */
+    public I18nProperties(@DefaultValue("false") boolean enabled, @DefaultValue("UTF-8") String defaultEncoding,
+            @DefaultValue("messages") String[] baseNames) {
+        LinkedHashSet<String> normalized = new LinkedHashSet<>();
+        if (baseNames != null) {
+            for (String baseName : baseNames) {
+                String value = baseName == null ? Normal.EMPTY : baseName.trim();
+                if (value.isEmpty()) {
+                    throw new IllegalArgumentException("bus.i18n.base-names must not contain blank entries");
+                }
+                normalized.add(value);
+            }
+        }
+        if (normalized.isEmpty()) {
+            normalized.add("messages");
+        }
+        this.enabled = enabled;
+        this.defaultEncoding = defaultEncoding;
+        this.baseNames = normalized.toArray(String[]::new);
     }
 
     /**
-     * The default character encoding for the message bundles. If not specified, the system's default encoding will be
-     * used. It is recommended to set this to UTF-8.
-     * <p>
-     * Kept for configuration compatibility. The current Spring adapter resolves messages through
-     * {@link org.miaixz.bus.core.lang.I18n}, which delegates to JDK {@code ResourceBundle}; this value is not applied
-     * by the starter-side message source.
+     * Returns the normalized immutable message bundle base-name list.
+     *
+     * @return a defensive copy of ordered bundle base names
      */
-    private String defaultEncoding = "UTF-8";
-
-    /**
-     * An array of base names for the resource bundles. Each base name corresponds to a set of property files. For
-     * example, a base name of "messages" would correspond to files like {@code messages.properties},
-     * {@code messages_en_US.properties}, etc.
-     */
-    private String[] baseNames = { "messages" };
+    public String[] getBaseNames() {
+        return baseNames.clone();
+    }
 
 }

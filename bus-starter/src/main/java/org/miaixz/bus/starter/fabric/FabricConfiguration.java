@@ -19,15 +19,17 @@
 */
 package org.miaixz.bus.starter.fabric;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration for fabric communication services.
+ * Configures TCP and WebSocket fabric communication services.
  * <p>
  * This class enables {@link FabricProperties} and creates protocol quick-service beans for configured fabric server
  * capabilities.
@@ -36,14 +38,23 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { FabricProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.FABRIC, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.fabric.Fabric")
+@ConditionalOnProperty(prefix = GeniusBuilder.FABRIC, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class FabricConfiguration {
 
     /**
-     * Constructs a new FabricConfiguration instance.
+     * Bound fabric configuration properties.
      */
-    public FabricConfiguration() {
-        // No initialization required.
+    private final FabricProperties properties;
+
+    /**
+     * Stores the transport properties used to construct TCP and WebSocket services.
+     *
+     * @param properties bound configuration properties
+     */
+    public FabricConfiguration(FabricProperties properties) {
+        this.properties = properties;
     }
 
     /**
@@ -53,15 +64,14 @@ public class FabricConfiguration {
      * only created when no other socket quick service bean is already present.
      * </p>
      *
-     * @param properties fabric configuration properties
      * @return socket quick service
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(SocketQuickService.class)
     @ConditionalOnProperty(prefix = GeniusBuilder.FABRIC
             + ".socket", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public SocketQuickService socketQuickService(final FabricProperties properties) {
-        return new SocketQuickService(properties);
+    public SocketQuickService socketQuickService() {
+        return new SocketQuickService(this.properties);
     }
 
     /**
@@ -71,14 +81,14 @@ public class FabricConfiguration {
      * is only created when the WebSocket service is explicitly enabled.
      * </p>
      *
-     * @param properties fabric configuration properties
      * @return WebSocket quick service
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = GeniusBuilder.FABRIC + ".websocket", name = "enabled", havingValue = "true")
-    public WebSocketQuickService webSocketQuickService(final FabricProperties properties) {
-        return new WebSocketQuickService(properties);
+    @ConditionalOnMissingBean(WebSocketQuickService.class)
+    @ConditionalOnProperty(prefix = GeniusBuilder.FABRIC
+            + ".websocket", name = "enabled", havingValue = "true", matchIfMissing = false)
+    public WebSocketQuickService webSocketQuickService() {
+        return new WebSocketQuickService(this.properties);
     }
 
 }

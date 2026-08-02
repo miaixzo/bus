@@ -19,30 +19,29 @@
 */
 package org.miaixz.bus.starter.auth;
 
-import jakarta.annotation.Resource;
-
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-import org.miaixz.bus.auth.cache.AuthCache;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
+import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Auto-configuration class for authorization, responsible for setting up authorization-related beans.
+ * Configures authorization services and protected-method resolution.
  * <p>
  * This class creates and configures the following main components:
  * <ul>
  * <li>{@link AuthService} - The authorization service provider factory for creating various third-party authorization
  * services.</li>
- * <li>{@link CacheX} - The authorization cache implementation, using a dedicated auth cache, the shared default cache,
- * or {@link AuthCache} as fallback.</li>
+ * <li>{@link CacheX} - The context-owned authorization cache implementation.</li>
  * </ul>
  * <p>
  * <strong>Configuration Example (in {@code application.yml}):</strong>
@@ -70,22 +69,36 @@ import org.miaixz.bus.spring.GeniusBuilder;
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { AuthProperties.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.AUTH, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnClass(name = "org.miaixz.bus.auth.cache.AuthCache")
+@ConditionalOnProperty(prefix = GeniusBuilder.AUTH, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class AuthConfiguration {
 
     /**
-     * Constructs a new AuthConfiguration instance.
+     * Bound auth configuration properties.
      */
-    public AuthConfiguration() {
-        // No initialization required.
+    private final AuthProperties properties;
+
+    /**
+     * Stores the properties used to construct authentication providers and services.
+     *
+     * @param properties authorization properties
+     */
+    public AuthConfiguration(AuthProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * Injected authorization configuration properties, containing settings for various authorization components.
-     * Automatically injected via the {@link EnableConfigurationProperties} annotation.
+     * Creates the MVC adapter that resolves the current authenticated principal.
+     *
+     * @param contextBuilder context-scoped authentication state
+     * @return the Auth method argument resolver
      */
-    @Resource
-    AuthProperties properties;
+    @Bean
+    @ConditionalOnMissingBean(AuthMethodResolver.class)
+    public AuthMethodResolver authMethodResolver(ContextBuilder contextBuilder) {
+        return new AuthMethodResolver(contextBuilder);
+    }
 
     /**
      * Creates the authorization service provider factory bean.
@@ -111,25 +124,18 @@ public class AuthConfiguration {
      * <ul>
      * <li>If {@code bus.auth.cache.*} configures a concrete backend type, create an auth-specific cache through
      * {@link Factory}.</li>
-     * <li>If {@code bus.auth.cache.type=default} or no auth-specific backend is configured, reuse the shared
-     * {@code defaultCache} bean when available.</li>
-     * <li>If neither auth nor global cache is configured, fall back to {@link AuthCache#INSTANCE}.</li>
+     * <li>If no auth-specific backend is configured, create a context-owned in-memory cache.</li>
      * </ul>
      *
-     * @param defaultCacheProvider shared default cache provider
-     * @param factoryProvider      optional shared cache factory provider
      * @return authorization cache implementation
      */
     @Bean("authCache")
     @ConditionalOnMissingBean(name = "authCache")
-    public CacheX<String, Object> authCache(
-            @Qualifier("defaultCache") ObjectProvider<CacheX<String, Object>> defaultCacheProvider,
-            ObjectProvider<Factory> factoryProvider) {
+    public CacheX<String, Object> authCache() {
         if (hasAuthBackend()) {
-            return factoryProvider.getIfAvailable(Factory::new).initialize(this.properties.getCache());
+            return new Factory().initialize(this.properties.getCache());
         }
-        CacheX<String, Object> defaultCache = defaultCacheProvider.getIfAvailable();
-        return defaultCache != null ? defaultCache : AuthCache.INSTANCE;
+        return new MemoryCache<>();
     }
 
     /**

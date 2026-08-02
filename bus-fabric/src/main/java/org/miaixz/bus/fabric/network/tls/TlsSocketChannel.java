@@ -446,4 +446,5 @@ public final class TlsSocketChannel implements Conduit {
             return 0;
         return (int) Math.min(Integer.MAX_VALUE, Math.max(1L, value.toMillis()));
     }
+
 }

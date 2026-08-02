@@ -19,269 +19,375 @@
 */
 package org.miaixz.bus.starter.mongo;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import java.time.Duration;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
 import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterType;
 
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configuration properties for MongoDB, mirroring a subset of {@link com.mongodb.MongoClientSettings}.
+ * Immutable properties used only by Bus Mongo client-settings customizers.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Getter
-@Setter
+@Validated
 @ConfigurationProperties(prefix = GeniusBuilder.MONGO)
-public class MongoProperties {
+public final class MongoProperties {
 
     /**
-     * Constructs a new MongoProperties instance.
+     * Whether the mongo integration is enabled.
      */
-    public MongoProperties() {
-        // No initialization required.
+    private final boolean enabled;
+    /**
+     * MongoDB client socket timeout and buffer settings.
+     */
+    private final Socket socket;
+    /**
+     * Socket settings used by the server heartbeat monitor.
+     */
+    private final Socket heartbeatSocket;
+    /**
+     * Cluster discovery and server-selection settings.
+     */
+    private final Cluster cluster;
+    /**
+     * Server heartbeat frequency settings.
+     */
+    private final Server server;
+    /**
+     * Connection pool capacity and lifecycle settings.
+     */
+    private final Connection connectionPool;
+    /**
+     * TLS activation and hostname validation settings.
+     */
+    private final Ssl ssl;
+
+    /**
+     * Creates Mongo customizer properties.
+     *
+     * @param enabled         whether the feature is enabled
+     * @param socket          MongoDB socket settings
+     * @param heartbeatSocket heartbeat socket
+     * @param cluster         MongoDB cluster settings
+     * @param server          MongoDB server settings
+     * @param connectionPool  connection pool
+     * @param ssl             MongoDB TLS settings
+     */
+    public MongoProperties(@DefaultValue("false") boolean enabled, Socket socket, Socket heartbeatSocket,
+            Cluster cluster, Server server, Connection connectionPool, Ssl ssl) {
+        this.enabled = enabled;
+        this.socket = socket;
+        this.heartbeatSocket = heartbeatSocket;
+        this.cluster = cluster;
+        this.server = server;
+        this.connectionPool = connectionPool;
+        this.ssl = ssl;
     }
 
     /**
-     * The settings for the network socket.
-     */
-    @NestedConfigurationProperty
-    private Socket socket;
-
-    /**
-     * The settings for the heartbeat network socket.
-     */
-    @NestedConfigurationProperty
-    private Socket heartbeatSocket;
-
-    /**
-     * The settings for the cluster.
-     */
-    @NestedConfigurationProperty
-    private Cluster cluster;
-
-    /**
-     * The settings for monitoring each server in the cluster.
-     */
-    @NestedConfigurationProperty
-    private Server server;
-
-    /**
-     * The settings for the connection pool to a MongoDB server.
-     */
-    @NestedConfigurationProperty
-    private Connection connectionPool;
-
-    /**
-     * The settings for connecting to MongoDB via SSL/TLS.
-     */
-    @NestedConfigurationProperty
-    private Ssl ssl;
-
-    /**
-     * Represents settings for the connection pool to a MongoDB server.
+     * Socket customizer settings.
      *
-     * @see com.mongodb.connection.ConnectionPoolSettings
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param connectTimeout    connect timeout
+     * @param readTimeout       read timeout
+     * @param receiveBufferSize receive buffer size
+     * @param sendBufferSize    send buffer size
      */
-    @Data
-    public static class Connection {
+    public record Socket(@DefaultValue("10s") Duration connectTimeout, @DefaultValue("10s") Duration readTimeout,
+            @DefaultValue("0") int receiveBufferSize, @DefaultValue("0") int sendBufferSize) {
 
         /**
-         * Constructs a new {@code Connection} instance.
+         * Validates socket settings.
          */
-        public Connection() {
-            // No initialization required.
+        public Socket {
+            positive(connectTimeout, "socket.connect-timeout", false);
+            positive(readTimeout, "socket.read-timeout", false);
+            if (receiveBufferSize < 0 || sendBufferSize < 0) {
+                throw new IllegalArgumentException("Mongo socket buffer sizes must not be negative");
+            }
         }
 
         /**
-         * The maximum number of connections in the pool. Default is 100.
+         * Exposes the socket read timeout in milliseconds.
+         *
+         * @return read timeout milliseconds
          */
-        private int maxSize = 100;
+        public long getReadTimeoutMilliSeconds() {
+            return readTimeout.toMillis();
+        }
 
         /**
-         * The minimum number of connections in the pool.
+         * Exposes the socket connection timeout in milliseconds.
+         *
+         * @return connect timeout milliseconds
          */
-        private int minSize;
+        public long getConnectTimeoutMilliSeconds() {
+            return connectTimeout.toMillis();
+        }
 
         /**
-         * The maximum time a thread will wait for a connection to become available. Default is 2 minutes.
+         * Exposes the requested socket receive-buffer capacity in bytes.
+         *
+         * @return receive buffer size
          */
-        private long maxWaitTimeMilliSeconds = 1000 * 60 * 2;
+        public int getReceiveBufferSize() {
+            return receiveBufferSize;
+        }
 
         /**
-         * The maximum lifetime of a connection in the pool. An idle or in-use connection will be closed when it exceeds
-         * this time.
+         * Exposes the requested socket send-buffer capacity in bytes.
+         *
+         * @return send buffer size
          */
-        private long maxConnectionLifeTimeMilliSeconds;
-
-        /**
-         * The maximum time a connection can remain idle in the pool before being removed.
-         */
-        private long maxConnectionIdleTimeMilliSeconds;
-
-        /**
-         * The initial delay before the first run of the maintenance task.
-         */
-        private long maintenanceInitialDelayMilliSeconds;
-
-        /**
-         * The frequency at which the maintenance task runs. Default is 1 minute.
-         */
-        private long maintenanceFrequencyMilliSeconds = MILLISECONDS.convert(1, MINUTES);
-
+        public int getSendBufferSize() {
+            return sendBufferSize;
+        }
     }
 
     /**
-     * Represents settings for connecting to MongoDB via SSL/TLS.
+     * Cluster customizer settings.
      *
-     * @see com.mongodb.connection.SslSettings
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param mode                   configured operating mode
+     * @param requiredClusterType    required cluster type
+     * @param requiredReplicaSetName required replica set name
+     * @param localThreshold         local threshold
+     * @param serverSelectionTimeout server selection timeout
      */
-    @Data
-    public static class Ssl {
+    public record Cluster(ClusterConnectionMode mode, @DefaultValue("UNKNOWN") ClusterType requiredClusterType,
+            String requiredReplicaSetName, @DefaultValue("15ms") Duration localThreshold,
+            @DefaultValue("30s") Duration serverSelectionTimeout) {
 
         /**
-         * Constructs a new {@code Ssl} instance.
+         * Validates cluster timing settings.
          */
-        public Ssl() {
-            // No initialization required.
+        public Cluster {
+            positive(localThreshold, "cluster.local-threshold", false);
+            positive(serverSelectionTimeout, "cluster.server-selection-timeout", false);
         }
 
         /**
-         * Whether SSL/TLS is enabled.
+         * Exposes the MongoDB cluster connection mode.
+         *
+         * @return connection mode
          */
-        private boolean enabled;
+        public ClusterConnectionMode getMode() {
+            return mode;
+        }
 
         /**
-         * Whether to allow invalid hostnames. If true, the driver will not perform hostname verification.
+         * Exposes the server type required during cluster discovery.
+         *
+         * @return required cluster type
          */
-        private boolean invalidHostNameAllowed;
+        public ClusterType getRequiredClusterType() {
+            return requiredClusterType;
+        }
 
+        /**
+         * Exposes the replica-set name required during cluster discovery.
+         *
+         * @return required replica set
+         */
+        public String getRequiredReplicaSetName() {
+            return requiredReplicaSetName;
+        }
+
+        /**
+         * Exposes the cluster latency threshold in milliseconds.
+         *
+         * @return local threshold milliseconds
+         */
+        public long getLocalThresholdMilliSeconds() {
+            return localThreshold.toMillis();
+        }
+
+        /**
+         * Exposes the server-selection timeout in milliseconds.
+         *
+         * @return selection timeout milliseconds
+         */
+        public long getServerSelectionTimeoutMilliSeconds() {
+            return serverSelectionTimeout.toMillis();
+        }
     }
 
     /**
-     * Represents settings for the cluster.
+     * Server-monitor customizer settings.
      *
-     * @see com.mongodb.connection.ClusterSettings
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param heartbeatFrequency    heartbeat frequency
+     * @param minHeartbeatFrequency min heartbeat frequency
      */
-    @Data
-    public static class Cluster {
+    public record Server(@DefaultValue("10s") Duration heartbeatFrequency,
+            @DefaultValue("500ms") Duration minHeartbeatFrequency) {
 
         /**
-         * Constructs a new {@code Cluster} instance.
+         * Validates heartbeat intervals.
          */
-        public Cluster() {
-            // No initialization required.
+        public Server {
+            positive(heartbeatFrequency, "server.heartbeat-frequency", false);
+            positive(minHeartbeatFrequency, "server.min-heartbeat-frequency", false);
         }
 
         /**
-         * The mode for connecting to the cluster.
+         * Exposes the regular server heartbeat interval in milliseconds.
+         *
+         * @return heartbeat interval milliseconds
          */
-        private ClusterConnectionMode mode;
+        public long getHeartbeatFrequencyMilliSeconds() {
+            return heartbeatFrequency.toMillis();
+        }
 
         /**
-         * The required type of the cluster. Default is UNKNOWN.
+         * Exposes the minimum server heartbeat interval in milliseconds.
+         *
+         * @return minimum heartbeat interval milliseconds
          */
-        private ClusterType requiredClusterType = ClusterType.UNKNOWN;
-
-        /**
-         * The required name of the replica set.
-         */
-        private String requiredReplicaSetName;
-
-        /**
-         * The acceptable latency window for selecting a server from multiple suitable servers. Default is 15ms.
-         */
-        private long localThresholdMilliSeconds = 15;
-
-        /**
-         * The timeout for server selection. Default is 30 seconds.
-         */
-        private long serverSelectionTimeoutMilliSeconds = 30000;
-
+        public long getMinHeartbeatFrequencyMilliSeconds() {
+            return minHeartbeatFrequency.toMillis();
+        }
     }
 
     /**
-     * Represents settings for monitoring each server in the cluster.
+     * Connection-pool customizer settings.
      *
-     * @see com.mongodb.connection.ServerSettings
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param maxSize                 max size
+     * @param minSize                 min size
+     * @param maxWaitTime             max wait time
+     * @param maxConnectionLifeTime   max connection life time
+     * @param maxConnectionIdleTime   max connection idle time
+     * @param maintenanceInitialDelay maintenance initial delay
+     * @param maintenanceFrequency    maintenance frequency
      */
-    @Data
-    public static class Server {
+    public record Connection(@DefaultValue("100") int maxSize, @DefaultValue("0") int minSize,
+            @DefaultValue("2m") Duration maxWaitTime, @DefaultValue("0") Duration maxConnectionLifeTime,
+            @DefaultValue("0") Duration maxConnectionIdleTime, @DefaultValue("0") Duration maintenanceInitialDelay,
+            @DefaultValue("1m") Duration maintenanceFrequency) {
 
         /**
-         * Constructs a new {@code Server} instance.
+         * Validates pool bounds and durations.
          */
-        public Server() {
-            // No initialization required.
+        public Connection {
+            if (maxSize <= 0 || minSize < 0 || minSize > maxSize) {
+                throw new IllegalArgumentException("Mongo pool sizes require 0 <= min-size <= max-size and max > 0");
+            }
+            positive(maxWaitTime, "connection-pool.max-wait-time", false);
+            positive(maxConnectionLifeTime, "connection-pool.max-connection-life-time", true);
+            positive(maxConnectionIdleTime, "connection-pool.max-connection-idle-time", true);
+            positive(maintenanceInitialDelay, "connection-pool.maintenance-initial-delay", true);
+            positive(maintenanceFrequency, "connection-pool.maintenance-frequency", false);
         }
 
         /**
-         * The frequency at which the driver sends a heartbeat to the server. Default is 10 seconds.
+         * Exposes the maximum number of connections retained by the pool.
+         *
+         * @return maximum pool size
          */
-        private long heartbeatFrequencyMilliSeconds = 10000;
+        public int getMaxSize() {
+            return maxSize;
+        }
 
         /**
-         * The minimum frequency for heartbeats. Default is 500ms.
+         * Exposes the minimum number of connections retained by the pool.
+         *
+         * @return minimum pool size
          */
-        private long minHeartbeatFrequencyMilliSeconds = 500;
+        public int getMinSize() {
+            return minSize;
+        }
 
+        /**
+         * Exposes the maximum connection-pool wait time in milliseconds.
+         *
+         * @return wait milliseconds
+         */
+        public long getMaxWaitTimeMilliSeconds() {
+            return maxWaitTime.toMillis();
+        }
+
+        /**
+         * Exposes the maximum pooled-connection lifetime in milliseconds.
+         *
+         * @return lifetime milliseconds
+         */
+        public long getMaxConnectionLifeTimeMilliSeconds() {
+            return maxConnectionLifeTime.toMillis();
+        }
+
+        /**
+         * Exposes the maximum pooled-connection idle time in milliseconds.
+         *
+         * @return idle milliseconds
+         */
+        public long getMaxConnectionIdleTimeMilliSeconds() {
+            return maxConnectionIdleTime.toMillis();
+        }
+
+        /**
+         * Exposes the initial connection-pool maintenance delay in milliseconds.
+         *
+         * @return maintenance delay milliseconds
+         */
+        public long getMaintenanceInitialDelayMilliSeconds() {
+            return maintenanceInitialDelay.toMillis();
+        }
+
+        /**
+         * Exposes the connection-pool maintenance interval in milliseconds.
+         *
+         * @return maintenance frequency milliseconds
+         */
+        public long getMaintenanceFrequencyMilliSeconds() {
+            return maintenanceFrequency.toMillis();
+        }
     }
 
     /**
-     * Represents settings for the network socket.
+     * Immutable TLS settings for MongoDB client connections.
      *
-     * @see com.mongodb.connection.SocketSettings
-     * @author Kimi Liu
-     * @since Java 21+
+     * @param enabled                whether the feature is enabled
+     * @param invalidHostNameAllowed invalid host name allowed
      */
-    @Data
-    public static class Socket {
+    public record Ssl(boolean enabled, boolean invalidHostNameAllowed) {
 
         /**
-         * Constructs a new {@code Socket} instance.
+         * Indicates whether TLS is enabled for MongoDB connections.
+         *
+         * @return whether TLS is enabled
          */
-        public Socket() {
-            // No initialization required.
+        public boolean isEnabled() {
+            return enabled;
         }
 
         /**
-         * The timeout for establishing a new socket connection. Default is 10 seconds.
+         * Indicates whether TLS certificate hostname mismatches are accepted.
+         *
+         * @return whether invalid hostnames are accepted
          */
-        private long connectTimeoutMilliSeconds = 10000;
+        public boolean isInvalidHostNameAllowed() {
+            return invalidHostNameAllowed;
+        }
+    }
 
-        /**
-         * The timeout for reading from a socket. Default is 10 seconds.
-         */
-        private long readTimeoutMilliSeconds = 10000;
-
-        /**
-         * The size of the socket receive buffer.
-         */
-        private int receiveBufferSize;
-
-        /**
-         * The size of the socket send buffer.
-         */
-        private int sendBufferSize;
-
+    /**
+     * Validates a non-negative or positive duration property.
+     *
+     * @param value       configured duration
+     * @param name        configuration property suffix
+     * @param zeroAllowed whether zero is accepted
+     */
+    private static void positive(Duration value, String name, boolean zeroAllowed) {
+        if (value == null || value.isNegative() || (!zeroAllowed && value.isZero())) {
+            throw new IllegalArgumentException("bus.mongo." + name + " has an invalid duration");
+        }
     }
 
 }

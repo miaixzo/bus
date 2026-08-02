@@ -20,7 +20,7 @@
 package org.miaixz.bus.starter.cache;
 
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.Objects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -29,10 +29,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Complex;
-import org.miaixz.bus.cache.Context;
-import org.miaixz.bus.cache.Module;
 import org.miaixz.bus.cache.magic.annotation.Cached;
 import org.miaixz.bus.cache.magic.annotation.CachedGet;
 import org.miaixz.bus.cache.magic.annotation.Invalid;
@@ -52,24 +49,18 @@ import org.miaixz.bus.proxy.invoker.InvocationInvoker;
 @Aspect
 public class AspectjCacheProxy {
 
+    /**
+     * Whether cache keys may contain complex expression fragments.
+     */
     private final Complex complex;
 
     /**
-     * Constructs a new cache proxy with a map of cache configurations.
+     * Constructs a cache proxy with the cache capability owned by the current configuration.
      *
-     * @param caches A map where the key is the cache name and the value is the {@link CacheX} instance.
+     * @param complex the configured cache capability
      */
-    public AspectjCacheProxy(Map<String, CacheX> caches) {
-        this(Context.newConfig(caches));
-    }
-
-    /**
-     * Constructs a new cache proxy with a pre-configured caching context.
-     *
-     * @param context The caching {@link Context} to be used.
-     */
-    public AspectjCacheProxy(Context context) {
-        this.complex = Module.instance(context);
+    public AspectjCacheProxy(Complex complex) {
+        this.complex = Objects.requireNonNull(complex, "complex");
     }
 
     /**

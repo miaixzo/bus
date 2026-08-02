@@ -127,15 +127,6 @@
       }
     },
     {
-      "type": "org.apache.ibatis.javassist.util.proxy.MethodFilter"
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.MethodHandler"
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.Proxy"
-    },
-    {
       "type": "org.apache.ibatis.javassist.util.proxy.ProxyFactory",
       "methods": [
         {
@@ -162,9 +153,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.apache.ibatis.javassist.util.proxy.ProxyObject"
     },
     {
       "type": "org.apache.ibatis.logging.commons.JakartaCommonsLoggingImpl",

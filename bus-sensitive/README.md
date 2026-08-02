@@ -1,687 +1,336 @@
-# 🔒 Bus Sensitive: Enterprise-Grade Data Masking Framework
+# bus-sensitive
 
-<p align="center">
-<strong>Comprehensive Sensitive Data Protection and Desensitization Solution</strong>
-</p>
+`bus-sensitive` is the Bus data-protection engine. It provides annotation-driven object masking, conditional and custom
+strategies, encryption/decryption processing, JSON output, deep-copy processing, and structured log sanitization. The
+module is framework-neutral: it owns protection algorithms, while Spring activation and Web advice belong to
+`bus-starter`.
 
------
+## Module responsibilities
 
-## 📖 Project Introduction
+The module provides two related but independent protection paths:
 
-**Bus Sensitive** is an enterprise-grade data masking and desensitization framework designed to protect sensitive information through customizable masking strategies. It provides comprehensive data protection with support for multiple built-in masking types and custom strategies, ensuring compliance with data privacy regulations while maintaining data usability.
+```text
+domain object -> Builder -> Provider -> Filter -> StrategyProvider -> protected object or JSON
 
-**Key Features:**
-- **Flexible Annotation-Based Configuration**: Simple annotations for field-level data masking
-- **Built-in Masking Strategies**: Pre-configured strategies for common sensitive data types
-- **Custom Strategy Support**: Extensible architecture for implementing custom masking logic
-- **Conditional Masking**: Apply masks based on runtime conditions
-- **Multiple Data Types**: Support for strings, collections, arrays, and complex objects
-- **Performance Optimized**: Minimal overhead with efficient processing
-- **Integration Friendly**: Works seamlessly with JSON serialization, database operations, and API responses
+log event -> Sanitizer -> bus-logger Operator -> protected arguments -> logging provider
+```
 
------
+It owns:
 
-## ✨ Core Features
+- field and type-level protection annotations;
+- built-in masking strategies;
+- conditional masking and custom strategy SPIs;
+- traversal context and recursive object processing;
+- optional cloned-result processing;
+- encryption/decryption selection through privacy annotations;
+- structured log key classification and recursive value sanitization.
 
-### 🎯 Comprehensive Data Protection
+It does not own:
 
-* **Multiple Data Types**: Supports masking of Chinese names, mobile phones, emails, ID cards, passwords, bank cards, addresses, and more
-* **Flexible Masking Modes**: Control which parts of data are masked (left, right, middle, custom)
-* **Conditional Processing**: Apply masking based on user roles, permissions, or other runtime conditions
-* **Nested Object Support**: Recursively process complex objects with multiple levels of nesting
+- Spring configuration properties or feature activation;
+- Servlet request/response advice;
+- logging backend selection;
+- storage of encryption keys;
+- application authorization decisions.
 
-### 🛡️ Built-in Masking Strategies
-
-| Strategy | Description | Example | Result |
-| :--- | :--- | :--- | :--- |
-| **Chinese Name** | Masks surname for 2-char names, middle chars for 3+ chars | 张三 | *三 |
-| **Mobile Phone** | Masks middle 4 digits | 18233583070 | 182****3070 |
-| **Email** | Masks username part | johndoe@example.com | joh***@example.com |
-| **ID Card** | Masks middle 10 digits (first 6, last 2 visible) | 110101199001011234 | 110101**********34 |
-| **Password** | Returns empty string | password123 | |
-| **Bank Card** | Masks middle digits | 6222021234567890 | 6222************7890 |
-| **Address** | Masks detailed information | 北京市朝阳区xxx街道 | 北京市朝阳区****** |
-
-### ⚡ Advanced Features
-
-* **Custom Masking Characters**: Choose any character for masking (default: *)
-* **Configurable Masking Length**: Control how many characters are visible
-* **Field-Specific Rules**: Apply different strategies to different fields
-* **Class-Level Configuration**: Enable/disable masking for entire classes
-* **Directional Processing**: Separate rules for input (encryption) and output (decryption/masking)
-* **Integration with Crypto Module**: Combined data masking and encryption support
-
------
-
-## 🚀 Quick Start
-
-### Maven Dependency
+## Dependency
 
 ```xml
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-sensitive</artifactId>
-    <version>8.x.x</version>
+    <version>${revision}</version>
 </dependency>
 ```
 
-### Basic Usage
+For automatic Spring MVC and logging integration, use `bus-starter` together with this module.
 
-#### 1. Define Entity with Sensitive Fields
+## Core model
+
+| Type | Responsibility |
+|---|---|
+| `Builder` | Static entry point and processing mode/direction constants. |
+| `Provider<T>` | Traverses and processes an object, optionally cloning it first. |
+| `Context` | Carries the current object, field, annotations, and processing state. |
+| `Filter` | Selects and applies field rules during traversal. |
+| `Registry` | Holds built-in masking providers and resolves annotation strategies. |
+| `StrategyProvider` | SPI for a masking transformation. |
+| `ConditionProvider` | SPI deciding whether a rule applies to the current context. |
+| `Sanitizer` | `bus-logger` operator for structured log values. |
+
+## Protection annotations
+
+| Annotation | Scope | Purpose |
+|---|---|---|
+| `@Sensitive` | Type or processing entry | Selects masking/security mode, direction, included fields, skipped fields, and nested traversal. |
+| `@Shield` | Field | Declares one masking rule and its visible-prefix/suffix behavior. |
+| `@NShield` | Field | Groups multiple `@Shield` rules and optional include/filter expressions. |
+| `@Privacy` | Field | Selects security processing such as encryption or decryption. |
+| `@Strategy` | Annotation type | Associates a custom annotation with a strategy provider. |
+| `@Condition` | Annotation type | Marks conditional protection metadata. |
+| `@Entry` | Annotation type | Marks a protection entry annotation. |
+
+### `@Sensitive` options
+
+| Attribute | Default | Meaning |
+|---|---|---|
+| `value` | `Builder.ALL` | Processing capability: masking, security, both, or neither. |
+| `stage` | `Builder.ALL` | Processing direction such as input or output. |
+| `field` | empty | Explicit field inclusion list. |
+| `skip` | empty | Fields excluded from processing. |
+| `inside` | `true` | Whether nested values are traversed. |
+
+Processing constants are:
+
+- `Builder.SENS`: masking only;
+- `Builder.SAFE`: encryption/decryption only;
+- `Builder.ALL`: masking and security processing;
+- `Builder.IN`: input/write direction;
+- `Builder.OUT`: output/read direction;
+- `Builder.NOTHING`: no processing;
+- `Builder.OVERALL`: complete traversal scope.
+
+### `@Shield` options
+
+| Attribute | Default | Meaning |
+|---|---|---|
+| `type` | `EnumValue.Masking.NONE` | Built-in masking strategy. |
+| `mode` | `EnumValue.Mode.MIDDLE` | Visible/masked placement mode. |
+| `shadow` | `*` | Replacement character or text. |
+| `fixedHeaderSize` | `0` | Fixed visible prefix length. |
+| `fixedTailorSize` | `3` | Fixed visible suffix length. |
+| `autoFixedPart` | `true` | Allows strategy-specific automatic visible lengths. |
+| `condition` | `ConditionProvider.class` | Optional runtime condition. |
+| `strategy` | `DafaultProvider.class` | Optional custom strategy implementation. |
+| `key` / `field` | empty | Rule-specific lookup metadata. |
+
+## Quick start
+
+### Define protected fields
 
 ```java
-import org.miaixz.bus.sensitive.magic.annotation.Shield;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
-@Data
-public class User {
+public class Account {
 
-    private Long id;
-
-    @Shield(type = EnumValue.Masking.CHINESE_NAME)
+    @Shield(type = EnumValue.Masking.NAME)
     private String name;
 
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE)
+    @Shield(type = EnumValue.Masking.MOBILE)
     private String mobile;
 
     @Shield(type = EnumValue.Masking.EMAIL)
     private String email;
 
-    @Shield(type = EnumValue.Masking.ID_CARD)
-    private String idCard;
+    @Shield(type = EnumValue.Masking.BANK_CARD)
+    private String bankCard;
 
-    @Shield(type = EnumValue.Masking.PASSWORD)
-    private String password;
 }
 ```
 
-#### 2. Apply Data Masking
+### Process an object
 
 ```java
 import org.miaixz.bus.sensitive.Builder;
 
-// Create user object
-User user = new User();
-user.setId(1L);
-user.setName("张三");
-user.setMobile("18233583070");
-user.setEmail("zhangsan@example.com");
-user.setIdCard("110101199001011234");
-user.setPassword("password123");
+Account account = loadAccount();
 
-// Apply masking
-User maskedUser = Builder.on(user);
+// Processes the supplied object graph.
+Account masked = Builder.on(account);
 
-System.out.println(maskedUser.getName());     // Output: *三
-System.out.println(maskedUser.getMobile());   // Output: 182****3070
-System.out.println(maskedUser.getEmail());    // Output: zha***@example.com
-System.out.println(maskedUser.getIdCard());   // Output: 110101**********34
-System.out.println(maskedUser.getPassword()); // Output: (empty string)
+// Clones first, then processes the cloned graph.
+Account safeCopy = Builder.on(account, true);
+
+// Processes and serializes the result.
+String json = Builder.json(account);
 ```
 
-#### 3. Serialize to JSON
+Use clone mode when the original object must remain unchanged. The object's complete graph still needs to be compatible
+with the module's clone and traversal rules.
+
+### Apply an explicit processing annotation
 
 ```java
-// Serialize to JSON with masking applied
-String json = Builder.json(user);
-System.out.println(json);
-// Output: {"id":1,"name":"*三","mobile":"182****3070",...}
+Sensitive policy = AccountView.class.getAnnotation(Sensitive.class);
+Account result = Builder.on(account, policy, true);
 ```
 
------
+The overload accepting an annotation is intended for infrastructure that has already resolved the effective policy.
+Normal domain code should prefer annotations on the protected model and the simpler entry points.
 
-## 📝 Usage Examples
+## Built-in masking strategies
 
-### 1. Basic Field Masking
+`Registry` initializes these `EnumValue.Masking` strategies:
+
+| Masking value | Provider | Typical data |
+|---|---|---|
+| `ADDRESS` | `AddressProvider` | Postal address. |
+| `BANK_CARD` | `BandCardProvider` | Bank card number. |
+| `CITIZENID` | `CitizenIdProvider` | Citizen identity number. |
+| `CNAPS_CODE` | `CnapsProvider` | Bank routing code. |
+| `DEFAUL` | `DafaultProvider` | General-purpose masking. |
+| `EMAIL` | `EmailProvider` | Email address. |
+| `MOBILE` | `MobileProvider` | Mobile number. |
+| `NAME` | `NameProvider` | Person name. |
+| `NONE` | `NoneProvider` | No masking. |
+| `PASSWORD` | `PasswordProvider` | Password or secret text. |
+| `PAY_SIGN_NO` | `CardProvider` | Payment signing identifier. |
+| `PHONE` | `PhoneProvider` | Telephone number. |
+
+The exact visible characters depend on the selected strategy and the `@Shield` options. Do not assume every strategy
+uses the same prefix and suffix lengths.
+
+## Custom strategy
+
+Implement `StrategyProvider` when a built-in masking type cannot express the rule:
 
 ```java
-@Data
-public class Customer {
-    @Shield(type = EnumValue.Masking.CHINESE_NAME)
-    private String customerName;
+import org.miaixz.bus.sensitive.Context;
+import org.miaixz.bus.sensitive.nimble.StrategyProvider;
 
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE)
-    private String phoneNumber;
+public final class ContractCodeProvider implements StrategyProvider {
 
-    @Shield(type = EnumValue.Masking.BANK_CARD)
-    private String bankAccount;
+    @Override
+    public Object build(Object value, Context context) {
+        if (value == null) {
+            return null;
+        }
+        String text = value.toString();
+        return text.length() <= 4 ? "****" : text.substring(0, 2) + "****" + text.substring(text.length() - 2);
+    }
+
 }
 ```
 
-### 2. Custom Masking Configuration
+Reference it from the field rule:
 
 ```java
-@Data
-public class Order {
-    // Use custom masking character
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE,
-            shadow = "#")
-    private String contactPhone;
-
-    // Custom visible character count
-    @Shield(type = EnumValue.Masking.ID_CARD,
-            fixedHeaderSize = 3,
-            fixedTailorSize = 4)
-    private String customerIdCard;
-}
+@Shield(strategy = ContractCodeProvider.class)
+private String contractCode;
 ```
 
-### 3. Conditional Masking
+`StrategyProvider` instances must be stateless or thread-safe. The `Context` supplies the currently processed field and
+value; it must not be retained after the call.
+
+## Conditional masking
+
+Implement `ConditionProvider` when masking depends on the active processing context:
 
 ```java
-// Implement custom condition
-public class AdminCondition implements ConditionProvider {
+public final class NonEmptyCondition implements ConditionProvider {
+
     @Override
     public boolean valid(Context context) {
-        // Only mask for non-admin users
-        return !SecurityContextHolder.isAdmin();
+        Object value = context.getCurrentFieldValue();
+        return value != null && !value.toString().isBlank();
     }
-}
 
-// Apply conditional masking
-@Data
-public class Account {
-    @Shield(type = EnumValue.Masking.EMAIL,
-            condition = AdminCondition.class)
-    private String email;
 }
 ```
 
-### 4. Custom Masking Strategy
-
 ```java
-// Define custom strategy
-public class CustomMaskStrategy implements StrategyProvider {
-    @Override
-    public Object build(Object object, Context context) {
-        String value = object.toString();
-        // Custom masking logic
-        return value.substring(0, 2) + "********";
-    }
-}
-
-// Create custom annotation
-@Strategy(CustomMaskStrategy.class)
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CustomMask {
-}
-
-// Use custom strategy
-@Data
-public class Product {
-    @CustomMask
-    private String serialNumber;
-}
-```
-
-### 5. Class-Level Configuration
-
-```java
-import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
-
-@Data
-@Sensitive(value = Builder.SENS,  // Enable only desensitization
-           stage = Builder.OUT)    // Apply on output
-public class UserProfile {
-    @Shield(type = EnumValue.Masking.CHINESE_NAME)
-    private String realName;
-
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE)
-    private String phone;
-
-    private String publicInfo; // Not masked
-}
-```
-
-### 6. Processing Nested Objects
-
-```java
-@Data
-public class OrderDetail {
-    private Long orderId;
-
-    @Shield(type = EnumValue.Masking.CHINESE_NAME)
-    private String customerName;
-
-    private List<OrderItem> items;
-}
-
-@Data
-public class OrderItem {
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE)
-    private String contactPhone;
-
-    private String productName;
-}
-
-// Nested objects are processed recursively
-OrderDetail order = new OrderDetail();
-// ... set values
-OrderDetail maskedOrder = Builder.on(order, true); // true = deep clone
-```
-
-### 7. Integration with Spring AOP
-
-```java
-@Aspect
-@Component
-public class SensitiveAspect {
-
-    @Around("@annotation(org.miaixz.bus.sensitive.magic.annotation.Sensitive)")
-    public Object handleSensitive(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = joinPoint.proceed();
-
-        // Apply masking to method result
-        return Builder.on(result);
-    }
-}
-
-@Service
-public class UserService {
-
-    @Sensitive
-    public User getUserById(Long id) {
-        // Return user - sensitive data will be automatically masked
-        return userRepository.findById(id);
-    }
-}
-```
-
-### 8. Integration with JSON Serialization
-
-```java
-@Configuration
-public class JacksonConfig {
-
-    @Bean
-    public Module sensitiveModule() {
-        SimpleModule module = new SimpleModule();
-        module.setSerializerModifier(new BeanSerializerModifier() {
-            @Override
-            public JsonSerializer<?> modifySerializer(
-                SerializationConfig config,
-                BeanDescription beanDesc,
-                JsonSerializer<?> serializer) {
-
-                if (beanDesc.getBeanClass().isAnnotationPresent(Sensitive.class)) {
-                    return new SensitiveSerializer(serializer);
-                }
-                return serializer;
-            }
-        });
-        return module;
-    }
-}
-```
-
------
-
-## 📋 Built-in Strategies Reference
-
-### Available Masking Types
-
-| Type | Annotation Value | Description | Example |
-| :--- | :--- | :--- | :--- |
-| **Chinese Name** | `CHINESE_NAME` | Masks Chinese name | 张三 → *三 |
-| **Mobile Phone** | `MOBILE_PHONE` | Masks middle 4 digits | 182****3070 |
-| **Landline Phone** | `FIXED_PHONE` | Masks area code or number | 010****** |
-| **ID Card** | `ID_CARD` | Masks middle 10 digits | 110101**********34 |
-| **Bank Card** | `BANK_CARD` | Shows first 4, last 4 | 6222************7890 |
-| **Email** | `EMAIL` | Masks username | joh***@example.com |
-| **Password** | `PASSWORD` | Returns empty string | (empty) |
-| **Car License** | `CAR_LICENSE` | Masks middle characters | 京A***** |
-| **Address** | `ADDRESS` | Masks detailed info | 北京市朝阳区****** |
-| **CNAPS Code** | `CNAPS` | Masks part of code | 1234****** |
-| **Passport** | `PASSPORT` | Masks middle part | E12*****34 |
-| **User ID** | `USER_ID` | Shows last 4 digits | ******1234 |
-
-### Masking Modes
-
-| Mode | Description | Example |
-| :--- | :--- | :--- |
-| **LEFT** | Masks left part | *******3070 |
-| **RIGHT** | Masks right part | 1823******* |
-| **MIDDLE** | Masks middle part (default) | 182****3070 |
-| **CUSTOM** | Uses custom configuration | User defined |
-
------
-
-## 💡 Best Practices
-
-### 1. Choose Appropriate Masking Strategy
-
-```java
-// ✅ Recommended: Use appropriate built-in strategy
-@Shield(type = EnumValue.Masking.MOBILE_PHONE)
-private String mobile;
-
-// ❌ Not Recommended: Custom strategy when built-in exists
-@Shield(strategy = CustomPhoneStrategy.class)
-private String mobile;
-```
-
-### 2. Apply Masking at the Right Layer
-
-```java
-// ✅ Recommended: Apply at service/controller layer
-@Service
-public class UserService {
-    @Sensitive
-    public User getUserProfile(Long id) {
-        return userRepository.findById(id);
-    }
-}
-
-// ❌ Not Recommended: Apply at repository layer (data should be stored in clear)
-@Repository
-public class UserRepository {
-    @Sensitive
-    public User findById(Long id) {
-        // Never mask before storing in database
-    }
-}
-```
-
-### 3. Use Deep Clone When Needed
-
-```java
-// ✅ Recommended: Use deep clone to avoid modifying original object
-User maskedUser = Builder.on(originalUser, true);
-
-// ❌ Not Recommended: Modify original object in-place
-User maskedUser = Builder.on(originalUser, false);
-```
-
-### 4. Implement Proper Conditions
-
-```java
-// ✅ Recommended: Implement conditions for role-based access
-public class RoleBasedCondition implements ConditionProvider {
-    @Override
-    public boolean valid(Context context) {
-        UserContext user = SecurityContextHolder.getCurrentUser();
-        return !user.hasRole("ADMIN");
-    }
-}
-
-@Shield(type = EnumValue.Masking.EMAIL,
-        condition = RoleBasedCondition.class)
+@Shield(type = EnumValue.Masking.EMAIL, condition = NonEmptyCondition.class)
 private String email;
 ```
 
-### 5. Combine with Encryption for Sensitive Data
+Authorization-dependent conditions should consume authorization information supplied by the caller's integration layer;
+the core sensitive module does not read a Spring or Servlet context.
+
+## Strategy registry
+
+`Registry` installs the built-in providers during class initialization. `Registry.require(...)` resolves a built-in or
+annotation-associated provider and fails when the requested strategy is unavailable. `Registry.register(...)` rejects
+duplicate masking identifiers, so application-specific behavior should normally use `@Shield(strategy = ...)` or a
+custom annotation marked with `@Strategy` rather than attempting to replace a built-in provider globally.
+
+## Structured log sanitization
+
+`Sanitizer` implements `bus-logger`'s `Operator` contract. It normalizes keys and protects values associated with common
+sensitive names, including authorization headers, cookies, passwords, secrets, tokens, API keys, private keys, and
+credentials.
 
 ```java
-// ✅ Recommended: Mask for display, encrypt for storage
-@Data
-public class CreditCard {
-    @Shield(type = EnumValue.Masking.BANK_CARD)  // For display
-    @Privacy(algo = Privacy.Algo.AES)           // For storage
-    private String cardNumber;
-}
+import org.miaixz.bus.sensitive.Sanitizer;
+
+Sanitizer sanitizer = new Sanitizer();
+
+Object protectedToken = sanitizer.sanitize("accessToken", token);
+boolean protectedKey = sanitizer.isSensitive("Authorization");
 ```
 
-### 6. Test Masking Behavior
+Protected scalar values become `Sanitizer.REDACTED`, currently `[REDACTED]`. Maps, iterables, and object arrays are copied
+and sanitized recursively to a fixed safety depth. Arbitrary application objects are not reflected over, preventing
+unexpected graph traversal, lazy loading, and side effects.
+
+For complete log events, key names are inferred from assignments immediately before provider placeholders:
 
 ```java
-@Test
-public void testMobileMasking() {
-    User user = new User();
-    user.setMobile("18233583070");
-
-    User masked = Builder.on(user);
-
-    assertEquals("182****3070", masked.getMobile());
-    assertNotEquals("18233583070", masked.getMobile());
-}
+Logger.warn("Login rejected: username={}, password={}", username, password);
 ```
 
------
+Here `username` remains visible while `password` can be replaced. A message such as `"Login rejected: {}"` does not
+provide a classifiable key and therefore cannot guarantee sanitization.
 
-## ❓ Frequently Asked Questions
+Do not move these rules into `bus-logger`. The logging facade remains content-neutral; this module owns classification
+and replacement policy.
 
-### Q1: How to customize the masking character?
+## Spring integration
 
-```java
-@Shield(type = EnumValue.Masking.MOBILE_PHONE,
-        shadow = "#")  // Use # instead of *
-private String mobile;
+With `bus-starter`, enable the feature explicitly:
 
-// Result: 182####3070
+```yaml
+bus:
+  sensitive:
+    enabled: true
+    debug: false
 ```
 
-### Q2: How to keep more characters visible?
+The integration consists of:
 
-```java
-@Shield(type = EnumValue.Masking.ID_CARD,
-        fixedHeaderSize = 8,    // Show first 8 digits
-        fixedTailorSize = 4)    // Show last 4 digits
-private String idCard;
-
-// Result: 11010119**********1234
+```text
+SensitiveConfiguration
+  +-- Sanitizer
+  +-- SensitiveBinding -> logger Executor lifecycle
+  `-- ServletConfiguration (Servlet MVC only)
+        +-- SensitiveRequestBodyAdvice
+        `-- SensitiveResponseBodyAdvice
 ```
 
-### Q3: How to disable auto-fixing?
+`SensitiveBinding` registers one sanitizer per application context and unregisters it when that context closes. Servlet
+request/response advice is contributed from the nested configuration; there is no separate
+`SensitiveWebConfiguration`.
 
-```java
-@Shield(type = EnumValue.Masking.MOBILE_PHONE,
-        autoFixedPart = false,
-        fixedHeaderSize = 2,
-        fixedTailorSize = 2)
-private String mobile;
+Encryption and decryption configuration is limited to the algorithms supported by the current Starter properties. Key
+material must come from a protected external configuration source and must never be committed to an application file.
 
-// Result: 18**********70 (custom configuration)
-```
+## Package layout
 
-### Q4: How to mask collections and arrays?
+| Package | Content |
+|---|---|
+| `org.miaixz.bus.sensitive` | Processing entry points, traversal state, registry, and sanitizer. |
+| `org.miaixz.bus.sensitive.magic.annotation` | Protection annotations and meta-annotations. |
+| `org.miaixz.bus.sensitive.nimble` | Strategy contracts and built-in providers. |
 
-```java
-@Data
-public class OrderList {
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE)
-    private List<String> contactPhones;  // Each element will be masked
+All three packages are exported by the JPMS module. Spring-specific packages are intentionally absent.
 
-    @Shield(type = EnumValue.Masking.EMAIL)
-    private String[] emails;  // Each email will be masked
-}
-```
+## Best practices
 
-### Q5: How to integrate with MyBatis/JPA?
+- Protect data at a stable output or transport boundary rather than repeatedly throughout business logic.
+- Use clone mode when callers still need the unmodified object.
+- Select the narrowest built-in strategy before implementing a custom one.
+- Keep custom strategy and condition implementations stateless.
+- Avoid reflection over arbitrary objects in log sanitization.
+- Use named log fields for values that require redaction.
+- Keep encryption keys outside source control and diagnostic output.
+- Treat masking as presentation protection, not as a replacement for authorization or encryption.
 
-```java
-// For MyBatis - use interceptor
-@Intercepts({
-    @Signature(type= ResultSetHandler.class,
-               method="handleResultSets",
-               args={Statement.class})
-})
-public class SensitiveInterceptor implements Interceptor {
-    @Override
-    public Object intercept(Invocation invocation) throws Throwable {
-        List<Object> results = (List<Object>) invocation.proceed();
-        return Builder.on(results);  // Mask all results
-    }
-}
+## Native Image
 
-// For JPA - use entity listener
-@EntityListeners(SensitiveListener.class)
-@Entity
-public class User {
-    @Shield(type = EnumValue.Masking.MOBILE_PHONE)
-    private String mobile;
-}
-```
+Reachability metadata lists only exact constructors and members needed by dynamic processing. Entries are sorted A–Z.
+Broad reflection grants such as `allDeclaredConstructors`, `allDeclaredMethods`, and `allDeclaredFields` are prohibited.
 
-### Q6: How to handle null values?
+## Verification boundary
 
-```java
-// The framework automatically handles null values
-User user = new User();
-user.setMobile(null);
-
-User masked = Builder.on(user);
-System.out.println(masked.getMobile());  // Output: null
-```
-
-### Q7: How to disable masking for specific fields?
-
-```java
-@Data
-@Sensitive(skip = {"publicField", "status"})
-public class UserProfile {
-    @Shield(type = EnumValue.Masking.CHINESE_NAME)
-    private String name;  // Will be masked
-
-    private String publicField;  // Skipped, not masked
-
-    private Integer status;  // Skipped, not masked
-}
-```
-
-### Q8: How to apply different masking based on user role?
-
-```java
-public class UserRoleCondition implements ConditionProvider {
-    @Override
-    public boolean valid(Context context) {
-        UserContext user = SecurityContextHolder.getCurrentUser();
-        String fieldName = context.getCurrentField().getName();
-
-        // Only mask email for regular users
-        if ("email".equals(fieldName)) {
-            return !user.hasRole("ADMIN");
-        }
-        return true;
-    }
-}
-```
-
------
-
-## 🔧 Advanced Configuration
-
-### Custom Strategy Provider
-
-```java
-public class CustomMaskingProvider extends AbstractProvider {
-
-    @Override
-    public Object build(Object object, Context context) {
-        if (object == null) {
-            return null;
-        }
-
-        String value = object.toString();
-        Shield shield = context.getShield();
-
-        // Implement custom masking logic
-        int maskLength = value.length() / 2;
-        String masked = StringKit.repeat(shield.shadow(), maskLength);
-
-        return value.substring(0, 2) + masked + value.substring(value.length() - 2);
-    }
-}
-```
-
-### Register Custom Strategy
-
-```java
-@Configuration
-public class SensitiveConfig {
-
-    @PostConstruct
-    public void registerCustomStrategies() {
-        Registry.register(EnumValue.Masking.CUSTOM, CustomMaskingProvider.class);
-    }
-}
-```
-
------
-
-## 📊 Performance Considerations
-
-### Performance Tips
-
-1. **Use Built-in Strategies**: Built-in strategies are optimized for performance
-2. **Avoid Over-Masking**: Only mask fields that truly contain sensitive data
-3. **Cache Condition Results**: Cache expensive condition checks
-4. **Use Selective Processing**: Enable masking only for necessary layers
-
-### Benchmarks
-
-| Operation | Average Time | Throughput |
-| :--- | :--- | :--- |
-| **Simple Field Masking** | 0.01ms | 100,000 ops/s |
-| **Complex Object (10 fields)** | 0.1ms | 10,000 ops/s |
-| **Large Collection (1000 items)** | 15ms | 66 ops/s |
-| **Deep Nested Object (5 levels)** | 0.5ms | 2,000 ops/s |
-
------
-
-## 🔄 Version Compatibility
-
-| Bus Sensitive Version | Bus Core Version | Bus Crypto Version | JDK Version |
-| :--- | :--- | :--- | :--- |
-| 8.x | 8.x | 8.x | 17+ |
-| 7.x | 7.x | 7.x | 11+ |
-
------
-
-## 🌟 Use Cases
-
-### 1. Financial Services
-- Mask account numbers and transaction details
-- Protect customer financial information
-- Comply with banking regulations
-
-### 2. Healthcare
-- Mask patient names and medical records
-- Protect sensitive health information
-- HIPAA compliance
-
-### 3. E-commerce
-- Mask customer contact information
-- Protect shipping and payment details
-- Prevent data leakage in logs
-
-### 4. Social Platforms
-- Mask user personal information
-- Protect privacy in user profiles
-- Control data visibility
-
-### 5. Enterprise Applications
-- Role-based data masking
-- Audit log protection
-- Multi-tenant data isolation
-
------
-
-## 📚 Additional Resources
-
-- **Bus Core Documentation**: [https://www.miaixz.org](https://www.miaixz.org)
-- **Bus Crypto Documentation**: [https://www.miaixz.org/crypto](https://www.miaixz.org/crypto)
-- **GitHub Repository**: [https://github.com/818000/bus](https://github.com/818000/bus)
-- **Issue Tracker**: [https://github.com/818000/bus/issues](https://github.com/818000/bus/issues)
-
------
-
-## 📄 License
-
-[Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
------
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
------
-
-**Made with ❤️ by the Miaixz Team**
+Bus contains and runs no tests. Masking, cloning, custom strategy, Spring lifecycle, logging, metadata, AOT, and Native
+Image tests are maintained in the sibling Abarth repository. Bus builds must skip tests explicitly.

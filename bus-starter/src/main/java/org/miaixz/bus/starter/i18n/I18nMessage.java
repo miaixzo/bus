@@ -21,21 +21,19 @@ package org.miaixz.bus.starter.i18n;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.AbstractMessageSource;
 
 import org.miaixz.bus.core.lang.I18n;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Spring {@link MessageSource} backed by the core {@link I18n} resolver, with convenience accessors for application
- * code.
+ * Application message accessor backed by Spring {@link MessageSource} with a core {@link I18n} fallback.
  * <p>
- * This class deliberately combines the Spring integration point and the application helper API into one bean. Spring
- * MVC, validation, and regular application code therefore resolve messages through the same path:
- * {@code MessageSource -> I18nMessage -> org.miaixz.bus.core.lang.I18n}.
+ * Application code resolves messages through the same source used by Spring MVC and validation without replacing the
+ * application-owned {@link MessageSource} bean.
  * </p>
  * <p>
  * The core module remains Spring-free; this starter-side adapter is the only place that bridges Spring's
@@ -45,20 +43,27 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class I18nMessage extends AbstractMessageSource {
+public class I18nMessage {
 
     /**
-     * Starter-side configuration used when this instance owns message resolution.
+     * Application-owned Spring message source.
+     */
+    private final MessageSource messageSource;
+
+    /**
+     * Starter-side fallback resource configuration.
      */
     private final I18nProperties properties;
 
     /**
      * Creates an i18n message source backed by core {@link I18n}.
      *
-     * @param properties i18n configuration properties
+     * @param messageSource application message source
+     * @param properties    i18n configuration properties
      */
-    public I18nMessage(I18nProperties properties) {
-        this.properties = properties;
+    public I18nMessage(MessageSource messageSource, I18nProperties properties) {
+        this.messageSource = Objects.requireNonNull(messageSource, "messageSource");
+        this.properties = Objects.requireNonNull(properties, "properties");
     }
 
     /**
@@ -91,18 +96,27 @@ public class I18nMessage extends AbstractMessageSource {
      * @return the resolved message
      */
     public String getMessage(String code, Object[] args, String defaultMessage) {
-        return getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
-    }
-
-    @Override
-    protected MessageFormat resolveCode(String code, Locale locale) {
-        String message = resolveMessage(code, locale);
-        return message == null ? null : new MessageFormat(message, locale == null ? Locale.getDefault() : locale);
+        if (code == null) {
+            return defaultMessage;
+        }
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage(code, args, null, locale);
+        if (message != null) {
+            return message;
+        }
+        String fallback = resolveMessage(code, locale);
+        if (fallback != null) {
+            return format(fallback, args, locale);
+        }
+        return defaultMessage == null ? null : format(defaultMessage, args, locale);
     }
 
     /**
-     * Resolves a raw message pattern. Spring's {@link AbstractMessageSource} performs argument formatting after this
-     * method returns a {@link MessageFormat}.
+     * Resolves a raw message pattern from the configured Bus resource bundles.
+     *
+     * @param code   message code
+     * @param locale locale used for message resolution
+     * @return resolved message
      */
     private String resolveMessage(String code, Locale locale) {
         if (code == null) {
@@ -124,6 +138,8 @@ public class I18nMessage extends AbstractMessageSource {
     /**
      * Falls back to the conventional {@code messages} bundle so {@code messages*.properties} works without extra
      * configuration.
+     *
+     * @return normalized message-resource base names in lookup order
      */
     private String[] baseNames() {
         String[] baseNames = this.properties.getBaseNames();
@@ -131,7 +147,25 @@ public class I18nMessage extends AbstractMessageSource {
     }
 
     /**
+     * Formats the message with the requested locale.
+     *
+     * @param message message supplied to this operation
+     * @param args    message format arguments
+     * @param locale  message locale
+     * @return formatted message
+     */
+    private static String format(String message, Object[] args, Locale locale) {
+        if (args == null || args.length == 0) {
+            return message;
+        }
+        return new MessageFormat(message, locale == null ? Locale.getDefault() : locale).format(args);
+    }
+
+    /**
      * Converts Spring/JDK {@link Locale} values to the closest core {@link I18n} enum entry.
+     *
+     * @param locale locale used for message resolution
+     * @return converted i18n
      */
     private I18n toI18n(Locale locale) {
         if (locale == null) {

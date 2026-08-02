@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.reflect.JdkProxy;
 public class Builder {
 
     /**
-     * Constructs a new Builder instance.
+     * Initializes the limiter builder that derives resource keys and protection metadata from methods.
      */
     public Builder() {
         // No initialization required.
@@ -110,6 +110,13 @@ public class Builder {
             }
         }
         return methodName;
+    }
+
+    /**
+     * Clears cached reflective method names.
+     */
+    public static void clear() {
+        MAP.clear();
     }
 
 }

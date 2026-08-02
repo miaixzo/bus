@@ -19,69 +19,203 @@
 */
 package org.miaixz.bus.starter.cors;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.Duration;
+import java.util.Arrays;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * CORS (Cross-Origin Resource Sharing) configuration properties.
+ * Immutable CORS configuration properties.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@Getter
-@Setter
+@Validated
 @ConfigurationProperties(GeniusBuilder.CORS)
-public class CorsProperties {
+public final class CorsProperties {
 
     /**
-     * Constructs a new CorsProperties instance.
+     * HTTP DELETE method used by the default CORS policy.
      */
-    public CorsProperties() {
-        // No initialization required.
+    private static final String METHOD_DELETE = "DELETE";
+
+    /**
+     * HTTP GET method used by the default CORS policy.
+     */
+    private static final String METHOD_GET = "GET";
+
+    /**
+     * HTTP OPTIONS method used by the default CORS policy.
+     */
+    private static final String METHOD_OPTIONS = "OPTIONS";
+
+    /**
+     * HTTP POST method used by the default CORS policy.
+     */
+    private static final String METHOD_POST = "POST";
+
+    /**
+     * HTTP PUT method used by the default CORS policy.
+     */
+    private static final String METHOD_PUT = "PUT";
+
+    /**
+     * Whether the cors integration is enabled.
+     */
+    private final boolean enabled;
+    /**
+     * Servlet path pattern to which the CORS policy applies.
+     */
+    private final String path;
+    /**
+     * Origins permitted to issue cross-origin requests.
+     */
+    private final String[] allowedOrigins;
+    /**
+     * Request headers accepted during cross-origin requests.
+     */
+    private final String[] allowedHeaders;
+    /**
+     * HTTP methods accepted during cross-origin requests.
+     */
+    private final String[] allowedMethods;
+    /**
+     * Response headers made visible to browser clients.
+     */
+    private final String[] exposedHeaders;
+    /**
+     * Whether browsers may include credentials in cross-origin requests.
+     */
+    private final boolean allowCredentials;
+    /**
+     * Duration for which browsers may cache a preflight response.
+     */
+    private final Duration maxAge;
+
+    /**
+     * Validates credential, origin, and preflight settings and stores defensive copies of all header arrays.
+     *
+     * @param enabled          whether CORS support is enabled
+     * @param path             mapped request path
+     * @param allowedOrigins   permitted origins
+     * @param allowedHeaders   permitted request headers
+     * @param allowedMethods   permitted HTTP methods
+     * @param exposedHeaders   response headers exposed to browsers
+     * @param allowCredentials whether credentialed requests are permitted
+     * @param maxAge           preflight cache duration
+     */
+    public CorsProperties(@DefaultValue(Normal.FALSE) boolean enabled,
+            @DefaultValue(Symbol.SLASH + Symbol.STAR + Symbol.STAR) String path, @DefaultValue String[] allowedOrigins,
+            @DefaultValue(Symbol.STAR) String[] allowedHeaders,
+            @DefaultValue({ METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_OPTIONS,
+                    METHOD_DELETE }) String[] allowedMethods,
+            @DefaultValue String[] exposedHeaders, @DefaultValue(Normal.FALSE) boolean allowCredentials,
+            @DefaultValue("30m") Duration maxAge) {
+        String[] origins = allowedOrigins == null ? new String[0] : allowedOrigins.clone();
+        if (allowCredentials && Arrays.asList(origins).contains(Symbol.STAR)) {
+            throw new IllegalArgumentException("bus.cors cannot combine wildcard origins with credentials");
+        }
+        if (maxAge == null || maxAge.isNegative()) {
+            throw new IllegalArgumentException("bus.cors.max-age must not be negative");
+        }
+        this.enabled = enabled;
+        this.path = path;
+        this.allowedOrigins = origins;
+        this.allowedHeaders = allowedHeaders == null ? new String[] { Symbol.STAR } : allowedHeaders.clone();
+        this.allowedMethods = allowedMethods == null
+                ? new String[] { METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_OPTIONS, METHOD_DELETE }
+                : allowedMethods.clone();
+        this.exposedHeaders = exposedHeaders == null ? new String[0] : exposedHeaders.clone();
+        this.allowCredentials = allowCredentials;
+        this.maxAge = maxAge;
     }
 
     /**
-     * The path pattern to which this CORS configuration applies. Default is {@code /**}.
+     * Indicates whether the validated CORS policy should be registered.
+     *
+     * @return whether CORS support is enabled
      */
-    private String path = "/**";
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     /**
-     * Allowed origins. A value of "*" allows all origins. Default is {@code ["*"]}.
+     * Exposes the Servlet path pattern covered by this CORS policy.
+     *
+     * @return mapped request path
      */
-    private String[] allowedOrigins = new String[] { Symbol.STAR };
+    public String getPath() {
+        return path;
+    }
 
     /**
-     * Allowed request headers. A value of "*" allows all headers. Default is {@code ["*"]}.
+     * Returns a defensive copy of the permitted origin patterns.
+     *
+     * @return a copy of permitted origins
      */
-    private String[] allowedHeaders = new String[] { Symbol.STAR };
+    public String[] getAllowedOrigins() {
+        return allowedOrigins.clone();
+    }
 
     /**
-     * Allowed HTTP methods. Default includes GET, POST, PUT, OPTIONS, DELETE.
+     * Returns a defensive copy of request headers accepted by the policy.
+     *
+     * @return a copy of permitted request headers
      */
-    private String[] allowedMethods = new String[] { Http.Method.GET.value(), Http.Method.POST.value(),
-            Http.Method.PUT.value(), Http.Method.OPTIONS.value(), Http.Method.DELETE.value() };
+    public String[] getAllowedHeaders() {
+        return allowedHeaders.clone();
+    }
 
     /**
-     * Headers to be exposed in the response.
+     * Returns a defensive copy of HTTP methods accepted by the policy.
+     *
+     * @return a copy of permitted methods
      */
-    private String[] exposedHeaders;
+    public String[] getAllowedMethods() {
+        return allowedMethods.clone();
+    }
 
     /**
-     * Whether the browser should include any cookies associated with the domain of the request. Default is
-     * {@code true}.
+     * Returns a defensive copy of response headers visible to browser clients.
+     *
+     * @return a copy of exposed response headers
      */
-    private Boolean allowCredentials = true;
+    public String[] getExposedHeaders() {
+        return exposedHeaders.clone();
+    }
 
     /**
-     * The validity period of the pre-flight request, in seconds. During this period, the pre-flight request will not be
-     * sent again. Default is 1800 seconds (30 minutes).
+     * Indicates whether browser clients may attach credentials to cross-origin requests.
+     *
+     * @return whether credentialed requests are permitted
      */
-    private Long maxAge = 1800L;
+    public Boolean getAllowCredentials() {
+        return allowCredentials;
+    }
+
+    /**
+     * Exposes the validated preflight response cache duration.
+     *
+     * @return preflight cache duration in seconds
+     */
+    public Long getMaxAge() {
+        return maxAge.toSeconds();
+    }
+
+    /**
+     * @return safe diagnostic text
+     */
+    @Override
+    public String toString() {
+        return "CorsProperties[enabled=" + enabled + ", path=" + path + ", allowedOrigins="
+                + Arrays.toString(allowedOrigins) + ", allowCredentials=" + allowCredentials + ", maxAge=" + maxAge
+                + "]";
+    }
 
 }

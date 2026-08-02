@@ -33,9 +33,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.bridge.HealthMetrics"
-    },
-    {
       "type": "org.miaixz.bus.metrics.bridge.HealthMetrics$CpuSnapshot",
       "methods": [
         {
@@ -697,15 +694,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.nimble.Counter"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Gauge"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Histogram"
-    },
-    {
       "type": "org.miaixz.bus.metrics.nimble.indigenous.LlmPriceTable",
       "methods": [
         {
@@ -1359,21 +1347,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.nimble.LlmSample"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.LlmTimer"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Meter"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.opentelemetry.OpenTelemetryProvider"
-    },
-    {
       "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusExporter",
       "methods": [
         {
@@ -1413,18 +1386,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.prometheus.PrometheusProvider"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.RatePair"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Sample"
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Timer"
     },
     {
       "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent",
@@ -1490,6 +1451,17 @@
     },
     {
       "type": "org.miaixz.bus.metrics.nimble.Timer$Window",
+      "fields": [
+        {
+          "name": "FIVE_MINUTES"
+        },
+        {
+          "name": "LIFETIME"
+        },
+        {
+          "name": "ONE_MINUTE"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
@@ -1601,9 +1573,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.observe.slo.SloTracker"
-    },
-    {
       "type": "org.miaixz.bus.metrics.observe.tag.Tag",
       "methods": [
         {
@@ -1652,9 +1621,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.metrics.Provider"
     },
     {
       "type": "org.miaixz.bus.metrics.window.BucketWindow",

@@ -19,14 +19,17 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
+import java.lang.reflect.Method;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.annotation.DataSource;
 
 /**
  * AOP aspect for dynamic data source switching.
@@ -43,100 +46,74 @@ import org.miaixz.bus.logger.Logger;
 public class AspectjJdbcProxy {
 
     /**
-     * Constructs a new AspectjJdbcProxy instance.
+     * Initializes the stateless aspect that scopes data source selection around annotated invocations.
      */
     public AspectjJdbcProxy() {
         // No initialization required.
     }
 
     /**
-     * Advice that executes before a method annotated with {@link DataSource}.
+     * Runs an annotated invocation inside a nested data source scope before transaction advice acquires a connection.
      * <p>
-     * It sets the data source context based on the value specified in the annotation. If no data source name is
-     * provided, it defaults to the primary data source.
-     * </p>
+     * Method annotations take precedence over class annotations. Every invocation restores the exact parent key on
+     * normal return or exception.
      *
-     * @param joinPoint  The join point representing the method execution.
-     * @param dataSource The {@link DataSource} annotation instance on the method.
+     * @param joinPoint intercepted invocation
+     * @return invocation result
+     * @throws Throwable when the invocation fails
      */
-    @Before("@annotation(dataSource)")
-    public void before(JoinPoint joinPoint, DataSource dataSource) {
-        String className = joinPoint.getTarget().getClass().getSimpleName();
-        String methodName = joinPoint.getSignature().getName();
-        String dataSourceName = dataSource.value();
-        if (dataSourceName.isEmpty()) {
-            Logger.debug(
-                    true,
-                    "Starter",
-                    "Datasource switch skipped: class={}, method={}, reason=no datasource specified",
-                    className,
-                    methodName);
-            return;
+    @Around("@annotation(org.miaixz.bus.mapper.annotation.DataSource) || @within(org.miaixz.bus.mapper.annotation.DataSource)")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        DataSource dataSource = resolveAnnotation(joinPoint);
+        if (dataSource == null || StringKit.isEmpty(dataSource.value())) {
+            return joinPoint.proceed();
         }
+        String requestedKey = dataSource.value().trim();
+        Object target = joinPoint.getTarget();
+        String className = target == null ? joinPoint.getSignature().getDeclaringTypeName()
+                : target.getClass().getSimpleName();
         Logger.info(
                 true,
                 "Starter",
-                "Datasource switch started: class={}, method={}, datasource={}",
+                "Datasource scope entered: class={}, method={}, datasource={}",
                 className,
-                methodName,
-                dataSourceName);
-
-        DataSourceHolder.setKey(dataSourceName);
-    }
-
-    /**
-     * Advice that executes after a method annotated with {@link DataSource}.
-     * <p>
-     * It cleans up the data source context based on the annotation's configuration. If {@link DataSource#clear()} is
-     * {@code true}, the data source context is switched back to the default data source. Otherwise, it is maintained
-     * for subsequent operations within the same thread.
-     * </p>
-     *
-     * @param joinPoint  The join point representing the method execution.
-     * @param dataSource The {@link DataSource} annotation instance on the method.
-     */
-    @After("@annotation(dataSource)")
-    public void after(JoinPoint joinPoint, DataSource dataSource) {
-        String className = joinPoint.getTarget().getClass().getSimpleName();
-        String methodName = joinPoint.getSignature().getName();
-        String dataSourceName = dataSource.value();
-        if (dataSourceName.isEmpty()) {
+                joinPoint.getSignature().getName(),
+                requestedKey);
+        try (DataSourceHolder.Scope ignored = DataSourceHolder.scope(requestedKey)) {
+            return joinPoint.proceed();
+        } finally {
             Logger.debug(
                     false,
                     "Starter",
-                    "Datasource switch completed: class={}, method={}, changed=false",
+                    "Datasource scope restored: class={}, method={}, parent={}",
                     className,
-                    methodName);
-            return;
+                    joinPoint.getSignature().getName(),
+                    DataSourceHolder.getCurrentKey());
         }
-        if (dataSource.clear()) {
-            Logger.info(
-                    false,
-                    "Starter",
-                    "Datasource switch completed: class={}, method={}, datasource={}, action=clear",
-                    className,
-                    methodName,
-                    dataSourceName);
+    }
 
-            // Switch back to the default data source instead of just clearing
-            String defaultDataSource = DataSourceHolder.getDefault();
-            if (StringKit.isEmpty(defaultDataSource)) {
-                DataSourceHolder.setKey(defaultDataSource);
-                Logger.debug(false, "Starter", "Switched back to default datasource: datasource={}", defaultDataSource);
-            } else {
-                // If no default data source is configured, clear the context (fallback to original behavior)
-                DataSourceHolder.remove();
-                Logger.debug(false, "Starter", "No default datasource configured, context cleared");
+    /**
+     * Resolves the effective datasource annotation, preferring the concrete implementation method over its class.
+     *
+     * @param joinPoint intercepted invocation
+     * @return effective datasource annotation, or {@code null}
+     */
+    private static DataSource resolveAnnotation(ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Object target = joinPoint.getTarget();
+        if (target != null) {
+            try {
+                method = target.getClass().getMethod(method.getName(), method.getParameterTypes());
+            } catch (NoSuchMethodException ignored) {
+                // The signature method remains authoritative for non-public implementation methods.
             }
-        } else {
-            Logger.info(
-                    false,
-                    "Starter",
-                    "Datasource switch completed: class={}, method={}, datasource={}, action=keep",
-                    className,
-                    methodName,
-                    dataSourceName);
         }
+        DataSource methodAnnotation = method.getAnnotation(DataSource.class);
+        if (methodAnnotation != null) {
+            return methodAnnotation;
+        }
+        return target == null ? null : target.getClass().getAnnotation(DataSource.class);
     }
 
 }
