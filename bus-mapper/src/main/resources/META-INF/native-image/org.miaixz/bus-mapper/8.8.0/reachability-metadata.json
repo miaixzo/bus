@@ -3173,6 +3173,12 @@
           "parameterTypes": [
             "org.miaixz.bus.mapper.dialect.Dialect"
           ]
+        },
+        {
+          "name": "setKeyProvider",
+          "parameterTypes": [
+            "java.util.function.Supplier"
+          ]
         }
       ]
     },
@@ -7999,39 +8005,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.Holder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefault",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "remove",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDefault",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": {
         "proxy": [
           "org.miaixz.bus.mapper.Mapper"
@@ -10729,6 +10702,9 @@
           "name": "auditProvider"
         },
         {
+          "name": "datasourceKeyProvider"
+        },
+        {
           "name": "populateProvider"
         },
         {
@@ -10751,6 +10727,10 @@
         },
         {
           "name": "getAuditProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatasourceKeyProvider",
           "parameterTypes": []
         },
         {
@@ -10777,6 +10757,12 @@
           "name": "setAuditProvider",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.audit.AuditProvider"
+          ]
+        },
+        {
+          "name": "setDatasourceKeyProvider",
+          "parameterTypes": [
+            "java.util.function.Supplier"
           ]
         },
         {
