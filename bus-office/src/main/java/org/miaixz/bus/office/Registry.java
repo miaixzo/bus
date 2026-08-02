@@ -34,7 +34,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class Registry {
+public class Registry implements AutoCloseable {
 
     /**
      * Identifier for local conversion services.
@@ -47,36 +47,15 @@ public class Registry {
     public static final String ONLINE = "ONLINE";
 
     /**
-     * Cache for storing registered service providers, mapped by name or simple class name.
+     * Thread-safe conversion component registry keyed by logical name and implementation class name.
      */
-    private static final Map<String, Object> COMPLEX_CACHE = new ConcurrentHashMap<>();
+    private final Map<String, Object> components;
 
     /**
-     * Singleton instance of the Registry.
-     */
-    private static Registry instance;
-
-    /**
-     * Constructs a new Registry instance.
+     * Initializes an empty registry for document conversion components.
      */
     public Registry() {
-        // No initialization required.
-    }
-
-    /**
-     * Retrieves the singleton instance of the Registry.
-     *
-     * @return The singleton {@link Registry} instance.
-     */
-    public static Registry getInstance() {
-        synchronized (Registry.class) {
-            if (ObjectKit.isEmpty(instance)) {
-                Logger.debug(true, "Office", "Office registry instance initialization started");
-                instance = new Registry();
-                Logger.debug(false, "Office", "Office registry instance initialized");
-            }
-        }
-        return instance;
+        this.components = new ConcurrentHashMap<>();
     }
 
     /**
@@ -87,19 +66,19 @@ public class Registry {
      * @param object The component object to register.
      * @throws InternalException if a component with the same name or type is already registered.
      */
-    public static void register(String name, Object object) {
+    public synchronized void register(String name, Object object) {
         Logger.debug(
                 true,
                 "Office",
                 "Office component registration started: name={}, type={}",
                 name,
                 object == null ? null : object.getClass().getName());
-        if (COMPLEX_CACHE.containsKey(name)) {
+        if (components.containsKey(name)) {
             Logger.warn(false, "Office", "Office component registration rejected: reason=duplicateName, name={}", name);
             throw new InternalException("Duplicate registration of component with the same name: " + name);
         }
         Class<?> clazz = object.getClass();
-        if (COMPLEX_CACHE.containsKey(clazz.getSimpleName())) {
+        if (components.containsKey(clazz.getSimpleName())) {
             Logger.warn(
                     false,
                     "Office",
@@ -108,15 +87,15 @@ public class Registry {
                     clazz.getName());
             throw new InternalException("Duplicate registration of component with the same type: " + clazz);
         }
-        COMPLEX_CACHE.putIfAbsent(name, object);
-        COMPLEX_CACHE.putIfAbsent(clazz.getSimpleName(), object);
+        components.put(name, object);
+        components.put(clazz.getSimpleName(), object);
         Logger.debug(
                 false,
                 "Office",
                 "Office component registration completed: name={}, type={}, cacheKeys={}",
                 name,
                 clazz.getName(),
-                COMPLEX_CACHE.size());
+                components.size());
     }
 
     /**
@@ -149,7 +128,7 @@ public class Registry {
      * @return {@code true} if the component is registered, {@code false} otherwise.
      */
     public boolean contains(String name) {
-        final boolean registered = COMPLEX_CACHE.containsKey(name);
+        final boolean registered = components.containsKey(name);
         Logger.trace(
                 false,
                 "Office",
@@ -166,7 +145,7 @@ public class Registry {
      * @return The component object, or {@code null} if not found.
      */
     public Object require(String name) {
-        final Object object = COMPLEX_CACHE.get(name);
+        final Object object = components.get(name);
         Logger.trace(
                 false,
                 "Office",
@@ -202,6 +181,14 @@ public class Registry {
                 clazz == null ? null : clazz.getName(),
                 ObjectKit.isNotEmpty(object));
         return object;
+    }
+
+    /**
+     * Clears only the providers owned by this registry instance.
+     */
+    @Override
+    public void close() {
+        components.clear();
     }
 
 }

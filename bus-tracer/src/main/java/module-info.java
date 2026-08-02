@@ -25,4 +25,6 @@
  */
 module bus.tracer {
 
+    exports org.miaixz.bus.tracer;
+
 }
