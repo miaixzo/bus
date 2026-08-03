@@ -26,7 +26,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -39,6 +40,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -650,13 +652,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
         }
 
-        return DataBufferUtils.join(bodyFlux, Math.toIntExact(Normal.MEBI_128)).flatMap(dataBuffer -> {
-            byte[] body = new byte[dataBuffer.readableByteCount()];
-            try {
-                dataBuffer.read(body);
-            } finally {
-                DataBufferUtils.release(dataBuffer);
-            }
+        return collectBufferedBody(bodyFlux).flatMap(body -> {
             if (body.length > 0) {
                 Logger.info(
                         false,
@@ -670,6 +666,51 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             }
             return buildEmptyBufferedResponse(responseBuilder, ip, method, path);
         }).switchIfEmpty(Mono.defer(() -> buildEmptyBufferedResponse(responseBuilder, ip, method, path)));
+    }
+
+    /**
+     * Collects a downstream response body while enforcing the buffered-response size limit.
+     *
+     * @param bodyFlux downstream response buffers
+     * @return collected response bytes
+     */
+    private Mono<byte[]> collectBufferedBody(Flux<DataBuffer> bodyFlux) {
+        return bodyFlux.doOnDiscard(PooledDataBuffer.class, this::releaseBuffer)
+                .collect(FastByteArrayOutputStream::new, this::appendBuffer)
+                .map(FastByteArrayOutputStream::toByteArray);
+    }
+
+    /**
+     * Appends one response buffer and always releases pooled storage after consumption.
+     *
+     * @param output     accumulated response bytes
+     * @param dataBuffer current response buffer
+     * @throws DataBufferLimitException when the buffered response exceeds the configured limit
+     */
+    private void appendBuffer(FastByteArrayOutputStream output, DataBuffer dataBuffer) {
+        try {
+            int readableBytes = dataBuffer.readableByteCount();
+            int limit = Math.toIntExact(Normal.MEBI_128);
+            if (readableBytes > limit - output.size()) {
+                throw new DataBufferLimitException("Exceeded buffered response limit of " + limit + " bytes");
+            }
+            byte[] chunk = new byte[readableBytes];
+            dataBuffer.read(chunk);
+            output.write(chunk, 0, chunk.length);
+        } finally {
+            releaseBuffer(dataBuffer);
+        }
+    }
+
+    /**
+     * Releases a pooled response buffer when it remains allocated.
+     *
+     * @param dataBuffer response buffer
+     */
+    private void releaseBuffer(DataBuffer dataBuffer) {
+        if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
+            pooledDataBuffer.release();
+        }
     }
 
     /**

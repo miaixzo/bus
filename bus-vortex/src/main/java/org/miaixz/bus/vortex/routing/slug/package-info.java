@@ -20,8 +20,8 @@
 /**
  * Provides matching and execution support for public slug-based forwarding routes.
  * <p>
- * Slug routes resolve registered assets, extract validated slug values from request paths, render target templates,
- * and forward requests to the resulting downstream URI.
+ * Slug routes resolve registered assets, extract validated slug values from request paths, render target templates, and
+ * forward requests to the resulting downstream URI.
  *
  * @author Kimi Liu
  * @since Java 21+
