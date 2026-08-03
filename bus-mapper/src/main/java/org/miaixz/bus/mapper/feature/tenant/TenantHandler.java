@@ -147,7 +147,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
 
         // If column is not configured, tenant feature is disabled
         if (column == null || column.trim().isEmpty()) {
-            Logger.debug(
+            Logger.trace(
                     false,
                     "Mapper",
                     "Tenant feature disabled: datasourceKey={}, reason={}",
@@ -178,7 +178,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
                         dsTenantPrefix + Args.TENANT_REQUIRED,
                         properties.getProperty(sharedTenantPrefix + Args.TENANT_REQUIRED, "false")));
 
-        Logger.debug(
+        Logger.trace(
                 false,
                 "Mapper",
                 "Tenant config resolve started: datasourceKey={}, columnPresent={}, ignoreConfigKey={}",
@@ -243,20 +243,20 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         // If multi-tenancy is not enabled, return true directly
         TenantConfig currentConfig = current();
         if (currentConfig == null) {
-            Logger.debug(true, "Mapper", "Tenant query skipped: method={}, reason={}", ms.getId(), "configMissing");
+            Logger.trace(true, "Mapper", "Tenant query skipped: method={}, reason={}", ms.getId(), "configMissing");
             return true;
         }
 
         // If tenant filtering is ignored, return true directly
         if (TenantContext.isIgnore()) {
-            Logger.debug(true, "Mapper", "Tenant query skipped: method={}, reason={}", ms.getId(), "contextIgnored");
+            Logger.trace(true, "Mapper", "Tenant query skipped: method={}, reason={}", ms.getId(), "contextIgnored");
             return true;
         }
 
         // Check if the Mapper should be ignored
         String mapperId = ms.getId();
         if (currentConfig.isIgnoreMapper(mapperId)) {
-            Logger.debug(true, "Mapper", "Tenant query skipped: method={}, reason={}", ms.getId(), "mapperIgnored");
+            Logger.trace(true, "Mapper", "Tenant query skipped: method={}, reason={}", ms.getId(), "mapperIgnored");
             return true;
         }
 
@@ -283,7 +283,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
             RowBounds rowBounds,
             ResultHandler resultHandler,
             BoundSql boundSql) {
-        Logger.debug(false, "Mapper", "Tenant query processing started: method={}", ms.getId());
+        Logger.trace(false, "Mapper", "Tenant query processing started: method={}", ms.getId());
         handleSqlInMappedStatement(ms, parameter, boundSql);
     }
 
@@ -296,7 +296,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
      */
     @Override
     public void update(Executor executor, MappedStatement ms, Object parameter) {
-        Logger.debug(
+        Logger.trace(
                 false,
                 "Mapper",
                 "Tenant update processing started: method={}, sqlCommandType={}",
@@ -336,7 +336,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         // This prevents duplicate tenant conditions and avoids unnecessary re-processing
         String tenantColumn = currentConfig.getColumn();
         if (hasTenantWhereCondition(originalSql, tenantColumn)) {
-            Logger.debug(
+            Logger.trace(
                     false,
                     "Mapper",
                     "Tenant SQL unchanged: method={}, reason={}, tenantColumnPresent={}",
@@ -351,7 +351,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         TenantBuilder builder = new TenantBuilder(currentConfig);
         String tenantSql = builder.handleSql(originalSql, Args.TENANT_ID);
 
-        Logger.debug(
+        Logger.trace(
                 false,
                 "Mapper",
                 "Tenant ignore check completed: method={}, ignoreTableCount={}, tenantRequired={}",
@@ -361,7 +361,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
 
         // If SQL wasn't modified (table is ignored), skip tenant ID validation
         if (originalSql.equals(tenantSql)) {
-            Logger.debug(false, "Mapper", "Tenant SQL unchanged: method={}, reason={}", ms.getId(), "tableIgnored");
+            Logger.trace(false, "Mapper", "Tenant SQL unchanged: method={}, reason={}", ms.getId(), "tableIgnored");
             return;
         }
 
@@ -380,7 +380,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
 
         // If SQL hasn't changed, return directly
         if (originalSql.equals(actualSql)) {
-            Logger.debug(false, "Mapper", "Tenant SQL unchanged: method={}, reason={}", ms.getId(), "builderNoChange");
+            Logger.trace(false, "Mapper", "Tenant SQL unchanged: method={}, reason={}", ms.getId(), "builderNoChange");
             return;
         }
 

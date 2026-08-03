@@ -131,11 +131,11 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
             BoundSql boundSql) {
         TablePrefixConfig currentConfig = current();
         if (currentConfig == null || currentConfig.getProvider() == null) {
-            Logger.debug(true, "Mapper", "Config not found, skipping: method={}", ms.getId());
+            Logger.trace(true, "Mapper", "Config not found, skipping: method={}", ms.getId());
             return;
         }
 
-        Logger.debug(false, "Mapper", "Processing query: method={}", ms.getId());
+        Logger.trace(false, "Mapper", "Processing query: method={}", ms.getId());
         processSqlInMappedStatement(ms, boundSql, parameter, currentConfig);
     }
 
@@ -150,11 +150,11 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
     public void update(Executor executor, MappedStatement ms, Object parameter) {
         TablePrefixConfig currentConfig = current();
         if (currentConfig == null || currentConfig.getProvider() == null) {
-            Logger.debug(true, "Mapper", "Config not found, skipping: method={}", ms.getId());
+            Logger.trace(true, "Mapper", "Config not found, skipping: method={}", ms.getId());
             return;
         }
 
-        Logger.debug(false, "Mapper", "Processing insert/update: method={}", ms.getId());
+        Logger.trace(false, "Mapper", "Processing insert/update: method={}", ms.getId());
         processSqlInMappedStatement(ms, null, parameter, currentConfig);
     }
 
@@ -251,7 +251,7 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
             TablePrefixConfig config) {
         String prefix = config.getProvider().getPrefix();
         if (StringKit.isEmpty(prefix)) {
-            Logger.debug(true, "Mapper", "Prefix is empty, skipping");
+            Logger.trace(true, "Mapper", "Prefix is empty, skipping");
             return;
         }
 
@@ -276,7 +276,7 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
                 Logger.debug(false, "Mapper", "Applied: prefix={}, method={}", prefix, ms.getId());
             } else {
                 // SQL unchanged (table in ignore list or no match)
-                Logger.debug(false, "Mapper", "SQL unchanged: method={}", ms.getId());
+                Logger.trace(false, "Mapper", "SQL unchanged: method={}", ms.getId());
             }
         } catch (Exception e) {
             Logger.warn(

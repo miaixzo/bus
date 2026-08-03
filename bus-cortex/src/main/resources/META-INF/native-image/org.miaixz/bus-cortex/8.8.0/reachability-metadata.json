@@ -6519,6 +6519,13 @@
           ]
         },
         {
+          "name": "registerResolved",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.registry.api.ApiAssets",
+            "org.miaixz.bus.cortex.registry.api.ApiAssets"
+          ]
+        },
+        {
           "name": "supportsInstances",
           "parameterTypes": []
         },
@@ -9462,6 +9469,16 @@
           ]
         },
         {
+          "name": "delete",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Type",
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.cortex.Assets",
+            "boolean"
+          ]
+        },
+        {
           "name": "dependenciesOf",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Assets"
@@ -9660,21 +9677,35 @@
           ]
         },
         {
+          "name": "upsert",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Assets",
+            "org.miaixz.bus.cortex.Assets",
+            "boolean"
+          ]
+        },
+        {
           "name": "upsertApi",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.registry.api.ApiAssets"
+            "org.miaixz.bus.cortex.registry.api.ApiAssets",
+            "org.miaixz.bus.cortex.registry.api.ApiAssets",
+            "boolean"
           ]
         },
         {
           "name": "upsertMcp",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.registry.mcp.McpAssets"
+            "org.miaixz.bus.cortex.registry.mcp.McpAssets",
+            "org.miaixz.bus.cortex.registry.mcp.McpAssets",
+            "boolean"
           ]
         },
         {
           "name": "upsertPrompt",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.registry.prompt.PromptAssets"
+            "org.miaixz.bus.cortex.registry.prompt.PromptAssets",
+            "org.miaixz.bus.cortex.registry.prompt.PromptAssets",
+            "boolean"
           ]
         },
         {
@@ -9700,6 +9731,15 @@
             "org.miaixz.bus.cortex.Type",
             "java.lang.String",
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Type",
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.cortex.Assets"
           ]
         },
         {
@@ -9758,6 +9798,13 @@
         {
           "name": "upsert",
           "parameterTypes": [
+            "org.miaixz.bus.cortex.Assets"
+          ]
+        },
+        {
+          "name": "upsert",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Assets",
             "org.miaixz.bus.cortex.Assets"
           ]
         }
@@ -10516,10 +10563,26 @@
           ]
         },
         {
+          "name": "deleteEntry",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.cortex.Assets"
+          ]
+        },
+        {
           "name": "deregister",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "deregisterResolved",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.cortex.Assets"
           ]
         },
         {
@@ -10575,6 +10638,14 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.Assets",
             "org.miaixz.bus.cortex.Instance"
+          ]
+        },
+        {
+          "name": "persistEntry",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Assets",
+            "org.miaixz.bus.cortex.Instance",
+            "org.miaixz.bus.cortex.Assets"
           ]
         },
         {
@@ -10638,6 +10709,13 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.Assets",
             "org.miaixz.bus.cortex.Instance"
+          ]
+        },
+        {
+          "name": "registerResolved",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Assets",
+            "org.miaixz.bus.cortex.Assets"
           ]
         },
         {

@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.registry;
 
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
 
 /**
@@ -29,6 +30,29 @@ import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
  * @since Java 21+
  */
 public interface RegistryBatchOperations extends RegistryOperations {
+
+    /**
+     * Upserts one entry using the snapshot already resolved for the current batch.
+     *
+     * @param entry    entry to store
+     * @param existing existing snapshot or {@code null} when the route is absent
+     * @return stored entry
+     */
+    default Assets upsert(Assets entry, Assets existing) {
+        return upsert(entry);
+    }
+
+    /**
+     * Deletes one entry using the snapshot already resolved for the current batch.
+     *
+     * @param type      registry type
+     * @param namespace namespace
+     * @param id        asset identifier
+     * @param existing  existing snapshot
+     */
+    default void delete(Type type, String namespace, String id, Assets existing) {
+        delete(type, namespace, id);
+    }
 
     /**
      * Prepares a source entry with operation defaults.

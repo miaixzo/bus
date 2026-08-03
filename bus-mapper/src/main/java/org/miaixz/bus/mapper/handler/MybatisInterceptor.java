@@ -151,27 +151,11 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             logging(ms, boundSql, start);
             return result;
         } else if (target instanceof StatementHandler) {
-            Object result = handleStatementHandler((StatementHandler) target, args, invocation);
-            MetaObject metaObject = getMetaObject(target);
-            MappedStatement ms = getMappedStatement(metaObject);
-            BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
-            logging(ms, boundSql, start);
-            return result;
+            return handleStatementHandler((StatementHandler) target, args, invocation);
         }
 
         // Default case for unhandled targets (e.g. ResultSetHandler fallback)
-        Object result = invocation.proceed();
-
-        // Try to log if possible
-        MetaObject metaObject = args != null && args.length > 0 && args[0] instanceof MappedStatement
-                ? getMetaObject(args[0])
-                : null;
-        if (metaObject != null) {
-            MappedStatement ms = getMappedStatement(metaObject);
-            BoundSql boundSql = ms.getBoundSql(args.length > 1 ? args[1] : null);
-            logging(ms, boundSql, start);
-        }
-        return result;
+        return invocation.proceed();
     }
 
     /**
@@ -263,7 +247,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
 
         // O(1) lookup: only get handlers that actually override query methods
         List<MapperHandler> queryHandlers = handlerRegistry.getHandlers(Handler.QUERY);
-        Logger.debug(
+        Logger.trace(
                 true,
                 "Mapper",
                 "MyBatis query interception started: method={}, command={}, queryHandlers={}, rowOffset={}, rowLimit={}",
@@ -288,7 +272,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             // Allow handler to execute custom query logic
             handler.query(handlerResult, executor, ms, parameter, rowBounds, resultHandler, boundSql);
             if (handlerResult[0] != null) {
-                Logger.debug(
+                Logger.trace(
                         false,
                         "Mapper",
                         "MyBatis query result supplied by handler: method={}, handler={}",
@@ -305,7 +289,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             args[5] = boundSql;
         }
         Object result = executor.query(ms, parameter, rowBounds, resultHandler, finalCacheKey, boundSql);
-        Logger.debug(
+        Logger.trace(
                 false,
                 "Mapper",
                 "MyBatis query completed: method={}, resultType={}",
@@ -348,7 +332,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             BoundSql boundSql) throws Throwable {
         // O(1) lookup: only get handlers that actually override update methods
         List<MapperHandler> updateHandlers = handlerRegistry.getHandlers(Handler.UPDATE);
-        Logger.debug(
+        Logger.trace(
                 true,
                 "Mapper",
                 "MyBatis update interception started: method={}, command={}, updateHandlers={}",
@@ -369,7 +353,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
             handler.update(executor, ms, parameter);
         }
         Object result = invocation.proceed();
-        Logger.debug(false, "Mapper", "MyBatis update completed: method={}, affectedRows={}", ms.getId(), result);
+        Logger.trace(false, "Mapper", "MyBatis update completed: method={}, affectedRows={}", ms.getId(), result);
         return result;
     }
 

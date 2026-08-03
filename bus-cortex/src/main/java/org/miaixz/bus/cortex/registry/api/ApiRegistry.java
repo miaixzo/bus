@@ -118,11 +118,33 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         }
         ApiAssets prepared = normalizeService(service, null);
         ApiAssets existing = loadExisting(prepared);
-        persistEntry(prepared, null);
+        persistEntry(prepared, null, existing);
         publishChange(
                 existing == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
                 prepared,
                 existing,
+                null,
+                null);
+    }
+
+    /**
+     * Registers one service definition using the snapshot resolved for the current batch.
+     *
+     * @param service  service definition to register
+     * @param existing existing service snapshot or {@code null}
+     */
+    @Override
+    public void registerResolved(ApiAssets service, ApiAssets existing) {
+        if (service == null) {
+            return;
+        }
+        ApiAssets prepared = normalizeService(service, null);
+        ApiAssets previous = existing == null ? null : normalizeService(existing, null);
+        persistEntry(prepared, null, previous);
+        publishChange(
+                previous == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
+                prepared,
+                previous,
                 null,
                 null);
     }
@@ -152,7 +174,7 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         String instKey = keying.key(Keying.RegistrySpec.instance(ns, appId, method, version, fingerprint));
         cacheX.write(instKey, JsonKit.toJsonString(instance), ttl);
         ApiAssets existing = loadExisting(prepared);
-        persistEntry(prepared, instance);
+        persistEntry(prepared, instance, existing);
         publishChange(
                 existing == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
                 prepared,

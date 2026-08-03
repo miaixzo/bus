@@ -310,11 +310,32 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         T prepared = normalizeEntry(entry);
         T existing = loadExisting(prepared);
-        persistEntry(prepared, null);
+        persistEntry(prepared, null, existing);
         publishChange(
                 existing == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
                 prepared,
                 existing,
+                null,
+                null);
+    }
+
+    /**
+     * Persists an entry using the existing snapshot already resolved by a batch operation.
+     *
+     * @param entry    entry to create or update
+     * @param existing existing snapshot or {@code null} when the route is absent
+     */
+    public void registerResolved(T entry, T existing) {
+        if (entry == null) {
+            return;
+        }
+        T prepared = normalizeEntry(entry);
+        T previous = existing == null ? null : normalizeEntry(existing);
+        persistEntry(prepared, null, previous);
+        publishChange(
+                previous == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
+                prepared,
+                previous,
                 null,
                 null);
     }
@@ -334,10 +355,31 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             return;
         }
         long tombstoneTime = System.currentTimeMillis();
-        deleteEntry(ns, id);
+        deleteEntry(ns, id, existing);
         existing.setStatus(-1);
         existing.setModified(tombstoneTime);
         publishChange(RegistryChange.Action.DEREGISTER, existing, existing, null, null);
+    }
+
+    /**
+     * Removes an entry using the existing snapshot already resolved by a batch operation.
+     *
+     * @param namespace entry namespace
+     * @param id        entry identifier
+     * @param existing  existing snapshot
+     */
+    public void deregisterResolved(String namespace, String id, T existing) {
+        String ns = normalizeNamespace(namespace);
+        if (existing == null) {
+            cacheX.remove(keying.key(Keying.RegistrySpec.entry(ns, registryType, id)));
+            return;
+        }
+        T previous = normalizeEntry(existing);
+        long tombstoneTime = System.currentTimeMillis();
+        deleteEntry(ns, id, previous);
+        previous.setStatus(-1);
+        previous.setModified(tombstoneTime);
+        publishChange(RegistryChange.Action.DEREGISTER, previous, previous, null, null);
     }
 
     /**
@@ -382,7 +424,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         }
         T prepared = normalizeEntry(entry);
         T existing = loadExisting(prepared);
-        persistEntry(prepared, instance);
+        persistEntry(prepared, instance, existing);
         publishChange(
                 existing == null ? RegistryChange.Action.REGISTER : RegistryChange.Action.UPDATE,
                 prepared,
@@ -572,15 +614,26 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Persists the entry to durable state and refreshes the local cache projection.
+     * Persists one entry through the compatibility path used by registry subclasses.
      *
      * @param prepared normalized entry
      * @param instance optional runtime instance
      */
     protected void persistEntry(T prepared, Instance instance) {
+        persistEntry(prepared, instance, loadExisting(prepared));
+    }
+
+    /**
+     * Persists the entry to durable state and refreshes the local cache projection.
+     *
+     * @param prepared normalized entry
+     * @param instance optional runtime instance
+     * @param existing existing snapshot or {@code null}
+     */
+    protected void persistEntry(T prepared, Instance instance, T existing) {
         if (store != null && storeSupports(Trait.DURABLE)) {
             if (instance == null) {
-                store.save(prepared);
+                store.save(prepared, existing);
             } else {
                 store.save(prepared, instance);
             }
@@ -591,14 +644,26 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
     }
 
     /**
-     * Deletes the entry from durable state and local cache.
+     * Deletes one entry through the compatibility path used by registry subclasses.
      *
      * @param namespace namespace
      * @param id        entry identifier
      */
     protected void deleteEntry(String namespace, String id) {
+        T existing = store == null ? null : store.find(registryType, namespace, id);
+        deleteEntry(namespace, id, existing);
+    }
+
+    /**
+     * Deletes the entry from durable state and local cache.
+     *
+     * @param namespace namespace
+     * @param id        entry identifier
+     * @param existing  existing snapshot
+     */
+    protected void deleteEntry(String namespace, String id, T existing) {
         if (store != null && storeSupports(Trait.DURABLE)) {
-            store.delete(registryType, namespace, id);
+            store.delete(registryType, namespace, id, existing);
         } else if (store != null) {
             capabilityFallback("delete", Trait.DURABLE, "cache remove");
         }

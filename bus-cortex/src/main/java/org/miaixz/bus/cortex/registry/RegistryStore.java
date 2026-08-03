@@ -47,6 +47,19 @@ public interface RegistryStore<T extends Assets> {
     void save(T entry);
 
     /**
+     * Saves one entry using an existing snapshot supplied by the mutation coordinator.
+     * <p>
+     * Stores that do not need the snapshot retain the ordinary save behavior.
+     * </p>
+     *
+     * @param entry    registry entry
+     * @param existing existing snapshot or {@code null} when the entry is absent
+     */
+    default void save(T entry, T existing) {
+        save(entry);
+    }
+
+    /**
      * Saves a batch of entries.
      *
      * @param entries registry entries
@@ -80,6 +93,18 @@ public interface RegistryStore<T extends Assets> {
      * @param id        entry identifier
      */
     void delete(Type type, String namespace, String id);
+
+    /**
+     * Deletes one entry using an existing snapshot supplied by the mutation coordinator.
+     *
+     * @param type      asset type
+     * @param namespace namespace
+     * @param id        entry identifier
+     * @param existing  existing snapshot
+     */
+    default void delete(Type type, String namespace, String id, T existing) {
+        delete(type, namespace, id);
+    }
 
     /**
      * Deletes a runtime instance by method/version/fingerprint.
