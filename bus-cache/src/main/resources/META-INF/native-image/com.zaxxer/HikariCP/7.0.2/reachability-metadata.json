@@ -1,0 +1,282 @@
+{
+  "reflection": [
+    {
+      "type": "com.zaxxer.hikari.HikariConfig",
+      "methods": [
+        {
+          "name": "setAllowPoolSuspension",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAutoCommit",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setCatalog",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setConnectionInitSql",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setConnectionTestQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setConnectionTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setCredentials",
+          "parameterTypes": [
+            "com.zaxxer.hikari.util.Credentials"
+          ]
+        },
+        {
+          "name": "setCredentialsProvider",
+          "parameterTypes": [
+            "com.zaxxer.hikari.HikariCredentialsProvider"
+          ]
+        },
+        {
+          "name": "setCredentialsProviderClassName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDataSource",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "setDataSourceClassName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDataSourceJNDI",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDataSourceProperties",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "setDriverClassName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setExceptionOverride",
+          "parameterTypes": [
+            "com.zaxxer.hikari.SQLExceptionOverride"
+          ]
+        },
+        {
+          "name": "setExceptionOverrideClassName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHealthCheckProperties",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "setHealthCheckRegistry",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setIdleTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setInitializationFailTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setIsolateInternalQueries",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setJdbcUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKeepaliveTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setLeakDetectionThreshold",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setMaxLifetime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setMaximumPoolSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMetricRegistry",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setMetricsTrackerFactory",
+          "parameterTypes": [
+            "com.zaxxer.hikari.metrics.MetricsTrackerFactory"
+          ]
+        },
+        {
+          "name": "setMinimumIdle",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPoolName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setReadOnly",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setRegisterMbeans",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setScheduledExecutor",
+          "parameterTypes": [
+            "java.util.concurrent.ScheduledExecutorService"
+          ]
+        },
+        {
+          "name": "setSchema",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setThreadFactory",
+          "parameterTypes": [
+            "java.util.concurrent.ThreadFactory"
+          ]
+        },
+        {
+          "name": "setTransactionIsolation",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUsername",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setValidationTimeout",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.zaxxer.hikari.HikariDataSource",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHealthCheckRegistry",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setLoginTimeout",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setLogWriter",
+          "parameterTypes": [
+            "java.io.PrintWriter"
+          ]
+        },
+        {
+          "name": "setMetricRegistry",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setMetricsTrackerFactory",
+          "parameterTypes": [
+            "com.zaxxer.hikari.metrics.MetricsTrackerFactory"
+          ]
+        }
+      ]
+    }
+  ]
+}

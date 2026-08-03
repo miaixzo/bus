@@ -1,0 +1,18 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "7.0.2",
+    "source-code-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-sources.jar",
+    "repository-url": "https://github.com/brettwooldridge/HikariCP",
+    "test-code-url": "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-$version$/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/$version$/HikariCP-$version$-javadoc.jar",
+    "description": "HikariCP is a high-performance JDBC connection pool for Java applications. It manages database connections efficiently to reduce latency and resource overhead.",
+    "tested-versions": [
+      "7.0.2",
+      "7.1.0"
+    ],
+    "allowed-packages": [
+      "com.zaxxer.hikari"
+    ]
+  }
+]
