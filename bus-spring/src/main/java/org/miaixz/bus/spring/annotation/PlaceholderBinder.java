@@ -26,53 +26,42 @@ import org.springframework.core.env.Environment;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Interface for handling placeholder resolution and binding of environment properties to objects.
- * <p>
- * This interface provides methods to bind environment properties to a target class or to resolve placeholders within a
- * string. It supports both Spring Boot 2.x and 1.x binding mechanisms.
+ * Resolves placeholders and binds environment properties to typed objects.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public interface PlaceHolderBinder {
+public interface PlaceholderBinder {
 
     /**
-     * Binds global resources from the {@link Environment} to a specified target class.
-     * <p>
-     * This static method attempts to bind properties from the environment to an instance of the {@code targetClass}. It
-     * first tries to use the Spring Boot 2.x {@code Binder} mechanism. If that fails (e.g., due to an older Spring Boot
-     * version), it falls back to a Spring Boot 1.x compatible binding mechanism using reflection.
-     * </p>
+     * Binds properties from the environment to a target type.
      *
-     * @param environment The Spring {@link Environment} containing the configuration properties.
-     * @param targetClass The {@link Class} of the target object to which properties will be bound.
-     * @param prefix      The prefix for the properties to bind (e.g., "bus.cache").
-     * @param <T>         The type of the target object.
-     * @return An instance of the {@code targetClass} with bound properties, or {@code null} if binding fails.
-     * @throws RuntimeException if an unexpected reflection error occurs during binding.
+     * @param environment environment containing configuration properties
+     * @param targetClass target configuration type
+     * @param prefix      property prefix
+     * @param <T>         target type
+     * @return bound object, or {@code null} when the prefix is absent
      */
     static <T> T bind(Environment environment, Class<T> targetClass, String prefix) {
-        // Directly use Spring Boot 2.x/3.x Binder
         return Binder.get(environment).bind(prefix, Bindable.of(targetClass)).orElse(null);
     }
 
     /**
-     * Resolves placeholders in a given string against the provided {@link Environment}.
+     * Resolves placeholders through the supplied environment.
      *
-     * @param environment The Spring {@link Environment} to use for placeholder resolution.
-     * @param string      The string containing placeholders (e.g., "${my.property}").
-     * @return The string with all placeholders resolved.
+     * @param environment environment used for resolution
+     * @param string      text containing placeholders
+     * @return resolved text
      */
     default String bind(Environment environment, String string) {
         return environment.resolvePlaceholders(string);
     }
 
     /**
-     * Resolves placeholders in a given string. This default implementation returns an empty string. Implementations
-     * should override this to provide actual placeholder resolution if needed without an explicit Environment.
+     * Resolves placeholders without an explicit environment.
      *
-     * @param string The string containing placeholders.
-     * @return The string with placeholders resolved, or an empty string by default.
+     * @param string text containing placeholders
+     * @return resolved text, or an empty value when unsupported
      */
     default String bind(String string) {
         return Normal.EMPTY;

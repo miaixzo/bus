@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Context;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 
 /**
@@ -64,16 +63,16 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
 public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefixConfig, TablePrefixProvider> {
 
     /**
-     * Default constructor (uses default configuration).
+     * Initializes table-prefix handling without a preconfigured default.
      */
     public TablePrefixHandler() {
         super();
     }
 
     /**
-     * Constructs a TablePrefixHandler with the specified file configuration.
+     * Initializes table-prefix handling with an explicit default configuration.
      *
-     * @param config the prefix configuration from file
+     * @param config default table-prefix configuration
      */
     public TablePrefixHandler(TablePrefixConfig config) {
         super(config);
@@ -170,9 +169,9 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
     }
 
     /**
-     * Resolves datasource-specific table prefix configuration from mapper properties.
+     * Resolves database-specific table prefix configuration from Mapper properties.
      *
-     * @param datasourceKey the datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    the mapper configuration properties
      * @param provider      the optional table prefix provider
      * @return the table prefix configuration, or {@code null} when no prefix can be resolved
@@ -183,13 +182,13 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
     }
 
     /**
-     * Resolves table prefix configuration with the same datasource-specific and global property rules used by this
+     * Resolves table prefix configuration with the same database-specific and global property rules used by this
      * handler.
      * <p>
-     * Resolution order is datasource-bound configuration, shared global configuration, then default global
+     * Resolution order is database-specific configuration, shared global configuration, then legacy-default
      * configuration.
      *
-     * @param datasourceKey the datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    the mapper configuration properties
      * @param provider      the optional table prefix provider
      * @return the table prefix configuration, or {@code null} when no prefix can be resolved
@@ -204,9 +203,8 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
         if (properties == null) {
             return TablePrefixConfig.builder().provider(provider).ignore(Collections.emptyList()).build();
         }
-        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Holder.getDefault();
+        String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Normal.DEFAULT;
         String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-        String defaultPrefix = Holder.getDefault() + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
         String legacyDefaultPrefix = "default" + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
         String dsPrefix = key + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
 
@@ -214,17 +212,13 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
                 dsPrefix + Args.TABLE_PREFIX,
                 properties.getProperty(
                         sharedPrefix + Args.TABLE_PREFIX,
-                        properties.getProperty(
-                                defaultPrefix + Args.TABLE_PREFIX,
-                                properties.getProperty(legacyDefaultPrefix + Args.TABLE_PREFIX, Normal.EMPTY))));
+                        properties.getProperty(legacyDefaultPrefix + Args.TABLE_PREFIX, Normal.EMPTY)));
 
         String ignore = properties.getProperty(
                 dsPrefix + Args.PROP_IGNORE,
                 properties.getProperty(
                         sharedPrefix + Args.PROP_IGNORE,
-                        properties.getProperty(
-                                defaultPrefix + Args.PROP_IGNORE,
-                                properties.getProperty(legacyDefaultPrefix + Args.PROP_IGNORE, Normal.EMPTY))));
+                        properties.getProperty(legacyDefaultPrefix + Args.PROP_IGNORE, Normal.EMPTY)));
 
         List<String> ignoreTables = StringKit.isNotEmpty(ignore) ? Arrays.stream(ignore.split(Symbol.COMMA))
                 .map(String::trim).filter(ObjectKit::isNotEmpty).collect(Collectors.toList()) : Collections.emptyList();

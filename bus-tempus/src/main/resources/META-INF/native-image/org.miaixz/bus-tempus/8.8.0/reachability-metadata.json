@@ -1988,10 +1988,6 @@
           "parameterTypes": []
         },
         {
-          "name": "resolveDefaultAdapter",
-          "parameterTypes": []
-        },
-        {
           "name": "toData",
           "parameterTypes": [
             "java.lang.Object"
@@ -2030,18 +2026,14 @@
       "type": "org.miaixz.bus.tempus.temporal.payload.AbstractPayloadConverter$1",
       "fields": [
         {
-          "name": "val$parseObject"
-        },
-        {
-          "name": "val$toJsonBytes"
+          "name": "val$provider"
         }
       ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.reflect.Method",
-            "java.lang.reflect.Method"
+            "org.miaixz.bus.extra.json.JsonProvider"
           ]
         },
         {
@@ -2384,7 +2376,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.String"
+            "org.miaixz.bus.extra.json.JsonProvider"
           ]
         }
       ]

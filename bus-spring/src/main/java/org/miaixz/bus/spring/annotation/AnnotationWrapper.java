@@ -50,7 +50,7 @@ public class AnnotationWrapper<A extends Annotation> {
     /**
      * The placeholder binder responsible for resolving annotation attribute values.
      */
-    private PlaceHolderBinder binder;
+    private PlaceholderBinder binder;
 
     /**
      * The Spring environment used for resolving placeholders.
@@ -89,12 +89,12 @@ public class AnnotationWrapper<A extends Annotation> {
     }
 
     /**
-     * Sets the {@link PlaceHolderBinder} to be used for resolving annotation attributes.
+     * Sets the {@link PlaceholderBinder} to be used for resolving annotation attributes.
      *
-     * @param binder The {@link PlaceHolderBinder} instance.
+     * @param binder The {@link PlaceholderBinder} instance.
      * @return This {@code AnnotationWrapper} instance for method chaining.
      */
-    public AnnotationWrapper<A> withBinder(PlaceHolderBinder binder) {
+    public AnnotationWrapper<A> withBinder(PlaceholderBinder binder) {
         this.binder = binder;
         return this;
     }
@@ -132,7 +132,7 @@ public class AnnotationWrapper<A extends Annotation> {
     private A build() {
         ClassLoader cl = this.getClass().getClassLoader();
         Class<?>[] exposedInterface = { delegate.annotationType(), WrapperAnnotation.class };
-        return (A) Proxy.newProxyInstance(cl, exposedInterface, new PlaceHolderHandler(delegate, binder, environment));
+        return (A) Proxy.newProxyInstance(cl, exposedInterface, new PlaceholderHandler(delegate, binder, environment));
     }
 
 }

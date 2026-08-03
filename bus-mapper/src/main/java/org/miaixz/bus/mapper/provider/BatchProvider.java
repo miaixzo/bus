@@ -88,11 +88,11 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  *     session.commit(); // Execute all inserts as a batch
  * }
  *
- * // Multi-datasource with dynamic detection
- * Holder.setKey("oracle_ds"); // Switch to Oracle datasource
+ * // Data source selection is owned by the JDBC integration
+ * // Run this method inside the JDBC scope for "oracle_ds"
  * // Use JDBC batch fallback instead of native insertUpBatch(users)
  *
- * Holder.setKey("mysql_ds"); // Switch to MySQL datasource
+ * // Run this method inside the JDBC scope for "mysql_ds"
  * userMapper.insertUpBatch(users); // Automatically uses ON DUPLICATE KEY UPDATE
  * }</pre>
  *
@@ -102,14 +102,14 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class BatchProvider extends BasicProvider {
 
     /**
-     * Constructs a new BatchProvider instance.
+     * Initializes the batch SQL provider.
      */
     public BatchProvider() {
         // No initialization required.
     }
 
     /**
-     * Build Multi-Values INSERT SQL.
+     * Builds a multi-row {@code INSERT} statement.
      *
      * <p>
      * Generates SQL similar to:
@@ -122,9 +122,9 @@ public class BatchProvider extends BasicProvider {
      * &lt;/foreach&gt;
      * </pre>
      *
-     * @param context Provider context
-     * @param list    Batch entities, must not be null or empty
-     * @return SQL statement with foreach tags
+     * @param context provider context containing Mapper metadata
+     * @param list    batch entities; must not be {@code null} or empty
+     * @return SQL statement containing MyBatis {@code foreach} tags
      */
     public static String insertBatch(ProviderContext context, @Param("list") List<?> list) {
         Assert.notEmpty(list, "Parameter cannot be empty");
@@ -132,7 +132,7 @@ public class BatchProvider extends BasicProvider {
     }
 
     /**
-     * Build Batch UPSERT SQL.
+     * Builds a dialect-specific batch upsert statement.
      *
      * <p>
      * Generates database-specific batch UPSERT statements:
@@ -158,11 +158,11 @@ public class BatchProvider extends BasicProvider {
      * </pre>
      *
      * <p>
-     * The SQL is generated dynamically at runtime based on the current datasource's dialect.
+     * The SQL is generated at execution time from the dialect registered for the effective JDBC data source key.
      *
-     * @param context Provider context containing entity metadata
-     * @param list    Batch entities, must not be null or empty
-     * @return SQL statement with foreach tags for batch UPSERT
+     * @param context provider context containing entity metadata
+     * @param list    batch entities; must not be {@code null} or empty
+     * @return SQL statement containing MyBatis {@code foreach} tags for batch upsert
      */
     public static String insertUpBatch(ProviderContext context, @Param("list") List<?> list) {
         Assert.notEmpty(list, "Parameter cannot be empty");
@@ -170,7 +170,7 @@ public class BatchProvider extends BasicProvider {
     }
 
     /**
-     * Build Multi-Values INSERT SQL (insert only non-null fields).
+     * Builds a multi-row {@code INSERT} statement containing only non-null fields.
      *
      * <p>
      * Generates SQL similar to:
@@ -191,9 +191,9 @@ public class BatchProvider extends BasicProvider {
      * &lt;/foreach&gt;
      * </pre>
      *
-     * @param context Provider context
-     * @param list    Batch entities, must not be null or empty
-     * @return SQL statement
+     * @param context provider context containing entity metadata
+     * @param list    batch entities; must not be {@code null} or empty
+     * @return generated SQL statement
      */
     public static String insertSelectiveBatch(ProviderContext context, @Param("list") List<?> list) {
         Assert.notEmpty(list, "Parameter cannot be empty");
@@ -201,16 +201,16 @@ public class BatchProvider extends BasicProvider {
     }
 
     /**
-     * Build Batch UPSERT SQL (insert only non-null fields).
+     * Builds a batch upsert statement containing only non-null fields.
      *
      * <p>
      * Generates UPSERT statements with dynamic SQL for only non-null fields on dialects that support native batch
      * UPSERT SQL. Other dialects must use JDBC batch fallback at the service layer.
      * </p>
      *
-     * @param context Provider context
-     * @param list    Batch entities, must not be null or empty
-     * @return SQL statement
+     * @param context provider context containing entity metadata
+     * @param list    batch entities; must not be {@code null} or empty
+     * @return generated SQL statement
      */
     public static String insertUpSelectiveBatch(ProviderContext context, @Param("list") List<?> list) {
         Assert.notEmpty(list, "Parameter cannot be empty");

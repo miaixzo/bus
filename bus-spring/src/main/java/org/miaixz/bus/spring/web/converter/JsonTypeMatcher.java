@@ -37,7 +37,7 @@ import org.miaixz.bus.spring.web.resolver.BindingDefaults;
  * @author Kimi Liu
  * @since Java 21+
  */
-final class JsonTypeMatcher {
+class JsonTypeMatcher {
 
     /**
      * Built-in safe default so all org.miaixz.bus types work even with no user config.

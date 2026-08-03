@@ -48,6 +48,10 @@ public final class GeniusBuilder {
      */
     public static final String CORTEX = "bus.cortex";
     /**
+     * Configuration prefix for compatible Bus datasource definitions.
+     */
+    public static final String DATASOURCE = "bus.datasource";
+    /**
      * Configuration prefix for dubbo.
      */
     public static final String DUBBO = "bus.dubbo";
@@ -71,10 +75,6 @@ public final class GeniusBuilder {
      * Configuration prefix for image.
      */
     public static final String IMAGE = "bus.image";
-    /**
-     * Configuration prefix for jdbc.
-     */
-    public static final String JDBC = "bus.jdbc";
     /**
      * Configuration prefix for json.
      */

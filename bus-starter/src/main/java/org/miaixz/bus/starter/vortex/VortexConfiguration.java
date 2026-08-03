@@ -26,7 +26,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +44,9 @@ import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableVortex;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
@@ -121,7 +122,7 @@ import reactor.netty.http.server.HttpServer;
 @EnableConfigurationProperties(value = { VortexProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = { "org.miaixz.bus.vortex.Context", "reactor.netty.http.server.HttpServer" })
-@ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableVortex.class, prefix = GeniusBuilder.VORTEX)
 public class VortexConfiguration {
 
     /**

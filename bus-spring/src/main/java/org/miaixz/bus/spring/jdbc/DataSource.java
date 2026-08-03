@@ -17,40 +17,34 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.annotation;
+package org.miaixz.bus.spring.jdbc;
 
-import org.springframework.core.env.Environment;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Default implementation of {@link PlaceHolderBinder} that resolves placeholders from the Spring {@link Environment}.
+ * Selects a named JDBC datasource for a Spring-managed service invocation.
+ * <p>
+ * A method declaration overrides a declaration on its containing service type. The routing integration selects the key
+ * before transaction advice acquires a connection and restores the exact parent selection after normal completion or
+ * failure.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class DefaultPlaceHolderBinder implements PlaceHolderBinder {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface DataSource {
 
     /**
-     * Initializes a stateless binder that delegates placeholder resolution to a supplied Spring environment.
-     */
-    public DefaultPlaceHolderBinder() {
-        // No initialization required.
-    }
-
-    /**
-     * Singleton instance of {@code DefaultPlaceHolderBinder}.
-     */
-    public static final DefaultPlaceHolderBinder INSTANCE = new DefaultPlaceHolderBinder();
-
-    /**
-     * Resolves placeholders in the given string using the provided Spring {@link Environment}.
+     * Returns the configured JDBC datasource routing key.
      *
-     * @param environment The Spring {@link Environment} to use for placeholder resolution.
-     * @param string      The string containing placeholders (e.g., "${my.property}").
-     * @return The string with all placeholders resolved.
+     * @return nonblank datasource routing key
      */
-    @Override
-    public String bind(Environment environment, String string) {
-        return environment.resolvePlaceholders(string);
-    }
+    String value();
 
 }

@@ -17,9 +17,10 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.jdbc;
+package org.miaixz.bus.spring.jdbc;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -29,14 +30,11 @@ import org.springframework.core.annotation.Order;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.annotation.DataSource;
 
 /**
- * AOP aspect for dynamic data source switching.
+ * Applies annotation-driven datasource routing around Spring-managed method invocations.
  * <p>
- * This aspect intercepts methods annotated with {@link DataSource} and manages the data source context before and after
- * method execution. The {@code @Order(-1)} annotation ensures that this aspect runs before the transaction aspect, so
- * data source switching occurs before transaction management begins.
+ * The aspect runs before transaction advice so datasource selection occurs before a transaction obtains its connection.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -46,14 +44,21 @@ import org.miaixz.bus.mapper.annotation.DataSource;
 public class AspectjJdbcProxy {
 
     /**
-     * Initializes the stateless aspect that scopes data source selection around annotated invocations.
+     * Application-context-scoped datasource routing state.
      */
-    public AspectjJdbcProxy() {
-        // No initialization required.
+    private final DataSourceHolder dataSourceHolder;
+
+    /**
+     * Creates the datasource routing aspect.
+     *
+     * @param dataSourceHolder datasource routing state
+     */
+    public AspectjJdbcProxy(DataSourceHolder dataSourceHolder) {
+        this.dataSourceHolder = Objects.requireNonNull(dataSourceHolder, "dataSourceHolder");
     }
 
     /**
-     * Runs an annotated invocation inside a nested data source scope before transaction advice acquires a connection.
+     * Runs an annotated invocation inside a nested datasource scope.
      * <p>
      * Method annotations take precedence over class annotations. Every invocation restores the exact parent key on
      * normal return or exception.
@@ -62,7 +67,7 @@ public class AspectjJdbcProxy {
      * @return invocation result
      * @throws Throwable when the invocation fails
      */
-    @Around("@annotation(org.miaixz.bus.mapper.annotation.DataSource) || @within(org.miaixz.bus.mapper.annotation.DataSource)")
+    @Around("@annotation(org.miaixz.bus.spring.jdbc.DataSource) || @within(org.miaixz.bus.spring.jdbc.DataSource)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         DataSource dataSource = resolveAnnotation(joinPoint);
         if (dataSource == null || StringKit.isEmpty(dataSource.value())) {
@@ -74,26 +79,26 @@ public class AspectjJdbcProxy {
                 : target.getClass().getSimpleName();
         Logger.info(
                 true,
-                "Starter",
+                "Spring",
                 "Datasource scope entered: class={}, method={}, datasource={}",
                 className,
                 joinPoint.getSignature().getName(),
                 requestedKey);
-        try (DataSourceHolder.Scope ignored = DataSourceHolder.scope(requestedKey)) {
+        try (DataSourceHolder.Scope ignored = this.dataSourceHolder.scope(requestedKey)) {
             return joinPoint.proceed();
         } finally {
             Logger.debug(
                     false,
-                    "Starter",
+                    "Spring",
                     "Datasource scope restored: class={}, method={}, parent={}",
                     className,
                     joinPoint.getSignature().getName(),
-                    DataSourceHolder.getCurrentKey());
+                    this.dataSourceHolder.getCurrentKey());
         }
     }
 
     /**
-     * Resolves the effective datasource annotation, preferring the concrete implementation method over its class.
+     * Resolves the effective datasource annotation, preferring the implementation method over its class.
      *
      * @param joinPoint intercepted invocation
      * @return effective datasource annotation, or {@code null}

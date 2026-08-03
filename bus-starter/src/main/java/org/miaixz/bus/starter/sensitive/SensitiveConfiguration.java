@@ -21,16 +21,16 @@ package org.miaixz.bus.starter.sensitive;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.sensitive.Sanitizer;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableSensitive;
 
 /**
  * Activates sensitive-data services independently of the application transport type.
@@ -44,8 +44,8 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(value = { SensitiveProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Sanitizer.class)
-@ConditionalOnProperty(prefix = GeniusBuilder.SENSITIVE, name = Normal.ENABLED, havingValue = Normal.TRUE, matchIfMissing = false)
 @Import(SensitiveConfiguration.ServletConfiguration.class)
+@ConditionalOnEnabled(annotation = EnableSensitive.class, prefix = GeniusBuilder.SENSITIVE)
 public class SensitiveConfiguration {
 
     /**

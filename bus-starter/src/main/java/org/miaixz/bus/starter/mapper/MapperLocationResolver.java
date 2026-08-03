@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +70,7 @@ public final class MapperLocationResolver {
      * @param properties mapper configuration properties
      * @param resolver   Spring resource pattern resolver
      * @return resolved resources and normalized classpath patterns
-     * @throws IllegalStateException when a location is unsupported, invalid or resolves to no resources
+     * @throws IllegalStateException when a location is unsupported, invalid, or cannot be resolved
      */
     public static Result resolve(MapperProperties properties, ResourcePatternResolver resolver) {
         Objects.requireNonNull(properties, "MapperProperties must not be null");
@@ -87,12 +88,15 @@ public final class MapperLocationResolver {
             Resource[] resolved;
             try {
                 resolved = resolver.getResources(location);
+            } catch (FileNotFoundException e) {
+                if (!isPattern(location)) {
+                    throw new IllegalStateException(
+                            "Failed to resolve mapper XML resource at configured location index " + index, e);
+                }
+                resolved = new Resource[0];
             } catch (IOException e) {
                 throw new IllegalStateException(
                         "Failed to resolve mapper XML resources at configured location index " + index, e);
-            }
-            if (resolved.length == 0) {
-                throw new IllegalStateException("No mapper XML resources found at configured location index " + index);
             }
             patterns.add(pattern);
             resources.addAll(Arrays.asList(resolved));
@@ -132,6 +136,16 @@ public final class MapperLocationResolver {
                     "Mapper XML location at configured index " + index + " must contain a classpath pattern");
         }
         return pattern;
+    }
+
+    /**
+     * Returns whether a mapper location is a classpath pattern that may legally match no resources.
+     *
+     * @param location mapper resource location
+     * @return {@code true} when the location contains a wildcard
+     */
+    private static boolean isPattern(String location) {
+        return location.contains(Symbol.STAR) || location.contains(Symbol.QUESTION_MARK);
     }
 
     /**

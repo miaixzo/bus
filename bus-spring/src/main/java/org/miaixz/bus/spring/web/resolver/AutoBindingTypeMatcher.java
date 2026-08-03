@@ -42,7 +42,7 @@ import org.miaixz.bus.spring.annotation.RequestObject;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class AutoBindingTypeMatcher {
+public class AutoBindingTypeMatcher {
 
     /**
      * Creates the stateless request binding matcher.

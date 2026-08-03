@@ -22,12 +22,12 @@ package org.miaixz.bus.mapper.runtime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.audit.AuditHandler;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
@@ -45,6 +45,7 @@ import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 import org.miaixz.bus.mapper.feature.visible.VisibleHandler;
 import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
+import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.mapper.handler.MapperHandler;
 import org.miaixz.bus.mapper.handler.MybatisInterceptor;
 
@@ -110,6 +111,10 @@ public class MapperPluginFactory {
             configureAudit(options, providers, resolved, handlers);
         }
 
+        Supplier<String> datasourceKeyProvider = providers == null ? null : providers.getDatasourceKeyProvider();
+        handlers.stream().filter(AbstractSqlHandler.class::isInstance).map(AbstractSqlHandler.class::cast)
+                .forEach(handler -> handler.setDatasourceKeyProvider(datasourceKeyProvider));
+
         MybatisInterceptor interceptor = new MybatisInterceptor();
         interceptor.setHandlers(handlers);
         return interceptor;
@@ -122,7 +127,7 @@ public class MapperPluginFactory {
      * {@code bus.mapper.operation.enabled}. It is enabled by default.
      *
      * @param options  mapper runtime options
-     * @param resolved flattened datasource configuration
+     * @param resolved flattened Mapper configuration
      * @param handlers handler list to update
      */
     private static void configureOperation(MapperOptions options, Properties resolved, List<MapperHandler> handlers) {
@@ -140,10 +145,10 @@ public class MapperPluginFactory {
     /**
      * Configures MyBatis pagination and adds the {@link PageHandler}.
      * <p>
-     * Pagination configuration is resolved per datasource while preserving legacy top-level defaults.
+     * Pagination configuration is selected by the effective JDBC data source key while preserving legacy defaults.
      *
      * @param options  mapper runtime options
-     * @param resolved flattened datasource configuration
+     * @param resolved flattened Mapper configuration
      * @param handlers handler list to update
      */
     private static void configurePagination(MapperOptions options, Properties resolved, List<MapperHandler> handlers) {
@@ -161,7 +166,7 @@ public class MapperPluginFactory {
      * <ol>
      * <li>Provider.getConfig() - if provider exists and returns non-null</li>
      * <li>Simplified YAML config ({@code bus.mapper.tenant.*})</li>
-     * <li>Configuration properties - datasource-specific > shared</li>
+     * <li>Configuration properties - database-specific &gt; shared</li>
      * <li>Provider instance only - if provider exists but no provider config is returned</li>
      * <li>Default values inside the handler</li>
      * </ol>
@@ -210,7 +215,7 @@ public class MapperPluginFactory {
             TenantConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 Logger.debug(false, "Mapper", "Using tenant config from Provider.getConfig()");
-                TenantHandler<?> handler = new TenantHandler<>(withTablePrefix(providerConfig, props));
+                TenantHandler<?> handler = new TenantHandler<>(withTablePrefix(providerConfig, props, providers));
                 handler.setActivationProperties(props);
                 handlers.add(handler);
                 return;
@@ -228,15 +233,23 @@ public class MapperPluginFactory {
     /**
      * Returns a tenant configuration that contains the table prefix supplied by mapper properties.
      *
-     * @param config the tenant configuration returned by a provider
-     * @param props  the resolved mapper properties
+     * @param config    the tenant configuration returned by a provider
+     * @param props     the resolved mapper properties
+     * @param providers runtime providers, including the read-only JDBC key provider
      * @return the tenant configuration with a table prefix
      */
-    private static TenantConfig withTablePrefix(TenantConfig config, Properties props) {
+    private static TenantConfig withTablePrefix(
+            TenantConfig config,
+            Properties props,
+            MapperPluginProviders providers) {
         if (config == null || StringKit.isNotEmpty(config.getTablePrefix()) || props == null) {
             return config;
         }
-        String defaultKey = Holder.getDefault();
+        Supplier<String> keyProvider = providers == null ? null : providers.getDatasourceKeyProvider();
+        String defaultKey = keyProvider == null ? DEFAULT_KEY : keyProvider.get();
+        if (StringKit.isEmpty(defaultKey)) {
+            defaultKey = DEFAULT_KEY;
+        }
         String tablePrefix = props.getProperty(
                 defaultKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT + Args.TABLE_PREFIX,
                 props.getProperty(
@@ -259,7 +272,7 @@ public class MapperPluginFactory {
      * <ol>
      * <li>Provider.getConfig() - if provider exists and returns non-null</li>
      * <li>Simplified YAML config ({@code bus.mapper.populate.*})</li>
-     * <li>Configuration properties - datasource-specific > shared</li>
+     * <li>Configuration properties - database-specific &gt; shared</li>
      * <li>Provider instance only - if provider exists but no provider config is returned</li>
      * <li>Default values inside the handler</li>
      * </ol>
@@ -329,7 +342,7 @@ public class MapperPluginFactory {
      * <ol>
      * <li>Provider.getConfig() - if provider exists and returns non-null</li>
      * <li>Simplified YAML config ({@code bus.mapper.visible.*})</li>
-     * <li>Configuration properties - datasource-specific > shared</li>
+     * <li>Configuration properties - database-specific &gt; shared</li>
      * <li>Provider instance only - if provider exists but no provider config is returned</li>
      * <li>Default values inside the handler</li>
      * </ol>
@@ -392,7 +405,7 @@ public class MapperPluginFactory {
      * <ol>
      * <li>Provider.getConfig() - if provider exists and returns non-null</li>
      * <li>Simplified YAML config ({@code bus.mapper.prefix.*})</li>
-     * <li>Configuration properties - datasource-specific > shared</li>
+     * <li>Configuration properties - database-specific &gt; shared</li>
      * <li>Provider instance only - if provider exists but no provider config is returned</li>
      * <li>Default values inside the handler</li>
      * </ol>
@@ -460,7 +473,7 @@ public class MapperPluginFactory {
      * <ol>
      * <li>Provider.getConfig() - if provider exists and returns non-null</li>
      * <li>Simplified YAML config ({@code bus.mapper.audit.*})</li>
-     * <li>Configuration properties - datasource-specific > shared</li>
+     * <li>Configuration properties - database-specific &gt; shared</li>
      * <li>Provider instance only - if provider exists but no provider config is returned</li>
      * <li>Default values inside the handler</li>
      * </ol>

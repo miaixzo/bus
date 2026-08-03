@@ -35,19 +35,17 @@ import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.parsing.SqlSource;
 
 /**
  * Base class for handling multi-table conditions. Provides methods for processing SELECT, UPDATE, and DELETE statements
  * and appending conditions based on table metadata.
  * <p>
- * This class also provides common functionality for dynamic configuration management in multi-threaded/virtual thread
- * environments, including:
+ * This class also resolves feature configuration for each SQL execution, including:
  * <ul>
  * <li>Properties storage and access</li>
- * <li>Dynamic configuration building based on current datasource</li>
- * <li>Three-tier configuration priority (Capture > Derived > Defaults)</li>
+ * <li>Database-specific configuration selected by a read-only JDBC key provider</li>
+ * <li>Three-level priority: runtime override, database-specific configuration, then global default</li>
  * </ul>
  *
  * @param <T> the type parameter for the mapper handler
@@ -65,16 +63,16 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * All properties for dynamic configuration lookup.
+     * Flattened Mapper properties used for feature configuration lookup.
      * <p>
-     * This field is shared across all handler subclasses and used to dynamically build configuration based on the
-     * current datasource key at runtime.
+     * Handler subclasses use the effective JDBC data source key to select database-specific entries. The properties do
+     * not hold data source instances or control routing.
      * </p>
      */
     protected Properties properties;
 
     /**
-     * Cache for datasource-derived configuration values.
+     * Cache of database-specific configuration values.
      */
     private final ConcurrentMap<DerivedConfigKey, Optional<C>> derivedConfigCache = new ConcurrentHashMap<>();
 
@@ -84,7 +82,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     private volatile Properties cachedProperties;
 
     /**
-     * Get the configuration key for this handler (e.g., {@link Args#TENANT_KEY}, {@link Args#POPULATE_KEY}).
+     * Returns the configuration scope handled by this instance, such as {@link Args#TENANT_KEY}.
      * <p>
      * This key is used to build configuration paths like "shared.{key}.xxx" or "{datasource}.{key}.xxx".
      * </p>
@@ -94,9 +92,9 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     protected abstract String scope();
 
     /**
-     * Get the runtime configuration from Context (ThreadLocal/InheritableThreadLocal).
+     * Returns the request- or thread-scoped Mapper override.
      * <p>
-     * This is the highest priority configuration (Level 1). Used for request/thread-level dynamic overrides.
+     * This value has the highest priority and is stored by the feature-specific Mapper context.
      * </p>
      *
      * @return the runtime configuration, or null if not set
@@ -104,9 +102,9 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     protected abstract C capture();
 
     /**
-     * Get the default configuration initialized from properties file.
+     * Returns the global feature configuration initialized from application properties.
      * <p>
-     * This is the lowest priority configuration (Level 3). Used as global fallback configuration.
+     * This value is used only when no runtime override or database-specific configuration is available.
      * </p>
      *
      * @return the default configuration, or null if not initialized
@@ -114,41 +112,40 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     protected abstract C defaults();
 
     /**
-     * Get the datasource configuration from properties file for a specific datasource.
+     * Builds the feature configuration for a specific data source key.
      * <p>
-     * This is called on every SQL execution to ensure correct configuration in multi-threaded/reactive environments.
-     * This is the medium priority configuration (Level 2).
+     * The supplied key is used only to select flattened Mapper properties; it does not select or expose a data source.
      * </p>
      *
-     * @param datasourceKey the current datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    the properties to read configuration from
-     * @return the datasource configuration, or null if provider is not available
+     * @return database-specific configuration, or {@code null} when unavailable
      */
     protected abstract C derived(String datasourceKey, Properties properties);
 
     /**
-     * Get the current configuration with three-tier priority:
+     * Resolves the current feature configuration using this fixed priority:
      * <ol>
-     * <li>Runtime configuration (highest priority) - from ThreadLocal/InheritableThreadLocal</li>
-     * <li>Datasource configuration (medium priority) - from properties file for current datasource</li>
-     * <li>Default configuration (lowest priority) - from properties file global settings</li>
+     * <li>Runtime Mapper override</li>
+     * <li>Database-specific properties for the effective JDBC key</li>
+     * <li>Global default properties</li>
      * </ol>
      *
      * @return the current configuration
      */
     protected C current() {
-        // 1. Highest priority: Runtime configuration (ThreadLocal/InheritableThreadLocal)
+        // 1. Runtime Mapper override.
         C captured = capture();
         if (captured != null) {
             Logger.debug(false, "Mapper", "Using Runtime configuration");
             return captured;
         }
 
-        // 2. Medium priority: Datasource configuration (from properties file for current datasource)
+        // 2. Database-specific properties selected through the read-only JDBC key provider.
         if (properties != null) {
             Properties currentProperties = properties;
             refreshDerivedConfigCache(currentProperties);
-            String key = Holder.getKey();
+            String key = getDatasourceKey();
             if (StringKit.isEmpty(key)) {
                 key = "default";
             }
@@ -173,7 +170,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
             }
         }
 
-        // 3. Lowest priority: Default configuration (from properties file global settings)
+        // 3. Global default configuration.
         C defaults = defaults();
         if (defaults != null) {
             Logger.debug(false, "Mapper", "Using Default configuration");
@@ -201,12 +198,12 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Build the configuration path for a given setting.
+     * Builds a database-specific configuration property path.
      * <p>
      * Example: "shared.tenant.column" or "ds1.tenant.column"
      * </p>
      *
-     * @param datasourceKey the datasource key (can be "shared" or a specific datasource name)
+     * @param datasourceKey data source key, or {@link Args#SHARED_KEY} for shared settings
      * @param settingKey    the specific setting key (e.g., "column", "ignore", etc.)
      * @return the full configuration path
      */
@@ -215,7 +212,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Build the shared configuration path.
+     * Builds a shared configuration property path.
      * <p>
      * Example: "shared.tenant.xxx"
      * </p>
@@ -228,7 +225,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Get property value with datasource-specific fallback to shared.
+     * Returns a database-specific property with a shared-property fallback.
      * <p>
      * Searches in order: {datasource}.{configKey}.{setting} -> shared.{configKey}.{setting} -> defaultValue
      * </p>
@@ -245,16 +242,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Get the current datasource key with fallback to "default".
-     *
-     * @return the datasource key, or "default" if not set
-     */
-    protected String getDatasourceKey() {
-        return Holder.getKey();
-    }
-
-    /**
-     * Get provider from properties for the specified type.
+     * Returns a provider stored in the flattened Mapper properties.
      *
      * @param <P>           the provider type
      * @param properties    mapper settings containing condition feature entries
@@ -273,9 +261,9 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Tests whether this handler is enabled for the current datasource.
+     * Returns whether this feature is enabled for the specified data source key.
      *
-     * @param datasourceKey current datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    flattened mapper properties
      * @return {@code true} by default
      */
@@ -378,7 +366,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
     }
 
     /**
-     * Cache key for datasource-derived configuration.
+     * Cache key for database-specific feature configuration.
      *
      * @author Kimi Liu
      * @since Java 21+

@@ -26,7 +26,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableFabric;
 
 /**
  * Configures TCP and WebSocket fabric communication services.
@@ -40,7 +42,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(value = { FabricProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.fabric.Fabric")
-@ConditionalOnProperty(prefix = GeniusBuilder.FABRIC, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableFabric.class, prefix = GeniusBuilder.FABRIC)
 public class FabricConfiguration {
 
     /**

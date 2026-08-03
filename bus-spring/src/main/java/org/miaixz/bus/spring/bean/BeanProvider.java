@@ -30,7 +30,7 @@ import org.springframework.core.ResolvableType;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class BeanProvider {
+public class BeanProvider {
 
     /**
      * Context owning all lookup operations.

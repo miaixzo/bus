@@ -39,7 +39,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(GeniusBuilder.LIMITER)
-public final class LimiterProperties {
+public class LimiterProperties {
 
     /**
      * Whether the limiter integration is enabled.

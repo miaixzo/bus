@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextBuilder {
+public class ContextBuilder {
 
     /**
      * State carrier owned by one application context.
@@ -85,7 +85,12 @@ public final class ContextBuilder {
      */
     public void setRequestId(@Nullable String requestId) {
         ContextState current = this.manager.capture();
-        this.manager.restore(ContextState.of(normalize(requestId), current.getAuthorize()));
+        this.manager.restore(
+                ContextState.of(
+                        normalize(requestId),
+                        current.getAuthorize(),
+                        current.getTokenCredential(),
+                        current.getApiKeyCredential()));
     }
 
     /**
@@ -134,7 +139,12 @@ public final class ContextBuilder {
      */
     public void setAuthorize(@Nullable Authorize authorize) {
         ContextState current = this.manager.capture();
-        this.manager.restore(ContextState.of(current.getRequestId(), authorize));
+        this.manager.restore(
+                ContextState.of(
+                        current.getRequestId(),
+                        authorize,
+                        current.getTokenCredential(),
+                        current.getApiKeyCredential()));
     }
 
     /**
@@ -178,33 +188,63 @@ public final class ContextBuilder {
     }
 
     /**
-     * Returns no transport credential because this facade never reads raw requests.
+     * Returns the preferred request credential captured at the integration boundary.
+     * <p>
+     * A token takes precedence when both a token and an API key are present.
      *
-     * @return always {@code null}
+     * @return preferred credential, or {@code null} when absent
      */
     @Nullable
     public Http.Auth.Credential getCredential() {
-        return null;
+        ContextState current = this.manager.capture();
+        Http.Auth.Credential credential = current.getTokenCredential();
+        return credential == null ? current.getApiKeyCredential() : credential;
     }
 
     /**
-     * Returns no raw transport token because this facade never reads raw requests.
+     * Returns the normalized token captured at the integration boundary.
      *
-     * @return always {@code null}
+     * @return token value, or {@code null} when absent
      */
     @Nullable
     public String getToken() {
-        return null;
+        return credentialValue(this.manager.capture().getTokenCredential());
     }
 
     /**
-     * Returns no raw API key because this facade never reads raw requests.
+     * Returns the normalized API key captured at the integration boundary.
      *
-     * @return always {@code null}
+     * @return API-key value, or {@code null} when absent
      */
     @Nullable
     public String getApiKey() {
-        return null;
+        return credentialValue(this.manager.capture().getApiKeyCredential());
+    }
+
+    /**
+     * Installs or clears the token credential while preserving all other context values.
+     *
+     * @param credential token credential, or {@code null} to clear it
+     * @throws IllegalArgumentException when the supplied credential is not a token or has a blank value
+     */
+    public void setTokenCredential(@Nullable Http.Auth.Credential credential) {
+        ContextState current = this.manager.capture();
+        this.manager.restore(
+                ContextState
+                        .of(current.getRequestId(), current.getAuthorize(), credential, current.getApiKeyCredential()));
+    }
+
+    /**
+     * Installs or clears the API-key credential while preserving all other context values.
+     *
+     * @param credential API-key credential, or {@code null} to clear it
+     * @throws IllegalArgumentException when the supplied credential is not an API key or has a blank value
+     */
+    public void setApiKeyCredential(@Nullable Http.Auth.Credential credential) {
+        ContextState current = this.manager.capture();
+        this.manager.restore(
+                ContextState
+                        .of(current.getRequestId(), current.getAuthorize(), current.getTokenCredential(), credential));
     }
 
     /**
@@ -212,13 +252,6 @@ public final class ContextBuilder {
      */
     public void clear() {
         this.manager.clear();
-    }
-
-    /**
-     * Resets the state owned by this application context.
-     */
-    public void reset() {
-        clear();
     }
 
     /**
@@ -259,6 +292,16 @@ public final class ContextBuilder {
      */
     private static Object normalizedValue(Object value) {
         return value instanceof String string ? normalize(string) : value;
+    }
+
+    /**
+     * Returns a normalized credential value without logging or formatting the secret.
+     *
+     * @param credential captured credential
+     * @return normalized credential value, or {@code null}
+     */
+    private static String credentialValue(Http.Auth.Credential credential) {
+        return credential == null ? null : normalize(credential.value());
     }
 
     /**

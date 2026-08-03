@@ -21,11 +21,12 @@ package org.miaixz.bus.starter.validate;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableValidate;
 
 /**
  * Configures annotation-driven method validation and controller validation advice.
@@ -39,11 +40,11 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.validate.Builder")
-@ConditionalOnProperty(prefix = GeniusBuilder.VALIDATE, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableValidate.class, prefix = GeniusBuilder.VALIDATE)
 public class ValidateConfiguration {
 
     /**
-     * Initializes validation infrastructure when {@code bus.validate.enabled=true}.
+     * Initializes validation infrastructure selected by {@code @EnableValidate} or the corresponding property.
      */
     public ValidateConfiguration() {
         // No initialization required.

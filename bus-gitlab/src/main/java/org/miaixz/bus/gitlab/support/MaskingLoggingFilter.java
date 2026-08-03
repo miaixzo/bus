@@ -424,7 +424,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         }
 
         MediaType mediaType = context.getMediaType();
-        if (mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE)
+        if (org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString())
                 || mediaType.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
             log(stream.getStringBuilder(MessageUtils.getCharset(mediaType)));
         }

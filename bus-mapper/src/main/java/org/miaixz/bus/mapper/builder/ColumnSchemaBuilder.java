@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.builder;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.FieldMeta;
@@ -35,6 +36,11 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @since Java 21+
  */
 public interface ColumnSchemaBuilder extends Order {
+
+    /**
+     * Shared column-schema processing chain assembled from registered SPI implementations.
+     */
+    Chain SPI = new ColumnSchemaChain(NormalSpiLoader.loadList(false, ColumnSchemaBuilder.class));
 
     /**
      * Creates column information. A field may not be a column, it may be a single column, or it may correspond to

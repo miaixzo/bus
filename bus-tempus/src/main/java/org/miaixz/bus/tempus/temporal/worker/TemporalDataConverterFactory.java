@@ -49,7 +49,7 @@ final class TemporalDataConverterFactory {
      * Prevents instantiation of this factory class.
      */
     private TemporalDataConverterFactory() {
-        // Utility class.
+        // No initialization required.
     }
 
     /**

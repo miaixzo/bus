@@ -30,7 +30,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextManager {
+public class ContextManager {
 
     /**
      * Creates an independent context state manager.

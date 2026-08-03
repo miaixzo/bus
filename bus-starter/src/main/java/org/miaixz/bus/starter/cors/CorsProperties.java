@@ -38,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @Validated
 @ConfigurationProperties(GeniusBuilder.CORS)
-public final class CorsProperties {
+public class CorsProperties {
 
     /**
      * HTTP DELETE method used by the default CORS policy.

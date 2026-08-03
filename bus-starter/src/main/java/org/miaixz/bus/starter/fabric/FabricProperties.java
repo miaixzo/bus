@@ -36,7 +36,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.FABRIC)
-public final class FabricProperties {
+public class FabricProperties {
 
     /**
      * Whether the fabric integration is enabled.

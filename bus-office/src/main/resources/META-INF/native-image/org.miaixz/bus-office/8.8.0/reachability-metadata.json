@@ -5171,14 +5171,14 @@
           "parameterTypes": []
         },
         {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
           "name": "contains",
           "parameterTypes": [
             "java.lang.String"
           ]
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
         },
         {
           "name": "register",

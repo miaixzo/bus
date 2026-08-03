@@ -37,6 +37,48 @@
       "defaultValue": false
     },
     {
+      "name": "bus.datasource.driver-class-name",
+      "type": "java.lang.String",
+      "description": "JDBC driver class name for the primary Bus datasource."
+    },
+    {
+      "name": "bus.datasource.hikari",
+      "type": "java.util.Map<java.lang.String,java.lang.Object>",
+      "description": "Hikari pool properties for the primary Bus datasource."
+    },
+    {
+      "name": "bus.datasource.multi",
+      "type": "java.util.List<java.util.Map<java.lang.String,java.lang.Object>>",
+      "description": "Additional named Bus data sources using the same fields as the primary data source."
+    },
+    {
+      "name": "bus.datasource.name",
+      "type": "java.lang.String",
+      "description": "Routing name of the primary Bus datasource.",
+      "defaultValue": "default"
+    },
+    {
+      "name": "bus.datasource.password",
+      "type": "java.lang.String",
+      "description": "Authentication password for the primary Bus datasource."
+    },
+    {
+      "name": "bus.datasource.type",
+      "type": "java.lang.String",
+      "description": "Datasource implementation type for the primary Bus datasource.",
+      "defaultValue": "com.zaxxer.hikari.HikariDataSource"
+    },
+    {
+      "name": "bus.datasource.url",
+      "type": "java.lang.String",
+      "description": "JDBC URL for the primary Bus datasource."
+    },
+    {
+      "name": "bus.datasource.username",
+      "type": "java.lang.String",
+      "description": "Authentication username for the primary Bus datasource."
+    },
+    {
       "name": "bus.dubbo.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether Dubbo integration is enabled.",
@@ -70,12 +112,6 @@
       "name": "bus.image.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether image integration is enabled.",
-      "defaultValue": false
-    },
-    {
-      "name": "bus.jdbc.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether JDBC integration is enabled.",
       "defaultValue": false
     },
     {
@@ -173,6 +209,11 @@
       "type": "java.lang.Boolean",
       "description": "Whether ZooKeeper integration is enabled.",
       "defaultValue": false
+    },
+    {
+      "name": "spring.datasource.multi",
+      "type": "java.util.List<java.util.Map<java.lang.String,java.lang.Object>>",
+      "description": "Additional named Spring data sources using the same fields as the primary data source."
     }
   ]
 }

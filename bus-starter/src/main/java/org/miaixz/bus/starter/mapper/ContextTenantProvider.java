@@ -30,7 +30,7 @@ import org.miaixz.bus.spring.ContextBuilder;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextTenantProvider implements TenantProvider {
+public class ContextTenantProvider implements TenantProvider {
 
     /**
      * Application-context-scoped runtime context facade.

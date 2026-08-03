@@ -351,6 +351,11 @@ public class Status {
     public static final int UPSDoesNotSupportEventReports = 0xC315;
 
     /**
+     * Failure (0xC112): referenced transfer syntax not supported for store instances response.
+     */
+    public static final int ReferencedTransferSyntaxNotSupported = 0xC112;
+
+    /**
      * A list of DICOM response attributes received during the operation.
      */
     private final List<Attributes> dicomRSP;

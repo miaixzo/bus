@@ -40,7 +40,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
+public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
 
     /**
      * Bound route prefix handler mapping configuration properties.
@@ -60,6 +60,11 @@ public final class RoutePrefixHandlerMapping extends RequestMappingHandlerMappin
         this.properties = Objects.requireNonNull(properties, "properties");
     }
 
+    /**
+     * Publishes the finalized handler mapping set for route-prefix diagnostics.
+     *
+     * @param handlerMethods initialized request mappings
+     */
     @Override
     protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
         if (properties.isInStorage()) {
@@ -67,6 +72,13 @@ public final class RoutePrefixHandlerMapping extends RequestMappingHandlerMappin
         }
     }
 
+    /**
+     * Prepends the configured application prefix to one controller method mapping.
+     *
+     * @param method      controller method
+     * @param handlerType controller type
+     * @return prefixed mapping, original mapping, or {@code null} when the method is not mapped
+     */
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
         RequestMappingInfo mapping = super.getMappingForMethod(method, handlerType);
@@ -111,8 +123,7 @@ public final class RoutePrefixHandlerMapping extends RequestMappingHandlerMappin
             return Normal.EMPTY;
         }
         String suffix = packageName.substring(basePackage.length()).replace(Symbol.C_DOT, Symbol.C_SLASH);
-        return suffix.isEmpty() ? Normal.EMPTY
-                : (suffix.startsWith(Symbol.SLASH) ? suffix : Symbol.SLASH + suffix);
+        return suffix.isEmpty() ? Normal.EMPTY : (suffix.startsWith(Symbol.SLASH) ? suffix : Symbol.SLASH + suffix);
     }
 
 }

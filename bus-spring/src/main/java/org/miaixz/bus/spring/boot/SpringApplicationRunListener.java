@@ -117,6 +117,12 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         // Startup collection is intentionally deferred until environmentPrepared.
     }
 
+    /**
+     * Activates startup reporting after configuration data has supplied the feature switch.
+     *
+     * @param bootstrapContext bootstrap context used to expose the reporter
+     * @param environment      prepared application environment
+     */
     @Override
     public void environmentPrepared(
             ConfigurableBootstrapContext bootstrapContext,
@@ -140,6 +146,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         bootstrapContext.registerIfAbsent(StartupReporter.class, key -> reporter);
     }
 
+    /**
+     * Opens the application-context preparation stage for an enabled report.
+     *
+     * @param context prepared application context
+     */
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
         if (!isEnabled()) {
@@ -149,6 +160,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
                 environmentPrepareStage.getEndTime(), System.currentTimeMillis(), List.of());
     }
 
+    /**
+     * Closes context preparation, records context loading, and registers reporting components.
+     *
+     * @param context loaded application context
+     */
     @Override
     public void contextLoaded(ConfigurableApplicationContext context) {
         if (!isEnabled() || applicationContextPrepareStage == null) {
@@ -161,6 +177,12 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         registerComponents(context);
     }
 
+    /**
+     * Completes and logs the startup report after the application context has started.
+     *
+     * @param context   started application context
+     * @param timeTaken total Spring Boot startup duration
+     */
     @Override
     public void started(ConfigurableApplicationContext context, Duration timeTaken) {
         if (!isEnabled() || applicationContextLoadStage == null || !reportCompleted.compareAndSet(false, true)) {
@@ -190,6 +212,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         Logger.info(false, "Starter", "Spring " + getStartedMessage(context, timeTaken));
     }
 
+    /**
+     * Runs startup reporting near the end of Spring Boot listener processing.
+     *
+     * @return listener order
+     */
     @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE - 10;

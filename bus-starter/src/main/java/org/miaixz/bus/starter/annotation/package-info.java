@@ -22,6 +22,10 @@
  * EnableElastic, EnableFabric, EnableHealth, EnableI18n, EnableImage, EnableJdbc, EnableJson, EnableLimiter,
  * EnableMapper, EnableMetrics, EnableMongo, EnableNotify, EnableOffice, EnablePay, EnableSensitive, EnableStorage,
  * EnableTempus, EnableTracer, EnableValidate, EnableVortex, EnableWrapper, and EnableZookeeper.
+ * <p>
+ * Every {@code EnableXxx} annotation has higher activation priority than its corresponding {@code bus.xxx.enabled}
+ * property. An explicit annotation therefore enables its feature even when the property is absent or set to
+ * {@code false}; the property controls activation only when the annotation is absent.
  *
  * @author Kimi Liu
  * @since Java 21+

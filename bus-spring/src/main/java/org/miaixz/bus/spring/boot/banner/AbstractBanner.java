@@ -120,6 +120,13 @@ public abstract class AbstractBanner implements Banner {
         return banner;
     }
 
+    /**
+     * Writes the resolved banner text to Spring Boot's output stream.
+     *
+     * @param environment application environment
+     * @param sourceClass application source class
+     * @param out         banner output stream
+     */
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream out) {
         out.println();

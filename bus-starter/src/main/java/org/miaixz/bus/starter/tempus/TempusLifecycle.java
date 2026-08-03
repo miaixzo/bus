@@ -32,7 +32,7 @@ import org.miaixz.bus.tempus.temporal.Subscriber;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class TempusLifecycle implements SmartLifecycle {
+public class TempusLifecycle implements SmartLifecycle {
 
     /**
      * Phase used to start after regular infrastructure beans.

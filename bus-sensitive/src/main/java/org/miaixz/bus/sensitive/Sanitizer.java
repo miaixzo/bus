@@ -207,9 +207,10 @@ public final class Sanitizer implements Operator {
         }
         if (value instanceof Map<?, ?> map) {
             Map<Object, Object> sanitized = new LinkedHashMap<>();
-            map.forEach((nestedKey, nestedValue) -> sanitized.put(
-                    nestedKey,
-                    sanitize(nestedKey == null ? null : nestedKey.toString(), nestedValue, depth + 1)));
+            map.forEach(
+                    (nestedKey, nestedValue) -> sanitized.put(
+                            nestedKey,
+                            sanitize(nestedKey == null ? null : nestedKey.toString(), nestedValue, depth + 1)));
             return sanitized;
         }
         if (value instanceof Iterable<?> iterable) {

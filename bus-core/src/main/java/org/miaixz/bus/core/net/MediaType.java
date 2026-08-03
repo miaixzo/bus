@@ -959,6 +959,41 @@ public class MediaType {
     }
 
     /**
+     * Checks whether the supplied media type represents JSON content.
+     * <p>
+     * Standard {@code json}, structured suffixes such as {@code problem+json}, and the existing provider-specific
+     * {@code json+fastjson}, {@code json+gson}, and {@code json+jackson} subtypes are recognized.
+     *
+     * @param mediaType media type to inspect
+     * @return {@code true} when the media subtype represents JSON content
+     */
+    public static boolean isJson(MediaType mediaType) {
+        if (mediaType == null || mediaType.getSubtype() == null) {
+            return false;
+        }
+        String subtype = mediaType.getSubtype().toLowerCase(Locale.ROOT);
+        return JSON.equals(subtype) || subtype.startsWith(JSON + Symbol.PLUS)
+                || subtype.endsWith(Symbol.PLUS + JSON);
+    }
+
+    /**
+     * Checks whether the supplied Content-Type value represents JSON content.
+     *
+     * @param contentType Content-Type value, including optional parameters
+     * @return {@code true} when the value is valid JSON media type syntax
+     */
+    public static boolean isJson(String contentType) {
+        if (contentType == null || contentType.isBlank()) {
+            return false;
+        }
+        try {
+            return isJson(valueOf(contentType));
+        } catch (ProtocolException | ValidateException ignored) {
+            return false;
+        }
+    }
+
+    /**
      * Checks if the specified media type represents an STL file format.
      *
      * @param mediaType the media type to check

@@ -26,8 +26,9 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.ModifierKit;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.builder.ClassMetaResolver;
+import org.miaixz.bus.mapper.builder.ColumnSchemaBuilder;
+import org.miaixz.bus.mapper.builder.TableSchemaBuilder;
 
 /**
  * A factory for creating and managing entity class metadata.
@@ -43,7 +44,7 @@ import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 public abstract class MapperFactory {
 
     /**
-     * Constructs a new MapperFactory instance.
+     * Initializes the base type for Mapper metadata factories.
      */
     public MapperFactory() {
         // No initialization required.
@@ -76,7 +77,7 @@ public abstract class MapperFactory {
     public static TableMeta of(Class<?> entityClass) {
         // Create TableMeta without processing columns (fields); the returned TableMeta has been processed by all
         // chains.
-        TableMeta tableMeta = Holder.TABLE_SCHEMA_CHAIN.createTable(entityClass);
+        TableMeta tableMeta = TableSchemaBuilder.SPI.createTable(entityClass);
         if (tableMeta == null) {
             throw new NullPointerException("Unable to get " + entityClass.getName() + " entity class information");
         }
@@ -101,7 +102,7 @@ public abstract class MapperFactory {
                                 if (tableMeta.isExcludeField(fieldMeta)) {
                                     continue;
                                 }
-                                Optional<List<ColumnMeta>> optionalEntityColumns = Holder.COLUMN_SCHEMA_CHAIN
+                                Optional<List<ColumnMeta>> optionalEntityColumns = ColumnSchemaBuilder.SPI
                                         .createColumn(tableMeta, fieldMeta);
                                 optionalEntityColumns.ifPresent(columns -> columns.forEach(tableMeta::addColumn));
                             }

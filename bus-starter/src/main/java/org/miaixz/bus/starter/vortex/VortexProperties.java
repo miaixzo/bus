@@ -39,7 +39,7 @@ import org.miaixz.bus.vortex.magic.Performance;
 @Setter
 @Validated
 @ConfigurationProperties(GeniusBuilder.VORTEX)
-public final class VortexProperties {
+public class VortexProperties {
 
     /**
      * Initializes Vortex properties with the documented transport and asset-refresh defaults.

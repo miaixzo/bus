@@ -49,8 +49,8 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * <h2>Common implementation strategies:</h2>
  * <ul>
  * <li>Static prefix for environment separation</li>
- * <li>Dynamic prefix based on datasource</li>
- * <li>Context-based prefix from configuration</li>
+ * <li>Dynamic prefix based on the runtime environment</li>
+ * <li>Application-context property-based prefix</li>
  * <li>Tenant-specific table prefixes</li>
  * </ul>
  *
@@ -76,7 +76,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * </pre>
  *
  * <p>
- * <b>Example 2: Context-based dynamic prefix</b>
+ * <b>Example 2: Application-context-based dynamic prefix</b>
  * </p>
  *
  * <pre>{@code
@@ -86,9 +86,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *     public String getPrefix() {
  *         Context context = getContext();
  *
- *         // Read prefix from datasource-specific configuration
- *         String dataSourceKey = Holder.getKey();
- *         return context.getProperty(dataSourceKey + ".table.prefix", "");
+ *         return context.getProperty("table.prefix", "");
  *     }
  * }
  * }</pre>
@@ -126,16 +124,16 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
 public interface TablePrefixProvider extends MapperProvider<TablePrefixConfig> {
 
     /**
-     * Get the table prefix for current context.
+     * Returns the table prefix for the current execution context.
      *
      * <p>
      * This method is called at SQL execution time to retrieve the prefix that should be applied to table names. The
      * implementation can return different prefixes based on:
      * </p>
      * <ul>
-     * <li>Current data source</li>
      * <li>Runtime environment (dev/test/prod)</li>
-     * <li>User context or tenant information</li>
+     * <li>Application properties</li>
+     * <li>User or tenant context</li>
      * <li>Any other runtime condition</li>
      * </ul>
      *

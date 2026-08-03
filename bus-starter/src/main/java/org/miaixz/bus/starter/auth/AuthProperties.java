@@ -44,7 +44,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @Getter
 @ConfigurationProperties(prefix = GeniusBuilder.AUTH)
-public final class AuthProperties {
+public class AuthProperties {
 
     /**
      * Binds immutable authorization provider and cache settings from {@code bus.auth}.

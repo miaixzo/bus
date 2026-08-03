@@ -37,7 +37,7 @@ import org.springframework.core.type.StandardMethodMetadata;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class BeanMetadata {
+public class BeanMetadata {
 
     /**
      * Creates a side-effect-free Bean metadata inspector.

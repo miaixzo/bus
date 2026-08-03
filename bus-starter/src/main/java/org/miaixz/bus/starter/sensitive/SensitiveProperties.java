@@ -36,7 +36,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE)
-public final class SensitiveProperties {
+public class SensitiveProperties {
 
     /**
      * Whether the sensitive integration is enabled.

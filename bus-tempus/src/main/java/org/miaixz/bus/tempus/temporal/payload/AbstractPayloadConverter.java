@@ -140,7 +140,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
          * Prevents instantiation of this holder class.
          */
         private DefaultPayloadAdapterHolder() {
-            // Utility holder.
+            // No initialization required.
         }
 
     }

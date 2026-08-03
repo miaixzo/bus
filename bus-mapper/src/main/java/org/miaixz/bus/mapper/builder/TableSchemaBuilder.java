@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -30,6 +31,11 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @since Java 21+
  */
 public interface TableSchemaBuilder extends Order {
+
+    /**
+     * Shared table-schema processing chain assembled from registered SPI implementations.
+     */
+    Chain SPI = new TableSchemaChain(NormalSpiLoader.loadList(false, TableSchemaBuilder.class));
 
     /**
      * Creates table information based on an entity class. This method should only return table-level information and

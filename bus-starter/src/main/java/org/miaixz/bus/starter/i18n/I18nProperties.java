@@ -39,7 +39,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(GeniusBuilder.I18N)
-public final class I18nProperties {
+public class I18nProperties {
 
     /**
      * Whether the i18n integration is enabled.

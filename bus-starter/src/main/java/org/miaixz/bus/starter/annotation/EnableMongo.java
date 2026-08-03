@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.starter.mongo.MongoConfiguration;
 
 /**
- * Imports Mongo customizers while retaining the {@code bus.mongo.enabled=true} guard.
+ * Enables Mongo customizers regardless of the value assigned to {@code bus.mongo.enabled}.
  *
  * @author Kimi Liu
  * @since Java 21+

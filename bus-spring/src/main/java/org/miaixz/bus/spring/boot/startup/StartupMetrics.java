@@ -27,7 +27,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class StartupMetrics {
+public class StartupMetrics {
 
     /**
      * Application name captured for the startup report.

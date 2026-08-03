@@ -26,9 +26,11 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -297,10 +299,18 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
             String beanClassName = definition.getBeanClassName();
-            // The mapper interface is the original class of the bean, but the actual bean class is MapperFactoryBean.
-            // definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName);
+            Class<?> mapperInterface;
+            try {
+                mapperInterface = Resources.classForName(beanClassName);
+            } catch (ClassNotFoundException e) {
+                throw new BeanDefinitionStoreException("Failed to load mapper interface " + beanClassName, e);
+            }
+
+            // Preserve the mapper product type before replacing the interface definition with its FactoryBean.
+            definition.getConstructorArgumentValues().addGenericArgumentValue(mapperInterface);
+            definition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, mapperInterface);
             definition.setBeanClass(this.mapperFactoryBeanClass);
-            definition.getPropertyValues().add("mapperInterface", beanClassName);
+            definition.getPropertyValues().add("mapperInterface", mapperInterface);
 
             // Set the generic mapper builder if specified.
             if (StringKit.hasText(this.mapperBuilderBeanName)) {

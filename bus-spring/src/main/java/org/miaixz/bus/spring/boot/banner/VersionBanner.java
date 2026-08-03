@@ -44,6 +44,12 @@ public class VersionBanner extends AbstractBanner {
         initialize();
     }
 
+    /**
+     * Selects loaded banner text, package implementation version, or the configured fallback in that order.
+     *
+     * @param bannerText loaded banner text
+     * @return resolved version banner
+     */
     @Override
     protected String printBanner(String bannerText) {
         if (bannerText != null && !bannerText.isBlank()) {

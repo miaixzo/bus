@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.mapper.handler.MapperHandler;
 
@@ -97,17 +96,17 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
     private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
 
     /**
-     * Whether to enable strict mode (check for trivial WHERE clauses)
+     * Whether strict mode rejects trivial {@code WHERE} clauses.
      */
     private boolean strictMode = true;
 
     /**
-     * Flattened datasource-scoped operation configuration.
+     * Flattened operation configuration containing global and database-specific entries.
      */
     private Properties properties;
 
     /**
-     * Installs flattened mapper configuration used for per-datasource safety settings.
+     * Installs flattened Mapper configuration used for database-specific safety settings.
      *
      * @param properties flattened mapper configuration
      * @return {@code true} when configuration is available
@@ -210,16 +209,16 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
     }
 
     /**
-     * Resolves whether operation protection is enabled for the current datasource.
+     * Resolves whether operation protection is enabled for the effective JDBC data source key.
      *
-     * @return {@code true} when the current datasource enables protection
+     * @return {@code true} when protection is enabled for the effective key
      */
     private boolean currentEnabled() {
         return Boolean.parseBoolean(find(Args.PROP_ENABLED, "true"));
     }
 
     /**
-     * Resolves strict-mode behavior for the current datasource.
+     * Resolves strict-mode behavior for the effective JDBC data source key.
      *
      * @return {@code true} when trivial WHERE clauses must be rejected
      */
@@ -228,7 +227,7 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
     }
 
     /**
-     * Finds one operation setting using datasource, shared and legacy-default precedence.
+     * Finds an operation setting using database-specific, shared, then legacy-default precedence.
      *
      * @param name     setting name
      * @param fallback fallback value when no configured value exists
@@ -238,14 +237,11 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
         if (properties == null) {
             return fallback;
         }
-        String key = Holder.getKey();
+        String key = getDatasourceKey();
         String suffix = Symbol.DOT + Args.OPERATION_KEY + Symbol.DOT + name;
         String value = properties.getProperty(key + suffix);
         if (value == null) {
             value = properties.getProperty(Args.SHARED_KEY + suffix);
-        }
-        if (value == null && Holder.getDefault() != null) {
-            value = properties.getProperty(Holder.getDefault() + suffix);
         }
         if (value == null) {
             value = properties.getProperty("default" + suffix, fallback);

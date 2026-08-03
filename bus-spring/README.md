@@ -2,8 +2,8 @@
 
 `bus-spring` is the reusable Spring integration layer for Bus. It provides application-context-owned Bean services,
 runtime context capture and propagation, Spring Boot lifecycle utilities, annotation helpers, and reusable Servlet MVC
-infrastructure. The module supplies mechanics, not product-feature activation; conditional assembly and configuration
-properties belong to `bus-starter`.
+infrastructure. The module supplies reusable condition mechanics, not product-feature decisions; concrete enable
+annotations, property prefixes, conditional assembly, and configuration properties belong to `bus-starter`.
 
 ## Responsibility boundary
 
@@ -12,7 +12,7 @@ bus-spring                              bus-starter
 -----------------------------------     -----------------------------------
 Spring and Web integration mechanics    discovery and startup assembly
 context capture/install/restore         bus.* configuration properties
-Bean and environment services           @ConditionalOnProperty decisions
+Bean, environment, and condition APIs   feature activation decisions
 Boot listener implementations           default Bean declarations
 request/converter/wrapper primitives     feature-specific integration
 ```
@@ -42,6 +42,7 @@ Spring APIs are required and activation will be provided by the application.
 | `annotation` | Merged annotation handling, placeholder binding, wrapper annotations, and `@RequestObject`. |
 | `aop` | Reusable auto-proxy infrastructure with Bean-name exclusions. |
 | `bean` | Focused Bean lookup, registration, metadata, environment, context, and provider services. |
+| `jdbc` | Reusable datasource resolution, pool creation, dynamic routing, route scope, annotation, and advice. |
 | `web` | Root Servlet request access and context-binding filter. |
 | `web.advice` | Reusable MVC response advice base implementation. |
 | `web.converter` | JSON/text converters, type matching, registration, and MVC configurers. |
@@ -51,12 +52,29 @@ Spring APIs are required and activation will be provided by the application.
 | `web.wrapper` | Bounded request/response body caching wrappers and filter. |
 | `boot` | Spring Boot run listener and smart lifecycle base class. |
 | `boot.banner` | Text, image, and version banner selection and rendering. |
+| `boot.condition` | Reusable annotation-first Spring Boot activation condition. |
 | `boot.environment` | Early Spring, logging, scenes, and cloud environment processors. |
 | `boot.listener` | Spring Boot and Spring Cloud configuration listeners. |
 | `boot.startup` | Startup stages, metrics, reporters, and Bean post-processing. |
 
 The root package intentionally remains populated. `ContextBuilder`, `ContextManager`, `ContextProvider`, `ContextState`,
 `ContextScope`, `ContextDecorator`, and `SpringBuilder` are stable public capabilities rather than an empty namespace.
+
+`boot.condition` provides `@ConditionalOnEnabled` and `EnabledCondition`. The condition gives an explicit enable
+annotation priority over the corresponding property, while leaving concrete annotations and property prefixes to the
+consuming Starter module. Its `name` member defaults to `enabled`, `matchIfMissing` defaults to `false`, and the
+condition can guard either a configuration type or an individual Bean method.
+
+## JDBC datasource infrastructure
+
+`org.miaixz.bus.spring.jdbc.DataSource` is the public Spring contract for selecting a datasource at a service boundary.
+Its value must identify a resolved datasource route. `DataSourceResolver`, `DataSourceDefinition`, and
+`DataSourceMapping` resolve an ordered list of compatible property prefixes into one validated mapping;
+`DataSourceFactory` creates the configured pools; `DynamicDataSource` performs routing; each application context owns
+an independent `DataSourceHolder` for exact nested route scopes; and `DataSourceListener` reports successful initial,
+added, replaced, and removed routes. `AspectjJdbcProxy`
+interprets the annotation before transaction advice obtains a connection. These types are independent of Mapper and
+Starter assembly. `bus-starter` supplies only the supported prefix order, default pool type, and Spring Beans.
 
 ## Runtime context model
 
@@ -66,14 +84,15 @@ application-context registry.
 | Type | Responsibility |
 |---|---|
 | `ContextManager` | Owns the current thread state and performs capture, install, restore, and clear operations. |
-| `ContextState` | Immutable detached snapshot containing request ID and a defensive authorization copy. |
+| `ContextState` | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credential metadata. |
 | `ContextBuilder` | Public facade for request IDs, authorization, tenant, credential, token, and API key access. |
 | `ContextScope` | `AutoCloseable` guard that restores the previous state exactly once. |
 | `ContextDecorator` | Spring `TaskDecorator` that propagates captured state to executor tasks. |
 | `ContextProvider` | Ordered extension point that can supply authorization state. |
 
-`ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. This makes
-the snapshot suitable for bounded asynchronous propagation.
+`ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. Token and
+API-key credentials are resolved once at the Servlet boundary and retained only as immutable credential values with
+redacted diagnostics. This makes the snapshot suitable for bounded asynchronous propagation.
 
 ### Capture and install
 
@@ -108,8 +127,12 @@ String apiKey = contextBuilder.getApiKey();
 Http.Auth.Credential credential = contextBuilder.getCredential();
 ```
 
-Use `clear()` at an integration boundary that owns the current thread state. Use `reset()` only when a fresh request ID
-and empty authorization state are required.
+Token and API-key values are stored independently. `getCredential()` prefers the token when both are present, while
+`getToken()` and `getApiKey()` continue to expose their respective values. Resolution follows `Http.Auth`: headers,
+parameters, an available cached JSON body, and cookies. Raw request bodies are never consumed by context resolution.
+
+Use `clear()` at an integration boundary that owns the current thread state. It removes the request ID, authorization,
+token, and API-key state owned by the current thread.
 
 ## Spring Bean services
 
@@ -158,7 +181,7 @@ services are genuinely required together.
 ## Annotation utilities
 
 - `AnnotationWrapper` and `WrapperAnnotation` support merged or wrapped annotation access.
-- `PlaceHolderBinder`, `DefaultPlaceHolderBinder`, and `PlaceHolderHandler` resolve annotation attributes containing
+- `PlaceholderBinder`, `DefaultPlaceholderBinder`, and `PlaceholderHandler` resolve annotation attributes containing
   environment placeholders.
 - `@RequestObject` explicitly opts a controller method parameter into Bus request-object binding.
 
@@ -176,8 +199,8 @@ including normal, asynchronous, and error dispatches. `RequestContext` provides 
 - multipart values;
 - cached JSON body fields.
 
-With `bus-starter`, `WebConfiguration` registers the filter by default for Servlet applications. Disable it explicitly
-with:
+With `bus-starter`, `WebConfiguration` always supplies one replaceable `RequestContext` Bean for Servlet integrations
+and registers the filter by default. Disable context binding explicitly with:
 
 ```yaml
 bus:
@@ -227,7 +250,9 @@ Safety rules:
 - multipart caching is opt-in;
 - only supported HTTP methods are wrapped;
 - response diagnostic caching is independent from response delivery;
-- wrappers are request-scoped and never enter `ContextState`.
+- wrappers are request-scoped and never enter `ContextState`;
+- when enabled, request body caching runs before context binding so JSON credentials can be resolved without consuming
+  the raw Servlet stream.
 
 Starter keeps body caching disabled by default even when aggregate wrapper support is enabled.
 
@@ -264,7 +289,7 @@ The reusable infrastructure is assembled by three Starter configurations:
 |---|---|---|
 | `GeniusStarter` | enabled | none |
 | `TaskConfiguration` | enabled when task classes exist | `bus.context.task.enabled=false` |
-| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` |
+| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` disables binding only |
 
 Product features such as cache, mapper, sensitive, storage, or Vortex are separate and remain controlled by their own
 `bus.<feature>.enabled` properties.

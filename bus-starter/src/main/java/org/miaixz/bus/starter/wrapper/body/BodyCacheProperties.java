@@ -37,7 +37,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.WRAPPER_BODY_CACHE)
-public final class BodyCacheProperties {
+public class BodyCacheProperties {
 
     /**
      * Whether the body cache integration is enabled.

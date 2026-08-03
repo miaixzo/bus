@@ -169,9 +169,8 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "boolean"
+            "java.lang.String[]",
+            "java.lang.Class[]"
           ]
         }
       ]
@@ -344,20 +343,7 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.starter.jdbc.JdbcProperties"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.jdbc.JdbcProperties",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "java.lang.String",
-            "java.util.Map"
+            "org.springframework.core.env.Environment"
           ]
         }
       ]

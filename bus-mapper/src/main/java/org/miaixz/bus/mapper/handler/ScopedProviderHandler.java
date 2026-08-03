@@ -24,14 +24,12 @@ import java.util.Properties;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
-import org.miaixz.bus.mapper.Holder;
 
 /**
- * Base class for mapper handlers that resolve datasource-scoped provider configuration.
+ * Base class for Mapper handlers that resolve database-specific provider configuration.
  * <p>
- * This class keeps provider lookup, default configuration storage, and datasource-derived configuration resolution in
- * one place. Concrete handlers only need to declare their provider contract and implement their own configuration
- * resolution rules.
+ * This class centralizes provider lookup, global default storage, and configuration selection by effective JDBC data
+ * source key. The key is observed through a callback and is never used here to route or retain a data source.
  *
  * @param <T> the handled object type
  * @param <C> the plugin configuration type
@@ -47,19 +45,19 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     protected C config;
 
     /**
-     * Optional properties used only to apply datasource-scoped enabled flags to an explicit default configuration.
+     * Optional properties used to apply database-specific activation flags to an explicit default configuration.
      */
     private Properties activationProperties;
 
     /**
-     * Initializes a scoped Provider handler without a default configuration.
+     * Initializes a scoped provider handler without a default configuration.
      */
     public ScopedProviderHandler() {
         // No initialization required.
     }
 
     /**
-     * Constructs a new ScopedProviderHandler instance with a default configuration.
+     * Initializes a scoped provider handler with a default configuration.
      *
      * @param config default configuration
      */
@@ -98,10 +96,10 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     }
 
     /**
-     * Applies datasource-scoped activation rules without replacing an explicit default configuration.
+     * Applies database-specific activation rules without replacing an explicit default configuration.
      * <p>
      * This is used when a provider supplies the highest-priority configuration object while external properties still
-     * need to disable or re-enable the handler for individual datasources.
+     * need to disable or re-enable the handler for individual data source keys.
      *
      * @param properties flattened mapper properties containing enabled flags
      */
@@ -112,7 +110,7 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     /**
      * Resolves the current configuration while enforcing activation rules attached to an explicit default.
      *
-     * @return current handler configuration, or {@code null} when disabled for the datasource
+     * @return current handler configuration, or {@code null} when disabled for the effective data source key
      */
     @Override
     protected C current() {
@@ -133,11 +131,11 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     }
 
     /**
-     * Resolves datasource-scoped configuration from mapper properties.
+     * Resolves database-specific configuration from Mapper properties.
      *
-     * @param datasourceKey datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    mapper configuration properties
-     * @return datasource-scoped configuration, or {@code null}
+     * @return database-specific configuration, or {@code null}
      */
     @Override
     protected C derived(String datasourceKey, Properties properties) {
@@ -149,24 +147,21 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     }
 
     /**
-     * Resolves the common enabled flag with datasource, shared, and legacy-default fallback.
+     * Resolves the activation flag using database-specific, shared, then legacy-default precedence.
      *
-     * @param datasourceKey current datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    flattened mapper configuration
-     * @return {@code true} when this handler is enabled for the datasource
+     * @return {@code true} when this handler is enabled for the specified key
      */
     protected boolean enabled(String datasourceKey, Properties properties) {
         if (properties == null) {
             return true;
         }
-        String key = datasourceKey == null || datasourceKey.isBlank() ? Holder.getDefault() : datasourceKey;
+        String key = datasourceKey == null || datasourceKey.isBlank() ? getDatasourceKey() : datasourceKey;
         String suffix = Symbol.DOT + scope() + Symbol.DOT + Args.PROP_ENABLED;
         String value = properties.getProperty(key + suffix);
         if (value == null) {
             value = properties.getProperty(Args.SHARED_KEY + suffix);
-        }
-        if (value == null && Holder.getDefault() != null) {
-            value = properties.getProperty(Holder.getDefault() + suffix);
         }
         if (value == null) {
             value = properties.getProperty("default" + suffix);
@@ -207,7 +202,7 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     /**
      * Resolves the effective plugin configuration.
      *
-     * @param datasourceKey datasource key
+     * @param datasourceKey effective JDBC data source key
      * @param properties    mapper configuration properties
      * @param provider      provider instance, or {@code null} when optional
      * @return resolved configuration, or {@code null} when unavailable
@@ -224,9 +219,9 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
     }
 
     /**
-     * Reports a missing required Provider using the handler's configured failure policy.
+     * Reports a missing required provider using the handler's configured failure policy.
      *
-     * @param datasourceKey datasource key
+     * @param datasourceKey effective JDBC data source key
      */
     protected void onProviderMissing(String datasourceKey) {
         Logger.warn(

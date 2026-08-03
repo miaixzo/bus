@@ -30,7 +30,7 @@ import org.springframework.boot.SpringApplication;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class BannerPrinter {
+public class BannerPrinter {
 
     /**
      * Creates a stateless banner applicator.

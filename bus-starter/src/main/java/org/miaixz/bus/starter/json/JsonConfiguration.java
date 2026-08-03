@@ -20,14 +20,15 @@
 package org.miaixz.bus.starter.json;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.miaixz.bus.extra.json.JsonFactory;
 import org.miaixz.bus.extra.json.JsonProvider;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableJson;
 
 /**
  * Creates the Context-local JSON provider.
@@ -37,7 +38,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @EnableConfigurationProperties(JsonProperties.class)
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.JSON, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableJson.class, prefix = GeniusBuilder.JSON)
 public class JsonConfiguration {
 
     /**

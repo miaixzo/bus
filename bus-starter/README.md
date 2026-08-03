@@ -102,7 +102,9 @@ Both switches default to `true` when their required runtime classes are present.
 
 ## Feature activation model
 
-Product features are disabled unless their `bus.<feature>.enabled` property is `true`.
+Product features use one deterministic activation order: an explicit `@EnableXxx` annotation always enables its
+feature, including when `bus.<feature>.enabled=false`; without the annotation, the feature is enabled only when its
+`bus.<feature>.enabled` property is `true`. If neither activation source is present, the feature remains disabled.
 
 | Feature | Import annotation | Property | Main responsibility |
 |---|---|---|---|
@@ -116,7 +118,7 @@ Product features are disabled unless their `bus.<feature>.enabled` property is `
 | Health | `@EnableHealth` | `bus.health.enabled` | System health and availability integration. |
 | I18n | `@EnableI18n` | `bus.i18n.enabled` | Message source and Bus i18n adapter. |
 | Image | `@EnableImage` | `bus.image.enabled` | Image and DICOM provider integration. |
-| JDBC | `@EnableJdbc` | `bus.jdbc.enabled` | Validated dynamic data sources and routing. |
+| JDBC | `@EnableJdbc` | `bus.datasource.url` or `spring.datasource.url` | Validated dynamic data sources and routing. |
 | JSON | `@EnableJson` | `bus.json.enabled` | Application-context JSON provider selection. |
 | Limiter | `@EnableLimiter` | `bus.limiter.enabled` | Limiter scanning and service registration. |
 | Mapper | `@EnableMapper` | `bus.mapper.enabled` | MyBatis mapper scanning, plugins, tenant context, and AOT. |
@@ -134,8 +136,9 @@ Product features are disabled unless their `bus.<feature>.enabled` property is `
 | Wrapper | `@EnableWrapper` | `bus.wrapper.enabled` | MVC binding, converters, caching, advice, and route prefixes. |
 | ZooKeeper | `@EnableZookeeper` | `bus.zookeeper.enabled` | Apache Curator client lifecycle. |
 
-The annotations import configurations explicitly, but they do not override `@ConditionalOnProperty`. In a Spring Boot
-application, discovery already contributes every candidate, so the property remains the authoritative runtime switch.
+Each annotation imports the feature configuration directly. The shared `@ConditionalOnEnabled` rule from
+`bus-spring` accepts that explicit annotation before evaluating `bus.<feature>.enabled` as the secondary source. Both
+activation paths therefore reach the same feature configuration without creating a parallel implementation.
 
 ## Quick start
 
@@ -246,21 +249,61 @@ per-route limit cannot exceed the total limit.
 
 ## JDBC
 
+The Starter assembles JDBC automatically when the pool classes are available; `@EnableJdbc` can also import the
+configuration explicitly. There is no separate ineffective feature switch. The only configuration entries are
+`bus.datasource` and `spring.datasource`, and both use the same root-primary plus `multi` structure. They are never
+merged: a `bus.datasource` URL selects the complete Bus group and overrides `spring.datasource`.
+
 ```yaml
 bus:
-  jdbc:
-    enabled: true
-    primary: master
-    datasources:
-      master:
-        url: "jdbc:mysql://127.0.0.1:3306/app"
-        username: "app"
-        password: "${APP_DB_PASSWORD}"
+  datasource:
+    name: master
+    url: jdbc:mysql://127.0.0.1:3306/app
+    username: app
+    password: ${APP_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+    multi:
+      - name: archive
+        url: jdbc:mysql://127.0.0.1:3306/archive
+        username: app
+        password: ${ARCHIVE_DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        hikari:
+          maximum-pool-size: 10
 ```
 
-`JdbcConfiguration` creates validated data sources, assembles `DynamicDataSource`, and exposes routing infrastructure.
-The configured primary name must identify an available data-source definition. Tenant or routing information should
-come from trusted runtime context rather than request-controlled model fields.
+JDBC responsibilities are fixed. Reusable `DataSourceResolver`, `DataSourceDefinition`, `DataSourceMapping`,
+`DataSourceFactory`, `DynamicDataSource`, `DataSourceHolder`, and `AspectjJdbcProxy` live in `bus-spring` under
+`org.miaixz.bus.spring.jdbc`. The Starter package retains only `JdbcConfiguration`, which assembles Beans, and
+`JdbcDescriptor`, which defines the Bus-before-Spring prefix order and Hikari default. Both prefixes use
+the same resolver path. The root `name` is the default route and every `multi` entry supplies an additional route.
+Names must be nonblank and unique across the complete group.
+
+Service methods select a named datasource with `@DataSource`. A method annotation overrides its class annotation, and
+nested invocations restore the exact parent route on return or failure:
+
+```java
+import org.miaixz.bus.spring.jdbc.DataSource;
+
+@Service
+public class OrderService {
+
+    @DataSource("archive")
+    @Transactional
+    public void createOrder() {
+        // Mapper operations use archive.
+    }
+
+}
+```
+
+Routing must occur before transaction advice obtains a connection. Put `@DataSource` on the externally invoked service
+transaction boundary, or call a routed inner operation through another Spring bean proxy. Self-invocation through
+`this` bypasses AOP, and an already active outer transaction cannot change its acquired connection. Dynamic routing is
+not a distributed transaction mechanism. Tenant or routing information must come from trusted runtime context rather
+than request-controlled model fields.
 
 ## Mapper
 

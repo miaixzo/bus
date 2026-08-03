@@ -22,7 +22,6 @@ package org.miaixz.bus.starter.auth;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,9 @@ import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.ContextBuilder;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableAuth;
 
 /**
  * Configures authorization services and protected-method resolution.
@@ -71,7 +72,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @EnableConfigurationProperties(value = { AuthProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.auth.cache.AuthCache")
-@ConditionalOnProperty(prefix = GeniusBuilder.AUTH, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH)
 public class AuthConfiguration {
 
     /**

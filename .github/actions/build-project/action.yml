@@ -40,6 +40,7 @@ inputs:
       bus-pay
       bus-storage
       bus-vortex
+      bus-spring
       bus-starter
       bus-all
   maven-args:

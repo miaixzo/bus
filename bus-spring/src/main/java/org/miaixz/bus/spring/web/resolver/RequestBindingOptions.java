@@ -25,7 +25,7 @@ package org.miaixz.bus.spring.web.resolver;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RequestBindingOptions {
+public class RequestBindingOptions {
 
     /**
      * Initializes the immutable binding limits used by the request-object argument resolver.

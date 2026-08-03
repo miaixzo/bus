@@ -41,7 +41,7 @@ import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
 @Setter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.TEMPUS)
-public final class TempusProperties extends WorkflowBindingOptions {
+public class TempusProperties extends WorkflowBindingOptions {
 
     /**
      * Whether the Temporal worker is enabled.

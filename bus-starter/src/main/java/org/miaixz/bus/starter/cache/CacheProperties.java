@@ -42,7 +42,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.CACHE)
-public final class CacheProperties extends Options {
+public class CacheProperties extends Options {
 
     /**
      * Whether the cache integration is enabled.

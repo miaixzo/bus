@@ -22,7 +22,6 @@ package org.miaixz.bus.starter.office;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +30,9 @@ import org.miaixz.bus.office.Provider;
 import org.miaixz.bus.office.Registry;
 import org.miaixz.bus.office.builtin.LocalOfficeProvider;
 import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableOffice;
 
 /**
  * Configures online document preview and conversion services.
@@ -45,7 +46,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @ConditionalOnClass({ LocalOfficeProvider.class, OnlineOfficeProvider.class })
 @EnableConfigurationProperties(value = { OfficeProperties.class })
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.OFFICE, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableOffice.class, prefix = GeniusBuilder.OFFICE)
 public class OfficeConfiguration {
 
     /**

@@ -31,7 +31,7 @@ import org.springframework.core.env.Environment;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class EnvironmentResolver {
+public class EnvironmentResolver {
 
     /**
      * Spring application name property key.

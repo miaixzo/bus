@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.mapper.runtime;
 
+import java.util.function.Supplier;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,11 +32,11 @@ import org.miaixz.bus.mapper.feature.tenant.TenantProvider;
 import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
 
 /**
- * Runtime provider instances used by mapper plugin construction.
+ * Runtime collaborators used during Mapper plugin construction.
  * <p>
- * Providers are deliberately kept out of {@code MapperOptions} because they come from a runtime container instead of
- * user configuration. Spring starter code may populate this holder from beans, while non-Spring callers can construct
- * it directly.
+ * Object providers are deliberately kept out of {@code MapperOptions} because they come from a runtime container
+ * instead of user configuration. The JDBC key supplier is also a callback only: this object does not copy or own data
+ * source routing state.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -44,7 +46,7 @@ import org.miaixz.bus.mapper.feature.visible.VisibleProvider;
 public class MapperPluginProviders {
 
     /**
-     * Constructs a new MapperPluginProviders instance.
+     * Initializes an empty runtime collaborator holder.
      */
     public MapperPluginProviders() {
         // No initialization required.
@@ -79,5 +81,10 @@ public class MapperPluginProviders {
      * Provider used to resolve schema initialization configuration and entity classes.
      */
     private SchemaProvider schemaProvider;
+
+    /**
+     * Read-only supplier for the effective JDBC data source key, owned by the data-access integration.
+     */
+    private Supplier<String> datasourceKeyProvider;
 
 }

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,71 +28,62 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
-import org.springframework.boot.context.properties.source.ConfigurationPropertyNameAliases;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.mapper.dialect.DialectRegistry;
+import org.miaixz.bus.spring.jdbc.AspectjJdbcProxy;
+import org.miaixz.bus.spring.jdbc.DataSourceFactory;
+import org.miaixz.bus.spring.jdbc.DataSourceHolder;
+import org.miaixz.bus.spring.jdbc.DataSourceMapping;
+import org.miaixz.bus.spring.jdbc.DataSourceResolver;
+import org.miaixz.bus.spring.jdbc.DynamicDataSource;
 
 /**
- * Configures dynamic JDBC data sources and annotation-driven routing.
+ * Assembles dynamic JDBC routing, annotation advice, and transaction management Beans.
  * <p>
- * This class configures the primary data source and any additional data sources, setting up a {@link DynamicDataSource}
- * to handle routing. It also provides support for encrypted credentials and configures a transaction manager.
+ * Configuration parsing belongs to {@link DataSourceResolver}; concrete pool creation belongs to
+ * {@link DataSourceFactory}. This class only connects those collaborators to Spring Bean lifecycle infrastructure.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
-@EnableConfigurationProperties(value = { JdbcProperties.class })
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.JDBC, name = "enabled", havingValue = "true", matchIfMissing = false)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
 public class JdbcConfiguration {
 
     /**
-     * Bound jdbc configuration properties.
+     * Resolves the selected datasource configuration mapping.
      */
-    private final JdbcProperties properties;
+    private final DataSourceResolver dataSourceResolver;
 
     /**
-     * Stores the data-source definitions used to create dynamic JDBC routing infrastructure.
-     *
-     * @param properties bound configuration properties
+     * Creates concrete datasource instances.
      */
-    public JdbcConfiguration(JdbcProperties properties) {
-        this.properties = properties;
+    private final DataSourceFactory dataSourceFactory;
+
+    /**
+     * Creates JDBC Bean assembly collaborators for the current environment.
+     *
+     * @param environment Spring environment containing compatible datasource properties
+     */
+    public JdbcConfiguration(Environment environment) {
+        JdbcDescriptor descriptor = JdbcDescriptor.defaults();
+        this.dataSourceResolver = new DataSourceResolver(environment, descriptor.getPrefixes());
+        this.dataSourceFactory = new DataSourceFactory(descriptor.getDefaultType());
     }
 
     /**
-     * Aliases for mapping common data source properties.
-     */
-    private static final ConfigurationPropertyNameAliases aliases;
-
-    static {
-        aliases = new ConfigurationPropertyNameAliases();
-        aliases.addAliases("url", "jdbc-url");
-        aliases.addAliases("username", "user");
-    }
-
-    /**
-     * Creates dynamic data source routing advice only after the routing data source is present.
+     * Creates dynamic datasource routing advice after the routing datasource is present.
      *
-     * @return dynamic data source aspect
+     * @return dynamic datasource aspect
      */
     @Bean
     @ConditionalOnBean(DynamicDataSource.class)
@@ -103,13 +93,12 @@ public class JdbcConfiguration {
     }
 
     /**
-     * Creates and configures the dynamic data source bean.
+     * Creates the primary routing datasource from one fully resolved configuration mapping.
      * <p>
-     * This method initializes the default data source and any additional data sources defined in the configuration. It
-     * then sets up the {@link DynamicDataSource} to manage them.
-     * </p>
+     * JDBC owns the application primary key and thread-local route. Mapper receives only a read-only key supplier for
+     * dialect resolution and never modifies routing state.
      *
-     * @return The configured {@link DynamicDataSource} instance.
+     * @return configured dynamic datasource
      */
     @Bean
     @Primary
@@ -117,12 +106,20 @@ public class JdbcConfiguration {
     public DynamicDataSource dataSource() {
         DataSourceHolder.remove();
         try {
-            Map<Object, Object> sourceMap = new LinkedHashMap<>();
-            this.properties.getDatasources().forEach((name, spec) -> sourceMap.put(name, bind(toMap(spec))));
+            DataSourceMapping mapping = this.dataSourceResolver.resolve();
+            DataSourceHolder.setDefaultKey(mapping.primary());
+            DialectRegistry.setKeyProvider(DataSourceHolder::getKey);
+
+            Map<Object, Object> sources = new LinkedHashMap<>();
+            mapping.sources().forEach((name, definition) -> {
+                DataSource source = this.dataSourceFactory.create(definition);
+                sources.put(name, source);
+                DialectRegistry.initializeDialect(name, source);
+            });
 
             DynamicDataSource dataSource = new DynamicDataSource();
-            dataSource.setPrimary(this.properties.getPrimary());
-            dataSource.setTargetDataSources(sourceMap);
+            dataSource.setPrimary(mapping.primary());
+            dataSource.setTargetDataSources(sources);
             return dataSource;
         } finally {
             // Bean initialization must never leave a routing key on the bootstrap thread.
@@ -131,83 +128,15 @@ public class JdbcConfiguration {
     }
 
     /**
-     * Creates the transaction manager bean.
+     * Creates the transaction manager for the effective routing datasource.
      *
-     * @param dataSource The {@link DataSource} to be used by the transaction manager.
-     * @return A {@link DataSourceTransactionManager} instance.
+     * @param dataSource effective application datasource
+     * @return datasource transaction manager
      */
     @Bean
     @ConditionalOnMissingBean(type = "org.springframework.transaction.PlatformTransactionManager")
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
-    }
-
-    /**
-     * Binds a map of properties to a new {@link DataSource} instance.
-     *
-     * @param map A map containing the data source properties.
-     * @return A configured {@link DataSource} instance.
-     * @throws InternalException        if the data source type is not specified.
-     * @throws IllegalArgumentException if the specified data source class cannot be found.
-     */
-    private DataSource bind(Map<String, Object> map) {
-        String type = StringKit.toString(map.get("type"));
-        if (StringKit.isEmpty(type)) {
-            throw new InternalException("The database type is empty");
-        }
-        try {
-            return bind((Class<? extends DataSource>) Class.forName(type), map);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Cannot resolve class with type: " + type, e);
-        }
-    }
-
-    /**
-     * Converts a bean to a map of its properties.
-     * <p>
-     * This method also handles the decryption of sensitive properties like url, username, and password if a private key
-     * is configured.
-     * </p>
-     *
-     * @param spec immutable data source specification to convert
-     * @return A map representation of the bean's properties.
-     */
-    private Map<String, Object> toMap(JdbcProperties.DataSourceSpec spec) {
-        Map<String, Object> map = new HashMap<>(spec.properties());
-        map.put("url", spec.url());
-        map.put("username", spec.username());
-        map.put("password", spec.password());
-        map.put("driverClassName", spec.driverClassName());
-        map.put("type", spec.type());
-        return map;
-    }
-
-    /**
-     * Binds properties to an existing {@link DataSource} instance. This method is inspired by Spring Boot's
-     * {@code DataSourceBuilder.bind} to ensure consistent data source configuration.
-     *
-     * @param result     The {@link DataSource} instance to configure.
-     * @param properties A map of properties to bind.
-     */
-    private void bind(DataSource result, Map<String, Object> properties) {
-        ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
-        Binder binder = new Binder(source.withAliases(aliases));
-        binder.bind(ConfigurationPropertyName.EMPTY, Bindable.ofInstance(result));
-    }
-
-    /**
-     * Creates and binds a new {@link DataSource} instance of the specified class. This method is inspired by Spring
-     * Boot's {@code DataSourceBuilder.bind} to ensure consistent data source creation.
-     *
-     * @param clazz      The class of the {@link DataSource} to create.
-     * @param properties A map of properties to bind.
-     * @param <T>        The type of the data source.
-     * @return A new, configured {@link DataSource} instance.
-     */
-    private <T extends DataSource> T bind(Class<T> clazz, Map<String, Object> properties) {
-        ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
-        Binder binder = new Binder(source.withAliases(aliases));
-        return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(clazz)).get();
     }
 
 }

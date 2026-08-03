@@ -1,8 +1,8 @@
 # bus-spring
 
 `bus-spring` 是 Bus 可复用的 Spring 集成层，提供 ApplicationContext 级 Bean 访问、运行时上下文传播、
-Spring Boot 生命周期支持和通用 Web 基础设施。它保持被动：功能选择、属性条件和应用启动装配均由
-`bus-starter` 负责。
+Spring Boot 生命周期支持和通用 Web 基础设施。它提供可复用的条件机制，但不决定具体功能：启用注解、属性
+前缀、功能选择和应用启动装配均由 `bus-starter` 负责。
 
 ## 依赖
 
@@ -22,6 +22,7 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它保持被动：功
 | `annotation` | 合并注解检查、占位符绑定及 `@RequestObject`。 |
 | `aop` | 可复用的 Spring AOP 基础设施。 |
 | `bean` | Context 内 Bean 查询、注册、元数据、环境及 Provider 服务。 |
+| `jdbc` | 可复用的数据源解析、连接池创建、动态路由、路由作用域、注解和切面。 |
 | `web` | 请求访问和 Servlet 上下文绑定根类型。 |
 | `web.advice` | 可复用的 MVC Response Advice。 |
 | `web.converter` | HTTP Message Converter 及注册接口。 |
@@ -31,6 +32,7 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它保持被动：功
 | `web.wrapper` | 有界 Request/Response Body Wrapper。 |
 | `boot` | Spring Boot RunListener 和生命周期基础类型。 |
 | `boot.banner` | Banner 选择与渲染。 |
+| `boot.condition` | 注解优先的通用 Spring Boot 启用条件。 |
 | `boot.environment` | 早期 EnvironmentPostProcessor。 |
 | `boot.listener` | Spring Boot 和 Spring Cloud 早期 Listener。 |
 | `boot.startup` | 启动阶段测量与报告。 |
@@ -38,10 +40,25 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它保持被动：功
 根 Package 有意保持非空。`ContextBuilder`、`ContextManager`、`ContextProvider`、`ContextState`、
 `ContextScope`、`ContextDecorator` 和 `SpringBuilder` 是稳定的根级能力。
 
+`boot.condition` 提供 `@ConditionalOnEnabled` 和 `EnabledCondition`，统一保证显式启用注解的优先级高于对应
+配置项；具体启用注解和属性前缀仍由使用它的 Starter 模块定义。`name` 默认为 `enabled`，`matchIfMissing`
+默认为 `false`，并同时支持 Configuration 类型和单个 Bean 方法。
+
+## JDBC 数据源基础设施
+
+`org.miaixz.bus.spring.jdbc.DataSource` 是 Service 层选择数据源的公共 Spring 契约，注解值必须对应已解析的
+数据源路由。`DataSourceResolver`、`DataSourceDefinition` 和 `DataSourceMapping` 将有序配置前缀解析为一个
+经过校验的数据源映射；`DataSourceFactory` 创建连接池；`DynamicDataSource` 执行路由；每个
+ApplicationContext 拥有独立的 `DataSourceHolder`，提供可精确恢复的嵌套路由作用域；`DataSourceListener`
+通知可选集成数据源的初始化、增加、替换和删除；
+`AspectjJdbcProxy` 在事务取得连接前解释注解。这些类型不依赖 Mapper 和 Starter 装配，`bus-starter` 只提供
+支持的前缀顺序、默认连接池类型和 Spring Bean 装配。
+
 ## 运行时上下文
 
 运行时状态由每个 Spring ApplicationContext 自己的 `ContextManager` 持有。`ContextState` 是不可变、已分离
-的快照，包含 Request ID 和防御性复制的认证信息，不持有 Servlet 对象、请求缓存或 ThreadLocal 容器。
+的快照，包含 Request ID、防御性复制的认证信息以及解析后的 Token/API Key 凭证元数据，不持有 Servlet
+对象、请求缓存或 ThreadLocal 容器。凭证只在 Servlet 边界解析一次，诊断输出始终脱敏。
 
 ```java
 ContextState state = contextBuilder.capture();
@@ -59,6 +76,11 @@ executor.execute(contextDecorator.decorate(task));
 
 `ContextProvider` 扩展可以提供认证数据。Provider 在所属 ApplicationContext 内排序和解析，不存在静态
 ApplicationContext 注册表。
+
+`ContextBuilder.getCredential()` 在 Token 和 API Key 同时存在时优先返回 Token；`getToken()` 与
+`getApiKey()` 分别读取各自的状态，因此不会丢失次优先级凭证。解析顺序复用 `Http.Auth`，覆盖 Header、
+Parameter、可用的缓存 JSON Body 和 Cookie。上下文解析绝不直接消费原始请求流；启用 Body Cache 后，缓存
+过滤器固定先于上下文绑定执行。
 
 ## Spring 门面
 

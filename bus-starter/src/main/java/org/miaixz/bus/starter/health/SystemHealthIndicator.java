@@ -33,7 +33,7 @@ import org.miaixz.bus.health.builtin.TID;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SystemHealthIndicator implements HealthIndicator {
+public class SystemHealthIndicator implements HealthIndicator {
 
     /**
      * Canonical allowlist of supported system health detail identifiers.

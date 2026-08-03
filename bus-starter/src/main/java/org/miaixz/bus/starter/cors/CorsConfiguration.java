@@ -23,7 +23,6 @@ import java.util.Arrays;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +33,9 @@ import org.springframework.web.filter.CorsFilter;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableCors;
 
 /**
  * Configures CORS (Cross-Origin Resource Sharing) support. This class enables and configures the CORS filter based on
@@ -47,7 +48,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.springframework.web.cors.CorsConfigurationSource")
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(prefix = GeniusBuilder.CORS, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableCors.class, prefix = GeniusBuilder.CORS)
 public class CorsConfiguration {
 
     /**

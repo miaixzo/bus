@@ -20,13 +20,14 @@
 package org.miaixz.bus.starter.i18n;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableI18n;
 
 /**
  * Configures internationalization (i18n). This class sets up the {@link MessageSource} bean based on the properties
@@ -41,7 +42,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
  */
 @EnableConfigurationProperties(value = { I18nProperties.class })
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = GeniusBuilder.I18N, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableI18n.class, prefix = GeniusBuilder.I18N)
 public class I18nConfiguration {
 
     /**

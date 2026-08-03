@@ -36,7 +36,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.DUBBO)
-public final class DubboProperties {
+public class DubboProperties {
 
     /**
      * Whether the dubbo integration is enabled.
@@ -45,15 +45,11 @@ public final class DubboProperties {
     /**
      * Package names scanned for Dubbo service components.
      */
-    private final String basePackages;
+    private final String[] basePackages;
     /**
      * Marker classes whose packages are included in Dubbo scanning.
      */
-    private final String basePackageClasses;
-    /**
-     * Whether multiple Dubbo configuration Beans may coexist.
-     */
-    private final boolean multiple;
+    private final Class<?>[] basePackageClasses;
 
     /**
      * Creates Dubbo properties.
@@ -61,14 +57,30 @@ public final class DubboProperties {
      * @param enabled            whether Dubbo integration is enabled
      * @param basePackages       packages containing Dubbo services
      * @param basePackageClasses type-safe package markers
-     * @param multiple           whether binding to multiple Spring beans is allowed
      */
-    public DubboProperties(@DefaultValue("false") boolean enabled, String basePackages, String basePackageClasses,
-            @DefaultValue("false") boolean multiple) {
+    public DubboProperties(@DefaultValue("false") boolean enabled, @DefaultValue String[] basePackages,
+            @DefaultValue Class<?>[] basePackageClasses) {
         this.enabled = enabled;
-        this.basePackages = basePackages;
-        this.basePackageClasses = basePackageClasses;
-        this.multiple = multiple;
+        this.basePackages = basePackages == null ? new String[0] : basePackages.clone();
+        this.basePackageClasses = basePackageClasses == null ? new Class<?>[0] : basePackageClasses.clone();
+    }
+
+    /**
+     * Returns a defensive copy of configured service scan packages.
+     *
+     * @return configured service scan packages
+     */
+    public String[] getBasePackages() {
+        return this.basePackages.clone();
+    }
+
+    /**
+     * Returns a defensive copy of configured package marker classes.
+     *
+     * @return configured package marker classes
+     */
+    public Class<?>[] getBasePackageClasses() {
+        return this.basePackageClasses.clone();
     }
 
     /**
@@ -76,8 +88,8 @@ public final class DubboProperties {
      */
     @Override
     public String toString() {
-        return "DubboProperties[enabled=" + enabled + ", basePackages=" + basePackages + ", basePackageClasses="
-                + basePackageClasses + ", multiple=" + multiple + "]";
+        return "DubboProperties[enabled=" + enabled + ", basePackages=" + java.util.Arrays.toString(basePackages)
+                + ", basePackageClasses=" + java.util.Arrays.toString(basePackageClasses) + "]";
     }
 
 }

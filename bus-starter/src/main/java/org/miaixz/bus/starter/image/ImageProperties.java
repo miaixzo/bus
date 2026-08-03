@@ -36,7 +36,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.IMAGE)
-public final class ImageProperties {
+public class ImageProperties {
 
     /**
      * Whether the image integration is enabled.

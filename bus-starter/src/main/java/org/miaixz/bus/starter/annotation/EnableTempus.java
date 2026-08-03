@@ -28,8 +28,8 @@ import org.miaixz.bus.starter.tempus.TempusConfiguration;
 /**
  * Enables Temporal workflow support.
  * <p>
- * Imports {@link TempusConfiguration} to register Temporal client, worker, publisher and subscriber beans. The
- * subscriber worker only starts when {@code bus.tempus.enabled=true}.
+ * Imports {@link TempusConfiguration} to register Temporal client, worker, publisher and subscriber beans regardless of
+ * the value assigned to {@code bus.tempus.enabled}.
  *
  * @author Kimi Liu
  * @since Java 21+

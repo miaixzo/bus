@@ -1,6 +1,15 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.spring.boot.condition.EnabledCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor",
       "methods": [
         {
@@ -55,6 +64,76 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.jdbc.DataSourceDefinition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDriverClassName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHikari",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUsername",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.routing.RoutePrefixProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.util.List",
+            "boolean"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "bus-scenes/**"
     }
   ]
 }

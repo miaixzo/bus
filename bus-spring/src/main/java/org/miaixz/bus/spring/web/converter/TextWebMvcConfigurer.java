@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Charset;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class TextWebMvcConfigurer implements MessageConverterRegistrar {
+public class TextWebMvcConfigurer implements MessageConverterRegistrar {
 
     /**
      * Creates the text MVC configurer.
@@ -41,11 +41,21 @@ public final class TextWebMvcConfigurer implements MessageConverterRegistrar {
         // No initialization required.
     }
 
+    /**
+     * Returns the stable name used to order and diagnose this converter registrar.
+     *
+     * @return registrar name
+     */
     @Override
     public String name() {
         return "BusText";
     }
 
+    /**
+     * Runs after higher-priority converter registrars.
+     *
+     * @return registrar order
+     */
     @Override
     public int getOrder() {
         return 100;

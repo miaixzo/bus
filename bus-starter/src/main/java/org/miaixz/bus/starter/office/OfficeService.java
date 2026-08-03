@@ -31,7 +31,7 @@ import org.miaixz.bus.office.Registry;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class OfficeService {
+public class OfficeService {
 
     /**
      * Constructs the OfficeService and registers the local and online providers.

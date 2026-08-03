@@ -31,7 +31,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class RequestWebMvcConfigurer implements WebMvcConfigurer {
+public class RequestWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
      * Request-binding options shared with the argument resolver.
@@ -53,6 +53,11 @@ public final class RequestWebMvcConfigurer implements WebMvcConfigurer {
         this.resolver = Objects.requireNonNull(resolver, "resolver");
     }
 
+    /**
+     * Registers the request-object resolver when request binding is enabled.
+     *
+     * @param resolvers mutable MVC argument resolver list
+     */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         Objects.requireNonNull(this.options, "options");

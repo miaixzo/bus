@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +36,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableElastic;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.Jackson3JsonpMapper;
@@ -57,7 +58,7 @@ import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder;
 @EnableConfigurationProperties(value = { ElasticProperties.class })
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Rest5Client.class, Rest5ClientTransport.class, ElasticsearchClient.class })
-@ConditionalOnProperty(prefix = GeniusBuilder.ELASTIC, name = "enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnEnabled(annotation = EnableElastic.class, prefix = GeniusBuilder.ELASTIC)
 public class ElasticConfiguration {
 
     /**

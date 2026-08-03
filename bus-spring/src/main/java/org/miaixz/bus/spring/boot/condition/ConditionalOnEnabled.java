@@ -17,43 +17,56 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.mapper.annotation;
+package org.miaixz.bus.spring.boot.condition;
 
 import java.lang.annotation.*;
+
+import org.springframework.context.annotation.Conditional;
 
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Annotation for supporting multiple data sources.
+ * Activates a Spring Boot feature when its explicit enable annotation is present or its configuration property is true.
  * <p>
- * This annotation can be applied to methods, types, or parameters to specify which data source should be used for the
- * execution of a method. It is typically used in conjunction with an Aspect-Oriented Programming (AOP) setup to switch
- * the data source context dynamically.
+ * The explicit annotation has the highest priority. Consequently, an {@code @EnableXxx} annotation still activates its
+ * feature when the corresponding {@code bus.xxx.enabled} property is absent or explicitly set to {@code false}. The
+ * property is evaluated only as the secondary activation source.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER })
-public @interface DataSource {
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Conditional(EnabledCondition.class)
+public @interface ConditionalOnEnabled {
 
     /**
-     * The name of the data source. If left empty, the default data source will be used.
+     * Returns the explicit annotation that activates the feature.
      *
-     * @return The data source name.
+     * @return feature enable annotation
      */
-    String value() default Normal.EMPTY;
+    Class<? extends Annotation> annotation();
 
     /**
-     * Whether to clear the data source setting after the method execution.
-     * <p>
-     * If set to {@code true}, the data source context will be reset to the default data source after the annotated
-     * method completes.
-     * </p>
+     * Returns the property prefix whose {@code enabled} member provides secondary activation.
      *
-     * @return {@code true} to clear the data source setting, {@code false} otherwise.
+     * @return feature property prefix
      */
-    boolean clear() default true;
+    String prefix();
+
+    /**
+     * Returns the property name appended to {@link #prefix()} for secondary activation.
+     *
+     * @return feature property name
+     */
+    String name() default Normal.ENABLED;
+
+    /**
+     * Returns whether a missing secondary property activates the feature when the explicit annotation is absent.
+     *
+     * @return {@code true} when a missing property should match
+     */
+    boolean matchIfMissing() default false;
 
 }

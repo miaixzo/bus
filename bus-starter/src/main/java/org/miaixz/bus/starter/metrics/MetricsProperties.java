@@ -40,7 +40,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.METRICS)
-public final class MetricsProperties {
+public class MetricsProperties {
 
     /**
      * Whether the metrics integration is enabled.

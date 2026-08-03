@@ -1437,7 +1437,7 @@ public class Format extends java.text.Format {
                     int offset,
                     Object dateTimeOffset,
                     UnaryOperatorX<String> splice) {
-                return attrs.getString(tag, index, "");
+                return attrs.getString(tag, index);
             }
         },
         /**
@@ -1453,7 +1453,8 @@ public class Format extends java.text.Format {
                     int offset,
                     Object dateTimeOffset,
                     UnaryOperatorX<String> splice) {
-                return attrs.getString(tag, index, "").toUpperCase();
+                String s = attrs.getString(tag, index);
+                return s != null ? s.toUpperCase() : null;
             }
         },
         /**
@@ -1469,7 +1470,8 @@ public class Format extends java.text.Format {
                     int offset,
                     Object dateTimeOffset,
                     UnaryOperatorX<String> slice) {
-                return slice.apply(attrs.getString(tag, index));
+                String s = attrs.getString(tag, index);
+                return s != null ? slice.apply(s) : null;
             }
         },
         /**
@@ -1518,7 +1520,7 @@ public class Format extends java.text.Format {
                     Object dateTimeOffset,
                     UnaryOperatorX<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
-                if (!(dateTimeOffset instanceof Period dateOffset))
+                if (date == null || !(dateTimeOffset instanceof Period dateOffset))
                     return date;
                 Calendar cal = Calendar.getInstance(attrs.getTimeZone());
                 cal.setTime(date);
@@ -1542,7 +1544,7 @@ public class Format extends java.text.Format {
                     Object dateTimeOffset,
                     UnaryOperatorX<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
-                if (!(dateTimeOffset instanceof Duration timeOffset))
+                if (date == null || !(dateTimeOffset instanceof Duration timeOffset))
                     return date;
                 Calendar cal = Calendar.getInstance(attrs.getTimeZone());
                 cal.setTime(date);
@@ -1785,7 +1787,7 @@ public class Format extends java.text.Format {
          * Applies the slice operation to a given string.
          *
          * @param s The string to slice.
-         * @return The resulting substring, or an empty string on error.
+         * @return The resulting substring, or {@code null} on error.
          */
         @Override
         public String applying(String s) {
@@ -1796,7 +1798,7 @@ public class Format extends java.text.Format {
                                 beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
                                 endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
             } catch (RuntimeException e) {
-                return "";
+                return null;
             }
         }
 

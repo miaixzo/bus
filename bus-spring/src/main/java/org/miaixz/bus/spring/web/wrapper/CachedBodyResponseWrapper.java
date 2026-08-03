@@ -38,7 +38,7 @@ import org.miaixz.bus.core.net.MediaType;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
+public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * Bounded diagnostic byte cache.
@@ -88,6 +88,12 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
         refreshPassthroughState();
     }
 
+    /**
+     * Returns the response character writer while mirroring bounded diagnostic content.
+     *
+     * @return pass-through response writer
+     * @throws IOException when the underlying response cannot provide a writer
+     */
     @Override
     public PrintWriter getWriter() throws IOException {
         if (this.outputStreamAccessed) {
@@ -101,6 +107,12 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
         return this.writer;
     }
 
+    /**
+     * Returns the response byte stream while mirroring bounded diagnostic content.
+     *
+     * @return pass-through response stream
+     * @throws IOException when the underlying response cannot provide a stream
+     */
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         if (this.writerAccessed) {
@@ -113,24 +125,44 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
         return this.outputStream;
     }
 
+    /**
+     * Updates the content type and disables caching for streaming media types.
+     *
+     * @param type response content type
+     */
     @Override
     public void setContentType(String type) {
         super.setContentType(type);
         refreshPassthroughState();
     }
 
+    /**
+     * Replaces a response header and reevaluates streaming disposition.
+     *
+     * @param name  header name
+     * @param value header value
+     */
     @Override
     public void setHeader(String name, String value) {
         super.setHeader(name, value);
         refreshPassthroughState();
     }
 
+    /**
+     * Adds a response header and reevaluates streaming disposition.
+     *
+     * @param name  header name
+     * @param value header value
+     */
     @Override
     public void addHeader(String name, String value) {
         super.addHeader(name, value);
         refreshPassthroughState();
     }
 
+    /**
+     * Clears both the underlying response buffer and retained diagnostic bytes.
+     */
     @Override
     public void resetBuffer() {
         flushCachedWriter();
@@ -140,6 +172,9 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
         refreshPassthroughState();
     }
 
+    /**
+     * Resets response metadata, output state, and retained diagnostic bytes.
+     */
     @Override
     public void reset() {
         flushCachedWriter();
@@ -281,33 +316,67 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
             this.delegate = delegate;
         }
 
+        /**
+         * Delegates nonblocking readiness to the target response stream.
+         *
+         * @return target stream readiness
+         */
         @Override
         public boolean isReady() {
             return this.delegate.isReady();
         }
 
+        /**
+         * Installs the nonblocking write listener on the target response stream.
+         *
+         * @param listener nonblocking write listener
+         */
         @Override
         public void setWriteListener(WriteListener listener) {
             this.delegate.setWriteListener(listener);
         }
 
+        /**
+         * Writes and conditionally caches one response byte.
+         *
+         * @param value byte value
+         * @throws IOException when target output fails
+         */
         @Override
         public void write(int value) throws IOException {
             this.delegate.write(value);
             cache(value);
         }
 
+        /**
+         * Writes and conditionally caches a response byte range.
+         *
+         * @param bytes  source bytes
+         * @param offset source offset
+         * @param length byte count
+         * @throws IOException when target output fails
+         */
         @Override
         public void write(byte[] bytes, int offset, int length) throws IOException {
             this.delegate.write(bytes, offset, length);
             cache(bytes, offset, length);
         }
 
+        /**
+         * Flushes the target response stream.
+         *
+         * @throws IOException when target output fails
+         */
         @Override
         public void flush() throws IOException {
             this.delegate.flush();
         }
 
+        /**
+         * Closes the target response stream.
+         *
+         * @throws IOException when target output fails
+         */
         @Override
         public void close() throws IOException {
             this.delegate.close();
@@ -326,11 +395,23 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
             // No initialization required.
         }
 
+        /**
+         * Retains one encoded byte when the diagnostic limit permits it.
+         *
+         * @param value encoded byte
+         */
         @Override
         public void write(int value) {
             cache(value);
         }
 
+        /**
+         * Retains an encoded byte range when the diagnostic limit permits it.
+         *
+         * @param bytes  encoded bytes
+         * @param offset source offset
+         * @param length byte count
+         */
         @Override
         public void write(byte[] bytes, int offset, int length) {
             cache(bytes, offset, length);
@@ -362,6 +443,14 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
             this.cache = cache;
         }
 
+        /**
+         * Writes characters to the response and bounded diagnostic encoder.
+         *
+         * @param characters source characters
+         * @param offset     source offset
+         * @param length     character count
+         * @throws IOException when target or cache output fails
+         */
         @Override
         public void write(char[] characters, int offset, int length) throws IOException {
             this.delegate.write(characters, offset, length);
@@ -372,6 +461,11 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
             }
         }
 
+        /**
+         * Flushes the target writer and active diagnostic encoder.
+         *
+         * @throws IOException when either writer fails
+         */
         @Override
         public void flush() throws IOException {
             this.delegate.flush();
@@ -379,6 +473,11 @@ public final class CachedBodyResponseWrapper extends HttpServletResponseWrapper 
                 this.cache.flush();
         }
 
+        /**
+         * Closes the target writer and active diagnostic encoder.
+         *
+         * @throws IOException when either writer fails
+         */
         @Override
         public void close() throws IOException {
             this.delegate.close();

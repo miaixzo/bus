@@ -40,7 +40,7 @@ import org.miaixz.bus.spring.bean.*;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SpringBuilder {
+public class SpringBuilder {
 
     /**
      * Application context owned by this facade.

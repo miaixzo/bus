@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.notify;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
@@ -161,8 +160,7 @@ public abstract class FabricX {
      */
     private static boolean json(final Map<String, ?> headers) {
         final Object contentType = header(headers, Http.Header.CONTENT_TYPE);
-        return contentType != null
-                && contentType.toString().toLowerCase(Locale.ROOT).startsWith(MediaType.APPLICATION_JSON);
+        return contentType != null && MediaType.isJson(contentType.toString());
     }
 
     /**

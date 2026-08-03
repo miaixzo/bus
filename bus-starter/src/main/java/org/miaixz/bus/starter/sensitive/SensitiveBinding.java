@@ -31,7 +31,7 @@ import org.miaixz.bus.sensitive.Sanitizer;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class SensitiveBinding implements AutoCloseable {
+public class SensitiveBinding implements AutoCloseable {
 
     /**
      * Sanitizer bound to the logger executor.

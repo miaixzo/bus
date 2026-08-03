@@ -5235,13 +5235,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "io.temporal.internal.WorkflowThreadMarker"
-        ]
-      }
-    },
-    {
       "type": "io.temporal.serviceclient.ChannelManager",
       "fields": [
         {
@@ -7049,13 +7042,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.worker.WorkerFactory"
-        ]
-      }
     },
     {
       "type": "io.temporal.worker.WorkerOptions",

@@ -36,7 +36,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Getter
 @Validated
 @ConfigurationProperties(prefix = GeniusBuilder.OFFICE)
-public final class OfficeProperties {
+public class OfficeProperties {
 
     /**
      * Whether the office integration is enabled.

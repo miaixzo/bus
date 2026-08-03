@@ -34,7 +34,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class BeanRegistry {
+public class BeanRegistry {
 
     /**
      * Context owning all registration operations.

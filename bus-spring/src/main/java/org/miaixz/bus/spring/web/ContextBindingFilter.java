@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring.web;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 import jakarta.servlet.AsyncEvent;
@@ -33,7 +34,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.ContextScope;
 import org.miaixz.bus.spring.ContextState;
@@ -44,7 +45,7 @@ import org.miaixz.bus.spring.ContextState;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class ContextBindingFilter implements Filter {
+public class ContextBindingFilter implements Filter {
 
     /**
      * Request attribute carrying immutable context state across dispatches.
@@ -65,16 +66,38 @@ public final class ContextBindingFilter implements Filter {
     private final ContextBuilder contextBuilder;
 
     /**
+     * Request accessor used only at the Servlet integration boundary.
+     */
+    private final RequestContext requestContext;
+
+    /**
      * Creates a Context binding filter using the owning Context facade.
      *
      * @param contextBuilder application-context-scoped facade
      */
     public ContextBindingFilter(ContextBuilder contextBuilder) {
+        this(contextBuilder, new RequestContext());
+    }
+
+    /**
+     * Creates a Context binding filter using explicit context and request collaborators.
+     *
+     * @param contextBuilder application-context-scoped facade
+     * @param requestContext request value accessor
+     */
+    public ContextBindingFilter(ContextBuilder contextBuilder, RequestContext requestContext) {
         this.contextBuilder = Objects.requireNonNull(contextBuilder, "contextBuilder");
+        this.requestContext = Objects.requireNonNull(requestContext, "requestContext");
     }
 
     /**
      * Installs one dispatch state and always restores the worker thread's parent state.
+     *
+     * @param request  incoming Servlet request
+     * @param response outgoing Servlet response
+     * @param chain    downstream filter chain
+     * @throws ServletException when the request is not HTTP or downstream processing fails
+     * @throws IOException      when downstream I/O fails
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -123,8 +146,15 @@ public final class ContextBindingFilter implements Filter {
         ContextState state;
         try (ContextScope ignored = this.contextBuilder.install(ContextState.empty())) {
             this.contextBuilder.setRequestId();
-            Authorize authorize = this.contextBuilder.getAuthorize();
-            this.contextBuilder.setAuthorize(authorize);
+            Map<String, String> headers = this.requestContext.getHeaders(request);
+            Map<String, String> parameters = this.requestContext.getParameters(request);
+            Map<String, Object> jsonBody = this.requestContext.getJsonBody(request);
+            Map<String, String> cookies = this.requestContext.getCookies(request);
+            Http.Auth.Credential tokenCredential = Http.Auth.tokenCredential(headers, parameters, jsonBody, cookies);
+            Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers, parameters, jsonBody, cookies);
+            this.contextBuilder.setTokenCredential(tokenCredential);
+            this.contextBuilder.setApiKeyCredential(apiKeyCredential);
+            this.contextBuilder.getAuthorize();
             state = this.contextBuilder.capture();
         }
         request.setAttribute(STATE_ATTRIBUTE, state);
@@ -196,21 +226,41 @@ public final class ContextBindingFilter implements Filter {
             this.contextBuilder = contextBuilder;
         }
 
+        /**
+         * Removes context attributes after asynchronous processing completes.
+         *
+         * @param event asynchronous completion event
+         */
         @Override
         public void onComplete(AsyncEvent event) {
             cleanup(event.getSuppliedRequest());
         }
 
+        /**
+         * Removes context attributes after asynchronous processing times out.
+         *
+         * @param event asynchronous timeout event
+         */
         @Override
         public void onTimeout(AsyncEvent event) {
             cleanup(event.getSuppliedRequest());
         }
 
+        /**
+         * Removes context attributes after asynchronous processing fails.
+         *
+         * @param event asynchronous error event
+         */
         @Override
         public void onError(AsyncEvent event) {
             cleanup(event.getSuppliedRequest());
         }
 
+        /**
+         * Carries the latest immutable state into a newly started asynchronous cycle.
+         *
+         * @param event asynchronous restart event
+         */
         @Override
         public void onStartAsync(AsyncEvent event) {
             event.getSuppliedRequest().setAttribute(STATE_ATTRIBUTE, this.contextBuilder.capture());

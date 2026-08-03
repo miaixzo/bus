@@ -38,7 +38,7 @@ import org.miaixz.bus.core.basic.entity.Message;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
+public class MessageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     /**
      * Initializes stateless response advice that wraps eligible controller results in a Bus message envelope.
