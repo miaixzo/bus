@@ -136,7 +136,7 @@ public class RequestStrategy extends AbstractStrategy {
         MediaType contentType = request.getHeaders().getContentType();
         if (contentType == null) {
             return handleFormRequest(exchange, chain, context);
-        } else if (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
+        } else if (org.miaixz.bus.core.net.MediaType.isJson(contentType.toString())) {
             return handleJsonRequest(exchange, chain, context);
         } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
             long contentLength = request.getHeaders().getContentLength();

@@ -174,7 +174,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     handleMultipartBody(bodySpec, context, ip, method, path);
-                } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
+                } else if (org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString())) {
                     handleJsonRequestBody(bodySpec, request, context, ip, method, path);
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
                     handleFormRequestBody(bodySpec, context, ip, method, path);

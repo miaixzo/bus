@@ -92,7 +92,7 @@ public class McpVettingStrategy extends VettingStrategy {
             }
             if (method == Http.Method.POST) {
                 MediaType contentType = request.getHeaders().getContentType();
-                if (!isJsonContentType(contentType)) {
+                if (contentType == null || !org.miaixz.bus.core.net.MediaType.isJson(contentType.toString())) {
                     throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "MCP POST requires JSON");
                 }
                 if (!accepts(request, MediaType.APPLICATION_JSON) || !accepts(request, MediaType.TEXT_EVENT_STREAM)) {
@@ -117,17 +117,6 @@ public class McpVettingStrategy extends VettingStrategy {
                     request.getPath().value(),
                     request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION));
         }).thenReturn(exchange);
-    }
-
-    /**
-     * Checks whether an MCP POST content type is JSON-compatible.
-     *
-     * @param contentType request content type
-     * @return {@code true} when the content type is JSON or a structured JSON subtype
-     */
-    private boolean isJsonContentType(MediaType contentType) {
-        return contentType != null && (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)
-                || contentType.getSubtype().toLowerCase(java.util.Locale.ROOT).endsWith("+json"));
     }
 
     /**
