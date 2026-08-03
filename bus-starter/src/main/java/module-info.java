@@ -51,7 +51,6 @@ module bus.starter {
     requires static bus.pay;
     requires static bus.proxy;
     requires static bus.sensitive;
-    requires static bus.setting;
     requires static bus.storage;
     requires static bus.tempus;
     requires static bus.tracer;

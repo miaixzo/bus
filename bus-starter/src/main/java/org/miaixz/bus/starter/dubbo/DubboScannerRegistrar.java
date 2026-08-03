@@ -38,7 +38,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 
 import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.spring.annotation.PlaceholderBinder;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableDubbo;
 
@@ -117,7 +117,7 @@ public class DubboScannerRegistrar implements ImportBeanDefinitionRegistrar, Env
             }
         }
 
-        DubboProperties properties = PlaceHolderBinder.bind(environment, DubboProperties.class, GeniusBuilder.DUBBO);
+        DubboProperties properties = PlaceholderBinder.bind(environment, DubboProperties.class, GeniusBuilder.DUBBO);
         if (properties != null) {
             basePackages.addAll(Arrays.asList(properties.getBasePackages()));
             for (Class<?> type : properties.getBasePackageClasses()) {

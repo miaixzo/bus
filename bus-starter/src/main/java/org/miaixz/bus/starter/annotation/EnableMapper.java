@@ -119,21 +119,6 @@ public @interface EnableMapper {
      *
      * @return The custom {@link MapperFactoryBean} class.
      */
-    Class<? extends MapperFactoryBean> factoryBean() default org.miaixz.bus.starter.mapper.MapperFactoryBean.class;
-
-    /**
-     * Configuration properties for the generic Mapper, with one property per line. This is often used to configure
-     * plugins like PageContext.
-     *
-     * @return An array of property strings.
-     */
-    String[] properties() default {};
-
-    /**
-     * Allows for the direct configuration of a mapper builder bean by reference.
-     *
-     * @return The bean name of the mapper builder.
-     */
-    String mapperBuilderRef() default Normal.EMPTY;
+    Class<? extends MapperFactoryBean> factoryBean() default MapperFactoryBean.class;
 
 }

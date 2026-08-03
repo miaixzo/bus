@@ -39,14 +39,11 @@ import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotContribution;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
 import org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.ResolvableType;
@@ -59,7 +56,7 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperMethodTypeResolver;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.spring.annotation.PlaceholderBinder;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -131,7 +128,7 @@ public final class MapperAotProcessors {
         @Override
         public BeanFactoryInitializationAotContribution processAheadOfTime(
                 ConfigurableListableBeanFactory beanFactory) {
-            MapperProperties properties = PlaceHolderBinder
+            MapperProperties properties = PlaceholderBinder
                     .bind(this.environment, MapperProperties.class, GeniusBuilder.MAPPER);
             if (properties == null) {
                 properties = new MapperProperties();
@@ -324,58 +321,6 @@ public final class MapperAotProcessors {
                 methods.addAll(Set.of(type.getMethods()));
                 methods.forEach(method -> reflection.registerMethod(method, ExecutableMode.INVOKE));
             }
-        }
-
-    }
-
-    /**
-     * Post-processor that preserves the mapper factory bean post-processing registration point.
-     * <p>
-     * The actual String-to-Class conversion and target generic refresh are handled by
-     * {@link MapperInterfaceStringToClassConverter}.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    public static class MyBatisMapperFactoryBeanPostProcessor
-            implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
-
-        /**
-         * Initializes the merged-definition hook retained for the mapper factory Bean lifecycle.
-         */
-        MyBatisMapperFactoryBeanPostProcessor() {
-            // No initialization required.
-        }
-
-        /**
-         * Accepts the configurable bean factory supplied by Spring.
-         * <p>
-         * The registration point is retained for compatibility with the original MyBatis mapper startup flow. The
-         * current implementation performs mapper interface conversion in {@link MapperInterfaceStringToClassConverter}.
-         *
-         * @param beanFactory bean factory supplied by Spring
-         */
-        @Override
-        public void setBeanFactory(BeanFactory beanFactory) {
-            // Compatibility hook; mapper interface conversion happens in MapperInterfaceStringToClassConverter.
-        }
-
-        /**
-         * Hook invoked after mapper factory bean definitions are merged.
-         * <p>
-         * The current implementation intentionally does not mutate the definition. It remains registered so downstream
-         * behavior keeps the same extension point shape while conversion is handled by
-         * {@link MapperInterfaceStringToClassConverter}.
-         *
-         * @param beanDefinition merged bean definition
-         * @param beanType       resolved bean type
-         * @param beanName       bean name
-         */
-        @Override
-        public void postProcessMergedBeanDefinition(
-                RootBeanDefinition beanDefinition,
-                Class<?> beanType,
-                String beanName) {
         }
 
     }

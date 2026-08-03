@@ -37,8 +37,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -63,6 +63,7 @@ import org.miaixz.bus.mapper.provider.MyBatisConfigCustomizer;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.bean.BeanProvider;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
+import org.miaixz.bus.spring.jdbc.DataSourceHolder;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
 
@@ -132,6 +133,32 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
+     * Creates the Mapper observer that synchronizes dialect state with JDBC route changes.
+     *
+     * @param dataSourceHolder application-context-scoped datasource routing state
+     * @return datasource route listener for Mapper dialects
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(DialectListener.class)
+    @ConditionalOnBean(DataSourceHolder.class)
+    public DialectListener dialectListener(DataSourceHolder dataSourceHolder) {
+        return new DialectListener(dataSourceHolder);
+    }
+
+    /**
+     * Creates the infrastructure processor that binds both default and user-supplied MyBatis factories to datasource
+     * dialect routing.
+     *
+     * @param dialectListeners lazy context-local dialect listener provider
+     * @return MyBatis factory dialect binding processor
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public static DialectBinding dialectBinding(ObjectProvider<DialectListener> dialectListeners) {
+        return new DialectBinding(dialectListeners);
+    }
+
+    /**
      * Checks the configured MyBatis XML configuration resource after Spring has injected all properties.
      * <p>
      * The check only runs when {@code bus.mapper.check-config-location} is enabled and a config location is configured.
@@ -157,9 +184,9 @@ public class MapperConfiguration implements InitializingBean {
     /**
      * Creates the {@link SqlSessionFactory} bean.
      *
-     * @param dataSource   primary data source
-     * @param beanFactory  Spring bean factory used by Mapper plugin configuration
-     * @param beanProvider Spring Bean provider
+     * @param dataSource       primary data source
+     * @param beanFactory      Spring bean factory used by Mapper plugin configuration
+     * @param beanProvider     Spring Bean provider
      * @return configured {@link SqlSessionFactory}
      * @throws Exception if factory creation or schema initialization fails
      */
@@ -312,22 +339,6 @@ public class MapperConfiguration implements InitializingBean {
     static MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor myBatisBeanFactoryInitializationAotProcessor(
             Environment environment) {
         return new MapperAotProcessors.MyBatisBeanFactoryInitializationAotProcessor(environment);
-    }
-
-    /**
-     * Registers a {@link MergedBeanDefinitionPostProcessor} that preserves the mapper factory bean post-processing
-     * extension point.
-     * <p>
-     * Mapper interface String-to-Class conversion and target generic refresh are performed by
-     * {@link MapperAotProcessors.MapperInterfaceStringToClassConverter}.
-     *
-     * @return the post-processor bean
-     */
-    @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    @ConditionalOnMissingBean(MapperAotProcessors.MyBatisMapperFactoryBeanPostProcessor.class)
-    static MapperAotProcessors.MyBatisMapperFactoryBeanPostProcessor myBatisMapperFactoryBeanPostProcessor() {
-        return new MapperAotProcessors.MyBatisMapperFactoryBeanPostProcessor();
     }
 
     /**

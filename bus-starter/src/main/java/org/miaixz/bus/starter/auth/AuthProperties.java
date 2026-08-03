@@ -80,6 +80,11 @@ public class AuthProperties {
     @NestedConfigurationProperty
     private final Options cache;
 
+    /**
+     * Returns a diagnostic representation without exposing cache credentials or backend secrets.
+     *
+     * @return safe property summary
+     */
     @Override
     public String toString() {
         return "AuthProperties[enabled=" + this.enabled + ", providerCount=" + this.type.size() + ", cache=<masked>]";

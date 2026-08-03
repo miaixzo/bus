@@ -57,7 +57,7 @@ import org.miaixz.bus.mapper.handler.MybatisInterceptor;
 import org.miaixz.bus.mapper.runtime.MapperOptions;
 import org.miaixz.bus.mapper.runtime.MapperPluginFactory;
 import org.miaixz.bus.mapper.runtime.MapperPluginProviders;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.spring.annotation.PlaceholderBinder;
 import org.miaixz.bus.spring.bean.BeanProvider;
 import org.miaixz.bus.spring.jdbc.DataSourceHolder;
 import org.miaixz.bus.starter.GeniusBuilder;
@@ -104,7 +104,7 @@ public final class MapperPluginBuilder {
         if (environment == null) {
             return MapperPluginFactory.build(null);
         }
-        MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
+        MapperProperties properties = PlaceholderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
         return build(properties);
     }
 
@@ -182,7 +182,10 @@ public final class MapperPluginBuilder {
             MapperProperties properties,
             BeanProvider beanProvider) {
         MapperPluginProviders providers = new MapperPluginProviders();
-        providers.setDatasourceKeyProvider(DataSourceHolder::getKey);
+        DataSourceHolder dataSourceHolder = provider(beanProvider, DataSourceHolder.class);
+        if (dataSourceHolder != null) {
+            providers.setDatasourceKeyProvider(dataSourceHolder::getKey);
+        }
         if (properties == null) {
             return providers;
         }

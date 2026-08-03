@@ -66,6 +66,20 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.cache.CacheProperties$Collector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.context.TaskConfiguration",
       "methods": [
         {
@@ -152,6 +166,90 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Audit",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Bridge",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Token"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Token",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Version",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Watch",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.dubbo.DubboConfiguration",
       "methods": [
         {
@@ -227,6 +325,62 @@
             "org.miaixz.bus.starter.fabric.FabricProperties$Socket",
             "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket",
             "org.miaixz.bus.starter.fabric.FabricProperties$Dns"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Dns",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "org.miaixz.bus.fabric.network.dns.server.DnsTransport",
+            "java.lang.String",
+            "java.lang.Integer",
+            "java.lang.Boolean",
+            "java.lang.Integer",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.lang.Integer",
+            "java.lang.Integer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$Socket",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.fabric.FabricProperties$WebSocket",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String"
           ]
         }
       ]
@@ -338,12 +492,44 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.image.ImageProperties$Node",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.jdbc.JdbcConfiguration",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.springframework.core.env.Environment"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.json.JsonBinding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.extra.json.JsonProvider"
           ]
         }
       ]
@@ -409,6 +595,17 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.mapper.DialectBinding",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.mapper.MapperConfiguration",
       "methods": [
         {
@@ -465,6 +662,103 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.util.List",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$CardinalityRule",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.time.Duration",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Endpoint",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.time.Duration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$SloDefinition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "double",
+            "double",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.mongo.MongoConfiguration",
       "methods": [
         {
@@ -488,6 +782,76 @@
             "org.miaixz.bus.starter.mongo.MongoProperties$Server",
             "org.miaixz.bus.starter.mongo.MongoProperties$Connection",
             "org.miaixz.bus.starter.mongo.MongoProperties$Ssl"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Cluster",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.mongodb.connection.ClusterConnectionMode",
+            "com.mongodb.connection.ClusterType",
+            "java.lang.String",
+            "java.time.Duration",
+            "java.time.Duration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Connection",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Server",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Duration",
+            "java.time.Duration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Socket",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Duration",
+            "java.time.Duration",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.mongo.MongoProperties$Ssl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean"
           ]
         }
       ]
@@ -644,6 +1008,30 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Decrypt",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.starter.sensitive.SensitiveProperties$Type"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$Encrypt",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.starter.sensitive.SensitiveProperties$Type"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.storage.StorageConfiguration",
       "methods": [
         {
@@ -754,6 +1142,15 @@
     },
     {
       "type": "org.miaixz.bus.starter.vortex.VortexProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties$Assets",
       "methods": [
         {
           "name": "<init>",
@@ -911,9 +1308,6 @@
     }
   ],
   "resources": [
-    {
-      "glob": "META-INF/spring-configuration-metadata.json"
-    },
     {
       "glob": "META-INF/spring.factories"
     },

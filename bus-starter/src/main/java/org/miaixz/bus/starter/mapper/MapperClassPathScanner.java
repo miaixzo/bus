@@ -29,6 +29,7 @@ import java.util.Set;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -92,11 +93,6 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
      * The marker interface to scan for. Interfaces extending this marker will be registered as mappers.
      */
     private Class<?> markerInterface;
-
-    /**
-     * The bean name of the mapper builder, used for configuring generic mapper support.
-     */
-    private String mapperBuilderBeanName;
 
     /**
      * The factory bean used to create mapper instances.
@@ -312,12 +308,6 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
             definition.setBeanClass(this.mapperFactoryBeanClass);
             definition.getPropertyValues().add("mapperInterface", mapperInterface);
 
-            // Set the generic mapper builder if specified.
-            if (StringKit.hasText(this.mapperBuilderBeanName)) {
-                definition.getPropertyValues()
-                        .add("mapperBuilder", new RuntimeBeanReference(this.mapperBuilderBeanName));
-            }
-
             boolean explicitFactoryUsed = false;
             if (StringKit.hasText(this.sqlSessionFactoryBeanName)) {
                 definition.getPropertyValues()
@@ -407,15 +397,6 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
     public void setMapperFactoryBeanClass(
             Class<? extends org.mybatis.spring.mapper.MapperFactoryBean> mapperFactoryBeanClass) {
         this.mapperFactoryBeanClass = mapperFactoryBeanClass != null ? mapperFactoryBeanClass : MapperFactoryBean.class;
-    }
-
-    /**
-     * Sets the bean name of the mapper builder.
-     *
-     * @param mapperBuilderBeanName The bean name of the mapper builder.
-     */
-    public void setMapperBuilderBeanName(String mapperBuilderBeanName) {
-        this.mapperBuilderBeanName = mapperBuilderBeanName;
     }
 
     /**

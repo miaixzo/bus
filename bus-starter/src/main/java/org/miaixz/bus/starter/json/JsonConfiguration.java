@@ -31,7 +31,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableJson;
 
 /**
- * Creates the Context-local JSON provider.
+ * Creates and binds the application JSON provider.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -64,6 +64,18 @@ public class JsonConfiguration {
     @ConditionalOnMissingBean(JsonProvider.class)
     public JsonProvider jsonProvider() {
         return JsonFactory.of(this.properties.getProvider().key());
+    }
+
+    /**
+     * Binds the selected Spring provider to static JSON consumers for the lifetime of the application context.
+     *
+     * @param provider selected application JSON provider
+     * @return lifecycle binding for the selected provider
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(JsonBinding.class)
+    public JsonBinding jsonBinding(JsonProvider provider) {
+        return new JsonBinding(provider);
     }
 
 }
