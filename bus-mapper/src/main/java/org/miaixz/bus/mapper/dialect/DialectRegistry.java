@@ -22,13 +22,18 @@ package org.miaixz.bus.mapper.dialect;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
+
+import org.apache.ibatis.session.Configuration;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -44,9 +49,9 @@ import org.miaixz.bus.logger.Logger;
  * </p>
  *
  * <p>
- * For applications with multiple data sources, this registry also caches dialects by data source key. The effective key
- * is obtained through a read-only provider owned by the data-access integration; this registry neither selects nor
- * stores a routed data source.
+ * For applications with multiple data sources, an integration can attach a dialect provider to a specific MyBatis
+ * {@link Configuration}. Providers are isolated by configuration and therefore cannot leak routing state between
+ * application contexts.
  * </p>
  *
  * <p>
@@ -63,14 +68,12 @@ import org.miaixz.bus.logger.Logger;
  * // Detection from JDBC URL
  * Dialect dialect = DialectRegistry.getDialectByUrl("jdbc:mysql://localhost:3306/test");
  *
- * // Obtain the dialect associated with the effective JDBC data source key
- * Dialect dialect = DialectRegistry.getDialect();
+ * // Obtain the dialect associated with one MyBatis configuration
+ * Dialect dialect = DialectRegistry.getDialect(configuration);
  *
  * // Register custom dialect
  * DialectRegistry.registerDialect(new MyCustomDialect());
  *
- * // Initialize dialect for a specific datasource key
- * DialectRegistry.initializeDialect("mysql_ds", mysqlDataSource);
  * }</pre>
  *
  * @author Kimi Liu
@@ -100,12 +103,8 @@ public final class DialectRegistry {
      * key without copying data source state into Mapper runtime context.
      * </p>
      */
-    private static final ConcurrentMap<String, Dialect> DS_KEY_CACHE = new ConcurrentHashMap<>();
-
-    /**
-     * Read-only provider installed by the data-access integration for its effective routing key.
-     */
-    private static volatile Supplier<String> keyProvider;
+    private static final Map<Configuration, Supplier<Dialect>> CONFIGURATION_PROVIDERS = Collections
+            .synchronizedMap(new WeakHashMap<>());
 
     /**
      * Default/unknown dialect (singleton)
@@ -296,62 +295,46 @@ public final class DialectRegistry {
     }
 
     /**
-     * Returns the dialect associated with the effective JDBC data source key.
+     * Returns the dialect supplied for one MyBatis configuration.
      *
-     * <p>
-     * The key is read from the provider installed by the data-access integration. The corresponding dialect must have
-     * been registered through {@link #initializeDialect(String, DataSource)}.
-     * </p>
-     *
-     * <p>
-     * This method only observes the effective key and does not participate in data source routing.
-     * </p>
-     *
-     * @return the registered dialect, or {@link #UNKNOWN} when no key or dialect is available
+     * @param configuration MyBatis configuration that owns the SQL source
+     * @return the registered dialect, or {@link #UNKNOWN} when no provider or dialect is available
      */
-    public static Dialect getDialect() {
-        Supplier<String> provider = keyProvider;
-        String dsKey = provider == null ? null : provider.get();
-        return dsKey == null ? UNKNOWN : DS_KEY_CACHE.getOrDefault(dsKey, UNKNOWN);
+    public static Dialect getDialect(Configuration configuration) {
+        Supplier<Dialect> provider = configuration == null ? null : CONFIGURATION_PROVIDERS.get(configuration);
+        Dialect dialect = provider == null ? null : provider.get();
+        return dialect == null ? UNKNOWN : dialect;
     }
 
     /**
-     * Installs the read-only provider used to obtain the effective data source key.
+     * Associates a read-only dialect provider with one MyBatis configuration.
      *
-     * @param provider data source key provider owned by the data-access integration
+     * @param configuration MyBatis configuration that owns the provider
+     * @param provider      context-local dialect provider
      */
-    public static void setKeyProvider(Supplier<String> provider) {
-        keyProvider = provider;
+    public static void setDialectProvider(Configuration configuration, Supplier<Dialect> provider) {
+        Assert.notNull(configuration, "MyBatis configuration cannot be null");
+        Assert.notNull(provider, "Dialect provider cannot be null");
+        CONFIGURATION_PROVIDERS.put(configuration, provider);
     }
 
     /**
-     * Detects and registers the dialect for a data source key.
+     * Removes the dialect provider owned by one MyBatis configuration.
      *
-     * <p>
-     * This method detects the dialect from the given DataSource and caches it for the specified datasource key. Should
-     * be called during application startup for each configured datasource.
-     * </p>
-     *
-     * @param dsKey      data source key, for example {@code master}, {@code slave}, or {@code tenant_001}
-     * @param dataSource data source used for dialect detection
+     * @param configuration MyBatis configuration being released
      */
-    public static void initializeDialect(String dsKey, DataSource dataSource) {
-        if (dsKey != null && dataSource != null) {
-            Dialect dialect = getDialect(dataSource);
-            DS_KEY_CACHE.put(dsKey, dialect);
+    public static void removeDialectProvider(Configuration configuration) {
+        if (configuration != null) {
+            CONFIGURATION_PROVIDERS.remove(configuration);
         }
     }
 
     /**
-     * Removes cached dialect state for a datasource route that is no longer available.
+     * Removes cached dialect state for a datasource that is no longer available.
      *
-     * @param dsKey      removed datasource key
      * @param dataSource removed datasource
      */
-    public static void removeDialect(String dsKey, DataSource dataSource) {
-        if (dsKey != null) {
-            DS_KEY_CACHE.remove(dsKey);
-        }
+    public static void removeDialect(DataSource dataSource) {
         if (dataSource != null) {
             DATASOURCE_CACHE.remove(dataSource);
         }
@@ -367,7 +350,7 @@ public final class DialectRegistry {
     public static void clearCache() {
         DATASOURCE_CACHE.clear();
         URL_CACHE.clear();
-        DS_KEY_CACHE.clear();
+        CONFIGURATION_PROVIDERS.clear();
     }
 
     /**
