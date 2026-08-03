@@ -115,6 +115,25 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.routing.RoutePrefixProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.util.List",
+            "boolean"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "bus-scenes/**"
     }
   ]
 }

@@ -89,11 +89,26 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
      *
      * @param primary configured primary key
      */
-    public void setPrimary(String primary) {
+    public synchronized void setPrimary(String primary) {
+        ensureOpen();
         if (primary == null || primary.isBlank()) {
             throw new IllegalArgumentException("Primary datasource key must not be blank");
         }
+        String previous = this.primary;
         this.primary = primary.trim();
+        if (this.initialized) {
+            try {
+                refreshRoutes();
+            } catch (RuntimeException | Error exception) {
+                this.primary = previous;
+                try {
+                    refreshRoutes();
+                } catch (RuntimeException rollbackException) {
+                    exception.addSuppressed(rollbackException);
+                }
+                throw exception;
+            }
+        }
     }
 
     /**
@@ -103,6 +118,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
      */
     @Override
     protected Object determineCurrentLookupKey() {
+        ensureOpen();
         String key = this.dataSourceHolder.getCurrentKey();
         if (key == null) {
             return this.primary;
@@ -126,7 +142,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
                 this.targetDataSources.forEach((key, value) -> notifyAdded(key, (DataSource) value));
             }
         } catch (RuntimeException | Error exception) {
-            close();
+            try {
+                close();
+            } catch (RuntimeException closeException) {
+                exception.addSuppressed(closeException);
+            }
             throw exception;
         }
     }
@@ -155,6 +175,14 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
     public synchronized void setTargetDataSources(Map<Object, Object> map) {
         ensureOpen();
         Objects.requireNonNull(map, "map");
+        map.forEach((key, value) -> {
+            if (key == null || String.valueOf(key).isBlank()) {
+                throw new IllegalArgumentException("Datasource key must not be blank");
+            }
+            if (!(value instanceof DataSource)) {
+                throw new IllegalArgumentException("Datasource route '" + key + "' must contain a DataSource");
+            }
+        });
         Map<Object, Object> previous = new LinkedHashMap<>(this.targetDataSources);
         this.targetDataSources.clear();
         this.targetDataSources.putAll(map);
@@ -172,16 +200,20 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
             this.keySet.clear();
             this.keySet.addAll(previous.keySet());
             super.setTargetDataSources(previous);
-            refreshRoutes();
+            try {
+                refreshRoutes();
+            } catch (RuntimeException rollbackException) {
+                exception.addSuppressed(rollbackException);
+            }
             throw exception;
         }
         previous.forEach((key, value) -> {
-            if (!Objects.equals(value, this.targetDataSources.get(key))) {
+            if (value != this.targetDataSources.get(key)) {
                 removeOwned(key, (DataSource) value);
             }
         });
         this.targetDataSources.forEach((key, value) -> {
-            if (!Objects.equals(value, previous.get(key))) {
+            if (value != previous.get(key)) {
                 notifyAdded(key, (DataSource) value);
             }
         });
@@ -218,7 +250,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
             } else {
                 this.targetDataSources.put(normalizedKey, previous);
             }
-            refreshRoutes();
+            try {
+                refreshRoutes();
+            } catch (RuntimeException rollbackException) {
+                exception.addSuppressed(rollbackException);
+            }
             throw exception;
         }
         if (previous != null && previous != dataSource) {
@@ -233,7 +269,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
      * @param key datasource key
      * @return {@code true} when the key is registered
      */
-    public boolean containsKey(String key) {
+    public synchronized boolean containsKey(String key) {
         return this.keySet.contains(key);
     }
 
@@ -253,7 +289,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
         } catch (RuntimeException | Error exception) {
             if (removed != null) {
                 this.targetDataSources.put(key, removed);
-                refreshRoutes();
+                try {
+                    refreshRoutes();
+                } catch (RuntimeException rollbackException) {
+                    exception.addSuppressed(rollbackException);
+                }
             }
             throw exception;
         }
@@ -282,6 +322,13 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
 
         Set<DataSource> released = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
         RuntimeException failure = null;
+        try {
+            super.setTargetDataSources(Map.of());
+            super.setDefaultTargetDataSource(null);
+            super.afterPropertiesSet();
+        } catch (RuntimeException exception) {
+            failure = append(failure, exception);
+        }
         for (Map.Entry<Object, Object> entry : owned.entrySet()) {
             DataSource dataSource = (DataSource) entry.getValue();
             try {
@@ -308,6 +355,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Auto
      * @return active datasource
      */
     public DataSource getCurrentDataSource() {
+        ensureOpen();
         return super.determineTargetDataSource();
     }
 

@@ -66,18 +66,30 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * Returns the wrapped HTTP request with its concrete Servlet type.
+     * Returns the wrapped HTTP request with its concrete Servlet type preserved.
+     *
+     * @return wrapped HTTP request
      */
     @Override
     public HttpServletRequest getRequest() {
         return (HttpServletRequest) super.getRequest();
     }
 
+    /**
+     * Opens a new Servlet input stream over the cached request body.
+     *
+     * @return repeatable cached-body stream
+     */
     @Override
     public ServletInputStream getInputStream() {
         return new CachedServletInputStream(this.body);
     }
 
+    /**
+     * Opens a new character reader over the cached request body.
+     *
+     * @return repeatable cached-body reader
+     */
     @Override
     public BufferedReader getReader() {
         return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(this.body), requestCharset()));
@@ -163,26 +175,54 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
             this.input = new ByteArrayInputStream(body);
         }
 
+        /**
+         * Reads the next cached byte.
+         *
+         * @return next unsigned byte or {@code -1} at end of input
+         */
         @Override
         public int read() {
             return this.input.read();
         }
 
+        /**
+         * Reads cached bytes into the caller's buffer.
+         *
+         * @param bytes  destination buffer
+         * @param offset destination offset
+         * @param length maximum byte count
+         * @return number of bytes read or {@code -1} at end of input
+         */
         @Override
         public int read(byte[] bytes, int offset, int length) {
             return this.input.read(bytes, offset, length);
         }
 
+        /**
+         * Returns whether all cached bytes have been consumed.
+         *
+         * @return {@code true} at end of input
+         */
         @Override
         public boolean isFinished() {
             return this.input.available() == 0;
         }
 
+        /**
+         * Reports that the in-memory stream can be read without blocking.
+         *
+         * @return always {@code true}
+         */
         @Override
         public boolean isReady() {
             return true;
         }
 
+        /**
+         * Immediately notifies the listener of available data or completion.
+         *
+         * @param listener nonblocking read listener
+         */
         @Override
         public void setReadListener(ReadListener listener) {
             if (listener == null) {

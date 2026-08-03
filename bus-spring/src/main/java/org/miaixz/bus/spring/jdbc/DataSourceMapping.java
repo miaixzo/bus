@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.spring.jdbc;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,7 +51,7 @@ public class DataSourceMapping {
      */
     public DataSourceMapping(String primary, Map<String, DataSourceDefinition> sources) {
         this.primary = StringKit.trim(primary);
-        this.sources = sources == null ? Map.of() : Map.copyOf(sources);
+        this.sources = sources == null ? Map.of() : Collections.unmodifiableMap(new LinkedHashMap<>(sources));
         if (StringKit.isEmpty(this.primary) || !this.sources.containsKey(this.primary)) {
             throw new IllegalArgumentException("Primary datasource must identify a configured source");
         }

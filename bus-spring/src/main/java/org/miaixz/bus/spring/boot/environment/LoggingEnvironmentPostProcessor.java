@@ -57,6 +57,12 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     private static final String FILE_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSSXXX} [%5p] %-50.50logger{50} %5.5L : %m%n";
 
+    /**
+     * Adds logging pattern defaults when Bus logging is enabled and the application has not supplied them.
+     *
+     * @param environment configurable application environment
+     * @param application current Spring Boot application
+     */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         if (!environment.getProperty(EnvironmentKeys.LOGGING_ENABLED, Boolean.class, false)
@@ -89,6 +95,11 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         }
     }
 
+    /**
+     * Applies defaults immediately after Spring Boot has processed configuration data.
+     *
+     * @return environment post-processor order
+     */
     @Override
     public int getOrder() {
         return ConfigDataEnvironmentPostProcessor.ORDER + 1;

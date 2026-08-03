@@ -92,6 +92,12 @@ public class ContextBindingFilter implements Filter {
 
     /**
      * Installs one dispatch state and always restores the worker thread's parent state.
+     *
+     * @param request  incoming Servlet request
+     * @param response outgoing Servlet response
+     * @param chain    downstream filter chain
+     * @throws ServletException when the request is not HTTP or downstream processing fails
+     * @throws IOException      when downstream I/O fails
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -220,21 +226,41 @@ public class ContextBindingFilter implements Filter {
             this.contextBuilder = contextBuilder;
         }
 
+        /**
+         * Removes context attributes after asynchronous processing completes.
+         *
+         * @param event asynchronous completion event
+         */
         @Override
         public void onComplete(AsyncEvent event) {
             cleanup(event.getSuppliedRequest());
         }
 
+        /**
+         * Removes context attributes after asynchronous processing times out.
+         *
+         * @param event asynchronous timeout event
+         */
         @Override
         public void onTimeout(AsyncEvent event) {
             cleanup(event.getSuppliedRequest());
         }
 
+        /**
+         * Removes context attributes after asynchronous processing fails.
+         *
+         * @param event asynchronous error event
+         */
         @Override
         public void onError(AsyncEvent event) {
             cleanup(event.getSuppliedRequest());
         }
 
+        /**
+         * Carries the latest immutable state into a newly started asynchronous cycle.
+         *
+         * @param event asynchronous restart event
+         */
         @Override
         public void onStartAsync(AsyncEvent event) {
             event.getSuppliedRequest().setAttribute(STATE_ATTRIBUTE, this.contextBuilder.capture());

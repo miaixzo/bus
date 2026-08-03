@@ -60,6 +60,11 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
         this.properties = Objects.requireNonNull(properties, "properties");
     }
 
+    /**
+     * Publishes the finalized handler mapping set for route-prefix diagnostics.
+     *
+     * @param handlerMethods initialized request mappings
+     */
     @Override
     protected void handlerMethodsInitialized(Map<RequestMappingInfo, HandlerMethod> handlerMethods) {
         if (properties.isInStorage()) {
@@ -67,6 +72,13 @@ public class RoutePrefixHandlerMapping extends RequestMappingHandlerMapping {
         }
     }
 
+    /**
+     * Prepends the configured application prefix to one controller method mapping.
+     *
+     * @param method      controller method
+     * @param handlerType controller type
+     * @return prefixed mapping, original mapping, or {@code null} when the method is not mapped
+     */
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
         RequestMappingInfo mapping = super.getMappingForMethod(method, handlerType);

@@ -74,6 +74,12 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
         this.refreshStartTime = refreshStartTime;
     }
 
+    /**
+     * Retains the configurable context whose completed refresh will be measured.
+     *
+     * @param applicationContext owning application context
+     * @throws BeansException if Spring cannot supply the context callback
+     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         if (!(applicationContext instanceof ConfigurableApplicationContext configurableContext)) {
@@ -82,6 +88,9 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
         this.applicationContext = configurableContext;
     }
 
+    /**
+     * Records context-refresh metrics once the lifecycle processor starts this component.
+     */
     @Override
     public void start() {
         if (!running.compareAndSet(false, true)) {
@@ -108,12 +117,20 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
         }
     }
 
+    /**
+     * Stops metric collection and releases the application-context reference.
+     */
     @Override
     public void stop() {
         running.set(false);
         applicationContext = null;
     }
 
+    /**
+     * Stops this lifecycle component and always signals asynchronous completion.
+     *
+     * @param callback completion callback supplied by Spring
+     */
     @Override
     public void stop(Runnable callback) {
         try {
@@ -123,11 +140,21 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
         }
     }
 
+    /**
+     * Returns whether refresh metrics have been recorded for the current start cycle.
+     *
+     * @return {@code true} while this lifecycle component is running
+     */
     @Override
     public boolean isRunning() {
         return running.get();
     }
 
+    /**
+     * Starts this component in the earliest lifecycle phase.
+     *
+     * @return the earliest lifecycle phase value
+     */
     @Override
     public int getPhase() {
         return Integer.MIN_VALUE;

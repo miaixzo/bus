@@ -74,11 +74,27 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
         this.options = Objects.requireNonNull(options, "options");
     }
 
+    /**
+     * Tests whether a controller parameter is eligible for request-object binding.
+     *
+     * @param parameter controller method parameter
+     * @return {@code true} when this resolver owns the parameter
+     */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return this.matcher.matches(parameter);
     }
 
+    /**
+     * Creates and binds the supported controller argument from trusted request sources.
+     *
+     * @param parameter     controller method parameter
+     * @param container     current model and view container
+     * @param webRequest    current web request
+     * @param binderFactory binder factory used for validation and conversion
+     * @return resolved controller argument
+     * @throws Exception when construction, binding, or validation fails
+     */
     @Override
     public Object resolveArgument(
             MethodParameter parameter,

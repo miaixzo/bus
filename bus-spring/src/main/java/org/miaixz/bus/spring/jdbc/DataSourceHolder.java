@@ -137,6 +137,9 @@ public class DataSourceHolder {
             setKey(key);
         }
 
+        /**
+         * Restores the exact routing key that was active before this scope opened.
+         */
         @Override
         public void close() {
             if (closed) {
