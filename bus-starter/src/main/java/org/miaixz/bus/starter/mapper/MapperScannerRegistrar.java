@@ -38,7 +38,6 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.util.ClassUtils;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -123,9 +122,6 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             for (Class<?> clazz : annotationAttributes.getClassArray("basePackageClasses")) {
                 basePackage.add(ClassKit.getPackageName(clazz));
             }
-            if (CollKit.isEmpty(basePackage)) {
-                basePackage.add(ClassUtils.getPackageName(enableMetadata.getClassName()));
-            }
         }
 
         if (!Annotation.class.equals(annotationClass)) {
@@ -152,6 +148,13 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             if (properties != null && properties.getBasePackage() != null && properties.getBasePackage().length > 0) {
                 basePackage.addAll(Arrays.asList(properties.getBasePackage()));
             }
+        }
+
+        // An annotation without an explicit scan package enables the feature but does not override a configured
+        // bus.mapper.base-package. Fall back to the annotated application package only when neither source specifies
+        // a package.
+        if (CollKit.isEmpty(basePackage) && enableMetadata != null) {
+            basePackage.add(ClassKit.getPackageName(enableMetadata.getClassName()));
         }
 
         // Property-free auto-configuration scans application packages and only accepts explicit @Mapper types.

@@ -43,7 +43,6 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.SpringProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.classreading.ClassFormatException;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -203,7 +202,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
     public Set<BeanDefinition> findCandidateComponents(String basePackage) {
         Set<BeanDefinition> candidates = new LinkedHashSet<>();
         try {
-            ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(getResourceLoader());
+            ResourcePatternResolver resolver = MapperLocationResolver.getPatternResolver(getResourceLoader());
             String packageSearchPattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
                     + resolveBasePackage(basePackage) + "/**/*.class";
             Resource[] resources = resolver.getResources(packageSearchPattern);

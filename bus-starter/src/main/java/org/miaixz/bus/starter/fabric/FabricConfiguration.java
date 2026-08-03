@@ -29,11 +29,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics;
+import org.miaixz.bus.fabric.network.dns.observe.DnsQueryLog;
 import org.miaixz.bus.fabric.network.dns.provider.DnsDynamicUpdateSink;
 import org.miaixz.bus.fabric.network.dns.provider.DnsSnapshotListener;
 import org.miaixz.bus.fabric.network.dns.provider.DnsSnapshotProvider;
-import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics;
-import org.miaixz.bus.fabric.network.dns.observe.DnsQueryLog;
 import org.miaixz.bus.fabric.network.dns.server.DnsEndpoint;
 import org.miaixz.bus.fabric.network.dns.server.DnsServer;
 import org.miaixz.bus.fabric.network.dns.server.DnsServerOptions;
@@ -151,12 +151,9 @@ public class FabricConfiguration {
         DnsServerOptions options = DnsServerOptions.provider(provider, List.of(dnsEndpoint(dns)))
                 .withMaxUdpPayloadBytes(dns.getMaxUdpPayloadBytes()).withRateLimitPerSecond(dns.getRateLimitPerSecond())
                 .withSnapshotListeners(listeners.orderedStream().toList())
-                .withTsigKeys(tsigKeys.orderedStream().toList())
-                .withIoThreads(dns.getIoThreads())
-                .withTcpIdleTimeout(dns.getTcpIdleTimeout())
-                .withTcpMaxInFlight(dns.getTcpMaxInFlight())
-                .withTcpMaxFrameBytes(dns.getTcpMaxFrameBytes())
-                .withQuicMaxStreams(dns.getQuicMaxStreams())
+                .withTsigKeys(tsigKeys.orderedStream().toList()).withIoThreads(dns.getIoThreads())
+                .withTcpIdleTimeout(dns.getTcpIdleTimeout()).withTcpMaxInFlight(dns.getTcpMaxInFlight())
+                .withTcpMaxFrameBytes(dns.getTcpMaxFrameBytes()).withQuicMaxStreams(dns.getQuicMaxStreams())
                 .withQuicIdleTimeout(dns.getQuicIdleTimeout())
                 .withRecursionAllowedCidrs(dns.isRecursion() ? cidrs(dns.getRecursionAllowedCidrs()) : List.of())
                 .withZoneTransferAllowedCidrs(

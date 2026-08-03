@@ -49,11 +49,12 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperMethodTypeResolver;
 import org.miaixz.bus.spring.annotation.PlaceholderBinder;
@@ -229,46 +230,50 @@ public final class MapperAotProcessors {
         /**
          * Registers reflection hints for all types related to mapper methods.
          * <p>
-         * The mapper interface itself is already registered by the caller. This method walks declared mapper methods
-         * and registers SQL provider classes plus resolved return and parameter payload classes.
+         * The mapper interface itself is already registered by the caller. This method walks declared methods across
+         * the complete mapper-interface hierarchy and registers SQL provider classes plus resolved return and parameter
+         * payload classes.
          *
          * @param mapperInterfaceType mapper interface class
          * @param hints               runtime hints to update
          */
         private void registerMapperRelationships(Class<?> mapperInterfaceType, RuntimeHints hints) {
-            Method[] methods = ReflectionUtils.getAllDeclaredMethods(mapperInterfaceType);
-            for (Method method : methods) {
-                if (method.getDeclaringClass() != Object.class) {
-                    ReflectionUtils.makeAccessible(method);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            SelectProvider.class,
-                            SelectProvider::value,
-                            SelectProvider::type);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            InsertProvider.class,
-                            InsertProvider::value,
-                            InsertProvider::type);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            UpdateProvider.class,
-                            UpdateProvider::value,
-                            UpdateProvider::type);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            DeleteProvider.class,
-                            DeleteProvider::value,
-                            DeleteProvider::type);
+            Set<Class<?>> mapperTypes = new LinkedHashSet<>();
+            mapperTypes.add(mapperInterfaceType);
+            mapperTypes.addAll(ClassKit.getInterfaces(mapperInterfaceType));
+            for (Class<?> mapperType : mapperTypes) {
+                for (Method method : MethodKit.getDeclaredMethods(mapperType)) {
+                    if (method.getDeclaringClass() != Object.class) {
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                SelectProvider.class,
+                                SelectProvider::value,
+                                SelectProvider::type);
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                InsertProvider.class,
+                                InsertProvider::value,
+                                InsertProvider::type);
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                UpdateProvider.class,
+                                UpdateProvider::value,
+                                UpdateProvider::type);
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                DeleteProvider.class,
+                                DeleteProvider::value,
+                                DeleteProvider::type);
 
-                    Class<?> returnType = MapperMethodTypeResolver.resolveReturnClass(mapperInterfaceType, method);
-                    registerReflectionTypeIfNecessary(returnType, hints);
-                    MapperMethodTypeResolver.resolveParameterClasses(mapperInterfaceType, method)
-                            .forEach(x -> registerReflectionTypeIfNecessary(x, hints));
+                        Class<?> returnType = MapperMethodTypeResolver.resolveReturnClass(mapperInterfaceType, method);
+                        registerReflectionTypeIfNecessary(returnType, hints);
+                        MapperMethodTypeResolver.resolveParameterClasses(mapperInterfaceType, method)
+                                .forEach(x -> registerReflectionTypeIfNecessary(x, hints));
+                    }
                 }
             }
         }
@@ -390,7 +395,7 @@ public final class MapperAotProcessors {
                                         "Mapper interface class conversion started: className={}",
                                         mapperInterfaceClassName);
                                 try {
-                                    Class<?> mapperInterface = ClassUtils
+                                    Class<?> mapperInterface = ClassKit
                                             .forName(mapperInterfaceClassName, beanFactory.getBeanClassLoader());
 
                                     rootBeanDefinition.getPropertyValues().removePropertyValue("mapperInterface");
@@ -408,7 +413,7 @@ public final class MapperAotProcessors {
                                             beanName,
                                             mapperInterface.getName());
                                     processedCount++;
-                                } catch (ClassNotFoundException e) {
+                                } catch (InternalException e) {
                                     Logger.error(
                                             false,
                                             "Starter",

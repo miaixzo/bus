@@ -35,7 +35,6 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.util.ClassUtils;
 
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.spring.annotation.PlaceholderBinder;
@@ -106,13 +105,13 @@ public class DubboScannerRegistrar implements ImportBeanDefinitionRegistrar, Env
                         basePackages.add(ClassKit.getPackageName(type));
                     }
                     if (basePackages.isEmpty()) {
-                        basePackages.add(ClassUtils.getPackageName(metadata.getClassName()));
+                        basePackages.add(ClassKit.getPackageName(metadata.getClassName()));
                     }
                     return basePackages;
                 }
                 if (metadata.hasAnnotation("org.springframework.boot.autoconfigure.SpringBootApplication")
                         || metadata.hasMetaAnnotation("org.springframework.boot.autoconfigure.SpringBootApplication")) {
-                    applicationBasePackage = ClassUtils.getPackageName(metadata.getClassName());
+                    applicationBasePackage = ClassKit.getPackageName(metadata.getClassName());
                 }
             }
         }

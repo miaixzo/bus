@@ -148,20 +148,20 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
 
         this.properties = properties;
-        // Parse reasonable parameter
-        String reasonableStr = properties.getProperty("reasonable");
+        String reasonableStr = find(Args.PAGE_REASONABLE, properties.getProperty(Args.PAGE_REASONABLE));
         if (StringKit.isNotEmpty(reasonableStr)) {
             this.reasonable = Boolean.parseBoolean(reasonableStr);
         }
 
-        // Parse supportMethodsArguments parameter
-        String supportMethodsArgumentsStr = properties.getProperty("supportMethodsArguments");
+        String supportMethodsArgumentsStr = find(
+                Args.PAGE_SUPPORT_METHOD_ARGUMENTS,
+                properties.getProperty(Args.PAGE_SUPPORT_METHOD_ARGUMENTS));
         if (StringKit.isNotEmpty(supportMethodsArgumentsStr)) {
             this.supportMethodsArguments = Boolean.parseBoolean(supportMethodsArgumentsStr);
         }
 
-        // Parse params parameter (e.g., "count=countSql")
-        String params = properties.getProperty("params");
+        String params = find(Args.PAGE_PARAMS, properties.getProperty(Args.PAGE_PARAMS));
+        paramsMap.clear();
         if (StringKit.isNotEmpty(params)) {
             parseParams(params);
         }

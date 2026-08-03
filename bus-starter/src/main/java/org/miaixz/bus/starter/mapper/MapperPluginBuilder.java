@@ -34,10 +34,11 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.util.ClassUtils;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
@@ -737,8 +738,8 @@ public final class MapperPluginBuilder {
         }
         if (mapperInterfaceValue instanceof String mapperInterfaceName) {
             try {
-                return ClassUtils.forName(mapperInterfaceName, beanFactory.getBeanClassLoader());
-            } catch (ClassNotFoundException e) {
+                return ClassKit.forName(mapperInterfaceName, beanFactory.getBeanClassLoader());
+            } catch (InternalException e) {
                 Logger.warn(
                         false,
                         "Starter",
@@ -804,8 +805,8 @@ public final class MapperPluginBuilder {
                     continue;
                 }
                 try {
-                    entityClasses.add(ClassUtils.forName(className, classLoader));
-                } catch (ClassNotFoundException e) {
+                    entityClasses.add(ClassKit.forName(className, classLoader));
+                } catch (InternalException e) {
                     Logger.warn(
                             false,
                             "Starter",

@@ -27,8 +27,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
- * Binds every default or user-supplied {@link SqlSessionFactory} to the application-context datasource dialect
- * listener after the factory has been initialized.
+ * Binds every default or user-supplied {@link SqlSessionFactory} to the application-context datasource dialect listener
+ * after the factory has been initialized.
  *
  * @author Kimi Liu
  * @since Java 21+

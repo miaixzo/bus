@@ -25,6 +25,7 @@ import java.util.List;
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
@@ -483,16 +484,16 @@ public class FabricProperties {
          * @param quicMaxStreams            maximum concurrent QUIC streams
          * @param quicIdleTimeout           QUIC connection idle timeout
          */
+        @ConstructorBinding
         public Dns(final Boolean enabled, final DnsTransport transport, final String host, final Integer port,
                 final Integer ioThreads, final Boolean recursion, final List<String> recursionAllowedCidrs,
                 final Boolean cache, final Integer cacheMaxEntries, final Duration cacheTtl,
                 final Duration cacheServeStaleTtl, final Duration cachePrefetchBeforeExpiry,
                 final Integer maxUdpPayloadBytes, final Integer rateLimitPerSecond, final Boolean zoneTransfer,
                 final List<String> zoneTransferAllowedCidrs, final Boolean dynamicUpdate, final Boolean dot,
-                final Boolean doh, final String dohPath, final Boolean doq, final Boolean policy,
-                final Boolean metrics, final Boolean queryLog, final Duration tcpIdleTimeout,
-                final Integer tcpMaxInFlight, final Integer tcpMaxFrameBytes, final Integer quicMaxStreams,
-                final Duration quicIdleTimeout) {
+                final Boolean doh, final String dohPath, final Boolean doq, final Boolean policy, final Boolean metrics,
+                final Boolean queryLog, final Duration tcpIdleTimeout, final Integer tcpMaxInFlight,
+                final Integer tcpMaxFrameBytes, final Integer quicMaxStreams, final Duration quicIdleTimeout) {
             this.enabled = enabled != null && enabled;
             this.transport = transport == null ? DnsTransport.UDP : transport;
             this.host = normalizeHost(host);
@@ -522,14 +523,11 @@ public class FabricProperties {
             this.policy = policy == null || policy;
             this.metrics = metrics != null && metrics;
             this.queryLog = queryLog != null && queryLog;
-            this.tcpIdleTimeout = tcpIdleTimeout == null ? DnsServerOptions.DEFAULT_TCP_IDLE_TIMEOUT
-                    : tcpIdleTimeout;
-            this.tcpMaxInFlight = tcpMaxInFlight == null ? DnsServerOptions.DEFAULT_TCP_MAX_IN_FLIGHT
-                    : tcpMaxInFlight;
+            this.tcpIdleTimeout = tcpIdleTimeout == null ? DnsServerOptions.DEFAULT_TCP_IDLE_TIMEOUT : tcpIdleTimeout;
+            this.tcpMaxInFlight = tcpMaxInFlight == null ? DnsServerOptions.DEFAULT_TCP_MAX_IN_FLIGHT : tcpMaxInFlight;
             this.tcpMaxFrameBytes = tcpMaxFrameBytes == null ? DnsServerOptions.DEFAULT_TCP_MAX_FRAME_BYTES
                     : tcpMaxFrameBytes;
-            this.quicMaxStreams = quicMaxStreams == null ? DnsServerOptions.DEFAULT_QUIC_MAX_STREAMS
-                    : quicMaxStreams;
+            this.quicMaxStreams = quicMaxStreams == null ? DnsServerOptions.DEFAULT_QUIC_MAX_STREAMS : quicMaxStreams;
             this.quicIdleTimeout = quicIdleTimeout == null ? DnsServerOptions.DEFAULT_QUIC_IDLE_TIMEOUT
                     : quicIdleTimeout;
             validate();

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
 import org.springframework.validation.annotation.Validated;
@@ -37,6 +36,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.spring.web.RequestContext;
 
 /**
@@ -102,7 +102,7 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) throws Exception {
         Class<?> type = parameter.getParameterType();
-        Object target = BeanUtils.instantiateClass(type);
+        Object target = BeanKit.createBean(type);
         String name = parameter.getParameterName() == null ? type.getSimpleName() : parameter.getParameterName();
         WebDataBinder binder = binderFactory.createBinder(webRequest, target, name);
         binder.setAutoGrowCollectionLimit(this.options.getAutoGrowCollectionLimit());

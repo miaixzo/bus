@@ -184,9 +184,9 @@ public class MapperConfiguration implements InitializingBean {
     /**
      * Creates the {@link SqlSessionFactory} bean.
      *
-     * @param dataSource       primary data source
-     * @param beanFactory      Spring bean factory used by Mapper plugin configuration
-     * @param beanProvider     Spring Bean provider
+     * @param dataSource   primary data source
+     * @param beanFactory  Spring bean factory used by Mapper plugin configuration
+     * @param beanProvider Spring Bean provider
      * @return configured {@link SqlSessionFactory}
      * @throws Exception if factory creation or schema initialization fails
      */

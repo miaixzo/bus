@@ -982,8 +982,7 @@ public class MediaType {
             return false;
         }
         String subtype = mediaType.getSubtype().toLowerCase(Locale.ROOT);
-        return JSON.equals(subtype) || subtype.startsWith(JSON + Symbol.PLUS)
-                || subtype.endsWith(Symbol.PLUS + JSON);
+        return JSON.equals(subtype) || subtype.startsWith(JSON + Symbol.PLUS) || subtype.endsWith(Symbol.PLUS + JSON);
     }
 
     /**
