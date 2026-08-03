@@ -18,13 +18,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines host resolution for route planning and connection establishment.
+ * Defines DNS resolution and DNS server runtime components for fabric networking.
  *
  * <p>
- * {@code DnsResolver} is the entry point used by protocol and network code to resolve host names. {@code Resolver}
- * adapts lookup functions, while {@code DnsResult} carries addresses, resolution time, optional TTL metadata and lookup
- * duration. Domain-rule helpers such as public suffix checks live in child packages and must not perform network
- * lookups.
+ * The root package keeps the legacy host-resolution entry points used by protocol and network code. DNS server packages
+ * underneath it provide wire messages, authoritative runtime indexes, forwarding, recursive lookup, secure transports,
+ * cache state, policy evaluation, dynamic update, zone transfer, DNSSEC validation, and externally supplied snapshot
+ * models.
  * </p>
  *
  * @author Kimi Liu
