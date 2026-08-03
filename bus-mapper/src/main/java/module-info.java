@@ -41,13 +41,6 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.annotation;
     exports org.miaixz.bus.mapper.behavior;
     exports org.miaixz.bus.mapper.binding;
-    exports org.miaixz.bus.mapper.builder;
-    exports org.miaixz.bus.mapper.criteria;
-    exports org.miaixz.bus.mapper.dialect;
-    exports org.miaixz.bus.mapper.handler;
-    exports org.miaixz.bus.mapper.parsing;
-    exports org.miaixz.bus.mapper.provider;
-    exports org.miaixz.bus.mapper.runtime;
     exports org.miaixz.bus.mapper.binding.basic;
     exports org.miaixz.bus.mapper.binding.batch;
     exports org.miaixz.bus.mapper.binding.condition;
@@ -55,6 +48,9 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.binding.function;
     exports org.miaixz.bus.mapper.binding.list;
     exports org.miaixz.bus.mapper.binding.logical;
+    exports org.miaixz.bus.mapper.builder;
+    exports org.miaixz.bus.mapper.criteria;
+    exports org.miaixz.bus.mapper.dialect;
     exports org.miaixz.bus.mapper.feature.audit;
     exports org.miaixz.bus.mapper.feature.keygen;
     exports org.miaixz.bus.mapper.feature.operation;
@@ -64,5 +60,9 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.feature.schema;
     exports org.miaixz.bus.mapper.feature.tenant;
     exports org.miaixz.bus.mapper.feature.visible;
+    exports org.miaixz.bus.mapper.handler;
+    exports org.miaixz.bus.mapper.parsing;
+    exports org.miaixz.bus.mapper.provider;
+    exports org.miaixz.bus.mapper.runtime;
 
 }

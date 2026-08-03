@@ -33,8 +33,8 @@ module bus.base {
     requires static lombok;
     requires static jakarta.persistence;
     requires static jakarta.servlet;
-    requires static spring.boot.autoconfigure;
     requires static spring.beans;
+    requires static spring.boot.autoconfigure;
     requires static spring.context;
     requires static spring.web;
     requires static spring.webmvc;

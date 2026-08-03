@@ -34,11 +34,11 @@ module bus.gitlab {
     requires static jakarta.annotation;
     requires static jakarta.servlet;
     requires static jakarta.ws.rs;
-    requires static tools.jackson.core;
-    requires static tools.jackson.databind;
     requires static org.glassfish.jersey.core.client;
     requires static org.glassfish.jersey.core.common;
     requires static org.glassfish.jersey.media.multipart;
+    requires static tools.jackson.core;
+    requires static tools.jackson.databind;
 
     exports org.miaixz.bus.gitlab;
     exports org.miaixz.bus.gitlab.hooks.system;

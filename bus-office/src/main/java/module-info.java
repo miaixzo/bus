@@ -36,8 +36,8 @@ module bus.office {
     requires static ofdrw.font;
     requires static ofdrw.layout;
     requires static ofdrw.reader;
-    requires static org.apache.poi.poi;
     requires static org.apache.poi.ooxml;
+    requires static org.apache.poi.poi;
 
     exports org.miaixz.bus.office;
     exports org.miaixz.bus.office.builtin;

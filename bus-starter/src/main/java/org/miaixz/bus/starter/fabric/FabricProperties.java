@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.fabric;
 
 import java.time.Duration;
+import java.util.List;
 
 import lombok.Getter;
 
@@ -315,6 +316,14 @@ public class FabricProperties {
          * Default DNS listener port.
          */
         private static final int DEFAULT_PORT = 53;
+        /**
+         * Default DNS-over-HTTPS request path.
+         */
+        private static final String DEFAULT_DOH_PATH = "/dns-query";
+        /**
+         * Default recursion ACL.
+         */
+        private static final List<String> DEFAULT_RECURSION_ALLOWED_CIDRS = List.of("127.0.0.0/8", "::1/128");
 
         /**
          * Whether the DNS server is enabled.
@@ -332,6 +341,18 @@ public class FabricProperties {
          * DNS listener port.
          */
         private final int port;
+        /**
+         * DNS server IO worker thread count.
+         */
+        private final int ioThreads;
+        /**
+         * Whether recursive and forwarding access is enabled.
+         */
+        private final boolean recursion;
+        /**
+         * Client CIDR blocks allowed to use recursion and forwarding.
+         */
+        private final List<String> recursionAllowedCidrs;
         /**
          * Whether DNS response caching is enabled.
          */
@@ -360,6 +381,74 @@ public class FabricProperties {
          * Maximum DNS queries accepted from one client per second.
          */
         private final int rateLimitPerSecond;
+        /**
+         * Whether zone transfer requests are allowed.
+         */
+        private final boolean zoneTransfer;
+        /**
+         * Client CIDR blocks allowed to request zone transfers.
+         */
+        private final List<String> zoneTransferAllowedCidrs;
+        /**
+         * Whether RFC 2136 dynamic update is enabled.
+         */
+        private final boolean dynamicUpdate;
+        /**
+         * Whether DNS-over-TLS settings are enabled.
+         */
+        private final boolean dot;
+        /**
+         * Whether DNS-over-HTTPS settings are enabled.
+         */
+        private final boolean doh;
+        /**
+         * DNS-over-HTTPS request path.
+         */
+        private final String dohPath;
+        /**
+         * Whether DNS-over-QUIC settings are enabled.
+         */
+        private final boolean doq;
+        /**
+         * Whether DNS policy evaluation is enabled.
+         */
+        private final boolean policy;
+        /**
+         * Whether DNS Server metrics are enabled.
+         */
+        private final boolean metrics;
+        /**
+         * Whether DNS query logging is enabled.
+         */
+        private final boolean queryLog;
+        /**
+         * TCP connection idle timeout.
+         */
+        private final Duration tcpIdleTimeout;
+        /**
+         * Maximum in-flight TCP DNS requests per connection.
+         */
+        private final int tcpMaxInFlight;
+        /**
+         * Maximum TCP DNS frame bytes.
+         */
+        private final int tcpMaxFrameBytes;
+        /**
+         * Maximum concurrent QUIC streams.
+         */
+        private final int quicMaxStreams;
+        /**
+         * QUIC connection idle timeout.
+         */
+        private final Duration quicIdleTimeout;
+
+        /**
+         * Creates default disabled DNS server options.
+         */
+        public Dns() {
+            this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null, null, null, null, null);
+        }
 
         /**
          * Creates and validates DNS server options.
@@ -368,6 +457,9 @@ public class FabricProperties {
          * @param transport                 listener transport
          * @param host                      listener bind host
          * @param port                      listener bind port
+         * @param ioThreads                 IO worker thread count
+         * @param recursion                 whether recursion and forwarding are enabled
+         * @param recursionAllowedCidrs     recursion and forwarding ACL CIDRs
          * @param cache                     whether response caching is enabled
          * @param cacheMaxEntries           maximum cached responses
          * @param cacheTtl                  response cache TTL
@@ -375,15 +467,39 @@ public class FabricProperties {
          * @param cachePrefetchBeforeExpiry cache prefetch window
          * @param maxUdpPayloadBytes        maximum UDP response payload
          * @param rateLimitPerSecond        per-client query rate limit
+         * @param zoneTransfer              whether zone transfer is enabled
+         * @param zoneTransferAllowedCidrs  zone transfer ACL CIDRs
+         * @param dynamicUpdate             whether dynamic update is enabled
+         * @param dot                       whether DNS-over-TLS settings are enabled
+         * @param doh                       whether DNS-over-HTTPS settings are enabled
+         * @param dohPath                   DNS-over-HTTPS request path
+         * @param doq                       whether DNS-over-QUIC settings are enabled
+         * @param policy                    whether policy evaluation is enabled
+         * @param metrics                   whether DNS metrics are enabled
+         * @param queryLog                  whether query logging is enabled
+         * @param tcpIdleTimeout            TCP connection idle timeout
+         * @param tcpMaxInFlight            maximum in-flight TCP requests
+         * @param tcpMaxFrameBytes          maximum TCP DNS frame bytes
+         * @param quicMaxStreams            maximum concurrent QUIC streams
+         * @param quicIdleTimeout           QUIC connection idle timeout
          */
         public Dns(final Boolean enabled, final DnsTransport transport, final String host, final Integer port,
+                final Integer ioThreads, final Boolean recursion, final List<String> recursionAllowedCidrs,
                 final Boolean cache, final Integer cacheMaxEntries, final Duration cacheTtl,
                 final Duration cacheServeStaleTtl, final Duration cachePrefetchBeforeExpiry,
-                final Integer maxUdpPayloadBytes, final Integer rateLimitPerSecond) {
+                final Integer maxUdpPayloadBytes, final Integer rateLimitPerSecond, final Boolean zoneTransfer,
+                final List<String> zoneTransferAllowedCidrs, final Boolean dynamicUpdate, final Boolean dot,
+                final Boolean doh, final String dohPath, final Boolean doq, final Boolean policy,
+                final Boolean metrics, final Boolean queryLog, final Duration tcpIdleTimeout,
+                final Integer tcpMaxInFlight, final Integer tcpMaxFrameBytes, final Integer quicMaxStreams,
+                final Duration quicIdleTimeout) {
             this.enabled = enabled != null && enabled;
             this.transport = transport == null ? DnsTransport.UDP : transport;
             this.host = normalizeHost(host);
             this.port = port == null ? DEFAULT_PORT : port;
+            this.ioThreads = ioThreads == null ? DnsServerOptions.DEFAULT_IO_THREADS : ioThreads;
+            this.recursion = recursion != null && recursion;
+            this.recursionAllowedCidrs = immutableStrings(recursionAllowedCidrs, DEFAULT_RECURSION_ALLOWED_CIDRS);
             this.cache = cache == null || cache;
             this.cacheMaxEntries = cacheMaxEntries == null ? DnsServerOptions.DEFAULT_CACHE_MAX_ENTRIES
                     : cacheMaxEntries;
@@ -396,6 +512,26 @@ public class FabricProperties {
             this.maxUdpPayloadBytes = maxUdpPayloadBytes == null ? DnsServerOptions.DEFAULT_UDP_PAYLOAD_BYTES
                     : maxUdpPayloadBytes;
             this.rateLimitPerSecond = rateLimitPerSecond == null ? 0 : rateLimitPerSecond;
+            this.zoneTransfer = zoneTransfer != null && zoneTransfer;
+            this.zoneTransferAllowedCidrs = immutableStrings(zoneTransferAllowedCidrs, List.of());
+            this.dynamicUpdate = dynamicUpdate != null && dynamicUpdate;
+            this.dot = dot != null && dot;
+            this.doh = doh != null && doh;
+            this.dohPath = dohPath == null || dohPath.isBlank() ? DEFAULT_DOH_PATH : dohPath.trim();
+            this.doq = doq != null && doq;
+            this.policy = policy == null || policy;
+            this.metrics = metrics != null && metrics;
+            this.queryLog = queryLog != null && queryLog;
+            this.tcpIdleTimeout = tcpIdleTimeout == null ? DnsServerOptions.DEFAULT_TCP_IDLE_TIMEOUT
+                    : tcpIdleTimeout;
+            this.tcpMaxInFlight = tcpMaxInFlight == null ? DnsServerOptions.DEFAULT_TCP_MAX_IN_FLIGHT
+                    : tcpMaxInFlight;
+            this.tcpMaxFrameBytes = tcpMaxFrameBytes == null ? DnsServerOptions.DEFAULT_TCP_MAX_FRAME_BYTES
+                    : tcpMaxFrameBytes;
+            this.quicMaxStreams = quicMaxStreams == null ? DnsServerOptions.DEFAULT_QUIC_MAX_STREAMS
+                    : quicMaxStreams;
+            this.quicIdleTimeout = quicIdleTimeout == null ? DnsServerOptions.DEFAULT_QUIC_IDLE_TIMEOUT
+                    : quicIdleTimeout;
             validate();
         }
 
@@ -405,7 +541,7 @@ public class FabricProperties {
          * @return default DNS options
          */
         private static Dns defaults() {
-            return new Dns(null, null, null, null, null, null, null, null, null, null, null);
+            return new Dns();
         }
 
         /**
@@ -419,6 +555,23 @@ public class FabricProperties {
         }
 
         /**
+         * Returns immutable string values with defaults.
+         *
+         * @param values       configured values
+         * @param defaultValue default values
+         * @return immutable string values
+         */
+        private static List<String> immutableStrings(final List<String> values, final List<String> defaultValue) {
+            final List<String> source = values == null ? defaultValue : values;
+            for (final String value : source) {
+                if (value == null || value.isBlank()) {
+                    throw new IllegalArgumentException("bus.fabric.dns list values must be non-blank");
+                }
+            }
+            return List.copyOf(source);
+        }
+
+        /**
          * Validates every normalized DNS server option.
          */
         private void validate() {
@@ -427,6 +580,9 @@ public class FabricProperties {
             }
             if (port < 1 || port > 65535) {
                 throw new IllegalArgumentException("bus.fabric.dns.port must be in 1..65535");
+            }
+            if (ioThreads <= 0) {
+                throw new IllegalArgumentException("bus.fabric.dns.io-threads must be positive");
             }
             if (cacheMaxEntries < 0) {
                 throw new IllegalArgumentException("bus.fabric.dns.cache-max-entries must be non-negative");
@@ -449,6 +605,24 @@ public class FabricProperties {
             }
             if (rateLimitPerSecond < 0) {
                 throw new IllegalArgumentException("bus.fabric.dns.rate-limit-per-second must be non-negative");
+            }
+            if (doh && dohPath.isBlank()) {
+                throw new IllegalArgumentException("bus.fabric.dns.doh-path must be non-blank when DoH is enabled");
+            }
+            if (tcpIdleTimeout.isNegative() || tcpIdleTimeout.isZero()) {
+                throw new IllegalArgumentException("bus.fabric.dns.tcp-idle-timeout must be positive");
+            }
+            if (tcpMaxInFlight <= 0) {
+                throw new IllegalArgumentException("bus.fabric.dns.tcp-max-in-flight must be positive");
+            }
+            if (tcpMaxFrameBytes < 1 || tcpMaxFrameBytes > 65535) {
+                throw new IllegalArgumentException("bus.fabric.dns.tcp-max-frame-bytes must be in 1..65535");
+            }
+            if (quicMaxStreams <= 0) {
+                throw new IllegalArgumentException("bus.fabric.dns.quic-max-streams must be positive");
+            }
+            if (quicIdleTimeout.isNegative() || quicIdleTimeout.isZero()) {
+                throw new IllegalArgumentException("bus.fabric.dns.quic-idle-timeout must be positive");
             }
         }
 

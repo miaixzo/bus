@@ -39,17 +39,19 @@ module bus.metrics {
     requires static io.prometheus.metrics.model;
     requires static micrometer.core;
 
+    exports org.miaixz.bus.metrics;
     exports org.miaixz.bus.metrics.bridge;
     exports org.miaixz.bus.metrics.builtin;
     exports org.miaixz.bus.metrics.guard;
     exports org.miaixz.bus.metrics.magic;
     exports org.miaixz.bus.metrics.nimble;
-    exports org.miaixz.bus.metrics.observe;
-    exports org.miaixz.bus.metrics.window;
     exports org.miaixz.bus.metrics.nimble.indigenous;
     exports org.miaixz.bus.metrics.nimble.micrometer;
     exports org.miaixz.bus.metrics.nimble.opentelemetry;
     exports org.miaixz.bus.metrics.nimble.prometheus;
-    exports org.miaixz.bus.metrics;
+    exports org.miaixz.bus.metrics.observe;
+    exports org.miaixz.bus.metrics.observe.slo;
+    exports org.miaixz.bus.metrics.observe.tag;
+    exports org.miaixz.bus.metrics.window;
 
 }

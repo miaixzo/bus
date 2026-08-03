@@ -32,11 +32,14 @@ import org.springframework.context.annotation.Configuration;
 import org.miaixz.bus.fabric.network.dns.provider.DnsDynamicUpdateSink;
 import org.miaixz.bus.fabric.network.dns.provider.DnsSnapshotListener;
 import org.miaixz.bus.fabric.network.dns.provider.DnsSnapshotProvider;
+import org.miaixz.bus.fabric.network.dns.observe.DnsMetrics;
+import org.miaixz.bus.fabric.network.dns.observe.DnsQueryLog;
 import org.miaixz.bus.fabric.network.dns.server.DnsEndpoint;
 import org.miaixz.bus.fabric.network.dns.server.DnsServer;
 import org.miaixz.bus.fabric.network.dns.server.DnsServerOptions;
 import org.miaixz.bus.fabric.network.dns.server.DnsTransport;
 import org.miaixz.bus.fabric.network.dns.server.DnsTsigKey;
+import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
@@ -148,9 +151,18 @@ public class FabricConfiguration {
         DnsServerOptions options = DnsServerOptions.provider(provider, List.of(dnsEndpoint(dns)))
                 .withMaxUdpPayloadBytes(dns.getMaxUdpPayloadBytes()).withRateLimitPerSecond(dns.getRateLimitPerSecond())
                 .withSnapshotListeners(listeners.orderedStream().toList())
-                .withTsigKeys(tsigKeys.orderedStream().toList());
+                .withTsigKeys(tsigKeys.orderedStream().toList())
+                .withIoThreads(dns.getIoThreads())
+                .withTcpIdleTimeout(dns.getTcpIdleTimeout())
+                .withTcpMaxInFlight(dns.getTcpMaxInFlight())
+                .withTcpMaxFrameBytes(dns.getTcpMaxFrameBytes())
+                .withQuicMaxStreams(dns.getQuicMaxStreams())
+                .withQuicIdleTimeout(dns.getQuicIdleTimeout())
+                .withRecursionAllowedCidrs(dns.isRecursion() ? cidrs(dns.getRecursionAllowedCidrs()) : List.of())
+                .withZoneTransferAllowedCidrs(
+                        dns.isZoneTransfer() ? cidrs(dns.getZoneTransferAllowedCidrs()) : List.of());
         final DnsDynamicUpdateSink updateSink = updateSinks.orderedStream().findFirst().orElse(null);
-        if (updateSink != null) {
+        if (dns.isDynamicUpdate() && updateSink != null) {
             options = options.withDynamicUpdateSink(updateSink);
         }
         options = options.withCache(
@@ -158,10 +170,26 @@ public class FabricConfiguration {
                 dns.getCacheTtl(),
                 dns.getCacheServeStaleTtl(),
                 dns.getCachePrefetchBeforeExpiry());
-        if (dns.getTransport() == DnsTransport.DOT) {
+        if (dns.getTransport() == DnsTransport.DOT || dns.isDot()) {
             options = options.withTlsPolicy(tlsPolicies.orderedStream().findFirst().orElse(null));
         }
+        if (dns.isMetrics()) {
+            options = options.withMetrics(DnsMetrics.create());
+        }
+        if (dns.isQueryLog()) {
+            options = options.withQueryLog(DnsQueryLog.create());
+        }
         return options;
+    }
+
+    /**
+     * Parses DNS starter CIDR strings.
+     *
+     * @param values CIDR strings
+     * @return immutable CIDR blocks
+     */
+    private List<CidrBlock> cidrs(final List<String> values) {
+        return values.stream().map(CidrBlock::parse).toList();
     }
 
     /**

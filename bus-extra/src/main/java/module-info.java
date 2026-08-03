@@ -41,8 +41,6 @@ module bus.extra {
     requires static beetl.core;
     requires static bopomofo4j;
     requires static com.alibaba.fastjson2;
-    requires static tools.jackson.core;
-    requires static tools.jackson.databind;
     requires static com.google.gson;
     requires static com.google.zxing;
     requires static com.hierynomus.sshj;
@@ -50,11 +48,11 @@ module bus.extra {
     requires static com.rabbitmq.client;
     requires static emoji.java;
     requires static freemarker;
-    requires static ftpserver.core;
     requires static ftplet.api;
+    requires static ftpserver.core;
     requires static hanlp.portable;
-    requires static jieba.analysis;
     requires static jcseg.core;
+    requires static jieba.analysis;
     requires static jpinyin;
     requires static kafka.clients;
     requires static lucene.analyzers.smartcn;
@@ -70,6 +68,8 @@ module bus.extra {
     requires static rocketmq.client;
     requires static rocketmq.common;
     requires static thymeleaf;
+    requires static tools.jackson.core;
+    requires static tools.jackson.databind;
     requires static word;
 
     exports org.miaixz.bus.extra.captcha;

@@ -40,8 +40,8 @@ module bus.storage {
     requires static com.hierynomus.smbj;
     requires static org.reactivestreams;
     requires static software.amazon.awssdk.auth;
-    requires static software.amazon.awssdk.core;
     requires static software.amazon.awssdk.awscore;
+    requires static software.amazon.awssdk.core;
     requires static software.amazon.awssdk.http;
     requires static software.amazon.awssdk.http.auth;
     requires static software.amazon.awssdk.regions;

@@ -40,7 +40,6 @@ module bus.tempus {
     exports org.miaixz.bus.tempus.pattern;
     exports org.miaixz.bus.tempus.pattern.matcher;
     exports org.miaixz.bus.tempus.pattern.parser;
-    exports org.miaixz.bus.tempus.timings;
     exports org.miaixz.bus.tempus.temporal;
     exports org.miaixz.bus.tempus.temporal.activity;
     exports org.miaixz.bus.tempus.temporal.notifier;
@@ -49,5 +48,6 @@ module bus.tempus {
     exports org.miaixz.bus.tempus.temporal.workflow;
     exports org.miaixz.bus.tempus.temporal.workflow.publisher;
     exports org.miaixz.bus.tempus.temporal.workflow.subscriber;
+    exports org.miaixz.bus.tempus.timings;
 
 }
