@@ -20,28 +20,94 @@
 package org.miaixz.bus.spring.jdbc;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Contains the complete datasource-definition mapping and its primary routing name.
  *
- * @param primary primary routing name
- * @param sources immutable definitions keyed by routing name
  * @author Kimi Liu
  * @since Java 21+
  */
-public record DataSourceMapping(String primary, Map<String, DataSourceDefinition> sources) {
+public class DataSourceMapping {
 
     /**
-     * Validates the primary route and defensively copies all definitions.
+     * Primary routing name.
      */
-    public DataSourceMapping {
-        primary = StringKit.trim(primary);
-        sources = sources == null ? Map.of() : Map.copyOf(sources);
-        if (StringKit.isEmpty(primary) || !sources.containsKey(primary)) {
+    private final String primary;
+    /**
+     * Immutable datasource definitions keyed by routing name.
+     */
+    private final Map<String, DataSourceDefinition> sources;
+
+    /**
+     * Creates a validated datasource mapping.
+     *
+     * @param primary primary routing name
+     * @param sources definitions keyed by routing name
+     */
+    public DataSourceMapping(String primary, Map<String, DataSourceDefinition> sources) {
+        this.primary = StringKit.trim(primary);
+        this.sources = sources == null ? Map.of() : Map.copyOf(sources);
+        if (StringKit.isEmpty(this.primary) || !this.sources.containsKey(this.primary)) {
             throw new IllegalArgumentException("Primary datasource must identify a configured source");
         }
+    }
+
+    /**
+     * Returns the primary datasource routing name.
+     *
+     * @return primary routing name
+     */
+    public String getPrimary() {
+        return this.primary;
+    }
+
+    /**
+     * Returns immutable datasource definitions keyed by routing name.
+     *
+     * @return immutable datasource definitions
+     */
+    public Map<String, DataSourceDefinition> getSources() {
+        return this.sources;
+    }
+
+    /**
+     * Compares the primary route and datasource definitions.
+     *
+     * @param object candidate object
+     * @return {@code true} when both mapping values match
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof DataSourceMapping that)) {
+            return false;
+        }
+        return Objects.equals(this.primary, that.primary) && Objects.equals(this.sources, that.sources);
+    }
+
+    /**
+     * Calculates a hash code from the primary route and datasource definitions.
+     *
+     * @return hash code for the mapping values
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.primary, this.sources);
+    }
+
+    /**
+     * Returns diagnostic mapping text whose nested datasource definitions redact credentials.
+     *
+     * @return diagnostic mapping text using redacted datasource definitions
+     */
+    @Override
+    public String toString() {
+        return "DataSourceMapping[primary=" + this.primary + ", sources=" + this.sources + "]";
     }
 
 }

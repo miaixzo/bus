@@ -343,6 +343,21 @@ public final class DialectRegistry {
     }
 
     /**
+     * Removes cached dialect state for a datasource route that is no longer available.
+     *
+     * @param dsKey      removed datasource key
+     * @param dataSource removed datasource
+     */
+    public static void removeDialect(String dsKey, DataSource dataSource) {
+        if (dsKey != null) {
+            DS_KEY_CACHE.remove(dsKey);
+        }
+        if (dataSource != null) {
+            DATASOURCE_CACHE.remove(dataSource);
+        }
+    }
+
+    /**
      * Clears all caches.
      *
      * <p>

@@ -64,8 +64,8 @@ module bus.spring {
     exports org.miaixz.bus.spring.web.wrapper;
 
     opens org.miaixz.bus.spring.boot to spring.boot, spring.core;
-    opens org.miaixz.bus.spring.boot.environment to spring.boot;
-    opens org.miaixz.bus.spring.boot.listener to spring.boot;
+    opens org.miaixz.bus.spring.boot.environment to spring.boot, spring.core;
+    opens org.miaixz.bus.spring.boot.listener to spring.boot, spring.core;
     opens org.miaixz.bus.spring.boot.startup to spring.boot;
 
 }

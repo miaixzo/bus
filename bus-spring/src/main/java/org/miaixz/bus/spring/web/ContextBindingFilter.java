@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring.web;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 import jakarta.servlet.AsyncEvent;
@@ -33,7 +34,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.ContextScope;
 import org.miaixz.bus.spring.ContextState;
@@ -65,12 +66,28 @@ public class ContextBindingFilter implements Filter {
     private final ContextBuilder contextBuilder;
 
     /**
+     * Request accessor used only at the Servlet integration boundary.
+     */
+    private final RequestContext requestContext;
+
+    /**
      * Creates a Context binding filter using the owning Context facade.
      *
      * @param contextBuilder application-context-scoped facade
      */
     public ContextBindingFilter(ContextBuilder contextBuilder) {
+        this(contextBuilder, new RequestContext());
+    }
+
+    /**
+     * Creates a Context binding filter using explicit context and request collaborators.
+     *
+     * @param contextBuilder application-context-scoped facade
+     * @param requestContext request value accessor
+     */
+    public ContextBindingFilter(ContextBuilder contextBuilder, RequestContext requestContext) {
         this.contextBuilder = Objects.requireNonNull(contextBuilder, "contextBuilder");
+        this.requestContext = Objects.requireNonNull(requestContext, "requestContext");
     }
 
     /**
@@ -123,8 +140,15 @@ public class ContextBindingFilter implements Filter {
         ContextState state;
         try (ContextScope ignored = this.contextBuilder.install(ContextState.empty())) {
             this.contextBuilder.setRequestId();
-            Authorize authorize = this.contextBuilder.getAuthorize();
-            this.contextBuilder.setAuthorize(authorize);
+            Map<String, String> headers = this.requestContext.getHeaders(request);
+            Map<String, String> parameters = this.requestContext.getParameters(request);
+            Map<String, Object> jsonBody = this.requestContext.getJsonBody(request);
+            Map<String, String> cookies = this.requestContext.getCookies(request);
+            Http.Auth.Credential tokenCredential = Http.Auth.tokenCredential(headers, parameters, jsonBody, cookies);
+            Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers, parameters, jsonBody, cookies);
+            this.contextBuilder.setTokenCredential(tokenCredential);
+            this.contextBuilder.setApiKeyCredential(apiKeyCredential);
+            this.contextBuilder.getAuthorize();
             state = this.contextBuilder.capture();
         }
         request.setAttribute(STATE_ATTRIBUTE, state);

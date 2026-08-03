@@ -31,22 +31,22 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class DataSourceHolder {
+public class DataSourceHolder {
 
     /**
      * Explicit JDBC routing key selected for the current thread.
      */
-    private static final ThreadLocal<String> CURRENT_KEY = new ThreadLocal<>();
+    private final ThreadLocal<String> currentKey = new ThreadLocal<>();
 
     /**
-     * Application-wide primary routing key used when the current thread has no explicit selection.
+     * Application-context primary routing key used when the current thread has no explicit selection.
      */
-    private static volatile String defaultKey = Normal.DEFAULT;
+    private volatile String defaultKey = Normal.DEFAULT;
 
     /**
-     * Prevents instantiation of this thread-local datasource holder.
+     * Creates an application-context-scoped datasource holder.
      */
-    private DataSourceHolder() {
+    public DataSourceHolder() {
         // No initialization required.
     }
 
@@ -55,8 +55,8 @@ public final class DataSourceHolder {
      *
      * @return explicitly selected key, or {@code null} when the application default applies
      */
-    public static String getCurrentKey() {
-        return CURRENT_KEY.get();
+    public String getCurrentKey() {
+        return this.currentKey.get();
     }
 
     /**
@@ -64,9 +64,9 @@ public final class DataSourceHolder {
      *
      * @return explicit routing key or the default routing key
      */
-    public static String getKey() {
-        String key = CURRENT_KEY.get();
-        return key == null ? defaultKey : key;
+    public String getKey() {
+        String key = this.currentKey.get();
+        return key == null ? this.defaultKey : key;
     }
 
     /**
@@ -74,12 +74,12 @@ public final class DataSourceHolder {
      *
      * @param key configured primary datasource key
      */
-    public static void setDefaultKey(String key) {
+    public void setDefaultKey(String key) {
         String value = StringKit.trim(key);
         if (StringKit.isEmpty(value)) {
             throw new IllegalArgumentException("Default JDBC datasource key must not be blank");
         }
-        defaultKey = value;
+        this.defaultKey = value;
     }
 
     /**
@@ -87,19 +87,19 @@ public final class DataSourceHolder {
      *
      * @param key routing key; {@code null} removes the explicit selection
      */
-    public static void setKey(String key) {
+    public void setKey(String key) {
         if (key == null) {
             remove();
         } else {
-            CURRENT_KEY.set(key);
+            this.currentKey.set(key);
         }
     }
 
     /**
      * Removes the explicit JDBC routing key from the current thread.
      */
-    public static void remove() {
-        CURRENT_KEY.remove();
+    public void remove() {
+        this.currentKey.remove();
     }
 
     /**
@@ -108,14 +108,14 @@ public final class DataSourceHolder {
      * @param key explicit key for this scope
      * @return scope that restores the exact parent state
      */
-    public static Scope scope(String key) {
+    public Scope scope(String key) {
         return new Scope(key);
     }
 
     /**
      * Lexical JDBC routing scope with idempotent parent-state restoration.
      */
-    public static final class Scope implements AutoCloseable {
+    public class Scope implements AutoCloseable {
 
         /**
          * Datasource key that was active before this scope was opened.
@@ -133,7 +133,7 @@ public final class DataSourceHolder {
          * @param key routing key for the scope; {@code null} clears the explicit selection within the scope
          */
         private Scope(String key) {
-            this.previous = CURRENT_KEY.get();
+            this.previous = currentKey.get();
             setKey(key);
         }
 

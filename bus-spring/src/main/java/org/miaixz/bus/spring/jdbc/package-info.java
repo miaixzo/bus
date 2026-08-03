@@ -18,8 +18,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides reusable Spring JDBC datasource resolution, creation, dynamic routing, route scope, and annotation advice.
- * The package has no dependency on Mapper or Starter assembly and can therefore be reused by any Spring integration.
+ * Provides reusable Spring JDBC datasource resolution, creation, dynamic routing, route scope, route-change
+ * observation, and annotation advice. The package has no dependency on Mapper or Starter assembly and can therefore be
+ * reused by any Spring integration.
  *
  * @author Kimi Liu
  * @since Java 21+

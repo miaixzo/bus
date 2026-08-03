@@ -115,12 +115,14 @@ public class DataSourceResolver {
                 hikari);
 
         LinkedHashMap<String, DataSourceDefinition> sources = new LinkedHashMap<>();
-        sources.put(root.name(), root);
+        sources.put(root.getName(), root);
         List<DataSourceDefinition> additional = binder
                 .bind(property(prefix, "multi"), Bindable.listOf(DataSourceDefinition.class)).orElse(List.of());
         for (DataSourceDefinition definition : additional) {
-            if (sources.putIfAbsent(definition.name(), definition) != null) {
-                throw new IllegalStateException("Duplicate datasource name under " + prefix + ": " + definition.name());
+            definition.validate();
+            if (sources.putIfAbsent(definition.getName(), definition) != null) {
+                throw new IllegalStateException(
+                        "Duplicate datasource name under " + prefix + ": " + definition.getName());
             }
         }
         DataSourceMapping mapping = new DataSourceMapping(primary, sources);
@@ -129,8 +131,8 @@ public class DataSourceResolver {
                 "Spring",
                 "JDBC configuration resolved: source={}, primary={}, datasourceCount={}",
                 prefix,
-                mapping.primary(),
-                mapping.sources().size());
+                mapping.getPrimary(),
+                mapping.getSources().size());
         return mapping;
     }
 

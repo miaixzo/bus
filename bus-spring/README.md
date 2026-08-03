@@ -70,8 +70,9 @@ condition can guard either a configuration type or an individual Bean method.
 `org.miaixz.bus.spring.jdbc.DataSource` is the public Spring contract for selecting a datasource at a service boundary.
 Its value must identify a resolved datasource route. `DataSourceResolver`, `DataSourceDefinition`, and
 `DataSourceMapping` resolve an ordered list of compatible property prefixes into one validated mapping;
-`DataSourceFactory` creates the configured pools;
-`DynamicDataSource` performs routing; and `DataSourceHolder` supplies exact nested route scopes. `AspectjJdbcProxy`
+`DataSourceFactory` creates the configured pools; `DynamicDataSource` performs routing; each application context owns
+an independent `DataSourceHolder` for exact nested route scopes; and `DataSourceListener` reports successful initial,
+added, replaced, and removed routes. `AspectjJdbcProxy`
 interprets the annotation before transaction advice obtains a connection. These types are independent of Mapper and
 Starter assembly. `bus-starter` supplies only the supported prefix order, default pool type, and Spring Beans.
 
@@ -83,14 +84,15 @@ application-context registry.
 | Type | Responsibility |
 |---|---|
 | `ContextManager` | Owns the current thread state and performs capture, install, restore, and clear operations. |
-| `ContextState` | Immutable detached snapshot containing request ID and a defensive authorization copy. |
+| `ContextState` | Immutable detached snapshot containing request ID, a defensive authorization copy, and resolved credential metadata. |
 | `ContextBuilder` | Public facade for request IDs, authorization, tenant, credential, token, and API key access. |
 | `ContextScope` | `AutoCloseable` guard that restores the previous state exactly once. |
 | `ContextDecorator` | Spring `TaskDecorator` that propagates captured state to executor tasks. |
 | `ContextProvider` | Ordered extension point that can supply authorization state. |
 
-`ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. This makes
-the snapshot suitable for bounded asynchronous propagation.
+`ContextState` never retains `HttpServletRequest`, cached bodies, multipart data, or a thread-local container. Token and
+API-key credentials are resolved once at the Servlet boundary and retained only as immutable credential values with
+redacted diagnostics. This makes the snapshot suitable for bounded asynchronous propagation.
 
 ### Capture and install
 
@@ -125,8 +127,12 @@ String apiKey = contextBuilder.getApiKey();
 Http.Auth.Credential credential = contextBuilder.getCredential();
 ```
 
-Use `clear()` at an integration boundary that owns the current thread state. Use `reset()` only when a fresh request ID
-and empty authorization state are required.
+Token and API-key values are stored independently. `getCredential()` prefers the token when both are present, while
+`getToken()` and `getApiKey()` continue to expose their respective values. Resolution follows `Http.Auth`: headers,
+parameters, an available cached JSON body, and cookies. Raw request bodies are never consumed by context resolution.
+
+Use `clear()` at an integration boundary that owns the current thread state. It removes the request ID, authorization,
+token, and API-key state owned by the current thread.
 
 ## Spring Bean services
 
@@ -175,7 +181,7 @@ services are genuinely required together.
 ## Annotation utilities
 
 - `AnnotationWrapper` and `WrapperAnnotation` support merged or wrapped annotation access.
-- `PlaceHolderBinder`, `DefaultPlaceHolderBinder`, and `PlaceHolderHandler` resolve annotation attributes containing
+- `PlaceholderBinder`, `DefaultPlaceholderBinder`, and `PlaceholderHandler` resolve annotation attributes containing
   environment placeholders.
 - `@RequestObject` explicitly opts a controller method parameter into Bus request-object binding.
 
@@ -193,8 +199,8 @@ including normal, asynchronous, and error dispatches. `RequestContext` provides 
 - multipart values;
 - cached JSON body fields.
 
-With `bus-starter`, `WebConfiguration` registers the filter by default for Servlet applications. Disable it explicitly
-with:
+With `bus-starter`, `WebConfiguration` always supplies one replaceable `RequestContext` Bean for Servlet integrations
+and registers the filter by default. Disable context binding explicitly with:
 
 ```yaml
 bus:
@@ -244,7 +250,9 @@ Safety rules:
 - multipart caching is opt-in;
 - only supported HTTP methods are wrapped;
 - response diagnostic caching is independent from response delivery;
-- wrappers are request-scoped and never enter `ContextState`.
+- wrappers are request-scoped and never enter `ContextState`;
+- when enabled, request body caching runs before context binding so JSON credentials can be resolved without consuming
+  the raw Servlet stream.
 
 Starter keeps body caching disabled by default even when aggregate wrapper support is enabled.
 
@@ -281,7 +289,7 @@ The reusable infrastructure is assembled by three Starter configurations:
 |---|---|---|
 | `GeniusStarter` | enabled | none |
 | `TaskConfiguration` | enabled when task classes exist | `bus.context.task.enabled=false` |
-| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` |
+| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` disables binding only |
 
 Product features such as cache, mapper, sensitive, storage, or Vortex are separate and remain controlled by their own
 `bus.<feature>.enabled` properties.

@@ -19,38 +19,52 @@
 */
 package org.miaixz.bus.spring.annotation;
 
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
- * Default implementation of {@link PlaceHolderBinder} that resolves placeholders from the Spring {@link Environment}.
+ * Resolves placeholders and binds environment properties to typed objects.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class DefaultPlaceHolderBinder implements PlaceHolderBinder {
+public interface PlaceholderBinder {
 
     /**
-     * Initializes a stateless binder that delegates placeholder resolution to a supplied Spring environment.
+     * Binds properties from the environment to a target type.
+     *
+     * @param environment environment containing configuration properties
+     * @param targetClass target configuration type
+     * @param prefix      property prefix
+     * @param <T>         target type
+     * @return bound object, or {@code null} when the prefix is absent
      */
-    public DefaultPlaceHolderBinder() {
-        // No initialization required.
+    static <T> T bind(Environment environment, Class<T> targetClass, String prefix) {
+        return Binder.get(environment).bind(prefix, Bindable.of(targetClass)).orElse(null);
     }
 
     /**
-     * Singleton instance of {@code DefaultPlaceHolderBinder}.
+     * Resolves placeholders through the supplied environment.
+     *
+     * @param environment environment used for resolution
+     * @param string      text containing placeholders
+     * @return resolved text
      */
-    public static final DefaultPlaceHolderBinder INSTANCE = new DefaultPlaceHolderBinder();
+    default String bind(Environment environment, String string) {
+        return environment.resolvePlaceholders(string);
+    }
 
     /**
-     * Resolves placeholders in the given string using the provided Spring {@link Environment}.
+     * Resolves placeholders without an explicit environment.
      *
-     * @param environment The Spring {@link Environment} to use for placeholder resolution.
-     * @param string      The string containing placeholders (e.g., "${my.property}").
-     * @return The string with all placeholders resolved.
+     * @param string text containing placeholders
+     * @return resolved text, or an empty value when unsupported
      */
-    @Override
-    public String bind(Environment environment, String string) {
-        return environment.resolvePlaceholders(string);
+    default String bind(String string) {
+        return Normal.EMPTY;
     }
 
 }

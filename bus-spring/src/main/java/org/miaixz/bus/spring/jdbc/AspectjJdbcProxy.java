@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring.jdbc;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -43,10 +44,17 @@ import org.miaixz.bus.logger.Logger;
 public class AspectjJdbcProxy {
 
     /**
-     * Creates the stateless datasource routing aspect.
+     * Application-context-scoped datasource routing state.
      */
-    public AspectjJdbcProxy() {
-        // No initialization required.
+    private final DataSourceHolder dataSourceHolder;
+
+    /**
+     * Creates the datasource routing aspect.
+     *
+     * @param dataSourceHolder datasource routing state
+     */
+    public AspectjJdbcProxy(DataSourceHolder dataSourceHolder) {
+        this.dataSourceHolder = Objects.requireNonNull(dataSourceHolder, "dataSourceHolder");
     }
 
     /**
@@ -76,7 +84,7 @@ public class AspectjJdbcProxy {
                 className,
                 joinPoint.getSignature().getName(),
                 requestedKey);
-        try (DataSourceHolder.Scope ignored = DataSourceHolder.scope(requestedKey)) {
+        try (DataSourceHolder.Scope ignored = this.dataSourceHolder.scope(requestedKey)) {
             return joinPoint.proceed();
         } finally {
             Logger.debug(
@@ -85,7 +93,7 @@ public class AspectjJdbcProxy {
                     "Datasource scope restored: class={}, method={}, parent={}",
                     className,
                     joinPoint.getSignature().getName(),
-                    DataSourceHolder.getCurrentKey());
+                    this.dataSourceHolder.getCurrentKey());
         }
     }
 

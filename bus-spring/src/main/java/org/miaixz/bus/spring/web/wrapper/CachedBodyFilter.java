@@ -26,13 +26,15 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.core.Ordered;
+
 /**
  * Applies optional hard-bounded request and response body caching.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class CachedBodyFilter implements Filter {
+public class CachedBodyFilter implements Filter, Ordered {
 
     /**
      * Immutable cache policy for this filter.
@@ -48,6 +50,19 @@ public class CachedBodyFilter implements Filter {
         this.options = Objects.requireNonNull(options, "options");
     }
 
+    /**
+     * Runs body caching before request-context credential resolution.
+     *
+     * @return a filter order before the Context binding filter
+     */
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE + 5;
+    }
+
+    /**
+     * Wraps supported requests and responses with bounded repeatable-body access.
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException, IOException {

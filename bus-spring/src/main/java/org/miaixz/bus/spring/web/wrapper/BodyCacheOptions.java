@@ -35,15 +35,6 @@ import org.miaixz.bus.core.net.MediaType;
 public class BodyCacheOptions {
 
     /**
-     * Default maximum cached request size in bytes.
-     */
-    public static final long DEFAULT_REQUEST_LIMIT = 1024L * 1024L;
-    /**
-     * Default maximum cached response size in bytes.
-     */
-    public static final long DEFAULT_RESPONSE_LIMIT = 1024L * 1024L;
-
-    /**
      * Whether eligible request bodies may be cached.
      */
     private final boolean requestCacheEnabled;
@@ -153,8 +144,7 @@ public class BodyCacheOptions {
         if (normalized.startsWith(MediaType.MULTIPART_FORM_DATA)) {
             return this.includeMultipart;
         }
-        return normalized.startsWith(MediaType.APPLICATION_JSON) || normalized.contains("+json")
-                || normalized.startsWith(MediaType.APPLICATION_FORM_URLENCODED);
+        return MediaType.isJson(contentType) || normalized.startsWith(MediaType.APPLICATION_FORM_URLENCODED);
     }
 
 }

@@ -81,7 +81,7 @@ public class DataSourceFactory {
      * @return configured datasource instance
      */
     public DataSource create(DataSourceDefinition definition) {
-        String typeName = StringKit.isEmpty(definition.type()) ? this.defaultType : definition.type();
+        String typeName = StringKit.isEmpty(definition.getType()) ? this.defaultType : definition.getType();
         try {
             Class<? extends DataSource> type = Class.forName(typeName).asSubclass(DataSource.class);
             Map<String, Object> properties = properties(definition);
@@ -90,7 +90,7 @@ public class DataSourceFactory {
             return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(type)).get();
         } catch (Exception e) {
             throw new IllegalArgumentException(
-                    "Cannot create datasource '" + definition.name() + "' with type: " + typeName, e);
+                    "Cannot create datasource '" + definition.getName() + "' with type: " + typeName, e);
         }
     }
 
@@ -101,12 +101,12 @@ public class DataSourceFactory {
      * @return mutable binding properties
      */
     private static Map<String, Object> properties(DataSourceDefinition definition) {
-        Map<String, Object> properties = new HashMap<>(definition.hikari());
+        Map<String, Object> properties = new HashMap<>(definition.getHikari());
         properties.remove(JDBC_URL);
-        put(properties, "url", definition.url());
-        put(properties, "username", definition.username());
-        put(properties, "password", definition.password());
-        put(properties, "driverClassName", definition.driverClassName());
+        put(properties, "url", definition.getUrl());
+        put(properties, "username", definition.getUsername());
+        put(properties, "password", definition.getPassword());
+        put(properties, "driverClassName", definition.getDriverClassName());
         return properties;
     }
 

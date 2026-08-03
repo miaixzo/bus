@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring.web;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -74,6 +75,14 @@ public class RequestContext {
      */
     private static final String JSON_BODY_ATTRIBUTE = ATTRIBUTE_PREFIX + "jsonBody";
     /**
+     * Request attribute containing the immutable parsed JSON-object snapshot.
+     */
+    private static final String JSON_VALUES_ATTRIBUTE = ATTRIBUTE_PREFIX + "jsonValues";
+    /**
+     * Request attribute containing the immutable cookie snapshot.
+     */
+    private static final String COOKIES_ATTRIBUTE = ATTRIBUTE_PREFIX + "cookies";
+    /**
      * Marker distinguishing an absent body from an uninitialized cache.
      */
     private static final Object EMPTY_BODY = new Object();
@@ -95,7 +104,16 @@ public class RequestContext {
      * @return immutable header snapshot
      */
     public Map<String, String> getHeaders() {
-        HttpServletRequest request = getRequest();
+        return getHeaders(getRequest());
+    }
+
+    /**
+     * Returns an immutable case-insensitive header snapshot for an explicit request.
+     *
+     * @param request HTTP request, or {@code null}
+     * @return immutable header snapshot
+     */
+    public Map<String, String> getHeaders(@Nullable HttpServletRequest request) {
         if (request == null) {
             return Map.of();
         }
@@ -118,7 +136,16 @@ public class RequestContext {
      * @return immutable parameter snapshot
      */
     public Map<String, String> getParameters() {
-        HttpServletRequest request = getRequest();
+        return getParameters(getRequest());
+    }
+
+    /**
+     * Returns an immutable parameter snapshot for an explicit request.
+     *
+     * @param request HTTP request, or {@code null}
+     * @return immutable parameter snapshot
+     */
+    public Map<String, String> getParameters(@Nullable HttpServletRequest request) {
         if (request == null) {
             return Map.of();
         }
@@ -138,6 +165,84 @@ public class RequestContext {
     }
 
     /**
+     * Returns an immutable snapshot of the cached JSON request object.
+     * <p>
+     * The request body is never consumed directly. An empty map is returned when body caching is unavailable, the
+     * content is not a JSON object, or parsing fails.
+     *
+     * @return immutable JSON-object snapshot
+     */
+    public Map<String, Object> getJsonBody() {
+        return getJsonBody(getRequest());
+    }
+
+    /**
+     * Returns an immutable cached JSON-object snapshot for an explicit request.
+     *
+     * @param request HTTP request, or {@code null}
+     * @return immutable JSON-object snapshot
+     */
+    public Map<String, Object> getJsonBody(@Nullable HttpServletRequest request) {
+        if (request == null) {
+            return Map.of();
+        }
+        Object cached = request.getAttribute(JSON_VALUES_ATTRIBUTE);
+        if (cached instanceof Map<?, ?> map) {
+            return objectMap(map);
+        }
+        try {
+            String body = getCachedJsonBody(request);
+            if (body == null) {
+                request.setAttribute(JSON_VALUES_ATTRIBUTE, Map.of());
+                return Map.of();
+            }
+            Map<String, Object> values = JsonKit.toPojo(body, Map.class);
+            Map<String, Object> snapshot = values == null ? Map.of()
+                    : Collections.unmodifiableMap(new LinkedHashMap<>(values));
+            request.setAttribute(JSON_VALUES_ATTRIBUTE, snapshot);
+            return snapshot;
+        } catch (RuntimeException ignored) {
+            request.setAttribute(JSON_VALUES_ATTRIBUTE, Map.of());
+            return Map.of();
+        }
+    }
+
+    /**
+     * Returns an immutable snapshot of current request cookies, retaining the first value for duplicate names.
+     *
+     * @return immutable cookie snapshot
+     */
+    public Map<String, String> getCookies() {
+        return getCookies(getRequest());
+    }
+
+    /**
+     * Returns an immutable cookie snapshot for an explicit request, retaining the first value for duplicate names.
+     *
+     * @param request HTTP request, or {@code null}
+     * @return immutable cookie snapshot
+     */
+    public Map<String, String> getCookies(@Nullable HttpServletRequest request) {
+        if (request == null) {
+            return Map.of();
+        }
+        Object cached = request.getAttribute(COOKIES_ATTRIBUTE);
+        if (cached instanceof Map<?, ?> map) {
+            return stringMap(map);
+        }
+        Map<String, String> values = new LinkedHashMap<>();
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                values.putIfAbsent(cookie.getName(), cookie.getValue());
+            }
+        }
+        Map<String, String> snapshot = Collections.unmodifiableMap(values);
+        request.setAttribute(COOKIES_ATTRIBUTE, snapshot);
+        return snapshot;
+    }
+
+    /**
      * Reads a JSON value only from an already cached request wrapper.
      *
      * @param key JSON field name
@@ -148,8 +253,8 @@ public class RequestContext {
         if (StringKit.isEmpty(key)) {
             return null;
         }
-        String body = getCachedJsonBody();
-        return body == null ? null : extractValueFromJson(body, key);
+        Object value = getJsonBody().get(key);
+        return value == null ? null : StringKit.toString(value);
     }
 
     /**
@@ -213,19 +318,7 @@ public class RequestContext {
      */
     @Nullable
     public String getCookieValue(String key) {
-        if (StringKit.isEmpty(key)) {
-            return null;
-        }
-        HttpServletRequest request = getRequest();
-        Cookie[] cookies = request == null ? null : request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (key.equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
+        return StringKit.isEmpty(key) ? null : getCookies().get(key);
     }
 
     /**
@@ -415,15 +508,14 @@ public class RequestContext {
     }
 
     /**
-     * Returns the cached bounded JSON request body.
+     * Returns the cached bounded JSON body for an explicit request.
      *
-     * @return the cached json body
+     * @param request HTTP request, or {@code null}
+     * @return cached JSON body, or {@code null}
      */
     @Nullable
-    private String getCachedJsonBody() {
-        HttpServletRequest request = getRequest();
-        if (request == null || request.getContentType() == null
-                || !request.getContentType().startsWith(MediaType.APPLICATION_JSON)) {
+    private String getCachedJsonBody(@Nullable HttpServletRequest request) {
+        if (request == null || !MediaType.isJson(request.getContentType())) {
             return null;
         }
         Object cached = request.getAttribute(JSON_BODY_ATTRIBUTE);
@@ -476,6 +568,17 @@ public class RequestContext {
      */
     private static Map<String, String> stringMap(Map<?, ?> map) {
         return (Map<String, String>) map;
+    }
+
+    /**
+     * Casts an internally created immutable object map.
+     *
+     * @param map source map to cast
+     * @return an object-valued map created by this accessor
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> objectMap(Map<?, ?> map) {
+        return (Map<String, Object>) map;
     }
 
     /**
