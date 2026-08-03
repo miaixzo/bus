@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.mapper.handler;
 
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.logger.Logger;
@@ -47,7 +45,7 @@ import org.miaixz.bus.mapper.Charter.Handler;
  * Implementation principles:
  * </p>
  * <ol>
- * <li>During registration: Detect which methods the handler actually overrides (non-default implementations)</li>
+ * <li>During registration: Read the hooks declared by the handler contract</li>
  * <li>Build index: Categorize and store by operation type (QUERY, UPDATE, PREPARE, GET_BOUND_SQL)</li>
  * <li>During lookup: Directly retrieve the corresponding handler list based on operation type</li>
  * </ol>
@@ -72,11 +70,6 @@ import org.miaixz.bus.mapper.Charter.Handler;
  * @since Java 21+
  */
 public class HandlerRegistry {
-
-    /**
-     * Cache of handler classes to their overridden methods to avoid repeated reflection checks
-     */
-    private static final Map<Class<?>, EnumSet<Handler>> METHOD_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Set of all handlers (deduplicated)
@@ -196,8 +189,8 @@ public class HandlerRegistry {
             index.put(type, new ArrayList<>());
         }
         for (MapperHandler handler : handlers) {
-            EnumSet<Handler> overriddenTypes = detectOverriddenMethods(handler);
-            for (Handler type : overriddenTypes) {
+            EnumSet<Handler> hooks = resolveHooks(handler);
+            for (Handler type : hooks) {
                 index.get(type).add(handler);
             }
         }
@@ -208,101 +201,14 @@ public class HandlerRegistry {
     }
 
     /**
-     * Detects which methods the handler actually overrides.
-     *
-     * <p>
-     * Strategy:
-     * </p>
-     * <ol>
-     * <li>First try to get from cache (avoid repeated reflection)</li>
-     * <li>Use reflection to detect method declaring class:
-     * <ul>
-     * <li>If declaring class is MapperHandler interface → uses default implementation (not indexed)</li>
-     * <li>If declaring class is concrete class → overridden (needs indexing)</li>
-     * </ul>
-     * </li>
-     * <li>Cache the result for subsequent use</li>
-     * </ol>
+     * Resolves the hooks declared by a handler without reflective method inspection.
      *
      * @param handler the handler instance
-     * @return the set of overridden method types
+     * @return a defensive copy of the supported hooks
      */
-    private EnumSet<Handler> detectOverriddenMethods(MapperHandler handler) {
-        Class<?> handlerClass = handler.getClass();
-
-        // Try to get from cache first
-        EnumSet<Handler> cached = METHOD_CACHE.get(handlerClass);
-        if (cached != null) {
-            return cached;
-        }
-
-        // Detect overridden methods
-        EnumSet<Handler> overriddenTypes = EnumSet.noneOf(Handler.class);
-
-        // Detect isQuery/query methods
-        if (isMethodOverridden(handlerClass, "isQuery") || isMethodOverridden(handlerClass, "query")) {
-            overriddenTypes.add(Handler.QUERY);
-        }
-
-        // Detect isUpdate/update methods
-        if (isMethodOverridden(handlerClass, "isUpdate") || isMethodOverridden(handlerClass, "update")) {
-            overriddenTypes.add(Handler.UPDATE);
-        }
-
-        // Detect prepare method
-        if (isMethodOverridden(handlerClass, "prepare")) {
-            overriddenTypes.add(Handler.PREPARE);
-        }
-
-        // Detect getBoundSql method
-        if (isMethodOverridden(handlerClass, "getBoundSql")) {
-            overriddenTypes.add(Handler.GET_BOUND_SQL);
-        }
-
-        // Cache the result
-        METHOD_CACHE.put(handlerClass, overriddenTypes);
-
-        return overriddenTypes;
-    }
-
-    /**
-     * Checks if a method is overridden.
-     *
-     * @param handlerClass the handler class
-     * @param methodName   the method name
-     * @return true if the method is overridden
-     */
-    private boolean isMethodOverridden(Class<?> handlerClass, String methodName) {
-        try {
-            // Get method by name
-            Method[] methods = handlerClass.getMethods();
-            for (Method method : methods) {
-                if (method.getName().equals(methodName)) {
-                    // Check method declaring class
-                    Class<?> declaringClass = method.getDeclaringClass();
-
-                    // If declaring class is MapperHandler interface, it uses default implementation
-                    if (declaringClass.equals(MapperHandler.class)) {
-                        return false;
-                    }
-
-                    // If declaring class is concrete class, it's overridden
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Mapper",
-                    e,
-                    "Mapper operation failed: provider={}, exception={}",
-                    "HandlerRegistry",
-                    e.getClass().getSimpleName());
-            // Conservative handling on exception: assume not overridden
-            return false;
-        }
-
-        return false;
+    private EnumSet<Handler> resolveHooks(MapperHandler handler) {
+        EnumSet<Handler> hooks = handler.hooks();
+        return hooks == null || hooks.isEmpty() ? EnumSet.noneOf(Handler.class) : EnumSet.copyOf(hooks);
     }
 
     /**

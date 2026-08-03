@@ -17,8 +17,8 @@
 #############################################################################
 
 org.miaixz.bus.starter.GeniusStarter
-org.miaixz.bus.starter.context.WebConfiguration
 org.miaixz.bus.starter.context.TaskConfiguration
+org.miaixz.bus.starter.context.WebConfiguration
 org.miaixz.bus.starter.auth.AuthConfiguration
 org.miaixz.bus.starter.cache.CacheConfiguration
 org.miaixz.bus.starter.cors.CorsConfiguration

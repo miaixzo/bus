@@ -209,9 +209,4 @@ public class SchemaConfig {
      */
     private String scriptLocation = Normal.EMPTY;
 
-    /**
-     * Optional datasource key used by starter integration.
-     */
-    private String datasourceKey = Normal.EMPTY;
-
 }

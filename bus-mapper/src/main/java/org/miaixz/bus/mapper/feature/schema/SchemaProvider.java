@@ -40,10 +40,10 @@ public interface SchemaProvider extends MapperProvider<SchemaConfig> {
      * <p>
      * Returning {@code null} means the schema initializer should use mapper configuration properties and defaults.
      *
-     * @param datasourceKey datasource key, or an empty value for the primary datasource
+     * @param name datasource name, or an empty value for global configuration
      * @return schema configuration, or {@code null}
      */
-    default SchemaConfig getConfig(String datasourceKey) {
+    default SchemaConfig getConfig(String name) {
         return getConfig();
     }
 
@@ -59,10 +59,10 @@ public interface SchemaProvider extends MapperProvider<SchemaConfig> {
     /**
      * Provides entity classes for schema initialization of a datasource.
      *
-     * @param datasourceKey datasource key, or an empty value for the primary datasource
+     * @param name datasource name, or an empty value for global configuration
      * @return entity classes, never {@code null}
      */
-    default Collection<Class<?>> getEntityClasses(String datasourceKey) {
+    default Collection<Class<?>> getEntityClasses(String name) {
         return getEntityClasses();
     }
 

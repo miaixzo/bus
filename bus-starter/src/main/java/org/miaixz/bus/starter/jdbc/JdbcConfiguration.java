@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
@@ -92,7 +91,6 @@ public class JdbcConfiguration {
      * @return dynamic datasource aspect
      */
     @Bean
-    @ConditionalOnBean(DynamicDataSource.class)
     @ConditionalOnMissingBean(AspectjJdbcProxy.class)
     public AspectjJdbcProxy aspectjJdbcProxy(DataSourceHolder dataSourceHolder) {
         return new AspectjJdbcProxy(dataSourceHolder);

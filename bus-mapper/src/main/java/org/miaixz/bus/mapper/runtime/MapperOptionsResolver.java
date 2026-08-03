@@ -283,7 +283,6 @@ final class MapperOptionsResolver {
                 case "allowdropforeignkey" -> schemaOptions.setAllowDropForeignKey(Boolean.parseBoolean(value));
                 case "allowdangerous" -> schemaOptions.setAllowDangerous(Boolean.parseBoolean(value));
                 case "scriptlocation" -> schemaOptions.setScriptLocation(StringKit.trim(value));
-                case "datasourcekey" -> schemaOptions.setDatasourceKey(StringKit.trim(value));
                 default -> {
                     // Collection and map properties are applied below.
                 }
@@ -344,7 +343,6 @@ final class MapperOptionsResolver {
         copy.setAllowDropForeignKey(source.isAllowDropForeignKey());
         copy.setAllowDangerous(source.isAllowDangerous());
         copy.setScriptLocation(source.getScriptLocation());
-        copy.setDatasourceKey(source.getDatasourceKey());
         copy.setDangerousWhitelist(SetKit.of(true, source.getDangerousWhitelist()));
         copy.setIncludeTables(SetKit.of(true, source.getIncludeTables()));
         copy.setExcludeTables(SetKit.of(true, source.getExcludeTables()));

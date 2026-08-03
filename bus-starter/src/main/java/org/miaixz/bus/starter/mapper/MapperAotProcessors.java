@@ -39,6 +39,7 @@ import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotContribution;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
 import org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter;
@@ -402,9 +403,7 @@ public final class MapperAotProcessors {
                                     rootBeanDefinition.getPropertyValues()
                                             .addPropertyValue("mapperInterface", mapperInterface);
 
-                                    rootBeanDefinition.setTargetType(
-                                            ResolvableType
-                                                    .forClassWithGenerics(MapperFactoryBean.class, mapperInterface));
+                                    prepareMapperDefinition(rootBeanDefinition, mapperInterface);
 
                                     Logger.debug(
                                             false,
@@ -423,11 +422,15 @@ public final class MapperAotProcessors {
                                             e.getClass().getSimpleName());
                                 }
                             } else if (mapperInterfaceValue instanceof Class) {
+                                Class<?> mapperInterface = (Class<?>) mapperInterfaceValue;
+                                prepareMapperDefinition(rootBeanDefinition, mapperInterface);
                                 Logger.debug(
                                         false,
                                         "Starter",
-                                        "Mapper interface conversion skipped: beanName={}, reason=alreadyClass",
-                                        beanName);
+                                        "Mapper factory bean type metadata restored: beanName={}, className={}",
+                                        beanName,
+                                        mapperInterface.getName());
+                                processedCount++;
                             } else {
                                 Logger.debug(
                                         false,
@@ -453,6 +456,17 @@ public final class MapperAotProcessors {
                     "Starter",
                     "Mapper interface conversion finished: processedMapperFactoryBeanCount={}",
                     processedCount);
+        }
+
+        /**
+         * Restores the mapper product type metadata required for dependency lookup.
+         *
+         * @param beanDefinition  mapper factory bean definition
+         * @param mapperInterface mapper interface exposed by the factory bean
+         */
+        private void prepareMapperDefinition(RootBeanDefinition beanDefinition, Class<?> mapperInterface) {
+            beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, mapperInterface);
+            beanDefinition.setTargetType(ResolvableType.forClassWithGenerics(MapperFactoryBean.class, mapperInterface));
         }
 
     }

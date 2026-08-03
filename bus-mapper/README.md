@@ -993,9 +993,10 @@ bus:
 
 `bus.mapper.schema` remains compatible: when no namespace-level `schema` exists, the legacy global configuration runs as
 before. When namespace-level `schema` exists, the global `bus.mapper.schema` object is used as the default template for
-each namespace so the same entities are not initialized a second time globally. If the datasource bean name differs from
-the namespace name, set `schema.datasource-key` in that namespace. `configurationProperties.shared.schema` can also
-provide default schema options for all namespaces, with each namespace allowed to override them.
+each namespace so the same entities are not initialized a second time globally. The namespace `name` is also the unique
+datasource route key used for schema initialization; it must match a named datasource bean or a route registered in the
+dynamic datasource. `configurationProperties.shared.schema` can provide default schema options for all namespaces,
+with each namespace allowed to override them.
 
 Use `SCRIPT` first in production-like environments to review generated DDL before allowing execution:
 

@@ -61,6 +61,7 @@ import org.miaixz.bus.mapper.runtime.MapperPluginProviders;
 import org.miaixz.bus.spring.annotation.PlaceholderBinder;
 import org.miaixz.bus.spring.bean.BeanProvider;
 import org.miaixz.bus.spring.jdbc.DataSourceHolder;
+import org.miaixz.bus.spring.jdbc.DynamicDataSource;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -358,11 +359,7 @@ public final class MapperPluginBuilder {
         if (schemaConfig == null || !schemaConfig.enabled()) {
             return;
         }
-        ResolvedSchemaDataSource schemaDataSource = resolveSchemaInitializationTarget(
-                dataSource,
-                beanFactory,
-                null,
-                schemaConfig);
+        ResolvedSchemaDataSource schemaDataSource = resolveSchemaInitializationTarget(dataSource, beanFactory, null);
         runSchemaInitialization(
                 properties,
                 providers,
@@ -417,8 +414,7 @@ public final class MapperPluginBuilder {
             ResolvedSchemaDataSource schemaDataSource = resolveSchemaInitializationTarget(
                     primaryDataSource,
                     beanFactory,
-                    namespaceName,
-                    schemaConfig);
+                    namespaceName);
             runSchemaInitialization(
                     properties,
                     providers,
@@ -466,24 +462,22 @@ public final class MapperPluginBuilder {
             Properties resolvedProperties,
             MapperOptions.SchemaOptions schemaProperties,
             SchemaConfig schemaConfig) throws Exception {
-        String datasourceKey = resolveSchemaDatasourceKey(schemaConfig, namespaceName);
-        schemaConfig.datasourceKey(datasourceKey);
+        String namespace = StringKit.trim(namespaceName);
         Set<Class<?>> entityClasses = new LinkedHashSet<>();
         entityClasses.addAll(resolveMapperEntityClassesFromBeanFactory(beanFactory));
         entityClasses.addAll(scanSchemaEntityClasses(schemaProperties, environment, resourceLoader));
-        entityClasses.addAll(resolveProviderEntityClasses(schemaProvider, datasourceKey));
+        entityClasses.addAll(resolveProviderEntityClasses(schemaProvider, namespace));
         TablePrefixConfig tablePrefixConfig = resolveTablePrefixConfig(
                 properties,
                 providers,
-                schemaConfig.datasourceKey(),
+                namespace,
                 resolvedProperties);
         Logger.info(
                 true,
                 "Starter",
-                "Mapper schema initialization started: namespace={}, mode={}, datasourceKey={}, entityCount={}",
+                "Mapper schema initialization started: namespace={}, mode={}, entityCount={}",
                 namespaceName,
                 schemaConfig.mode(),
-                schemaConfig.datasourceKey(),
                 entityClasses.size());
         SchemaReport report = new EntitySchemaInitializer()
                 .initialize(dataSource, entityClasses, schemaConfig, tablePrefixConfig);
@@ -500,44 +494,36 @@ public final class MapperPluginBuilder {
     /**
      * Resolves the target data source used by schema initialization.
      * <p>
-     * When {@code schema.datasourceKey} is empty, the namespace name becomes the configuration lookup key. A named
-     * {@link DataSource} bean matching that key is preferred; otherwise schema initialization uses the primary data
-     * source. This method never changes JDBC routing state.
+     * The namespace name is the only datasource route key. A named {@link DataSource} bean matching the namespace is
+     * preferred, followed by a route registered in {@link DynamicDataSource}. An unresolved namespace is rejected so
+     * schema operations cannot silently run against the primary datasource. This method never changes JDBC routing
+     * state.
      *
      * @param primaryDataSource data source supplied to mapper Bean assembly
      * @param beanFactory       bean factory used for named data source lookup
      * @param namespaceName     namespace name, or {@code null} for global schema initialization
-     * @param schemaConfig      schema runtime configuration
      * @return schema initialization target data source
      */
     private static ResolvedSchemaDataSource resolveSchemaInitializationTarget(
             DataSource primaryDataSource,
             ConfigurableListableBeanFactory beanFactory,
-            String namespaceName,
-            SchemaConfig schemaConfig) {
-        String datasourceKey = StringKit.trim(schemaConfig.datasourceKey());
-        boolean explicit = StringKit.isNotEmpty(datasourceKey);
-        if (StringKit.isEmpty(datasourceKey)) {
-            datasourceKey = StringKit.trim(namespaceName);
-        }
-        schemaConfig.datasourceKey(datasourceKey);
-        if (StringKit.isEmpty(datasourceKey)) {
+            String namespaceName) {
+        String namespace = StringKit.trim(namespaceName);
+        if (StringKit.isEmpty(namespace)) {
             return new ResolvedSchemaDataSource(primaryDataSource);
         }
-        DataSource namedDataSource = resolveNamedDataSource(beanFactory, datasourceKey);
+        DataSource namedDataSource = resolveNamedDataSource(beanFactory, namespace);
         if (namedDataSource != null) {
             return new ResolvedSchemaDataSource(namedDataSource);
         }
-        if (!explicit) {
-            Logger.info(
-                    true,
-                    "Starter",
-                    "Mapper namespace schema initialization uses primary datasource: namespace={}, datasourceKey={}, reason={}",
-                    namespaceName,
-                    datasourceKey,
-                    "noNamedBean");
+        if (primaryDataSource instanceof DynamicDataSource dynamicDataSource) {
+            Object routedDataSource = dynamicDataSource.getAllDataSources().get(namespace);
+            if (routedDataSource instanceof DataSource dataSource) {
+                return new ResolvedSchemaDataSource(dataSource);
+            }
         }
-        return new ResolvedSchemaDataSource(primaryDataSource);
+        throw new IllegalStateException("Unable to locate schema datasource route for mapper namespace "
+                + Symbol.SINGLE_QUOTE + namespace + Symbol.SINGLE_QUOTE);
     }
 
     /**
@@ -564,8 +550,8 @@ public final class MapperPluginBuilder {
      * Resolves the effective schema runtime configuration.
      * <p>
      * The mapper options are converted first, then {@link SchemaProvider#getConfig(String)} can override the runtime
-     * configuration for the resolved data source key. Provider-returned configuration is copied before the data source
-     * key is filled to avoid mutating user-owned instances.
+     * configuration for the mapper namespace. Provider-returned configuration is copied to avoid mutating user-owned
+     * instances.
      *
      * @param provider         schema provider
      * @param schemaProperties schema options
@@ -577,17 +563,12 @@ public final class MapperPluginBuilder {
             MapperOptions.SchemaOptions schemaProperties,
             String namespaceName) {
         SchemaConfig schemaConfig = toSchemaConfig(schemaProperties);
-        String datasourceKey = resolveSchemaDatasourceKey(schemaConfig, namespaceName);
-        SchemaConfig providerConfig = provider == null ? null : provider.getConfig(datasourceKey);
+        String namespace = StringKit.trim(namespaceName);
+        SchemaConfig providerConfig = provider == null ? null : provider.getConfig(namespace);
         if (providerConfig == null) {
-            schemaConfig.datasourceKey(datasourceKey);
             return schemaConfig;
         }
-        SchemaConfig copy = copySchemaConfig(providerConfig);
-        if (StringKit.isEmpty(copy.datasourceKey())) {
-            copy.datasourceKey(datasourceKey);
-        }
-        return copy;
+        return copySchemaConfig(providerConfig);
     }
 
     /**
@@ -616,8 +597,7 @@ public final class MapperPluginBuilder {
                 .allowCreateForeignKey(source.allowCreateForeignKey()).allowDropForeignKey(source.allowDropForeignKey())
                 .allowDangerous(source.allowDangerous()).dangerousWhitelist(copySet(source.dangerousWhitelist()))
                 .renameMappings(copyMap(source.renameMappings()))
-                .scriptLocation(StringKit.trim(source.scriptLocation()))
-                .datasourceKey(StringKit.trim(source.datasourceKey()));
+                .scriptLocation(StringKit.trim(source.scriptLocation()));
     }
 
     /**
@@ -661,34 +641,21 @@ public final class MapperPluginBuilder {
                 .allowDangerous(schemaProperties.isAllowDangerous())
                 .dangerousWhitelist(copySet(schemaProperties.getDangerousWhitelist()))
                 .renameMappings(copyMap(schemaProperties.getRenameMappings()))
-                .scriptLocation(StringKit.trim(schemaProperties.getScriptLocation()))
-                .datasourceKey(StringKit.trim(schemaProperties.getDatasourceKey()));
-    }
-
-    /**
-     * Resolves the schema data source key from explicit configuration or the namespace name.
-     *
-     * @param schemaConfig  schema runtime configuration
-     * @param namespaceName namespace name
-     * @return data source key
-     */
-    private static String resolveSchemaDatasourceKey(SchemaConfig schemaConfig, String namespaceName) {
-        String datasourceKey = StringKit.trim(schemaConfig.datasourceKey());
-        return StringKit.isNotEmpty(datasourceKey) ? datasourceKey : StringKit.trim(namespaceName);
+                .scriptLocation(StringKit.trim(schemaProperties.getScriptLocation()));
     }
 
     /**
      * Resolves entity classes from the optional schema provider.
      *
      * @param provider      schema provider
-     * @param datasourceKey data source key
+     * @param namespaceName mapper namespace name
      * @return entity classes, never {@code null}
      */
-    private static Collection<Class<?>> resolveProviderEntityClasses(SchemaProvider provider, String datasourceKey) {
+    private static Collection<Class<?>> resolveProviderEntityClasses(SchemaProvider provider, String namespaceName) {
         if (provider == null) {
             return Collections.emptyList();
         }
-        Collection<Class<?>> entityClasses = provider.getEntityClasses(datasourceKey);
+        Collection<Class<?>> entityClasses = provider.getEntityClasses(namespaceName);
         return entityClasses == null ? Collections.emptyList() : entityClasses;
     }
 
