@@ -106,6 +106,7 @@ dependencies {
 - `bus-sensitive`: sensitive data masking
 - `bus-setting`: configuration utilities
 - `bus-shade`: shaded dependency support
+- `bus-spring`: shared Spring integration and runtime support
 - `bus-starter`: Spring Boot auto-configuration
 - `bus-storage`: object storage integrations
 - `bus-tempus`: time and scheduling utilities

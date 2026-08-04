@@ -31,6 +31,7 @@ inputs:
       bus-cache
       bus-image
       bus-sensitive
+      bus-spring
       bus-tempus
       bus-auth
       bus-cortex
@@ -40,7 +41,6 @@ inputs:
       bus-pay
       bus-storage
       bus-vortex
-      bus-spring
       bus-starter
       bus-all
   maven-args:
@@ -241,10 +241,10 @@ runs:
             continue
           fi
 
-          project_version="$(awk -F'[<>]' '
-            /<parent>/ { in_parent = 1 }
-            /<\/parent>/ { in_parent = 0; next }
-            !in_parent && /<version>/ { print $3; exit }
+          project_version="$(ruby -r rexml/document -e '
+            document = REXML::Document.new(File.read(ARGV.fetch(0)))
+            version = document.root.elements["version"]
+            print version.text.to_s.strip if version
           ' "$pom")"
 
           if [ -n "$project_version" ] && [ "$project_version" != "$VERSION" ] && [ "$project_version" != "\${revision}" ]; then

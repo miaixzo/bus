@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.miaixz.org"><img src="LOGO.svg" width="40%"></a>
+  <a href="https://www.miaixz.org"><img src="LOGO.svg" width="39%"></a>
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
