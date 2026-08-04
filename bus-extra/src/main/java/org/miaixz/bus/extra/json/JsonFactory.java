@@ -42,10 +42,9 @@ import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
 public class JsonFactory {
 
     /**
-     * Stores the immutable application-wide JSON provider after its first successful resolution or explicit
-     * installation.
+     * Stores the application-wide JSON provider state after its first successful resolution or explicit installation.
      */
-    private static final AtomicReference<JsonProvider> DEFAULT_PROVIDER = new AtomicReference<>();
+    private static final AtomicReference<ProviderState> DEFAULT_PROVIDER = new AtomicReference<>();
 
     /**
      * JVM system property used when resolving the provider outside a dependency-injection container.
@@ -65,15 +64,16 @@ public class JsonFactory {
      * @return The singleton {@link JsonProvider} instance.
      */
     public static JsonProvider get() {
-        JsonProvider provider = DEFAULT_PROVIDER.get();
-        if (provider != null) {
-            return provider;
+        while (true) {
+            ProviderState state = DEFAULT_PROVIDER.get();
+            if (state != null) {
+                return state.provider();
+            }
+            JsonProvider resolved = create(System.getProperty(PROVIDER_PROPERTY, "auto"));
+            if (DEFAULT_PROVIDER.compareAndSet(null, new ProviderState(resolved, false))) {
+                return resolved;
+            }
         }
-        JsonProvider resolved = of(System.getProperty(PROVIDER_PROPERTY, "auto"));
-        if (DEFAULT_PROVIDER.compareAndSet(null, resolved)) {
-            return resolved;
-        }
-        return DEFAULT_PROVIDER.get();
     }
 
     /**
@@ -96,6 +96,80 @@ public class JsonFactory {
      * @return selected provider
      */
     public static JsonProvider of(String requestedProvider) {
+        return create(requestedProvider);
+    }
+
+    /**
+     * Installs the application-wide provider used by {@link #get()} and {@link JsonKit}.
+     *
+     * @param provider selected provider
+     */
+    public static void install(JsonProvider provider) {
+        Objects.requireNonNull(provider, "provider");
+        while (true) {
+            ProviderState state = DEFAULT_PROVIDER.get();
+            if (state == null) {
+                if (DEFAULT_PROVIDER.compareAndSet(null, new ProviderState(provider, true))) {
+                    return;
+                }
+                continue;
+            }
+
+            JsonProvider current = state.provider();
+            if (current == provider) {
+                if (state.bound()) {
+                    return;
+                }
+                if (DEFAULT_PROVIDER.compareAndSet(state, new ProviderState(provider, true))) {
+                    return;
+                }
+                continue;
+            }
+
+            String currentName = normalize(current.name());
+            String providerName = normalize(provider.name());
+            if (!currentName.equals(providerName)) {
+                throw new IllegalStateException("JSON provider is already initialized with " + current.name()
+                        + " and cannot be replaced by " + provider.name());
+            }
+            if (state.bound()) {
+                throw new IllegalStateException("JSON provider is already bound with " + current.name()
+                        + " and cannot be replaced by another " + provider.name() + " instance");
+            }
+            if (DEFAULT_PROVIDER.compareAndSet(state, new ProviderState(provider, true))) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * Removes an application-managed provider when it is still the active global provider.
+     *
+     * @param provider provider previously installed by the owning application context
+     * @return {@code true} when the supplied provider was removed
+     */
+    public static boolean uninstall(JsonProvider provider) {
+        if (provider == null) {
+            return false;
+        }
+        while (true) {
+            ProviderState state = DEFAULT_PROVIDER.get();
+            if (state == null || state.provider() != provider || !state.bound()) {
+                return false;
+            }
+            if (DEFAULT_PROVIDER.compareAndSet(state, null)) {
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Creates a provider with the requested name without changing the application-wide provider state.
+     *
+     * @param requestedProvider provider name, or {@code auto}
+     * @return selected provider
+     */
+    private static JsonProvider create(String requestedProvider) {
         String requested = normalize(requestedProvider);
         List<JsonProvider> providers = loadAvailableProviders();
         if (providers.isEmpty()) {
@@ -113,36 +187,6 @@ public class JsonFactory {
                     + ". Configure bus.json.provider explicitly.");
         }
         return providers.getFirst();
-    }
-
-    /**
-     * Installs the application-wide provider used by {@link #get()} and {@link JsonKit}.
-     *
-     * @param provider selected provider
-     */
-    public static void install(JsonProvider provider) {
-        Objects.requireNonNull(provider, "provider");
-        JsonProvider current = DEFAULT_PROVIDER.get();
-        if (current == provider) {
-            return;
-        }
-        if (current != null || !DEFAULT_PROVIDER.compareAndSet(null, provider)) {
-            current = DEFAULT_PROVIDER.get();
-            if (current != provider) {
-                throw new IllegalStateException("JSON provider is already initialized with " + current.name()
-                        + " and cannot be replaced by " + provider.name());
-            }
-        }
-    }
-
-    /**
-     * Removes an application-managed provider when it is still the active global provider.
-     *
-     * @param provider provider previously installed by the owning application context
-     * @return {@code true} when the supplied provider was removed
-     */
-    public static boolean uninstall(JsonProvider provider) {
-        return provider != null && DEFAULT_PROVIDER.compareAndSet(provider, null);
     }
 
     /**
@@ -189,6 +233,18 @@ public class JsonFactory {
             }
         }
         return new ArrayList<>(providers.values());
+    }
+
+    /**
+     * Application-wide provider state. An unbound provider is created by {@link #get()} and may be taken over by the
+     * dependency-injection managed provider of the same type. A bound provider is owned by an application context and
+     * cannot be replaced by another instance.
+     *
+     * @param provider active provider
+     * @param bound    whether the provider has been explicitly installed by an application context
+     */
+    private record ProviderState(JsonProvider provider, boolean bound) {
+
     }
 
 }
