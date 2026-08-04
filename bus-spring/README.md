@@ -53,8 +53,8 @@ Spring APIs are required and activation will be provided by the application.
 | `boot` | Spring Boot run listener and smart lifecycle base class. |
 | `boot.banner` | Text, image, and version banner selection and rendering. |
 | `boot.condition` | Reusable annotation-first Spring Boot activation condition. |
-| `boot.environment` | Early Spring, logging, scenes, and cloud environment processors. |
-| `boot.listener` | Spring Boot and Spring Cloud configuration listeners. |
+| `boot.environment` | Early Spring Boot and logging environment processors. |
+| `boot.listener` | Spring Boot configuration listeners. |
 | `boot.startup` | Startup stages, metrics, reporters, and Bean post-processing. |
 
 The root package intentionally remains populated. `ContextBuilder`, `ContextManager`, `ContextProvider`, `ContextState`,
@@ -272,14 +272,44 @@ The Boot packages contain infrastructure executed before and during application 
 
 - `SpringApplicationRunListener` integrates Bus startup stages with Spring Boot;
 - `SpringSmartLifecycle` provides a reusable lifecycle base;
-- environment processors prepare scenes, logging, Spring, and cloud configuration;
-- configuration listeners observe Boot and Spring Cloud configuration phases;
+- environment processors prepare logging and Spring Boot configuration;
+- configuration listeners observe Spring Boot configuration phases;
 - banner implementations render text, image, and version information;
-- startup metrics capture application, module, child, and Bean stages;
-- `StartupReporter` and related contracts publish startup diagnostics.
+- startup metrics capture stable top-level application stages;
+- `SpringStartupPublisher` publishes completed Spring startup summaries through optional integrations such as the Bus
+  metrics Provider.
 
 Discovery remains centralized in `bus-starter/src/main/resources/META-INF/spring.factories`. Do not add a second
 discovery file to `bus-spring`.
+
+### Logging namespace bridge
+
+`LoggingEnvironmentPostProcessor` maps every `bus.logging.*` property to Spring Boot's native `logging.*` namespace
+after config data has been loaded. Spring Boot still owns the logging model, so any property supported by
+`logging.*` can be written with the `bus.logging.*` prefix. When both names are present, `bus.logging.*` wins.
+
+Example:
+
+```yaml
+bus:
+  logging:
+    level:
+      root: INFO
+      org.miaixz: DEBUG
+    file:
+      name: app.log
+    pattern:
+      console: "%d %-5level %logger - %msg%n"
+```
+
+is exposed during startup as:
+
+```properties
+logging.level.root=INFO
+logging.level.org.miaixz=DEBUG
+logging.file.name=app.log
+logging.pattern.console=%d %-5level %logger - %msg%n
+```
 
 ## Activation through Starter
 

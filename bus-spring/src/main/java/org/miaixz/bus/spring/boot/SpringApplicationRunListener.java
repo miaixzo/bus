@@ -35,12 +35,10 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.boot.environment.EnvironmentKeys;
-import org.miaixz.bus.spring.boot.startup.BaseMetrics;
-import org.miaixz.bus.spring.boot.startup.ChildrenMetrics;
-import org.miaixz.bus.spring.boot.startup.ModuleMetrics;
-import org.miaixz.bus.spring.boot.startup.StartupReporter;
-import org.miaixz.bus.spring.boot.startup.StartupReporterProcessor;
-import org.miaixz.bus.spring.boot.startup.StartupStages;
+import org.miaixz.bus.spring.boot.startup.SpringStartupCollector;
+import org.miaixz.bus.spring.boot.startup.SpringStartupPublisher;
+import org.miaixz.bus.spring.boot.startup.SpringStartupSummary;
+import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
 
 /**
  * Collects startup statistics after the environment explicitly enables the feature.
@@ -51,13 +49,9 @@ import org.miaixz.bus.spring.boot.startup.StartupStages;
 public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener, Ordered {
 
     /**
-     * Bean name for the startup reporter.
+     * Bean name for the startup collector.
      */
-    private static final String REPORTER_BEAN_NAME = "busStartupReporter";
-    /**
-     * Bean name for the startup reporter processor.
-     */
-    private static final String PROCESSOR_BEAN_NAME = "busStartupReporterProcessor";
+    private static final String COLLECTOR_BEAN_NAME = "busSpringStartupCollector";
     /**
      * Bean name for the startup lifecycle component.
      */
@@ -77,25 +71,21 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     private final AtomicBoolean reportCompleted = new AtomicBoolean();
 
     /**
-     * Reporter allocated after startup metrics are enabled.
+     * Collector allocated after startup metrics are enabled.
      */
-    private StartupReporter startupReporter;
+    private SpringStartupCollector startupCollector;
     /**
-     * Metrics for JVM startup before Spring Boot begins.
+     * Timestamp at which the prepared environment enabled startup metrics.
      */
-    private BaseMetrics jvmStartingStage;
+    private long environmentPreparedTime;
     /**
-     * Metrics for Spring environment preparation.
+     * Timestamp at which application-context preparation completed.
      */
-    private BaseMetrics environmentPrepareStage;
+    private long contextPreparedTime;
     /**
-     * Metrics for application-context preparation and its child phases.
+     * Timestamp at which application-context loading completed.
      */
-    private ChildrenMetrics<BaseMetrics> applicationContextPrepareStage;
-    /**
-     * Metrics for application-context loading.
-     */
-    private BaseMetrics applicationContextLoadStage;
+    private long contextLoadedTime;
 
     /**
      * Creates a listener without allocating startup statistics.
@@ -128,22 +118,21 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             ConfigurableBootstrapContext bootstrapContext,
             ConfigurableEnvironment environment) {
         if (!activationChecked.compareAndSet(false, true)
-                || !environment.getProperty(EnvironmentKeys.STARTUP_ENABLED, Boolean.class, false)) {
+                || !environment.getProperty(EnvironmentKeys.METRICS_ENABLED, Boolean.class, false)
+                || !environment.getProperty(EnvironmentKeys.STARTUP_METRICS_ENABLED, Boolean.class, false)) {
             return;
         }
 
+        long applicationBootTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         long enabledAt = System.currentTimeMillis();
-        StartupReporter reporter = new StartupReporter(ManagementFactory.getRuntimeMXBean().getStartTime());
-        reporter.setAppName(environment.getProperty(EnvironmentKeys.APPLICATION_NAME));
-        reporter.bindToStartupReporter(environment);
-        startupReporter = reporter;
-
-        jvmStartingStage = stage(
-                StartupStages.JVM_STARTING_STAGE,
-                ManagementFactory.getRuntimeMXBean().getStartTime(),
-                enabledAt);
-        environmentPrepareStage = stage(StartupStages.ENVIRONMENT_PREPARE_STAGE, enabledAt, enabledAt);
-        bootstrapContext.registerIfAbsent(StartupReporter.class, key -> reporter);
+        SpringStartupCollector collector = new SpringStartupCollector(
+                environment.getProperty(EnvironmentKeys.APPLICATION_NAME),
+                applicationBootTime);
+        startupCollector = collector;
+        environmentPreparedTime = enabledAt;
+        collector.addStage(Stage.between(Stage.JVM_STARTING, applicationBootTime, enabledAt));
+        collector.addStage(Stage.between(Stage.ENVIRONMENT_PREPARE, enabledAt, enabledAt));
+        bootstrapContext.registerIfAbsent(SpringStartupCollector.class, key -> collector);
     }
 
     /**
@@ -156,8 +145,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         if (!isEnabled()) {
             return;
         }
-        applicationContextPrepareStage = new ChildrenMetrics<>(StartupStages.APPLICATION_CONTEXT_PREPARE_STAGE,
-                environmentPrepareStage.getEndTime(), System.currentTimeMillis(), List.of());
+        contextPreparedTime = System.currentTimeMillis();
+        startupCollector.addStage(Stage.between(
+                Stage.APPLICATION_CONTEXT_PREPARE,
+                environmentPreparedTime,
+                contextPreparedTime));
     }
 
     /**
@@ -167,13 +159,14 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      */
     @Override
     public void contextLoaded(ConfigurableApplicationContext context) {
-        if (!isEnabled() || applicationContextPrepareStage == null) {
+        if (!isEnabled() || contextPreparedTime == 0) {
             return;
         }
-        applicationContextLoadStage = stage(
-                StartupStages.APPLICATION_CONTEXT_LOAD_STAGE,
-                applicationContextPrepareStage.getEndTime(),
-                System.currentTimeMillis());
+        contextLoadedTime = System.currentTimeMillis();
+        startupCollector.addStage(Stage.between(
+                Stage.APPLICATION_CONTEXT_LOAD,
+                contextPreparedTime,
+                contextLoadedTime));
         registerComponents(context);
     }
 
@@ -185,30 +178,19 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      */
     @Override
     public void started(ConfigurableApplicationContext context, Duration timeTaken) {
-        if (!isEnabled() || applicationContextLoadStage == null || !reportCompleted.compareAndSet(false, true)) {
+        if (!isEnabled() || contextLoadedTime == 0 || !reportCompleted.compareAndSet(false, true)) {
             return;
         }
 
-        BaseMetrics refreshStage = startupReporter.getStageByName(StartupStages.APPLICATION_CONTEXT_REFRESH_STAGE);
-        ChildrenMetrics<ModuleMetrics> applicationRefreshStage;
-        if (refreshStage instanceof ChildrenMetrics<?> childrenMetrics) {
-            ChildrenMetrics<ModuleMetrics> typedStage = (ChildrenMetrics<ModuleMetrics>) childrenMetrics;
-            applicationRefreshStage = typedStage;
-        } else {
-            long refreshEndTime = System.currentTimeMillis();
-            ModuleMetrics rootModule = new ModuleMetrics(SpringSmartLifecycle.ROOT_MODULE_NAME,
-                    applicationContextLoadStage.getEndTime(), refreshEndTime, Thread.currentThread().getName(),
-                    List.of());
-            applicationRefreshStage = new ChildrenMetrics<>(StartupStages.APPLICATION_CONTEXT_REFRESH_STAGE,
-                    applicationContextLoadStage.getEndTime(), refreshEndTime, List.of(rootModule));
-            startupReporter.addCommonStartupStat(applicationRefreshStage);
+        long applicationBootEndTime = System.currentTimeMillis();
+        if (!startupCollector.containsStage(Stage.APPLICATION_CONTEXT_REFRESH)) {
+            startupCollector.addStage(Stage.between(
+                    Stage.APPLICATION_CONTEXT_REFRESH,
+                    contextLoadedTime,
+                    applicationBootEndTime));
         }
 
-        startupReporter.addCommonStartupStat(jvmStartingStage);
-        startupReporter.addCommonStartupStat(environmentPrepareStage);
-        startupReporter.addCommonStartupStat(applicationContextPrepareStage);
-        startupReporter.addCommonStartupStat(applicationContextLoadStage);
-        startupReporter.applicationBootFinish();
+        publishStartupMetrics(context, startupCollector.complete(applicationBootEndTime));
         Logger.info(false, "Starter", "Spring " + getStartedMessage(context, timeTaken));
     }
 
@@ -228,19 +210,33 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
      * @return whether enabled
      */
     private boolean isEnabled() {
-        return startupReporter != null;
+        return startupCollector != null;
     }
 
     /**
-     * Creates timing metrics for one startup stage.
+     * Publishes the completed startup summary to optional application-context publishers.
      *
-     * @param name      stage name
-     * @param startTime stage start time in milliseconds
-     * @param endTime   stage end time in milliseconds
-     * @return startup stage metrics
+     * @param context started application context
+     * @param summary completed startup summary
      */
-    private BaseMetrics stage(String name, long startTime, long endTime) {
-        return new BaseMetrics(name, startTime, endTime);
+    private void publishStartupMetrics(ConfigurableApplicationContext context, SpringStartupSummary summary) {
+        List<SpringStartupPublisher> publishers = List
+                .copyOf(context.getBeansOfType(SpringStartupPublisher.class).values());
+        if (publishers.isEmpty()) {
+            return;
+        }
+        for (SpringStartupPublisher publisher : publishers) {
+            try {
+                publisher.publish(summary);
+            } catch (RuntimeException exception) {
+                Logger.warn(
+                        false,
+                        "Starter",
+                        "Startup metrics publication failed: publisher={}, exception={}",
+                        publisher.getClass().getName(),
+                        exception.getClass().getSimpleName());
+            }
+        }
     }
 
     /**
@@ -253,18 +249,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             return;
         }
         ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
-        if (!contains(beanFactory, REPORTER_BEAN_NAME, StartupReporter.class)) {
-            beanFactory.registerSingleton(REPORTER_BEAN_NAME, startupReporter);
-        }
-        if (!contains(beanFactory, PROCESSOR_BEAN_NAME, StartupReporterProcessor.class)) {
-            StartupReporterProcessor processor = new StartupReporterProcessor(startupReporter);
-            beanFactory.addBeanPostProcessor(processor);
-            beanFactory.registerSingleton(PROCESSOR_BEAN_NAME, processor);
+        if (!contains(beanFactory, COLLECTOR_BEAN_NAME, SpringStartupCollector.class)) {
+            beanFactory.registerSingleton(COLLECTOR_BEAN_NAME, startupCollector);
         }
         if (!contains(beanFactory, LIFECYCLE_BEAN_NAME, SpringSmartLifecycle.class)) {
-            SpringSmartLifecycle lifecycle = new SpringSmartLifecycle(startupReporter,
-                    applicationContextLoadStage.getEndTime());
-            lifecycle.setApplicationContext(context);
+            SpringSmartLifecycle lifecycle = new SpringSmartLifecycle(startupCollector, contextLoadedTime);
             beanFactory.registerSingleton(LIFECYCLE_BEAN_NAME, lifecycle);
         }
     }

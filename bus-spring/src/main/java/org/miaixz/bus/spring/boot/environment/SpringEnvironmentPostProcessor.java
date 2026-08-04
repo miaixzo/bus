@@ -61,9 +61,6 @@ public class SpringEnvironmentPostProcessor implements EnvironmentPostProcessor,
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        if (!environment.getProperty(EnvironmentKeys.ENVIRONMENT_ENABLED, Boolean.class, false)) {
-            return;
-        }
         if (environment.getPropertySources().get(EnvironmentKeys.BUS_PROPERTY_SOURCE) != null) {
             return;
         }

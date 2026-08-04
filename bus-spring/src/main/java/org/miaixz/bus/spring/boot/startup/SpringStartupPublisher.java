@@ -20,33 +20,19 @@
 package org.miaixz.bus.spring.boot.startup;
 
 /**
- * Interface for customizing {@link BeanMetrics}.
- * <p>
- * Implementations of this interface can be used to perform custom processing on bean metrics, such as adding additional
- * attributes or modifying existing metrics. This allows for tailored monitoring needs during the bean initialization
- * process.
- * </p>
+ * Publishes one completed Spring Boot startup summary.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface
-public interface BeanMetricsCustomizer {
+public interface SpringStartupPublisher {
 
     /**
-     * Customizes the startup metrics of a bean.
-     * <p>
-     * This method is invoked during the bean initialization process, allowing for custom processing of the bean's
-     * metrics. Additional attributes can be added or existing metrics can be modified to meet specific monitoring
-     * requirements.
-     * </p>
+     * Publishes one immutable Spring Boot startup summary.
      *
-     * @param beanName The name of the bean.
-     * @param bean     The bean instance.
-     * @param beanStat The {@link BeanMetrics} object representing the bean's statistics.
-     * @return The customized {@link BeanMetrics} object. If {@code null} is returned, subsequent
-     *         {@code BeanMetricsCustomizer}s will not be called for this bean.
+     * @param summary completed startup summary
      */
-    BeanMetrics customize(String beanName, Object bean, BeanMetrics beanStat);
+    void publish(SpringStartupSummary summary);
 
 }
