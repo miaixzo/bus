@@ -117,6 +117,11 @@ public final class Http1Codec implements HttpCodec {
     private final AtomicReference<CodecState> state;
 
     /**
+     * Whether the current exchange has not yet received an HTTP status line.
+     */
+    private volatile boolean beforeResponse;
+
+    /**
      * Response body completion flag.
      */
     private final AtomicBoolean bodyComplete;
@@ -167,6 +172,7 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public void writeRequest(final HttpRequest request) {
         final HttpRequest current = require(request, "HTTP request");
+        beforeResponse = true;
         timeout = current.timeout();
         state.set(CodecState.BUSY);
         writeHeaders(current);
@@ -235,7 +241,9 @@ public final class Http1Codec implements HttpCodec {
         timeout = current.timeout();
         state.set(CodecState.BUSY);
         trailers.set(Headers.empty());
+        beforeResponse = true;
         String line = reader.readLine(timeout.read());
+        beforeResponse = false;
         int code = Http1Parser.status(line);
         Headers headers = readHeaders();
         while (code >= Http.Status.CONTINUE && code < Http.Status.OK && code != Http.Status.SWITCHING_PROTOCOLS) {
@@ -333,6 +341,16 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public boolean reusable() {
         return state.get() == CodecState.IDLE && bodyComplete.get() && !connectionClose.get() && connection.healthy();
+    }
+
+    /**
+     * Returns whether the current exchange is still before its response status line.
+     *
+     * @return {@code true} until the response status line is read
+     */
+    @Override
+    public boolean beforeResponse() {
+        return beforeResponse;
     }
 
     /**

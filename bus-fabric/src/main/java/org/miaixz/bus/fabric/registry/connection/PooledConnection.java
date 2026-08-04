@@ -134,6 +134,15 @@ final class PooledConnection {
     }
 
     /**
+     * Returns the recorded idle timestamp without allocating an instant.
+     *
+     * @return pool-clock time in epoch milliseconds when the connection became idle
+     */
+    long lastUsedMillis() {
+        return lastUsedMillis;
+    }
+
+    /**
      * Returns the established protocol snapshot.
      *
      * @return protocol captured at entry creation

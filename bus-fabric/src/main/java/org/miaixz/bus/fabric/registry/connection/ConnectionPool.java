@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Timeout;
@@ -97,6 +98,11 @@ public final class ConnectionPool implements AutoCloseable {
      * Idle connections by destination.
      */
     private final IdleConnectionIndex idleIndex;
+
+    /**
+     * Exclusive idle connections detached while active validation runs outside the pool lock.
+     */
+    private final Set<Connection> validatingIdle;
 
     /**
      * Destination values whose stable option identity has already been verified.
@@ -214,6 +220,7 @@ public final class ConnectionPool implements AutoCloseable {
         this.meter = meter;
         this.runtimeDispatcher = dispatcher;
         this.idleIndex = new IdleConnectionIndex();
+        this.validatingIdle = Collections.newSetFromMap(new IdentityHashMap<>());
         this.validatedDestinations = ConcurrentHashMap.newKeySet();
         this.leased = Collections.newSetFromMap(new IdentityHashMap<>());
         this.active = new IdentityHashMap<>();
@@ -350,10 +357,11 @@ public final class ConnectionPool implements AutoCloseable {
         final Cancellation scope = require(cancellation, "Cancellation");
         final long deadline = deadline(policy.acquireTimeout());
         scope.throwIfCancelled();
-        final ConnectionLease immediateIdle = acquireIdle(target, null);
+        final ConnectionLease immediateIdle = acquireIdle(target, null, scope);
         if (immediateIdle != null) {
             return immediateIdle;
         }
+        scope.throwIfCancelled();
         final PoolWaiters.Waiter waiter = new PoolWaiters.Waiter(target);
         final Runnable unregister = scope.cancellable() ? scope.onCancel(() -> {
             synchronized (lock) {
@@ -377,7 +385,7 @@ public final class ConnectionPool implements AutoCloseable {
                     return shared;
                 }
                 scope.throwIfCancelled();
-                final ConnectionLease reused = acquireIdle(target, waiter);
+                final ConnectionLease reused = acquireIdle(target, waiter, scope);
                 if (reused != null) {
                     return reused;
                 }
@@ -419,7 +427,7 @@ public final class ConnectionPool implements AutoCloseable {
             if (closed.get() || scope.cancelled()) {
                 closeable = true;
             } else {
-                final ConnectionLease lease = new ConnectionLease(this, target, connection, clock.millis(), true);
+                final ConnectionLease lease = ConnectionLease.transientLease(this, target, connection, clock.millis());
                 leased.add(lease);
                 physicalCount++;
                 physicalCreated();
@@ -578,6 +586,12 @@ public final class ConnectionPool implements AutoCloseable {
             }
             idleIndex.buckets.clear();
             idleIndex.entries.clear();
+            for (final Connection connection : validatingIdle) {
+                if (seen.add(connection)) {
+                    connections.add(connection);
+                }
+            }
+            validatingIdle.clear();
             validatedDestinations.clear();
             for (final ConnectionLease lease : List.copyOf(leased)) {
                 if (seen.add(lease.connection())) {
@@ -783,7 +797,7 @@ public final class ConnectionPool implements AutoCloseable {
             if (candidate == null) {
                 return null;
             }
-            final ConnectionLease shared = new ConnectionLease(this, destination, candidate, clock.millis());
+            final ConnectionLease shared = ConnectionLease.reused(this, destination, candidate, clock.millis());
             leased.add(shared);
             active.merge(candidate, 1, Integer::sum);
             logicalAcquired();
@@ -795,57 +809,117 @@ public final class ConnectionPool implements AutoCloseable {
     /**
      * Attempts to acquire an idle connection.
      *
-     * @param destination connection destination
-     * @param waiter      fair waiter or null for an immediate caller
+     * @param destination  connection destination
+     * @param waiter       fair waiter or null for an immediate caller
+     * @param cancellation cancellation scope that may become terminal during active validation
      * @return lease or null
      */
-    private ConnectionLease acquireIdle(final Destination destination, final PoolWaiters.Waiter waiter) {
-        List<Connection> discarded = null;
-        ConnectionLease lease = null;
-        synchronized (lock) {
-            ensureOpen();
-            if (!hasTurn(waiter)) {
-                return null;
-            }
-            final ArrayDeque<PooledConnection> bucket = idleIndex.buckets.get(destination);
-            while (bucket != null && !bucket.isEmpty()) {
+    private ConnectionLease acquireIdle(
+            final Destination destination,
+            final PoolWaiters.Waiter waiter,
+            final Cancellation cancellation) {
+        final Cancellation scope = require(cancellation, "Cancellation");
+        while (true) {
+            PooledConnection validating = null;
+            Connection discarded = null;
+            synchronized (lock) {
+                ensureOpen();
+                if (!hasTurn(waiter)) {
+                    return null;
+                }
+                final ArrayDeque<PooledConnection> bucket = idleIndex.buckets.get(destination);
+                if (bucket == null || bucket.isEmpty()) {
+                    return null;
+                }
                 // Reuse the hottest connection first. Under closed-loop concurrency this preserves TLS/codec
                 // cache locality and avoids rotating every connection across worker cores.
-                final Connection connection = bucket.removeLast().connection();
+                final PooledConnection pooled = bucket.removeLast();
+                final Connection connection = pooled.connection();
                 idleIndex.count--;
-                if (connection.healthy()) {
-                    lease = new ConnectionLease(this, destination, connection, clock.millis());
-                    leased.add(lease);
-                    active.put(connection, 1);
-                    addMultiplex(destination, connection);
-                    logicalAcquired();
-                    if (bucket.isEmpty()) {
-                        idleIndex.buckets.remove(destination, bucket);
-                    }
-                    completeWaiter(waiter);
-                    break;
+                if (bucket.isEmpty()) {
+                    idleIndex.buckets.remove(destination, bucket);
                 }
-                if (discarded == null) {
-                    discarded = new ArrayList<>();
+                if (!connection.reusable()) {
+                    removePhysical(connection);
+                    discarded = connection;
+                } else if (activeIdleValidationRequired(pooled, clock.millis())) {
+                    validatingIdle.add(connection);
+                    validating = pooled;
+                } else {
+                    return leaseIdleLocked(destination, connection, waiter);
                 }
-                discarded.add(connection);
-                removePhysical(connection);
             }
-        }
-        RuntimeException failure = null;
-        try {
             if (discarded != null) {
-                closeAll(discarded);
+                closeOne(discarded);
+                continue;
             }
-        } catch (final RuntimeException e) {
-            failure = e;
-        }
-        if (failure != null) {
-            if (lease != null) {
-                releaseLease(lease);
+
+            final PooledConnection candidate = require(validating, "Idle validation candidate");
+            final Connection connection = candidate.connection();
+            boolean valid;
+            try {
+                valid = connection.validateIdle();
+            } catch (final RuntimeException ignored) {
+                valid = false;
             }
-            throw failure;
+            boolean closeable = false;
+            synchronized (lock) {
+                validatingIdle.remove(connection);
+                if (closed.get()) {
+                    closeable = true;
+                } else if (!valid || !connection.reusable()) {
+                    removePhysical(connection);
+                    closeable = true;
+                } else if (scope.cancelled() || waiter != null && waiter.cancelled || !hasTurn(waiter)) {
+                    idleIndex.buckets.computeIfAbsent(destination, ignored -> new ArrayDeque<>()).addLast(candidate);
+                    idleIndex.count++;
+                    signalHead();
+                    return null;
+                } else {
+                    return leaseIdleLocked(destination, connection, waiter);
+                }
+            }
+            if (closeable) {
+                closeOne(connection);
+            }
         }
+    }
+
+    /**
+     * Returns whether an exclusive idle HTTP/1 connection requires active peer-close validation.
+     *
+     * @param pooled retained idle connection and its protocol snapshot
+     * @param now    current pool-clock time in epoch milliseconds
+     * @return true when the connection is eligible and has reached the configured idle threshold
+     */
+    private boolean activeIdleValidationRequired(final PooledConnection pooled, final long now) {
+        final Connection connection = pooled.connection();
+        final Protocol protocol = pooled.protocol();
+        if (connection.multiplex() || (protocol != Protocol.HTTP_1_0 && protocol != Protocol.HTTP_1_1)) {
+            return false;
+        }
+        final long idleMillis = Math.max(0L, now - pooled.lastUsedMillis());
+        return idleMillis >= policy.staleCheckAfter().toMillis();
+    }
+
+    /**
+     * Registers an idle connection as a logical lease while holding the pool lock.
+     *
+     * @param destination connection destination
+     * @param connection  reusable physical connection
+     * @param waiter      fair waiter receiving the lease, or {@code null} for an immediate caller
+     * @return logical lease marked as using a previously established physical connection
+     */
+    private ConnectionLease leaseIdleLocked(
+            final Destination destination,
+            final Connection connection,
+            final PoolWaiters.Waiter waiter) {
+        final ConnectionLease lease = ConnectionLease.reused(this, destination, connection, clock.millis());
+        leased.add(lease);
+        active.put(connection, 1);
+        addMultiplex(destination, connection);
+        logicalAcquired();
+        completeWaiter(waiter);
         return lease;
     }
 
@@ -929,7 +1003,7 @@ public final class ConnectionPool implements AutoCloseable {
                 closeable = true;
                 cancelled = scope.cancelled();
             } else {
-                final ConnectionLease lease = new ConnectionLease(this, destination, connection, clock.millis());
+                final ConnectionLease lease = ConnectionLease.created(this, destination, connection, clock.millis());
                 leased.add(lease);
                 active.put(connection, 1);
                 physicalCount++;
@@ -1160,7 +1234,7 @@ public final class ConnectionPool implements AutoCloseable {
         if (waiter == null || waiter.cancelled || !waiter.destination.equals(destination)) {
             return false;
         }
-        final ConnectionLease handedOff = new ConnectionLease(this, destination, connection, clock.millis());
+        final ConnectionLease handedOff = ConnectionLease.reused(this, destination, connection, clock.millis());
         leased.add(handedOff);
         active.put(connection, 1);
         logicalAcquired();

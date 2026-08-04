@@ -2477,6 +2477,10 @@
           "parameterTypes": []
         },
         {
+          "name": "beforeResponse",
+          "parameterTypes": []
+        },
+        {
           "name": "cancel",
           "parameterTypes": []
         },
@@ -5647,7 +5651,8 @@
           "name": "acquireIdle",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Destination",
-            "org.miaixz.bus.fabric.registry.connection.PoolWaiters$Waiter"
+            "org.miaixz.bus.fabric.registry.connection.PoolWaiters$Waiter",
+            "org.miaixz.bus.fabric.runtime.resource.Cancellation"
           ]
         },
         {
@@ -5674,6 +5679,13 @@
         {
           "name": "active",
           "parameterTypes": []
+        },
+        {
+          "name": "activeIdleValidationRequired",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.registry.connection.PooledConnection",
+            "long"
+          ]
         },
         {
           "name": "addMultiplex",
@@ -5827,6 +5839,14 @@
         {
           "name": "leased",
           "parameterTypes": []
+        },
+        {
+          "name": "leaseIdleLocked",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.network.Destination",
+            "org.miaixz.bus.fabric.network.Connection",
+            "org.miaixz.bus.fabric.registry.connection.PoolWaiters$Waiter"
+          ]
         },
         {
           "name": "logicalAcquired",

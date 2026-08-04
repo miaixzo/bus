@@ -36,11 +36,12 @@ import org.miaixz.bus.fabric.Policy;
  * @param maxConnections               positive maximum total connections
  * @param maxConnectionsPerDestination per-destination limit from one through {@code maxConnections}
  * @param acquireTimeout               non-negative acquisition timeout representable in nanoseconds
+ * @param staleCheckAfter              non-negative HTTP/1 idle age after which active validation is enabled
  * @author Kimi Liu
  * @since Java 21+
  */
 public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, int maxConnectionsPerDestination,
-        Duration acquireTimeout) implements Policy {
+        Duration acquireTimeout, Duration staleCheckAfter) implements Policy {
 
     /**
      * Typed option for the connection pool policy.
@@ -55,6 +56,7 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
      * @param maxConnections               positive maximum total connections
      * @param maxConnectionsPerDestination positive per-destination connection limit
      * @param acquireTimeout               non-negative acquisition timeout
+     * @param staleCheckAfter              non-negative HTTP/1 stale-check threshold
      * @throws ValidateException if a count relationship is invalid, a duration is null or negative, or a duration
      *                           cannot be represented in signed nanoseconds
      */
@@ -70,13 +72,28 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
                 () -> new ValidateException("Max connections per destination must be between one and max connections"));
         keepAlive = Builder.validateDuration(keepAlive, "Keep alive");
         acquireTimeout = Builder.validateDuration(acquireTimeout, "Acquire timeout");
+        staleCheckAfter = Builder.validateDuration(staleCheckAfter, "Stale check after");
+    }
+
+    /**
+     * Creates a compatibility policy that validates every reused HTTP/1 connection.
+     *
+     * @param maxIdle                      maximum idle connections
+     * @param keepAlive                    non-negative idle keep-alive duration
+     * @param maxConnections               positive maximum total connections
+     * @param maxConnectionsPerDestination positive per-destination connection limit
+     * @param acquireTimeout               non-negative acquisition timeout
+     */
+    public PoolPolicy(final int maxIdle, final Duration keepAlive, final int maxConnections,
+            final int maxConnectionsPerDestination, final Duration acquireTimeout) {
+        this(maxIdle, keepAlive, maxConnections, maxConnectionsPerDestination, acquireTimeout, Duration.ZERO);
     }
 
     /**
      * Returns default policy values.
      *
-     * @return process-wide default policy with 14 idle, 256 total, 256 per destination, five-minute keep-alive, and a
-     *         30-second acquisition timeout
+     * @return process-wide default policy with 14 idle, 256 total, 256 per destination, five-minute keep-alive, a
+     *         30-second acquisition timeout, and validation before every HTTP/1 connection reuse
      */
     public static PoolPolicy defaults() {
         return Instances.get(PoolPolicy.class.getName() + ".defaults", () -> builder().build());
@@ -161,6 +178,15 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
     }
 
     /**
+     * Returns the idle age after which an exclusive HTTP/1 connection receives active validation.
+     *
+     * @return non-negative stale-check threshold
+     */
+    public Duration staleCheckAfter() {
+        return staleCheckAfter;
+    }
+
+    /**
      * Returns the idle keep-alive duration as primitive nanoseconds.
      *
      * @return keep-alive nanoseconds, including zero for immediate expiry
@@ -210,6 +236,11 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
          * Acquire timeout candidate.
          */
         private Duration acquireTimeout = Duration.ofSeconds(Normal._30);
+
+        /**
+         * HTTP/1 idle age after which active validation is performed.
+         */
+        private Duration staleCheckAfter = Duration.ZERO;
 
         /**
          * Creates a builder.
@@ -286,6 +317,17 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
         }
 
         /**
+         * Sets the HTTP/1 idle age after which active validation is performed.
+         *
+         * @param value non-negative stale-check threshold
+         * @return this builder
+         */
+        public Builder staleCheckAfter(final Duration value) {
+            this.staleCheckAfter = validateDuration(value, "Stale check after");
+            return this;
+        }
+
+        /**
          * Builds an immutable policy.
          *
          * @return immutable policy containing the current builder values
@@ -296,7 +338,8 @@ public record PoolPolicy(int maxIdle, Duration keepAlive, int maxConnections, in
             Assert.isFalse(
                     maxIdle > maxConnections,
                     () -> new ValidateException("Max idle must not exceed max connections"));
-            return new PoolPolicy(maxIdle, keepAlive, maxConnections, maxConnectionsPerDestination, acquireTimeout);
+            return new PoolPolicy(maxIdle, keepAlive, maxConnections, maxConnectionsPerDestination, acquireTimeout,
+                    staleCheckAfter);
         }
 
         /**

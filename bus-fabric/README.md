@@ -242,6 +242,24 @@ try (HttpCache cache = HttpCache.create(
 }
 ```
 
+### HTTP Connection Reuse And Retry
+
+Eligible HTTP/1 connections taken from the idle queue are validated before reuse by default. For an exclusive idle
+`SocketChannel`, peer-close detection uses a non-blocking read after the connection has been detached from the idle
+queue and does not hold the connection-pool coordination lock. Transports that cannot safely probe the wire, including
+stream-based TLS connections, fall back to local reusable-state validation. A connection handed directly to a waiting
+request does not pass through the idle queue. `PoolPolicy.staleCheckAfter(...)` may defer active validation for recently
+used connections when an application accepts that reliability and performance trade-off.
+
+Transport retries have one total limit. Recovery from a stale reused connection is a subset of that total and has its
+own narrower limit; the two limits are not additive. Setting `HttpRetryPolicy.Builder.maxAttempts(0)` or
+`maxFollowUps(0)` disables every transport retry, including stale-connection recovery.
+
+Automatic transport retries require a repeatable request body and an idempotent HTTP method: `GET`, `HEAD`, `PUT`,
+`DELETE`, `OPTIONS`, or `TRACE`. `POST` and other non-idempotent requests are never replayed automatically after an
+ambiguous network failure. Pre-reuse validation reduces stale-connection failures where active probing is available,
+but it cannot guarantee that a non-idempotent request will not observe a concurrent peer close.
+
 ### Cookies
 
 Automatic cookies are opt-in. Attach the shared `CookieJar` through its typed option.

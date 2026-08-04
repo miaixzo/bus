@@ -111,6 +111,7 @@ public final class HttpRetry implements HttpStage {
         final HttpChain next = require(chain, "HTTP chain");
         final boolean debug = DEBUG_ENABLED;
         int attempt = Normal._0;
+        int staleAttempts = Normal._0;
         int followUps = Normal._0;
         HttpResponse prior = null;
         boolean first = true;
@@ -122,17 +123,18 @@ public final class HttpRetry implements HttpStage {
                 final HttpResponse response = attemptChain.proceed(current);
                 final HttpRequest followUp = followUp(response);
                 if (followUp == null) {
-                    if (debug && (attempt > Normal._0 || followUps > Normal._0)) {
+                    if (debug && (attempt > Normal._0 || staleAttempts > Normal._0 || followUps > Normal._0)) {
                         Logger.debug(
                                 false,
                                 "Fabric",
                                 "HTTP retry stage completed: method={}, host={}, port={}, code={}, retries={}, "
-                                        + "followUps={}",
+                                        + "staleRetries={}, followUps={}",
                                 current.method().value(),
                                 current.url().host(),
                                 current.url().port(),
                                 response.code(),
                                 attempt,
+                                staleAttempts,
                                 followUps);
                     }
                     return prior == null ? response : response.toBuilder().priorResponse(prior).build();
@@ -170,8 +172,11 @@ public final class HttpRetry implements HttpStage {
                 current = followUp;
                 followUps++;
                 attempt = Normal._0;
+                staleAttempts = Normal._0;
             } catch (final RuntimeException e) {
-                final boolean recoverable = recover(current, e, attempt);
+                final boolean staleRecovery = attempt < policy.maxAttempts()
+                        && recoverStaleConnection(current, e, staleAttempts);
+                final boolean recoverable = staleRecovery || recover(current, e, attempt);
                 if (debug) {
                     final HttpChain.ExchangeFailure failure = e instanceof HttpChain.ExchangeFailure currentFailure
                             ? currentFailure
@@ -179,11 +184,15 @@ public final class HttpRetry implements HttpStage {
                     Logger.debug(
                             false,
                             "Fabric",
-                            "HTTP retry decision: retry={}, attempt={}, maxAttempts={}, method={}, host={}, port={}, "
-                                    + "delivery={}, reason={}, exception={}",
+                            "HTTP retry decision: retry={}, staleRecovery={}, attempt={}, staleAttempt={}, "
+                                    + "maxAttempts={}, maxStaleAttempts={}, method={}, host={}, port={}, delivery={}, "
+                                    + "reason={}, exception={}",
                             recoverable,
+                            staleRecovery,
                             attempt,
+                            staleAttempts,
                             policy.maxAttempts(),
+                            policy.maxStaleRetries(),
                             current.method().value(),
                             current.url().host(),
                             current.url().port(),
@@ -195,6 +204,9 @@ public final class HttpRetry implements HttpStage {
                     throw e;
                 }
                 attempt++;
+                if (staleRecovery) {
+                    staleAttempts++;
+                }
             }
         }
     }
@@ -244,6 +256,26 @@ public final class HttpRetry implements HttpStage {
      */
     private boolean recover(final HttpRequest request, final Throwable cause, final int attempt) {
         return idempotent(request.method()) && request.body().repeatable() && recover(cause, attempt);
+    }
+
+    /**
+     * Recovers a single exchange that failed because a pooled HTTP/1 connection was already stale.
+     *
+     * @param request request considered for replay
+     * @param cause   structured exchange failure
+     * @param attempt zero-based stale recovery attempt
+     * @return {@code true} when all stale-connection and request replay constraints permit recovery
+     */
+    private boolean recoverStaleConnection(final HttpRequest request, final Throwable cause, final int attempt) {
+        if (!idempotent(request.method()) || !request.body().repeatable()
+                || !(cause instanceof HttpChain.ExchangeFailure failure)) {
+            return false;
+        }
+        final Throwable underlying = failure.getCause() == null ? failure : failure.getCause();
+        return failure.deliveryState() == HttpChain.DeliveryState.MAYBE_PROCESSED
+                && failure.scope() == HttpChain.FailureScope.CONNECTION
+                && failure.reason() == HttpChain.FailureReason.IO && failure.reusedConnection()
+                && failure.beforeResponse() && policy.retryStaleConnection(underlying, attempt);
     }
 
     /**
