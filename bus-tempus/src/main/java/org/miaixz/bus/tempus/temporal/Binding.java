@@ -61,4 +61,13 @@ public interface Binding {
         return null;
     }
 
+    /**
+     * Returns whether the Temporal channel may use the JVM network proxy.
+     *
+     * @return {@code true} to use the configured JVM proxy; {@code false} to connect directly
+     */
+    default boolean isProxyEnabled() {
+        return false;
+    }
+
 }

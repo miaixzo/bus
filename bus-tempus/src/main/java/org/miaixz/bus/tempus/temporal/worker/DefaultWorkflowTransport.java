@@ -22,8 +22,10 @@ package org.miaixz.bus.tempus.temporal.worker;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,6 +46,16 @@ import io.temporal.common.converter.DataConverter;
  * @since Java 21+
  */
 public class DefaultWorkflowTransport implements WorkflowTransport {
+
+    /**
+     * gRPC proxy detector contract name used without introducing a direct gRPC dependency.
+     */
+    private static final String PROXY_DETECTOR = "io.grpc.ProxyDetector";
+
+    /**
+     * Channel initializer that prevents JVM HTTP proxy settings from intercepting direct Temporal connections.
+     */
+    private static final Consumer<Object> DIRECT_CHANNEL_INITIALIZER = DefaultWorkflowTransport::configureDirectChannel;
 
     /**
      * Temporal data converter configured with the application-wide Bus JSON provider.
@@ -81,6 +93,9 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
         if (StringKit.isNotBlank(endpoint.target())) {
             MethodKit.invoke(builder, "setTarget", endpoint.target());
             MethodKit.invoke(builder, "setEnableHttps", endpoint.enableHttps());
+        }
+        if (binding == null || !binding.isProxyEnabled()) {
+            MethodKit.invoke(builder, "setChannelInitializer", DIRECT_CHANNEL_INITIALIZER);
         }
         Object options = MethodKit.invoke(builder, "build");
         Object serviceStubs = newServiceStubs(options);
@@ -606,6 +621,19 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
      */
     private static String unknownTransportState() {
         return WorkflowTransportState.UNKNOWN.value();
+    }
+
+    /**
+     * Configures a Temporal managed channel to bypass the JVM network proxy.
+     *
+     * @param channelBuilder Temporal managed channel builder
+     */
+    private static void configureDirectChannel(Object channelBuilder) {
+        ClassLoader loader = channelBuilder.getClass().getClassLoader();
+        Class<?> detectorType = ClassKit.forName(PROXY_DETECTOR, loader);
+        Object detector = java.lang.reflect.Proxy
+                .newProxyInstance(loader, new Class<?>[] { detectorType }, (proxy, method, arguments) -> null);
+        MethodKit.invoke(channelBuilder, "proxyDetector", detector);
     }
 
 }

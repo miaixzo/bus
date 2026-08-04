@@ -5858,6 +5858,29 @@
       ]
     },
     {
+      "type": "io.temporal.serviceclient.ServiceStubsOptions$Builder",
+      "methods": [
+        {
+          "name": "setChannelInitializer",
+          "parameterTypes": [
+            "java.util.function.Consumer"
+          ]
+        },
+        {
+          "name": "setEnableHttps",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setTarget",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "io.temporal.serviceclient.WorkflowServiceStubs",
       "fields": [
         {
@@ -6360,6 +6383,15 @@
       ]
     },
     {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubsOptions$Builder",
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "io.temporal.worker.Worker",
       "fields": [
         {
@@ -6429,6 +6461,7 @@
             "io.temporal.internal.sync.WorkflowThreadExecutor",
             "java.util.List",
             "java.util.List",
+            "java.lang.String",
             "io.temporal.internal.worker.NamespaceCapabilities"
           ]
         },

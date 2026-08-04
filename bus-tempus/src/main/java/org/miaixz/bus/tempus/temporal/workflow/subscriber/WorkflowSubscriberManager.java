@@ -40,6 +40,7 @@ import org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions;
 import org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory;
 
 import io.temporal.client.WorkflowClient;
+import io.temporal.internal.client.WorkflowClientInternal;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import io.temporal.worker.WorkerFactoryOptions;
@@ -481,6 +482,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                         Class.forName("io.temporal.internal.sync.WorkflowThreadExecutor"),
                         List.class,
                         List.class,
+                        String.class,
                         Class.forName("io.temporal.internal.worker.NamespaceCapabilities"));
                 constructor.setAccessible(true);
                 Worker worker = constructor.newInstance(
@@ -495,6 +497,7 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
                         field(workerFactory, "workflowThreadExecutor"),
                         workflowClient.getOptions().getContextPropagators(),
                         plugins,
+                        ((WorkflowClientInternal) workflowClient.getInternal()).getWorkerGroupingKey(),
                         field(workerFactory, "namespaceCapabilities"));
                 workers.put(taskQueue, worker);
                 for (WorkerPlugin plugin : plugins) {
