@@ -60,8 +60,7 @@ public final class StartupMetricsPublisher implements SpringStartupPublisher {
         StartupMetrics.record(
                 provider,
                 summary.applicationBootElapsedTime(),
-                summary.stageStats().stream()
-                        .map(stage -> new StartupStage(stage.name(), stage.durationMillis()))
+                summary.stageStats().stream().map(stage -> new StartupStage(stage.name(), stage.durationMillis()))
                         .toList());
     }
 

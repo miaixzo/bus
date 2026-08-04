@@ -57,16 +57,12 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
     /**
      * Name of the generated logging bridge property source.
      */
-    private static final String PROPERTY_SOURCE = "busLoggingBridge";
-    /**
-     * Spring Boot logging property prefix.
-     */
-    private static final String TARGET_PREFIX = "logging.";
+    private static final String PROPERTY_SOURCE = "busLoggingNamespaceBridge";
+
     /**
      * Source namespace for Bus logging properties.
      */
-    private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName
-            .of("bus.logging");
+    private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName.of("bus.logging");
     /**
      * Source namespace element count.
      */
@@ -88,8 +84,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         Map<String, Object> bridges = new LinkedHashMap<>();
         for (ConfigurationPropertySource source : ConfigurationPropertySources.get(environment)) {
             if (source instanceof IterableConfigurationPropertySource iterableSource) {
-                iterableSource.stream()
-                        .filter(this::isBusLoggingProperty)
+                iterableSource.stream().filter(this::isBusLoggingProperty)
                         .forEach(name -> addBridgeProperty(source, name, bridges));
             }
         }
@@ -138,7 +133,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * @return target Spring Boot logging property name
      */
     private String getTargetName(ConfigurationPropertyName name) {
-        StringBuilder targetName = new StringBuilder(TARGET_PREFIX);
+        StringBuilder targetName = new StringBuilder(EnvironmentKeys.LOGGING_PREFIX);
         for (int i = SOURCE_NAMESPACE_ELEMENTS; i < name.getNumberOfElements(); i++) {
             if (i > SOURCE_NAMESPACE_ELEMENTS) {
                 targetName.append('.');

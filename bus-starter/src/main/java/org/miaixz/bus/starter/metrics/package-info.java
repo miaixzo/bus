@@ -19,8 +19,8 @@
 */
 /**
  * Activates metrics collection and its management endpoint, binds cardinality and service-level objectives, and bridges
- * Spring Boot startup summaries into the configured Provider. This non-exported package contains Starter assembly rather
- * than public business APIs.
+ * Spring Boot startup summaries into the configured Provider. This non-exported package contains Starter assembly
+ * rather than public business APIs.
  *
  * @author Kimi Liu
  * @since Java 21+

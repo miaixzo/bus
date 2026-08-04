@@ -126,8 +126,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         long applicationBootTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         long enabledAt = System.currentTimeMillis();
         SpringStartupCollector collector = new SpringStartupCollector(
-                environment.getProperty(EnvironmentKeys.APPLICATION_NAME),
-                applicationBootTime);
+                environment.getProperty(EnvironmentKeys.APPLICATION_NAME), applicationBootTime);
         startupCollector = collector;
         environmentPreparedTime = enabledAt;
         collector.addStage(Stage.between(Stage.JVM_STARTING, applicationBootTime, enabledAt));
@@ -146,10 +145,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             return;
         }
         contextPreparedTime = System.currentTimeMillis();
-        startupCollector.addStage(Stage.between(
-                Stage.APPLICATION_CONTEXT_PREPARE,
-                environmentPreparedTime,
-                contextPreparedTime));
+        startupCollector.addStage(
+                Stage.between(Stage.APPLICATION_CONTEXT_PREPARE, environmentPreparedTime, contextPreparedTime));
     }
 
     /**
@@ -163,10 +160,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             return;
         }
         contextLoadedTime = System.currentTimeMillis();
-        startupCollector.addStage(Stage.between(
-                Stage.APPLICATION_CONTEXT_LOAD,
-                contextPreparedTime,
-                contextLoadedTime));
+        startupCollector
+                .addStage(Stage.between(Stage.APPLICATION_CONTEXT_LOAD, contextPreparedTime, contextLoadedTime));
         registerComponents(context);
     }
 
@@ -184,10 +179,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
 
         long applicationBootEndTime = System.currentTimeMillis();
         if (!startupCollector.containsStage(Stage.APPLICATION_CONTEXT_REFRESH)) {
-            startupCollector.addStage(Stage.between(
-                    Stage.APPLICATION_CONTEXT_REFRESH,
-                    contextLoadedTime,
-                    applicationBootEndTime));
+            startupCollector.addStage(
+                    Stage.between(Stage.APPLICATION_CONTEXT_REFRESH, contextLoadedTime, applicationBootEndTime));
         }
 
         publishStartupMetrics(context, startupCollector.complete(applicationBootEndTime));

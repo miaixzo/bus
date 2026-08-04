@@ -66,10 +66,8 @@ public class SpringSmartLifecycle implements SmartLifecycle {
         if (!running.compareAndSet(false, true)) {
             return;
         }
-        startupCollector.addStage(Stage.between(
-                Stage.APPLICATION_CONTEXT_REFRESH,
-                refreshStartTime,
-                System.currentTimeMillis()));
+        startupCollector.addStage(
+                Stage.between(Stage.APPLICATION_CONTEXT_REFRESH, refreshStartTime, System.currentTimeMillis()));
     }
 
     /**

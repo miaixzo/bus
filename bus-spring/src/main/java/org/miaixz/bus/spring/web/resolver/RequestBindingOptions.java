@@ -28,6 +28,11 @@ package org.miaixz.bus.spring.web.resolver;
 public class RequestBindingOptions {
 
     /**
+     * Maximum JSON request-object body size retained while resolving one controller argument.
+     */
+    private static final int MAX_REQUEST_BODY_SIZE = 16 * 1024 * 1024;
+
+    /**
      * Initializes the immutable binding limits used by the request-object argument resolver.
      */
     public RequestBindingOptions() {
@@ -49,12 +54,21 @@ public class RequestBindingOptions {
     }
 
     /**
+     * Returns the maximum JSON request-object body size in bytes.
+     *
+     * @return bounded request body size
+     */
+    public int getMaxRequestBodySize() {
+        return MAX_REQUEST_BODY_SIZE;
+    }
+
+    /**
      * Indicates whether request fields without writable target properties are ignored.
      *
      * @return whether ignore unknown fields
      */
     public boolean isIgnoreUnknownFields() {
-        return false;
+        return true;
     }
 
     /**

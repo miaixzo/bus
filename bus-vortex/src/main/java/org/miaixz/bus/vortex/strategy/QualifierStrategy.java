@@ -85,28 +85,6 @@ public class QualifierStrategy extends AbstractStrategy {
     }
 
     /**
-     * Resolves a bearer token using the shared case-insensitive credential lookup.
-     *
-     * @param context current request context
-     * @return token value, or {@code null} when absent
-     */
-    @Override
-    protected String getToken(Context context) {
-        return Http.Auth.token(context.getHeaders(), context.getParameters());
-    }
-
-    /**
-     * Resolves an API key using the shared case-insensitive credential lookup.
-     *
-     * @param context current request context
-     * @return API key value, or {@code null} when absent
-     */
-    @Override
-    protected String getApiKey(Context context) {
-        return Http.Auth.apiKey(context.getHeaders(), context.getParameters());
-    }
-
-    /**
      * Resolves a generic route asset, validates its HTTP verb, and performs policy authorization.
      *
      * @param exchange current exchange
@@ -369,7 +347,7 @@ public class QualifierStrategy extends AbstractStrategy {
      * @return selected credential, or {@code null} when no supported credential is present
      */
     protected Credential selectCredential(Context context, Integer policy) {
-        Http.Auth.Credential credential = Http.Auth.credential(context.getHeaders(), context.getParameters());
+        Http.Auth.Credential credential = Http.Auth.credential(context.getHeaders());
         if (credential == null) {
             return null;
         }

@@ -28,17 +28,21 @@ package org.miaixz.bus.spring.boot.environment;
 public final class EnvironmentKeys {
 
     /**
+     * Spring application-name property.
+     */
+    public static final String APPLICATION_NAME = "spring.application.name";
+    /**
      * Bus configuration property-source name.
      */
     public static final String BUS_PROPERTY_SOURCE = "configurationProperties";
     /**
+     * Spring Boot logging property prefix.
+     */
+    public static final String LOGGING_PREFIX = "logging.";
+    /**
      * Root Spring logging-level property.
      */
-    public static final String LOGGING_LEVEL = "logging.level";
-    /**
-     * Spring application-name property.
-     */
-    public static final String APPLICATION_NAME = "spring.application.name";
+    public static final String LOGGING_LEVEL = LOGGING_PREFIX + "level";
     /**
      * Bus configuration-listener flag.
      */
@@ -51,7 +55,6 @@ public final class EnvironmentKeys {
      * Bus startup-metrics flag.
      */
     public static final String STARTUP_METRICS_ENABLED = "bus.metrics.startup.enabled";
-
 
     /**
      * Prevents instantiation of this constants holder.

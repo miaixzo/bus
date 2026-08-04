@@ -447,36 +447,24 @@ public abstract class AbstractStrategy implements Strategy {
      * Extracts the authentication token from the incoming request.
      *
      * <p>
-     * The token extraction follows a specific order of precedence to ensure compatibility with both standard and legacy
-     * authentication methods:
-     * </p>
-     *
-     * <ol>
-     * <li><b>Standard Authorization Header:</b> It first checks for the standard {@code Authorization: Bearer <token>}
-     * header. This is the preferred and most secure method.</li>
-     * <li><b>Custom Header for Backward Compatibility:</b> If the standard header is not found, it searches for a
-     * custom header, {@code X-Access-Token}. This check is performed against a list of common case variations (e.g.,
-     * {@code X_ACCESS_TOKEN}, {@code x_access_token}) to accommodate different client implementations.</li>
-     * <li><b>Request Parameter as Fallback:</b> As a final fallback, if no token is found in the headers, the method
-     * searches for the token in the request parameters (query string) using the same set of keys as the custom header.
-     * </li>
-     * </ol>
+     * Only the standard {@code Authorization: Bearer <token>} header is accepted. Query parameters, cookies, JSON
+     * fields, raw Authorization values, and legacy token headers are intentionally unsupported.
      *
      * @param context The incoming {@link ServerHttpRequest} context containing headers and parameters.
-     * @return The extracted token string, or {@code null} if no token is found in any of the checked locations.
+     * @return The extracted token string, or {@code null} when the standard header is absent or malformed.
      */
     protected String getToken(Context context) {
-        return Http.Auth.token(context.getHeaders(), context.getParameters());
+        return Http.Auth.bearerToken(context.getHeaders());
     }
 
     /**
-     * Searches for an API key in a predefined list of request parameters and headers.
+     * Extracts an API key exclusively from the supported request headers.
      *
      * @param context The request context.
-     * @return The found API key, or {@code null} if not present.
+     * @return The found API key, or {@code null} if no supported header is present.
      */
     protected String getApiKey(Context context) {
-        return Http.Auth.apiKey(context.getHeaders(), context.getParameters());
+        return Http.Auth.apiKey(context.getHeaders());
     }
 
 }

@@ -37,8 +37,8 @@ import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityPolicy;
 import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
 import org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider;
-import org.miaixz.bus.spring.boot.startup.SpringStartupPublisher;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
+import org.miaixz.bus.spring.boot.startup.SpringStartupPublisher;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableMetrics;
 
