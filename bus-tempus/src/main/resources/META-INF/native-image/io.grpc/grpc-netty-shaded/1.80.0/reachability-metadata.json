@@ -1,0 +1,46 @@
+{
+  "reflection": [
+    {
+      "type": "io.grpc.ManagedChannelBuilder",
+      "methods": [
+        {
+          "name": "proxyDetector",
+          "parameterTypes": [
+            "io.grpc.ProxyDetector"
+          ]
+        }
+      ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.grpc.ProxyDetector"
+        ]
+      }
+    },
+    {
+      "type": "io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded.MpscUnpaddedArrayQueueConsumerIndexField",
+      "fields": [
+        {
+          "name": "consumerIndex"
+        }
+      ]
+    },
+    {
+      "type": "io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded.MpscUnpaddedArrayQueueProducerIndexField",
+      "fields": [
+        {
+          "name": "producerIndex"
+        }
+      ]
+    },
+    {
+      "type": "io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.unpadded.MpscUnpaddedArrayQueueProducerLimitField",
+      "fields": [
+        {
+          "name": "producerLimit"
+        }
+      ]
+    }
+  ]
+}

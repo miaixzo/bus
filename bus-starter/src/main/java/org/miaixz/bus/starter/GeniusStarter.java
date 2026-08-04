@@ -24,7 +24,11 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 
 import org.miaixz.bus.spring.ContextBuilder;
@@ -40,12 +44,18 @@ import org.miaixz.bus.spring.bean.ProviderRegistry;
 import org.miaixz.bus.spring.bean.SpringContext;
 
 /**
- * Registers instance-scoped Spring Bean access and request-context infrastructure shared by all Starter features.
+ * Registers shared Spring infrastructure and discovers framework components outside the Starter configuration layer.
+ * <p>
+ * Starter packages are excluded from component scanning because every Starter feature has an explicit
+ * auto-configuration or {@code @EnableXxx} import entry. This prevents disabled feature configurations from being
+ * discovered as ordinary components while retaining discovery for components owned by other Bus modules.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Configuration(proxyBeanMethods = false)
+@ComponentScan(value = "org.miaixz.**", excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.starter(?:\\..*)?"))
 public class GeniusStarter {
 
     /**

@@ -137,7 +137,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         // 1. Runtime Mapper override.
         C captured = capture();
         if (captured != null) {
-            Logger.debug(false, "Mapper", "Using Runtime configuration");
+            Logger.trace(false, "Mapper", "Using Runtime configuration");
             return captured;
         }
 
@@ -152,7 +152,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
 
             String datasourceKey = key;
             if (!enabled(datasourceKey, currentProperties)) {
-                Logger.debug(
+                Logger.trace(
                         false,
                         "Mapper",
                         "Datasource configuration is disabled: scope={}, datasource={}",
@@ -165,7 +165,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
                     cacheKey,
                     ignored -> Optional.ofNullable(derived(datasourceKey, currentProperties))).orElse(null);
             if (derived != null) {
-                Logger.debug(false, "Mapper", "Using Datasource configuration");
+                Logger.trace(false, "Mapper", "Using Datasource configuration");
                 return derived;
             }
         }
@@ -173,9 +173,9 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
         // 3. Global default configuration.
         C defaults = defaults();
         if (defaults != null) {
-            Logger.debug(false, "Mapper", "Using Default configuration");
+            Logger.trace(false, "Mapper", "Using Default configuration");
         } else {
-            Logger.debug(true, "Mapper", "No configuration available");
+            Logger.trace(true, "Mapper", "No configuration available");
         }
         return defaults;
     }

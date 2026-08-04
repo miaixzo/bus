@@ -983,8 +983,8 @@ bus:
 ```
 
 `bus.mapper.schema` 仍然保持兼容：没有 namespace 级 `schema` 时按原全局配置执行；存在 namespace 级 `schema` 时，全局
-`bus.mapper.schema` 会作为每个 namespace 的默认模板，避免同一批实体再被全局初始化一次。若数据源 Bean 名与 namespace
-名称不一致，可以在 namespace 的 `schema.datasource-key` 中指定实际数据源 key。也可以使用
+`bus.mapper.schema` 会作为每个 namespace 的默认模板，避免同一批实体再被全局初始化一次。namespace 的 `name` 同时也是
+schema 初始化使用的唯一数据源路由键，必须与具名数据源 Bean 或动态数据源中注册的路由名称一致。也可以使用
 `configurationProperties.shared.schema` 作为所有 namespace 的默认 schema 配置，再由具体 namespace 覆盖。
 
 生产环境或类生产环境首次启用时，先使用 `SCRIPT` 模式生成 SQL 脚本并人工确认：

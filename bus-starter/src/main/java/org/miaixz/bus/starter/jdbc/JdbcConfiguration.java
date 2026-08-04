@@ -24,8 +24,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
@@ -37,13 +37,16 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import org.miaixz.bus.mapper.dialect.DialectRegistry;
+import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.spring.jdbc.AspectjJdbcProxy;
 import org.miaixz.bus.spring.jdbc.DataSourceFactory;
 import org.miaixz.bus.spring.jdbc.DataSourceHolder;
+import org.miaixz.bus.spring.jdbc.DataSourceListener;
 import org.miaixz.bus.spring.jdbc.DataSourceMapping;
 import org.miaixz.bus.spring.jdbc.DataSourceResolver;
 import org.miaixz.bus.spring.jdbc.DynamicDataSource;
+import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableJdbc;
 
 /**
  * Assembles dynamic JDBC routing, annotation advice, and transaction management Beans.
@@ -55,6 +58,7 @@ import org.miaixz.bus.spring.jdbc.DynamicDataSource;
  * @since Java 21+
  */
 @ConditionalOnClass(value = { HikariDataSource.class })
+@ConditionalOnEnabled(annotation = EnableJdbc.class, prefix = GeniusBuilder.DATASOURCE, matchIfMissing = true)
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
 public class JdbcConfiguration {
@@ -83,47 +87,69 @@ public class JdbcConfiguration {
     /**
      * Creates dynamic datasource routing advice after the routing datasource is present.
      *
+     * @param dataSourceHolder application-context-scoped routing state
      * @return dynamic datasource aspect
      */
     @Bean
-    @ConditionalOnBean(DynamicDataSource.class)
     @ConditionalOnMissingBean(AspectjJdbcProxy.class)
-    public AspectjJdbcProxy aspectjJdbcProxy() {
-        return new AspectjJdbcProxy();
+    public AspectjJdbcProxy aspectjJdbcProxy(DataSourceHolder dataSourceHolder) {
+        return new AspectjJdbcProxy(dataSourceHolder);
+    }
+
+    /**
+     * Creates the application-context-scoped datasource routing state.
+     *
+     * @return datasource routing state
+     */
+    @Bean
+    @ConditionalOnMissingBean(DataSourceHolder.class)
+    public DataSourceHolder dataSourceHolder() {
+        return new DataSourceHolder();
     }
 
     /**
      * Creates the primary routing datasource from one fully resolved configuration mapping.
      * <p>
-     * JDBC owns the application primary key and thread-local route. Mapper receives only a read-only key supplier for
-     * dialect resolution and never modifies routing state.
+     * JDBC owns the application primary key and thread-local route. Optional integrations observe successful route
+     * changes through {@link DataSourceListener} without becoming dependencies of JDBC assembly.
      *
+     * @param dataSourceHolder datasource routing state
+     * @param listeners        ordered observers of datasource route changes
      * @return configured dynamic datasource
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     @Primary
     @ConditionalOnMissingBean(DataSource.class)
-    public DynamicDataSource dataSource() {
-        DataSourceHolder.remove();
+    public DynamicDataSource dataSource(
+            DataSourceHolder dataSourceHolder,
+            ObjectProvider<DataSourceListener> listeners) {
+        dataSourceHolder.remove();
         try {
             DataSourceMapping mapping = this.dataSourceResolver.resolve();
-            DataSourceHolder.setDefaultKey(mapping.primary());
-            DialectRegistry.setKeyProvider(DataSourceHolder::getKey);
+            dataSourceHolder.setDefaultKey(mapping.getPrimary());
 
             Map<Object, Object> sources = new LinkedHashMap<>();
-            mapping.sources().forEach((name, definition) -> {
-                DataSource source = this.dataSourceFactory.create(definition);
-                sources.put(name, source);
-                DialectRegistry.initializeDialect(name, source);
-            });
+            try {
+                mapping.getSources().forEach((name, definition) -> {
+                    DataSource source = this.dataSourceFactory.create(definition);
+                    sources.put(name, source);
+                });
+            } catch (RuntimeException | Error exception) {
+                try {
+                    close(sources);
+                } catch (RuntimeException closeException) {
+                    exception.addSuppressed(closeException);
+                }
+                throw exception;
+            }
 
-            DynamicDataSource dataSource = new DynamicDataSource();
-            dataSource.setPrimary(mapping.primary());
+            DynamicDataSource dataSource = new DynamicDataSource(dataSourceHolder, listeners.orderedStream().toList());
+            dataSource.setPrimary(mapping.getPrimary());
             dataSource.setTargetDataSources(sources);
             return dataSource;
         } finally {
             // Bean initialization must never leave a routing key on the bootstrap thread.
-            DataSourceHolder.remove();
+            dataSourceHolder.remove();
         }
     }
 
@@ -137,6 +163,41 @@ public class JdbcConfiguration {
     @ConditionalOnMissingBean(type = "org.springframework.transaction.PlatformTransactionManager")
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    /**
+     * Releases datasource instances created before JDBC assembly failed.
+     *
+     * @param sources partially created datasource mapping
+     */
+    private static void close(Map<Object, Object> sources) {
+        java.util.Set<Object> released = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        RuntimeException failure = null;
+        for (Object source : sources.values()) {
+            if (!released.add(source) || !(source instanceof AutoCloseable closeable)) {
+                continue;
+            }
+            try {
+                closeable.close();
+            } catch (RuntimeException exception) {
+                if (failure == null) {
+                    failure = exception;
+                } else {
+                    failure.addSuppressed(exception);
+                }
+            } catch (Exception exception) {
+                RuntimeException wrapped = new IllegalStateException(
+                        "Failed to close datasource after JDBC assembly failure", exception);
+                if (failure == null) {
+                    failure = wrapped;
+                } else {
+                    failure.addSuppressed(wrapped);
+                }
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
     }
 
 }

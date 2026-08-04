@@ -6231,16 +6231,6 @@
           ]
         },
         {
-          "name": "datasourceKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "datasourceKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "dryRun",
           "parameterTypes": []
         },
@@ -10099,9 +10089,6 @@
           "name": "dangerousWhitelist"
         },
         {
-          "name": "datasourceKey"
-        },
-        {
           "name": "dryRun"
         },
         {
@@ -10145,10 +10132,6 @@
         },
         {
           "name": "getDangerousWhitelist",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatasourceKey",
           "parameterTypes": []
         },
         {
@@ -10403,12 +10386,6 @@
           "name": "setDangerousWhitelist",
           "parameterTypes": [
             "java.util.Set"
-          ]
-        },
-        {
-          "name": "setDatasourceKey",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         },
         {

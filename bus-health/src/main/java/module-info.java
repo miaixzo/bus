@@ -36,14 +36,9 @@ module bus.health {
     requires static com.sun.jna;
     requires static com.sun.jna.platform;
 
-    opens org.miaixz.bus.health to com.sun.jna;
-    opens org.miaixz.bus.health.linux to com.sun.jna;
-    opens org.miaixz.bus.health.mac to com.sun.jna;
-    opens org.miaixz.bus.health.windows to com.sun.jna;
-    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
-
     exports org.miaixz.bus.health;
     exports org.miaixz.bus.health.builtin;
+    exports org.miaixz.bus.health.builtin.gpu;
     exports org.miaixz.bus.health.builtin.hardware;
     exports org.miaixz.bus.health.builtin.hardware.common;
     exports org.miaixz.bus.health.builtin.jna;
@@ -62,9 +57,6 @@ module bus.health {
     exports org.miaixz.bus.health.mac.hardware;
     exports org.miaixz.bus.health.mac.jna;
     exports org.miaixz.bus.health.mac.software;
-    exports org.miaixz.bus.health.unix.shared.driver;
-    exports org.miaixz.bus.health.unix.shared.hardware;
-    exports org.miaixz.bus.health.unix.shared.jna;
     exports org.miaixz.bus.health.unix.aix.driver;
     exports org.miaixz.bus.health.unix.aix.driver.perfstat;
     exports org.miaixz.bus.health.unix.aix.hardware;
@@ -79,6 +71,9 @@ module bus.health {
     exports org.miaixz.bus.health.unix.openbsd.driver.disk;
     exports org.miaixz.bus.health.unix.openbsd.hardware;
     exports org.miaixz.bus.health.unix.openbsd.software;
+    exports org.miaixz.bus.health.unix.shared.driver;
+    exports org.miaixz.bus.health.unix.shared.hardware;
+    exports org.miaixz.bus.health.unix.shared.jna;
     exports org.miaixz.bus.health.unix.solaris;
     exports org.miaixz.bus.health.unix.solaris.driver;
     exports org.miaixz.bus.health.unix.solaris.driver.disk;
@@ -93,6 +88,11 @@ module bus.health {
     exports org.miaixz.bus.health.windows.hardware;
     exports org.miaixz.bus.health.windows.jna;
     exports org.miaixz.bus.health.windows.software;
-    exports org.miaixz.bus.health.builtin.gpu;
+
+    opens org.miaixz.bus.health to com.sun.jna;
+    opens org.miaixz.bus.health.builtin.gpu to com.sun.jna;
+    opens org.miaixz.bus.health.linux to com.sun.jna;
+    opens org.miaixz.bus.health.mac to com.sun.jna;
+    opens org.miaixz.bus.health.windows to com.sun.jna;
 
 }

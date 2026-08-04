@@ -678,12 +678,6 @@ public class MapperOptions {
         private String scriptLocation = Normal.EMPTY;
 
         /**
-         * Datasource bean name used for schema initialization when it must target a datasource different from the
-         * primary datasource.
-         */
-        private String datasourceKey = Normal.EMPTY;
-
-        /**
          * Whitelist of dangerous schema change keys that may run when {@link #allowDangerous} is enabled.
          */
         private Set<String> dangerousWhitelist = new HashSet<>();

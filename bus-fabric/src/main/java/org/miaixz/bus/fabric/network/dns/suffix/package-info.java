@@ -21,8 +21,8 @@
  * Implements public suffix list based domain classification.
  *
  * <p>
- * Public suffix logic is a local domain-rule helper used by cookies and host policies. It is not a DNS resolver, does
- * not open sockets, and must not call system DNS APIs.
+ * Public suffix logic is a local domain-rule helper used by cookies, host policies, and domain classification. It is
+ * not a DNS resolver, does not open sockets, and must not call system DNS APIs.
  * </p>
  *
  * @author Kimi Liu

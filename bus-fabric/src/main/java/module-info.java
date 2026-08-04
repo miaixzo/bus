@@ -25,6 +25,8 @@
  */
 module bus.fabric {
 
+    requires java.net.http;
+
     requires bus.core;
     requires bus.crypto;
     requires bus.logger;
@@ -46,7 +48,14 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.network;
     exports org.miaixz.bus.fabric.network.aio;
     exports org.miaixz.bus.fabric.network.dns;
+    exports org.miaixz.bus.fabric.network.dns.forward;
+    exports org.miaixz.bus.fabric.network.dns.observe;
+    exports org.miaixz.bus.fabric.network.dns.policy;
+    exports org.miaixz.bus.fabric.network.dns.provider;
+    exports org.miaixz.bus.fabric.network.dns.record;
+    exports org.miaixz.bus.fabric.network.dns.server;
     exports org.miaixz.bus.fabric.network.dns.suffix;
+    exports org.miaixz.bus.fabric.network.dns.zone;
     exports org.miaixz.bus.fabric.network.kcp;
     exports org.miaixz.bus.fabric.network.proxy;
     exports org.miaixz.bus.fabric.network.tcp;
@@ -60,9 +69,9 @@ module bus.fabric {
     exports org.miaixz.bus.fabric.observe.tags;
     exports org.miaixz.bus.fabric.observe.timing;
     exports org.miaixz.bus.fabric.observe.window;
+    exports org.miaixz.bus.fabric.platform;
     exports org.miaixz.bus.fabric.protocol;
     exports org.miaixz.bus.fabric.protocol.http;
-    exports org.miaixz.bus.fabric.platform;
     exports org.miaixz.bus.fabric.protocol.http.auth;
     exports org.miaixz.bus.fabric.protocol.http.body;
     exports org.miaixz.bus.fabric.protocol.http.cache;

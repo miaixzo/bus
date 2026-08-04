@@ -46,6 +46,7 @@ import org.miaixz.bus.core.convert.RecordConverter;
 import org.miaixz.bus.core.lang.annotation.Readables;
 import org.miaixz.bus.core.lang.annotation.Writables;
 import org.miaixz.bus.core.lang.exception.BeanException;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 
 /**
@@ -64,6 +65,18 @@ public class BeanKit {
      */
     private BeanKit() {
         // No initialization required.
+    }
+
+    /**
+     * Creates a Bean through its no-argument constructor.
+     *
+     * @param <T>       The Bean type.
+     * @param beanClass The Bean class.
+     * @return A new Bean instance.
+     * @throws InternalException If the Bean cannot be instantiated.
+     */
+    public static <T> T createBean(final Class<T> beanClass) throws InternalException {
+        return ReflectKit.newInstance(beanClass);
     }
 
     /**

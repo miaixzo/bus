@@ -17,7 +17,6 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-
 /**
  * Bus Cortex — unified registry and configuration center platform.
  * <p>
@@ -34,8 +33,8 @@ module bus.cortex {
     requires bus.core;
     requires bus.crypto;
     requires bus.extra;
-    requires bus.health;
     requires bus.fabric;
+    requires bus.health;
     requires bus.logger;
 
     requires static lombok;
@@ -44,32 +43,32 @@ module bus.cortex {
     exports org.miaixz.bus.cortex;
     exports org.miaixz.bus.cortex.bridge;
     exports org.miaixz.bus.cortex.builtin;
-    exports org.miaixz.bus.cortex.guard;
-    exports org.miaixz.bus.cortex.health;
-    exports org.miaixz.bus.cortex.magic;
-    exports org.miaixz.bus.cortex.registry;
-    exports org.miaixz.bus.cortex.setting;
-    exports org.miaixz.bus.cortex.version;
     exports org.miaixz.bus.cortex.builtin.batch;
     exports org.miaixz.bus.cortex.builtin.event;
     exports org.miaixz.bus.cortex.builtin.graph;
+    exports org.miaixz.bus.cortex.guard;
     exports org.miaixz.bus.cortex.guard.token;
+    exports org.miaixz.bus.cortex.health;
+    exports org.miaixz.bus.cortex.magic;
     exports org.miaixz.bus.cortex.magic.event;
     exports org.miaixz.bus.cortex.magic.identity;
     exports org.miaixz.bus.cortex.magic.runtime;
     exports org.miaixz.bus.cortex.magic.state;
     exports org.miaixz.bus.cortex.magic.watch;
+    exports org.miaixz.bus.cortex.registry;
     exports org.miaixz.bus.cortex.registry.api;
     exports org.miaixz.bus.cortex.registry.mcp;
     exports org.miaixz.bus.cortex.registry.prompt;
+    exports org.miaixz.bus.cortex.setting;
     exports org.miaixz.bus.cortex.setting.app;
     exports org.miaixz.bus.cortex.setting.binding;
     exports org.miaixz.bus.cortex.setting.curator;
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.item;
+    exports org.miaixz.bus.cortex.setting.item.revision;
     exports org.miaixz.bus.cortex.setting.namespace;
     exports org.miaixz.bus.cortex.setting.profile;
     exports org.miaixz.bus.cortex.setting.secret;
-    exports org.miaixz.bus.cortex.setting.item.revision;
+    exports org.miaixz.bus.cortex.version;
 
 }

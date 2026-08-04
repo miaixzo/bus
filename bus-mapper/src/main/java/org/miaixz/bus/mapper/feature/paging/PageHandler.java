@@ -148,20 +148,20 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         }
 
         this.properties = properties;
-        // Parse reasonable parameter
-        String reasonableStr = properties.getProperty("reasonable");
+        String reasonableStr = find(Args.PAGE_REASONABLE, properties.getProperty(Args.PAGE_REASONABLE));
         if (StringKit.isNotEmpty(reasonableStr)) {
             this.reasonable = Boolean.parseBoolean(reasonableStr);
         }
 
-        // Parse supportMethodsArguments parameter
-        String supportMethodsArgumentsStr = properties.getProperty("supportMethodsArguments");
+        String supportMethodsArgumentsStr = find(
+                Args.PAGE_SUPPORT_METHOD_ARGUMENTS,
+                properties.getProperty(Args.PAGE_SUPPORT_METHOD_ARGUMENTS));
         if (StringKit.isNotEmpty(supportMethodsArgumentsStr)) {
             this.supportMethodsArguments = Boolean.parseBoolean(supportMethodsArgumentsStr);
         }
 
-        // Parse params parameter (e.g., "count=countSql")
-        String params = properties.getProperty("params");
+        String params = find(Args.PAGE_PARAMS, properties.getProperty(Args.PAGE_PARAMS));
+        paramsMap.clear();
         if (StringKit.isNotEmpty(params)) {
             parseParams(params);
         }
@@ -203,11 +203,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         // Check if pagination is enabled for this thread
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
-            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=pageMissing");
+            Logger.trace(true, "Mapper", "Pagination getBoundSql skipped: reason=pageMissing");
             return;
         }
         if (isInternalPaginationQuery()) {
-            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=internalQuery");
+            Logger.trace(true, "Mapper", "Pagination getBoundSql skipped: reason=internalQuery");
             return;
         }
 
@@ -215,22 +215,22 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         if (boundSql == null) {
-            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=boundSqlMissing");
+            Logger.trace(true, "Mapper", "Pagination getBoundSql skipped: reason=boundSqlMissing");
             return;
         }
 
         // Get MappedStatement
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
         if (ms == null) {
-            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: reason=mappedStatementMissing");
+            Logger.trace(true, "Mapper", "Pagination getBoundSql skipped: reason=mappedStatementMissing");
             return;
         }
         if (isCountMappedStatement(ms)) {
-            Logger.debug(true, "Mapper", "Pagination getBoundSql skipped: method={}, reason=countQuery", ms.getId());
+            Logger.trace(true, "Mapper", "Pagination getBoundSql skipped: method={}, reason=countQuery", ms.getId());
             return;
         }
 
-        Logger.debug(true, "Mapper", "Pagination getBoundSql observed without SQL mutation: method={}", ms.getId());
+        Logger.trace(true, "Mapper", "Pagination getBoundSql observed without SQL mutation: method={}", ms.getId());
     }
 
     /**
@@ -246,22 +246,22 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         // Apply pagination SQL modifications
         Pageable pageable = PageContext.getLocalPage();
         if (pageable == null || pageable.isUnpaged()) {
-            Logger.debug(true, "Mapper", "Pagination prepare skipped: reason=pageMissing");
+            Logger.trace(true, "Mapper", "Pagination prepare skipped: reason=pageMissing");
             return;
         }
         if (isInternalPaginationQuery()) {
-            Logger.debug(true, "Mapper", "Pagination prepare skipped: reason=internalQuery");
+            Logger.trace(true, "Mapper", "Pagination prepare skipped: reason=internalQuery");
             return;
         }
 
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
         if (ms != null && isCountMappedStatement(ms)) {
-            Logger.debug(true, "Mapper", "Pagination prepare skipped: method={}, reason=countQuery", ms.getId());
+            Logger.trace(true, "Mapper", "Pagination prepare skipped: method={}, reason=countQuery", ms.getId());
             return;
         }
 
-        Logger.debug(
+        Logger.trace(
                 true,
                 "Mapper",
                 "Pagination prepare observed without SQL mutation: method={}, pageNo={}, pageSize={}",
@@ -304,7 +304,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
                     pageable = extractPageableFromParameter(parameter);
                     if (pageable != null) {
                         PageContext.setLocalPage(pageable);
-                        Logger.debug(
+                        Logger.trace(
                                 false,
                                 "Mapper",
                                 "Pagination extracted from method arguments: method={}, pageNo={}, pageSize={}",
@@ -323,7 +323,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             }
 
             if (pageable == null || pageable.isUnpaged()) {
-                Logger.debug(
+                Logger.trace(
                         true,
                         "Mapper",
                         "Pagination query skipped: method={}, reason=pageMissing",
@@ -346,7 +346,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         try {
             // Get database dialect
             dialect = getDialect(executor);
-            Logger.debug(
+            Logger.trace(
                     false,
                     "Mapper",
                     "Pagination dialect resolved: method={}, dialect={}",
@@ -357,7 +357,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             long total = 0;
             boolean performCount = PageContext.getLocalCount();
             if (performCount) {
-                Logger.debug(true, "Mapper", "Pagination count query started: method={}", mappedStatement.getId());
+                Logger.trace(true, "Mapper", "Pagination count query started: method={}", mappedStatement.getId());
                 total = executeCountQuery(executor, mappedStatement, parameter, boundSql, dialect);
                 Logger.debug(
                         false,
@@ -382,7 +382,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
             // Apply reasonable logic if enabled
             if (currentSettings.reasonable() && performCount && total > 0) {
-                Logger.debug(
+                Logger.trace(
                         false,
                         "Mapper",
                         "Pagination reasonable adjustment evaluated: method={}, total={}",
@@ -392,7 +392,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             }
 
             // Execute pagination query
-            Logger.debug(
+            Logger.trace(
                     true,
                     "Mapper",
                     "Pagination data query started: method={}, pageNo={}, pageSize={}",

@@ -35,15 +35,16 @@ module bus.auth {
     requires bus.logger;
 
     requires static lombok;
-    requires static org.bouncycastle.provider;
     requires static org.bouncycastle.pkix;
+    requires static org.bouncycastle.provider;
 
     exports org.miaixz.bus.auth;
     exports org.miaixz.bus.auth.cache;
     exports org.miaixz.bus.auth.magic;
     exports org.miaixz.bus.auth.metric;
-    exports org.miaixz.bus.auth.nimble;
     exports org.miaixz.bus.auth.metric.jwt;
+    exports org.miaixz.bus.auth.metric.jwt.signature;
+    exports org.miaixz.bus.auth.nimble;
     exports org.miaixz.bus.auth.nimble.afdian;
     exports org.miaixz.bus.auth.nimble.alipay;
     exports org.miaixz.bus.auth.nimble.aliyun;

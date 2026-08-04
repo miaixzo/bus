@@ -198,7 +198,11 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
                     result.recordSkip();
                     return;
                 }
-                operations.delete(RegistryIdentity.type(existing), existing.getNamespace_id(), existing.getId());
+                operations.delete(
+                        RegistryIdentity.type(existing),
+                        existing.getNamespace_id(),
+                        existing.getId(),
+                        existing);
                 result.recordDelete();
             }
             case REGISTER, UPDATE, UPSERT -> {
@@ -214,7 +218,7 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
                 if (existing != null && existing.getId() != null) {
                     entry.setId(existing.getId());
                 }
-                operations.upsert(entry);
+                operations.upsert(entry, existing);
                 if (existing == null) {
                     result.recordInsert();
                 } else {

@@ -107,21 +107,24 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
         if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethodAnnotation(Sensitive.class);
-                if (ObjectKit.isEmpty(sensitive)) {
+                final Sensitive effective = ObjectKit.isEmpty(sensitive)
+                        ? parameter.getDeclaringClass().getAnnotation(Sensitive.class)
+                        : sensitive;
+                if (ObjectKit.isEmpty(effective)) {
                     return inputMessage;
                 }
 
                 // Decrypt the data if the stage is 'ALL' or 'IN'
-                if ((Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value()))
-                        && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
+                if ((Builder.ALL.equals(effective.value()) || Builder.SAFE.equals(effective.value()))
+                        && (Builder.ALL.equals(effective.stage()) || Builder.IN.equals(effective.stage()))) {
                     Logger.debug(
                             true,
                             "Starter",
                             "Sensitive request body decryption selected: controller={}, method={}, mode={}, stage={}, targetType={}",
                             parameter.getDeclaringClass().getName(),
                             parameter.getExecutable().getName(),
-                            sensitive.value(),
-                            sensitive.stage(),
+                            effective.value(),
+                            effective.stage(),
                             targetType.getTypeName());
                     return new InputMessage(inputMessage, this.properties.getDecrypt().getKey(),
                             this.properties.getDecrypt().getType(), Charset.DEFAULT_UTF_8);
@@ -256,11 +259,21 @@ public class SensitiveRequestBodyAdvice extends BaseAdvice
             this.body = IoKit.toStream(decryptBody, Charset.parse(charset));
         }
 
+        /**
+         * Returns the decrypted request body stream.
+         *
+         * @return decrypted body stream
+         */
         @Override
         public InputStream getBody() {
             return body;
         }
 
+        /**
+         * Returns copied request headers associated with the decrypted body.
+         *
+         * @return request headers
+         */
         @Override
         public HttpHeaders getHeaders() {
             return headers;

@@ -39,27 +39,26 @@ import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotContribution;
 import org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor;
 import org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RegisteredBean;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperMethodTypeResolver;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.spring.annotation.PlaceholderBinder;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -131,7 +130,7 @@ public final class MapperAotProcessors {
         @Override
         public BeanFactoryInitializationAotContribution processAheadOfTime(
                 ConfigurableListableBeanFactory beanFactory) {
-            MapperProperties properties = PlaceHolderBinder
+            MapperProperties properties = PlaceholderBinder
                     .bind(this.environment, MapperProperties.class, GeniusBuilder.MAPPER);
             if (properties == null) {
                 properties = new MapperProperties();
@@ -232,46 +231,50 @@ public final class MapperAotProcessors {
         /**
          * Registers reflection hints for all types related to mapper methods.
          * <p>
-         * The mapper interface itself is already registered by the caller. This method walks declared mapper methods
-         * and registers SQL provider classes plus resolved return and parameter payload classes.
+         * The mapper interface itself is already registered by the caller. This method walks declared methods across
+         * the complete mapper-interface hierarchy and registers SQL provider classes plus resolved return and parameter
+         * payload classes.
          *
          * @param mapperInterfaceType mapper interface class
          * @param hints               runtime hints to update
          */
         private void registerMapperRelationships(Class<?> mapperInterfaceType, RuntimeHints hints) {
-            Method[] methods = ReflectionUtils.getAllDeclaredMethods(mapperInterfaceType);
-            for (Method method : methods) {
-                if (method.getDeclaringClass() != Object.class) {
-                    ReflectionUtils.makeAccessible(method);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            SelectProvider.class,
-                            SelectProvider::value,
-                            SelectProvider::type);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            InsertProvider.class,
-                            InsertProvider::value,
-                            InsertProvider::type);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            UpdateProvider.class,
-                            UpdateProvider::value,
-                            UpdateProvider::type);
-                    registerSqlProviderTypes(
-                            method,
-                            hints,
-                            DeleteProvider.class,
-                            DeleteProvider::value,
-                            DeleteProvider::type);
+            Set<Class<?>> mapperTypes = new LinkedHashSet<>();
+            mapperTypes.add(mapperInterfaceType);
+            mapperTypes.addAll(ClassKit.getInterfaces(mapperInterfaceType));
+            for (Class<?> mapperType : mapperTypes) {
+                for (Method method : MethodKit.getDeclaredMethods(mapperType)) {
+                    if (method.getDeclaringClass() != Object.class) {
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                SelectProvider.class,
+                                SelectProvider::value,
+                                SelectProvider::type);
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                InsertProvider.class,
+                                InsertProvider::value,
+                                InsertProvider::type);
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                UpdateProvider.class,
+                                UpdateProvider::value,
+                                UpdateProvider::type);
+                        registerSqlProviderTypes(
+                                method,
+                                hints,
+                                DeleteProvider.class,
+                                DeleteProvider::value,
+                                DeleteProvider::type);
 
-                    Class<?> returnType = MapperMethodTypeResolver.resolveReturnClass(mapperInterfaceType, method);
-                    registerReflectionTypeIfNecessary(returnType, hints);
-                    MapperMethodTypeResolver.resolveParameterClasses(mapperInterfaceType, method)
-                            .forEach(x -> registerReflectionTypeIfNecessary(x, hints));
+                        Class<?> returnType = MapperMethodTypeResolver.resolveReturnClass(mapperInterfaceType, method);
+                        registerReflectionTypeIfNecessary(returnType, hints);
+                        MapperMethodTypeResolver.resolveParameterClasses(mapperInterfaceType, method)
+                                .forEach(x -> registerReflectionTypeIfNecessary(x, hints));
+                    }
                 }
             }
         }
@@ -324,58 +327,6 @@ public final class MapperAotProcessors {
                 methods.addAll(Set.of(type.getMethods()));
                 methods.forEach(method -> reflection.registerMethod(method, ExecutableMode.INVOKE));
             }
-        }
-
-    }
-
-    /**
-     * Post-processor that preserves the mapper factory bean post-processing registration point.
-     * <p>
-     * The actual String-to-Class conversion and target generic refresh are handled by
-     * {@link MapperInterfaceStringToClassConverter}.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    public static class MyBatisMapperFactoryBeanPostProcessor
-            implements MergedBeanDefinitionPostProcessor, BeanFactoryAware {
-
-        /**
-         * Initializes the merged-definition hook retained for the mapper factory Bean lifecycle.
-         */
-        MyBatisMapperFactoryBeanPostProcessor() {
-            // No initialization required.
-        }
-
-        /**
-         * Accepts the configurable bean factory supplied by Spring.
-         * <p>
-         * The registration point is retained for compatibility with the original MyBatis mapper startup flow. The
-         * current implementation performs mapper interface conversion in {@link MapperInterfaceStringToClassConverter}.
-         *
-         * @param beanFactory bean factory supplied by Spring
-         */
-        @Override
-        public void setBeanFactory(BeanFactory beanFactory) {
-            // Compatibility hook; mapper interface conversion happens in MapperInterfaceStringToClassConverter.
-        }
-
-        /**
-         * Hook invoked after mapper factory bean definitions are merged.
-         * <p>
-         * The current implementation intentionally does not mutate the definition. It remains registered so downstream
-         * behavior keeps the same extension point shape while conversion is handled by
-         * {@link MapperInterfaceStringToClassConverter}.
-         *
-         * @param beanDefinition merged bean definition
-         * @param beanType       resolved bean type
-         * @param beanName       bean name
-         */
-        @Override
-        public void postProcessMergedBeanDefinition(
-                RootBeanDefinition beanDefinition,
-                Class<?> beanType,
-                String beanName) {
         }
 
     }
@@ -445,16 +396,14 @@ public final class MapperAotProcessors {
                                         "Mapper interface class conversion started: className={}",
                                         mapperInterfaceClassName);
                                 try {
-                                    Class<?> mapperInterface = ClassUtils
+                                    Class<?> mapperInterface = ClassKit
                                             .forName(mapperInterfaceClassName, beanFactory.getBeanClassLoader());
 
                                     rootBeanDefinition.getPropertyValues().removePropertyValue("mapperInterface");
                                     rootBeanDefinition.getPropertyValues()
                                             .addPropertyValue("mapperInterface", mapperInterface);
 
-                                    rootBeanDefinition.setTargetType(
-                                            ResolvableType
-                                                    .forClassWithGenerics(MapperFactoryBean.class, mapperInterface));
+                                    prepareMapperDefinition(rootBeanDefinition, mapperInterface);
 
                                     Logger.debug(
                                             false,
@@ -463,7 +412,7 @@ public final class MapperAotProcessors {
                                             beanName,
                                             mapperInterface.getName());
                                     processedCount++;
-                                } catch (ClassNotFoundException e) {
+                                } catch (InternalException e) {
                                     Logger.error(
                                             false,
                                             "Starter",
@@ -473,11 +422,15 @@ public final class MapperAotProcessors {
                                             e.getClass().getSimpleName());
                                 }
                             } else if (mapperInterfaceValue instanceof Class) {
+                                Class<?> mapperInterface = (Class<?>) mapperInterfaceValue;
+                                prepareMapperDefinition(rootBeanDefinition, mapperInterface);
                                 Logger.debug(
                                         false,
                                         "Starter",
-                                        "Mapper interface conversion skipped: beanName={}, reason=alreadyClass",
-                                        beanName);
+                                        "Mapper factory bean type metadata restored: beanName={}, className={}",
+                                        beanName,
+                                        mapperInterface.getName());
+                                processedCount++;
                             } else {
                                 Logger.debug(
                                         false,
@@ -503,6 +456,17 @@ public final class MapperAotProcessors {
                     "Starter",
                     "Mapper interface conversion finished: processedMapperFactoryBeanCount={}",
                     processedCount);
+        }
+
+        /**
+         * Restores the mapper product type metadata required for dependency lookup.
+         *
+         * @param beanDefinition  mapper factory bean definition
+         * @param mapperInterface mapper interface exposed by the factory bean
+         */
+        private void prepareMapperDefinition(RootBeanDefinition beanDefinition, Class<?> mapperInterface) {
+            beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, mapperInterface);
+            beanDefinition.setTargetType(ResolvableType.forClassWithGenerics(MapperFactoryBean.class, mapperInterface));
         }
 
     }

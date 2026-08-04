@@ -169,6 +169,24 @@ public class WorkflowBindingOptions {
     }
 
     /**
+     * Returns whether the Temporal channel may use the JVM network proxy.
+     *
+     * @return {@code true} to use the configured JVM proxy; {@code false} to connect directly
+     */
+    public boolean isProxyEnabled() {
+        return getConnection().isProxyEnabled();
+    }
+
+    /**
+     * Updates whether the Temporal channel may use the JVM network proxy.
+     *
+     * @param proxyEnabled whether the configured JVM proxy may be used
+     */
+    public void setProxyEnabled(boolean proxyEnabled) {
+        getConnection().setProxyEnabled(proxyEnabled);
+    }
+
+    /**
      * Returns the Temporal task queue.
      *
      * @return Temporal task queue
@@ -546,6 +564,11 @@ public class WorkflowBindingOptions {
          * Temporal client identity.
          */
         String identity;
+
+        /**
+         * Whether the Temporal channel may use the JVM network proxy.
+         */
+        boolean proxyEnabled;
 
         /**
          * Creates connection options.

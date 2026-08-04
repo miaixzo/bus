@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -62,6 +64,22 @@ public final class MapperLocationResolver {
      */
     private MapperLocationResolver() {
         // No initialization required.
+    }
+
+    /**
+     * Returns a Mapper resource-pattern resolver backed by the supplied resource loader.
+     *
+     * @param resourceLoader resource loader to adapt, or {@code null} for the default resolver
+     * @return Mapper resource-pattern resolver
+     */
+    public static ResourcePatternResolver getPatternResolver(ResourceLoader resourceLoader) {
+        if (resourceLoader instanceof ResourcePatternResolver resolver) {
+            return resolver;
+        }
+        if (resourceLoader != null) {
+            return new PathMatchingResourcePatternResolver(resourceLoader);
+        }
+        return new PathMatchingResourcePatternResolver();
     }
 
     /**

@@ -136,13 +136,15 @@ public class VortexConfiguration {
     private static final String WS_ROUTER = "ws";
 
     /**
-     * Stores and validates the Vortex gateway properties before any runtime Bean is created.
+     * Stores and validates the Vortex gateway properties and installs performance settings before any runtime Bean is
+     * created.
      *
      * @param properties bound configuration properties
      */
     public VortexConfiguration(VortexProperties properties) {
         this.properties = properties;
         this.properties.validate();
+        Holder.of(this.properties.getPerformance());
     }
 
     /**
@@ -177,8 +179,6 @@ public class VortexConfiguration {
             @Qualifier(WS_ROUTER) Router<ServerRequest, ?> wsRouter,
             @Qualifier("llm") Router<ServerRequest, ?> llmRouter,
             @Qualifier("slug") Router<ServerRequest, ?> slugRouter) {
-        Holder.of(properties.getPerformance());
-
         Map<Integer, Router<ServerRequest, ?>> routers = Map.of(
                 Args.PROTOCOL_HTTP,
                 httpRouter,
@@ -363,8 +363,8 @@ public class VortexConfiguration {
     /**
      * Provides the MqExecutor bean. This executor handles sending messages to a message queue.
      * <p>
-     * Uses {@link Holder#get()} to obtain the global Performance configuration, which is initialized during
-     * {@code Holder.of(properties.getPerformance())} call in the vortex bean.
+     * Uses {@link Holder#get()} to obtain the global Performance configuration installed by this configuration's
+     * constructor before executor Beans are created.
      *
      * @return A new instance of MqExecutor with globally configured performance settings
      */

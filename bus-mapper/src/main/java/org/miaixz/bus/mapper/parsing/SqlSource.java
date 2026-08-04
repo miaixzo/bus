@@ -211,7 +211,7 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
      * @return the dialect resolved from the datasource key or MyBatis environment datasource
      */
     private Dialect resolveDialect() {
-        Dialect dialect = DialectRegistry.getDialect();
+        Dialect dialect = DialectRegistry.getDialect(this.configuration);
         if (isResolvedDialect(dialect)) {
             return dialect;
         }

@@ -192,6 +192,11 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-spring</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-starter</artifactId>
             <optional>true</optional>
         </dependency>

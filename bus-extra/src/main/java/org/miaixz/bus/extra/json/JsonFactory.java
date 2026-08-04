@@ -136,6 +136,16 @@ public class JsonFactory {
     }
 
     /**
+     * Removes an application-managed provider when it is still the active global provider.
+     *
+     * @param provider provider previously installed by the owning application context
+     * @return {@code true} when the supplied provider was removed
+     */
+    public static boolean uninstall(JsonProvider provider) {
+        return provider != null && DEFAULT_PROVIDER.compareAndSet(provider, null);
+    }
+
+    /**
      * Normalizes a configured provider name and maps the Fastjson2 alias to its canonical provider name.
      *
      * @param name configured provider name; {@code null} and blank values mean {@code auto}

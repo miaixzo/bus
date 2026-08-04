@@ -36,15 +36,16 @@ import org.springframework.core.Ordered;
 
 import org.miaixz.bus.spring.ContextBuilder;
 import org.miaixz.bus.spring.web.ContextBindingFilter;
+import org.miaixz.bus.spring.web.RequestContext;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
  * Configures runtime context propagation for Servlet web applications.
  *
  * <p>
- * This configuration is activated by default when the application is a Servlet application. It can be disabled with
- * {@code bus.context.web.enabled=false}. It supplies the filter that isolates context state for each dispatch and the
- * Servlet registration that applies the filter to request, asynchronous, and error dispatches.
+ * This configuration supplies the shared request accessor for every Servlet application. Context binding is activated
+ * by default and can be disabled with {@code bus.context.web.enabled=false}; disabling binding does not create a second
+ * request-access implementation for other Servlet integrations.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -52,7 +53,6 @@ import org.miaixz.bus.starter.GeniusBuilder;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ Servlet.class, Filter.class, FilterRegistrationBean.class })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(prefix = GeniusBuilder.CONTEXT, name = "web.enabled", havingValue = "true", matchIfMissing = true)
 public class WebConfiguration {
 
     /**
@@ -63,6 +63,17 @@ public class WebConfiguration {
     }
 
     /**
+     * Creates the request accessor used to resolve transport values at the Servlet boundary.
+     *
+     * @return stateless accessor whose derived values are stored in Servlet request attributes
+     */
+    @Bean
+    @ConditionalOnMissingBean(RequestContext.class)
+    RequestContext requestContext() {
+        return new RequestContext();
+    }
+
+    /**
      * Creates the filter responsible for the runtime context lifecycle of a Servlet dispatch.
      *
      * <p>
@@ -70,12 +81,14 @@ public class WebConfiguration {
      * final state for a later dispatch, and restores the worker thread state when processing finishes.
      *
      * @param contextBuilder runtime context facade used to create, install, capture, and restore dispatch state
+     * @param requestContext request accessor used to resolve credentials once per request
      * @return a filter that manages runtime context state around the Servlet filter chain
      */
     @Bean
     @ConditionalOnMissingBean(ContextBindingFilter.class)
-    ContextBindingFilter contextBindingFilter(ContextBuilder contextBuilder) {
-        return new ContextBindingFilter(contextBuilder);
+    @ConditionalOnProperty(prefix = GeniusBuilder.CONTEXT, name = "web.enabled", havingValue = "true", matchIfMissing = true)
+    ContextBindingFilter contextBindingFilter(ContextBuilder contextBuilder, RequestContext requestContext) {
+        return new ContextBindingFilter(contextBuilder, requestContext);
     }
 
     /**
@@ -91,6 +104,7 @@ public class WebConfiguration {
      */
     @Bean("registrationContextFilter")
     @ConditionalOnMissingBean(name = "registrationContextFilter")
+    @ConditionalOnProperty(prefix = GeniusBuilder.CONTEXT, name = "web.enabled", havingValue = "true", matchIfMissing = true)
     FilterRegistrationBean<ContextBindingFilter> registrationContextFilter(ContextBindingFilter contextBindingFilter) {
         FilterRegistrationBean<ContextBindingFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(contextBindingFilter);

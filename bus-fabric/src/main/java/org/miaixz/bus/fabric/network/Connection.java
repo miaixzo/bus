@@ -116,6 +116,20 @@ public interface Connection extends AutoCloseable, Lifecycle {
     }
 
     /**
+     * Actively validates an exclusively idle physical connection before it is leased again.
+     *
+     * <p>
+     * The default remains a lightweight state check. A transport may override this method only when it can safely
+     * detect a peer close without blocking or competing with another logical reader.
+     * </p>
+     *
+     * @return true when the idle connection can still be reused
+     */
+    default boolean validateIdle() {
+        return reusable();
+    }
+
+    /**
      * Returns whether this connection refuses new logical leases while existing work drains.
      *
      * @return true when existing logical work may finish but new leases must be refused

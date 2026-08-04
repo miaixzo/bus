@@ -17,7 +17,6 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-
 /**
  * The core module for the Bus Vortex reactive API gateway.
  * <p>
@@ -65,19 +64,21 @@ module bus.vortex {
     requires static spring.core;
     requires static spring.web;
     requires static spring.webflux;
+    requires static io.netty.handler;
+    requires static org.reactivestreams;
     requires static reactor.core;
     requires static reactor.netty.core;
     requires static reactor.netty.http;
-    requires static io.netty.handler;
-    requires static org.reactivestreams;
 
     exports org.miaixz.bus.vortex;
+    exports org.miaixz.bus.vortex.cache;
+    exports org.miaixz.bus.vortex.cluster;
     exports org.miaixz.bus.vortex.filter;
     exports org.miaixz.bus.vortex.handler;
     exports org.miaixz.bus.vortex.magic;
+    exports org.miaixz.bus.vortex.nimble;
     exports org.miaixz.bus.vortex.provider;
     exports org.miaixz.bus.vortex.registry;
-    exports org.miaixz.bus.vortex.strategy;
     exports org.miaixz.bus.vortex.routing;
     exports org.miaixz.bus.vortex.routing.grpc;
     exports org.miaixz.bus.vortex.routing.llm;
@@ -86,6 +87,7 @@ module bus.vortex {
     exports org.miaixz.bus.vortex.routing.rest;
     exports org.miaixz.bus.vortex.routing.slug;
     exports org.miaixz.bus.vortex.routing.ws;
+    exports org.miaixz.bus.vortex.strategy;
     exports org.miaixz.bus.vortex.strategy.qualifier;
     exports org.miaixz.bus.vortex.strategy.request;
     exports org.miaixz.bus.vortex.strategy.vetting;

@@ -267,6 +267,16 @@ public class MediaType {
     public static final MediaType APPLICATION_OCTET_STREAM_TYPE = new MediaType("application", "octet-stream");
 
     /**
+     * A {@code String} constant representing {@value #APPLICATION_DNS_MESSAGE} media type.
+     */
+    public static final String APPLICATION_DNS_MESSAGE = "application/dns-message";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_DNS_MESSAGE} media type.
+     */
+    public static final MediaType APPLICATION_DNS_MESSAGE_TYPE = new MediaType("application", "dns-message");
+
+    /**
      * A {@code String} constant representing {@value #TEXT_PLAIN} media type.
      */
     public static final String TEXT_PLAIN = "text/plain";
@@ -972,8 +982,7 @@ public class MediaType {
             return false;
         }
         String subtype = mediaType.getSubtype().toLowerCase(Locale.ROOT);
-        return JSON.equals(subtype) || subtype.startsWith(JSON + Symbol.PLUS)
-                || subtype.endsWith(Symbol.PLUS + JSON);
+        return JSON.equals(subtype) || subtype.startsWith(JSON + Symbol.PLUS) || subtype.endsWith(Symbol.PLUS + JSON);
     }
 
     /**

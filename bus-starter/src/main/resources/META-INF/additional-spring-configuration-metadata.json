@@ -42,13 +42,19 @@
       "description": "JDBC driver class name for the primary Bus datasource."
     },
     {
+      "name": "bus.datasource.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether JDBC integration is enabled when @EnableJdbc is absent.",
+      "defaultValue": true
+    },
+    {
       "name": "bus.datasource.hikari",
       "type": "java.util.Map<java.lang.String,java.lang.Object>",
       "description": "Hikari pool properties for the primary Bus datasource."
     },
     {
       "name": "bus.datasource.multi",
-      "type": "java.util.List<java.util.Map<java.lang.String,java.lang.Object>>",
+      "type": "java.util.List<org.miaixz.bus.spring.jdbc.DataSourceDefinition>",
       "description": "Additional named Bus data sources using the same fields as the primary data source."
     },
     {
@@ -95,6 +101,183 @@
       "type": "java.lang.Boolean",
       "description": "Whether Fabric integration is enabled.",
       "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the Fabric DNS server is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.transport",
+      "type": "org.miaixz.bus.fabric.network.dns.server.DnsTransport",
+      "description": "DNS listener transport started by the Fabric DNS server.",
+      "defaultValue": "UDP"
+    },
+    {
+      "name": "bus.fabric.dns.host",
+      "type": "java.lang.String",
+      "description": "Network host on which the Fabric DNS server listens.",
+      "defaultValue": "0.0.0.0"
+    },
+    {
+      "name": "bus.fabric.dns.port",
+      "type": "java.lang.Integer",
+      "description": "Network port on which the Fabric DNS server listens.",
+      "defaultValue": 53
+    },
+    {
+      "name": "bus.fabric.dns.cache",
+      "type": "java.lang.Boolean",
+      "description": "Whether the Fabric DNS server raw response cache is enabled.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.fabric.dns.cache-max-entries",
+      "type": "java.lang.Integer",
+      "description": "Maximum raw DNS responses retained by the Fabric DNS server cache.",
+      "defaultValue": 10000
+    },
+    {
+      "name": "bus.fabric.dns.cache-ttl",
+      "type": "java.time.Duration",
+      "description": "Raw DNS response cache time to live.",
+      "defaultValue": "30s"
+    },
+    {
+      "name": "bus.fabric.dns.cache-serve-stale-ttl",
+      "type": "java.time.Duration",
+      "description": "Window during which expired DNS cache entries may be served after refresh failure.",
+      "defaultValue": "5m"
+    },
+    {
+      "name": "bus.fabric.dns.cache-prefetch-before-expiry",
+      "type": "java.time.Duration",
+      "description": "Window before DNS cache expiry that triggers background prefetch on active hits.",
+      "defaultValue": "5s"
+    },
+    {
+      "name": "bus.fabric.dns.max-udp-payload-bytes",
+      "type": "java.lang.Integer",
+      "description": "Maximum UDP DNS response payload size.",
+      "defaultValue": 1232
+    },
+    {
+      "name": "bus.fabric.dns.rate-limit-per-second",
+      "type": "java.lang.Integer",
+      "description": "Maximum DNS queries allowed per client per second, or zero to disable rate limiting.",
+      "defaultValue": 0
+    },
+    {
+      "name": "bus.fabric.dns.io-threads",
+      "type": "java.lang.Integer",
+      "description": "DNS server IO worker thread count.",
+      "defaultValue": 16
+    },
+    {
+      "name": "bus.fabric.dns.recursion",
+      "type": "java.lang.Boolean",
+      "description": "Whether recursive and forwarding access is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.recursion-allowed-cidrs",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Client CIDR blocks allowed to use recursion and forwarding.",
+      "defaultValue": [
+        "127.0.0.0/8",
+        "::1/128"
+      ]
+    },
+    {
+      "name": "bus.fabric.dns.zone-transfer",
+      "type": "java.lang.Boolean",
+      "description": "Whether zone transfer requests are allowed.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.zone-transfer-allowed-cidrs",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Client CIDR blocks allowed to request zone transfers.",
+      "defaultValue": []
+    },
+    {
+      "name": "bus.fabric.dns.dynamic-update",
+      "type": "java.lang.Boolean",
+      "description": "Whether RFC 2136 dynamic update is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.dot",
+      "type": "java.lang.Boolean",
+      "description": "Whether DNS-over-TLS settings are enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.doh",
+      "type": "java.lang.Boolean",
+      "description": "Whether DNS-over-HTTPS settings are enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.doh-path",
+      "type": "java.lang.String",
+      "description": "DNS-over-HTTPS request path.",
+      "defaultValue": "/dns-query"
+    },
+    {
+      "name": "bus.fabric.dns.doq",
+      "type": "java.lang.Boolean",
+      "description": "Whether DNS-over-QUIC settings are enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.policy",
+      "type": "java.lang.Boolean",
+      "description": "Whether DNS policy evaluation is enabled.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.fabric.dns.metrics",
+      "type": "java.lang.Boolean",
+      "description": "Whether DNS Server metrics are enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.query-log",
+      "type": "java.lang.Boolean",
+      "description": "Whether DNS query logging is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.fabric.dns.tcp-idle-timeout",
+      "type": "java.time.Duration",
+      "description": "TCP connection idle timeout.",
+      "defaultValue": "30s"
+    },
+    {
+      "name": "bus.fabric.dns.tcp-max-in-flight",
+      "type": "java.lang.Integer",
+      "description": "Maximum in-flight TCP DNS requests per connection.",
+      "defaultValue": 16
+    },
+    {
+      "name": "bus.fabric.dns.tcp-max-frame-bytes",
+      "type": "java.lang.Integer",
+      "description": "Maximum TCP DNS frame bytes.",
+      "defaultValue": 65535
+    },
+    {
+      "name": "bus.fabric.dns.quic-max-streams",
+      "type": "java.lang.Integer",
+      "description": "Maximum concurrent QUIC streams.",
+      "defaultValue": 128
+    },
+    {
+      "name": "bus.fabric.dns.quic-idle-timeout",
+      "type": "java.time.Duration",
+      "description": "QUIC connection idle timeout.",
+      "defaultValue": "30s"
     },
     {
       "name": "bus.health.enabled",
@@ -212,7 +395,7 @@
     },
     {
       "name": "spring.datasource.multi",
-      "type": "java.util.List<java.util.Map<java.lang.String,java.lang.Object>>",
+      "type": "java.util.List<org.miaixz.bus.spring.jdbc.DataSourceDefinition>",
       "description": "Additional named Spring data sources using the same fields as the primary data source."
     }
   ]

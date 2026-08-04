@@ -106,11 +106,21 @@ public class TaskConfiguration {
             this.taskDecorator = taskDecorator;
         }
 
+        /**
+         * Installs the composed decorator on one Boot-managed task executor.
+         *
+         * @param taskExecutor task executor being customized
+         */
         @Override
         public void customize(ThreadPoolTaskExecutor taskExecutor) {
             taskExecutor.setTaskDecorator(this.taskDecorator);
         }
 
+        /**
+         * Runs after application-provided task-executor customizers.
+         *
+         * @return customizer order
+         */
         @Override
         public int getOrder() {
             return Ordered.LOWEST_PRECEDENCE;

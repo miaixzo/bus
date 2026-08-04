@@ -101,6 +101,11 @@ public final class ConnectionLease {
     private final boolean transientConnection;
 
     /**
+     * Whether this lease uses a previously established physical connection.
+     */
+    private final boolean reusedConnection;
+
+    /**
      * VarHandle-managed state initialized to {@link #LEASED}.
      */
     private volatile int state;
@@ -134,7 +139,7 @@ public final class ConnectionLease {
      */
     ConnectionLease(final ConnectionPool pool, final Destination destination, final Connection connection,
             final long acquiredAtMillis) {
-        this(pool, destination, connection, acquiredAtMillis, false);
+        this(pool, destination, connection, acquiredAtMillis, false, false);
     }
 
     /**
@@ -148,6 +153,21 @@ public final class ConnectionLease {
      */
     ConnectionLease(final ConnectionPool pool, final Destination destination, final Connection connection,
             final long acquiredAtMillis, final boolean transientConnection) {
+        this(pool, destination, connection, acquiredAtMillis, transientConnection, false);
+    }
+
+    /**
+     * Creates a lease with explicit release and acquisition characteristics.
+     *
+     * @param pool                owning connection pool
+     * @param destination         destination key used by the pool
+     * @param connection          leased physical connection
+     * @param acquiredAtMillis    acquisition time in epoch milliseconds
+     * @param transientConnection whether release must close rather than pool the connection
+     * @param reusedConnection    whether the physical connection existed before this acquisition
+     */
+    private ConnectionLease(final ConnectionPool pool, final Destination destination, final Connection connection,
+            final long acquiredAtMillis, final boolean transientConnection, final boolean reusedConnection) {
         this.pool = require(pool, "Connection pool");
         this.destination = require(destination, "Connection destination");
         this.connection = require(connection, "Connection");
@@ -156,6 +176,58 @@ public final class ConnectionLease {
         }
         this.acquiredAtMillis = acquiredAtMillis;
         this.transientConnection = transientConnection;
+        this.reusedConnection = reusedConnection;
+    }
+
+    /**
+     * Creates a lease for a newly established reusable physical connection.
+     *
+     * @param pool             owning connection pool
+     * @param destination      destination key used by the pool
+     * @param connection       leased physical connection
+     * @param acquiredAtMillis acquisition time in epoch milliseconds
+     * @return lease marked as newly created
+     */
+    static ConnectionLease created(
+            final ConnectionPool pool,
+            final Destination destination,
+            final Connection connection,
+            final long acquiredAtMillis) {
+        return new ConnectionLease(pool, destination, connection, acquiredAtMillis, false, false);
+    }
+
+    /**
+     * Creates a lease for a previously established reusable physical connection.
+     *
+     * @param pool             owning connection pool
+     * @param destination      destination key used by the pool
+     * @param connection       leased physical connection
+     * @param acquiredAtMillis acquisition time in epoch milliseconds
+     * @return lease marked as reused
+     */
+    static ConnectionLease reused(
+            final ConnectionPool pool,
+            final Destination destination,
+            final Connection connection,
+            final long acquiredAtMillis) {
+        return new ConnectionLease(pool, destination, connection, acquiredAtMillis, false, true);
+    }
+
+    /**
+     * Creates a lease for a newly established connection that must not return to the pool.
+     *
+     * @param pool             owning connection pool
+     * @param destination      destination key used by the pool
+     * @param connection       leased physical connection
+     * @param acquiredAtMillis acquisition time in epoch milliseconds
+     * @return transient lease
+     */
+    static ConnectionLease transientLease(
+            final ConnectionPool pool,
+            final Destination destination,
+            final Connection connection,
+            final long acquiredAtMillis) {
+        return new ConnectionLease(pool, destination, connection, acquiredAtMillis, true, false);
     }
 
     /**
@@ -183,6 +255,15 @@ public final class ConnectionLease {
      */
     public Instant acquiredAt() {
         return Instant.ofEpochMilli(acquiredAtMillis);
+    }
+
+    /**
+     * Returns whether this lease uses a previously established physical connection.
+     *
+     * @return true when the physical connection existed before this acquisition
+     */
+    public boolean reusedConnection() {
+        return reusedConnection;
     }
 
     /**

@@ -382,6 +382,16 @@ public final class HttpChain {
         private final FailureReason reason;
 
         /**
+         * Whether the failed exchange borrowed an already-established physical connection.
+         */
+        private final boolean reusedConnection;
+
+        /**
+         * Whether the failure occurred before an HTTP response was observed.
+         */
+        private final boolean beforeResponse;
+
+        /**
          * Creates a structured exchange failure.
          *
          * @param deliveryState authoritative delivery state
@@ -391,10 +401,27 @@ public final class HttpChain {
          */
         public ExchangeFailure(final DeliveryState deliveryState, final FailureScope scope, final FailureReason reason,
                 final Throwable cause) {
+            this(deliveryState, scope, reason, false, false, cause);
+        }
+
+        /**
+         * Creates a structured exchange failure with connection-acquisition facts.
+         *
+         * @param deliveryState    authoritative delivery state
+         * @param scope            invalidated ownership scope
+         * @param reason           stable failure reason
+         * @param reusedConnection whether the physical connection predated this exchange
+         * @param beforeResponse   whether the failure occurred before a response was observed
+         * @param cause            underlying failure, or {@code null}
+         */
+        public ExchangeFailure(final DeliveryState deliveryState, final FailureScope scope, final FailureReason reason,
+                final boolean reusedConnection, final boolean beforeResponse, final Throwable cause) {
             super(cause == null ? "HTTP exchange failed: " + reason : cause.getMessage(), cause);
             this.deliveryState = require(deliveryState, "Delivery state");
             this.scope = require(scope, "Failure scope");
             this.reason = require(reason, "Failure reason");
+            this.reusedConnection = reusedConnection;
+            this.beforeResponse = beforeResponse;
         }
 
         /**
@@ -422,6 +449,24 @@ public final class HttpChain {
          */
         public FailureReason reason() {
             return reason;
+        }
+
+        /**
+         * Returns whether the exchange used a previously established physical connection.
+         *
+         * @return {@code true} when the connection was acquired from existing pool state
+         */
+        public boolean reusedConnection() {
+            return reusedConnection;
+        }
+
+        /**
+         * Returns whether the failure occurred before a response was observed.
+         *
+         * @return {@code true} when no response status was received before the failure
+         */
+        public boolean beforeResponse() {
+            return beforeResponse;
         }
     }
 

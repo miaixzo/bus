@@ -34,7 +34,6 @@ module bus.starter {
     requires bus.extra;
     requires bus.logger;
     requires bus.spring;
-
     requires static bus.auth;
     requires static bus.base;
     requires static bus.cache;
@@ -44,14 +43,13 @@ module bus.starter {
     requires static bus.health;
     requires static bus.image;
     requires static bus.limiter;
-    requires static bus.metrics;
     requires static bus.mapper;
+    requires static bus.metrics;
     requires static bus.notify;
     requires static bus.office;
     requires static bus.pay;
     requires static bus.proxy;
     requires static bus.sensitive;
-    requires static bus.setting;
     requires static bus.storage;
     requires static bus.tempus;
     requires static bus.tracer;
@@ -62,14 +60,14 @@ module bus.starter {
     requires static jakarta.annotation;
     requires static jakarta.persistence;
     requires static jakarta.servlet;
+    requires static spring.aop;
+    requires static spring.beans;
     requires static spring.boot;
     requires static spring.boot.autoconfigure;
     requires static spring.boot.health;
     requires static spring.boot.jdbc;
     requires static spring.boot.mongodb;
     requires static spring.boot.webmvc;
-    requires static spring.aop;
-    requires static spring.beans;
     requires static spring.context;
     requires static spring.core;
     requires static spring.expression;
@@ -86,6 +84,8 @@ module bus.starter {
     requires static io.vertx.core;
     requires static io.vertx.web;
     requires static micrometer.core;
+    requires static org.apache.httpcomponents.client5.httpclient5;
+    requires static org.apache.httpcomponents.core5.httpcore5;
     requires static org.aspectj.weaver;
     requires static org.mongodb.driver.core;
     requires static org.mybatis;
@@ -93,15 +93,13 @@ module bus.starter {
     requires static org.slf4j;
     requires static reactor.core;
     requires static reactor.netty.http;
-    requires static org.apache.httpcomponents.client5.httpclient5;
-    requires static org.apache.httpcomponents.core5.httpcore5;
 
     exports org.miaixz.bus.starter.annotation;
 
     opens org.miaixz.bus.starter to spring.beans, spring.boot, spring.context, spring.core;
-    opens org.miaixz.bus.starter.context to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.auth to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.cache to spring.beans, spring.boot, spring.context, spring.core;
+    opens org.miaixz.bus.starter.context to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.cors to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.cortex to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.dubbo to spring.beans, spring.boot, spring.context, spring.core;

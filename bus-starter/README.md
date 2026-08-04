@@ -65,7 +65,7 @@ Infrastructure required by multiple features is enabled independently from produ
 |---|---|---|---|
 | `GeniusStarter` | enabled | none | Registers Bean services, environment/provider services, runtime context, and task decorator. |
 | `TaskConfiguration` | enabled when Boot task classes exist | `bus.context.task.enabled=false` | Composes ordered task decorators and propagates runtime context. |
-| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` | Registers context binding for request, async, and error dispatches. |
+| `WebConfiguration` | enabled for Servlet applications | `bus.context.web.enabled=false` disables binding only | Registers the shared `RequestContext` and conditionally registers context binding for request, async, and error dispatches. |
 
 `GeniusStarter` contributes replaceable defaults for:
 
@@ -86,8 +86,9 @@ entire infrastructure graph.
 ### Context propagation defaults
 
 `TaskConfiguration` sorts all `TaskDecorator` Beans, removes duplicate instances, ensures one `ContextDecorator`, and
-installs a composite decorator on Spring Boot task executors. `WebConfiguration` registers `ContextBindingFilter` at
-`Ordered.HIGHEST_PRECEDENCE + 10` for `REQUEST`, `ASYNC`, and `ERROR` dispatches.
+installs a composite decorator on Spring Boot task executors. `WebConfiguration` always supplies the replaceable
+`RequestContext` Bean in Servlet applications and registers `ContextBindingFilter` at
+`Ordered.HIGHEST_PRECEDENCE + 10` for `REQUEST`, `ASYNC`, and `ERROR` dispatches unless binding is disabled.
 
 ```yaml
 bus:
@@ -114,7 +115,7 @@ feature, including when `bus.<feature>.enabled=false`; without the annotation, t
 | Cortex | `@EnableCortex` | `bus.cortex.enabled` | Cortex registry and integration assembly. |
 | Dubbo | `@EnableDubbo` | `bus.dubbo.enabled` | Apache Dubbo integration. |
 | Elastic | `@EnableElastic` | `bus.elastic.enabled` | Elasticsearch REST client lifecycle. |
-| Fabric | `@EnableFabric` | `bus.fabric.enabled` | TCP and WebSocket quick-service lifecycle. |
+| Fabric | `@EnableFabric` | `bus.fabric.enabled` | TCP, WebSocket, and DNS service lifecycle. |
 | Health | `@EnableHealth` | `bus.health.enabled` | System health and availability integration. |
 | I18n | `@EnableI18n` | `bus.i18n.enabled` | Message source and Bus i18n adapter. |
 | Image | `@EnableImage` | `bus.image.enabled` | Image and DICOM provider integration. |
@@ -139,6 +140,11 @@ feature, including when `bus.<feature>.enabled=false`; without the annotation, t
 Each annotation imports the feature configuration directly. The shared `@ConditionalOnEnabled` rule from
 `bus-spring` accepts that explicit annotation before evaluating `bus.<feature>.enabled` as the secondary source. Both
 activation paths therefore reach the same feature configuration without creating a parallel implementation.
+
+When JSON integration is enabled, `JsonConfiguration` selects one `JsonProvider` and `JsonBinding` installs that exact
+provider for `JsonKit`, cached request-body parsing, and other shared static JSON consumers. Closing the Spring context
+removes only the provider owned by that binding. If more than one JSON engine is present, set
+`bus.json.provider=fastjson`, `gson`, or `jackson`; `AUTO` accepts exactly one available engine.
 
 ## Quick start
 
@@ -247,12 +253,48 @@ bus:
 Each host must contain a valid port in the range `1..65535`. Timeouts and connection limits must be positive, and the
 per-route limit cannot exceed the total limit.
 
+## Fabric and DNS
+
+`bus.fabric.enabled=true` or `@EnableFabric` activates the Fabric parent integration. The explicit annotation has
+priority over the property. TCP socket support is enabled by default after the parent is active; WebSocket and DNS
+remain child capabilities and require their own `enabled=true` property. DNS is deliberately imported by
+`FabricConfiguration`, so `bus.fabric.dns.enabled=true` cannot create a second independent Fabric entry point.
+
+```yaml
+bus:
+  fabric:
+    enabled: true
+    socket:
+      enabled: true
+      host: 0.0.0.0
+      port: 7890
+    websocket:
+      enabled: false
+    dns:
+      enabled: true
+      transport: UDP
+      host: 0.0.0.0
+      port: 53
+      cache: true
+      cache-max-entries: 10000
+      cache-ttl: 30s
+      cache-serve-stale-ttl: 5m
+      cache-prefetch-before-expiry: 5s
+      max-udp-payload-bytes: 1232
+      rate-limit-per-second: 0
+```
+
+The application must provide one `DnsSnapshotProvider`; it remains the owner of DNS zones and snapshots. Optional
+`DnsSnapshotListener`, `DnsDynamicUpdateSink`, `DnsTsigKey`, and `TlsPolicy` beans extend lifecycle notifications,
+dynamic updates, TSIG validation, and DoT respectively. The Starter owns only the runtime `DnsServer` bean and closes
+it with the Spring context. DNS management, database access, and persistence are outside the Starter.
+
 ## JDBC
 
-The Starter assembles JDBC automatically when the pool classes are available; `@EnableJdbc` can also import the
-configuration explicitly. There is no separate ineffective feature switch. The only configuration entries are
-`bus.datasource` and `spring.datasource`, and both use the same root-primary plus `multi` structure. They are never
-merged: a `bus.datasource` URL selects the complete Bus group and overrides `spring.datasource`.
+The Starter assembles JDBC automatically when the pool classes are available. Set `bus.datasource.enabled=false` to
+disable automatic assembly; an explicit `@EnableJdbc` always has higher priority and still enables JDBC. Datasource
+definitions use `bus.datasource` or `spring.datasource`, and both use the same root-primary plus `multi` structure.
+They are never merged: a `bus.datasource` URL selects the complete Bus group and overrides `spring.datasource`.
 
 ```yaml
 bus:
@@ -279,7 +321,10 @@ JDBC responsibilities are fixed. Reusable `DataSourceResolver`, `DataSourceDefin
 `org.miaixz.bus.spring.jdbc`. The Starter package retains only `JdbcConfiguration`, which assembles Beans, and
 `JdbcDescriptor`, which defines the Bus-before-Spring prefix order and Hikari default. Both prefixes use
 the same resolver path. The root `name` is the default route and every `multi` entry supplies an additional route.
-Names must be nonblank and unique across the complete group.
+Names must be nonblank and unique across the complete group. JDBC never references Mapper. When Mapper is enabled, its
+own `DataSourceListener` synchronizes dialect state for initial and runtime route changes. The routing Bean owns every
+pool created from these definitions: replacing or removing a route closes the unreferenced pool, and application-context
+shutdown closes every remaining pool exactly once.
 
 Service methods select a named datasource with `@DataSource`. A method annotation overrides its class annotation, and
 nested invocations restore the exact parent route on return or failure:
@@ -319,6 +364,10 @@ Mapper integration covers:
 
 Business code must not overwrite tenant identity through request binding. Custom mapper plugins should use the
 documented provider and interceptor extension points instead of modifying the Starter registry after startup.
+`@EnableMapper` scans its declaring package when no package attribute is supplied. Property activation uses
+`bus.mapper.base-package`; when that is also absent, Spring Boot application packages are scanned for explicit
+`@Mapper` interfaces. An unresolved scan scope fails startup instead of silently registering no Mapper. Dialects are
+bound to the owning MyBatis `Configuration`, so two application contexts cannot overwrite each other's route provider.
 
 ## Wrapper capabilities
 

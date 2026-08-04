@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.mapper.handler;
 
+import java.util.EnumSet;
+
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -27,6 +29,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import org.miaixz.bus.core.Handler;
+import org.miaixz.bus.mapper.Charter;
 
 /**
  * An interface for SQL interception handlers.
@@ -66,6 +69,18 @@ import org.miaixz.bus.core.Handler;
  * @since Java 21+
  */
 public interface MapperHandler<T> extends Handler<T> {
+
+    /**
+     * Returns the SQL interception hooks supported by this handler.
+     * <p>
+     * The default includes every operation so custom handlers remain functional without reflective method inspection,
+     * including in native images. Implementations may return a smaller set to reduce no-op dispatches.
+     *
+     * @return supported SQL interception hooks
+     */
+    default EnumSet<Charter.Handler> hooks() {
+        return EnumSet.allOf(Charter.Handler.class);
+    }
 
     /**
      * Get the execution order of this handler.

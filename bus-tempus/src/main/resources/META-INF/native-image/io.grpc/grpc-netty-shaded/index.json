@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.80.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/io/grpc/grpc-netty-shaded/$version$/grpc-netty-shaded-$version$-sources.jar",
+    "repository-url": "https://github.com/grpc/grpc-java",
+    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
+    "documentation-url": "https://grpc.github.io/grpc-java/javadoc/",
+    "description": "gRPC Netty shaded transport provides the network channel used by Temporal Java clients.",
+    "tested-versions": [
+      "1.80.0"
+    ],
+    "allowed-packages": [
+      "io.grpc"
+    ]
+  }
+]

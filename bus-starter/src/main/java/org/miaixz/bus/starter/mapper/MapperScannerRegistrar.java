@@ -27,8 +27,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -43,7 +45,7 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
+import org.miaixz.bus.spring.annotation.PlaceholderBinder;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableMapper;
 
@@ -88,7 +90,10 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
      */
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes annotationAttributes = findEnableMapperAttributes(registry);
+        AnnotationMetadata enableMetadata = findEnableMapperMetadata(registry);
+        AnnotationAttributes annotationAttributes = enableMetadata == null ? null
+                : AnnotationAttributes
+                        .fromMap(enableMetadata.getAnnotationAttributes(EnableMapper.class.getName(), false));
         MapperClassPathScanner scanner = new MapperClassPathScanner(registry);
 
         // Set the resource loader if available (required in Spring 3.1+).
@@ -99,7 +104,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         Class<? extends Annotation> annotationClass = Annotation.class;
         Class<?> markerInterface = Class.class;
         Class<? extends BeanNameGenerator> generatorClass = BeanNameGenerator.class;
-        Class<? extends MapperFactoryBean> mapperFactoryBeanClass = org.miaixz.bus.starter.mapper.MapperFactoryBean.class;
+        Class<? extends MapperFactoryBean> mapperFactoryBeanClass = MapperFactoryBean.class;
         String sqlSessionTemplateRef = Normal.EMPTY;
         String sqlSessionFactoryRef = Normal.EMPTY;
         List<String> basePackage = new ArrayList<>();
@@ -138,14 +143,31 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         // If no base packages are specified in the annotation, check properties.
         if (CollKit.isEmpty(basePackage)) {
             // Bind properties from the environment to MapperProperties.
-            MapperProperties properties = PlaceHolderBinder
+            MapperProperties properties = PlaceholderBinder
                     .bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
             if (properties != null && properties.getBasePackage() != null && properties.getBasePackage().length > 0) {
                 basePackage.addAll(Arrays.asList(properties.getBasePackage()));
-            } else {
-                // If no packages are set via annotation or properties, scan for the @Mapper annotation by default.
-                scanner.setAnnotationClass(Mapper.class);
             }
+        }
+
+        // An annotation without an explicit scan package enables the feature but does not override a configured
+        // bus.mapper.base-package. Fall back to the annotated application package only when neither source specifies
+        // a package.
+        if (CollKit.isEmpty(basePackage) && enableMetadata != null) {
+            basePackage.add(ClassKit.getPackageName(enableMetadata.getClassName()));
+        }
+
+        // Property-free auto-configuration scans application packages and only accepts explicit @Mapper types.
+        if (CollKit.isEmpty(basePackage) && registry instanceof ConfigurableListableBeanFactory beanFactory
+                && AutoConfigurationPackages.has(beanFactory)) {
+            basePackage.addAll(AutoConfigurationPackages.get(beanFactory));
+            scanner.setAnnotationClass(Mapper.class);
+            annotationClass = Mapper.class;
+        }
+        if (CollKit.isEmpty(basePackage)) {
+            throw new IllegalStateException(
+                    "Mapper scanning requires @EnableMapper on an application class, bus.mapper.base-package, "
+                            + "or Spring Boot auto-configuration packages");
         }
 
         // Register default filters and perform the component scan.
@@ -172,14 +194,13 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
      * @param registry current Bean definition registry
      * @return merged annotation attributes, or {@code null} when properties activated the feature
      */
-    private static AnnotationAttributes findEnableMapperAttributes(BeanDefinitionRegistry registry) {
+    private static AnnotationMetadata findEnableMapperMetadata(BeanDefinitionRegistry registry) {
         for (String beanName : registry.getBeanDefinitionNames()) {
             if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition) {
                 AnnotationMetadata metadata = definition.getMetadata();
                 if (metadata.hasAnnotation(EnableMapper.class.getName())
                         || metadata.hasMetaAnnotation(EnableMapper.class.getName())) {
-                    return AnnotationAttributes
-                            .fromMap(metadata.getAnnotationAttributes(EnableMapper.class.getName(), false));
+                    return metadata;
                 }
             }
         }

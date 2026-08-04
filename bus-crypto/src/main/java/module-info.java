@@ -32,13 +32,14 @@ module bus.crypto {
     requires bus.logger;
 
     requires static lombok;
-    requires static org.bouncycastle.provider;
     requires static org.bouncycastle.pkix;
+    requires static org.bouncycastle.provider;
 
     exports org.miaixz.bus.crypto;
     exports org.miaixz.bus.crypto.builtin;
     exports org.miaixz.bus.crypto.builtin.asymmetric;
     exports org.miaixz.bus.crypto.builtin.digest;
+    exports org.miaixz.bus.crypto.builtin.digest.mac;
     exports org.miaixz.bus.crypto.builtin.symmetric;
     exports org.miaixz.bus.crypto.center;
     exports org.miaixz.bus.crypto.cipher;

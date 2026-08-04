@@ -37,6 +37,7 @@ import org.miaixz.bus.fabric.protocol.http.codec.Http1Codec;
 import org.miaixz.bus.fabric.protocol.http.codec.Http2Codec;
 import org.miaixz.bus.fabric.protocol.http.codec.HttpCodec;
 import org.miaixz.bus.fabric.protocol.http.http2.Http2Connection;
+import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
@@ -146,7 +147,7 @@ public final class HttpTransport implements HttpStage {
             } catch (final HttpChain.ExchangeFailure e) {
                 throw e;
             } catch (final RuntimeException e) {
-                throw failure(cancellation, HttpChain.FailureScope.REQUEST, e);
+                throw failure(context, cancellation, connectionScope(codec), true, e);
             }
             final long sentRequestAtMillis = clock.millis();
             cancellation.throwIfCancelled();
@@ -156,7 +157,7 @@ public final class HttpTransport implements HttpStage {
             } catch (final HttpChain.ExchangeFailure e) {
                 throw e;
             } catch (final RuntimeException e) {
-                throw failure(cancellation, connectionScope(codec), e);
+                throw failure(context, cancellation, connectionScope(codec), codec.beforeResponse(), e);
             }
             final long receivedResponseAtMillis = clock.millis();
             return response.withTiming(sentRequestAtMillis, receivedResponseAtMillis);
@@ -308,18 +309,27 @@ public final class HttpTransport implements HttpStage {
     /**
      * Wraps an unstructured transport failure with conservative authoritative facts.
      *
-     * @param cancellation cancellation scope used to classify cancellation
-     * @param scope        transport resource scope affected by the failure
-     * @param cause        original runtime failure
+     * @param chain          active exchange chain
+     * @param cancellation   cancellation scope used to classify cancellation
+     * @param scope          transport resource scope affected by the failure
+     * @param beforeResponse whether the failure occurred before a response was observed
+     * @param cause          original runtime failure
      * @return structured exchange failure
      */
     private static HttpChain.ExchangeFailure failure(
+            final HttpChain chain,
             final Cancellation cancellation,
             final HttpChain.FailureScope scope,
+            final boolean beforeResponse,
             final RuntimeException cause) {
         final HttpChain.FailureReason reason = cancellation.cancelled() ? HttpChain.FailureReason.CANCELLED
                 : cause instanceof ProtocolException ? HttpChain.FailureReason.PROTOCOL : HttpChain.FailureReason.IO;
-        return new HttpChain.ExchangeFailure(HttpChain.DeliveryState.MAYBE_PROCESSED, scope, reason, cause);
+        final ConnectionLease lease = chain.lease();
+        final Connection connection = chain.connection();
+        final boolean reusedConnection = lease != null && lease.reusedConnection() && connection != null
+                && !connection.multiplex();
+        return new HttpChain.ExchangeFailure(HttpChain.DeliveryState.MAYBE_PROCESSED, scope, reason, reusedConnection,
+                beforeResponse, cause);
     }
 
     /**

@@ -46,9 +46,14 @@ public final class HttpRetryPolicy implements Policy {
     public static final Options.Key<HttpRetryPolicy> OPTION = Options.key("http.retry.policy", HttpRetryPolicy.class);
 
     /**
-     * Exclusive upper bound applied to connection-failure retry attempt indices.
+     * Exclusive upper bound applied to every transport retry accepted for one request.
      */
     private final int maxAttempts;
+
+    /**
+     * Exclusive sub-limit for stale reused-connection recovery within the total retry budget.
+     */
+    private final int maxStaleRetries;
 
     /**
      * Exclusive upper bound applied to redirect follow-up counts.
@@ -73,15 +78,17 @@ public final class HttpRetryPolicy implements Policy {
     /**
      * Creates a retry policy.
      *
-     * @param maxAttempts              non-negative retry attempt limit
+     * @param maxAttempts              non-negative total transport retry limit
+     * @param maxStaleRetries          non-negative stale recovery sub-limit
      * @param maxRedirects             non-negative redirect follow-up limit
      * @param retryOnConnectionFailure whether recognized connection failures may be retried
      * @param baseDelay                non-negative base delay for retry backoff
      * @param maxDelay                 maximum retry backoff
      */
-    private HttpRetryPolicy(final int maxAttempts, final int maxRedirects, final boolean retryOnConnectionFailure,
-            final Duration baseDelay, final Duration maxDelay) {
+    private HttpRetryPolicy(final int maxAttempts, final int maxStaleRetries, final int maxRedirects,
+            final boolean retryOnConnectionFailure, final Duration baseDelay, final Duration maxDelay) {
         this.maxAttempts = maxAttempts;
+        this.maxStaleRetries = maxStaleRetries;
         this.maxRedirects = maxRedirects;
         this.retryOnConnectionFailure = retryOnConnectionFailure;
         this.baseDelay = baseDelay;
@@ -134,7 +141,8 @@ public final class HttpRetryPolicy implements Policy {
      *
      * @param cause   non-null failure to classify directly
      * @param attempt non-negative zero-based retry attempt index
-     * @return true when connection-failure retries are enabled, the attempt is below the limit, and the cause matches
+     * @return true when connection-failure retries are enabled, the total attempt is below the limit, and the cause
+     *         matches
      */
     public boolean retry(final Throwable cause, final int attempt) {
         final Throwable current = Assert.notNull(
@@ -144,6 +152,24 @@ public final class HttpRetryPolicy implements Policy {
                 attempt < Normal._0,
                 () -> new ValidateException("Retry cause must be non-null and attempt must not be negative"));
         return retryOnConnectionFailure && attempt < maxAttempts && connectionFailure(current);
+    }
+
+    /**
+     * Returns whether a stale reused connection remains within its recovery sub-limit.
+     *
+     * @param cause   non-null connection failure
+     * @param attempt non-negative stale-recovery attempt index
+     * @return {@code true} when stale recovery is enabled, within its sub-limit, and caused by I/O; the caller must
+     *         also enforce the total retry limit
+     */
+    public boolean retryStaleConnection(final Throwable cause, final int attempt) {
+        final Throwable current = Assert.notNull(
+                cause,
+                () -> new ValidateException("Stale retry cause must be non-null and attempt must not be negative"));
+        Assert.isFalse(
+                attempt < Normal._0,
+                () -> new ValidateException("Stale retry cause must be non-null and attempt must not be negative"));
+        return retryOnConnectionFailure && attempt < maxStaleRetries && connectionFailure(current);
     }
 
     /**
@@ -183,12 +209,21 @@ public final class HttpRetryPolicy implements Policy {
     }
 
     /**
-     * Returns the retry-attempt limit.
+     * Returns the total transport retry limit.
      *
-     * @return maximum retry attempts
+     * @return maximum transport retries for one request
      */
     public int maxAttempts() {
         return maxAttempts;
+    }
+
+    /**
+     * Returns the stale reused-connection recovery sub-limit.
+     *
+     * @return maximum stale connection recoveries within the total retry limit
+     */
+    public int maxStaleRetries() {
+        return maxStaleRetries;
     }
 
     /**
@@ -247,9 +282,14 @@ public final class HttpRetryPolicy implements Policy {
     public static final class Builder {
 
         /**
-         * Maximum follow-ups candidate.
+         * Total transport retry limit candidate.
          */
         private int maxAttempts = Normal._20;
+
+        /**
+         * Stale reused-connection recovery sub-limit candidate.
+         */
+        private int maxStaleRetries = Normal._1;
 
         /**
          * Redirect follow-up limit candidate.
@@ -279,9 +319,9 @@ public final class HttpRetryPolicy implements Policy {
         }
 
         /**
-         * Sets maximum follow-ups.
+         * Sets the shared total transport retry and redirect limits.
          *
-         * @param max non-negative retry and redirect follow-up limit
+         * @param max non-negative total transport retry and redirect limit
          * @return this builder
          */
         public Builder maxFollowUps(final int max) {
@@ -292,14 +332,26 @@ public final class HttpRetryPolicy implements Policy {
         }
 
         /**
-         * Sets the retry-attempt limit.
+         * Sets the total transport retry limit.
          *
-         * @param max non-negative retry-attempt limit
+         * @param max non-negative total transport retry limit
          * @return this builder
          */
         public Builder maxAttempts(final int max) {
             Assert.isFalse(max < Normal._0, () -> new ValidateException("Max attempts must not be negative"));
             this.maxAttempts = max;
+            return this;
+        }
+
+        /**
+         * Sets the stale reused-connection recovery sub-limit.
+         *
+         * @param max non-negative stale recovery sub-limit within the total retry limit
+         * @return this builder
+         */
+        public Builder maxStaleRetries(final int max) {
+            Assert.isFalse(max < Normal._0, () -> new ValidateException("Max stale retries must not be negative"));
+            this.maxStaleRetries = max;
             return this;
         }
 
@@ -359,8 +411,8 @@ public final class HttpRetryPolicy implements Policy {
             if (currentMaximum.compareTo(currentBase) < Normal._0) {
                 throw new ValidateException("Maximum delay must not be less than base delay");
             }
-            return new HttpRetryPolicy(maxAttempts, maxRedirects, retryOnConnectionFailure, currentBase,
-                    currentMaximum);
+            return new HttpRetryPolicy(maxAttempts, maxStaleRetries, maxRedirects, retryOnConnectionFailure,
+                    currentBase, currentMaximum);
         }
 
         /**

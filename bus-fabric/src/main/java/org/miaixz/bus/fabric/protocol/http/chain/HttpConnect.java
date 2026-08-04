@@ -1079,6 +1079,26 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
+         * Returns whether both route state and the physical delegate permit another logical lease.
+         *
+         * @return true when the routed connection is reusable
+         */
+        @Override
+        public boolean reusable() {
+            return delegate.reusable() && !draining() && capacity() > Normal._0;
+        }
+
+        /**
+         * Actively validates the exclusively idle physical delegate while retaining route admission checks.
+         *
+         * @return true when both route and transport remain reusable
+         */
+        @Override
+        public boolean validateIdle() {
+            return reusable() && delegate.validateIdle();
+        }
+
+        /**
          * Returns whether idle.
          *
          * @return idle flag
@@ -1862,6 +1882,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         private final Conduit conduit;
 
         /**
+         * Reused one-byte buffer for exclusive idle-channel validation.
+         */
+        private final ByteBuffer staleProbe;
+
+        /**
          * Lifecycle listener retained without allocating a full protocol resource scope.
          */
         private final Listener<Object> listener;
@@ -1886,6 +1911,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             this.channel = require(socket, "Socket channel");
             this.socket = socket.socket();
             this.conduit = new SocketConduit(socket, dispatcher, timeout);
+            this.staleProbe = ByteBuffer.allocate(Normal._1);
             this.listener = safe(listener);
             this.listener.open(this);
         }
@@ -1899,6 +1925,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             this.channel = null;
             this.socket = require(socket, "Socket");
             this.conduit = new SocketStreamConduit(socket);
+            this.staleProbe = null;
             this.listener = safe(listener);
             this.listener.open(this);
         }
@@ -1973,6 +2000,40 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         @Override
         public boolean healthy() {
             return !closed.get() && socket.isConnected() && !socket.isClosed() && (channel == null || channel.isOpen());
+        }
+
+        /**
+         * Checks an exclusive idle channel for a peer close without waiting for application data.
+         *
+         * @return true when the channel has no pending data and has not reached EOF
+         */
+        @Override
+        public boolean validateIdle() {
+            if (!reusable() || channel == null) {
+                return reusable();
+            }
+            synchronized (channel.blockingLock()) {
+                boolean valid = false;
+                final boolean blocking = channel.isBlocking();
+                try {
+                    if (blocking) {
+                        channel.configureBlocking(false);
+                    }
+                    staleProbe.clear();
+                    valid = channel.read(staleProbe) == Normal._0;
+                } catch (final IOException | RuntimeException ignored) {
+                    valid = false;
+                } finally {
+                    if (blocking && channel.isOpen()) {
+                        try {
+                            channel.configureBlocking(true);
+                        } catch (final IOException | RuntimeException ignored) {
+                            valid = false;
+                        }
+                    }
+                }
+                return valid;
+            }
         }
 
         /**

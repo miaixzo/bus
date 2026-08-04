@@ -106,6 +106,7 @@ dependencies {
 - `bus-sensitive`：敏感数据脱敏
 - `bus-setting`：配置工具
 - `bus-shade`：依赖重定位与 shaded 支持
+- `bus-spring`：通用 Spring 集成与运行时支持
 - `bus-starter`：Spring Boot 自动配置
 - `bus-storage`：对象存储集成
 - `bus-tempus`：时间与调度工具

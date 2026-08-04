@@ -348,12 +348,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 -----
 
-## 📄 License
-
-[License information]
-
------
-
 ## 🔗 Related Documentation
 
 - [OpenCV Official Documentation](https://docs.opencv.org/)

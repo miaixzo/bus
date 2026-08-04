@@ -262,6 +262,18 @@ public class RegistryControlService {
      * @return stored entry snapshot
      */
     public Assets upsert(Assets asset) {
+        return upsert(asset, null, false);
+    }
+
+    /**
+     * Creates or updates one registry entry using an optional pre-resolved snapshot.
+     *
+     * @param asset       entry to upsert
+     * @param existing    existing snapshot or {@code null}
+     * @param preResolved whether the snapshot was resolved by the batch resolver
+     * @return stored entry snapshot
+     */
+    private Assets upsert(Assets asset, Assets existing, boolean preResolved) {
         if (asset == null) {
             return null;
         }
@@ -277,21 +289,22 @@ public class RegistryControlService {
                 prepared.getMethod(),
                 prepared.getVersion());
         enforceRegistry("upsert", type, prepared);
-        if (prepared.getId() == null && prepared.getMethod() != null && prepared.getVersion() != null) {
-            Assets existing = getByRoute(
+        if (!preResolved && prepared.getId() == null && prepared.getMethod() != null && prepared.getVersion() != null) {
+            Assets routeExisting = getByRoute(
                     type,
                     prepared.getNamespace_id(),
                     prepared.getApp_id(),
                     prepared.getMethod(),
                     prepared.getVersion());
-            if (existing != null) {
-                prepared.setId(existing.getId());
+            if (routeExisting != null) {
+                prepared.setId(routeExisting.getId());
+                existing = routeExisting;
             }
         }
         Assets stored = switch (type) {
-            case API -> upsertApi((ApiAssets) prepared);
-            case MCP -> upsertMcp((McpAssets) prepared);
-            case PROMPT -> upsertPrompt((PromptAssets) prepared);
+            case API -> upsertApi((ApiAssets) prepared, (ApiAssets) existing, preResolved);
+            case MCP -> upsertMcp((McpAssets) prepared, (McpAssets) existing, preResolved);
+            case PROMPT -> upsertPrompt((PromptAssets) prepared, (PromptAssets) existing, preResolved);
             default -> throw new IllegalArgumentException("Unsupported admin registry type: " + type);
         };
         Logger.info(
@@ -312,6 +325,19 @@ public class RegistryControlService {
      * @param id        entry identifier
      */
     public void delete(Type type, String namespace, String id) {
+        delete(type, namespace, id, null, false);
+    }
+
+    /**
+     * Deletes one registry entry using an optional pre-resolved snapshot.
+     *
+     * @param type        target type
+     * @param namespace   target namespace
+     * @param id          entry identifier
+     * @param existing    existing snapshot or {@code null}
+     * @param preResolved whether the snapshot was resolved by the batch resolver
+     */
+    private void delete(Type type, String namespace, String id, Assets existing, boolean preResolved) {
         Logger.info(
                 true,
                 "Cortex",
@@ -320,7 +346,16 @@ public class RegistryControlService {
                 namespace,
                 id);
         enforceRegistry("delete", type, namespace, id, null, null, null);
-        registry(type).deregister(namespace, id);
+        if (!preResolved) {
+            registry(type).deregister(namespace, id);
+        } else {
+            switch (Type.requireRegistry(type)) {
+                case API -> apiRegistry.deregisterResolved(namespace, id, (ApiAssets) existing);
+                case MCP -> mcpRegistry.deregisterResolved(namespace, id, (McpAssets) existing);
+                case PROMPT -> promptRegistry.deregisterResolved(namespace, id, (PromptAssets) existing);
+                default -> throw new IllegalArgumentException("Unsupported admin registry type: " + type);
+            }
+        }
         Logger.info(
                 false,
                 "Cortex",
@@ -551,8 +586,12 @@ public class RegistryControlService {
      * @param asset API definition
      * @return stored API definition
      */
-    private ApiAssets upsertApi(ApiAssets asset) {
-        apiRegistry.register(asset);
+    private ApiAssets upsertApi(ApiAssets asset, ApiAssets existing, boolean preResolved) {
+        if (preResolved) {
+            apiRegistry.registerResolved(asset, existing);
+        } else {
+            apiRegistry.register(asset);
+        }
         return apiRegistry.find(asset.getNamespace_id(), asset.getId());
     }
 
@@ -562,8 +601,12 @@ public class RegistryControlService {
      * @param asset MCP definition
      * @return stored MCP definition
      */
-    private McpAssets upsertMcp(McpAssets asset) {
-        mcpRegistry.register(asset);
+    private McpAssets upsertMcp(McpAssets asset, McpAssets existing, boolean preResolved) {
+        if (preResolved) {
+            mcpRegistry.registerResolved(asset, existing);
+        } else {
+            mcpRegistry.register(asset);
+        }
         return mcpRegistry.find(asset.getNamespace_id(), asset.getId());
     }
 
@@ -573,8 +616,12 @@ public class RegistryControlService {
      * @param asset prompt definition
      * @return stored prompt definition
      */
-    private PromptAssets upsertPrompt(PromptAssets asset) {
-        promptRegistry.register(asset);
+    private PromptAssets upsertPrompt(PromptAssets asset, PromptAssets existing, boolean preResolved) {
+        if (preResolved) {
+            promptRegistry.registerResolved(asset, existing);
+        } else {
+            promptRegistry.register(asset);
+        }
         return promptRegistry.find(asset.getNamespace_id(), asset.getId());
     }
 
@@ -1179,8 +1226,18 @@ public class RegistryControlService {
         }
 
         @Override
+        public Assets upsert(Assets entry, Assets existing) {
+            return RegistryControlService.this.upsert(entry, existing, true);
+        }
+
+        @Override
         public void delete(Type type, String namespace, String id) {
             RegistryControlService.this.delete(type, namespace, id);
+        }
+
+        @Override
+        public void delete(Type type, String namespace, String id, Assets existing) {
+            RegistryControlService.this.delete(type, namespace, id, existing, true);
         }
 
         @Override

@@ -46,6 +46,15 @@ public interface HttpCodec {
     HttpResponse readResponse(HttpRequest request);
 
     /**
+     * Returns whether the current exchange is still before an observed response.
+     *
+     * @return {@code true} until authoritative response metadata has been received
+     */
+    default boolean beforeResponse() {
+        return false;
+    }
+
+    /**
      * Cancels in-progress codec work and the transport resources bound to it.
      */
     void cancel();
