@@ -345,6 +345,64 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.metrics.builtin.StartupMetrics",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "record",
+          "parameterTypes": [
+            "long",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "record",
+          "parameterTypes": [
+            "org.miaixz.bus.metrics.Provider",
+            "long",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.metrics.builtin.StartupStage",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "durationMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.metrics.builtin.SystemMetrics",
       "methods": [
         {

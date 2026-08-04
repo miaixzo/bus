@@ -18,9 +18,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Built-in auto-instrumentation collectors: JvmMetrics (GC, memory, threads), SystemMetrics (CPU load), HttpMetrics
- * (server request latency and rate with URI-template normalization), and CacheMetrics (hit/miss rates). All collectors
- * register themselves against a Provider on construction.
+ * Built-in instrumentation for JVM, system, HTTP, cache, and framework-neutral application startup metrics.
  *
  * @author Kimi Liu
  * @since Java 21+

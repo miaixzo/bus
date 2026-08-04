@@ -265,6 +265,24 @@ Servlet Filter，自动埋点所有 HTTP 请求。URI 模板化（`/user/123` �
 CacheX<String, User> cache = CacheMetrics.instrument(rawCache, "user-cache");
 ```
 
+#### 启动指标（`StartupMetrics`）
+
+Spring Boot、RPC 服务、网关、任务或独立应用都可以记录统一的启动指标：
+
+```java
+StartupMetrics.record(1250, List.of(
+        new StartupStage("configuration", 320),
+        new StartupStage("components", 930)));
+```
+
+| 指标 | 类型 | 标签 |
+|:---|:---|:---|
+| `application.startup.count` | Counter | — |
+| `application.startup.duration` | Timer | — |
+| `application.startup.stage.duration` | Timer | stage |
+
+各框架集成只负责采集自身生命周期耗时，并转换为这个通用模型。
+
 ### Prometheus 导出
 
 `PrometheusExporter` 输出标准 Prometheus text 0.0.4 格式。bus-starter 中的 `MetricsEndpoint` 提供 `/metricz` 端点直接响应 scrape 请求。
@@ -328,6 +346,7 @@ TempusMetrics.recordExecution("daily-report", durationMs, success);
 ```yaml
 bus:
   metrics:
+    enabled: true                 # 启用指标集成
     provider: native              # native（默认）或 micrometer
     jvm: true                     # 启用 JVM 指标
     system: true                  # 启用系统指标
@@ -335,6 +354,9 @@ bus:
     http: true                    # 启用 HTTP 请求指标
     endpoint: true                # 启用 /metricz 端点
     path: /metricz                # 端点路径
+
+    startup:
+      enabled: false              # 发布 Spring Boot 启动指标
 
     cardinality:
       default-max: 100            # 未注册 key 的默认基数上限
@@ -373,12 +395,14 @@ bus:
 
 | 属性 | 类型 | 默认值 | 说明 |
 |:---|:---|:---|:---|
+| `bus.metrics.enabled` | boolean | `false` | 启用指标集成 |
 | `bus.metrics.provider` | String | `native` | 后端实现：`native` 或 `micrometer` |
 | `bus.metrics.jvm` | boolean | `true` | 启用 JVM 指标 |
 | `bus.metrics.system` | boolean | `true` | 启用系统指标 |
 | `bus.metrics.http` | boolean | `true` | 启用 HTTP 指标 |
 | `bus.metrics.endpoint` | boolean | `true` | 启用 `/metricz` 端点 |
 | `bus.metrics.path` | String | `/metricz` | 端点路径 |
+| `bus.metrics.startup.enabled` | boolean | `false` | 采集并发布 Spring Boot 启动指标 |
 | `bus.metrics.cardinality.default-max` | int | `100` | 默认基数上限 |
 | `bus.metrics.cardinality.deny-list` | List | — | 永远禁止的 Tag key |
 | `bus.metrics.cortex.enabled` | boolean | `false` | 启用 CortexExporter |

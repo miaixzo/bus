@@ -265,6 +265,25 @@ Conditional — only active when bus-cache is on the classpath. Wraps a `CacheX`
 CacheX<String, User> cache = CacheMetrics.instrument(rawCache, "user-cache");
 ```
 
+#### Startup Metrics (`StartupMetrics`)
+
+Framework-neutral startup metrics can be recorded by Spring Boot, RPC services, gateways, jobs, or standalone
+applications:
+
+```java
+StartupMetrics.record(1250, List.of(
+        new StartupStage("configuration", 320),
+        new StartupStage("components", 930)));
+```
+
+| Metric | Type | Tags |
+|:---|:---|:---|
+| `application.startup.count` | Counter | — |
+| `application.startup.duration` | Timer | — |
+| `application.startup.stage.duration` | Timer | stage |
+
+Framework integrations only collect lifecycle timings and adapt them to this common model.
+
 ### Prometheus Export
 
 `PrometheusExporter` renders Prometheus text format 0.0.4. The `/metricz` endpoint (via `MetricsEndpoint` in bus-starter) serves the scrape payload directly.
@@ -328,6 +347,7 @@ TempusMetrics.recordExecution("daily-report", durationMs, success);
 ```yaml
 bus:
   metrics:
+    enabled: true                 # Enable metrics integration
     provider: native              # native (default) or micrometer
     jvm: true                     # Enable JVM metrics
     system: true                  # Enable system metrics
@@ -335,6 +355,9 @@ bus:
     http: true                    # Enable HTTP request metrics
     endpoint: true                # Enable /metricz endpoint
     path: /metricz                # Endpoint path
+
+    startup:
+      enabled: false              # Publish Spring Boot startup metrics
 
     cardinality:
       default-max: 100            # Default max distinct values for unregistered keys
@@ -373,12 +396,14 @@ bus:
 
 | Property | Type | Default | Description |
 |:---|:---|:---|:---|
+| `bus.metrics.enabled` | boolean | `false` | Enable metrics integration |
 | `bus.metrics.provider` | String | `native` | Backend: `native` or `micrometer` |
 | `bus.metrics.jvm` | boolean | `true` | Enable JVM metrics |
 | `bus.metrics.system` | boolean | `true` | Enable system metrics |
 | `bus.metrics.http` | boolean | `true` | Enable HTTP metrics |
 | `bus.metrics.endpoint` | boolean | `true` | Enable `/metricz` endpoint |
 | `bus.metrics.path` | String | `/metricz` | Endpoint path |
+| `bus.metrics.startup.enabled` | boolean | `false` | Collect and publish Spring Boot startup metrics |
 | `bus.metrics.cardinality.default-max` | int | `100` | Default cardinality limit |
 | `bus.metrics.cardinality.deny-list` | List | — | Always-denied tag keys |
 | `bus.metrics.cortex.enabled` | boolean | `false` | Enable CortexExporter |
