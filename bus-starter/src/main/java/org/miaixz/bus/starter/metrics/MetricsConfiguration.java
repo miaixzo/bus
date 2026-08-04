@@ -37,6 +37,7 @@ import org.miaixz.bus.metrics.guard.CardinalityGuard;
 import org.miaixz.bus.metrics.guard.CardinalityPolicy;
 import org.miaixz.bus.metrics.nimble.indigenous.NativeProvider;
 import org.miaixz.bus.metrics.nimble.micrometer.MicrometerProvider;
+import org.miaixz.bus.spring.boot.startup.SpringStartupPublisher;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableMetrics;
@@ -101,6 +102,19 @@ public class MetricsConfiguration {
         Provider provider = new MicrometerProvider(registry);
         registerBuiltinMetrics(this.properties);
         return provider;
+    }
+
+    /**
+     * Bridges completed Spring Boot startup summaries into the configured metrics provider.
+     *
+     * @param provider metrics provider
+     * @return startup metrics publisher
+     */
+    @Bean
+    @ConditionalOnBean(Provider.class)
+    @ConditionalOnMissingBean(SpringStartupPublisher.class)
+    public SpringStartupPublisher startupMetricsPublisher(Provider provider) {
+        return new StartupMetricsPublisher(provider);
     }
 
     /**

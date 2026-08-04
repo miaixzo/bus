@@ -20,10 +20,8 @@ org.springframework.boot.SpringApplicationRunListener=\
   org.miaixz.bus.spring.boot.SpringApplicationRunListener
 
 org.springframework.context.ApplicationListener=\
-  org.miaixz.bus.spring.boot.listener.SpringCloudConfigListener,\
   org.miaixz.bus.spring.boot.listener.SpringBootConfigListener
 
 org.springframework.boot.EnvironmentPostProcessor=\
   org.miaixz.bus.spring.boot.environment.SpringEnvironmentPostProcessor,\
-  org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor,\
-  org.miaixz.bus.spring.boot.environment.ScenesEnvironmentPostProcessor
+  org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor

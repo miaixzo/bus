@@ -13,6 +13,12 @@
       "defaultValue": false
     },
     {
+      "name": "bus.config.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Bus configuration registration is enabled during Spring Boot startup.",
+      "defaultValue": false
+    },
+    {
       "name": "bus.context.task.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether runtime context propagation is enabled for Spring-managed task executors.",
@@ -286,6 +292,11 @@
       "defaultValue": false
     },
     {
+      "name": "bus.logging",
+      "type": "java.util.Map<java.lang.String,java.lang.Object>",
+      "description": "Namespace bridge for Spring Boot logging.* properties. Each bus.logging.* property is mapped to logging.* and takes precedence over native logging.*."
+    },
+    {
       "name": "bus.i18n.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether internationalization integration is enabled.",
@@ -319,6 +330,12 @@
       "name": "bus.metrics.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether metrics integration is enabled.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.metrics.startup.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Spring Boot startup metrics are collected and published.",
       "defaultValue": false
     },
     {

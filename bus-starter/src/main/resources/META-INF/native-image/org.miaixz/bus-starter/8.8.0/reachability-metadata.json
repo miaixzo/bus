@@ -653,10 +653,26 @@
             "boolean",
             "java.lang.String",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Endpoint",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Startup",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
             "java.util.List",
             "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Startup",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]
