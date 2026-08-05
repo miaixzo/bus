@@ -30,7 +30,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -268,7 +268,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * @return the query vm mac addr props result
      */
     private static Properties queryVmMacAddrProps() {
-        return Config.readProperties(Config._VM_MAC_ADDR_PROPERTIES);
+        return Builder.readProperties(Builder._VM_MAC_ADDR_PROPERTIES);
     }
 
     /**

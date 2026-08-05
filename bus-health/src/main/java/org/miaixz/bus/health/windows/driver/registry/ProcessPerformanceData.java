@@ -28,7 +28,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPerformanceProperty;
@@ -57,7 +57,7 @@ public final class ProcessPerformanceData {
     /**
      * The PERFDATA constant.
      */
-    private static final boolean PERFDATA = Config.get(Config._WINDOWS_HKEYPERFDATA, true);
+    private static final boolean PERFDATA = Builder.get(Builder._WINDOWS_HKEYPERFDATA, true);
 
     /**
      * Query the registry for process performance counters

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.jna.Struct;
@@ -70,7 +70,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * The USE_PROCSTATE_SUSPENDED constant.
      */
-    private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
+    private static final boolean USE_PROCSTATE_SUSPENDED = Builder.get(Builder._WINDOWS_PROCSTATE_SUSPENDED, false);
 
     /**
      * The IS_VISTA_OR_GREATER constant.
@@ -264,7 +264,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * @return the query system log result
      */
     private static String querySystemLog() {
-        String systemLog = Config.get(Config._WINDOWS_EVENTLOG, "System");
+        String systemLog = Builder.get(Builder._WINDOWS_EVENTLOG, "System");
         if (systemLog.isEmpty()) {
             // Use faster boot time approximation
             return null;

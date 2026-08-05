@@ -24,11 +24,11 @@ import java.io.File;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 
 /**
  * Provides constants for paths in the {@code /proc} filesystem on Linux. If the user desires to configure a custom
- * {@code /proc} path, it must be declared in the configuration file or updated in the {@link Config} class prior to
+ * {@code /proc} path, it must be declared in the configuration file or updated in the {@link Builder} class prior to
  * initializing this class.
  *
  * @author Kimi Liu
@@ -225,11 +225,11 @@ public final class ProcPath {
      * @return the query proc config result
      */
     private static String queryProcConfig() {
-        String procPath = Config.get(Config._UTIL_PROC_PATH, "/proc");
+        String procPath = Builder.get(Builder._UTIL_PROC_PATH, "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
         procPath = '/' + procPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(procPath).exists()) {
-            throw new NotFoundException("The path does not exist " + Config._UTIL_PROC_PATH);
+            throw new NotFoundException("The path does not exist " + Builder._UTIL_PROC_PATH);
         }
         return procPath;
     }

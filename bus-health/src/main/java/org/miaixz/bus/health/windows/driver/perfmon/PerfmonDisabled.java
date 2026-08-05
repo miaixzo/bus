@@ -26,7 +26,7 @@ import com.sun.jna.platform.win32.WinReg;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -41,17 +41,17 @@ public final class PerfmonDisabled {
     /**
      * The PERF_OS_DISABLED constant.
      */
-    public static final boolean PERF_OS_DISABLED = isDisabled(Config._WINDOWS_PERFOS_DISABLED, "PerfOS");
+    public static final boolean PERF_OS_DISABLED = isDisabled(Builder._WINDOWS_PERFOS_DISABLED, "PerfOS");
 
     /**
      * The PERF_PROC_DISABLED constant.
      */
-    public static final boolean PERF_PROC_DISABLED = isDisabled(Config._WINDOWS_PERFPROC_DISABLED, "PerfProc");
+    public static final boolean PERF_PROC_DISABLED = isDisabled(Builder._WINDOWS_PERFPROC_DISABLED, "PerfProc");
 
     /**
      * The PERF_DISK_DISABLED constant.
      */
-    public static final boolean PERF_DISK_DISABLED = isDisabled(Config._WINDOWS_PERFDISK_DISABLED, "PerfDisk");
+    public static final boolean PERF_DISK_DISABLED = isDisabled(Builder._WINDOWS_PERFDISK_DISABLED, "PerfDisk");
 
     /**
      * Everything in this class is static, never instantiate it
@@ -68,7 +68,7 @@ public final class PerfmonDisabled {
      * @return the is disabled result
      */
     private static boolean isDisabled(String config, String service) {
-        String perfDisabled = Config.get(config);
+        String perfDisabled = Builder.get(config);
         // If null or empty, check registry
         if (StringKit.isBlank(perfDisabled)) {
             String key = String.format(Locale.ROOT, "SYSTEM\\CurrentControlSet\\Services\\%s\\Performance", service);

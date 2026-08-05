@@ -24,6 +24,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -36,6 +41,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.unix.LibCAPI;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
@@ -67,6 +77,16 @@ public final class Parsing {
      * Default log message template for recording parsing failures.
      */
     private static final String DEFAULT_LOG_MSG = "{} didn't parse. Returning default. {}";
+
+    /**
+     * File-system glob pattern prefix.
+     */
+    private static final String GLOB_PREFIX = "glob:";
+
+    /**
+     * File-system regular-expression pattern prefix.
+     */
+    private static final String REGEX_PREFIX = "regex:";
 
     /**
      * Regular expression for matching Hertz values, e.g., "2.00MHz".
@@ -148,6 +168,188 @@ public final class Parsing {
      */
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter
             .ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ", Locale.US);
+
+    /**
+     * Tests if a string matches a wildcard pattern.
+     *
+     * @param text    The string to test.
+     * @param pattern The pattern string, with {@code ?} matching a single character and {@code *} matching any number
+     *                of characters. If the first character of the pattern is {@code ^}, the remaining characters are
+     *                tested and the opposite result is returned.
+     * @return {@code true} if the string matches, or if the pattern starts with {@code ^} and the remainder does not
+     *         match.
+     */
+    public static boolean wildcardMatch(String text, String pattern) {
+        if (!pattern.isEmpty() && pattern.charAt(0) == '^') {
+            return !wildcardMatch(text, pattern.substring(1));
+        }
+        return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
+    }
+
+    /**
+     * Determines if a file store (identified by {@code path} and {@code volume}) should be excluded based on
+     * configuration.
+     * <p>
+     * Inclusions take precedence over exclusions. If no exclude/include patterns are specified, the file store is not
+     * excluded.
+     *
+     * @param path           The mount point of the file store.
+     * @param volume         The file store volume.
+     * @param pathIncludes   A list of path inclusion patterns.
+     * @param pathExcludes   A list of path exclusion patterns.
+     * @param volumeIncludes A list of volume inclusion patterns.
+     * @param volumeExcludes A list of volume exclusion patterns.
+     * @return {@code true} if the file store should be excluded, {@code false} otherwise.
+     */
+    public static boolean isFileStoreExcluded(
+            String path,
+            String volume,
+            List<PathMatcher> pathIncludes,
+            List<PathMatcher> pathExcludes,
+            List<PathMatcher> volumeIncludes,
+            List<PathMatcher> volumeExcludes) {
+        Path p = Paths.get(path);
+        Path v = Paths.get(volume);
+        if (matches(p, pathIncludes) || matches(v, volumeIncludes)) {
+            return false;
+        }
+        return matches(p, pathExcludes) || matches(v, volumeExcludes);
+    }
+
+    /**
+     * Parses file system include/exclude lines.
+     *
+     * @param config The configuration line to parse.
+     * @return A list of {@link PathMatcher} for matching file store volumes and paths.
+     */
+    public static List<PathMatcher> parseFileSystemConfig(String config) {
+        FileSystem fs = FileSystems.getDefault(); // Not closable
+        List<PathMatcher> patterns = new ArrayList<>();
+        for (String item : config.split(Symbol.COMMA)) {
+            if (item.length() > 0) {
+                // Default to glob: prefix unless user specified glob or regex
+                if (!(item.startsWith(GLOB_PREFIX) || item.startsWith(REGEX_PREFIX))) {
+                    item = GLOB_PREFIX + item;
+                }
+                patterns.add(fs.getPathMatcher(item));
+            }
+        }
+        return patterns;
+    }
+
+    /**
+     * Checks if {@code text} matches any of the patterns in {@code patterns}.
+     *
+     * @param text     The text to match.
+     * @param patterns The list of patterns.
+     * @return {@code true} if the given text matches at least one glob pattern, {@code false} otherwise.
+     * @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia - glob (programming)</a>
+     */
+    public static boolean matches(Path text, List<PathMatcher> patterns) {
+        for (PathMatcher pattern : patterns) {
+            if (pattern.matches(text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Reads a byte value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next byte value.
+     */
+    public static byte readByteFromBuffer(ByteBuffer buff) {
+        if (buff.position() < buff.limit()) {
+            return buff.get();
+        }
+        return 0;
+    }
+
+    /**
+     * Reads a short integer value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next short integer value.
+     */
+    public static short readShortFromBuffer(ByteBuffer buff) {
+        if (buff.position() <= buff.limit() - 2) {
+            return buff.getShort();
+        }
+        return 0;
+    }
+
+    /**
+     * Reads an integer value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next integer value.
+     */
+    public static int readIntFromBuffer(ByteBuffer buff) {
+        if (buff.position() <= buff.limit() - 4) {
+            return buff.getInt();
+        }
+        return 0;
+    }
+
+    /**
+     * Reads a long integer value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next long integer value.
+     */
+    public static long readLongFromBuffer(ByteBuffer buff) {
+        if (buff.position() <= buff.limit() - 8) {
+            return buff.getLong();
+        }
+        return 0L;
+    }
+
+    /**
+     * Reads a {@link NativeLong} value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next {@link NativeLong} value.
+     */
+    public static NativeLong readNativeLongFromBuffer(ByteBuffer buff) {
+        return new NativeLong(Native.LONG_SIZE == 4 ? readIntFromBuffer(buff) : readLongFromBuffer(buff));
+    }
+
+    /**
+     * Reads a size_t value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next size_t value.
+     */
+    public static LibCAPI.size_t readSizeTFromBuffer(ByteBuffer buff) {
+        return new LibCAPI.size_t(Native.SIZE_T_SIZE == 4 ? readIntFromBuffer(buff) : readLongFromBuffer(buff));
+    }
+
+    /**
+     * Reads a byte array value from a {@link ByteBuffer}.
+     *
+     * @param buff  The {@link ByteBuffer} to read from.
+     * @param array The target array to read data into.
+     */
+    public static void readByteArrayFromBuffer(ByteBuffer buff, byte[] array) {
+        if (buff.position() <= buff.limit() - array.length) {
+            buff.get(array);
+        }
+    }
+
+    /**
+     * Reads a {@link Pointer} value from a {@link ByteBuffer}.
+     *
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next {@link Pointer} value.
+     */
+    public static Pointer readPointerFromBuffer(ByteBuffer buff) {
+        if (buff.position() <= buff.limit() - Native.POINTER_SIZE) {
+            return Native.POINTER_SIZE == 4 ? new Pointer(buff.getInt()) : new Pointer(buff.getLong());
+        }
+        return Pointer.NULL;
+    }
 
     /**
      * Decodes REG_BINARY to String. Supports UTF-16LE and Windows-1252 C-strings, otherwise returns a hex.

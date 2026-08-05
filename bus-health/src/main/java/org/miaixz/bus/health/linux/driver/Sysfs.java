@@ -25,7 +25,6 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
-import org.miaixz.bus.health.Privilege;
 import org.miaixz.bus.health.linux.SysPath;
 
 /**
@@ -86,7 +85,7 @@ public final class Sysfs {
     public static String queryProductSerial() {
         // These sysfs files accessible by root, or can be chmod'd at boot time
         // to enable access without root, or use privileged read fallback
-        String serial = Privilege.getStringFromFile(SysPath.DMI_ID + "product_serial");
+        String serial = Builder.getStringFromFile(SysPath.DMI_ID + "product_serial");
         if (!serial.isEmpty() && !"None".equals(serial)) {
             return serial;
         }
@@ -101,7 +100,7 @@ public final class Sysfs {
     public static String queryUUID() {
         // These sysfs files accessible by root, or can be chmod'd at boot time
         // to enable access without root, or use privileged read fallback
-        String uuid = Privilege.getStringFromFile(SysPath.DMI_ID + "product_uuid");
+        String uuid = Builder.getStringFromFile(SysPath.DMI_ID + "product_uuid");
         if (!uuid.isEmpty() && !"None".equals(uuid)) {
             return uuid;
         }
@@ -153,7 +152,7 @@ public final class Sysfs {
      * @return The board serial number if available, null otherwise
      */
     public static String queryBoardSerial() {
-        final String boardSerial = Privilege.getStringFromFile(SysPath.DMI_ID + "board_serial").trim();
+        final String boardSerial = Builder.getStringFromFile(SysPath.DMI_ID + "board_serial").trim();
         if (!boardSerial.isEmpty()) {
             return boardSerial;
         }

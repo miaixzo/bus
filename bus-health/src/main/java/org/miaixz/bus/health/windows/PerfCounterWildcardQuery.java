@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -55,8 +55,8 @@ public final class PerfCounterWildcardQuery {
     /**
      * The PERF_DISABLE_ALL_ON_FAILURE constant.
      */
-    private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Config
-            .get(Config._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE, false);
+    private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Builder
+            .get(Builder._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE, false);
 
     // Use a thread safe set to cache failed pdh queries
     /**
@@ -188,7 +188,7 @@ public final class PerfCounterWildcardQuery {
         }
         List<String> instances = objectItems.getInstances();
         // Filter out instances not matching filter
-        instances.removeIf(i -> !Builder.wildcardMatch(i.toLowerCase(Locale.ROOT), instanceFilter));
+        instances.removeIf(i -> !Parsing.wildcardMatch(i.toLowerCase(Locale.ROOT), instanceFilter));
         EnumMap<T, List<Long>> valuesMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
             // Set up the query and counter handles

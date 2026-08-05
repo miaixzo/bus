@@ -21,13 +21,10 @@ package org.miaixz.bus.health;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.text.DecimalFormat;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -43,27 +40,18 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 
 /**
- * Server information collector.
+ * Collects local operating-system, hardware, process, JVM, and runtime health information.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class Provider implements org.miaixz.bus.core.Provider {
+public class Collector implements org.miaixz.bus.core.Provider {
 
     /**
-     * Creates a new Provider instance.
+     * Creates a new Collector instance.
      */
-    public Provider() {
+    public Collector() {
         // No initialization required.
-    }
-
-    /**
-     * Main method for testing purposes.
-     *
-     * @param args Command line arguments.
-     */
-    public static void main(String[] args) {
-        System.out.println(Platform.INSTANCE.getOperatingSystem().toString());
     }
 
     /**
@@ -189,10 +177,10 @@ public class Provider implements org.miaixz.bus.core.Provider {
         InetAddress inetAddress = NetKit.getLocalhostV4();
         return Host.builder().name(inetAddress.getHostName()).ip(inetAddress.getHostAddress())
                 .os(Keys.get(Keys.OS_NAME)).osArch(Keys.get(Keys.OS_ARCH)).userDir(Keys.get(Keys.USER_DIR))
-                .rxBytesPerSecond(formatDouble((rxBytesEnd - rxBytesBegin) / 3.0 / 1024))
-                .txBytesPerSecond(formatDouble((txBytesEnd - txBytesBegin) / 3.0 / 1024))
-                .rxPacketsPerSecond(formatDouble((rxPacketsEnd - rxPacketsBegin) / 3.0))
-                .txPacketsPerSecond(formatDouble((txPacketsEnd - txPacketsBegin) / 3.0)).build();
+                .rxBytesPerSecond(Formats.round((rxBytesEnd - rxBytesBegin) / 3.0 / 1024))
+                .txBytesPerSecond(Formats.round((txBytesEnd - txBytesBegin) / 3.0 / 1024))
+                .rxPacketsPerSecond(Formats.round((rxPacketsEnd - rxPacketsBegin) / 3.0))
+                .txPacketsPerSecond(Formats.round((txPacketsEnd - txPacketsBegin) / 3.0)).build();
     }
 
     /**
@@ -211,7 +199,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
                 totalSpace += disk.getTotalSpace();
             }
             double usedSize = (totalSpace - usableSpace);
-            map.put(type, formatDouble((usedSize / totalSpace) * 100));
+            map.put(type, Formats.round((usedSize / totalSpace) * 100));
         }
     }
 
@@ -230,7 +218,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
             Map<String, Object> processMap = new HashMap<>(5);
             processMap.put("name", process.getName());
             processMap.put("pid", process.getProcessID());
-            processMap.put(TID.CPU, formatDouble(process.getProcessCpuLoadCumulative()));
+            processMap.put(TID.CPU, Formats.round(process.getProcessCpuLoadCumulative()));
             processMapList.add(processMap);
         }
         map.put(type, processMapList);
@@ -368,7 +356,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
         Map<String, Object> processMap = new HashMap<>(5);
         processMap.put("name", process.getName());
         processMap.put("pid", process.getProcessID());
-        processMap.put(TID.CPU, formatDouble(process.getProcessCpuLoadCumulative()));
+        processMap.put(TID.CPU, Formats.round(process.getProcessCpuLoadCumulative()));
         processMap.put(TID.MEMORY, process.getResidentMemory());
         processMap.put("state", process.getState().toString());
         return processMap;
@@ -403,9 +391,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
         long totalCpu = user + nice + sys + idle + ioWait + irq + softirq + steal;
         return Cpu.builder().physicalCores(centralProcessor.getPhysicalProcessorCount())
                 .logicalCores(centralProcessor.getLogicalProcessorCount())
-                .systemUsage(formatDouble(sys * 100.0 / totalCpu)).userUsage(formatDouble(user * 100.0 / totalCpu))
-                .ioWait(formatDouble(ioWait * 100.0 / totalCpu))
-                .totalUsage(formatDouble((totalCpu - idle) * 100.0 / totalCpu)).build();
+                .systemUsage(Formats.round(sys * 100.0 / totalCpu)).userUsage(Formats.round(user * 100.0 / totalCpu))
+                .ioWait(Formats.round(ioWait * 100.0 / totalCpu))
+                .totalUsage(Formats.round((totalCpu - idle) * 100.0 / totalCpu)).build();
     }
 
     /**
@@ -417,9 +405,9 @@ public class Provider implements org.miaixz.bus.core.Provider {
         GlobalMemory globalMemory = getHardware().getMemory();
         long totalByte = globalMemory.getTotal();
         long availableByte = globalMemory.getAvailable();
-        return Memory.builder().total(formatByte(totalByte)).used(formatByte(totalByte - availableByte))
-                .free(formatByte(availableByte)).usage(formatDouble((totalByte - availableByte) * 100.0 / totalByte))
-                .build();
+        return Memory.builder().total(Formats.formatBytes(totalByte))
+                .used(Formats.formatBytes(totalByte - availableByte)).free(Formats.formatBytes(availableByte))
+                .usage(Formats.round((totalByte - availableByte) * 100.0 / totalByte)).build();
     }
 
     /**
@@ -435,7 +423,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
         return Jvm.builder().jdkVersion(Keys.get(Keys.JAVA_VERSION)).jdkHome(Keys.get(Keys.JAVA_HOME))
                 .jdkName(runtimeMXBean.getVmName()).totalMemory(jvmTotalMemoryByte).maxMemory(runtime.maxMemory())
                 .freeMemory(freeMemoryByte).usedMemory(jvmTotalMemoryByte - freeMemoryByte)
-                .usagePercent(formatDouble((jvmTotalMemoryByte - freeMemoryByte) * 100.0 / jvmTotalMemoryByte))
+                .usagePercent(Formats.round((jvmTotalMemoryByte - freeMemoryByte) * 100.0 / jvmTotalMemoryByte))
                 .startTime(runtimeMXBean.getStartTime()).uptime(runtimeMXBean.getUptime()).build();
     }
 
@@ -457,7 +445,7 @@ public class Provider implements org.miaixz.bus.core.Provider {
                             .logicalVolumeName(fs.getLogicalVolume()).mountPoint(fs.getMount())
                             .description(fs.getDescription()).mountOptions(fs.getOptions()).filesystemType(fs.getType())
                             .uuid(fs.getUUID()).totalSpace(total).usedSpace(total - usable).freeSpace(usable)
-                            .usagePercent(total > 0 ? formatDouble((total - usable) * 100.0 / total) : 0.0).build());
+                            .usagePercent(total > 0 ? Formats.round((total - usable) * 100.0 / total) : 0.0).build());
         }
         return disks;
     }
@@ -482,50 +470,6 @@ public class Provider implements org.miaixz.bus.core.Provider {
         Map<String, Object> map = new HashMap<>(1);
         map.put("powerSources", getHardware().getPowerSources());
         return map;
-    }
-
-    /**
-     * Formats a byte value into a human-readable unit (KB, MB, GB, TB).
-     *
-     * @param byteNumber The number of bytes.
-     * @return The formatted string.
-     */
-    public String formatByte(long byteNumber) {
-        double FORMAT = 1024.0;
-        double kbNumber = byteNumber / FORMAT;
-        if (kbNumber < FORMAT) {
-            return formatDecimal("#.##KB", kbNumber);
-        }
-        double mbNumber = kbNumber / FORMAT;
-        if (mbNumber < FORMAT) {
-            return formatDecimal("#.##MB", mbNumber);
-        }
-        double gbNumber = mbNumber / FORMAT;
-        if (gbNumber < FORMAT) {
-            return formatDecimal("#.##GB", gbNumber);
-        }
-        return formatDecimal("#.##TB", gbNumber / FORMAT);
-    }
-
-    /**
-     * Formats a number to the specified pattern.
-     *
-     * @param pattern The format pattern.
-     * @param number  The number.
-     * @return The formatted string.
-     */
-    public String formatDecimal(String pattern, double number) {
-        return new DecimalFormat(pattern).format(number);
-    }
-
-    /**
-     * Formats a double value to two decimal places.
-     *
-     * @param value The input value.
-     * @return The formatted double value.
-     */
-    public double formatDouble(double value) {
-        return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**

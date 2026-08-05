@@ -24,11 +24,11 @@ import java.io.File;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 
 /**
  * Provides constants for paths in the {@code /sys} filesystem on Linux. If the user desires to configure a custom
- * {@code /sys} path, it must be declared in the configuration file or updated in the {@link Config} class prior to
+ * {@code /sys} path, it must be declared in the configuration file or updated in the {@link Builder} class prior to
  * initializing this class.
  *
  * @author Kimi Liu
@@ -100,11 +100,11 @@ public final class SysPath {
      * @return the query sys config result
      */
     private static String querySysConfig() {
-        String sysPath = Config.get(Config._UTIL_SYS_PATH, "/sys");
+        String sysPath = Builder.get(Builder._UTIL_SYS_PATH, "/sys");
         // Ensure prefix begins with path separator, but doesn't end with one
         sysPath = '/' + sysPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(sysPath).exists()) {
-            throw new NotFoundException("The path does not exist " + Config._UTIL_SYS_PATH);
+            throw new NotFoundException("The path does not exist " + Builder._UTIL_SYS_PATH);
         }
         return sysPath;
     }

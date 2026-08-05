@@ -21,13 +21,18 @@ package org.miaixz.bus.health;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -200,13 +205,110 @@ public final class Executor {
     }
 
     /**
+     * Returns the configured command prefix used for controlled privileged access.
+     *
+     * @return The configured prefix, or an empty string when privileged access is disabled.
+     */
+    static String getPrivilegedPrefix() {
+        return Platform.isLinux() ? Builder.get(Builder._LINUX_PRIVILEGED_PREFIX, Normal.EMPTY).trim() : Normal.EMPTY;
+    }
+
+    /**
+     * Checks whether a command is allowed to use the configured privileged prefix.
+     *
+     * @param command The command to check.
+     * @return {@code true} when the executable is allowlisted.
+     */
+    static boolean isPrivilegedCommandAllowed(String command) {
+        if (command == null || command.isBlank()) {
+            return false;
+        }
+        String commandPath = command.trim().split("\\s+", 2)[0];
+        String commandName = new File(commandPath).getName();
+        if (commandName.isEmpty()) {
+            return false;
+        }
+        for (String allowed : parseAllowlist(Builder.get(Builder._LINUX_PRIVILEGED_ALLOWLIST, Normal.EMPTY))) {
+            if (allowed.indexOf(File.separatorChar) >= 0) {
+                if (allowed.equals(commandPath)) {
+                    return true;
+                }
+            } else if (allowed.equals(commandName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Builds a binary-safe command for privileged file reading.
+     *
+     * @param filename The file to read.
+     * @return The command and its arguments.
+     */
+    static String[] buildPrivilegedFileCommand(String filename) {
+        List<String> command = new ArrayList<>(Arrays.asList(getPrivilegedPrefix().split("\\s+")));
+        command.add("cat");
+        command.add(filename);
+        return command.toArray(new String[0]);
+    }
+
+    /**
+     * Reads a file as bytes using the controlled privileged command.
+     *
+     * @param filename    The file to read.
+     * @param reportError Whether failures should be logged as errors.
+     * @return The file contents, or an empty array when the read fails.
+     */
+    static byte[] readBytesWithPrivilege(String filename, boolean reportError) {
+        Process process = null;
+        try {
+            process = Runtime.getRuntime().exec(buildPrivilegedFileCommand(filename));
+            byte[] stdout;
+            byte[] stderr;
+            try (InputStream input = process.getInputStream(); InputStream error = process.getErrorStream()) {
+                stdout = input.readAllBytes();
+                stderr = error.readAllBytes();
+            }
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                return stdout;
+            }
+            String error = new String(stderr, StandardCharsets.UTF_8).trim();
+            if (reportError) {
+                Logger.error(false, "Health", "Privileged file read exited with code {}: {}", exitCode, error);
+            } else {
+                Logger.debug(false, "Health", "Privileged file read exited with code {}: {}", exitCode, error);
+            }
+        } catch (SecurityException | IOException e) {
+            Logger.debug(false, "Health", "Privileged file read failed: {}", e.getClass().getSimpleName());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Logger.debug(false, "Health", "Privileged file read interrupted");
+        } finally {
+            if (process != null) {
+                destroyProcess(process);
+            }
+        }
+        return Normal.EMPTY_BYTE_ARRAY;
+    }
+
+    private static Set<String> parseAllowlist(String value) {
+        if (value == null || value.isBlank()) {
+            return Collections.emptySet();
+        }
+        return Arrays.stream(value.split(Symbol.COMMA)).map(String::trim).filter(entry -> !entry.isEmpty())
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    /**
      * Executes a command that may require elevated privileges.
      *
      * @param cmdToRun The command to run.
      * @return A list of strings representing the command's result, or an empty list if the command fails.
      */
     public static List<String> runPrivilegedNative(String cmdToRun) {
-        String prefix = Privilege.getPrefix();
+        String prefix = getPrivilegedPrefix();
         if (prefix.isEmpty() || IdGroup.isElevated()) {
             Logger.debug(
                     false,
@@ -216,7 +318,7 @@ public final class Executor {
                     IdGroup.isElevated());
             return runNative(cmdToRun);
         }
-        if (!Privilege.isCommandAllowed(cmdToRun, Privilege.getCommandAllowlist())) {
+        if (!isPrivilegedCommandAllowed(cmdToRun)) {
             Logger.debug(
                     false,
                     "Health",

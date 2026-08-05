@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;
 
 /**
@@ -70,7 +69,7 @@ public interface OSProcess {
      * process memory fails, by default, performs a single WMI query for this process, with some latency. If this method
      * will be frequently called for multiple processes, see the configuration file to enable a batch query mode
      * leveraging {@link Win32ProcessCached#getCommandLine} to improve performance, or setting that parameter via
-     * {@link Config#set(String, Object)} before instantiating any {@link OSProcess} object.
+     * {@link Builder#set(String, Object)} before instantiating any {@link OSProcess} object.
      * </p>
      *
      * @return the process command line.

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
 
 /**
@@ -74,9 +75,9 @@ public final class Auxv {
         Map<Integer, Long> auxvMap = new HashMap<>();
         int key;
         do {
-            key = Builder.readNativeLongFromBuffer(buff).intValue();
+            key = Parsing.readNativeLongFromBuffer(buff).intValue();
             if (key != AT_NULL) {
-                auxvMap.put(key, Builder.readNativeLongFromBuffer(buff).longValue());
+                auxvMap.put(key, Parsing.readNativeLongFromBuffer(buff).longValue());
             }
         } while (key != AT_NULL);
         return auxvMap;

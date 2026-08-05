@@ -19,12 +19,15 @@
 */
 package org.miaixz.bus.health;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
  * Utility class for formatting units or converting between numeric types.
@@ -216,6 +219,16 @@ public final class Formats {
     }
 
     /**
+     * Rounds a floating-point value to two decimal places.
+     *
+     * @param value The value to round.
+     * @return The value rounded using half-up rounding.
+     */
+    public static double round(double value) {
+        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    /**
      * Formats a six-byte MAC address stored in the lower 48 bits of a long to colon-separated uppercase hexadecimal.
      *
      * @param addr the MAC address as a long
@@ -269,6 +282,69 @@ public final class Formats {
             }
         }
         return true;
+    }
+
+    /**
+     * Parses an EDID byte array into human-readable information.
+     *
+     * @param edid The EDID byte array.
+     * @return Human-readable text representing the EDID.
+     */
+    public static String formatEdid(byte[] edid) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("  Manuf. ID=").append(Edid.getManufacturerID(edid));
+        sb.append(", Product ID=").append(Edid.getProductID(edid));
+        sb.append(", ").append(Edid.isDigital(edid) ? "Digital" : "Analog");
+        sb.append(", Serial=").append(Edid.getSerialNo(edid));
+        sb.append(", ManufDate=").append(Edid.getWeek(edid) * 12 / 52 + 1).append('/').append(Edid.getYear(edid));
+        sb.append(", EDID v").append(Edid.getVersion(edid));
+        int hSize = Edid.getHcm(edid);
+        int vSize = Edid.getVcm(edid);
+        sb.append(
+                String.format(
+                        Locale.ROOT,
+                        "%n  %d x %d cm (%.1f x %.1f in)",
+                        hSize,
+                        vSize,
+                        hSize / 2.54,
+                        vSize / 2.54));
+        byte[][] desc = Edid.getDescriptors(edid);
+        for (byte[] b : desc) {
+            switch (Edid.getDescriptorType(b)) {
+                case 0xff:
+                    sb.append("\n  Serial Number: ").append(Edid.getDescriptorText(b));
+                    break;
+
+                case 0xfe:
+                    sb.append("\n  Unspecified Text: ").append(Edid.getDescriptorText(b));
+                    break;
+
+                case 0xfd:
+                    sb.append("\n  Range Limits: ").append(Edid.getDescriptorRangeLimits(b));
+                    break;
+
+                case 0xfc:
+                    sb.append("\n  Monitor Name: ").append(Edid.getDescriptorText(b));
+                    break;
+
+                case 0xfb:
+                    sb.append("\n  White Point Data: ").append(ByteKit.byteArrayToHexString(b));
+                    break;
+
+                case 0xfa:
+                    sb.append("\n  Standard Timing ID: ").append(ByteKit.byteArrayToHexString(b));
+                    break;
+
+                default:
+                    if (Edid.getDescriptorType(b) <= 0x0f && Edid.getDescriptorType(b) >= 0x00) {
+                        sb.append("\n  Manufacturer Data: ").append(ByteKit.byteArrayToHexString(b));
+                    } else {
+                        sb.append("\n  Preferred Timing: ").append(Edid.getTimingDescriptor(b));
+                    }
+                    break;
+            }
+        }
+        return sb.toString();
     }
 
 }

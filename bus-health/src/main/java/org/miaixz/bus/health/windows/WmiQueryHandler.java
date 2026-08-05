@@ -35,7 +35,7 @@ import com.sun.jna.platform.win32.WinNT;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -67,7 +67,7 @@ public class WmiQueryHandler {
     /**
      * The globalTimeout constant.
      */
-    private static final int globalTimeout = Config.get(Config._UTIL_WMI_TIMEOUT, -1);
+    private static final int globalTimeout = Builder.get(Builder._UTIL_WMI_TIMEOUT, -1);
     // Factory to create this or a subclass
     /**
      * The customClass value.
@@ -76,7 +76,7 @@ public class WmiQueryHandler {
 
     static {
         if (globalTimeout == 0 || globalTimeout < -1) {
-            throw new NotFoundException("The property does not exist " + Config._UTIL_WMI_TIMEOUT);
+            throw new NotFoundException("The property does not exist " + Builder._UTIL_WMI_TIMEOUT);
         }
     }
 

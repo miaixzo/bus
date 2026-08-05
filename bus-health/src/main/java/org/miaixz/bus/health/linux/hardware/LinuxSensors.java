@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
@@ -57,25 +56,25 @@ final class LinuxSensors extends AbstractSensors {
      * <li>via-cputemp: VIA CPU temperature</li>
      * </ul>
      */
-    public static final String HWMON_NAME_PRIORITY_CONFIG = Config._LINUX_HWMON_NAME_PRIORITY;
+    public static final String HWMON_NAME_PRIORITY_CONFIG = Builder._LINUX_HWMON_NAME_PRIORITY;
 
     /**
      * The THERMAL_ZONE_TYPE_PRIORITY_CONFIG constant.
      */
-    public static final String THERMAL_ZONE_TYPE_PRIORITY_CONFIG = Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY;
+    public static final String THERMAL_ZONE_TYPE_PRIORITY_CONFIG = Builder._LINUX_THERMAL_ZONE_TYPE_PRIORITY;
 
     /**
      * The HWMON_NAME_PRIORITY constant.
      */
     private static final List<String> HWMON_NAME_PRIORITY = Stream.of(
-            Config.get(HWMON_NAME_PRIORITY_CONFIG, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
+            Builder.get(HWMON_NAME_PRIORITY_CONFIG, "coretemp,k10temp,zenpower,k8temp,via-cputemp,acpitz").split(","))
             .filter(s -> !s.isEmpty()).collect(Collectors.toList());
 
     /**
      * The THERMAL_ZONE_TYPE_PRIORITY constant.
      */
     private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
-            .of(Config.get(THERMAL_ZONE_TYPE_PRIORITY_CONFIG, "cpu-thermal,x86_pkg_temp").split(","))
+            .of(Builder.get(THERMAL_ZONE_TYPE_PRIORITY_CONFIG, "cpu-thermal,x86_pkg_temp").split(","))
             .filter(s -> !s.isEmpty()).collect(Collectors.toList());
 
     /**

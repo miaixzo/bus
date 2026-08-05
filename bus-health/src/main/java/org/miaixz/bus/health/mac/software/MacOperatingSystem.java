@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -135,7 +135,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
      * @return the parse code name result
      */
     protected String parseCodeName() {
-        Properties verProps = Config.readProperties(Config._MACOS_VERSIONS_PROPERTIES);
+        Properties verProps = Builder.readProperties(Builder._MACOS_VERSIONS_PROPERTIES);
         String codeName = null;
         if (this.major > 10) {
             codeName = verProps.getProperty(Integer.toString(this.major));

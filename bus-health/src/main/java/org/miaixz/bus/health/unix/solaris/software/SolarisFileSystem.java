@@ -67,25 +67,25 @@ public class SolarisFileSystem extends AbstractFileSystem {
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_EXCLUDES);
 
     /**
      * The FS_PATH_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_INCLUDES);
 
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
 
     /**
      * The FS_VOLUME_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
 
     /**
      * Returns the file store matching.
@@ -145,7 +145,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
             // Skip non-local drives if requested, and exclude pseudo file systems
             boolean isLocal = !NETWORK_FS_TYPES.contains(type);
             if ((localOnly && !isLocal)
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                             path,
                             volume,
                             FS_PATH_INCLUDES,

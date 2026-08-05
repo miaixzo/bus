@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.Struct;
@@ -71,7 +71,7 @@ public class MacOSProcess extends AbstractOSProcess {
     /**
      * The LOG_MAC_SYSCTL_WARNING constant.
      */
-    private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config._MAC_SYSCTL_LOGWARNING, false);
+    private static final boolean LOG_MAC_SYSCTL_WARNING = Builder.get(Builder._MAC_SYSCTL_LOGWARNING, false);
 
     /**
      * The MAC_RLIMIT_NOFILE constant.

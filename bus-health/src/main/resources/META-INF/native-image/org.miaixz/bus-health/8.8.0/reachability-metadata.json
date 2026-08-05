@@ -6,6 +6,207 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "envKeyToProperty",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "freeMemory",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "double"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getConfig",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIntFromFile",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getKeyValueMapFromFile",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLongFromFile",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getStringFromFile",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getUnsignedLongFromFile",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isPrivilegedFileAllowed",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "isSessionValid",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "load",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "loadAndParseFileSystemConfig",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "loadExternalConfig",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "parseAllowlist",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readAllBytes",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readAllBytes",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "readAllBytesAsBuffer",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readFile",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readFile",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "readLines",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "readLines",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "readProperties",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readSymlinkTarget",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "shouldUsePrivilegedRead",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
         }
       ]
     },
@@ -11461,99 +11662,17 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.Config",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "envKeyToProperty",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "double"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getConfig",
-          "parameterTypes": []
-        },
-        {
-          "name": "load",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "loadExternalConfig",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "readProperties",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "set",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.health.Executor",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "buildPrivilegedFileCommand",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
           "name": "closeSilently",
@@ -11591,10 +11710,33 @@
           ]
         },
         {
+          "name": "getPrivilegedPrefix",
+          "parameterTypes": []
+        },
+        {
           "name": "getProcessOutput",
           "parameterTypes": [
             "java.lang.Process",
             "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "isPrivilegedCommandAllowed",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseAllowlist",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readBytesWithPrivilege",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
           ]
         },
         {
@@ -11625,6 +11767,265 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.Edid",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decodeManufacturerId",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "getAlphaNumericOrHex",
+          "parameterTypes": [
+            "byte"
+          ]
+        },
+        {
+          "name": "getDescriptorRangeLimits",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getDescriptors",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getDescriptorText",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getDescriptorType",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getHcm",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getManufacturerID",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getModel",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getPreferredResolution",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getProductID",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getProductSerialNumber",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getSerialNo",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getTimingDescriptor",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getVcm",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getVersion",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getWeek",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getYear",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "isDigital",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "newEdidTemplate",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDescriptor",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "setDescriptorText",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDigital",
+          "parameterTypes": [
+            "byte[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setHcm",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "setManufacturerID",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModel",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPreferredResolution",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProductID",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setProductSerialNumber",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSerialNo",
+          "parameterTypes": [
+            "byte[]",
+            "long"
+          ]
+        },
+        {
+          "name": "setSerialNo",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setVcm",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "setVersion",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setWeek",
+          "parameterTypes": [
+            "byte[]",
+            "byte"
+          ]
+        },
+        {
+          "name": "setYear",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "synthesizeDisplayInfo",
+          "parameterTypes": [
+            "java.lang.Long",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Long",
+            "java.lang.Long",
+            "java.lang.String",
+            "java.lang.Double",
+            "java.lang.Double",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "updateChecksum",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.Formats",
       "methods": [
         {
@@ -11647,6 +12048,12 @@
           "name": "formatElapsedSecs",
           "parameterTypes": [
             "long"
+          ]
+        },
+        {
+          "name": "formatEdid",
+          "parameterTypes": [
+            "byte[]"
           ]
         },
         {
@@ -11702,6 +12109,12 @@
         },
         {
           "name": "roundToInt",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "round",
           "parameterTypes": [
             "double"
           ]
@@ -23528,6 +23941,86 @@
           "parameterTypes": []
         },
         {
+          "name": "isFileStoreExcluded",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.nio.file.Path",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "parseFileSystemConfig",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readByteArrayFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "readByteFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "readIntFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "readLongFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "readNativeLongFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "readPointerFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "readShortFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "readSizeTFromBuffer",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        },
+        {
+          "name": "wildcardMatch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "asciiStringToByteArray",
           "parameterTypes": [
             "java.lang.String",
@@ -24255,128 +24748,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.health.Privilege",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildCatCommand",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "clearCaches",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCommandAllowlist",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFileAllowlist",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFileName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getKeyValueMapFromFile",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getKeyValueMapFromFilePrivileged",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStringFromFile",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getStringFromFilePrivileged",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isCommandAllowed",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Set"
-          ]
-        },
-        {
-          "name": "isFileAllowed",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Set"
-          ]
-        },
-        {
-          "name": "parseAllowlist",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryCommandAllowlist",
-          "parameterTypes": []
-        },
-        {
-          "name": "queryFileAllowlist",
-          "parameterTypes": []
-        },
-        {
-          "name": "queryPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "readAllBytes",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "readAllBytesPrivileged",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "readFile",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "readFilePrivileged",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.health.Provider",
+      "type": "org.miaixz.bus.health.Collector",
       "methods": [
         {
           "name": "<init>",
@@ -24409,25 +24781,6 @@
             "java.lang.Integer",
             "java.lang.String",
             "java.util.Map"
-          ]
-        },
-        {
-          "name": "formatByte",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "formatDecimal",
-          "parameterTypes": [
-            "java.lang.String",
-            "double"
-          ]
-        },
-        {
-          "name": "formatDouble",
-          "parameterTypes": [
-            "double"
           ]
         },
         {
@@ -24513,178 +24866,8 @@
           ]
         },
         {
-          "name": "main",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
           "name": "type",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.health.Reporter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "printBluetoothDevices",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printComputerSystem",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.hardware.ComputerSystem"
-          ]
-        },
-        {
-          "name": "printCpu",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
-          ]
-        },
-        {
-          "name": "printDisks",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printDisplays",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printFileSystem",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.software.FileSystem"
-          ]
-        },
-        {
-          "name": "printGraphicsCards",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printInstalledApps",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printInternetProtocolStats",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.software.InternetProtocolStats"
-          ]
-        },
-        {
-          "name": "printLVgroups",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printMemory",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.hardware.GlobalMemory"
-          ]
-        },
-        {
-          "name": "printNetworkInterfaces",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printNetworkParameters",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.software.NetworkParams"
-          ]
-        },
-        {
-          "name": "printOperatingSystem",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.software.OperatingSystem"
-          ]
-        },
-        {
-          "name": "printPowerSources",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printPrinters",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printProcesses",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.software.OperatingSystem",
-            "org.miaixz.bus.health.builtin.hardware.GlobalMemory"
-          ]
-        },
-        {
-          "name": "printProcessor",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.hardware.CentralProcessor"
-          ]
-        },
-        {
-          "name": "printSensors",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.hardware.Sensors"
-          ]
-        },
-        {
-          "name": "printServices",
-          "parameterTypes": [
-            "java.util.List",
-            "org.miaixz.bus.health.builtin.software.OperatingSystem"
-          ]
-        },
-        {
-          "name": "printSoundCards",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "printUsbDevices",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
         }
       ]
     },

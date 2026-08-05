@@ -69,18 +69,18 @@
 #### 1. 获取系统信息
 
 ```java
-import org.miaixz.bus.health.Provider;
+import org.miaixz.bus.health.Collector;
 
 public class HealthExample {
     public static void main(String[] args) {
-        Provider provider = new Provider();
+        Collector collector = new Collector();
 
         // 获取所有系统信息
-        Map<String, Object> allInfo = provider.getAll();
+        Map<String, Object> allInfo = collector.getAll();
         System.out.println(allInfo);
 
         // 获取特定信息
-        Map<String, Object> cpuInfo = provider.getSingle(TID.CPU);
+        Map<String, Object> cpuInfo = collector.getSingle(TID.CPU);
         System.out.println(cpuInfo);
     }
 }
@@ -89,10 +89,10 @@ public class HealthExample {
 #### 2. 监控 CPU 使用率
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取 CPU 信息
-Cpu cpu = provider.getCpu();
+Cpu cpu = collector.getCpu();
 System.out.println("物理核心数: " + cpu.getPhysicalCores());
 System.out.println("逻辑核心数: " + cpu.getLogicalCores());
 System.out.println("总使用率: " + cpu.getTotalUsage() + "%");
@@ -104,10 +104,10 @@ System.out.println("IO 等待: " + cpu.getIoWait() + "%");
 #### 3. 监控内存使用率
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取内存信息
-Memory memory = provider.getMemory();
+Memory memory = collector.getMemory();
 System.out.println("总内存: " + memory.getTotal());
 System.out.println("已用内存: " + memory.getUsed());
 System.out.println("空闲内存: " + memory.getFree());
@@ -117,16 +117,16 @@ System.out.println("使用率: " + memory.getUsage() + "%");
 #### 4. 监控磁盘使用率
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取磁盘信息
-List<Disk> disks = provider.getDisk();
+List<Disk> disks = collector.getDisk();
 for (Disk disk : disks) {
     System.out.println("设备: " + disk.getDeviceName());
     System.out.println("挂载点: " + disk.getMountPoint());
-    System.out.println("总空间: " + provider.formatByte(disk.getTotalSpace()));
-    System.out.println("已用空间: " + provider.formatByte(disk.getUsedSpace()));
-    System.out.println("可用空间: " + provider.formatByte(disk.getFreeSpace()));
+    System.out.println("总空间: " + Formats.formatBytes(disk.getTotalSpace()));
+    System.out.println("已用空间: " + Formats.formatBytes(disk.getUsedSpace()));
+    System.out.println("可用空间: " + Formats.formatBytes(disk.getFreeSpace()));
     System.out.println("使用率: " + disk.getUsagePercent() + "%");
 }
 ```
@@ -134,16 +134,16 @@ for (Disk disk : disks) {
 #### 5. 监控 JVM 信息
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取 JVM 信息
-Jvm jvm = provider.getJvm();
+Jvm jvm = collector.getJvm();
 System.out.println("JDK 版本: " + jvm.getJdkVersion());
 System.out.println("JDK 主目录: " + jvm.getJdkHome());
 System.out.println("JVM 名称: " + jvm.getJdkName());
-System.out.println("总内存: " + provider.formatByte(jvm.getTotalMemory()));
-System.out.println("最大内存: " + provider.formatByte(jvm.getMaxMemory()));
-System.out.println("空闲内存: " + provider.formatByte(jvm.getFreeMemory()));
+System.out.println("总内存: " + Formats.formatBytes(jvm.getTotalMemory()));
+System.out.println("最大内存: " + Formats.formatBytes(jvm.getMaxMemory()));
+System.out.println("空闲内存: " + Formats.formatBytes(jvm.getFreeMemory()));
 System.out.println("使用率: " + jvm.getUsagePercent() + "%");
 System.out.println("启动时间: " + jvm.getStartTime());
 System.out.println("运行时间: " + jvm.getUptime() + "ms");
@@ -152,11 +152,11 @@ System.out.println("运行时间: " + jvm.getUptime() + "ms");
 #### 6. 监控进程
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取 CPU 使用率前 10 的进程
 Map<String, Object> result = new HashMap<>();
-provider.appendProcessList(10, TID.PROCESS, result);
+collector.appendProcessList(10, TID.PROCESS, result);
 List<Map<String, Object>> processes = (List<Map<String, Object>>) result.get(TID.PROCESS);
 
 for (Map<String, Object> process : processes) {
@@ -169,10 +169,10 @@ for (Map<String, Object> process : processes) {
 #### 7. 获取主机信息
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取主机信息(包括网络统计)
-Host host = provider.getHost();
+Host host = collector.getHost();
 System.out.println("主机名: " + host.getName());
 System.out.println("IP 地址: " + host.getIp());
 System.out.println("操作系统: " + host.getOs());
@@ -189,8 +189,8 @@ System.out.println("发送字节/秒: " + host.getTxBytesPerSecond() + "KB");
 ### 1. 访问硬件抽象层
 
 ```java
-Provider provider = new Provider();
-HardwareAbstractionLayer hal = provider.getHardware();
+Collector collector = new Collector();
+HardwareAbstractionLayer hal = collector.getHardware();
 
 // 处理器信息
 CentralProcessor processor = hal.getProcessor();
@@ -242,8 +242,8 @@ for (Display display : displays) {
 ### 2. 访问操作系统信息
 
 ```java
-Provider provider = new Provider();
-OperatingSystem os = provider.getOperatingSystem();
+Collector collector = new Collector();
+OperatingSystem os = collector.getOperatingSystem();
 
 // 操作系统信息
 System.out.println("系列: " + os.getFamily());
@@ -275,23 +275,23 @@ for (OSFileStore fs : fileStores) {
 ```java
 public class CustomHealthCheck {
 
-    private final Provider provider = new Provider();
+    private final Collector collector = new Collector();
 
     public Map<String, Object> checkSystemHealth() {
         Map<String, Object> health = new HashMap<>();
 
         // CPU 健康检查
-        Cpu cpu = provider.getCpu();
+        Cpu cpu = collector.getCpu();
         health.put("cpu_健康", cpu.getTotalUsage() < 80.0);
         health.put("cpu_使用率", cpu.getTotalUsage());
 
         // 内存健康检查
-        Memory memory = provider.getMemory();
+        Memory memory = collector.getMemory();
         health.put("memory_健康", memory.getUsage() < 80.0);
         health.put("memory_使用率", memory.getUsage());
 
         // 磁盘健康检查
-        List<Disk> disks = provider.getDisk();
+        List<Disk> disks = collector.getDisk();
         boolean diskHealthy = true;
         for (Disk disk : disks) {
             if (disk.getUsagePercent() > 80.0) {
@@ -313,16 +313,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class SystemMonitor {
+public class MetricsScheduler {
 
-    private final Provider provider = new Provider();
+    private final Collector collector = new Collector();
     private final ScheduledExecutorService scheduler =
         Executors.newScheduledThreadPool(1);
 
     public void startMonitoring() {
         scheduler.scheduleAtFixedRate(() -> {
-            Cpu cpu = provider.getCpu();
-            Memory memory = provider.getMemory();
+            Cpu cpu = collector.getCpu();
+            Memory memory = collector.getMemory();
 
             System.out.println("CPU 使用率: " + cpu.getTotalUsage() + "%");
             System.out.println("内存使用率: " + memory.getUsage() + "%");
@@ -346,7 +346,7 @@ public class SystemMonitor {
 ### 5. 查询多个指标
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // 获取多个特定指标
 List<String> metrics = Arrays.asList(
@@ -356,7 +356,7 @@ List<String> metrics = Arrays.asList(
     TID.JVM
 );
 
-Map<String, Object> result = provider.get(metrics);
+Map<String, Object> result = collector.get(metrics);
 result.forEach((key, value) -> System.out.println(key + ": " + value));
 ```
 
@@ -385,20 +385,20 @@ result.forEach((key, value) -> System.out.println(key + ": " + value));
 
 ## 💡 最佳实践
 
-### 1. 使用单例 Provider
+### 1. 使用单例 Collector
 
 ```java
-// ✅ 推荐: 重用 Provider 实例
-private static final Provider PROVIDER = new Provider();
+// ✅ 推荐: 重用 Collector 实例
+private static final Collector COLLECTOR = new Collector();
 
 public void checkHealth() {
-    Cpu cpu = PROVIDER.getCpu();
+    Cpu cpu = COLLECTOR.getCpu();
     // ...
 }
 
 // ❌ 不推荐: 每次都创建新实例
 public void checkHealth() {
-    Provider provider = new Provider(); // 浪费资源
+    Collector collector = new Collector(); // 浪费资源
     // ...
 }
 ```
@@ -406,8 +406,8 @@ public void checkHealth() {
 ### 2. 处理平台差异
 
 ```java
-Provider provider = new Provider();
-OS osType = (OS) provider.type();
+Collector collector = new Collector();
+OS osType = (OS) collector.type();
 
 switch (osType) {
     case WINDOWS:
@@ -428,10 +428,10 @@ switch (osType) {
 
 ```java
 // ✅ 推荐: 仅查询所需内容
-Map<String, Object> result = provider.getSingle(TID.CPU);
+Map<String, Object> result = collector.getSingle(TID.CPU);
 
 // ❌ 不推荐: 只需一个指标却查询所有
-Map<String, Object> result = provider.getAll(); // 浪费资源
+Map<String, Object> result = collector.getAll(); // 浪费资源
 ```
 
 ### 4. 使用定时监控
@@ -440,13 +440,13 @@ Map<String, Object> result = provider.getAll(); // 浪费资源
 // ✅ 推荐: 使用定时执行器进行周期性检查
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 scheduler.scheduleAtFixedRate(() -> {
-    Cpu cpu = provider.getCpu();
+    Cpu cpu = collector.getCpu();
     // 根据 cpu.getTotalUsage() 记录日志或发出警告
 }, 0, 5, TimeUnit.SECONDS);
 
 // ❌ 不推荐: 忙等待
 while (true) {
-    Cpu cpu = provider.getCpu();
+    Cpu cpu = collector.getCpu();
     Thread.sleep(5000); // 阻塞线程
 }
 ```
@@ -456,7 +456,7 @@ while (true) {
 ```java
 public Map<String, Object> safeGetCpu() {
     try {
-        Cpu cpu = provider.getCpu();
+        Cpu cpu = collector.getCpu();
         return Map.of("cpu", cpu);
     } catch (Exception e) {
         Logger.error("获取 CPU 信息失败", e);
@@ -474,7 +474,7 @@ public Map<String, Object> safeGetCpu() {
 **A**: 使用 `getCpu()` 方法,它会计算 600 毫秒间隔内的使用率:
 
 ```java
-Cpu cpu = provider.getCpu();
+Cpu cpu = collector.getCpu();
 double totalUsage = cpu.getTotalUsage();
 ```
 
@@ -490,8 +490,8 @@ double totalUsage = cpu.getTotalUsage();
 **A**: 使用 `getPowerSourceInfo()` 方法:
 
 ```java
-Map<String, Object> powerInfo = provider.getPowerSourceInfo();
-List<PowerSource> powerSources = provider.getHardware().getPowerSources();
+Map<String, Object> powerInfo = collector.getPowerSourceInfo();
+List<PowerSource> powerSources = collector.getHardware().getPowerSources();
 
 for (PowerSource ps : powerSources) {
     if (!ps.isPowerOnLine()) {
@@ -512,7 +512,7 @@ for (PowerSource ps : powerSources) {
 **A**:
 - 仅查询必要的指标
 - 增加监控间隔(例如,5-10 秒而不是 1 秒)
-- 使用单例 Provider 实例
+- 使用单例 Collector 实例
 - 适当缓存结果
 
 ### Q6: 可以与 Spring Boot Actuator 集成吗?
@@ -523,12 +523,12 @@ for (PowerSource ps : powerSources) {
 @Component
 public class SystemHealthIndicator implements HealthIndicator {
 
-    private final Provider provider = new Provider();
+    private final Collector collector = new Collector();
 
     @Override
     public Health health() {
-        Cpu cpu = provider.getCpu();
-        Memory memory = provider.getMemory();
+        Cpu cpu = collector.getCpu();
+        Memory memory = collector.getMemory();
 
         if (cpu.getTotalUsage() > 90.0 || memory.getUsage() > 90.0) {
             return Health.down()
@@ -550,14 +550,14 @@ public class SystemHealthIndicator implements HealthIndicator {
 **A**: 网络统计在 `getHost()` 中通过 3 秒间隔计算:
 
 ```java
-Host host = provider.getHost();
+Host host = collector.getHost();
 System.out.println("接收: " + host.getRxBytesPerSecond() + " KB/s");
 System.out.println("发送: " + host.getTxBytesPerSecond() + " KB/s");
 ```
 
 ### Q8: 是否线程安全?
 
-**A**: 是的,Provider 是线程安全的,可以在多线程环境中安全使用。
+**A**: 是的,Collector 是线程安全的,可以在多线程环境中安全使用。
 
 -----
 
@@ -590,7 +590,7 @@ System.out.println("发送: " + host.getTxBytesPerSecond() + " KB/s");
 
 ### 3. 内存占用
 
-- Provider 实例: ~1KB
+- Collector 实例: ~1KB
 - 缓存的平台实例: ~50-100KB
 - 查询结果: 根据数据量变化
 
@@ -604,7 +604,7 @@ private long lastCpuUpdate = 0;
 public Cpu getCpuWithCache() {
     long now = System.currentTimeMillis();
     if (now - lastCpuUpdate > 5000) { // 5 秒缓存
-        cachedCpu = provider.getCpu();
+        cachedCpu = collector.getCpu();
         lastCpuUpdate = now;
     }
     return cachedCpu;
