@@ -95,7 +95,8 @@ bus:
     basePackage:
       ai.deepparser.nexus.mapper
     mapperLocations: classpath:mapper/**/*.xml
-    autoDelimitKeywords: true
+    identifier:
+      enabled: true # 默认启用；设置为 false 可关闭严格标识符校验。
     reasonable: false
     supportMethodsArguments: false
     params: count=countSql

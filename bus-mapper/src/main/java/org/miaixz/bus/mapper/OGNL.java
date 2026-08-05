@@ -141,7 +141,10 @@ public class OGNL {
             YearMonth.class));
 
     /**
-     * A string containing SQL syntax keywords for injection checks, delimited by '|'.
+     * SQL injection signatures used to inspect external values, delimited by '|'.
+     * <p>
+     * These signatures are security heuristics, not database reserved-word or identifier compliance rules.
+     * </p>
      */
     public static final String SQL_SYNTAX_KEYWORD = "and |exec |peformance_schema|information_schema|extractvalue|updatexml|geohash|gtid_subset|gtid_subtract|insert |select |delete |update |drop |count |chr |mid |master |truncate |char |declare |;|or |+|--";
 

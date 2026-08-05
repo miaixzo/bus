@@ -31,6 +31,7 @@ import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.audit.AuditHandler;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
+import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
 import org.miaixz.bus.mapper.feature.operation.OperationHandler;
 import org.miaixz.bus.mapper.feature.paging.PageHandler;
 import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
@@ -96,6 +97,26 @@ public class MapperPluginFactory {
      * @return configured interceptor
      */
     public static MybatisInterceptor build(MapperOptions options, MapperPluginProviders providers) {
+        return build(options, providers, IdentifierValidator.create(options));
+    }
+
+    /**
+     * Builds the primary mapper interceptor with an explicitly resolved identifier validator.
+     *
+     * <p>
+     * Starter integration uses this overload so the same validator instance performs startup validation and pagination
+     * sort validation. A {@code null} validator means that every effective identifier scope is explicitly disabled.
+     * </p>
+     *
+     * @param options             mapper options
+     * @param providers           runtime providers
+     * @param identifierValidator identifier validator, or {@code null} when disabled
+     * @return configured interceptor
+     */
+    public static MybatisInterceptor build(
+            MapperOptions options,
+            MapperPluginProviders providers,
+            IdentifierValidator identifierValidator) {
         List<MapperHandler> handlers = new ArrayList<>();
         if (options != null) {
             Properties resolved = effectiveProperties(options);
@@ -107,7 +128,7 @@ public class MapperPluginFactory {
             configureTenant(options, providers, resolved, handlers);
             configureVisible(options, providers, resolved, handlers);
             configurePopulate(options, providers, resolved, handlers);
-            configurePagination(options, resolved, handlers);
+            configurePagination(options, resolved, identifierValidator, handlers);
             configureAudit(options, providers, resolved, handlers);
         }
 
@@ -147,12 +168,17 @@ public class MapperPluginFactory {
      * <p>
      * Pagination configuration is selected by the effective JDBC data source key while preserving legacy defaults.
      *
-     * @param options  mapper runtime options
-     * @param resolved flattened Mapper configuration
-     * @param handlers handler list to update
+     * @param options             mapper runtime options
+     * @param resolved            flattened Mapper configuration
+     * @param identifierValidator optional identifier validator
+     * @param handlers            handler list to update
      */
-    private static void configurePagination(MapperOptions options, Properties resolved, List<MapperHandler> handlers) {
-        PageHandler<?> pageHandler = new PageHandler<>();
+    private static void configurePagination(
+            MapperOptions options,
+            Properties resolved,
+            IdentifierValidator identifierValidator,
+            List<MapperHandler> handlers) {
+        PageHandler<?> pageHandler = new PageHandler<>(identifierValidator);
         pageHandler.setProperties(resolved);
         handlers.add(pageHandler);
         Logger.debug(false, "Mapper", "Pagination handler configured");
@@ -559,12 +585,15 @@ public class MapperPluginFactory {
             shared(properties, Args.PAGE_KEY, Args.PAGE_REASONABLE, page.isReasonable());
             shared(properties, Args.PAGE_KEY, Args.PAGE_SUPPORT_METHOD_ARGUMENTS, page.isSupportMethodsArguments());
             shared(properties, Args.PAGE_KEY, Args.PAGE_PARAMS, page.getParams());
-            shared(properties, Args.PAGE_KEY, Args.PAGE_AUTO_DELIMIT_KEYWORDS, page.getAutoDelimitKeywords());
         } else {
             shared(properties, Args.PAGE_KEY, Args.PAGE_REASONABLE, options.getReasonable());
             shared(properties, Args.PAGE_KEY, Args.PAGE_SUPPORT_METHOD_ARGUMENTS, options.getSupportMethodsArguments());
             shared(properties, Args.PAGE_KEY, Args.PAGE_PARAMS, options.getParams());
-            shared(properties, Args.PAGE_KEY, Args.PAGE_AUTO_DELIMIT_KEYWORDS, options.getAutoDelimitKeywords());
+        }
+
+        MapperOptions.IdentifierOptions identifier = options.getIdentifier();
+        if (identifier != null) {
+            shared(properties, Args.IDENTIFIER_KEY, Args.PROP_ENABLED, identifier.isEnabled());
         }
 
         MapperOptions.PrefixOptions prefix = options.getPrefix();

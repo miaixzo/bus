@@ -37,7 +37,10 @@ public class Args {
     }
 
     /**
-     * Regular expression to remove potential delimiters (like backticks or brackets) from field names.
+     * Parser pattern used to unwrap common delimiters when comparing mapped columns and properties.
+     * <p>
+     * This pattern normalizes already-declared mappings; it does not validate identifier syntax or quote legality.
+     * </p>
      */
     public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
 
@@ -55,6 +58,11 @@ public class Args {
      * Pagination configuration scope.
      */
     public static final String PAGE_KEY = "page";
+
+    /**
+     * Physical identifier validation configuration scope.
+     */
+    public static final String IDENTIFIER_KEY = "identifier";
 
     /**
      * Configuration key for table-related settings (prefix, ignore).
@@ -175,11 +183,6 @@ public class Args {
      * Audit property: whether to print to console.
      */
     public static final String AUDIT_PRINT_CONSOLE = "printConsole";
-
-    /**
-     * Page property: auto-delimit keywords.
-     */
-    public static final String PAGE_AUTO_DELIMIT_KEYWORDS = "autoDelimitKeywords";
 
     /**
      * Page property: reasonable pagination.

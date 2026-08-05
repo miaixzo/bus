@@ -44,6 +44,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.builder.MapperEntityResolver;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
+import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
 import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
 import org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler;
@@ -65,7 +66,7 @@ import org.miaixz.bus.spring.jdbc.DynamicDataSource;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Starter adapter for creating mapper plugins and coordinating mapper schema initialization.
+ * Starter adapter for creating Mapper plugins, validating physical identifiers, and coordinating schema initialization.
  * <p>
  * Pure plugin-chain construction lives in {@link MapperPluginFactory}. Spring-specific work such as property binding,
  * provider lookup, datasource lookup and package scanning stays here so {@link MapperConfiguration} only declares
@@ -135,8 +136,8 @@ public final class MapperPluginBuilder {
     /**
      * Configures mapper plugins on the MyBatis session factory bean.
      * <p>
-     * The interceptor is attached to the factory first, then mapper schema initialization is executed when global,
-     * namespace, or provider configuration enables it.
+     * The interceptor is attached to the factory first, physical identifiers are validated for each enabled datasource
+     * scope, and then schema initialization runs when global, namespace, or provider configuration enables it.
      *
      * @param factory        MyBatis session factory bean
      * @param properties     mapper properties
@@ -145,7 +146,7 @@ public final class MapperPluginBuilder {
      * @param dataSource     primary data source
      * @param beanFactory    bean factory used to discover mapper definitions
      * @param beanProvider   Spring Bean provider
-     * @throws Exception if schema initialization fails
+     * @throws Exception if identifier validation or schema initialization fails
      */
     public static void configureSqlSessionFactory(
             SqlSessionFactoryBean factory,
@@ -157,9 +158,16 @@ public final class MapperPluginBuilder {
             BeanProvider beanProvider) throws Exception {
         MapperProperties mapperProperties = properties == null ? new MapperProperties() : properties;
         MapperPluginProviders mapperProviders = resolvePluginProviders(mapperProperties, beanProvider);
+        IdentifierValidator identifierValidator = IdentifierValidator.create(mapperProperties);
         if (factory != null) {
-            factory.setPlugins(build(mapperProperties, mapperProviders));
+            factory.setPlugins(MapperPluginFactory.build(mapperProperties, mapperProviders, identifierValidator));
         }
+        validateIdentifiersIfNecessary(
+                identifierValidator,
+                mapperProperties,
+                mapperProviders,
+                dataSource,
+                beanFactory);
         initializeSchemaIfNecessary(
                 mapperProperties,
                 mapperProviders,
@@ -256,10 +264,10 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Resolves the effective table prefix configuration for schema initialization.
+     * Resolves the effective table prefix configuration for Mapper startup operations.
      * <p>
      * Prefix configuration follows the same provider and property resolution path used by the table prefix plugin, so
-     * schema DDL generation observes both global and database-specific table prefix settings.
+     * identifier validation and schema DDL generation observe the same global and datasource-specific table names.
      *
      * @param properties         mapper properties
      * @param providers          provider holder
@@ -359,7 +367,7 @@ public final class MapperPluginBuilder {
         if (schemaConfig == null || !schemaConfig.enabled()) {
             return;
         }
-        ResolvedSchemaDataSource schemaDataSource = resolveSchemaInitializationTarget(dataSource, beanFactory, null);
+        ResolvedDataSource schemaDataSource = resolveDataSourceTarget(dataSource, beanFactory, null);
         runSchemaInitialization(
                 properties,
                 providers,
@@ -411,7 +419,7 @@ public final class MapperPluginBuilder {
                         "disabled");
                 continue;
             }
-            ResolvedSchemaDataSource schemaDataSource = resolveSchemaInitializationTarget(
+            ResolvedDataSource schemaDataSource = resolveDataSourceTarget(
                     primaryDataSource,
                     beanFactory,
                     namespaceName);
@@ -492,37 +500,81 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Resolves the target data source used by schema initialization.
+     * Validates Mapper entity identifiers for each configured datasource namespace, or the primary datasource when no
+     * namespace is configured, while the default-enabled identifier validator is active.
+     *
+     * @param identifierValidator identifier validator, or {@code null} when explicitly disabled for every scope
+     * @param properties          mapper properties
+     * @param providers           mapper runtime providers
+     * @param primaryDataSource   primary datasource supplied to Mapper assembly
+     * @param beanFactory         bean factory used to resolve Mapper entities and named datasources
+     */
+    private static void validateIdentifiersIfNecessary(
+            IdentifierValidator identifierValidator,
+            MapperProperties properties,
+            MapperPluginProviders providers,
+            DataSource primaryDataSource,
+            ConfigurableListableBeanFactory beanFactory) {
+        if (identifierValidator == null) {
+            return;
+        }
+        Set<Class<?>> entityClasses = resolveMapperEntityClassesFromBeanFactory(beanFactory);
+        Properties resolvedProperties = MapperOptions.resolve(properties);
+        Set<String> namespaces = new LinkedHashSet<>(MapperOptions.resolveNamespaceNames(resolvedProperties));
+        namespaces.remove(Normal.DEFAULT);
+        if (primaryDataSource instanceof DynamicDataSource dynamicDataSource) {
+            dynamicDataSource.getAllDataSources().keySet().stream().map(String::valueOf).forEach(namespaces::add);
+        }
+        if (namespaces.isEmpty()) {
+            if (!identifierValidator.isEnabled(null)) {
+                return;
+            }
+            TablePrefixConfig prefix = resolveTablePrefixConfig(properties, providers, null, resolvedProperties);
+            identifierValidator.validate(primaryDataSource, null, entityClasses, prefix);
+            return;
+        }
+        for (String namespace : namespaces) {
+            if (!identifierValidator.isEnabled(namespace)) {
+                continue;
+            }
+            ResolvedDataSource target = resolveDataSourceTarget(primaryDataSource, beanFactory, namespace);
+            TablePrefixConfig prefix = resolveTablePrefixConfig(properties, providers, namespace, resolvedProperties);
+            identifierValidator.validate(target.dataSource(), namespace, entityClasses, prefix);
+        }
+    }
+
+    /**
+     * Resolves a target datasource used by Mapper startup features.
      * <p>
      * The namespace name is the only datasource route key. A named {@link DataSource} bean matching the namespace is
      * preferred, followed by a route registered in {@link DynamicDataSource}. An unresolved namespace is rejected so
-     * schema operations cannot silently run against the primary datasource. This method never changes JDBC routing
+     * startup operations cannot silently run against the primary datasource. This method never changes JDBC routing
      * state.
      *
      * @param primaryDataSource data source supplied to mapper Bean assembly
      * @param beanFactory       bean factory used for named data source lookup
-     * @param namespaceName     namespace name, or {@code null} for global schema initialization
-     * @return schema initialization target data source
+     * @param namespaceName     namespace name, or {@code null} for the primary datasource
+     * @return resolved target datasource
      */
-    private static ResolvedSchemaDataSource resolveSchemaInitializationTarget(
+    private static ResolvedDataSource resolveDataSourceTarget(
             DataSource primaryDataSource,
             ConfigurableListableBeanFactory beanFactory,
             String namespaceName) {
         String namespace = StringKit.trim(namespaceName);
         if (StringKit.isEmpty(namespace)) {
-            return new ResolvedSchemaDataSource(primaryDataSource);
+            return new ResolvedDataSource(primaryDataSource);
         }
         DataSource namedDataSource = resolveNamedDataSource(beanFactory, namespace);
         if (namedDataSource != null) {
-            return new ResolvedSchemaDataSource(namedDataSource);
+            return new ResolvedDataSource(namedDataSource);
         }
         if (primaryDataSource instanceof DynamicDataSource dynamicDataSource) {
             Object routedDataSource = dynamicDataSource.getAllDataSources().get(namespace);
             if (routedDataSource instanceof DataSource dataSource) {
-                return new ResolvedSchemaDataSource(dataSource);
+                return new ResolvedDataSource(dataSource);
             }
         }
-        throw new IllegalStateException("Unable to locate schema datasource route for mapper namespace "
+        throw new IllegalStateException("Unable to locate datasource route for mapper namespace "
                 + Symbol.SINGLE_QUOTE + namespace + Symbol.SINGLE_QUOTE);
     }
 
@@ -834,11 +886,11 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Resolved data source target for one schema initialization pass.
+     * Resolved datasource target for one Mapper startup pass.
      *
-     * @param dataSource data source used for metadata reads and DDL execution
+     * @param dataSource data source used for metadata reads and optional DDL execution
      */
-    private record ResolvedSchemaDataSource(DataSource dataSource) {
+    private record ResolvedDataSource(DataSource dataSource) {
 
     }
 

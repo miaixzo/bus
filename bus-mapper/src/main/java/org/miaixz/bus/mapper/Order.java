@@ -137,16 +137,6 @@ public interface Order extends org.miaixz.bus.core.Order {
     }
 
     /**
-     * Validates the property name.
-     *
-     * @param property the property to validate
-     * @return true if valid, false otherwise
-     */
-    private static boolean propertyIsValid(String property) {
-        return property != null && !property.trim().isEmpty();
-    }
-
-    /**
      * Gets the sort direction.
      *
      * @return the sort direction, or null if not applicable

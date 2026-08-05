@@ -52,6 +52,7 @@ module bus.mapper {
     exports org.miaixz.bus.mapper.criteria;
     exports org.miaixz.bus.mapper.dialect;
     exports org.miaixz.bus.mapper.feature.audit;
+    exports org.miaixz.bus.mapper.feature.identifier;
     exports org.miaixz.bus.mapper.feature.keygen;
     exports org.miaixz.bus.mapper.feature.operation;
     exports org.miaixz.bus.mapper.feature.paging;

@@ -119,13 +119,16 @@ public final class TableNameParser {
     private static final String KEYWORD_DUPLICATE = "duplicate";
 
     /**
-     * A list of SQL keywords that are of concern for table name parsing.
+     * Structural SQL tokens that introduce or affect table-name parsing.
+     * <p>
+     * This parser vocabulary is independent from database reserved-word validation.
+     * </p>
      */
     private static final List<String> concerned = Arrays
             .asList(KEYWORD_TABLE, KEYWORD_INTO, KEYWORD_JOIN, KEYWORD_USING, KEYWORD_UPDATE, KEYWORD_STRAIGHT_JOIN);
 
     /**
-     * A list of SQL keywords that should be ignored during table name parsing.
+     * Structural tokens ignored while parsing table names.
      */
     private static final List<String> ignored = Arrays.asList(Symbol.BRACE_LEFT, TOKEN_SET, TOKEN_OF, TOKEN_DUAL);
 

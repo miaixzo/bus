@@ -95,7 +95,8 @@ bus:
     basePackage:
       ai.deepparser.nexus.mapper
     mapperLocations: classpath:mapper/**/*.xml
-    autoDelimitKeywords: true
+    identifier:
+      enabled: true # Enabled by default; set false to disable strict identifier validation.
     reasonable: false
     supportMethodsArguments: false
     params: count=countSql
