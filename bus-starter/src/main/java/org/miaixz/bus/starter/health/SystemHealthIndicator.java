@@ -24,7 +24,9 @@ import java.util.*;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.HealthIndicator;
 
-import org.miaixz.bus.health.Provider;
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.builtin.TID;
 
 /**
@@ -41,9 +43,9 @@ public class SystemHealthIndicator implements HealthIndicator {
     private static final Map<String, String> ALLOWED_DETAILS = allowedDetails();
 
     /**
-     * Provider used to obtain system health metrics.
+     * System and hardware information collector used to obtain health details.
      */
-    private final Provider provider;
+    private final Collector collector;
 
     /**
      * Allowlist controlling which health details are exposed.
@@ -53,11 +55,11 @@ public class SystemHealthIndicator implements HealthIndicator {
     /**
      * Creates an indicator for the selected Bus health detail identifiers.
      *
-     * @param provider system information provider
-     * @param details  selected detail identifiers
+     * @param collector system and hardware information collector
+     * @param details   selected detail identifiers
      */
-    public SystemHealthIndicator(Provider provider, Collection<String> details) {
-        this.provider = provider;
+    public SystemHealthIndicator(Collector collector, Collection<String> details) {
+        this.collector = collector;
         this.details = normalize(details);
     }
 
@@ -72,9 +74,9 @@ public class SystemHealthIndicator implements HealthIndicator {
             return Health.up().build();
         }
         try {
-            return Health.up().withDetails(provider.get(details)).build();
-        } catch (RuntimeException ignored) {
-            return Health.down().withDetail("error", "system health data unavailable").build();
+            return Health.up().withDetails(collector.get(details)).build();
+        } catch (RuntimeException e) {
+            return Health.down(e).build();
         }
     }
 
@@ -95,7 +97,8 @@ public class SystemHealthIndicator implements HealthIndicator {
      * Validates, canonicalizes, and de-duplicates requested health detail identifiers.
      *
      * @param details requested detail identifiers
-     * @return normalized detail name, or an empty string for blank input
+     * @return immutable normalized detail identifiers
+     * @throws ValidateException when a detail identifier is blank or unknown
      */
     private static List<String> normalize(Collection<String> details) {
         if (details == null || details.isEmpty()) {
@@ -104,11 +107,11 @@ public class SystemHealthIndicator implements HealthIndicator {
         List<String> normalized = new ArrayList<>(details.size());
         for (String detail : details) {
             if (detail == null || detail.isBlank()) {
-                throw new IllegalArgumentException("Health detail identifier must not be blank");
+                throw new ValidateException(ErrorCode._400, "Health detail identifier must not be blank");
             }
             String canonical = ALLOWED_DETAILS.get(detail.trim().toLowerCase(Locale.ROOT));
             if (canonical == null) {
-                throw new IllegalArgumentException("Unknown health detail identifier");
+                throw new ValidateException(ErrorCode._400, "Unknown health detail identifier");
             }
             if (!normalized.contains(canonical)) {
                 normalized.add(canonical);

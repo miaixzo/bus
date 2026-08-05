@@ -29,7 +29,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.health.builtin.TID;
 import org.miaixz.bus.starter.GeniusBuilder;
 
@@ -58,6 +60,7 @@ public class HealthProperties {
      *
      * @param enabled whether health integration is enabled
      * @param details ordered health detail identifiers
+     * @throws ValidateException when a configured detail is blank or unknown
      */
     public HealthProperties(@DefaultValue("false") boolean enabled, @DefaultValue List<String> details) {
         Set<String> normalized = new LinkedHashSet<>();
@@ -65,7 +68,7 @@ public class HealthProperties {
             for (String detail : details) {
                 String value = detail == null ? Normal.EMPTY : detail.trim();
                 if (value.isEmpty() || (!TID.ALL.equals(value) && !TID.ALL_TID.contains(value))) {
-                    throw new IllegalArgumentException("Unknown bus.health.details TID: " + detail);
+                    throw new ValidateException(ErrorCode._400, "Unknown bus.health.details TID: " + detail);
                 }
                 normalized.add(value);
             }

@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.SystemHook;
 
 /**
@@ -53,9 +54,9 @@ public class SystemHooksApi extends AbstractApi {
      * </pre>
      *
      * @return a list of SystemHook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<SystemHook> getSystemHooks() throws GitLabApiException {
+    public List<SystemHook> getSystemHooks() throws RelevantException {
         return (getSystemHooks(getDefaultPerPage()).all());
     }
 
@@ -69,9 +70,9 @@ public class SystemHooksApi extends AbstractApi {
      * @param page    the page to get
      * @param perPage the number of deploy keys per page
      * @return the list of SystemHook in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<SystemHook> getSystemHooks(int page, int perPage) throws GitLabApiException {
+    public List<SystemHook> getSystemHooks(int page, int perPage) throws RelevantException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "hooks");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -86,9 +87,9 @@ public class SystemHooksApi extends AbstractApi {
      *
      * @param itemsPerPage the number of SystemHook instances that will be fetched per page
      * @return a Pager of SystemHook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<SystemHook> getSystemHooks(int itemsPerPage) throws GitLabApiException {
+    public Pager<SystemHook> getSystemHooks(int itemsPerPage) throws RelevantException {
         return (new Pager<SystemHook>(this, SystemHook.class, itemsPerPage, null, "hooks"));
     }
 
@@ -100,9 +101,9 @@ public class SystemHooksApi extends AbstractApi {
      * </pre>
      *
      * @return a Stream of SystemHook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<SystemHook> getSystemHookStream() throws GitLabApiException {
+    public Stream<SystemHook> getSystemHookStream() throws RelevantException {
         return (getSystemHooks(getDefaultPerPage()).stream());
     }
 
@@ -115,9 +116,9 @@ public class SystemHooksApi extends AbstractApi {
      *
      * @param hookId the ID of the system hook.
      * @return the SystemHook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public SystemHook getSystemHook(Long hookId) throws GitLabApiException {
+    public SystemHook getSystemHook(Long hookId) throws RelevantException {
         Response response = get(Response.Status.OK, null, "hooks", hookId);
         return response.readEntity(SystemHook.class);
     }
@@ -135,14 +136,14 @@ public class SystemHooksApi extends AbstractApi {
      * @param tagPushEvents         when true, the hook will fire on new tags being pushed, optional
      * @param enableSslVerification do SSL verification when triggering the hook, optional
      * @return an SystemHook instance with info on the added system hook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public SystemHook addSystemHook(
             String url,
             String token,
             Boolean pushEvents,
             Boolean tagPushEvents,
-            Boolean enableSslVerification) throws GitLabApiException {
+            Boolean enableSslVerification) throws RelevantException {
 
         SystemHook systemHook = new SystemHook().withPushEvents(pushEvents).withTagPushEvents(tagPushEvents)
                 .withEnableSslVerification(enableSslVerification);
@@ -161,9 +162,9 @@ public class SystemHooksApi extends AbstractApi {
      * @param token      secret token to validate received payloads, optional
      * @param systemHook the systemHook to create
      * @return an SystemHook instance with info on the added system hook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public SystemHook addSystemHook(String url, String token, SystemHook systemHook) throws GitLabApiException {
+    public SystemHook addSystemHook(String url, String token, SystemHook systemHook) throws RelevantException {
 
         if (url == null) {
             throw new RuntimeException("url cannot be null");
@@ -190,9 +191,9 @@ public class SystemHooksApi extends AbstractApi {
      * @param systemHook the systemHook to update
      * @param token      secret token to validate received payloads, optional
      * @return an SystemHook instance with info on the added system hook
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public SystemHook updateSystemHook(SystemHook systemHook, String token) throws GitLabApiException {
+    public SystemHook updateSystemHook(SystemHook systemHook, String token) throws RelevantException {
 
         if (systemHook.getId() == null) {
             throw new RuntimeException("systemHook id cannot be null");
@@ -217,9 +218,9 @@ public class SystemHooksApi extends AbstractApi {
      * </pre>
      *
      * @param hook the SystemHook instance to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteSystemHook(SystemHook hook) throws GitLabApiException {
+    public void deleteSystemHook(SystemHook hook) throws RelevantException {
 
         if (hook == null) {
             throw new RuntimeException("hook cannot be null");
@@ -236,9 +237,9 @@ public class SystemHooksApi extends AbstractApi {
      * </pre>
      *
      * @param hookId the ID of the system hook to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteSystemHook(Long hookId) throws GitLabApiException {
+    public void deleteSystemHook(Long hookId) throws RelevantException {
 
         if (hookId == null) {
             throw new RuntimeException("hookId cannot be null");
@@ -255,9 +256,9 @@ public class SystemHooksApi extends AbstractApi {
      * </pre>
      *
      * @param hook the SystemHook instance to test
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void testSystemHook(SystemHook hook) throws GitLabApiException {
+    public void testSystemHook(SystemHook hook) throws RelevantException {
 
         if (hook == null) {
             throw new RuntimeException("hook cannot be null");
@@ -274,9 +275,9 @@ public class SystemHooksApi extends AbstractApi {
      * </pre>
      *
      * @param hookId the ID of the system hook to test
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void testSystemHook(Long hookId) throws GitLabApiException {
+    public void testSystemHook(Long hookId) throws RelevantException {
 
         if (hookId == null) {
             throw new RuntimeException("hookId cannot be null");
@@ -295,9 +296,9 @@ public class SystemHooksApi extends AbstractApi {
      * @param hookId the ID of the system hook
      * @param key    Key of the URL variable
      * @param value  Value of the URL variable.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void addSystemHookUrlVariable(Long hookId, String key, String value) throws GitLabApiException {
+    public void addSystemHookUrlVariable(Long hookId, String key, String value) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("value", value, true);
         put(Response.Status.CREATED, formData.asMap(), "hooks", hookId, "url_variables", key);
     }
@@ -311,9 +312,9 @@ public class SystemHooksApi extends AbstractApi {
      *
      * @param hookId the ID of the system hook
      * @param key    Key of the URL variable
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteSystemHookUrlVariable(Long hookId, String key) throws GitLabApiException {
+    public void deleteSystemHookUrlVariable(Long hookId, String key) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "hooks", hookId, "url_variables", key);
     }
 

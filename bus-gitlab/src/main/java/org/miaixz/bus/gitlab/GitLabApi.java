@@ -26,6 +26,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
 import org.miaixz.bus.gitlab.models.User;
@@ -51,8 +52,8 @@ public class GitLabApi implements AutoCloseable {
      * GitLab4J default per page. GitLab will ignore anything over 100.
      */
     public static final int DEFAULT_PER_PAGE = 96;
-    // Used to keep track of GitLabApiExceptions on calls that return Optional<?>
-    private static final Map<Integer, GitLabApiException> optionalExceptionMap = Collections
+    // Used to keep track of RelevantExceptions on calls that return Optional<?>
+    private static final Map<Integer, RelevantException> optionalExceptionMap = Collections
             .synchronizedMap(new WeakHashMap<>());
     private PersonalAccessTokenApi personalAccessTokenApi;
 
@@ -171,9 +172,9 @@ public class GitLabApi implements AutoCloseable {
      * @param username user name for which private token should be obtained
      * @param password a CharSequence containing the password for a given {@code username}
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public static GitLabApi oauth2Login(String url, String username, CharSequence password) throws GitLabApiException {
+    public static GitLabApi oauth2Login(String url, String username, CharSequence password) throws RelevantException {
         return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, password, null, null, false));
     }
 
@@ -187,9 +188,9 @@ public class GitLabApi implements AutoCloseable {
      * @param username user name for which private token should be obtained
      * @param password a char array holding the password for a given {@code username}
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public static GitLabApi oauth2Login(String url, String username, char[] password) throws GitLabApiException {
+    public static GitLabApi oauth2Login(String url, String username, char[] password) throws RelevantException {
 
         try (SecretString secretPassword = new SecretString(password)) {
             return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, secretPassword, null, null, false));
@@ -207,13 +208,13 @@ public class GitLabApi implements AutoCloseable {
      * @param password                a CharSequence containing the password for a given {@code username}
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(
             String url,
             String username,
             CharSequence password,
-            boolean ignoreCertificateErrors) throws GitLabApiException {
+            boolean ignoreCertificateErrors) throws RelevantException {
         return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, password, null, null, ignoreCertificateErrors));
     }
 
@@ -228,10 +229,10 @@ public class GitLabApi implements AutoCloseable {
      * @param password                a char array holding the password for a given {@code username}
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(String url, String username, char[] password, boolean ignoreCertificateErrors)
-            throws GitLabApiException {
+            throws RelevantException {
 
         try (SecretString secretPassword = new SecretString(password)) {
             return (GitLabApi
@@ -252,7 +253,7 @@ public class GitLabApi implements AutoCloseable {
      * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(
             String url,
@@ -260,7 +261,7 @@ public class GitLabApi implements AutoCloseable {
             CharSequence password,
             String secretToken,
             Map<String, Object> clientConfigProperties,
-            boolean ignoreCertificateErrors) throws GitLabApiException {
+            boolean ignoreCertificateErrors) throws RelevantException {
         return (GitLabApi.oauth2Login(
                 ApiVersion.V4,
                 url,
@@ -284,7 +285,7 @@ public class GitLabApi implements AutoCloseable {
      * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(
             String url,
@@ -292,7 +293,7 @@ public class GitLabApi implements AutoCloseable {
             char[] password,
             String secretToken,
             Map<String, Object> clientConfigProperties,
-            boolean ignoreCertificateErrors) throws GitLabApiException {
+            boolean ignoreCertificateErrors) throws RelevantException {
 
         try (SecretString secretPassword = new SecretString(password)) {
             return (GitLabApi.oauth2Login(
@@ -320,7 +321,7 @@ public class GitLabApi implements AutoCloseable {
      * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(
             ApiVersion apiVersion,
@@ -329,7 +330,7 @@ public class GitLabApi implements AutoCloseable {
             char[] password,
             String secretToken,
             Map<String, Object> clientConfigProperties,
-            boolean ignoreCertificateErrors) throws GitLabApiException {
+            boolean ignoreCertificateErrors) throws RelevantException {
 
         try (SecretString secretPassword = new SecretString(password)) {
             return (GitLabApi.oauth2Login(
@@ -357,7 +358,7 @@ public class GitLabApi implements AutoCloseable {
      * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(
             ApiVersion apiVersion,
@@ -366,7 +367,7 @@ public class GitLabApi implements AutoCloseable {
             CharSequence password,
             String secretToken,
             Map<String, Object> clientConfigProperties,
-            boolean ignoreCertificateErrors) throws GitLabApiException {
+            boolean ignoreCertificateErrors) throws RelevantException {
 
         if (username == null || username.trim().length() == 0) {
             throw new IllegalArgumentException("both username and email cannot be empty or null");
@@ -420,7 +421,7 @@ public class GitLabApi implements AutoCloseable {
                         url,
                         TokenType.OAUTH2_ACCESS);
                 return (gitLabApi);
-            } catch (GitLabApiException | RuntimeException e) {
+            } catch (RelevantException | RuntimeException e) {
                 Logger.warn(
                         false,
                         "GitLab",
@@ -562,13 +563,13 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Create and return an Optional instance associated with a GitLabApiException.
+     * Create and return an Optional instance associated with a RelevantException.
      *
      * @param <T>  the type of the Optional instance
-     * @param glae the GitLabApiException that was the result of a call to the GitLab API
+     * @param glae the RelevantException that was the result of a call to the GitLab API
      * @return the created Optional instance
      */
-    protected static final <T> Optional<T> createOptionalFromException(GitLabApiException glae) {
+    protected static final <T> Optional<T> createOptionalFromException(RelevantException glae) {
         Optional<T> optional = Optional.empty();
         optionalExceptionMap.put(System.identityHashCode(optional), glae);
         return (optional);
@@ -796,9 +797,9 @@ public class GitLabApi implements AutoCloseable {
      * to normal non-sudo operation you must call unsudo(), or pass null as the username.
      *
      * @param sudoAsUsername the username to sudo as, null will turn off sudo
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void sudo(String sudoAsUsername) throws GitLabApiException {
+    public void sudo(String sudoAsUsername) throws RelevantException {
 
         if (sudoAsUsername == null || sudoAsUsername.trim().length() == 0) {
             apiClient.setSudoAsId(null);
@@ -808,7 +809,7 @@ public class GitLabApi implements AutoCloseable {
         // Get the User specified by username, if you are not an admin or the username is not found, this will fail
         User user = getUserApi().getUser(sudoAsUsername);
         if (user == null || user.getId() == null) {
-            throw new GitLabApiException("the specified username was not found");
+            throw GitLabFailure.exception("the specified username was not found");
         }
 
         Long sudoAsId = user.getId();
@@ -827,9 +828,9 @@ public class GitLabApi implements AutoCloseable {
      * back to normal non-sudo operation you must call unsudo(), or pass null as the sudoAsId.
      *
      * @param sudoAsId the ID of the user to sudo as, null will turn off sudo
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void setSudoAsId(Long sudoAsId) throws GitLabApiException {
+    public void setSudoAsId(Long sudoAsId) throws RelevantException {
 
         if (sudoAsId == null) {
             apiClient.setSudoAsId(null);
@@ -839,7 +840,7 @@ public class GitLabApi implements AutoCloseable {
         // Get the User specified by the sudoAsId, if you are not an admin or the username is not found, this will fail
         User user = getUserApi().getUser(sudoAsId);
         if (user == null || !user.getId().equals(sudoAsId)) {
-            throw new GitLabApiException("the specified user ID was not found");
+            throw GitLabFailure.exception("the specified user ID was not found");
         }
 
         apiClient.setSudoAsId(sudoAsId);
@@ -853,7 +854,7 @@ public class GitLabApi implements AutoCloseable {
      * @return the exception associated with the provided Optional instance, or null if no exception is associated with
      *         the Optional instance
      */
-    public static final GitLabApiException getOptionalException(Optional<?> optional) {
+    public static final RelevantException getOptionalException(Optional<?> optional) {
         return (optionalExceptionMap.get(System.identityHashCode(optional)));
     }
 
@@ -873,11 +874,11 @@ public class GitLabApi implements AutoCloseable {
      * @param <T>      the type for the Optional parameter
      * @param optional the Optional instance to get the value for
      * @return the value of the Optional instance if no exception is associated with it
-     * @throws GitLabApiException if there was an exception associated with the Optional instance
+     * @throws RelevantException if there was an exception associated with the Optional instance
      */
-    public static final <T> T orElseThrow(Optional<T> optional) throws GitLabApiException {
+    public static final <T> T orElseThrow(Optional<T> optional) throws RelevantException {
 
-        GitLabApiException glea = getOptionalException(optional);
+        RelevantException glea = getOptionalException(optional);
         if (glea != null) {
             throw (glea);
         }
@@ -989,9 +990,9 @@ public class GitLabApi implements AutoCloseable {
      * Get the version info for the GitLab server using the GitLab Version API.
      *
      * @return the version info for the GitLab server
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Version getVersion() throws GitLabApiException {
+    public Version getVersion() throws RelevantException {
 
         /**
          * The version API class.

@@ -3441,19 +3441,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$EndOfReadException",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "fillInStackTrace",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.office.excel.reader.BigExcelReader$RowBatch",
       "methods": [
         {

@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Deployment;
 import org.miaixz.bus.gitlab.models.DeploymentFilter;
 import org.miaixz.bus.gitlab.models.MergeRequest;
@@ -57,9 +58,9 @@ public class DeploymentsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of Deployments
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Deployment> getProjectDeployments(Object projectIdOrPath) throws GitLabApiException {
+    public List<Deployment> getProjectDeployments(Object projectIdOrPath) throws RelevantException {
         return (getProjectDeployments(projectIdOrPath, null, getDefaultPerPage()).all());
     }
 
@@ -73,9 +74,9 @@ public class DeploymentsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of Deployments instances that will be fetched per page
      * @return a Pager of Deployment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Deployment> getProjectDeployments(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Deployment> getProjectDeployments(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
         return (getProjectDeployments(projectIdOrPath, null, itemsPerPage));
     }
 
@@ -89,10 +90,10 @@ public class DeploymentsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param filter          {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
      * @return a Pager of Deployment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<Deployment> getProjectDeployments(Object projectIdOrPath, DeploymentFilter filter)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getProjectDeployments(projectIdOrPath, filter, getDefaultPerPage()));
     }
 
@@ -107,10 +108,10 @@ public class DeploymentsApi extends AbstractApi {
      * @param filter          {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
      * @param itemsPerPage    the number of Deployments instances that will be fetched per page
      * @return a Pager of Deployment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<Deployment> getProjectDeployments(Object projectIdOrPath, DeploymentFilter filter, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = (filter != null ? new GitLabApiForm(filter.getQueryParams()) : new GitLabApiForm());
         return (new Pager<Deployment>(this, Deployment.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "deployments"));
@@ -125,9 +126,9 @@ public class DeploymentsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of Deployment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Deployment> getProjectDeploymentsStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<Deployment> getProjectDeploymentsStream(Object projectIdOrPath) throws RelevantException {
         return (getProjectDeployments(projectIdOrPath, null, getDefaultPerPage()).stream());
     }
 
@@ -141,10 +142,10 @@ public class DeploymentsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param filter          {@link DeploymentFilter} a DeploymentFilter instance with the filter settings
      * @return a list of Deployment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<Deployment> getProjectDeploymentsStream(Object projectIdOrPath, DeploymentFilter filter)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getProjectDeployments(projectIdOrPath, filter, getDefaultPerPage()).stream());
     }
 
@@ -158,9 +159,9 @@ public class DeploymentsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param deploymentId    the ID of a project's deployment
      * @return the specified Deployment instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Deployment getDeployment(Object projectIdOrPath, Long deploymentId) throws GitLabApiException {
+    public Deployment getDeployment(Object projectIdOrPath, Long deploymentId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getDefaultPerPageParam(),
@@ -185,7 +186,7 @@ public class DeploymentsApi extends AbstractApi {
     public Optional<Deployment> getOptionalDeployment(Object projectIdOrPath, Long deploymentId) {
         try {
             return (Optional.ofNullable(getDeployment(projectIdOrPath, deploymentId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -204,7 +205,7 @@ public class DeploymentsApi extends AbstractApi {
      * @param tag             A boolean that indicates if the deployed ref is a tag (true) or not (false), required
      * @param status          The status to filter deployments by, required
      * @return a Deployment instance with info on the added deployment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Deployment addDeployment(
             Object projectIdOrPath,
@@ -212,7 +213,7 @@ public class DeploymentsApi extends AbstractApi {
             String sha,
             String ref,
             Boolean tag,
-            DeploymentStatus status) throws GitLabApiException {
+            DeploymentStatus status) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("environment", environment, true)
                 .withParam("sha", sha, true).withParam("ref", ref, true).withParam("tag", tag, true)
@@ -238,10 +239,10 @@ public class DeploymentsApi extends AbstractApi {
      * @param deploymentId    The ID of the deployment to update, required
      * @param status          The new status of the deployment, required
      * @return an updated Deployment instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Deployment updateDeployment(Object projectIdOrPath, Long deploymentId, DeploymentStatus status)
-            throws GitLabApiException {
+            throws RelevantException {
 
         if (deploymentId == null) {
             throw new RuntimeException("deploymentId cannot be null");
@@ -270,9 +271,9 @@ public class DeploymentsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param deploymentId    The ID of the deployment to update, required
      * @return a list containing the MergeRequest instances shipped with a given deployment
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public List<MergeRequest> getMergeRequests(Object projectIdOrPath, Long deploymentId) throws GitLabApiException {
+    public List<MergeRequest> getMergeRequests(Object projectIdOrPath, Long deploymentId) throws RelevantException {
         return (getMergeRequests(projectIdOrPath, deploymentId, getDefaultPerPage()).all());
     }
 
@@ -287,10 +288,10 @@ public class DeploymentsApi extends AbstractApi {
      * @param deploymentId    The ID of the deployment to update, required
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager containing the MergeRequest instances shipped with a given deployment
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, Long deploymentId, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "deployments", deploymentId, "merge_requests"));
     }
@@ -305,10 +306,10 @@ public class DeploymentsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param deploymentId    The ID of the deployment to update, required
      * @return a Stream containing the MergeRequest instances shipped with a given deployment
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Stream<MergeRequest> getMergeRequestsStream(Object projectIdOrPath, Long deploymentId)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getMergeRequests(projectIdOrPath, deploymentId, getDefaultPerPage()).stream());
     }
 

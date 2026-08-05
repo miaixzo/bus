@@ -21,6 +21,8 @@ package org.miaixz.bus.gitlab;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
+
 /**
  * This interface provides a base class handler for processing GitLab Web Hook and System Hook callouts.
  *
@@ -77,8 +79,8 @@ public interface HookManager {
      * Parses and verifies an Event instance from the HTTP request and fires it off to the registered listeners.
      *
      * @param request the HttpServletRequest to read the Event instance from
-     * @throws GitLabApiException if the parsed event is not supported
+     * @throws RelevantException if the parsed event is not supported
      */
-    public void handleEvent(HttpServletRequest request) throws GitLabApiException;
+    public void handleEvent(HttpServletRequest request) throws RelevantException;
 
 }

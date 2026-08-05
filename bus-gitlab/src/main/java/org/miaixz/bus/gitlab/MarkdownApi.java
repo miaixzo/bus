@@ -21,6 +21,7 @@ package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.Markdown;
 import org.miaixz.bus.gitlab.models.MarkdownRequest;
@@ -52,13 +53,13 @@ public class MarkdownApi extends AbstractApi {
      *
      * @param text text to be transformed
      * @return a Markdown instance with transformed info
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 11.0
      */
-    public Markdown getMarkdown(String text) throws GitLabApiException {
+    public Markdown getMarkdown(String text) throws RelevantException {
 
         if (!isApiVersion(ApiVersion.V4)) {
-            throw new GitLabApiException("Api version must be v4");
+            throw GitLabFailure.exception("Api version must be v4");
         }
 
         return getMarkdown(new MarkdownRequest(text, true));
@@ -73,13 +74,13 @@ public class MarkdownApi extends AbstractApi {
      *
      * @param markdownRequest a request of markdown transformation
      * @return a Markdown instance with transformed info
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 11.0
      */
-    public Markdown getMarkdown(MarkdownRequest markdownRequest) throws GitLabApiException {
+    public Markdown getMarkdown(MarkdownRequest markdownRequest) throws RelevantException {
 
         if (!isApiVersion(ApiVersion.V4)) {
-            throw new GitLabApiException("Api version must be v4");
+            throw GitLabFailure.exception("Api version must be v4");
         }
 
         Response response = post(Response.Status.OK, markdownRequest, "markdown");

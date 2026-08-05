@@ -19,48 +19,35 @@
 */
 package org.miaixz.bus.starter.health;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.availability.ApplicationAvailability;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import org.miaixz.bus.health.Provider;
+import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableHealth;
 
 /**
- * Configures application health indicators and availability monitoring.
+ * Configures application availability monitoring and its lightweight HTTP endpoint.
  * <p>
- * This configuration class sets up all the necessary beans for the health monitoring feature, including the data
- * provider and the Spring Boot health indicator. The entire configuration is conditional on the health feature being
- * explicitly enabled.
+ * The configuration reuses the Bus Health collector for explicitly selected details while the endpoint itself reports
+ * Spring Boot's in-memory liveness and readiness states without requiring Actuator.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @EnableConfigurationProperties(value = { HealthProperties.class })
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(name = { "org.miaixz.bus.health.Provider",
-        "org.springframework.boot.health.contributor.HealthIndicator" })
 @ConditionalOnEnabled(annotation = EnableHealth.class, prefix = GeniusBuilder.HEALTH)
 public class HealthConfiguration {
-
-    /**
-     * Bound health configuration properties.
-     */
-    private final HealthProperties properties;
-
-    /**
-     * Stores the health-reporting policy used by the indicator and availability listener.
-     *
-     * @param properties bound configuration properties
-     */
-    public HealthConfiguration(HealthProperties properties) {
-        this.properties = properties;
-    }
 
     /**
      * Creates the observer for Spring Boot availability state changes.
@@ -74,34 +61,90 @@ public class HealthConfiguration {
     }
 
     /**
-     * Creates the {@link Provider} bean, which is responsible for gathering raw system and hardware information.
+     * Creates the collector responsible for gathering system and hardware information.
      *
-     * @return A new {@link Provider} instance.
-     * @throws IllegalStateException if the provider fails to initialize.
+     * @return system and hardware information collector
+     * @throws IllegalStateException if the collector fails to initialize
      */
     @Bean
-    @ConditionalOnClass(name = "org.springframework.boot.health.contributor.HealthIndicator")
-    @ConditionalOnMissingBean(Provider.class)
-    public Provider provider() {
+    @ConditionalOnMissingBean(Collector.class)
+    public Collector collector() {
         try {
-            return new Provider();
+            return new Collector();
         } catch (Exception e) {
-            Logger.error(false, "Starter", "Health failed to initialize Provider: {}", e.getClass().getSimpleName(), e);
-            throw new IllegalStateException("Failed to initialize Provider: " + e.getMessage(), e);
+            Logger.error(
+                    false,
+                    "Starter",
+                    "Health failed to initialize Collector: {}",
+                    e.getClass().getSimpleName(),
+                    e);
+            throw new IllegalStateException("Failed to initialize Collector: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Creates the read-only system health indicator when the Boot health SPI is available.
+     * Creates the service that combines application availability with selected Bus Health details.
      *
-     * @param provider provider instance
-     * @return the health indicator backed by the selected health Provider
+     * @param properties   health endpoint properties
+     * @param collector    system and hardware information collector
+     * @param publisher    application event publisher
+     * @param availability current application availability state
+     * @return health query service
      */
     @Bean
-    @ConditionalOnClass(name = "org.springframework.boot.health.contributor.HealthIndicator")
-    @ConditionalOnMissingBean(SystemHealthIndicator.class)
-    public SystemHealthIndicator systemHealthIndicator(Provider provider) {
-        return new SystemHealthIndicator(provider, this.properties.getDetails());
+    @ConditionalOnMissingBean(HealthService.class)
+    public HealthService healthService(
+            HealthProperties properties,
+            Collector collector,
+            ApplicationEventPublisher publisher,
+            ApplicationAvailability availability) {
+        return new HealthService(properties, collector, publisher, availability);
+    }
+
+    /**
+     * Creates and registers the lightweight health endpoint handler dynamically.
+     *
+     * @param service        health query service
+     * @param handlerMapping Spring MVC request mapping registry
+     * @return dynamically registered health endpoint handler
+     */
+    @Bean
+    @ConditionalOnMissingBean(HealthEndpointHandler.class)
+    public HealthEndpointHandler healthEndpointHandler(
+            HealthService service,
+            RequestMappingHandlerMapping handlerMapping) {
+        HealthEndpointHandler handler = new HealthEndpointHandler(service);
+        try {
+            registerMapping(handlerMapping, "/healthz", handler, "healthz", String.class);
+            registerMapping(handlerMapping, "/broken", handler, "broken");
+            registerMapping(handlerMapping, "/correct", handler, "correct");
+            registerMapping(handlerMapping, "/accept", handler, "accept");
+            registerMapping(handlerMapping, "/refuse", handler, "refuse");
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Failed to register health mapping", e);
+        }
+        return handler;
+    }
+
+    /**
+     * Registers a GET endpoint against a dynamically created handler.
+     *
+     * @param handlerMapping Spring MVC request mapping registry
+     * @param path           endpoint path
+     * @param handler        handler instance
+     * @param methodName     handler method name
+     * @param parameterTypes handler method parameter types
+     * @throws NoSuchMethodException when the handler method cannot be resolved
+     */
+    private void registerMapping(
+            RequestMappingHandlerMapping handlerMapping,
+            String path,
+            Object handler,
+            String methodName,
+            Class<?>... parameterTypes) throws NoSuchMethodException {
+        RequestMappingInfo mapping = RequestMappingInfo.paths(path).methods(RequestMethod.GET, RequestMethod.POST)
+                .build();
+        handlerMapping.registerMapping(mapping, handler, handler.getClass().getMethod(methodName, parameterTypes));
     }
 
 }

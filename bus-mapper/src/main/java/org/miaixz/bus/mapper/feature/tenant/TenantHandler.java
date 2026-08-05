@@ -30,9 +30,11 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
@@ -370,7 +372,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         String tenantId = currentConfig.getProvider().getTenantId();
         if (tenantId == null || tenantId.isEmpty()) {
             if (currentConfig.isRequired()) {
-                throw new MissingTenantException();
+                throw new ForbiddenException(ErrorCode._403);
             }
             return;
         }

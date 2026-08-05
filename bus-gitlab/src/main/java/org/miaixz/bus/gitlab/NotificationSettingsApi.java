@@ -21,6 +21,7 @@ package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.NotificationSettings;
 import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
 
@@ -50,9 +51,9 @@ public class NotificationSettingsApi extends AbstractApi {
      * </pre>
      *
      * @return a NotificationSettings instance containing the global notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public NotificationSettings getGlobalNotificationSettings() throws GitLabApiException {
+    public NotificationSettings getGlobalNotificationSettings() throws RelevantException {
         Response response = get(Response.Status.OK, null, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
@@ -66,10 +67,10 @@ public class NotificationSettingsApi extends AbstractApi {
      *
      * @param settings a NotificationSettings instance with the new settings
      * @return a NotificationSettings instance containing the updated global notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public NotificationSettings updateGlobalNotificationSettings(NotificationSettings settings)
-            throws GitLabApiException {
+            throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());
@@ -101,9 +102,9 @@ public class NotificationSettingsApi extends AbstractApi {
      *
      * @param groupId the group ID to get the notification settings for
      * @return a NotificationSettings instance containing the specified group's notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public NotificationSettings getGroupNotificationSettings(long groupId) throws GitLabApiException {
+    public NotificationSettings getGroupNotificationSettings(long groupId) throws RelevantException {
         Response response = get(Response.Status.OK, null, "groups", groupId, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
@@ -118,10 +119,10 @@ public class NotificationSettingsApi extends AbstractApi {
      * @param groupId  the group ID to update the notification settings for
      * @param settings a NotificationSettings instance with the new settings
      * @return a NotificationSettings instance containing the updated group notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public NotificationSettings updateGroupNotificationSettings(long groupId, NotificationSettings settings)
-            throws GitLabApiException {
+            throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());
@@ -153,9 +154,9 @@ public class NotificationSettingsApi extends AbstractApi {
      *
      * @param projectId the project ID to get the notification settings for
      * @return a NotificationSettings instance containing the specified project's notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public NotificationSettings getProjectNotificationSettings(long projectId) throws GitLabApiException {
+    public NotificationSettings getProjectNotificationSettings(long projectId) throws RelevantException {
         Response response = get(Response.Status.OK, null, "projects", projectId, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
@@ -170,10 +171,10 @@ public class NotificationSettingsApi extends AbstractApi {
      * @param projectId the project ID to update the notification settings for
      * @param settings  a NotificationSettings instance with the new settings
      * @return a NotificationSettings instance containing the updated project notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public NotificationSettings updateProjectNotificationSettings(long projectId, NotificationSettings settings)
-            throws GitLabApiException {
+            throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());

@@ -22,6 +22,7 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.IssueEvent;
 
 /**
@@ -53,9 +54,9 @@ public class ResourceStateEventsApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param issueIid        the IID of the issue
      * @return a List of IssueEvent for the specified issue
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<IssueEvent> getIssueStateEvents(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
+    public List<IssueEvent> getIssueStateEvents(Object projectIdOrPath, Long issueIid) throws RelevantException {
         return (getIssueStateEvents(projectIdOrPath, issueIid, getDefaultPerPage()).all());
     }
 
@@ -70,10 +71,10 @@ public class ResourceStateEventsApi extends AbstractApi {
      * @param issueIid        the IID of the issue
      * @param itemsPerPage    the number of LabelEvent instances that will be fetched per page
      * @return the Pager of IssueEvent instances for the specified issue IID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<IssueEvent> getIssueStateEvents(Object projectIdOrPath, Long issueIid, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<IssueEvent>(this, IssueEvent.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "resource_state_events"));
     }
@@ -88,10 +89,10 @@ public class ResourceStateEventsApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param issueIid        the IID of the issue
      * @return a Stream of IssueEvent for the specified issue
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<IssueEvent> getIssueStateEventsStream(Object projectIdOrPath, Long issueIid)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getIssueStateEvents(projectIdOrPath, issueIid, getDefaultPerPage()).stream());
     }
 

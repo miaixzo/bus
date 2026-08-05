@@ -28,6 +28,7 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 
 /**
@@ -63,9 +64,9 @@ public class EpicsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @return a list of all epics of the requested group and its subgroups
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Epic> getEpics(Object groupIdOrPath) throws GitLabApiException {
+    public List<Epic> getEpics(Object groupIdOrPath) throws RelevantException {
         return (getEpics(groupIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -80,9 +81,9 @@ public class EpicsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of epics per page
      * @return a list of all epics of the requested group and its subgroups in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Epic> getEpics(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
+    public List<Epic> getEpics(Object groupIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -103,9 +104,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param itemsPerPage  the number of epics per page
      * @return the Pager of all epics of the requested group and its subgroups
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Epic> getEpics(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Epic> getEpics(Object groupIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Epic>(this, Epic.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "epics"));
     }
@@ -119,9 +120,9 @@ public class EpicsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @return a Stream of all epics of the requested group and its subgroups
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Epic> getEpicsStream(Object groupIdOrPath) throws GitLabApiException {
+    public Stream<Epic> getEpicsStream(Object groupIdOrPath) throws RelevantException {
         return (getEpics(groupIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -140,7 +141,7 @@ public class EpicsApi extends AbstractApi {
      * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
      * @param search        search epics against their title and description
      * @return a list of matching epics of the requested group and its subgroups
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<Epic> getEpics(
             Object groupIdOrPath,
@@ -148,7 +149,7 @@ public class EpicsApi extends AbstractApi {
             String labels,
             EpicOrderBy orderBy,
             SortOrder sortOrder,
-            String search) throws GitLabApiException {
+            String search) throws RelevantException {
         return (getEpics(groupIdOrPath, authorId, labels, orderBy, sortOrder, search, getDefaultPerPage()).all());
     }
 
@@ -169,7 +170,7 @@ public class EpicsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of epics per page
      * @return a list of matching epics of the requested group and its subgroups in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<Epic> getEpics(
             Object groupIdOrPath,
@@ -179,7 +180,7 @@ public class EpicsApi extends AbstractApi {
             SortOrder sortOrder,
             String search,
             int page,
-            int perPage) throws GitLabApiException {
+            int perPage) throws RelevantException {
         EpicFilter filter = createEpicFilter(authorId, labels, orderBy, sortOrder, search);
         return getEpics(groupIdOrPath, filter);
     }
@@ -194,9 +195,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param filter        epic filter
      * @return a list of matching epics of the requested group and its subgroups in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Epic> getEpics(Object groupIdOrPath, EpicFilter filter) throws GitLabApiException {
+    public List<Epic> getEpics(Object groupIdOrPath, EpicFilter filter) throws RelevantException {
         return getEpics(groupIdOrPath, getDefaultPerPage(), filter).all();
     }
 
@@ -216,7 +217,7 @@ public class EpicsApi extends AbstractApi {
      * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
      * @param search        search epics against their title and description
      * @return the Pager of matching epics of the requested group and its subgroups
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<Epic> getEpics(
             Object groupIdOrPath,
@@ -225,7 +226,7 @@ public class EpicsApi extends AbstractApi {
             EpicOrderBy orderBy,
             SortOrder sortOrder,
             String search,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         EpicFilter filter = createEpicFilter(authorId, labels, orderBy, sortOrder, search);
         return getEpics(groupIdOrPath, itemsPerPage, filter);
     }
@@ -241,9 +242,9 @@ public class EpicsApi extends AbstractApi {
      * @param filter        epic filter
      * @param itemsPerPage  the number of epics per page
      * @return a list of matching epics of the requested group and its subgroups in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Epic> getEpics(Object groupIdOrPath, int itemsPerPage, EpicFilter filter) throws GitLabApiException {
+    public Pager<Epic> getEpics(Object groupIdOrPath, int itemsPerPage, EpicFilter filter) throws RelevantException {
         return (new Pager<Epic>(this, Epic.class, itemsPerPage, new GitLabApiForm(filter.getQueryParams()).asMap(),
                 "groups", getGroupIdOrPath(groupIdOrPath), "epics"));
     }
@@ -273,7 +274,7 @@ public class EpicsApi extends AbstractApi {
      * @param sortOrder     return epics sorted in ASC or DESC order. Default is DESC
      * @param search        search epics against their title and description
      * @return a Stream of matching epics of the requested group and its subgroups
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<Epic> getEpicsStream(
             Object groupIdOrPath,
@@ -281,7 +282,7 @@ public class EpicsApi extends AbstractApi {
             String labels,
             EpicOrderBy orderBy,
             SortOrder sortOrder,
-            String search) throws GitLabApiException {
+            String search) throws RelevantException {
         return (getEpics(groupIdOrPath, authorId, labels, orderBy, sortOrder, search, getDefaultPerPage()).stream());
     }
 
@@ -295,9 +296,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get
      * @return an Epic instance for the specified Epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Epic getEpic(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public Epic getEpic(Object groupIdOrPath, Long epicIid) throws RelevantException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "epics", epicIid);
         return (response.readEntity(Epic.class));
     }
@@ -316,7 +317,7 @@ public class EpicsApi extends AbstractApi {
     public Optional<Epic> getOptionalEpic(Object groupIdOrPath, Long epicIid) {
         try {
             return (Optional.ofNullable(getEpic(groupIdOrPath, epicIid)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -337,7 +338,7 @@ public class EpicsApi extends AbstractApi {
      * @param createdAt     the end date when the epic was created. Requires administrator or project/group owner
      *                      privileges (optional)
      * @return an Epic instance containing info on the newly created epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Epic createEpic(
             Object groupIdOrPath,
@@ -346,7 +347,7 @@ public class EpicsApi extends AbstractApi {
             String description,
             Date startDate,
             Date endDate,
-            Date createdAt) throws GitLabApiException {
+            Date createdAt) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("title", title, true).withParam("labels", labels)
                 .withParam("description", description).withParam("start_date", startDate).withParam("end_date", endDate)
                 .withParam("created_at", createdAt);
@@ -375,9 +376,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epic          the Epic instance with information for the new epic
      * @return an Epic instance containing info on the newly created epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Epic createEpic(Object groupIdOrPath, Epic epic) throws GitLabApiException {
+    public Epic createEpic(Object groupIdOrPath, Epic epic) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("title", epic.getTitle(), true)
                 .withParam("labels", epic.getLabels()).withParam("description", epic.getDescription())
                 .withParam("start_date", epic.getStartDate()).withParam("end_date", epic.getEndDate())
@@ -405,7 +406,7 @@ public class EpicsApi extends AbstractApi {
      * @param confidential  Whether the epic should be confidential (optional)
      * @param parentId      The ID of a parent epic (optional)
      * @return an Epic instance containing info on the newly created epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Epic updateEpic(
             Object groupIdOrPath,
@@ -417,7 +418,7 @@ public class EpicsApi extends AbstractApi {
             Date endDate,
             StateEvent stateEvent,
             Boolean confidential,
-            Long parentId) throws GitLabApiException {
+            Long parentId) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("title", title, true).withParam("labels", labels)
                 .withParam("description", description).withParam("start_date", startDate).withParam("end_date", endDate)
                 .withParam("state_event", stateEvent).withParam("confidential", confidential)
@@ -454,9 +455,9 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid       the IID of the epic to update
      * @param epic          the Epic instance with update information
      * @return an Epic instance containing info on the updated epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Epic updateEpic(Object groupIdOrPath, Long epicIid, Epic epic) throws GitLabApiException {
+    public Epic updateEpic(Object groupIdOrPath, Long epicIid, Epic epic) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("title", epic.getTitle(), true)
                 .withParam("labels", epic.getLabels()).withParam("description", epic.getDescription())
                 .withParam("start_date", epic.getStartDate()).withParam("end_date", epic.getEndDate())
@@ -480,9 +481,9 @@ public class EpicsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteEpic(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public void deleteEpic(Object groupIdOrPath, Long epicIid) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "groups", getGroupIdOrPath(groupIdOrPath), "epics", epicIid);
     }
 
@@ -496,9 +497,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get issues for
      * @return a list of all issues belonging to the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<EpicIssue> getEpicIssues(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public List<EpicIssue> getEpicIssues(Object groupIdOrPath, Long epicIid) throws RelevantException {
         return (getEpicIssues(groupIdOrPath, epicIid, getDefaultPerPage()).all());
     }
 
@@ -515,10 +516,10 @@ public class EpicsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of epics per page
      * @return a list of all issues belonging to the specified epic in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<EpicIssue> getEpicIssues(Object groupIdOrPath, Long epicIid, int page, int perPage)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -542,10 +543,10 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid       the IID of the epic to get issues for
      * @param itemsPerPage  the number of epics per page
      * @return the Pager of all issues belonging to the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<EpicIssue> getEpicIssues(Object groupIdOrPath, Long epicIid, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<EpicIssue>(this, EpicIssue.class, itemsPerPage, null, "groups",
                 getGroupIdOrPath(groupIdOrPath), "epics", epicIid, "issues"));
     }
@@ -560,9 +561,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get issues for
      * @return a Stream of all issues belonging to the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<EpicIssue> getEpicIssuesStream(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public Stream<EpicIssue> getEpicIssuesStream(Object groupIdOrPath, Long epicIid) throws RelevantException {
         return (getEpicIssues(groupIdOrPath, epicIid, getDefaultPerPage()).stream());
     }
 
@@ -578,9 +579,9 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid       the Epic IID to assign the issue to
      * @param issueId       the issue ID of the issue to assign to the epic
      * @return an EpicIssue instance containing info on the newly assigned epic issue
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public EpicIssue assignIssue(Object groupIdOrPath, Long epicIid, Long issueId) throws GitLabApiException {
+    public EpicIssue assignIssue(Object groupIdOrPath, Long epicIid, Long issueId) throws RelevantException {
         Response response = post(
                 Response.Status.CREATED,
                 (Form) null,
@@ -604,9 +605,9 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid       the Epic IID to remove the issue from
      * @param epicIssueId   the ID of the "issue - epic" association of the issue to remove from the epic
      * @return an EpicIssueLink instance containing info on the removed issue
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public EpicIssueLink removeIssue(Object groupIdOrPath, Long epicIid, Long epicIssueId) throws GitLabApiException {
+    public EpicIssueLink removeIssue(Object groupIdOrPath, Long epicIid, Long epicIssueId) throws RelevantException {
         Response response = delete(
                 Response.Status.OK,
                 null,
@@ -634,14 +635,14 @@ public class EpicsApi extends AbstractApi {
      * @param moveAfterId   the ID of the "issue - epic" association that should be placed after the link in the
      *                      question (optional)
      * @return a list of all issues belonging to the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<EpicIssue> updateIssue(
             Object groupIdOrPath,
             Long epicIid,
             Long epicIssueId,
             Long moveBeforeId,
-            Long moveAfterId) throws GitLabApiException {
+            Long moveAfterId) throws RelevantException {
         GitLabApiForm form = new GitLabApiForm().withParam("move_before_id", moveBeforeId)
                 .withParam("move_after_id", moveAfterId);
         Response response = put(
@@ -667,9 +668,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get child epics for
      * @return a list of all child epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<ChildEpic> getChildEpics(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public List<ChildEpic> getChildEpics(Object groupIdOrPath, Long epicIid) throws RelevantException {
         return (getChildEpics(groupIdOrPath, epicIid, getDefaultPerPage()).all());
     }
 
@@ -684,10 +685,10 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid       the IID of the epic to get child epics for
      * @param itemsPerPage  the number of child epics per page
      * @return the Pager of all child epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<ChildEpic> getChildEpics(Object groupIdOrPath, Long epicIid, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<ChildEpic>(this, ChildEpic.class, itemsPerPage, null, "groups",
                 getGroupIdOrPath(groupIdOrPath), "epics", epicIid, "epics"));
     }
@@ -702,9 +703,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get child epics for
      * @return a Stream of all child epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<ChildEpic> getChildEpicsStream(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public Stream<ChildEpic> getChildEpicsStream(Object groupIdOrPath, Long epicIid) throws RelevantException {
         return (getChildEpics(groupIdOrPath, epicIid, getDefaultPerPage()).stream());
     }
 
@@ -722,9 +723,9 @@ public class EpicsApi extends AbstractApi {
      * @param childEpicId   the global ID of the child epic. Epic IID can’t be used because they can conflict with epics
      *                      from other groups.
      * @return an ChildEpic instance containing info on the newly assigned child epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ChildEpic assignChildEpic(Object groupIdOrPath, Long epicIid, Long childEpicId) throws GitLabApiException {
+    public ChildEpic assignChildEpic(Object groupIdOrPath, Long epicIid, Long childEpicId) throws RelevantException {
         Response response = post(
                 Response.Status.CREATED,
                 (Form) null,
@@ -749,13 +750,13 @@ public class EpicsApi extends AbstractApi {
      * @param title         the title of a newly created epic
      * @param confidential  whether the epic should be confidential (optional)
      * @return an ChildEpic instance containing info on the newly created and assigned child epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public CreatedChildEpic createAndAssignChildEpic(
             Object groupIdOrPath,
             Long epicIid,
             String title,
-            Boolean confidential) throws GitLabApiException {
+            Boolean confidential) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("title", title, true).withParam("confidential", confidential);
         Response response = post(
                 Response.Status.CREATED,
@@ -782,14 +783,14 @@ public class EpicsApi extends AbstractApi {
      * @param moveBeforeId  the ID of a sibling epic that should be placed before the child epic (optional)
      * @param moveAfterId   the ID of a sibling epic that should be placed after the child epic (optional)
      * @return a list of all child epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<ChildEpic> reOrderChildEpic(
             Object groupIdOrPath,
             Long epicIid,
             Long childEpicId,
             Long moveBeforeId,
-            Long moveAfterId) throws GitLabApiException {
+            Long moveAfterId) throws RelevantException {
         GitLabApiForm form = new GitLabApiForm().withParam("move_before_id", moveBeforeId)
                 .withParam("move_after_id", moveAfterId);
         Response response = put(
@@ -817,9 +818,9 @@ public class EpicsApi extends AbstractApi {
      * @param childEpicId   the ID of the child epic. Epic IID can’t be used because they can conflict with epics from
      *                      other groups.
      * @return an ChildEpic instance containing info on the removed child epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ChildEpic unassignChildEpic(Object groupIdOrPath, Long epicIid, Long childEpicId) throws GitLabApiException {
+    public ChildEpic unassignChildEpic(Object groupIdOrPath, Long epicIid, Long childEpicId) throws RelevantException {
         Response response = delete(
                 Response.Status.OK,
                 null,
@@ -842,9 +843,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get child epics for
      * @return a list of all related epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<RelatedEpic> getRelatedEpics(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public List<RelatedEpic> getRelatedEpics(Object groupIdOrPath, Long epicIid) throws RelevantException {
         return (getRelatedEpics(groupIdOrPath, epicIid, getDefaultPerPage()).all());
     }
 
@@ -859,10 +860,10 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid       the IID of the epic to get child epics for
      * @param itemsPerPage  the number of child epics per page
      * @return the Pager of all related epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<RelatedEpic> getRelatedEpics(Object groupIdOrPath, Long epicIid, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<RelatedEpic>(this, RelatedEpic.class, itemsPerPage, null, "groups",
                 getGroupIdOrPath(groupIdOrPath), "epics", epicIid, "related_epics"));
     }
@@ -877,9 +878,9 @@ public class EpicsApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
      * @param epicIid       the IID of the epic to get child epics for
      * @return a Stream of all related epics of the specified epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<RelatedEpic> getRelatedEpicsStream(Object groupIdOrPath, Long epicIid) throws GitLabApiException {
+    public Stream<RelatedEpic> getRelatedEpicsStream(Object groupIdOrPath, Long epicIid) throws RelevantException {
         return (getRelatedEpics(groupIdOrPath, epicIid, getDefaultPerPage()).stream());
     }
 
@@ -897,14 +898,14 @@ public class EpicsApi extends AbstractApi {
      * @param targetEpicIid       the Epic IID of the target group’s epic.
      * @param linkType            the type of the relation (optional), defaults to {@link LinkType#RELATES_TO}.
      * @return an RelatedEpic instance containing info on the newly assigned child epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public RelatedEpicLink createRelatedEpicLink(
             Object groupIdOrPath,
             Long epicIid,
             Object targetGroupIdOrPath,
             Long targetEpicIid,
-            LinkType linkType) throws GitLabApiException {
+            LinkType linkType) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("target_group_id", getGroupIdOrPath(targetGroupIdOrPath), true)
                 .withParam("target_epic_iid", targetEpicIid, true).withParam("link_type", linkType);
         Response response = post(
@@ -929,10 +930,10 @@ public class EpicsApi extends AbstractApi {
      * @param epicIid           the Epic IID to remove the child epic from
      * @param relatedEpicLinkId the ID a related epic link.
      * @return an RelatedEpicLink instance containing info on the removed related epic
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public RelatedEpicLink deleteRelatedEpicLink(Object groupIdOrPath, Long epicIid, Long relatedEpicLinkId)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = delete(
                 Response.Status.OK,
                 null,

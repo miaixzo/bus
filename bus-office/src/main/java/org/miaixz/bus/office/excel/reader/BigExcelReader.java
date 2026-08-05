@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.TerminateException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -46,36 +47,11 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 public class BigExcelReader implements AutoCloseable {
 
     /**
-     * Lightweight signal exception for normal end-of-read flow.
+     * Shared stackless termination signal used to stop SAX iteration at the configured end row.
      *
-     * @author Kimi Liu
-     * @since Java 21+
+     * Identity comparison prevents termination exceptions raised by user handlers from being consumed.
      */
-    private static final class EndOfReadException extends RuntimeException {
-
-        /**
-         * Shared singleton instance used to abort SAX iteration without allocating a full stack trace.
-         */
-        private static final EndOfReadException INSTANCE = new EndOfReadException();
-
-        /**
-         * Creates the end-of-read signal exception.
-         */
-        private EndOfReadException() {
-            // No initialization required.
-        }
-
-        /**
-         * Skips stack trace generation because this exception is only used as an internal control signal.
-         *
-         * @return current exception instance
-         */
-        @Override
-        public synchronized Throwable fillInStackTrace() {
-            return this;
-        }
-
-    }
+    private static final TerminateException END_OF_READ = new TerminateException("Excel end row reached");
 
     /**
      * Source file when reading from file.
@@ -384,7 +360,7 @@ public class BigExcelReader implements AutoCloseable {
                         batchSheetHolder);
                 final long currentGlobalRow = globalRowCursor[0]++;
                 if (currentGlobalRow > safeEnd) {
-                    throw EndOfReadException.INSTANCE;
+                    throw END_OF_READ;
                 }
                 if (currentGlobalRow < safeStart) {
                     return;
@@ -489,7 +465,10 @@ public class BigExcelReader implements AutoCloseable {
             } else {
                 saxReader.read(this.sourceStream, this.idOrRidOrSheetName);
             }
-        } catch (final EndOfReadException e) {
+        } catch (final TerminateException e) {
+            if (e != END_OF_READ) {
+                throw e;
+            }
             terminated[0] = true;
         } finally {
             finishWorkbook(

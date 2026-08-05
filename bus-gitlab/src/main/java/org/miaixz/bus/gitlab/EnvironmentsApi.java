@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Environment;
 
 /**
@@ -55,9 +56,9 @@ public class EnvironmentsApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a List of Environment instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Environment> getEnvironments(Object projectIdOrPath) throws GitLabApiException {
+    public List<Environment> getEnvironments(Object projectIdOrPath) throws RelevantException {
         return (getEnvironments(projectIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -70,9 +71,9 @@ public class EnvironmentsApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a Stream of Environment instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Environment> getEnvironmentsStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<Environment> getEnvironmentsStream(Object projectIdOrPath) throws RelevantException {
         return (getEnvironments(projectIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -86,9 +87,9 @@ public class EnvironmentsApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param itemsPerPage    the number of Environment instances that will be fetched per page
      * @return a Pager of Environment instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Environment> getEnvironments(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Environment> getEnvironments(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Environment>(this, Environment.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "environments"));
     }
@@ -103,9 +104,9 @@ public class EnvironmentsApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param environmentId   the ID of the environment to get
      * @return an Environment instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Environment getEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
+    public Environment getEnvironment(Object projectIdOrPath, Long environmentId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -130,7 +131,7 @@ public class EnvironmentsApi extends AbstractApi {
     public Optional<Environment> getOptionalEnvironment(Object projectIdOrPath, Long environmentId) {
         try {
             return (Optional.ofNullable(getEnvironment(projectIdOrPath, environmentId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -147,10 +148,10 @@ public class EnvironmentsApi extends AbstractApi {
      * @param externalUrl     the place to link to for this environment
      * @param tier            the tier of the environment
      * @return the created Environment instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Environment createEnvironment(Object projectIdOrPath, String name, String externalUrl, String tier)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("external_url", externalUrl).withParam("tier", tier);
         Response response = post(
@@ -175,14 +176,14 @@ public class EnvironmentsApi extends AbstractApi {
      * @param externalUrl     the place to link to for this environment
      * @param tier            the tier of the environment
      * @return the created Environment instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Environment updateEnvironment(
             Object projectIdOrPath,
             Long environmentId,
             String name,
             String externalUrl,
-            String tier) throws GitLabApiException {
+            String tier) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name).withParam("external_url", externalUrl)
                 .withParam("tier", tier);
         Response response = putWithFormData(
@@ -206,9 +207,9 @@ public class EnvironmentsApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param environmentId   the ID of the environment to stop
      * @return the stopped Environment instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Environment stopEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
+    public Environment stopEnvironment(Object projectIdOrPath, Long environmentId) throws RelevantException {
         Response response = post(
                 Response.Status.OK,
                 (GitLabApiForm) null,
@@ -229,9 +230,9 @@ public class EnvironmentsApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param environmentId   the ID of the environment to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
+    public void deleteEnvironment(Object projectIdOrPath, Long environmentId) throws RelevantException {
         delete(
                 Response.Status.OK,
                 null,
@@ -251,9 +252,9 @@ public class EnvironmentsApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param environmentId   the ID of the environment to stop
      * @return the Environment instance of the stopped environment
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Environment createEnvironment(Object projectIdOrPath, Long environmentId) throws GitLabApiException {
+    public Environment createEnvironment(Object projectIdOrPath, Long environmentId) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm();
         Response response = post(
                 Response.Status.CREATED,

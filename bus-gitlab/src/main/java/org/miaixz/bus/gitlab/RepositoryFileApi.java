@@ -32,6 +32,7 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Blame;
 import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.models.RepositoryFile;
@@ -76,7 +77,7 @@ public class RepositoryFileApi extends AbstractApi {
     public Optional<RepositoryFile> getOptionalFileInfo(Object projectIdOrPath, String filePath, String ref) {
         try {
             return (Optional.ofNullable(getFileInfo(projectIdOrPath, filePath, ref)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -93,10 +94,10 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        (required) - Full path to the file. Ex. lib/class.rb
      * @param ref             (required) - The name of branch, tag or commit
      * @return a RepositoryFile instance with the file info
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab-11.1.0
      */
-    public RepositoryFile getFileInfo(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
+    public RepositoryFile getFileInfo(Object projectIdOrPath, String filePath, String ref) throws RelevantException {
 
         Form form = new Form();
         addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
@@ -145,7 +146,7 @@ public class RepositoryFileApi extends AbstractApi {
     public Optional<RepositoryFile> getOptionalFile(Object projectIdOrPath, String filePath, String ref) {
         try {
             return (Optional.ofNullable(getFile(projectIdOrPath, filePath, ref, true)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -162,9 +163,9 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        (required) - Full path to the file. Ex. lib/class.rb
      * @param ref             (required) - The name of branch, tag or commit
      * @return a RepositoryFile instance with the file info and file content
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public RepositoryFile getFile(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
+    public RepositoryFile getFile(Object projectIdOrPath, String filePath, String ref) throws RelevantException {
         return (getFile(projectIdOrPath, filePath, ref, true));
     }
 
@@ -181,10 +182,10 @@ public class RepositoryFileApi extends AbstractApi {
      * @param ref             (required) - The name of branch, tag or commit
      * @param includeContent  if true will also fetch file content
      * @return a RepositoryFile instance with the file info and optionally file content
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public RepositoryFile getFile(Object projectIdOrPath, String filePath, String ref, boolean includeContent)
-            throws GitLabApiException {
+            throws RelevantException {
 
         if (!includeContent) {
             return (getFileInfo(projectIdOrPath, filePath, ref));
@@ -219,13 +220,13 @@ public class RepositoryFileApi extends AbstractApi {
      * @param branchName      the name of branch
      * @param commitMessage   the commit message
      * @return a RepositoryFile instance with the created file info
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public RepositoryFileResponse createFile(
             Object projectIdOrPath,
             RepositoryFile file,
             String branchName,
-            String commitMessage) throws GitLabApiException {
+            String commitMessage) throws RelevantException {
 
         Form formData = createForm(file, branchName, commitMessage);
         Response response = post(
@@ -255,13 +256,13 @@ public class RepositoryFileApi extends AbstractApi {
      * @param branchName      the name of branch
      * @param commitMessage   the commit message
      * @return a RepositoryFile instance with the updated file info
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public RepositoryFileResponse updateFile(
             Object projectIdOrPath,
             RepositoryFile file,
             String branchName,
-            String commitMessage) throws GitLabApiException {
+            String commitMessage) throws RelevantException {
 
         Form formData = createForm(file, branchName, commitMessage);
         Response response = put(
@@ -289,10 +290,10 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        full path to new file. Ex. lib/class.rb
      * @param branchName      the name of branch
      * @param commitMessage   the commit message
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public void deleteFile(Object projectIdOrPath, String filePath, String branchName, String commitMessage)
-            throws GitLabApiException {
+            throws RelevantException {
 
         if (filePath == null) {
             throw new RuntimeException("filePath cannot be null");
@@ -333,10 +334,10 @@ public class RepositoryFileApi extends AbstractApi {
      * @param directory          the File instance of the directory to save the file to, if null will use
      *                           "java.io.tmpdir"
      * @return a File instance pointing to the download of the specified file
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public File getRawFile(Object projectIdOrPath, String commitOrBranchName, String filepath, File directory)
-            throws GitLabApiException {
+            throws RelevantException {
 
         InputStream in = getRawFile(projectIdOrPath, commitOrBranchName, filepath);
 
@@ -363,7 +364,7 @@ public class RepositoryFileApi extends AbstractApi {
                     filepath == null ? -1 : filepath.length(),
                     directory != null,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
             try {
                 in.close();
@@ -399,9 +400,9 @@ public class RepositoryFileApi extends AbstractApi {
      * @param ref             the commit or branch name to get the file contents for
      * @param filepath        the path of the file to get
      * @return an InputStream to read the raw file from
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public InputStream getRawFile(Object projectIdOrPath, String ref, String filepath) throws GitLabApiException {
+    public InputStream getRawFile(Object projectIdOrPath, String ref, String filepath) throws RelevantException {
 
         Form formData = new GitLabApiForm().withParam("ref", (ref != null ? ref : null), true);
         Response response = getWithAccepts(
@@ -454,9 +455,9 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        the path of the file to get the blame for
      * @param ref             the name of branch, tag or commit
      * @return a List of Blame instances for the specified filePath and ref
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Blame> getBlame(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
+    public List<Blame> getBlame(Object projectIdOrPath, String filePath, String ref) throws RelevantException {
         return (getBlame(projectIdOrPath, filePath, ref, getDefaultPerPage()).all());
     }
 
@@ -473,10 +474,10 @@ public class RepositoryFileApi extends AbstractApi {
      * @param ref             the name of branch, tag or commit
      * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return a Pager of Blame instances for the specified filePath and ref
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<Blame> getBlame(Object projectIdOrPath, String filePath, String ref, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("ref", ref, true);
         return (new Pager<Blame>(this, Blame.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath), "blame"));
@@ -494,9 +495,9 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        the path of the file to get the blame for
      * @param ref             the name of branch, tag or commit
      * @return a Stream of Blame instances for the specified filePath and ref
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Blame> getBlameStream(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
+    public Stream<Blame> getBlameStream(Object projectIdOrPath, String filePath, String ref) throws RelevantException {
         return (getBlame(projectIdOrPath, filePath, ref, getDefaultPerPage()).stream());
     }
 

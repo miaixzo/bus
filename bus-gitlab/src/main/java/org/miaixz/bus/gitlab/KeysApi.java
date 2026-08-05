@@ -25,6 +25,7 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Key;
 
 /**
@@ -50,9 +51,9 @@ public class KeysApi extends AbstractApi {
      *
      * @param fingerprint The md5 hash of a ssh public key with : separating the bytes Or SHA256:$base64hash
      * @return The Key which includes the user who owns the key
-     * @throws GitLabApiException If anything goes wrong
+     * @throws RelevantException If anything goes wrong
      */
-    public Key getUserBySSHKeyFingerprint(String fingerprint) throws GitLabApiException {
+    public Key getUserBySSHKeyFingerprint(String fingerprint) throws RelevantException {
         MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
         queryParams.put("fingerprint", Collections.singletonList(fingerprint));
         Response response = get(Response.Status.OK, queryParams, "keys");
@@ -68,9 +69,9 @@ public class KeysApi extends AbstractApi {
      *
      * @param keyId the IID of the key to get
      * @return a Key instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Key getKey(String keyId) throws GitLabApiException {
+    public Key getKey(String keyId) throws RelevantException {
         Response response = get(Response.Status.OK, null, "keys", keyId);
         return response.readEntity(Key.class);
     }

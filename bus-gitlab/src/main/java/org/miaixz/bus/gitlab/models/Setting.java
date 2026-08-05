@@ -1709,7 +1709,7 @@ public enum Setting {
 
     /**
      * Validates the provided value against the data type of this ApplicationSetting enum. Will throw a
-     * GitLabApiException if the value is not of the correct type.
+     * RelevantException if the value is not of the correct type.
      *
      * @param value the value to validate
      * @throws IllegalStateException if the provided value is not a valid type for the ApplicationSetting

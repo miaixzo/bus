@@ -178,9 +178,7 @@ public final class HttpRetry implements HttpStage {
                         && recoverStaleConnection(current, e, staleAttempts);
                 final boolean recoverable = staleRecovery || recover(current, e, attempt);
                 if (debug) {
-                    final HttpChain.ExchangeFailure failure = e instanceof HttpChain.ExchangeFailure currentFailure
-                            ? currentFailure
-                            : null;
+                    final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(e);
                     Logger.debug(
                             false,
                             "Fabric",
@@ -239,11 +237,12 @@ public final class HttpRetry implements HttpStage {
      */
     public boolean recover(final Throwable cause, final int attempt) {
         final Throwable current = require(cause, "Failure cause");
-        if (!(current instanceof HttpChain.ExchangeFailure failure)) {
+        final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(current);
+        if (failure == null) {
             return false;
         }
         return retryableDelivery(failure) && retryableReason(failure)
-                && policy.retry(failure.getCause() == null ? failure : failure.getCause(), attempt);
+                && policy.retry(failure.cause() == null ? current : failure.cause(), attempt);
     }
 
     /**
@@ -267,11 +266,11 @@ public final class HttpRetry implements HttpStage {
      * @return {@code true} when all stale-connection and request replay constraints permit recovery
      */
     private boolean recoverStaleConnection(final HttpRequest request, final Throwable cause, final int attempt) {
-        if (!idempotent(request.method()) || !request.body().repeatable()
-                || !(cause instanceof HttpChain.ExchangeFailure failure)) {
+        final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(cause);
+        if (!idempotent(request.method()) || !request.body().repeatable() || failure == null) {
             return false;
         }
-        final Throwable underlying = failure.getCause() == null ? failure : failure.getCause();
+        final Throwable underlying = failure.cause() == null ? cause : failure.cause();
         return failure.deliveryState() == HttpChain.DeliveryState.MAYBE_PROCESSED
                 && failure.scope() == HttpChain.FailureScope.CONNECTION
                 && failure.reason() == HttpChain.FailureReason.IO && failure.reusedConnection()

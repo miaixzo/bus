@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.DeployToken;
 
 /**
@@ -61,9 +62,9 @@ public class DeployTokensApi extends AbstractApi {
      * </pre>
      *
      * @return a list of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<DeployToken> getDeployTokens() throws GitLabApiException {
+    public List<DeployToken> getDeployTokens() throws RelevantException {
         return (getDeployTokens(getDefaultPerPage()).all());
     }
 
@@ -76,9 +77,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param itemsPerPage the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<DeployToken> getDeployTokens(int itemsPerPage) throws GitLabApiException {
+    public Pager<DeployToken> getDeployTokens(int itemsPerPage) throws RelevantException {
         return (new Pager<>(this, DeployToken.class, itemsPerPage, null, "deploy_tokens"));
     }
 
@@ -90,9 +91,9 @@ public class DeployTokensApi extends AbstractApi {
      * </pre>
      *
      * @return a list of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<DeployToken> getDeployTokensStream() throws GitLabApiException {
+    public Stream<DeployToken> getDeployTokensStream() throws RelevantException {
         return (getDeployTokens(getDefaultPerPage()).stream());
     }
 
@@ -110,9 +111,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<DeployToken> getProjectDeployTokens(Object projectIdOrPath) throws GitLabApiException {
+    public List<DeployToken> getProjectDeployTokens(Object projectIdOrPath) throws RelevantException {
         return (getProjectDeployTokens(projectIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -127,10 +128,10 @@ public class DeployTokensApi extends AbstractApi {
      *                        the ID of the project
      * @param itemsPerPage    the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<DeployToken> getProjectDeployTokens(Object projectIdOrPath, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<>(this, DeployToken.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "deploy_tokens"));
     }
@@ -144,9 +145,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<DeployToken> getProjectDeployTokensStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<DeployToken> getProjectDeployTokensStream(Object projectIdOrPath) throws RelevantException {
         return (getProjectDeployTokens(projectIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -165,14 +166,14 @@ public class DeployTokensApi extends AbstractApi {
      *                        provided. Default is gitlab+deploy-token-{n}
      * @param scopes          indicates the deploy token scopes.
      * @return an DeployToken instance with info on the added deploy token
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public DeployToken addProjectDeployToken(
             Object projectIdOrPath,
             String name,
             Date expiresAt,
             String username,
-            List<DeployTokenScope> scopes) throws GitLabApiException {
+            List<DeployTokenScope> scopes) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true) // Currently documented as not required but api fails if not
                 // provided
@@ -197,9 +198,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param tokenId         the ID of the deploy token to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteProjectDeployToken(Object projectIdOrPath, Long tokenId) throws GitLabApiException {
+    public void deleteProjectDeployToken(Object projectIdOrPath, Long tokenId) throws RelevantException {
 
         if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");
@@ -222,9 +223,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<DeployToken> getGroupDeployTokens(Object groupIdOrPath) throws GitLabApiException {
+    public List<DeployToken> getGroupDeployTokens(Object groupIdOrPath) throws RelevantException {
         return (getGroupDeployTokens(groupIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -239,9 +240,9 @@ public class DeployTokensApi extends AbstractApi {
      *                      of the group
      * @param itemsPerPage  the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<DeployToken> getGroupDeployTokens(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<DeployToken> getGroupDeployTokens(Object groupIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<>(this, DeployToken.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "deploy_tokens"));
     }
@@ -255,9 +256,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of DeployToken
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<DeployToken> getGroupDeployTokensStream(Object groupIdOrPath) throws GitLabApiException {
+    public Stream<DeployToken> getGroupDeployTokensStream(Object groupIdOrPath) throws RelevantException {
         return (getGroupDeployTokens(groupIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -276,14 +277,14 @@ public class DeployTokensApi extends AbstractApi {
      *                      provided. Default is gitlab+deploy-token-{n}
      * @param scopes        indicates the deploy token scopes.
      * @return an DeployToken instance with info on the added deploy token
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public DeployToken addGroupDeployToken(
             Object groupIdOrPath,
             String name,
             Date expiresAt,
             String username,
-            List<DeployTokenScope> scopes) throws GitLabApiException {
+            List<DeployTokenScope> scopes) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("expires_at", expiresAt, true) // Currently documented as not required but api fails if not
                 // provided
@@ -308,9 +309,9 @@ public class DeployTokensApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param tokenId       the ID of the deploy token to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteGroupDeployToken(Object groupIdOrPath, Long tokenId) throws GitLabApiException {
+    public void deleteGroupDeployToken(Object groupIdOrPath, Long tokenId) throws RelevantException {
 
         if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");

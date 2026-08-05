@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.hooks.web.*;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
@@ -82,9 +83,9 @@ public class WebHookManager implements HookManager {
      * Parses and verifies an Event instance from the HTTP request and fires it off to the registered listeners.
      *
      * @param request the HttpServletRequest to read the Event instance from
-     * @throws GitLabApiException if the parsed event is not supported
+     * @throws RelevantException if the parsed event is not supported
      */
-    public void handleEvent(HttpServletRequest request) throws GitLabApiException {
+    public void handleEvent(HttpServletRequest request) throws RelevantException {
         handleRequest(request);
     }
 
@@ -93,9 +94,9 @@ public class WebHookManager implements HookManager {
      *
      * @param request the HttpServletRequest to read the Event instance from
      * @return the Event instance that was read from the request body, null if the request not contain a webhook event
-     * @throws GitLabApiException if the parsed event is not supported
+     * @throws RelevantException if the parsed event is not supported
      */
-    public Event handleRequest(HttpServletRequest request) throws GitLabApiException {
+    public Event handleRequest(HttpServletRequest request) throws RelevantException {
 
         String eventName = request.getHeader("X-Gitlab-Event");
         Logger.info(
@@ -125,7 +126,7 @@ public class WebHookManager implements HookManager {
                     eventName,
                     "credentialMismatch",
                     request.getRequestURI());
-            throw new GitLabApiException(message);
+            throw GitLabFailure.exception(message);
         }
 
         Logger.info(
@@ -155,7 +156,7 @@ public class WebHookManager implements HookManager {
                         "Webhook event rejected: eventName={}, reason={}",
                         eventName,
                         "unsupportedEventName");
-                throw new GitLabApiException(message);
+                throw GitLabFailure.exception(message);
         }
 
         Event event;
@@ -185,7 +186,7 @@ public class WebHookManager implements HookManager {
                     eventName,
                     request.getRequestURI(),
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
 
         try {
@@ -223,7 +224,7 @@ public class WebHookManager implements HookManager {
                     event.getObjectKind(),
                     webhookListeners.size(),
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
     }
 
@@ -231,9 +232,9 @@ public class WebHookManager implements HookManager {
      * Verifies the provided Event and fires it off to the registered listeners.
      *
      * @param event the Event instance to handle
-     * @throws GitLabApiException if the event is not supported
+     * @throws RelevantException if the event is not supported
      */
-    public void handleEvent(Event event) throws GitLabApiException {
+    public void handleEvent(Event event) throws RelevantException {
 
         Logger.info(
                 true,
@@ -266,7 +267,7 @@ public class WebHookManager implements HookManager {
                         "Webhook event rejected: objectKind={}, reason={}",
                         event.getObjectKind(),
                         "unsupportedObjectKind");
-                throw new GitLabApiException(message);
+                throw GitLabFailure.exception(message);
         }
         Logger.info(
                 false,
@@ -301,9 +302,9 @@ public class WebHookManager implements HookManager {
      * Fire the event to the registered listeners.
      *
      * @param event the Event instance to fire to the registered event listeners
-     * @throws GitLabApiException if the event is not supported
+     * @throws RelevantException if the event is not supported
      */
-    public void fireEvent(Event event) throws GitLabApiException {
+    public void fireEvent(Event event) throws RelevantException {
 
         switch (event.getObjectKind()) {
             case BuildEvent.OBJECT_KIND:
@@ -362,7 +363,7 @@ public class WebHookManager implements HookManager {
                         "Webhook event rejected: objectKind={}, reason={}",
                         event.getObjectKind(),
                         "unsupportedObjectKind");
-                throw new GitLabApiException(message);
+                throw GitLabFailure.exception(message);
         }
     }
 

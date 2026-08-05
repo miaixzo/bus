@@ -21,6 +21,7 @@ package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.services.*;
 
 /**
@@ -52,9 +53,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a HipChatService instance holding the HipChatService notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public HipChatService getHipChatService(Object projectIdOrPath) throws GitLabApiException {
+    public HipChatService getHipChatService(Object projectIdOrPath) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -87,10 +88,10 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param hipChat         the HipChatService instance holding the settings
      * @return a HipChatService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public HipChatService updateHipChatService(Object projectIdOrPath, HipChatService hipChat)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(hipChat.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -110,9 +111,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteHipChatService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteHipChatService(Object projectIdOrPath) throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -131,9 +132,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a SlackService instance holding the Slack notification settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public SlackService getSlackService(Object projectIdOrPath) throws GitLabApiException {
+    public SlackService getSlackService(Object projectIdOrPath) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -174,10 +175,10 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath    id, path of the project, or a Project instance holding the project ID or path
      * @param slackNotifications the SlackService instance holding the settings
      * @return a SlackService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public SlackService updateSlackService(Object projectIdOrPath, SlackService slackNotifications)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(slackNotifications.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -197,9 +198,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteSlackService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteSlackService(Object projectIdOrPath) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "slack");
     }
 
@@ -212,9 +213,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a JiraService instance holding the JIRA service settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public JiraService getJiraService(Object projectIdOrPath) throws GitLabApiException {
+    public JiraService getJiraService(Object projectIdOrPath) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -245,9 +246,9 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param jira            the JiraService instance holding the settings
      * @return a JiraService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public JiraService updateJiraService(Object projectIdOrPath, JiraService jira) throws GitLabApiException {
+    public JiraService updateJiraService(Object projectIdOrPath, JiraService jira) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(jira.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -267,9 +268,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteJiraService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteJiraService(Object projectIdOrPath) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "jira");
     }
 
@@ -282,9 +283,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a ExternalWikiService instance holding the External Wiki service settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ExternalWikiService getExternalWikiService(Object projectIdOrPath) throws GitLabApiException {
+    public ExternalWikiService getExternalWikiService(Object projectIdOrPath) throws RelevantException {
         Response response = this.get(
                 Response.Status.OK,
                 null,
@@ -310,10 +311,10 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param externalWiki    the ExternalWikiService instance holding the settings
      * @return a ExternalWikiService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ExternalWikiService updateExternalWikiService(Object projectIdOrPath, ExternalWikiService externalWiki)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(externalWiki.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -333,9 +334,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteExternalWikiService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteExternalWikiService(Object projectIdOrPath) throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -354,9 +355,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a MattermostService instance holding the Mattermost service settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public MattermostService getMattermostService(Object projectIdOrPath) throws GitLabApiException {
+    public MattermostService getMattermostService(Object projectIdOrPath) throws RelevantException {
         Response response = this.get(
                 Response.Status.OK,
                 null,
@@ -397,10 +398,10 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath         id, path of the project, or a Project instance holding the project ID or path
      * @param mattermostNotifications the MattermostService instance holding the settings
      * @return a MattermostService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public MattermostService updateMattermostService(Object projectIdOrPath, MattermostService mattermostNotifications)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(mattermostNotifications.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -420,9 +421,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteMattermostService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteMattermostService(Object projectIdOrPath) throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -441,9 +442,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a BugzillaService instance holding the External Wiki service settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public BugzillaService getBugzillaService(Object projectIdOrPath) throws GitLabApiException {
+    public BugzillaService getBugzillaService(Object projectIdOrPath) throws RelevantException {
         Response response = this
                 .get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "bugzilla");
         return (response.readEntity(BugzillaService.class));
@@ -466,10 +467,10 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param bugzillaService the BugzillaService instance holding the settings
      * @return a BugzillaService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public BugzillaService updateBugzillaService(Object projectIdOrPath, BugzillaService bugzillaService)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(bugzillaService.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -489,9 +490,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteBugzillaService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteBugzillaService(Object projectIdOrPath) throws RelevantException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "bugzilla");
     }
 
@@ -504,9 +505,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a ExternalWikiService instance holding the External Wiki service settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public CustomIssueTrackerService getCustomIssueTrackerService(Object projectIdOrPath) throws GitLabApiException {
+    public CustomIssueTrackerService getCustomIssueTrackerService(Object projectIdOrPath) throws RelevantException {
         Response response = this.get(
                 Response.Status.OK,
                 null,
@@ -534,11 +535,11 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath    id, path of the project, or a Project instance holding the project ID or path
      * @param customIssueTracker the CustomIssueTrackerService instance holding the settings
      * @return a CustomIssueTrackerService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public CustomIssueTrackerService updateCustomIssueTrackerService(
             Object projectIdOrPath,
-            CustomIssueTrackerService customIssueTracker) throws GitLabApiException {
+            CustomIssueTrackerService customIssueTracker) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(customIssueTracker.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -558,9 +559,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteCustomIssueTrackerService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteCustomIssueTrackerService(Object projectIdOrPath) throws RelevantException {
         delete(
                 Response.Status.OK,
                 null,
@@ -579,9 +580,9 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a EmailOnPushService instance holding the Email on push settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public EmailOnPushService getEmailOnPushService(Object projectIdOrPath) throws GitLabApiException {
+    public EmailOnPushService getEmailOnPushService(Object projectIdOrPath) throws RelevantException {
         Response response = this.get(
                 Response.Status.OK,
                 null,
@@ -611,10 +612,10 @@ public class ServicesApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param emailsOnPush    the EmailOnPushService instance holding the settings
      * @return a EmailOnPushService instance holding the newly updated settings
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public EmailOnPushService updateEmailOnPushService(Object projectIdOrPath, EmailOnPushService emailsOnPush)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(emailsOnPush.servicePropertiesForm());
         Response response = put(
                 Response.Status.OK,
@@ -634,9 +635,9 @@ public class ServicesApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteEmailonPushService(Object projectIdOrPath) throws GitLabApiException {
+    public void deleteEmailonPushService(Object projectIdOrPath) throws RelevantException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "emails-on-push");
     }
 

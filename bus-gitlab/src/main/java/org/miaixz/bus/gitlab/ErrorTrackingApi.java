@@ -24,6 +24,7 @@ import java.util.List;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.ErrorTrackingClientKey;
 
 /**
@@ -54,9 +55,9 @@ public class ErrorTrackingApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return the created ErrorTrackingClientKey
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ErrorTrackingClientKey createClientKey(Object projectIdOrPath) throws GitLabApiException {
+    public ErrorTrackingClientKey createClientKey(Object projectIdOrPath) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm();
         Response response = post(
                 Response.Status.CREATED,
@@ -77,9 +78,9 @@ public class ErrorTrackingApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a list of ErrorTrackingClientKey
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<ErrorTrackingClientKey> getClientKeys(Object projectIdOrPath) throws GitLabApiException {
+    public List<ErrorTrackingClientKey> getClientKeys(Object projectIdOrPath) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,

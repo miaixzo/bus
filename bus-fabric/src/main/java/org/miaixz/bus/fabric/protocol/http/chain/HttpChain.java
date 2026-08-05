@@ -362,9 +362,9 @@ public final class HttpChain {
     }
 
     /**
-     * Structured exchange failure carrying authoritative delivery and ownership facts.
+     * Structured exchange failure state carrying authoritative delivery and ownership facts.
      */
-    public static final class ExchangeFailure extends RuntimeException {
+    public static final class ExchangeFailure {
 
         /**
          * Authoritative request delivery state at the failure boundary.
@@ -392,6 +392,11 @@ public final class HttpChain {
         private final boolean beforeResponse;
 
         /**
+         * Underlying transport failure, or {@code null} when no lower-level cause is available.
+         */
+        private final Throwable cause;
+
+        /**
          * Creates a structured exchange failure.
          *
          * @param deliveryState authoritative delivery state
@@ -416,12 +421,38 @@ public final class HttpChain {
          */
         public ExchangeFailure(final DeliveryState deliveryState, final FailureScope scope, final FailureReason reason,
                 final boolean reusedConnection, final boolean beforeResponse, final Throwable cause) {
-            super(cause == null ? "HTTP exchange failed: " + reason : cause.getMessage(), cause);
             this.deliveryState = require(deliveryState, "Delivery state");
             this.scope = require(scope, "Failure scope");
             this.reason = require(reason, "Failure reason");
             this.reusedConnection = reusedConnection;
             this.beforeResponse = beforeResponse;
+            this.cause = cause;
+        }
+
+        /**
+         * Resolves structured exchange state from a global state exception.
+         *
+         * @param failure global failure raised by the transport pipeline
+         * @return exchange state, or {@code null} when the failure is not transport-structured
+         */
+        public static ExchangeFailure from(final Throwable failure) {
+            if (failure instanceof StatefulException exception
+                    && exception.getRaw() instanceof ExchangeFailure exchangeFailure) {
+                return exchangeFailure;
+            }
+            return null;
+        }
+
+        /**
+         * Creates the global state exception carrying this exchange state.
+         *
+         * @return global state exception
+         */
+        public StatefulException exception() {
+            final String message = cause == null ? "HTTP exchange failed: " + reason : cause.getMessage();
+            final StatefulException exception = new StatefulException(message, cause);
+            exception.setRaw(this);
+            return exception;
         }
 
         /**
@@ -467,6 +498,15 @@ public final class HttpChain {
          */
         public boolean beforeResponse() {
             return beforeResponse;
+        }
+
+        /**
+         * Returns the underlying transport failure.
+         *
+         * @return underlying failure, or {@code null}
+         */
+        public Throwable cause() {
+            return cause;
         }
     }
 

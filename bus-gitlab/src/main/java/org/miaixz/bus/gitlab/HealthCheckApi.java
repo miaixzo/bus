@@ -24,6 +24,7 @@ import java.net.URL;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.HealthCheckInfo;
 import org.miaixz.bus.logger.Logger;
 
@@ -56,9 +57,9 @@ public class HealthCheckApi extends AbstractApi {
      * </pre>
      *
      * @return HealthCheckInfo instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public HealthCheckInfo getLiveness() throws GitLabApiException {
+    public HealthCheckInfo getLiveness() throws RelevantException {
         return (getLiveness(null));
     }
 
@@ -71,9 +72,9 @@ public class HealthCheckApi extends AbstractApi {
      *
      * @param token Health Status token
      * @return HealthCheckInfo instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public HealthCheckInfo getLiveness(String token) throws GitLabApiException {
+    public HealthCheckInfo getLiveness(String token) throws RelevantException {
         try {
             URL livenessUrl = getApiClient().getUrlWithBase("-", "liveness");
             GitLabApiForm formData = new GitLabApiForm().withParam("token", token, false);
@@ -87,7 +88,7 @@ public class HealthCheckApi extends AbstractApi {
                     "GitLab health check URL build failed: operation=getLiveness, tokenPresent={}, exception={}",
                     token != null && !token.isEmpty(),
                     ioe.getClass().getSimpleName());
-            throw (new GitLabApiException(ioe));
+            throw (GitLabFailure.exception(ioe));
         }
     }
 
@@ -102,9 +103,9 @@ public class HealthCheckApi extends AbstractApi {
      * </pre>
      *
      * @return HealthCheckInfo instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public HealthCheckInfo getReadiness() throws GitLabApiException {
+    public HealthCheckInfo getReadiness() throws RelevantException {
         return (getReadiness(null));
     }
 
@@ -117,9 +118,9 @@ public class HealthCheckApi extends AbstractApi {
      *
      * @param token Health Status token
      * @return HealthCheckInfo instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public HealthCheckInfo getReadiness(String token) throws GitLabApiException {
+    public HealthCheckInfo getReadiness(String token) throws RelevantException {
         try {
             URL readinessUrl = getApiClient().getUrlWithBase("-", "readiness");
             GitLabApiForm formData = new GitLabApiForm().withParam("token", token, false);
@@ -133,7 +134,7 @@ public class HealthCheckApi extends AbstractApi {
                     "GitLab health check URL build failed: operation=getReadiness, tokenPresent={}, exception={}",
                     token != null && !token.isEmpty(),
                     ioe.getClass().getSimpleName());
-            throw (new GitLabApiException(ioe));
+            throw (GitLabFailure.exception(ioe));
         }
     }
 

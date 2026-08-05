@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.License;
 
 /**
@@ -54,9 +55,9 @@ public class LicenseApi extends AbstractApi {
      * </pre>
      *
      * @return a License instance holding info about the current license
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public License getLicense() throws GitLabApiException {
+    public License getLicense() throws RelevantException {
         Response response = get(Response.Status.OK, null, "license");
         return (response.readEntity(License.class));
     }
@@ -73,7 +74,7 @@ public class LicenseApi extends AbstractApi {
     public Optional<License> getOptionalLicense() {
         try {
             return (Optional.ofNullable(getLicense()));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -86,9 +87,9 @@ public class LicenseApi extends AbstractApi {
      * </pre>
      *
      * @return a List of License instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<License> getAllLicenses() throws GitLabApiException {
+    public List<License> getAllLicenses() throws RelevantException {
         return (getAllLicenses(getDefaultPerPage()).all());
     }
 
@@ -100,9 +101,9 @@ public class LicenseApi extends AbstractApi {
      * </pre>
      *
      * @return a Stream of License instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<License> getAllLicensesStream() throws GitLabApiException {
+    public Stream<License> getAllLicensesStream() throws RelevantException {
         return (getAllLicenses(getDefaultPerPage()).stream());
     }
 
@@ -115,9 +116,9 @@ public class LicenseApi extends AbstractApi {
      *
      * @param itemsPerPage the number of LicenseTemplate instances that will be fetched per page
      * @return a Pager of license template
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<License> getAllLicenses(int itemsPerPage) throws GitLabApiException {
+    public Pager<License> getAllLicenses(int itemsPerPage) throws RelevantException {
         return (new Pager<License>(this, License.class, itemsPerPage, null, "licenses"));
     }
 
@@ -130,9 +131,9 @@ public class LicenseApi extends AbstractApi {
      *
      * @param licenseString the license string for the license
      * @return a License instance for the added license
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public License addLicense(String licenseString) throws GitLabApiException {
+    public License addLicense(String licenseString) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("license", licenseString, true);
         Response response = post(Response.Status.CREATED, formData, "license");
         return (response.readEntity(License.class));
@@ -147,9 +148,9 @@ public class LicenseApi extends AbstractApi {
      *
      * @param licenseId the ID of the license to delete
      * @return a License instance for the delete license
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public License deleteLicense(Long licenseId) throws GitLabApiException {
+    public License deleteLicense(Long licenseId) throws RelevantException {
         Response response = delete(Response.Status.OK, null, "license", licenseId);
         return (response.readEntity(License.class));
     }

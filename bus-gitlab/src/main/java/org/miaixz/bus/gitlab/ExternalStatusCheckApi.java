@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheck;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckProtectedBranch;
 import org.miaixz.bus.gitlab.models.ExternalStatusCheckResult;
@@ -60,9 +61,9 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a List of ExternalStatusCheck
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<ExternalStatusCheck> getExternalStatusChecks(Object projectIdOrPath) throws GitLabApiException {
+    public List<ExternalStatusCheck> getExternalStatusChecks(Object projectIdOrPath) throws RelevantException {
         return (getExternalStatusChecks(projectIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -76,10 +77,10 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param itemsPerPage    the number of ExternalStatusCheck instances that will be fetched per page
      * @return the Pager of ExternalStatusCheck instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<ExternalStatusCheck> getExternalStatusChecks(Object projectIdOrPath, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<ExternalStatusCheck>(this, ExternalStatusCheck.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "external_status_checks"));
     }
@@ -93,9 +94,9 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @return a Stream of ExternalStatusCheck
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<ExternalStatusCheck> getExternalStatusChecksStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<ExternalStatusCheck> getExternalStatusChecksStream(Object projectIdOrPath) throws RelevantException {
         return (getExternalStatusChecks(projectIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -111,13 +112,13 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param externalUrl        URL of external status check resource (optional)
      * @param protectedBranchIds IDs of protected branches to scope the rule by (optional)
      * @return an ExternalStatusCheck instance containing info on the newly created externalStatusCheck
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ExternalStatusCheck createExternalStatusCheck(
             Object projectIdOrPath,
             String name,
             String externalUrl,
-            List<Long> protectedBranchIds) throws GitLabApiException {
+            List<Long> protectedBranchIds) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("name", name, true).withParam("external_url", externalUrl, true)
                 .withParam("protected_branch_ids", protectedBranchIds);
         Response response = post(
@@ -148,11 +149,11 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param projectIdOrPath     id, path of the project, or a Project instance holding the project ID or path
      * @param externalStatusCheck the ExternalStatusCheck instance with information for the new external status check
      * @return an ExternalStatusCheck instance containing info on the newly created externalStatusCheck
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ExternalStatusCheck createExternalStatusCheck(
             Object projectIdOrPath,
-            ExternalStatusCheck externalStatusCheck) throws GitLabApiException {
+            ExternalStatusCheck externalStatusCheck) throws RelevantException {
         List<Long> protectedBranchIds;
         if (externalStatusCheck.getProtectedBranches() == null) {
             protectedBranchIds = null;
@@ -185,14 +186,14 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param externalUrl        URL of external status check resource (optional)
      * @param protectedBranchIds IDs of protected branches to scope the rule by (optional)
      * @return an ExternalStatusCheck instance containing info on the newly created ExternalStatusCheck
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ExternalStatusCheck updateExternalStatusCheck(
             Object projectIdOrPath,
             Long checkId,
             String name,
             String externalUrl,
-            List<Long> protectedBranchIds) throws GitLabApiException {
+            List<Long> protectedBranchIds) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("name", name).withParam("external_url", externalUrl)
                 .withParam("protected_branch_ids", protectedBranchIds);
         Response response = put(
@@ -225,13 +226,13 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param projectIdOrPath     id, path of the project, or a Project instance holding the project ID or path
      * @param externalStatusCheck the ExternalStatusCheck instance with update information
      * @return an ExternalStatusCheck instance containing info on the updated ExternalStatusCheck
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ExternalStatusCheck updateExternalStatusCheck(
             Object projectIdOrPath,
-            ExternalStatusCheck externalStatusCheck) throws GitLabApiException {
+            ExternalStatusCheck externalStatusCheck) throws RelevantException {
         if (externalStatusCheck == null || externalStatusCheck.getId() == null) {
-            throw new GitLabApiException("the specified external status check is null or has no id");
+            throw GitLabFailure.exception("the specified external status check is null or has no id");
         }
         List<Long> protectedBranchIds = getProtectedBranchIds(externalStatusCheck);
         Form formData = new GitLabApiForm().withParam("name", externalStatusCheck.getName())
@@ -264,9 +265,9 @@ public class ExternalStatusCheckApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param checkId         ID of an external status check
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteExternalStatusCheck(Object projectIdOrPath, Long checkId) throws GitLabApiException {
+    public void deleteExternalStatusCheck(Object projectIdOrPath, Long checkId) throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -286,10 +287,10 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID to get the statuses
      * @return a List of ExternalStatusCheckStatus
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<ExternalStatusCheckStatus> getExternalStatusCheckStatuses(Object projectIdOrPath, Long mergeRequestIid)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getExternalStatusCheckStatuses(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -304,12 +305,12 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param mergeRequestIid the merge request IID to get the statuses
      * @param itemsPerPage    the number of ExternalStatusCheckStatus instances that will be fetched per page
      * @return the Pager of ExternalStatusCheckStatus instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<ExternalStatusCheckStatus> getExternalStatusCheckStatuses(
             Object projectIdOrPath,
             Long mergeRequestIid,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         return (new Pager<ExternalStatusCheckStatus>(this, ExternalStatusCheckStatus.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "status_checks"));
     }
@@ -324,11 +325,11 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid the merge request IID to get the statuses
      * @return a Stream of ExternalStatusCheckStatus
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<ExternalStatusCheckStatus> getExternalStatusCheckStatusesStream(
             Object projectIdOrPath,
-            Long mergeRequestIid) throws GitLabApiException {
+            Long mergeRequestIid) throws RelevantException {
         return (getExternalStatusCheckStatuses(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).stream());
     }
 
@@ -345,14 +346,14 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param externalStatusCheckId ID of an external status check (required)
      * @param status                the status to set (optional)
      * @return an ExternalStatusCheckResult instance containing info on the newly created status
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ExternalStatusCheckResult setStatusOfExternalStatusCheck(
             Object projectIdOrPath,
             Long mergeRequestIid,
             String sha,
             Long externalStatusCheckId,
-            Status status) throws GitLabApiException {
+            Status status) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("sha", sha)
                 .withParam("external_status_check_id", externalStatusCheckId).withParam("status", status);
         Response response = post(
@@ -377,10 +378,10 @@ public class ExternalStatusCheckApi extends AbstractApi {
      * @param projectIdOrPath       id, path of the project, or a Project instance holding the project ID or path
      * @param mergeRequestIid       the merge request IID to get the statuses
      * @param externalStatusCheckId ID of an external status check
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public void retryExternalStatusCheck(Object projectIdOrPath, Long mergeRequestIid, Long externalStatusCheckId)
-            throws GitLabApiException {
+            throws RelevantException {
         post(
                 Response.Status.ACCEPTED,
                 (Form) null,

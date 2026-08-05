@@ -28,6 +28,9 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
+import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.exception.RelevantException;
+
 /**
  * Repeatable request body wrapper with a non-negotiable byte limit.
  *
@@ -131,7 +134,7 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
             while ((count = input.read(buffer)) != -1) {
                 if (count > limit - total) {
                     output.reset();
-                    throw new PayloadTooLargeException();
+                    throw new RelevantException(ErrorCode._413, "Request body exceeds the configured limit");
                 }
                 output.write(buffer, 0, count);
                 total += count;
@@ -140,19 +143,6 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
         } catch (IOException | RuntimeException failure) {
             output.reset();
             throw failure;
-        }
-    }
-
-    /**
-     * Signals that an unknown-length request crossed its configured body limit.
-     */
-    public static class PayloadTooLargeException extends IOException {
-
-        /**
-         * Creates an exception for a body crossing its configured limit.
-         */
-        public PayloadTooLargeException() {
-            super("Request body exceeds the configured limit");
         }
     }
 

@@ -26,6 +26,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Package;
 import org.miaixz.bus.gitlab.models.PackageFile;
 import org.miaixz.bus.gitlab.models.PackageFilter;
@@ -63,9 +64,9 @@ public class PackagesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of pages in the project's packages
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Package> getPackages(Object projectIdOrPath) throws GitLabApiException {
+    public List<Package> getPackages(Object projectIdOrPath) throws RelevantException {
         return (getPackages(projectIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -81,9 +82,9 @@ public class PackagesApi extends AbstractApi {
      * @param page            the page to get
      * @param perPage         the number of Package instances per page
      * @return a list of project packages for the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Package> getPackages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
+    public List<Package> getPackages(Object projectIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -105,9 +106,9 @@ public class PackagesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of Package instances per page
      * @return a Pager of project packages for the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Package> getPackages(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Package> getPackages(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
         return getPackages(projectIdOrPath, null, itemsPerPage);
     }
 
@@ -123,10 +124,10 @@ public class PackagesApi extends AbstractApi {
      * @param filter          the PackageFilter instance holding the filter values for the query
      * @param itemsPerPage    the number of Package instances per page
      * @return a Pager of project packages for the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<Package> getPackages(Object projectIdOrPath, PackageFilter filter, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         MultivaluedMap<String, String> query = filter != null ? new GitLabApiForm(filter.getQueryParams()).asMap()
                 : null;
         return (new Pager<Package>(this, Package.class, itemsPerPage, query, "projects",
@@ -143,9 +144,9 @@ public class PackagesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream of pages in the project's packages
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Package> getPackagesStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<Package> getPackagesStream(Object projectIdOrPath) throws RelevantException {
         return (getPackages(projectIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -160,9 +161,9 @@ public class PackagesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param filter          the PackageFilter instance holding the filter values for the query
      * @return a Stream of pages in the project's packages
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Package> getPackagesStream(Object projectIdOrPath, PackageFilter filter) throws GitLabApiException {
+    public Stream<Package> getPackagesStream(Object projectIdOrPath, PackageFilter filter) throws RelevantException {
         return (getPackages(projectIdOrPath, filter, getDefaultPerPage()).stream());
     }
 
@@ -176,9 +177,9 @@ public class PackagesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param packageId       the ID of the package to get
      * @return a Package instance for the specified package ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Package getPackage(Object projectIdOrPath, Long packageId) throws GitLabApiException {
+    public Package getPackage(Object projectIdOrPath, Long packageId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -199,9 +200,9 @@ public class PackagesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param packageId       the ID of the package to get the package files for
      * @return a list of PackageFile instances for the specified package ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId) throws GitLabApiException {
+    public List<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId) throws RelevantException {
         return (getPackageFiles(projectIdOrPath, packageId, getDefaultPerPage()).all());
     }
 
@@ -217,10 +218,10 @@ public class PackagesApi extends AbstractApi {
      * @param page            the page to get
      * @param perPage         the number of PackageFile instances per page
      * @return a list of PackageFile instances for the specified package ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId, int page, int perPage)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -244,10 +245,10 @@ public class PackagesApi extends AbstractApi {
      * @param packageId       the ID of the package to get the package files for
      * @param itemsPerPage    the number of PackageFile instances per page
      * @return a Pager of PackageFile instances for the specified package ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<PackageFile>(this, PackageFile.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages", packageId, "package_files"));
     }
@@ -262,9 +263,9 @@ public class PackagesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param packageId       the ID of the package to get the package files for
      * @return a Stream of PackageFile instances for the specified package ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<PackageFile> getPackagesStream(Object projectIdOrPath, Long packageId) throws GitLabApiException {
+    public Stream<PackageFile> getPackagesStream(Object projectIdOrPath, Long packageId) throws RelevantException {
         return (getPackageFiles(projectIdOrPath, packageId, getDefaultPerPage()).stream());
     }
 
@@ -277,9 +278,9 @@ public class PackagesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param packageId       the ID of the package to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deletePackage(Object projectIdOrPath, Long packageId) throws GitLabApiException {
+    public void deletePackage(Object projectIdOrPath, Long packageId) throws RelevantException {
 
         if (packageId == null) {
             throw new RuntimeException("packageId cannot be null");

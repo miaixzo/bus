@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.AllowedTo;
 import org.miaixz.bus.gitlab.models.GitLabForm;
@@ -59,9 +60,9 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return the list of protected branches for the project
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<ProtectedBranch> getProtectedBranches(Object projectIdOrPath) throws GitLabApiException {
+    public List<ProtectedBranch> getProtectedBranches(Object projectIdOrPath) throws RelevantException {
         return (getProtectedBranches(projectIdOrPath, this.getDefaultPerPage()).all());
     }
 
@@ -75,10 +76,10 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of instances that will be fetched per page
      * @return the Pager of protected branches for the project
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<ProtectedBranch> getProtectedBranches(Object projectIdOrPath, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<ProtectedBranch>(this, ProtectedBranch.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "protected_branches"));
     }
@@ -92,9 +93,9 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return the Stream of protected branches for the project
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<ProtectedBranch> getProtectedBranchesStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<ProtectedBranch> getProtectedBranchesStream(Object projectIdOrPath) throws RelevantException {
         return (getProtectedBranches(projectIdOrPath, this.getDefaultPerPage()).stream());
     }
 
@@ -108,9 +109,9 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param branchName      the name of the branch or wildcard
      * @return a ProtectedBranch instance with info on the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ProtectedBranch getProtectedBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
+    public ProtectedBranch getProtectedBranch(Object projectIdOrPath, String branchName) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -135,7 +136,7 @@ public class ProtectedBranchesApi extends AbstractApi {
     public Optional<ProtectedBranch> getOptionalProtectedBranch(Object projectIdOrPath, String branchName) {
         try {
             return (Optional.ofNullable(getProtectedBranch(projectIdOrPath, branchName)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -149,9 +150,9 @@ public class ProtectedBranchesApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param branchName      the name of the branch to un-protect, can be a wildcard
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void unprotectBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
+    public void unprotectBranch(Object projectIdOrPath, String branchName) throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -171,9 +172,9 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param branchName      the name of the branch to protect, can be a wildcard
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
+    public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName) throws RelevantException {
         return protectBranch(projectIdOrPath, branchName, AccessLevel.MAINTAINER, AccessLevel.MAINTAINER);
     }
 
@@ -189,13 +190,13 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param pushAccessLevel  Access levels allowed to push (defaults: 40, maintainer access level)
      * @param mergeAccessLevel Access levels allowed to merge (defaults: 40, maintainer access level)
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ProtectedBranch protectBranch(
             Object projectIdOrPath,
             String branchName,
             AccessLevel pushAccessLevel,
-            AccessLevel mergeAccessLevel) throws GitLabApiException {
+            AccessLevel mergeAccessLevel) throws RelevantException {
         return (protectBranch(projectIdOrPath, branchName, pushAccessLevel, mergeAccessLevel, null, null, null));
     }
 
@@ -214,7 +215,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file.
      *                                  (defaults: false)
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @see ProtectedBranchesApi#protectBranch(Object, String, AccessLevel, AccessLevel, AccessLevel, Boolean, Boolean)
      */
     public ProtectedBranch protectBranch(
@@ -223,7 +224,7 @@ public class ProtectedBranchesApi extends AbstractApi {
             AccessLevel pushAccessLevel,
             AccessLevel mergeAccessLevel,
             AccessLevel unprotectAccessLevel,
-            Boolean codeOwnerApprovalRequired) throws GitLabApiException {
+            Boolean codeOwnerApprovalRequired) throws RelevantException {
         return protectBranch(
                 projectIdOrPath,
                 branchName,
@@ -251,7 +252,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param allowForcedPush           when enabled, members who can push to this branch can also force push. (default:
      *                                  false)
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ProtectedBranch protectBranch(
             Object projectIdOrPath,
@@ -260,7 +261,7 @@ public class ProtectedBranchesApi extends AbstractApi {
             AccessLevel mergeAccessLevel,
             AccessLevel unprotectAccessLevel,
             Boolean codeOwnerApprovalRequired,
-            Boolean allowForcedPush) throws GitLabApiException {
+            Boolean allowForcedPush) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", branchName, true)
                 .withParam("push_access_level", pushAccessLevel).withParam("merge_access_level", mergeAccessLevel)
                 .withParam("unprotect_access_level", unprotectAccessLevel)
@@ -294,7 +295,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file.
      *                                  (defaults: false)
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ProtectedBranch protectBranch(
             Object projectIdOrPath,
@@ -302,7 +303,7 @@ public class ProtectedBranchesApi extends AbstractApi {
             Long allowedToPushUserId,
             Long allowedToMergeUserId,
             Long allowedToUnprotectUserId,
-            Boolean codeOwnerApprovalRequired) throws GitLabApiException {
+            Boolean codeOwnerApprovalRequired) throws RelevantException {
         return protectBranch(
                 projectIdOrPath,
                 branchName,
@@ -334,7 +335,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param allowForcedPush           when enabled, members who can push to this branch can also force push. (default:
      *                                  false)
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ProtectedBranch protectBranch(
             Object projectIdOrPath,
@@ -343,7 +344,7 @@ public class ProtectedBranchesApi extends AbstractApi {
             Long allowedToMergeUserId,
             Long allowedToUnprotectUserId,
             Boolean codeOwnerApprovalRequired,
-            Boolean allowForcedPush) throws GitLabApiException {
+            Boolean allowForcedPush) throws RelevantException {
 
         Form formData = new GitLabApiForm().withParam("name", branchName, true)
                 .withParam("allowed_to_push[][user_id]", allowedToPushUserId)
@@ -380,7 +381,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file.
      *                                  (defaults: false)
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ProtectedBranch protectBranch(
             Object projectIdOrPath,
@@ -388,7 +389,7 @@ public class ProtectedBranchesApi extends AbstractApi {
             AllowedTo allowedToPush,
             AllowedTo allowedToMerge,
             AllowedTo allowedToUnprotect,
-            Boolean codeOwnerApprovalRequired) throws GitLabApiException {
+            Boolean codeOwnerApprovalRequired) throws RelevantException {
 
         GitLabForm formData = new GitLabForm().withParam("name", branchName, true)
                 .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
@@ -424,12 +425,12 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @param branchName                the name of the branch to protect, can be a wildcard
      * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file.
      * @return the branch info for the protected branch
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ProtectedBranch setCodeOwnerApprovalRequired(
             Object projectIdOrPath,
             String branchName,
-            Boolean codeOwnerApprovalRequired) throws GitLabApiException {
+            Boolean codeOwnerApprovalRequired) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("code_owner_approval_required", codeOwnerApprovalRequired);
 
         Response response = patch(

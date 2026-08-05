@@ -535,7 +535,7 @@ JsonFactory.use(JsonProvider.FASTJSON2);
 // ✅ Good: Handle specific exceptions
 try {
     QrCodeKit.decode(qrFile);
-} catch (QrCodeException e) {
+} catch (InternalException e) {
     log.error("Failed to decode QR code", e);
 }
 
