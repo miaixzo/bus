@@ -54,7 +54,7 @@ module bus.spring {
     exports org.miaixz.bus.spring.bean;
     exports org.miaixz.bus.spring.boot.banner;
     exports org.miaixz.bus.spring.boot.condition;
-    exports org.miaixz.bus.spring.boot.startup to bus.starter;
+    exports org.miaixz.bus.spring.boot.startup;
     exports org.miaixz.bus.spring.jdbc;
     exports org.miaixz.bus.spring.web;
     exports org.miaixz.bus.spring.web.advice;

@@ -22,6 +22,8 @@ package org.miaixz.bus.metrics.observe.tag;
 /**
  * An immutable key=value metric tag.
  *
+ * @param key   tag key; must not be blank
+ * @param value tag value; {@code null} is normalised to {@code ""}
  * @author Kimi Liu
  * @since Java 21+
  */

@@ -81,6 +81,8 @@ public class ErrorBudget {
     /**
      * Returns the observed compliance as a fraction (1.0 = perfect, 0.0 = all bad). Returns 1.0 if no requests have
      * been recorded yet.
+     *
+     * @return the observed compliance fraction
      */
     public synchronized double compliance() {
         return totalRequests == 0 ? 1.0 : (double) goodRequests / totalRequests;
@@ -88,6 +90,8 @@ public class ErrorBudget {
 
     /**
      * Remaining error budget as a fraction (1.0 = full, 0.0 = exhausted).
+     *
+     * @return the remaining error budget fraction
      */
     public synchronized double errorBudgetRemaining() {
         if (totalRequests == 0) {
@@ -103,6 +107,8 @@ public class ErrorBudget {
 
     /**
      * Burn rate = (actual error rate) / (allowed error rate). Value > 1 means budget is burning faster than allowed.
+     *
+     * @return the current error budget burn rate
      */
     public synchronized double burnRate() {
         if (totalRequests == 0) {
@@ -118,6 +124,8 @@ public class ErrorBudget {
 
     /**
      * Returns the SLO target fraction, e.g. 0.999.
+     *
+     * @return the SLO target fraction
      */
     public double target() {
         return target;

@@ -297,6 +297,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the commit events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param commitEvents    the commit events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -330,6 +331,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the push events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param pushEvents      the push events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -363,6 +365,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the issues events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param issuesEvents    the issues events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -396,6 +399,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the confidential issues events and returns this instance.
      *
+     * @param <T>                      the type of the derived instance
      * @param confidentialIssuesEvents the confidential issues events value
      * @param derivedInstance          the derived instance value
      * @return the result
@@ -429,6 +433,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the merge requests events and returns this instance.
      *
+     * @param <T>                 the type of the derived instance
      * @param mergeRequestsEvents the merge requests events value
      * @param derivedInstance     the derived instance value
      * @return the result
@@ -462,6 +467,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the tag push events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param tagPushEvents   the tag push events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -495,6 +501,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the note events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param noteEvents      the note events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -528,6 +535,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the confidential note events and returns this instance.
      *
+     * @param <T>                    the type of the derived instance
      * @param confidentialNoteEvents the confidential note events value
      * @param derivedInstance        the derived instance value
      * @return the result
@@ -561,6 +569,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the pipeline events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param pipelineEvents  the pipeline events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -594,6 +603,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the wiki page events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param wikiPageEvents  the wiki page events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -627,6 +637,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Sets the job events and returns this instance.
      *
+     * @param <T>             the type of the derived instance
      * @param jobEvents       the job events value
      * @param derivedInstance the derived instance value
      * @return the result
@@ -672,6 +683,7 @@ public abstract class NotificationService implements Serializable {
     /**
      * Returns the property.
      *
+     * @param <T>          the type of the property value
      * @param prop         the prop value
      * @param defaultValue the default value value
      * @return the result
