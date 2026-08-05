@@ -648,6 +648,11 @@ public class MapperOptions {
         private boolean allowModifyNullable = false;
 
         /**
+         * Whether table and column comments may be changed.
+         */
+        private boolean allowModifyComment = false;
+
+        /**
          * Whether unmapped database columns may be dropped.
          */
         private boolean allowDropColumn = false;

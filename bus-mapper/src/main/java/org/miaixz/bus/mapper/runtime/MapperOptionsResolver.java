@@ -291,6 +291,7 @@ final class MapperOptionsResolver {
                 case "allowexpanddecimal" -> schemaOptions.setAllowExpandDecimal(Boolean.parseBoolean(value));
                 case "allowshrinkdecimal" -> schemaOptions.setAllowShrinkDecimal(Boolean.parseBoolean(value));
                 case "allowmodifynullable" -> schemaOptions.setAllowModifyNullable(Boolean.parseBoolean(value));
+                case "allowmodifycomment" -> schemaOptions.setAllowModifyComment(Boolean.parseBoolean(value));
                 case "allowdropcolumn" -> schemaOptions.setAllowDropColumn(Boolean.parseBoolean(value));
                 case "allowrenamecolumn" -> schemaOptions.setAllowRenameColumn(Boolean.parseBoolean(value));
                 case "allowcreateindex" -> schemaOptions.setAllowCreateIndex(Boolean.parseBoolean(value));
@@ -351,6 +352,7 @@ final class MapperOptionsResolver {
         copy.setAllowExpandDecimal(source.isAllowExpandDecimal());
         copy.setAllowShrinkDecimal(source.isAllowShrinkDecimal());
         copy.setAllowModifyNullable(source.isAllowModifyNullable());
+        copy.setAllowModifyComment(source.isAllowModifyComment());
         copy.setAllowDropColumn(source.isAllowDropColumn());
         copy.setAllowRenameColumn(source.isAllowRenameColumn());
         copy.setAllowCreateIndex(source.isAllowCreateIndex());

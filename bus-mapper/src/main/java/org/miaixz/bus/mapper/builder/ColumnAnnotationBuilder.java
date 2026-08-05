@@ -127,6 +127,9 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
             if (!column.columnDefinition().isBlank()) {
                 columnMeta.columnDefinition(column.columnDefinition());
             }
+            if (!column.comment().isBlank()) {
+                columnMeta.comment(column.comment());
+            }
         }
 
         // Process the basic annotation.

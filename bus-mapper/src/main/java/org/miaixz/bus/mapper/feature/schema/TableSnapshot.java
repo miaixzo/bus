@@ -55,6 +55,11 @@ public class TableSnapshot {
     private String name;
 
     /**
+     * Database table comment.
+     */
+    private String comment;
+
+    /**
      * Whether the table exists in the database.
      */
     private boolean exists;

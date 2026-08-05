@@ -69,6 +69,8 @@ public class SQLite extends AbstractDialect {
         EnumSet<Behavior> types = schemaTypes(getUpsertType());
         types.remove(Behavior.CREATE_FOREIGN_KEY);
         types.remove(Behavior.DROP_FOREIGN_KEY);
+        types.remove(Behavior.MODIFY_TABLE_COMMENT);
+        types.remove(Behavior.MODIFY_COLUMN_COMMENT);
         return types;
     }
 

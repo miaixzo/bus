@@ -75,6 +75,16 @@ public class SchemaDiff {
     private ColumnSnapshot actualColumn;
 
     /**
+     * Whether this difference belongs to a table being created in the same schema plan.
+     */
+    private boolean tableCreated;
+
+    /**
+     * Whether this difference belongs to a column being created in the same schema plan.
+     */
+    private boolean columnCreated;
+
+    /**
      * Index metadata associated with the difference.
      */
     private IndexMeta index;

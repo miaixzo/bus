@@ -152,6 +152,16 @@ public interface SchemaBehavior {
     }
 
     /**
+     * Builds table comment modification SQL.
+     *
+     * @param table the table metadata
+     * @return the table comment modification SQL
+     */
+    default String modifyTableComment(TableMeta table) {
+        throw unsupportedSchema("MODIFY_TABLE_COMMENT", table);
+    }
+
+    /**
      * Builds column add SQL.
      *
      * @param table  the table metadata
@@ -160,6 +170,17 @@ public interface SchemaBehavior {
      */
     default String addColumn(TableMeta table, ColumnMeta column) {
         throw unsupportedSchema("ADD_COLUMN", table);
+    }
+
+    /**
+     * Builds column comment modification SQL.
+     *
+     * @param table  the table metadata
+     * @param column the column metadata
+     * @return the column comment modification SQL
+     */
+    default String modifyColumnComment(TableMeta table, ColumnMeta column) {
+        throw unsupportedSchema("MODIFY_COLUMN_COMMENT", table);
     }
 
     /**

@@ -74,7 +74,8 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
 
     /**
      * Processes the {@link Table} annotation to set the table name, catalog, and schema, or uses default naming
-     * conventions if the annotation is not present.
+     * conventions if the annotation is not present. Jakarta Persistence 3.2 table comments are preserved for schema
+     * initialization DDL.
      *
      * @param entityClass The entity class.
      * @param tableMeta   The table metadata.
@@ -90,6 +91,9 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             }
             if (StringKit.isNotEmpty(table.schema())) {
                 tableMeta.schema(table.schema());
+            }
+            if (StringKit.isNotEmpty(table.comment())) {
+                tableMeta.comment(table.comment());
             }
             for (jakarta.persistence.Index index : table.indexes()) {
                 String[] columns = splitColumns(index.columnList());

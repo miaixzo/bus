@@ -21,6 +21,8 @@ package org.miaixz.bus.mapper;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Mapper charter definitions shared by behavior contracts, schema initialization, and dialect SQL generation.
@@ -123,9 +125,19 @@ public final class Charter {
         CREATE_TABLE(Group.SCHEMA),
 
         /**
+         * Modify table comment operation.
+         */
+        MODIFY_TABLE_COMMENT(Group.SCHEMA),
+
+        /**
          * Add column operation.
          */
         ADD_COLUMN(Group.SCHEMA),
+
+        /**
+         * Modify column comment operation.
+         */
+        MODIFY_COLUMN_COMMENT(Group.SCHEMA),
 
         /**
          * Modify column SQL type operation.

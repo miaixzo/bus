@@ -41,6 +41,8 @@ import jakarta.persistence.EnumType;
 
 import org.apache.ibatis.type.JdbcType;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
@@ -70,6 +72,56 @@ public abstract class AbstractDialect implements Dialect {
      * Extra buffer size reserved when building paginated SQL statements.
      */
     protected static final int PAGINATION_SQL_EXTRA_CAPACITY = 50;
+
+    /**
+     * Comma plus one trailing space used in generated SQL lists.
+     */
+    protected static final String COMMA_SPACE = Symbol.COMMA + Symbol.SPACE;
+
+    /**
+     * JDBC table type used for table metadata lookup.
+     */
+    protected static final String TABLE_TYPE = "TABLE";
+
+    /**
+     * JDBC metadata column that stores table or column remarks.
+     */
+    protected static final String REMARKS_COLUMN = "REMARKS";
+
+    /**
+     * SQL Server extended-property name used for descriptions.
+     */
+    protected static final String SQLSERVER_DESCRIPTION = "MS_Description";
+
+    /**
+     * SQL Server schema level name.
+     */
+    protected static final String SQLSERVER_SCHEMA = "SCHEMA";
+
+    /**
+     * SQL Server table level name.
+     */
+    protected static final String SQLSERVER_TABLE = "TABLE";
+
+    /**
+     * SQL Server column level name.
+     */
+    protected static final String SQLSERVER_COLUMN = "COLUMN";
+
+    /**
+     * SQL Server column identifier property name.
+     */
+    protected static final String SQLSERVER_COLUMN_ID = "ColumnId";
+
+    /**
+     * Default SQL Server schema.
+     */
+    protected static final String SQLSERVER_DEFAULT_SCHEMA = "dbo";
+
+    /**
+     * SQL Server Unicode string literal prefix.
+     */
+    protected static final String SQLSERVER_UNICODE_PREFIX = "N";
 
     /**
      * Human-readable database name.
@@ -116,6 +168,8 @@ public abstract class AbstractDialect implements Dialect {
                 Behavior.DROP_PRIMARY_KEY,
                 Behavior.CREATE_FOREIGN_KEY,
                 Behavior.DROP_FOREIGN_KEY,
+                Behavior.MODIFY_TABLE_COMMENT,
+                Behavior.MODIFY_COLUMN_COMMENT,
                 Behavior.READ_TABLE_METADATA,
                 Behavior.READ_COLUMN_METADATA,
                 Behavior.READ_INDEX_METADATA,
@@ -229,12 +283,34 @@ public abstract class AbstractDialect implements Dialect {
     public TableSnapshot readTable(Connection connection, TableMeta table) throws SQLException {
         TableSnapshot snapshot = new TableSnapshot().name(table.tableName()).exists(existsTable(connection, table));
         if (snapshot.exists()) {
+            snapshot.comment(readTableComment(connection, table));
             snapshot.columns(readColumns(connection, table));
             snapshot.indexes(readIndexes(connection, table));
             snapshot.primaryKey(readPrimaryKey(connection, table));
             snapshot.foreignKeys(readForeignKeys(connection, table));
         }
         return snapshot;
+    }
+
+    /**
+     * Reads a table comment from JDBC metadata remarks.
+     *
+     * @param connection the JDBC connection used to read database metadata
+     * @param table      the mapper table metadata
+     * @return the table comment, or {@code null} when unavailable
+     * @throws SQLException if database metadata cannot be read
+     */
+    protected String readTableComment(Connection connection, TableMeta table) throws SQLException {
+        DatabaseMetaData metaData = connection.getMetaData();
+        for (String tableName : tableLookupNames(metaData, table)) {
+            try (ResultSet rs = metaData
+                    .getTables(table.catalog(), table.schema(), tableName, new String[] { TABLE_TYPE })) {
+                if (rs.next()) {
+                    return getString(rs, REMARKS_COLUMN);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -284,7 +360,8 @@ public abstract class AbstractDialect implements Dialect {
                     type.precision(size).scale(scale);
                 }
                 columns.add(
-                        new ColumnSnapshot().name(rs.getString("COLUMN_NAME")).type(type)
+                        new ColumnSnapshot().name(rs.getString("COLUMN_NAME")).comment(getString(rs, REMARKS_COLUMN))
+                                .type(type)
                                 .nullable(nullable == DatabaseMetaData.columnNullable));
             }
         }
@@ -452,17 +529,24 @@ public abstract class AbstractDialect implements Dialect {
      */
     @Override
     public String createTable(TableMeta table) {
-        StringJoiner joiner = new StringJoiner(", ");
+        StringJoiner joiner = new StringJoiner(COMMA_SPACE);
         for (ColumnMeta column : table.columns()) {
             joiner.add(columnDefinition(column));
         }
-        List<String> ids = table.primaryKey() == null ? List.of() : table.primaryKey().columns();
-        if (!ids.isEmpty()) {
-            StringJoiner pk = new StringJoiner(", ");
-            ids.forEach(column -> pk.add(identifier(column)));
-            joiner.add("PRIMARY KEY (" + pk + ")");
-        }
-        return "CREATE TABLE " + tableName(table) + " (" + joiner + ")";
+        return "CREATE TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + Symbol.PARENTHESE_LEFT + joiner
+                + Symbol.PARENTHESE_RIGHT;
+    }
+
+    /**
+     * Builds the DDL used to set or replace a table comment.
+     *
+     * @param table the mapper table metadata
+     * @return the generated table-comment SQL
+     */
+    @Override
+    public String modifyTableComment(TableMeta table) {
+        return "COMMENT ON TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + "IS" + Symbol.SPACE
+                + stringLiteral(table.comment());
     }
 
     /**
@@ -475,6 +559,20 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String addColumn(TableMeta table, ColumnMeta column) {
         return "ALTER TABLE " + tableName(table) + " ADD COLUMN " + columnDefinition(column);
+    }
+
+    /**
+     * Builds the DDL used to set or replace a column comment.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column-comment SQL
+     */
+    @Override
+    public String modifyColumnComment(TableMeta table, ColumnMeta column) {
+        return "COMMENT ON COLUMN" + Symbol.SPACE + tableName(table) + Symbol.DOT + identifier(column.column())
+                + Symbol.SPACE + "IS" + Symbol.SPACE
+                + stringLiteral(column.comment());
     }
 
     /**
@@ -727,7 +825,45 @@ public abstract class AbstractDialect implements Dialect {
      * @return the column modification SQL
      */
     protected String mysqlModifyColumn(TableMeta table, ColumnMeta column) {
-        return "ALTER TABLE " + tableName(table) + " MODIFY COLUMN " + columnDefinition(column);
+        return "ALTER TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + "MODIFY COLUMN" + Symbol.SPACE
+                + mysqlColumnDefinition(column);
+    }
+
+    /**
+     * Builds MySQL-compatible table comment SQL.
+     *
+     * @param table the table metadata
+     * @return the table comment SQL
+     */
+    protected String mysqlModifyTableComment(TableMeta table) {
+        return "ALTER TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + "COMMENT" + Symbol.SPACE
+                + Symbol.EQUAL + Symbol.SPACE + stringLiteral(table.comment());
+    }
+
+    /**
+     * Builds MySQL-compatible column comment SQL.
+     *
+     * @param table  the table metadata
+     * @param column the column metadata
+     * @return the column comment SQL
+     */
+    protected String mysqlModifyColumnComment(TableMeta table, ColumnMeta column) {
+        return "ALTER TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + "MODIFY COLUMN" + Symbol.SPACE
+                + mysqlColumnDefinition(column);
+    }
+
+    /**
+     * Builds a MySQL column definition including an optional comment fragment.
+     *
+     * @param column the column metadata
+     * @return the MySQL column definition SQL fragment
+     */
+    protected String mysqlColumnDefinition(ColumnMeta column) {
+        String definition = columnDefinition(column);
+        if (column.comment() == null || column.comment().isBlank()) {
+            return definition;
+        }
+        return definition + Symbol.SPACE + "COMMENT" + Symbol.SPACE + stringLiteral(column.comment());
     }
 
     /**
@@ -849,13 +985,77 @@ public abstract class AbstractDialect implements Dialect {
     }
 
     /**
+     * Builds SQL Server-compatible table comment SQL using the standard {@code MS_Description} extended property.
+     *
+     * @param table the table metadata
+     * @return the table comment SQL
+     */
+    protected String sqlServerModifyTableComment(TableMeta table) {
+        String schema = sqlServerSchema(table);
+        String name = sqlServerTable(table);
+        String qualified = schema + Symbol.DOT + name;
+        String exists = "SELECT 1 FROM sys.extended_properties WHERE major_id = OBJECT_ID"
+                + parenthesized(unicodeLiteral(qualified)) + " AND minor_id = 0 AND name = "
+                + unicodeLiteral(SQLSERVER_DESCRIPTION);
+        String levels = "@level0type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
+                + unicodeLiteral(SQLSERVER_SCHEMA) + COMMA_SPACE + "@level0name" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(schema)
+                + COMMA_SPACE + "@level1type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
+                + unicodeLiteral(SQLSERVER_TABLE) + COMMA_SPACE + "@level1name" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(name);
+        return "IF EXISTS" + Symbol.SPACE + parenthesized(exists) + Symbol.SPACE
+                + "EXEC sp_updateextendedproperty @name = "
+                + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE + "@value" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(table.comment()) + COMMA_SPACE + levels
+                + " ELSE EXEC sp_addextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE
+                + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(table.comment())
+                + COMMA_SPACE + levels;
+    }
+
+    /**
+     * Builds SQL Server-compatible column comment SQL using the standard {@code MS_Description} extended property.
+     *
+     * @param table  the table metadata
+     * @param column the column metadata
+     * @return the column comment SQL
+     */
+    protected String sqlServerModifyColumnComment(TableMeta table, ColumnMeta column) {
+        String schema = sqlServerSchema(table);
+        String name = sqlServerTable(table);
+        String columnName = unquote(column.column());
+        String qualified = schema + Symbol.DOT + name;
+        String columnId = "COLUMNPROPERTY" + parenthesized(
+                "OBJECT_ID" + parenthesized(unicodeLiteral(qualified)) + COMMA_SPACE + unicodeLiteral(columnName)
+                        + COMMA_SPACE + unicodeLiteral(SQLSERVER_COLUMN_ID));
+        String exists = "SELECT 1 FROM sys.extended_properties WHERE major_id = OBJECT_ID"
+                + parenthesized(unicodeLiteral(qualified)) + " AND minor_id = " + columnId
+                + " AND name = " + unicodeLiteral(SQLSERVER_DESCRIPTION);
+        String levels = "@level0type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
+                + unicodeLiteral(SQLSERVER_SCHEMA) + COMMA_SPACE + "@level0name" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(schema)
+                + COMMA_SPACE + "@level1type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
+                + unicodeLiteral(SQLSERVER_TABLE) + COMMA_SPACE + "@level1name" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(name)
+                + COMMA_SPACE + "@level2type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
+                + unicodeLiteral(SQLSERVER_COLUMN) + COMMA_SPACE + "@level2name" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(columnName);
+        return "IF EXISTS" + Symbol.SPACE + parenthesized(exists) + Symbol.SPACE
+                + "EXEC sp_updateextendedproperty @name = "
+                + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE + "@value" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(column.comment()) + COMMA_SPACE + levels
+                + " ELSE EXEC sp_addextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE
+                + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(column.comment())
+                + COMMA_SPACE + levels;
+    }
+
+    /**
      * Builds a column definition fragment.
      *
      * @param column the column metadata
      * @return the column definition SQL fragment
      */
     protected String columnDefinition(ColumnMeta column) {
-        return identifier(column.column()) + " " + resolveType(column).definition() + nullableSql(column);
+        return identifier(column.column()) + Symbol.SPACE + resolveType(column).definition() + nullableSql(column);
     }
 
     /**
@@ -866,9 +1066,9 @@ public abstract class AbstractDialect implements Dialect {
      */
     protected String nullableSql(ColumnMeta column) {
         if (column.id() || Boolean.FALSE.equals(column.ddlNullable())) {
-            return " NOT NULL";
+            return Symbol.SPACE + "NOT NULL";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -892,7 +1092,7 @@ public abstract class AbstractDialect implements Dialect {
         if (primaryKey != null && primaryKey.name() != null && !primaryKey.name().isBlank()) {
             return primaryKey.name();
         }
-        return table.table() + "_pk";
+        return table.table() + Symbol.UNDERLINE + "pk";
     }
 
     /**
@@ -902,7 +1102,7 @@ public abstract class AbstractDialect implements Dialect {
      * @return the rendered column list
      */
     protected String columnList(List<String> columns) {
-        StringJoiner joiner = new StringJoiner(", ");
+        StringJoiner joiner = new StringJoiner(COMMA_SPACE);
         columns.forEach(column -> joiner.add(identifier(column)));
         return joiner.toString();
     }
@@ -924,7 +1124,70 @@ public abstract class AbstractDialect implements Dialect {
      * @return the unquoted identifier value
      */
     protected String unquote(String value) {
-        return value == null ? null : value.replace("`", "").replace("\"", "");
+        return value == null ? null
+                : value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY);
+    }
+
+    /**
+     * Builds a SQL string literal and escapes embedded quotes.
+     *
+     * @param value the literal value
+     * @return the SQL string literal
+     */
+    protected String stringLiteral(String value) {
+        String escaped = value == null ? Normal.EMPTY
+                : value.replace(Symbol.SINGLE_QUOTE, Symbol.SINGLE_QUOTE + Symbol.SINGLE_QUOTE);
+        return Symbol.SINGLE_QUOTE + escaped + Symbol.SINGLE_QUOTE;
+    }
+
+    /**
+     * Builds a SQL Server Unicode string literal and escapes embedded quotes.
+     *
+     * @param value the literal value
+     * @return the SQL Server Unicode string literal
+     */
+    protected String unicodeLiteral(String value) {
+        return SQLSERVER_UNICODE_PREFIX + stringLiteral(value);
+    }
+
+    /**
+     * Wraps a SQL fragment in parentheses.
+     *
+     * @param value the SQL fragment
+     * @return the parenthesized SQL fragment
+     */
+    protected String parenthesized(String value) {
+        return Symbol.PARENTHESE_LEFT + value + Symbol.PARENTHESE_RIGHT;
+    }
+
+    /**
+     * Resolves the SQL Server schema name used in extended-property calls.
+     *
+     * @param table the table metadata
+     * @return the schema name
+     */
+    protected String sqlServerSchema(TableMeta table) {
+        if (table.schema() != null && !table.schema().isBlank()) {
+            return unquote(table.schema());
+        }
+        String tableName = unquote(table.table());
+        int dot = tableName == null ? -1 : tableName.lastIndexOf(Symbol.C_DOT);
+        if (dot > 0) {
+            return tableName.substring(0, dot);
+        }
+        return SQLSERVER_DEFAULT_SCHEMA;
+    }
+
+    /**
+     * Resolves the SQL Server table name used in extended-property calls.
+     *
+     * @param table the table metadata
+     * @return the simple table name
+     */
+    protected String sqlServerTable(TableMeta table) {
+        String tableName = unquote(table.table());
+        int dot = tableName == null ? -1 : tableName.lastIndexOf(Symbol.C_DOT);
+        return dot < 0 ? tableName : tableName.substring(dot + 1);
     }
 
     /**
@@ -1164,6 +1427,21 @@ public abstract class AbstractDialect implements Dialect {
             return rs.getBoolean(column);
         } catch (SQLException e) {
             return false;
+        }
+    }
+
+    /**
+     * Reads a string result-set column defensively.
+     *
+     * @param rs     the result set
+     * @param column the column label
+     * @return the string value, or {@code null} when unavailable
+     */
+    private static String getString(ResultSet rs, String column) {
+        try {
+            return rs.getString(column);
+        } catch (SQLException e) {
+            return null;
         }
     }
 

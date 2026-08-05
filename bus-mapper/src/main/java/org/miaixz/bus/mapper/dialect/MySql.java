@@ -94,6 +94,29 @@ public class MySql extends AbstractDialect {
     }
 
     /**
+     * Builds the DDL used to set a MySQL table comment.
+     *
+     * @param table the mapper table metadata
+     * @return the generated table-comment SQL
+     */
+    @Override
+    public String modifyTableComment(TableMeta table) {
+        return mysqlModifyTableComment(table);
+    }
+
+    /**
+     * Builds the DDL used to set a MySQL column comment.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column-comment SQL
+     */
+    @Override
+    public String modifyColumnComment(TableMeta table, ColumnMeta column) {
+        return mysqlModifyColumnComment(table, column);
+    }
+
+    /**
      * Builds the DDL used to drop an index from a table.
      *
      * @param table the mapper table metadata

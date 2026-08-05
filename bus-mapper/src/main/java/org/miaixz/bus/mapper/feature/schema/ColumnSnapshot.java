@@ -47,6 +47,11 @@ public class ColumnSnapshot {
     private String name;
 
     /**
+     * Database column comment.
+     */
+    private String comment;
+
+    /**
      * Database column type descriptor.
      */
     private SqlTypeDescriptor type;

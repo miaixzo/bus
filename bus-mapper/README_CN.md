@@ -897,6 +897,7 @@ bus:
 | 创建唯一索引 | 支持 | `allow-create-unique: true` |
 | 创建组合索引 | 支持 | `allow-create-index: true` |
 | 创建外键 | 支持 | `allow-create-foreign-key: true` |
+| 修正表/字段注释 | 支持 | `allow-modify-comment: true` |
 | 修改 SQL 类型 | 支持 | `allow-modify-type: true` |
 | 扩大 varchar 长度 | 支持 | `allow-expand-length: true` |
 | 缩小 varchar 长度 | 默认阻止 | `allow-shrink-length: true`、`allow-dangerous: true`、白名单 |
@@ -915,7 +916,8 @@ bus:
 ### 已存在表的处理规则
 
 当数据表已经存在时，Bus Mapper 会读取当前数据库元数据，并与实体元数据进行差异比较。只有同时满足“当前方言支持”和“配置明确放行”的差异才会执行。已有表缺少索引、唯一索引、主键、外键时，可以在启动初始化时补齐。已有字段类型变更必须开启
-`allow-modify-type: true`，字段长度扩展必须开启 `allow-expand-length: true`。
+`allow-modify-type: true`，字段长度扩展必须开启 `allow-expand-length: true`。所有表/字段注释 DDL 都必须开启
+`allow-modify-comment: true`；当该配置为 `false` 时，新建表、新增字段、已有表和已有字段都不会生成注释 SQL。
 
 破坏性变更默认全部阻止。删除字段、删除索引、删除主键、删除外键、缩小字段长度等操作，必须同时满足对应操作开关、`allow-dangerous: true` 和
 `dangerous-whitelist` 白名单。
@@ -941,6 +943,7 @@ bus:
       allow-create-index: true
       allow-create-unique: true
       allow-create-foreign-key: true
+      allow-modify-comment: true
       allow-modify-type: true
       allow-expand-length: true
 ```
@@ -981,6 +984,7 @@ bus:
             allow-add-column: true
             allow-create-primary-key: true
             allow-create-index: true
+            allow-modify-comment: true
 ```
 
 `bus.mapper.schema` 仍然保持兼容：没有 namespace 级 `schema` 时按原全局配置执行；存在 namespace 级 `schema` 时，全局
@@ -1024,14 +1028,14 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "dp_user")
+@Table(name = "dp_user", comment = "用户表")
 public class UserEntity {
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, comment = "主键ID")
     private Long id;
 
-    @Column(length = 128)
+    @Column(length = 128, comment = "用户名")
     private String name;
 }
 ```
@@ -1078,6 +1082,7 @@ public class OrderEntity {
 * 普通组合索引 `idx_dp_order_user_code(user_id, code)`。
 * 唯一索引 `uk_dp_order_code(code)`。
 * 外键 `fk_dp_order_user(user_id) references dp_user(id)`。
+* 通过 `@Table(comment = "...")` 和 `@Column(comment = "...")` 生成或补齐表、字段注释。
 * `remark VARCHAR(512)`，来源于 `@Column(length = 512)`。
 * `amount BIGINT`，来源于 Java 类型 `Long`。
 
@@ -1163,6 +1168,7 @@ public class SchemaBootstrap {
             .allowCreateIndex(true)
             .allowCreateUnique(true)
             .allowCreateForeignKey(true)
+            .allowModifyComment(true)
             .allowModifyType(true)
             .allowExpandLength(true);
 
