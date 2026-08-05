@@ -287,7 +287,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature("GET", path, date, 0);
+            String signature = generateSignature(Http.Method.GET.value(), path, date, 0);
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
@@ -355,7 +355,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, Normal.EMPTY, fileName);
             String path = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature("GET", path, date, 0);
+            String signature = generateSignature(Http.Method.GET.value(), path, date, 0);
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
@@ -402,7 +402,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String path = Symbol.SLASH + context.getBucket() + Symbol.SLASH + prefix;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature("GET", path, date, 0);
+            String signature = generateSignature(Http.Method.GET.value(), path, date, 0);
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
@@ -414,9 +414,9 @@ public class UpyunOssProvider extends AbstractProvider {
                 }
                 String responseBody = response.text();
                 List<Blob> files = new ArrayList<>();
-                String[] lines = responseBody.split("\n");
+                String[] lines = responseBody.split(Symbol.LF);
                 for (String line : lines) {
-                    String[] parts = line.split("\t");
+                    String[] parts = line.split(Symbol.HT);
                     if (parts.length == 4) {
                         Map<String, Object> extend = new HashMap<>();
                         extend.put("tag", parts[0]);
@@ -488,7 +488,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             // Download original file content
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String getSignature = generateSignature("GET", oldPath, date, 0);
+            String getSignature = generateSignature(Http.Method.GET.value(), oldPath, date, 0);
 
             byte[] content;
             try (Response response = get(
@@ -503,7 +503,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             // Upload to new path
             String putDate = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String putSignature = generateSignature("PUT", newPath, putDate, content.length);
+            String putSignature = generateSignature(Http.Method.PUT.value(), newPath, putDate, content.length);
 
             try (Response response = put(
                     this.context.getEndpoint() + newPath,
@@ -519,7 +519,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             // Delete original file
             String deleteDate = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String deleteSignature = generateSignature("DELETE", oldPath, deleteDate, 0);
+            String deleteSignature = generateSignature(Http.Method.DELETE.value(), oldPath, deleteDate, 0);
 
             try (Response response = delete(
                     this.context.getEndpoint() + oldPath,
@@ -717,7 +717,7 @@ public class UpyunOssProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             String requestPath = Symbol.SLASH + bucket + Symbol.SLASH + objectKey;
             String date = Formatter.HTTP_DATETIME_FORMAT_GMT.format(ZonedDateTime.now());
-            String signature = generateSignature("DELETE", requestPath, date, 0);
+            String signature = generateSignature(Http.Method.DELETE.value(), requestPath, date, 0);
 
             try (Response response = delete(
                     this.context.getEndpoint() + requestPath,

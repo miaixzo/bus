@@ -73,9 +73,9 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                 true,
                 "Notify",
                 "Generic email send started: targetCount={}, ccCount={}, bccCount={}, attachmentCount={}, type={}",
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
-                entity == null || entity.getCcs() == null ? 0 : entity.getCcs().split(",").length,
-                entity == null || entity.getBccs() == null ? 0 : entity.getBccs().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
+                entity == null || entity.getCcs() == null ? 0 : entity.getCcs().split(Symbol.COMMA).length,
+                entity == null || entity.getBccs() == null ? 0 : entity.getBccs().split(Symbol.COMMA).length,
                 entity == null || entity.getAttachments() == null ? 0 : entity.getAttachments().length,
                 entity == null ? null : entity.getType());
         try {
@@ -93,7 +93,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                     "Notify",
                     e,
                     "Generic email send failed: targetCount={}, attachmentCount={}, exception={}, reason={}",
-                    entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                    entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                     entity == null || entity.getAttachments() == null ? 0 : entity.getAttachments().length,
                     e.getClass().getSimpleName(),
                     message);
@@ -104,7 +104,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                 false,
                 "Notify",
                 "Generic email send completed: targetCount={}, errcode={}",
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 result.getErrcode());
         return result;
     }

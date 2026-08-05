@@ -170,7 +170,7 @@ public class FastByteArrayOutputStream extends OutputStream {
             throw new IllegalArgumentException("Length must be greater than zero!");
         }
         if (start >= buffer.size() || len == 0) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         Buffer copy = buffer.clone();
         int byteCount = (int) Math.min(len, buffer.size() - start);

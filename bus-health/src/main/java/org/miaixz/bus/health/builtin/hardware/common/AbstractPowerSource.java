@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 
@@ -478,32 +479,39 @@ public abstract class AbstractPowerSource implements PowerSource {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(getName()).append(", ");
-        sb.append("Device Name: ").append(getDeviceName()).append(",\n ");
-        sb.append("RemainingCapacityPercent: ").append(getRemainingCapacityPercent() * 100).append("%, ");
-        sb.append("Time Remaining: ").append(formatTimeRemaining(getTimeRemainingEstimated())).append(", ");
-        sb.append("Time Remaining Instant: ").append(formatTimeRemaining(getTimeRemainingInstant())).append(",\n ");
-        sb.append("Power Usage Rate: ").append(getPowerUsageRate()).append("mW, ");
+        sb.append("Name: ").append(getName()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Device Name: ").append(getDeviceName()).append(Symbol.COMMA).append(Symbol.LF).append(Symbol.SPACE);
+        sb.append("RemainingCapacityPercent: ").append(getRemainingCapacityPercent() * 100).append(Symbol.PERCENT)
+                .append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Time Remaining: ").append(formatTimeRemaining(getTimeRemainingEstimated())).append(Symbol.COMMA)
+                .append(Symbol.SPACE);
+        sb.append("Time Remaining Instant: ").append(formatTimeRemaining(getTimeRemainingInstant()))
+                .append(Symbol.COMMA).append(Symbol.LF).append(Symbol.SPACE);
+        sb.append("Power Usage Rate: ").append(getPowerUsageRate()).append("mW").append(Symbol.COMMA)
+                .append(Symbol.SPACE);
         sb.append("Voltage: ");
         if (getVoltage() > 0) {
-            sb.append(getVoltage()).append("V, ");
+            sb.append(getVoltage()).append("V").append(Symbol.COMMA).append(Symbol.SPACE);
         } else {
-            sb.append(Normal.UNKNOWN).append(", ");
+            sb.append(Normal.UNKNOWN).append(Symbol.COMMA).append(Symbol.SPACE);
         }
-        sb.append("Amperage: ").append(getAmperage()).append("mA,\n ");
-        sb.append("Power OnLine: ").append(isPowerOnLine()).append(", ");
-        sb.append("Charging: ").append(isCharging()).append(", ");
-        sb.append("Discharging: ").append(isDischarging()).append(",\n ");
-        sb.append("Capacity Units: ").append(getCapacityUnits()).append(", ");
-        sb.append("Current Capacity: ").append(getCurrentCapacity()).append(", ");
-        sb.append("Max Capacity: ").append(getMaxCapacity()).append(", ");
-        sb.append("Design Capacity: ").append(getDesignCapacity()).append(",\n ");
-        sb.append("Cycle Count: ").append(getCycleCount()).append(", ");
-        sb.append("Chemistry: ").append(getChemistry()).append(", ");
+        sb.append("Amperage: ").append(getAmperage()).append("mA").append(Symbol.COMMA).append(Symbol.LF)
+                .append(Symbol.SPACE);
+        sb.append("Power OnLine: ").append(isPowerOnLine()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Charging: ").append(isCharging()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Discharging: ").append(isDischarging()).append(Symbol.COMMA).append(Symbol.LF).append(Symbol.SPACE);
+        sb.append("Capacity Units: ").append(getCapacityUnits()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Current Capacity: ").append(getCurrentCapacity()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Max Capacity: ").append(getMaxCapacity()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Design Capacity: ").append(getDesignCapacity()).append(Symbol.COMMA).append(Symbol.LF)
+                .append(Symbol.SPACE);
+        sb.append("Cycle Count: ").append(getCycleCount()).append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Chemistry: ").append(getChemistry()).append(Symbol.COMMA).append(Symbol.SPACE);
         sb.append("Manufacture Date: ").append(getManufactureDate() != null ? getManufactureDate() : Normal.UNKNOWN)
-                .append(", ");
-        sb.append("Manufacturer: ").append(getManufacturer()).append(",\n ");
-        sb.append("SerialNumber: ").append(getSerialNumber()).append(", ");
+                .append(Symbol.COMMA).append(Symbol.SPACE);
+        sb.append("Manufacturer: ").append(getManufacturer()).append(Symbol.COMMA).append(Symbol.LF)
+                .append(Symbol.SPACE);
+        sb.append("SerialNumber: ").append(getSerialNumber()).append(Symbol.COMMA).append(Symbol.SPACE);
         sb.append("Temperature: ");
         if (getTemperature() > 0) {
             sb.append(getTemperature()).append("°C");

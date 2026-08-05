@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 
 /**
@@ -93,7 +94,7 @@ public class IdentityRQ {
         this.type = type;
         this.rspReq = rspReq;
         this.primaryField = primaryField.clone();
-        this.secondaryField = secondaryField != null ? secondaryField.clone() : new byte[0];
+        this.secondaryField = secondaryField != null ? secondaryField.clone() : Normal.EMPTY_BYTE_ARRAY;
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Curator;
 import org.miaixz.bus.cortex.Listener;
@@ -231,7 +232,7 @@ public class DefaultCurator implements Curator {
             if (key == null || key.isBlank()) {
                 continue;
             }
-            String[] parts = key.split(":", 3);
+            String[] parts = key.split(Symbol.COLON, 3);
             if (parts.length < 2) {
                 continue;
             }

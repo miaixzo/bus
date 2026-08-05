@@ -21,7 +21,6 @@ package org.miaixz.bus.gitlab;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
@@ -29,6 +28,8 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.*;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.support.ISO8601;
@@ -873,20 +874,7 @@ public class ProjectApi extends AbstractApi implements Constants {
             throw new RuntimeException("project cannot be null");
         }
 
-        String projectPath = null;
-        try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            Logger.warn(
-                    false,
-                    "GitLab",
-                    uee,
-                    "GitLab project path encoding failed: namespacePresent={}, projectPresent={}, exception={}",
-                    namespace != null && !namespace.isEmpty(),
-                    project != null && !project.isEmpty(),
-                    uee.getClass().getSimpleName());
-            throw (GitLabFailure.exception(uee));
-        }
+        String projectPath = URLEncoder.encode(namespace + Symbol.SLASH + project, Charset.UTF_8);
 
         Response response = get(Response.Status.OK, null, "projects", projectPath);
         return (response.readEntity(Project.class));
@@ -934,21 +922,7 @@ public class ProjectApi extends AbstractApi implements Constants {
             throw new RuntimeException("project cannot be null");
         }
 
-        String projectPath;
-        try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            Logger.warn(
-                    false,
-                    "GitLab",
-                    uee,
-                    "GitLab project path encoding failed: namespacePresent={}, projectPresent={}, includeStatistics={}, exception={}",
-                    namespace != null && !namespace.isEmpty(),
-                    project != null && !project.isEmpty(),
-                    includeStatistics,
-                    uee.getClass().getSimpleName());
-            throw (GitLabFailure.exception(uee));
-        }
+        String projectPath = URLEncoder.encode(namespace + Symbol.SLASH + project, Charset.UTF_8);
 
         Form formData = new GitLabApiForm().withParam("statistics", includeStatistics);
         Response response = get(Response.Status.OK, formData.asMap(), "projects", projectPath);
@@ -1191,7 +1165,7 @@ public class ProjectApi extends AbstractApi implements Constants {
         formData.withParam("visibility", visibility);
 
         if (project.getTopics() != null && !project.getTopics().isEmpty()) {
-            formData.withParam("topics", String.join(",", project.getTopics()));
+            formData.withParam("topics", String.join(Symbol.COMMA, project.getTopics()));
         }
 
         Response response = post(Response.Status.CREATED, formData, "projects");
@@ -1482,7 +1456,7 @@ public class ProjectApi extends AbstractApi implements Constants {
         formData.withParam("issues_template", project.getIssuesTemplate());
 
         if (project.getTopics() != null) {
-            formData.withParam("topics", String.join(",", project.getTopics()));
+            formData.withParam("topics", String.join(Symbol.COMMA, project.getTopics()));
         }
 
         Response response = putWithFormData(Response.Status.OK, formData, "projects", projectIdentifier);

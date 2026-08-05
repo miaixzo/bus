@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.IssueOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.IssueScope;
 import org.miaixz.bus.gitlab.models.Constants.IssueState;
@@ -739,7 +740,7 @@ public class IssueFilter implements Serializable {
      * @return the reference to this IssueFilter instance
      */
     public IssueFilter withoutLabels(String... labels) {
-        return withNot(IssueField.LABELS, String.join(",", labels));
+        return withNot(IssueField.LABELS, String.join(Symbol.COMMA, labels));
     }
 
     /*
@@ -750,7 +751,7 @@ public class IssueFilter implements Serializable {
      * @return the reference to this IssueFilter instance
      */
     public IssueFilter withoutIids(String... iids) {
-        return withNot(IssueField.IIDS, String.join(",", iids));
+        return withNot(IssueField.IIDS, String.join(Symbol.COMMA, iids));
     }
 
     /**
@@ -842,8 +843,8 @@ public class IssueFilter implements Serializable {
     @JsonIgnore
     public GitLabForm getQueryParams() {
         return (new GitLabForm().withParam("iids", iids).withParam("state", state)
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("in", (in != null ? String.join(",", in) : null)).withParam("milestone", milestone)
+                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("in", (in != null ? String.join(Symbol.COMMA, in) : null)).withParam("milestone", milestone)
                 .withParam("scope", scope).withParam("author_id", authorId).withParam("assignee_id", assigneeId)
                 .withParam("my_reaction_emoji", myReactionEmoji).withParam("order_by", orderBy).withParam("sort", sort)
                 .withParam("search", search).withParam("created_after", ISO8601.toString(createdAfter, false))

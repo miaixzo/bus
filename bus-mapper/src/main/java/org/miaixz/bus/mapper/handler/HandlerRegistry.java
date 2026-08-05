@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.handler;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Charter.Handler;
 
@@ -219,12 +220,13 @@ public class HandlerRegistry {
     public String getStatistics() {
         HandlerSnapshot current = snapshot.get();
         StringBuilder sb = new StringBuilder();
-        sb.append("HandlerRegistry Statistics:\n");
-        sb.append("  Total handlers: ").append(current.size()).append("\n");
+        sb.append("HandlerRegistry Statistics:").append(Symbol.LF);
+        sb.append("  Total handlers: ").append(current.size()).append(Symbol.LF);
 
         for (Handler type : Handler.values()) {
             int count = current.getHandlers(type).size();
-            sb.append("  ").append(type).append(": ").append(count).append(" handlers\n");
+            sb.append("  ").append(type).append(Symbol.COLON).append(Symbol.SPACE).append(count).append(" handlers")
+                    .append(Symbol.LF);
         }
 
         return sb.toString();

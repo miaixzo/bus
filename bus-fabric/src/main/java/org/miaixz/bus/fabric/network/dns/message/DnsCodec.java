@@ -805,7 +805,7 @@ public final class DnsCodec {
         if (extendedError == null) {
             return;
         }
-        final byte[] text = extendedError.text() == null ? new byte[0]
+        final byte[] text = extendedError.text() == null ? Normal.EMPTY_BYTE_ARRAY
                 : extendedError.text().getBytes(StandardCharsets.UTF_8);
         output.writeShort(EDNS_OPTION_EXTENDED_DNS_ERROR);
         output.writeShort(Short.BYTES + text.length);

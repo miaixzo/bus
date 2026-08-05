@@ -779,7 +779,7 @@ public class MacOSProcess extends AbstractOSProcess {
                 if (0 < SystemB.INSTANCE.proc_pidpath(getProcessID(), buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
                     this.path = buf.getString(0).trim();
                     // Overwrite name with last part of path
-                    String[] pathSplit = this.path.split("/");
+                    String[] pathSplit = this.path.split(Symbol.SLASH);
                     if (pathSplit.length > 0) {
                         this.name = pathSplit[pathSplit.length - 1];
                     }

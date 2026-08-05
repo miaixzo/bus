@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex.setting.item;
 
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -109,7 +110,7 @@ public class GrayRuleMatcher {
         if (range == null || clientIp == null) {
             return false;
         }
-        String[] segments = range.split("-", 2);
+        String[] segments = range.split(Symbol.MINUS, 2);
         if (segments.length != 2) {
             return false;
         }

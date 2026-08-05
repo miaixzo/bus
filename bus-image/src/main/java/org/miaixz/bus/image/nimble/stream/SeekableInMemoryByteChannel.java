@@ -26,6 +26,8 @@ import java.nio.channels.SeekableByteChannel;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * A {@link SeekableByteChannel} implementation that wraps a byte[]. When this channel is used for writing an internal
  * buffer grows to accommodate incoming data. The natural size limit is the value of {@link Integer#MAX_VALUE} and it is
@@ -73,7 +75,7 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
      * Parameterless constructor - allocates internal buffer by itself.
      */
     public SeekableInMemoryByteChannel() {
-        this(new byte[0]);
+        this(Normal.EMPTY_BYTE_ARRAY);
     }
 
     /**

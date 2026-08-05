@@ -28,6 +28,7 @@ import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
@@ -433,7 +434,7 @@ public class NamedPlaceholderString extends StringTemplate {
      * @return A string array.
      */
     public String[] matchesSequenceToArray(final String text) {
-        return matchesSequence(text).toArray(new String[0]);
+        return matchesSequence(text).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -455,7 +456,7 @@ public class NamedPlaceholderString extends StringTemplate {
      * @see #matchesIndexed(String, IntFunction)
      */
     public String[] matchesIndexedToArray(final String text) {
-        return matchesIndexed(text, null).toArray(new String[0]);
+        return matchesIndexed(text, null).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -469,7 +470,7 @@ public class NamedPlaceholderString extends StringTemplate {
      * @see #matchesIndexed(String, IntFunction)
      */
     public String[] matchesIndexedToArray(final String text, final IntFunction<String> missingIndexHandler) {
-        return matchesIndexed(text, missingIndexHandler).toArray(new String[0]);
+        return matchesIndexed(text, missingIndexHandler).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**

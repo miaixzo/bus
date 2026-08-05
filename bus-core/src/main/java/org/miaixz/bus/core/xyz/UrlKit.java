@@ -35,6 +35,8 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.net.url.UrlQuery;
@@ -483,14 +485,15 @@ public class UrlKit {
         if (StringKit.isBlank(url)) {
             return url;
         }
-        final int sepIndex = url.indexOf("://");
+        final String protocolSeparator = Symbol.COLON + Symbol.FORWARDSLASH;
+        final int sepIndex = url.indexOf(protocolSeparator);
         final String protocol;
         String body;
         if (sepIndex > 0) {
-            protocol = StringKit.subPre(url, sepIndex + 3);
-            body = StringKit.subSuf(url, sepIndex + 3);
+            protocol = StringKit.subPre(url, sepIndex + protocolSeparator.length());
+            body = StringKit.subSuf(url, sepIndex + protocolSeparator.length());
         } else {
-            protocol = "http://";
+            protocol = Protocol.HTTP_PREFIX;
             body = url;
         }
 
@@ -505,10 +508,10 @@ public class UrlKit {
             // Remove leading backslashes or forward slashes
             body = body.replaceAll("^[\\\\/]+", Normal.EMPTY);
             // Replace backslashes with forward slashes
-            body = body.replace("\\", "/");
+            body = body.replace(Symbol.BACKSLASH, Symbol.SLASH);
             if (replaceSlash) {
                 // Double slashes are allowed in URLs and are not replaced by default
-                body = body.replaceAll("//+", "/");
+                body = body.replaceAll(Symbol.FORWARDSLASH + "+", Symbol.SLASH);
             }
         }
 
@@ -639,7 +642,7 @@ public class UrlKit {
                 useCachesIfNecessary(conn);
                 if (conn instanceof HttpURLConnection) {
                     final HttpURLConnection httpCon = (HttpURLConnection) conn;
-                    httpCon.setRequestMethod("HEAD");
+                    httpCon.setRequestMethod(Http.Method.HEAD.value());
                 }
                 return conn.getContentLengthLong();
             } catch (final IOException e) {

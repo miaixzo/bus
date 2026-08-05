@@ -89,7 +89,7 @@ public class StreamReader {
     public byte[] readBytes(final int length) throws InternalException {
         final InputStream in = this.in;
         if (null == in || length == 0) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         return read(length).toByteArrayZeroCopyIfPossible();
     }

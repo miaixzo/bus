@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux;
 import java.io.File;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Builder;
@@ -80,7 +81,7 @@ public final class DevPath {
      * @return the query dev config result
      */
     private static String queryDevConfig() {
-        String devPath = Builder.get(Builder._UTIL_DEV_PATH, "/dev");
+        String devPath = Builder.get(Builder._UTIL_DEV_PATH, Symbol.SLASH + "dev");
         // Ensure prefix begins with path separator, but doesn't end with one
         devPath = '/' + devPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(devPath).exists()) {

@@ -38,6 +38,7 @@ import javax.net.ssl.SSLContext;
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -440,7 +441,7 @@ public abstract class FabricX {
      */
     private static KeyManager[] keyManagers(final String certPass, final String certPath, final InputStream certFile)
             throws Exception {
-        final char[] password = certPass == null ? new char[0] : certPass.toCharArray();
+        final char[] password = certPass == null ? Normal.EMPTY_CHAR_ARRAY : certPass.toCharArray();
         final KeyStore clientStore = KeyStore.getInstance("PKCS12");
         if (certFile != null) {
             clientStore.load(certFile, password);

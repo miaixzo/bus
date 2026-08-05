@@ -215,7 +215,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                     cpuStepping,
                     cpuModel,
                     cpuFamily,
-                    cpu64bit ? new String[] { "ia64" } : new String[0]);
+                    cpu64bit ? new String[] { "ia64" } : Normal.EMPTY_STRING_ARRAY);
         }
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
                 processorID, cpu64bit, cpuVendorFreq);

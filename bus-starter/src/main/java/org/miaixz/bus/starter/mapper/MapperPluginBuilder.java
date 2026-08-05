@@ -162,12 +162,7 @@ public final class MapperPluginBuilder {
         if (factory != null) {
             factory.setPlugins(MapperPluginFactory.build(mapperProperties, mapperProviders, identifierValidator));
         }
-        validateIdentifiersIfNecessary(
-                identifierValidator,
-                mapperProperties,
-                mapperProviders,
-                dataSource,
-                beanFactory);
+        validateIdentifiersIfNecessary(identifierValidator, mapperProperties, mapperProviders, dataSource, beanFactory);
         initializeSchemaIfNecessary(
                 mapperProperties,
                 mapperProviders,
@@ -574,8 +569,8 @@ public final class MapperPluginBuilder {
                 return new ResolvedDataSource(dataSource);
             }
         }
-        throw new IllegalStateException("Unable to locate datasource route for mapper namespace "
-                + Symbol.SINGLE_QUOTE + namespace + Symbol.SINGLE_QUOTE);
+        throw new IllegalStateException("Unable to locate datasource route for mapper namespace " + Symbol.SINGLE_QUOTE
+                + namespace + Symbol.SINGLE_QUOTE);
     }
 
     /**
@@ -643,12 +638,12 @@ public final class MapperPluginBuilder {
                 .allowShrinkLength(source.allowShrinkLength()).allowExpandDecimal(source.allowExpandDecimal())
                 .allowShrinkDecimal(source.allowShrinkDecimal()).allowModifyNullable(source.allowModifyNullable())
                 .allowModifyComment(source.allowModifyComment()).allowDropColumn(source.allowDropColumn())
-                .allowRenameColumn(source.allowRenameColumn())
-                .allowCreateIndex(source.allowCreateIndex()).allowDropIndex(source.allowDropIndex())
-                .allowCreateUnique(source.allowCreateUnique()).allowDropUnique(source.allowDropUnique())
-                .allowCreatePrimaryKey(source.allowCreatePrimaryKey()).allowDropPrimaryKey(source.allowDropPrimaryKey())
-                .allowCreateForeignKey(source.allowCreateForeignKey()).allowDropForeignKey(source.allowDropForeignKey())
-                .allowDangerous(source.allowDangerous()).dangerousWhitelist(copySet(source.dangerousWhitelist()))
+                .allowRenameColumn(source.allowRenameColumn()).allowCreateIndex(source.allowCreateIndex())
+                .allowDropIndex(source.allowDropIndex()).allowCreateUnique(source.allowCreateUnique())
+                .allowDropUnique(source.allowDropUnique()).allowCreatePrimaryKey(source.allowCreatePrimaryKey())
+                .allowDropPrimaryKey(source.allowDropPrimaryKey()).allowCreateForeignKey(source.allowCreateForeignKey())
+                .allowDropForeignKey(source.allowDropForeignKey()).allowDangerous(source.allowDangerous())
+                .dangerousWhitelist(copySet(source.dangerousWhitelist()))
                 .renameMappings(copyMap(source.renameMappings()))
                 .scriptLocation(StringKit.trim(source.scriptLocation()));
     }

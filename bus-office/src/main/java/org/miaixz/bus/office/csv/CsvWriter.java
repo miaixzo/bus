@@ -27,6 +27,7 @@ import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
@@ -267,7 +268,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
             // 1. Write header
             final List<String> header = csvData.getHeader();
             if (CollKit.isNotEmpty(header)) {
-                this.writeHeaderLine(header.toArray(new String[0]));
+                this.writeHeaderLine(header.toArray(Normal.EMPTY_STRING_ARRAY));
             }
             // 2. Write content
             this.write(csvData.getRows());
@@ -308,7 +309,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
             for (final Object bean : beans) {
                 map = BeanKit.beanToMap(bean, properties);
                 if (isFirst) {
-                    writeHeaderLine(map.keySet().toArray(new String[0]));
+                    writeHeaderLine(map.keySet().toArray(Normal.EMPTY_STRING_ARRAY));
                     isFirst = false;
                 }
                 writeLine(Convert.toStringArray(map.values()));

@@ -31,6 +31,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.*;
@@ -301,10 +302,10 @@ public abstract class AbstractApi implements Constants {
             String encoded = URLEncoder.encode(s, Charset.UTF_8);
             // Since the encode method encodes plus signs as %2B,
             // we can simply replace the encoded spaces with the correct encoding here
-            encoded = encoded.replace("+", "%20");
-            encoded = encoded.replace(".", "%2E");
-            encoded = encoded.replace("-", "%2D");
-            encoded = encoded.replace("_", "%5F");
+            encoded = encoded.replace(Symbol.PLUS, "%20");
+            encoded = encoded.replace(Symbol.DOT, "%2E");
+            encoded = encoded.replace(Symbol.MINUS, "%2D");
+            encoded = encoded.replace(Symbol.UNDERLINE, "%5F");
             return (encoded);
         } catch (Exception e) {
             Logger.warn(

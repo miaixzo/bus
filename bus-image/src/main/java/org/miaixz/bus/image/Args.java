@@ -30,6 +30,7 @@ import java.util.Objects;
 import lombok.*;
 import lombok.Builder;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.tls.AnyTrustManager;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Connection;
@@ -196,7 +197,7 @@ public class Args {
         this.option = option;
         this.bindCallingAet = bindCallingAet;
         this.sopClassesTCS = sopClassesTCS;
-        this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0]
+        this.acceptedCallingAETitles = null == acceptedCallingAETitles ? Normal.EMPTY_STRING_ARRAY
                 : Arrays.copyOf(acceptedCallingAETitles, acceptedCallingAETitles.length);
         if (null != this.option) {
             this.option.setMaxOpsInvoked(15);
@@ -359,7 +360,7 @@ public class Args {
      * @return the tsuid order.
      */
     public String[] getTsuidOrder() {
-        return tsuidOrder == null ? new String[0] : Arrays.copyOf(tsuidOrder, tsuidOrder.length);
+        return tsuidOrder == null ? Normal.EMPTY_STRING_ARRAY : Arrays.copyOf(tsuidOrder, tsuidOrder.length);
     }
 
     /**
@@ -378,7 +379,7 @@ public class Args {
      * @return the accepted calling ae titles.
      */
     public String[] getAcceptedCallingAETitles() {
-        return acceptedCallingAETitles == null ? new String[0]
+        return acceptedCallingAETitles == null ? Normal.EMPTY_STRING_ARRAY
                 : Arrays.copyOf(acceptedCallingAETitles, acceptedCallingAETitles.length);
     }
 
@@ -388,7 +389,7 @@ public class Args {
      * @param acceptedCallingAETitles the accepted calling ae titles.
      */
     public void setAcceptedCallingAETitles(String[] acceptedCallingAETitles) {
-        this.acceptedCallingAETitles = acceptedCallingAETitles == null ? new String[0]
+        this.acceptedCallingAETitles = acceptedCallingAETitles == null ? Normal.EMPTY_STRING_ARRAY
                 : Arrays.copyOf(acceptedCallingAETitles, acceptedCallingAETitles.length);
     }
 
@@ -532,10 +533,10 @@ public class Args {
     public void configureTLS(Connection conn, Connection remote) throws IOException {
         if (option != null) {
             if (option.getCipherSuites() != null) {
-                conn.setTlsCipherSuites(option.getCipherSuites().toArray(new String[0]));
+                conn.setTlsCipherSuites(option.getCipherSuites().toArray(Normal.EMPTY_STRING_ARRAY));
             }
             if (option.getTlsProtocols() != null) {
-                conn.setTlsProtocols(option.getTlsProtocols().toArray(new String[0]));
+                conn.setTlsProtocols(option.getTlsProtocols().toArray(Normal.EMPTY_STRING_ARRAY));
             }
             conn.setTlsNeedClientAuth(option.isTlsNeedClientAuth());
 

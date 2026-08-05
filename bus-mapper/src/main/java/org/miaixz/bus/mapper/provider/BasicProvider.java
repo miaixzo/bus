@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
@@ -180,11 +181,11 @@ public abstract class BasicProvider {
         return "INSERT INTO " + entity.tableName() + "<trim prefix='(' suffix=')' suffixOverrides=','>"
                 + entity.insertColumns().stream()
                         .map(col -> "<if test='" + col.notNullTest() + "'>" + col.column() + "," + "</if>")
-                        .collect(Collectors.joining("\n"))
+                        .collect(Collectors.joining(Symbol.LF))
                 + "</trim>" + "<trim prefix='VALUES (' suffix=')' suffixOverrides=','>"
                 + entity.insertColumns().stream()
                         .map(col -> "<if test='" + col.notNullTest() + "'>" + col.variables() + "," + "</if>")
-                        .collect(Collectors.joining("\n"))
+                        .collect(Collectors.joining(Symbol.LF))
                 + "</trim>";
     }
 
@@ -195,9 +196,9 @@ public abstract class BasicProvider {
      * @return UPDATE SQL
      */
     protected static String buildUpdateAll(TableMeta entity) {
-        return "UPDATE "
-                + entity.tableName() + " SET " + entity.updateColumns().stream()
-                        .map(col -> col.column() + " = " + col.variables()).collect(Collectors.joining(", "))
+        return "UPDATE " + entity.tableName() + " SET "
+                + entity.updateColumns().stream().map(col -> col.column() + " = " + col.variables())
+                        .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE))
                 + buildWherePrimaryKey(entity, null);
     }
 
@@ -210,7 +211,7 @@ public abstract class BasicProvider {
     protected static String buildUpdateSelective(TableMeta entity) {
         return "UPDATE " + entity.tableName() + "<set>" + entity.updateColumns().stream().map(
                 col -> "<if test='" + col.notNullTest() + "'>" + col.column() + " = " + col.variables() + "," + "</if>")
-                .collect(Collectors.joining("\n")) + "</set>" + buildWherePrimaryKey(entity, null);
+                .collect(Collectors.joining(Symbol.LF)) + "</set>" + buildWherePrimaryKey(entity, null);
     }
 
     /**
@@ -253,10 +254,11 @@ public abstract class BasicProvider {
      */
     protected static String buildWherePrimaryKey(TableMeta entity, String paramPrefix) {
         StringBuilder sql = new StringBuilder();
-        sql.append("\n<where>");
+        sql.append(Symbol.LF).append("<where>");
 
         entity.idColumns().forEach(pk -> {
-            sql.append("\n  AND ").append(pk.column()).append(" = ");
+            sql.append(Symbol.LF).append("  AND ").append(pk.column()).append(Symbol.SPACE).append(Symbol.EQUAL)
+                    .append(Symbol.SPACE);
             if (paramPrefix != null) {
                 sql.append(pk.variables(paramPrefix));
             } else {
@@ -264,7 +266,7 @@ public abstract class BasicProvider {
             }
         });
 
-        sql.append("\n</where>");
+        sql.append(Symbol.LF).append("</where>");
         return sql.toString();
     }
 
@@ -277,19 +279,21 @@ public abstract class BasicProvider {
      */
     protected static String buildWhereSelective(TableMeta entity, String paramName) {
         StringBuilder sql = new StringBuilder();
-        sql.append("\n<where>");
+        sql.append(Symbol.LF).append("<where>");
 
         entity.columns().forEach(col -> {
-            String test = paramName != null ? paramName + "." + col.property() + " != null"
-                    : col.property() + " != null";
+            String test = paramName != null
+                    ? paramName + Symbol.DOT + col.property() + Symbol.SPACE + Symbol.NE + Symbol.SPACE + Normal.NULL
+                    : col.property() + Symbol.SPACE + Symbol.NE + Symbol.SPACE + Normal.NULL;
             String variable = paramName != null ? col.variables(paramName) : col.variables();
 
-            sql.append("\n  <if test='").append(test).append("'>");
-            sql.append("AND ").append(col.column()).append(" = ").append(variable);
+            sql.append(Symbol.LF).append("  <if test='").append(test).append("'>");
+            sql.append("AND ").append(col.column()).append(Symbol.SPACE).append(Symbol.EQUAL).append(Symbol.SPACE)
+                    .append(variable);
             sql.append("</if>");
         });
 
-        sql.append("\n</where>");
+        sql.append(Symbol.LF).append("</where>");
         return sql.toString();
     }
 
@@ -395,7 +399,7 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(Normal.EMPTY, col)).append("\">")
                     .append(col.column()).append(",</if>\n");
         }
         sql.append("</trim>");
@@ -414,7 +418,7 @@ public abstract class BasicProvider {
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
             sql.append("  <if test=\"").append(requiredUpsertColumnCondition(item, col)).append("\">#{").append(item)
-                    .append(".").append(col.property()).append("},</if>\n");
+                    .append(Symbol.DOT).append(col.property()).append("},</if>\n");
         }
         sql.append("</trim>");
         return sql.toString();
@@ -430,7 +434,7 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(Normal.EMPTY, col)).append("\">")
                     .append(col.variables()).append(",</if>\n");
         }
         sql.append("</trim>");
@@ -465,7 +469,8 @@ public abstract class BasicProvider {
      * @return the key column list
      */
     protected static String keyColumnList(TableMeta entity) {
-        return entity.idColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
+        return entity.idColumns().stream().map(ColumnMeta::column)
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
     }
 
     /**
@@ -475,7 +480,8 @@ public abstract class BasicProvider {
      * @return the insert column list
      */
     protected static String insertColumnList(TableMeta entity) {
-        return entity.insertColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
+        return entity.insertColumns().stream().map(ColumnMeta::column)
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
     }
 
     /**
@@ -489,13 +495,16 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         if (!selective) {
             sql.append("INSERT INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
-                    .append(") VALUES (").append(insertValues(entity, null)).append(")\n");
+                    .append(") VALUES (").append(insertValues(entity, null)).append(Symbol.PARENTHESE_RIGHT)
+                    .append(Symbol.LF);
             sql.append("ON DUPLICATE KEY UPDATE ").append(buildUpdateAssignments(entity, "VALUES", null, false));
             return sql.toString();
         }
-        sql.append("INSERT INTO ").append(entity.tableName()).append("\n").append(buildDynamicColumnListSingle(entity))
-                .append("\nVALUES\n").append(buildDynamicValuesListSingle(entity)).append("\n");
-        sql.append("ON DUPLICATE KEY UPDATE\n").append(buildUpdateAssignments(entity, "VALUES", "", true));
+        sql.append("INSERT INTO ").append(entity.tableName()).append(Symbol.LF)
+                .append(buildDynamicColumnListSingle(entity)).append(Symbol.LF).append("VALUES").append(Symbol.LF)
+                .append(buildDynamicValuesListSingle(entity)).append(Symbol.LF);
+        sql.append("ON DUPLICATE KEY UPDATE").append(Symbol.LF)
+                .append(buildUpdateAssignments(entity, "VALUES", Normal.EMPTY, true));
         return sql.toString();
     }
 
@@ -510,15 +519,17 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         if (!selective) {
             sql.append("INSERT INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
-                    .append(") VALUES (").append(insertValues(entity, null)).append(")\n");
+                    .append(") VALUES (").append(insertValues(entity, null)).append(Symbol.PARENTHESE_RIGHT)
+                    .append(Symbol.LF);
             sql.append("ON CONFLICT (").append(keyColumnList(entity)).append(") DO UPDATE SET ")
                     .append(buildUpdateAssignments(entity, "EXCLUDED", null, false));
             return sql.toString();
         }
-        sql.append("INSERT INTO ").append(entity.tableName()).append("\n").append(buildDynamicColumnListSingle(entity))
-                .append("\nVALUES\n").append(buildDynamicValuesListSingle(entity)).append("\n");
-        sql.append("ON CONFLICT (").append(keyColumnList(entity)).append(") DO UPDATE SET\n")
-                .append(buildUpdateAssignments(entity, "EXCLUDED", "", true));
+        sql.append("INSERT INTO ").append(entity.tableName()).append(Symbol.LF)
+                .append(buildDynamicColumnListSingle(entity)).append(Symbol.LF).append("VALUES").append(Symbol.LF)
+                .append(buildDynamicValuesListSingle(entity)).append(Symbol.LF);
+        sql.append("ON CONFLICT (").append(keyColumnList(entity)).append(") DO UPDATE SET").append(Symbol.LF)
+                .append(buildUpdateAssignments(entity, "EXCLUDED", Normal.EMPTY, true));
         return sql.toString();
     }
 
@@ -534,11 +545,11 @@ public abstract class BasicProvider {
         if (!selective) {
             sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append(" (")
                     .append(insertColumnList(entity)).append(") VALUES (").append(insertValues(entity, null))
-                    .append(")");
+                    .append(Symbol.PARENTHESE_RIGHT);
             return sql.toString();
         }
-        sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append("\n")
-                .append(buildDynamicColumnListSingle(entity)).append("\nVALUES\n")
+        sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append(Symbol.LF)
+                .append(buildDynamicColumnListSingle(entity)).append(Symbol.LF).append("VALUES").append(Symbol.LF)
                 .append(buildDynamicValuesListSingle(entity));
         return sql.toString();
     }
@@ -555,13 +566,13 @@ public abstract class BasicProvider {
         if (!selective) {
             sql.append("UPDATE OR INSERT INTO ").append(entity.tableName()).append(" (")
                     .append(insertColumnList(entity)).append(") VALUES (").append(insertValues(entity, null))
-                    .append(") MATCHING (").append(keyColumnList(entity)).append(")");
+                    .append(") MATCHING (").append(keyColumnList(entity)).append(Symbol.PARENTHESE_RIGHT);
             return sql.toString();
         }
-        sql.append("UPDATE OR INSERT INTO ").append(entity.tableName()).append("\n")
-                .append(buildDynamicColumnListSingle(entity)).append("\nVALUES\n")
-                .append(buildDynamicValuesListSingle(entity)).append("\nMATCHING (").append(keyColumnList(entity))
-                .append(")");
+        sql.append("UPDATE OR INSERT INTO ").append(entity.tableName()).append(Symbol.LF)
+                .append(buildDynamicColumnListSingle(entity)).append(Symbol.LF).append("VALUES").append(Symbol.LF)
+                .append(buildDynamicValuesListSingle(entity)).append(Symbol.LF).append("MATCHING (")
+                .append(keyColumnList(entity)).append(Symbol.PARENTHESE_RIGHT);
         return sql.toString();
     }
 
@@ -577,12 +588,13 @@ public abstract class BasicProvider {
         if (!selective) {
             sql.append("MERGE INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
                     .append(") KEY(").append(keyColumnList(entity)).append(") VALUES (")
-                    .append(insertValues(entity, null)).append(")");
+                    .append(insertValues(entity, null)).append(Symbol.PARENTHESE_RIGHT);
             return sql.toString();
         }
-        sql.append("MERGE INTO ").append(entity.tableName()).append("\n").append(buildDynamicColumnListSingle(entity))
-                .append("\nKEY(").append(keyColumnList(entity)).append(")\nVALUES\n")
-                .append(buildDynamicValuesListSingle(entity));
+        sql.append("MERGE INTO ").append(entity.tableName()).append(Symbol.LF)
+                .append(buildDynamicColumnListSingle(entity)).append(Symbol.LF).append("KEY(")
+                .append(keyColumnList(entity)).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF).append("VALUES")
+                .append(Symbol.LF).append(buildDynamicValuesListSingle(entity));
         return sql.toString();
     }
 
@@ -597,25 +609,29 @@ public abstract class BasicProvider {
         String targetAlias = "target";
         String sourceAlias = "source";
         StringBuilder sql = new StringBuilder();
-        sql.append("MERGE INTO ").append(entity.tableName()).append(" ").append(targetAlias).append("\n");
+        sql.append("MERGE INTO ").append(entity.tableName()).append(Symbol.SPACE).append(targetAlias).append(Symbol.LF);
         if (!selective) {
             sql.append("USING (VALUES (").append(insertValues(entity, null)).append(")) ").append(sourceAlias)
-                    .append(" (").append(insertColumnList(entity)).append(")\n");
-            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
+                    .append(" (").append(insertColumnList(entity)).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
+            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias))
+                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
             sql.append("WHEN MATCHED THEN UPDATE SET ")
-                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append("\n");
-            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity)).append(")\n");
-            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false)).append(")");
+                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append(Symbol.LF);
+            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity))
+                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
+            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false))
+                    .append(Symbol.PARENTHESE_RIGHT);
             return sql.toString();
         }
         String columns = buildDynamicColumnListSingle(entity);
         sql.append("USING (VALUES\n").append(buildDynamicValuesListSingle(entity)).append(") ").append(sourceAlias)
-                .append(" ").append(columns).append("\n");
-        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
-        sql.append("WHEN MATCHED THEN UPDATE SET\n").append(buildUpdateAssignments(entity, "SOURCE", "", true))
-                .append("\n");
-        sql.append("WHEN NOT MATCHED THEN INSERT\n").append(columns).append("\nVALUES\n")
-                .append(buildSourceReferenceList(entity, sourceAlias, true));
+                .append(Symbol.SPACE).append(columns).append(Symbol.LF);
+        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(Symbol.PARENTHESE_RIGHT)
+                .append(Symbol.LF);
+        sql.append("WHEN MATCHED THEN UPDATE SET").append(Symbol.LF)
+                .append(buildUpdateAssignments(entity, "SOURCE", Normal.EMPTY, true)).append(Symbol.LF);
+        sql.append("WHEN NOT MATCHED THEN INSERT").append(Symbol.LF).append(columns).append(Symbol.LF).append("VALUES")
+                .append(Symbol.LF).append(buildSourceReferenceList(entity, sourceAlias, true));
         return sql.toString();
     }
 
@@ -630,28 +646,33 @@ public abstract class BasicProvider {
         String targetAlias = "target";
         String sourceAlias = "source";
         StringBuilder sql = new StringBuilder();
-        sql.append("MERGE INTO ").append(entity.tableName()).append(" ").append(targetAlias).append("\n");
+        sql.append("MERGE INTO ").append(entity.tableName()).append(Symbol.SPACE).append(targetAlias).append(Symbol.LF);
         if (!selective) {
             sql.append("USING (\n  SELECT ")
                     .append(
                             entity.insertColumns().stream().map(col -> col.variables() + " AS " + col.column())
-                                    .collect(Collectors.joining(", ")))
-                    .append(" FROM dual\n) ").append(sourceAlias).append("\n");
-            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
+                                    .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE)))
+                    .append(" FROM dual").append(Symbol.LF).append(") ").append(sourceAlias).append(Symbol.LF);
+            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias))
+                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
             sql.append("WHEN MATCHED THEN UPDATE SET ")
-                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append("\n");
-            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity)).append(")\n");
-            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false)).append(")");
+                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append(Symbol.LF);
+            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity))
+                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
+            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false))
+                    .append(Symbol.PARENTHESE_RIGHT);
             return sql.toString();
         }
         String columns = buildDynamicColumnListSingle(entity);
-        sql.append("USING (\nSELECT\n").append(buildSelectSourceList(entity)).append("\nFROM dual\n) ")
-                .append(sourceAlias).append("\n");
-        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(")\n");
-        sql.append("WHEN MATCHED THEN UPDATE SET\n").append(buildUpdateAssignments(entity, "SOURCE", "", true))
-                .append("\n");
-        sql.append("WHEN NOT MATCHED THEN INSERT\n").append(columns).append("\nVALUES\n")
-                .append(buildSourceReferenceList(entity, sourceAlias, true));
+        sql.append("USING (").append(Symbol.LF).append("SELECT").append(Symbol.LF).append(buildSelectSourceList(entity))
+                .append(Symbol.LF).append("FROM dual").append(Symbol.LF).append(") ").append(sourceAlias)
+                .append(Symbol.LF);
+        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(Symbol.PARENTHESE_RIGHT)
+                .append(Symbol.LF);
+        sql.append("WHEN MATCHED THEN UPDATE SET").append(Symbol.LF)
+                .append(buildUpdateAssignments(entity, "SOURCE", Normal.EMPTY, true)).append(Symbol.LF);
+        sql.append("WHEN NOT MATCHED THEN INSERT").append(Symbol.LF).append(columns).append(Symbol.LF).append("VALUES")
+                .append(Symbol.LF).append(buildSourceReferenceList(entity, sourceAlias, true));
         return sql.toString();
     }
 
@@ -667,8 +688,8 @@ public abstract class BasicProvider {
      * @return the OGNL expression used in dynamic SQL
      */
     private static String requiredUpsertColumnCondition(String prefix, ColumnMeta col) {
-        String property = prefix.isEmpty() ? col.property() : prefix + "." + col.property();
-        return col.id() ? "true" : property + " != null";
+        String property = prefix.isEmpty() ? col.property() : prefix + Symbol.DOT + col.property();
+        return col.id() ? Normal.TRUE : property + Symbol.SPACE + Symbol.NE + Symbol.SPACE + Normal.NULL;
     }
 
     /**
@@ -680,7 +701,7 @@ public abstract class BasicProvider {
      */
     private static String insertValues(TableMeta entity, String prefix) {
         return entity.insertColumns().stream().map(col -> prefix == null ? col.variables() : col.variables(prefix))
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
     }
 
     /**
@@ -694,24 +715,25 @@ public abstract class BasicProvider {
      */
     private static String buildUpdateAssignments(TableMeta entity, String mode, String sourceAlias, boolean selective) {
         if (!selective) {
-            return entity.updateColumns().stream().map(col -> col.column() + " = " + switch (mode) {
-                case "VALUES" -> "VALUES(" + col.column() + ")";
-                case "EXCLUDED" -> "EXCLUDED." + col.column();
-                case "SOURCE" -> sourceAlias + "." + col.column();
-                default -> col.variables();
-            }).collect(Collectors.joining(", "));
+            return entity.updateColumns().stream()
+                    .map(col -> col.column() + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + switch (mode) {
+                        case "VALUES" -> "VALUES(" + col.column() + Symbol.PARENTHESE_RIGHT;
+                        case "EXCLUDED" -> "EXCLUDED" + Symbol.DOT + col.column();
+                        case "SOURCE" -> sourceAlias + Symbol.DOT + col.column();
+                        default -> col.variables();
+                    }).collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         }
         StringBuilder sql = new StringBuilder();
         sql.append("<trim suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.updateColumns()) {
-            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(Normal.EMPTY, col)).append("\">")
                     .append(col.column()).append(" = ");
             if ("VALUES".equals(mode)) {
-                sql.append("VALUES(").append(col.column()).append(")");
+                sql.append("VALUES(").append(col.column()).append(Symbol.PARENTHESE_RIGHT);
             } else if ("EXCLUDED".equals(mode)) {
-                sql.append("EXCLUDED.").append(col.column());
+                sql.append("EXCLUDED").append(Symbol.DOT).append(col.column());
             } else {
-                sql.append(sourceAlias).append(".").append(col.column());
+                sql.append(sourceAlias).append(Symbol.DOT).append(col.column());
             }
             sql.append(",</if>\n");
         }
@@ -729,7 +751,9 @@ public abstract class BasicProvider {
      */
     private static String buildMergeOnClause(TableMeta entity, String targetAlias, String sourceAlias) {
         return entity.idColumns().stream()
-                .map(col -> targetAlias + "." + col.column() + " = " + sourceAlias + "." + col.column())
+                .map(
+                        col -> targetAlias + Symbol.DOT + col.column() + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
+                                + sourceAlias + Symbol.DOT + col.column())
                 .collect(Collectors.joining(" AND "));
     }
 
@@ -743,14 +767,14 @@ public abstract class BasicProvider {
      */
     private static String buildSourceReferenceList(TableMeta entity, String sourceAlias, boolean selective) {
         if (!selective) {
-            return entity.insertColumns().stream().map(col -> sourceAlias + "." + col.column())
-                    .collect(Collectors.joining(", "));
+            return entity.insertColumns().stream().map(col -> sourceAlias + Symbol.DOT + col.column())
+                    .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         }
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">").append(sourceAlias)
-                    .append(".").append(col.column()).append(",</if>\n");
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(Normal.EMPTY, col)).append("\">")
+                    .append(sourceAlias).append(Symbol.DOT).append(col.column()).append(",</if>\n");
         }
         sql.append("</trim>");
         return sql.toString();
@@ -766,7 +790,7 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("  <if test=\"").append(requiredUpsertColumnCondition("", col)).append("\">")
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(Normal.EMPTY, col)).append("\">")
                     .append(col.variables()).append(" AS ").append(col.column()).append(",</if>\n");
         }
         sql.append("</trim>");

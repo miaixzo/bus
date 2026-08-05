@@ -33,6 +33,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.binding.function.Fn;
@@ -311,9 +312,9 @@ public class Condition<T> {
      */
     public Condition<T> orderBy(Fn<T, Object> fn, String order) {
         if (orderByClause == null) {
-            orderByClause = "";
+            orderByClause = Normal.EMPTY;
         } else {
-            orderByClause += ", ";
+            orderByClause += Symbol.COMMA + Symbol.SPACE;
         }
         orderByClause += fn.toColumn() + Symbol.SPACE + order;
         return this;
@@ -328,9 +329,9 @@ public class Condition<T> {
     public Condition<T> orderBy(String orderByCondition) {
         if (orderByCondition != null && !orderByCondition.isEmpty()) {
             if (orderByClause == null) {
-                orderByClause = "";
+                orderByClause = Normal.EMPTY;
             } else {
-                orderByClause += ", ";
+                orderByClause += Symbol.COMMA + Symbol.SPACE;
             }
             orderByClause += orderByCondition;
         }

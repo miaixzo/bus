@@ -377,7 +377,7 @@ public final class Parsing {
 
         // fall back to Hex
         return IntStream.range(0, bytes.length).mapToObj(i -> String.format(Locale.ROOT, "%02X", bytes[i]))
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(Symbol.SPACE));
     }
 
     /**

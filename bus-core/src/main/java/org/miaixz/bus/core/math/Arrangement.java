@@ -23,6 +23,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * A class for handling arrangements (permutations), mathematically noted as $A(n, m)$ or $P(n, k)$.
  * <p>
@@ -155,7 +157,7 @@ public class Arrangement implements Serializable {
         }
         if (m == 0) {
             // A(n,0) = 1, the unique empty permutation
-            return Collections.singletonList(new String[0]);
+            return Collections.singletonList(Normal.EMPTY_STRING_ARRAY);
         }
 
         final long estimated = count(datas.length, m);
@@ -320,8 +322,8 @@ public class Arrangement implements Serializable {
                 this.end = true;
             } else if (m == 0) {
                 // m == 0: Returns only one empty array as the single result
-                this.indices = new int[0];
-                this.buffer = new String[0];
+                this.indices = Normal.EMPTY_INT_ARRAY;
+                this.buffer = Normal.EMPTY_STRING_ARRAY;
                 this.depth = 0;
                 this.end = false;
             } else {
@@ -392,7 +394,7 @@ public class Arrangement implements Serializable {
 
             // Special-case m == 0
             if (m == 0) {
-                nextItem = new String[0];
+                nextItem = Normal.EMPTY_STRING_ARRAY;
                 nextPrepared = true;
                 // Do not set end here; end will be set after returning this element in next()
                 return;

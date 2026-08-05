@@ -42,6 +42,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
@@ -182,7 +184,7 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
         if (body != null && body.length > maximum) {
             throw new IOException("JSON request body exceeds the maximum size of " + maximum + " bytes");
         }
-        byte[] resolved = body == null ? new byte[0] : body;
+        byte[] resolved = body == null ? Normal.EMPTY_BYTE_ARRAY : body;
         request.setAttribute(BODY_ATTRIBUTE, resolved);
         return resolved;
     }
@@ -197,10 +199,9 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
         if (!org.miaixz.bus.core.net.MediaType.isJson(request.getContentType())) {
             return false;
         }
-        return switch (request.getMethod()) {
-            case "POST", "PUT", "PATCH" -> true;
-            default -> false;
-        };
+        String method = request.getMethod();
+        return Http.Method.POST.value().equals(method) || Http.Method.PUT.value().equals(method)
+                || Http.Method.PATCH.value().equals(method);
     }
 
     /**

@@ -25,6 +25,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -61,7 +62,7 @@ public class DubboProperties {
     public DubboProperties(@DefaultValue("false") boolean enabled, @DefaultValue String[] basePackages,
             @DefaultValue Class<?>[] basePackageClasses) {
         this.enabled = enabled;
-        this.basePackages = basePackages == null ? new String[0] : basePackages.clone();
+        this.basePackages = basePackages == null ? Normal.EMPTY_STRING_ARRAY : basePackages.clone();
         this.basePackageClasses = basePackageClasses == null ? new Class<?>[0] : basePackageClasses.clone();
     }
 

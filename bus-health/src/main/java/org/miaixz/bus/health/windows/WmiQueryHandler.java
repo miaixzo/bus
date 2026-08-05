@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.Ole32;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Builder;
@@ -62,7 +63,7 @@ public class WmiQueryHandler {
     /**
      * The EMPTY_OBJECT_ARRAY constant.
      */
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    private static final Object[] EMPTY_OBJECT_ARRAY = Normal.EMPTY_OBJECT_ARRAY;
 
     /**
      * The globalTimeout constant.

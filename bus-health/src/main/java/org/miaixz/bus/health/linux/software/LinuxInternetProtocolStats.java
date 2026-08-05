@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -204,10 +206,10 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         Map<Long, Integer> pidMap = ProcessStat.querySocketToPidMap();
-        conns.addAll(queryConnections("tcp", 4, pidMap));
-        conns.addAll(queryConnections("tcp", 6, pidMap));
-        conns.addAll(queryConnections("udp", 4, pidMap));
-        conns.addAll(queryConnections("udp", 6, pidMap));
+        conns.addAll(queryConnections(Protocol.TCP.name, 4, pidMap));
+        conns.addAll(queryConnections(Protocol.TCP.name, 6, pidMap));
+        conns.addAll(queryConnections(Protocol.UDP.name, 4, pidMap));
+        conns.addAll(queryConnections(Protocol.UDP.name, 6, pidMap));
         return conns;
     }
 
@@ -262,7 +264,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
             int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
             return new Pair<>(first, second);
         }
-        return new Pair<>(new byte[0], 0);
+        return new Pair<>(Normal.EMPTY_BYTE_ARRAY, 0);
     }
 
     /**

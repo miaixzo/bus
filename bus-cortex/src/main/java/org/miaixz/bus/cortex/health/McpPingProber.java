@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.cortex.health;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Port;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Callout;
 import org.miaixz.bus.cortex.Instance;
@@ -80,8 +83,8 @@ public class McpPingProber implements Prober {
     @Override
     public Status check(Instance instance) {
         String host = instance.getHost();
-        int port = instance.getPort() != null ? instance.getPort() : 80;
-        String url = "http://" + host + ":" + port + "/mcp";
+        int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
+        String url = Protocol.HTTP_PREFIX + host + Symbol.COLON + port + Symbol.SLASH + "mcp";
         long start = System.currentTimeMillis();
         Callout.Response response = Callout.postJson(url, PING_PAYLOAD, timeoutMs);
         long latency = System.currentTimeMillis() - start;

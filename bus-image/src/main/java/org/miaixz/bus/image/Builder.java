@@ -47,6 +47,7 @@ import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -200,11 +201,11 @@ public class Builder {
             for (String optVal : optVals) {
                 int delim = optVal.indexOf('=');
                 if (delim < 0) {
-                    addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, "/")));
+                    addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, Symbol.SLASH)));
                 } else {
                     addAttributes(
                             attrs,
-                            Tag.toTags(StringKit.splitToArray(optVal.substring(0, delim), "/")),
+                            Tag.toTags(StringKit.splitToArray(optVal.substring(0, delim), Symbol.SLASH)),
                             optVal.substring(delim + 1));
                 }
             }
@@ -219,7 +220,7 @@ public class Builder {
     public static void addEmptyAttributes(Attributes attrs, String[] optVals) {
         if (optVals != null) {
             for (String optVal : optVals) {
-                addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, "/")));
+                addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, Symbol.SLASH)));
             }
         }
     }
@@ -460,14 +461,17 @@ public class Builder {
         } else if (value instanceof TemporalAccessor temporal) {
             str = Format.formatDateTime(temporal, locale);
         } else if (value instanceof TemporalAccessor[] temporal) {
-            str = Stream.of(temporal).map(v -> Format.formatDateTime(v, locale)).collect(Collectors.joining(", "));
+            str = Stream.of(temporal).map(v -> Format.formatDateTime(v, locale))
+                    .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         } else if (value instanceof float[] array) {
             str = IntStream.range(0, array.length).mapToObj(i -> String.valueOf(array[i]))
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         } else if (value instanceof double[] array) {
-            str = DoubleStream.of(array).mapToObj(String::valueOf).collect(Collectors.joining(", "));
+            str = DoubleStream.of(array).mapToObj(String::valueOf)
+                    .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         } else if (value instanceof int[] array) {
-            str = IntStream.of(array).mapToObj(String::valueOf).collect(Collectors.joining(", "));
+            str = IntStream.of(array).mapToObj(String::valueOf)
+                    .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         } else {
             str = value.toString();
         }
@@ -570,7 +574,7 @@ public class Builder {
         }
         StringBuilder sb = new StringBuilder(s[0]);
         for (int i = 1; i < s.length; i++) {
-            sb.append("\\").append(s[i]);
+            sb.append(Symbol.BACKSLASH).append(s[i]);
         }
         return sb.toString();
     }

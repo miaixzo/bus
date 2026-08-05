@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.cortex.health;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Port;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Callout;
 import org.miaixz.bus.cortex.Instance;
@@ -63,7 +66,8 @@ public class HttpProber implements Prober {
      */
     @Override
     public boolean supports(Instance instance) {
-        return instance != null && instance.getHost() != null && !"tcp".equalsIgnoreCase(instance.getScheme());
+        return instance != null && instance.getHost() != null
+                && !Protocol.TCP.name.equalsIgnoreCase(instance.getScheme());
     }
 
     /**
@@ -74,11 +78,11 @@ public class HttpProber implements Prober {
      */
     @Override
     public Status check(Instance instance) {
-        String scheme = instance.getScheme() != null ? instance.getScheme() : "http";
+        String scheme = instance.getScheme() != null ? instance.getScheme() : Protocol.HTTP.name;
         String host = instance.getHost();
-        int port = instance.getPort() != null ? instance.getPort() : 80;
-        String path = instance.getHealthPath() != null ? instance.getHealthPath() : "/health";
-        String url = scheme + "://" + host + ":" + port + path;
+        int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
+        String path = instance.getHealthPath() != null ? instance.getHealthPath() : Symbol.SLASH + "health";
+        String url = scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port + path;
         long start = System.currentTimeMillis();
         Logger.debug(
                 true,

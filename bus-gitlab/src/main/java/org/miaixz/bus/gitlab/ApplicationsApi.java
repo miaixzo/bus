@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Application;
 
@@ -137,7 +138,7 @@ public class ApplicationsApi extends AbstractApi {
             throw GitLabFailure.exception("scopes cannot be null or empty");
         }
 
-        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(" "));
+        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(Symbol.SPACE));
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("redirect_uri", redirectUri, true).withParam("scopes", scopesString, true)
                 .withParam("confidential", confidential);

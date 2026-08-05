@@ -34,6 +34,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -196,7 +197,7 @@ public class HealthService {
             return List.of();
         }
         Set<String> requested = new LinkedHashSet<>();
-        for (String value : tid.split(",")) {
+        for (String value : tid.split(Symbol.COMMA)) {
             String detail = value.trim().toLowerCase(Locale.ROOT);
             if (detail.isEmpty()) {
                 continue;

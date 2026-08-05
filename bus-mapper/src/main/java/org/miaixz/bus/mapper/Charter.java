@@ -21,8 +21,6 @@ package org.miaixz.bus.mapper;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Mapper charter definitions shared by behavior contracts, schema initialization, and dialect SQL generation.

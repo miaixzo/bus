@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.*;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
@@ -409,7 +410,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         appendFilter("hl7ApplicationName", keys.getHl7ApplicationName(), sb);
         appendFilter("hl7OtherApplicationName", keys.getHl7ApplicationName(), sb);
         appendFilter("dicomApplicationCluster", keys.getApplicationClusters(), sb);
-        sb.append(")");
+        sb.append(Symbol.PARENTHESE_RIGHT);
         return sb.toString();
     }
 
@@ -446,7 +447,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         sb.append("(|");
         for (String value : values)
             appendFilter(attrid, value, sb);
-        sb.append(")");
+        sb.append(Symbol.PARENTHESE_RIGHT);
     }
 
     /**
@@ -753,7 +754,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             return;
 
         for (String name : hl7Ext.getHL7ApplicationNames()) {
-            if (!name.equals("*"))
+            if (!name.equals(Symbol.STAR))
                 dns.add(registerHL7App(name));
         }
     }
@@ -779,7 +780,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             return;
 
         for (String name : hl7Ext.getHL7ApplicationNames()) {
-            if (!name.equals("*") && prevHL7Ext.getHL7Application(name) == null)
+            if (!name.equals(Symbol.STAR) && prevHL7Ext.getHL7Application(name) == null)
                 dns.add(registerHL7App(name));
         }
     }
@@ -799,7 +800,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
 
         HL7DeviceExtension hl7Ext = device.getDeviceExtension(HL7DeviceExtension.class);
         for (String name : prevHL7Ext.getHL7ApplicationNames()) {
-            if (!name.equals("*") && (hl7Ext == null || hl7Ext.getHL7Application(name) == null))
+            if (!name.equals(Symbol.STAR) && (hl7Ext == null || hl7Ext.getHL7Application(name) == null))
                 dns.add(hl7appDN(name, appNamesRegistryDN));
         }
     }

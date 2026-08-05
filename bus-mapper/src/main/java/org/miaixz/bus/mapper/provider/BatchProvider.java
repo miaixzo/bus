@@ -27,6 +27,8 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -235,17 +237,18 @@ public class BatchProvider extends BasicProvider {
      * @return INSERT SQL with foreach tags
      */
     protected static String insertBatch(TableMeta entity) {
-        String columnList = entity.insertColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(", "));
+        String columnList = entity.insertColumns().stream().map(ColumnMeta::column)
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
 
         // Build foreach values placeholder: #{item.col1}, #{item.col2}, ...
         String valuesPlaceholder = entity.insertColumns().stream().map(col -> "#{item." + col.property() + "}")
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
 
         // Build foreach SQL
-        String foreachSql = "  <foreach collection=\"list\" item=\"item\" separator=\",\">\n" + "    ("
-                + valuesPlaceholder + ")\n" + "  </foreach>";
+        String foreachSql = "  <foreach collection=\"list\" item=\"item\" separator=\",\">" + Symbol.LF + "    ("
+                + valuesPlaceholder + Symbol.PARENTHESE_RIGHT + Symbol.LF + "  </foreach>";
 
-        return "INSERT INTO " + entity.tableName() + " (" + columnList + ") VALUES\n" + foreachSql;
+        return "INSERT INTO " + entity.tableName() + " (" + columnList + ") VALUES" + Symbol.LF + foreachSql;
     }
 
     /**
@@ -287,8 +290,9 @@ public class BatchProvider extends BasicProvider {
      * @return FunctionX that accepts Dialect and returns INSERT SQL
      */
     protected static FunctionX<Dialect, String> insertSelectiveBatch(TableMeta entity) {
-        return dialect -> "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0")
-                + "\nVALUES\n" + buildBatchDynamicRows(entity);
+        return dialect -> "INSERT INTO " + entity.tableName() + Symbol.LF
+                + buildDynamicColumnList(entity, "list", Symbol.ZERO) + Symbol.LF + "VALUES" + Symbol.LF
+                + buildBatchDynamicRows(entity);
     }
 
     /**
@@ -331,9 +335,13 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOnDuplicate(TableMeta entity) {
-        return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES\n"
-                + buildBatchRowValues(entity) + "\nON DUPLICATE KEY UPDATE " + entity.updateColumns().stream()
-                        .map(col -> col.column() + " = VALUES(" + col.column() + ")").collect(Collectors.joining(", "));
+        return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES" + Symbol.LF
+                + buildBatchRowValues(entity) + Symbol.LF + "ON DUPLICATE KEY UPDATE "
+                + entity.updateColumns().stream()
+                        .map(
+                                col -> col.column() + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + "VALUES("
+                                        + col.column() + Symbol.PARENTHESE_RIGHT)
+                        .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
     }
 
     /**
@@ -343,10 +351,13 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOnConflict(TableMeta entity) {
-        return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES\n"
-                + buildBatchRowValues(entity) + "\nON CONFLICT (" + keyColumnList(entity) + ") DO UPDATE SET "
-                + entity.updateColumns().stream().map(col -> col.column() + " = EXCLUDED." + col.column())
-                        .collect(Collectors.joining(", "));
+        return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES" + Symbol.LF
+                + buildBatchRowValues(entity) + Symbol.LF + "ON CONFLICT (" + keyColumnList(entity) + ") DO UPDATE SET "
+                + entity.updateColumns().stream()
+                        .map(
+                                col -> col.column() + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + "EXCLUDED"
+                                        + Symbol.DOT + col.column())
+                        .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
     }
 
     /**
@@ -356,7 +367,7 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOrReplace(TableMeta entity) {
-        return "INSERT OR REPLACE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES\n"
+        return "INSERT OR REPLACE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES" + Symbol.LF
                 + buildBatchRowValues(entity);
     }
 
@@ -368,7 +379,7 @@ public class BatchProvider extends BasicProvider {
      */
     private static String buildBatchMergeIntoKey(TableMeta entity) {
         return "MERGE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") KEY(" + keyColumnList(entity)
-                + ") VALUES\n" + buildBatchRowValues(entity);
+                + ") VALUES" + Symbol.LF + buildBatchRowValues(entity);
     }
 
     /**
@@ -378,9 +389,9 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOnDuplicateSelective(TableMeta entity) {
-        return "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0") + "\nVALUES\n"
-                + buildBatchDynamicRows(entity) + "\nON DUPLICATE KEY UPDATE\n"
-                + buildSelectiveAssignments(entity, "VALUES");
+        return "INSERT INTO " + entity.tableName() + Symbol.LF + buildDynamicColumnList(entity, "list", Symbol.ZERO)
+                + Symbol.LF + "VALUES" + Symbol.LF + buildBatchDynamicRows(entity) + Symbol.LF
+                + "ON DUPLICATE KEY UPDATE" + Symbol.LF + buildSelectiveAssignments(entity, "VALUES");
     }
 
     /**
@@ -390,9 +401,9 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOnConflictSelective(TableMeta entity) {
-        return "INSERT INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0") + "\nVALUES\n"
-                + buildBatchDynamicRows(entity) + "\nON CONFLICT (" + keyColumnList(entity) + ") DO UPDATE SET\n"
-                + buildSelectiveAssignments(entity, "EXCLUDED");
+        return "INSERT INTO " + entity.tableName() + Symbol.LF + buildDynamicColumnList(entity, "list", Symbol.ZERO)
+                + Symbol.LF + "VALUES" + Symbol.LF + buildBatchDynamicRows(entity) + Symbol.LF + "ON CONFLICT ("
+                + keyColumnList(entity) + ") DO UPDATE SET" + Symbol.LF + buildSelectiveAssignments(entity, "EXCLUDED");
     }
 
     /**
@@ -402,8 +413,9 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOrReplaceSelective(TableMeta entity) {
-        return "INSERT OR REPLACE INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0")
-                + "\nVALUES\n" + buildBatchDynamicRows(entity);
+        return "INSERT OR REPLACE INTO " + entity.tableName() + Symbol.LF
+                + buildDynamicColumnList(entity, "list", Symbol.ZERO) + Symbol.LF + "VALUES" + Symbol.LF
+                + buildBatchDynamicRows(entity);
     }
 
     /**
@@ -413,8 +425,9 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchMergeIntoKeySelective(TableMeta entity) {
-        return "MERGE INTO " + entity.tableName() + "\n" + buildDynamicColumnList(entity, "list", "0") + "\nKEY("
-                + keyColumnList(entity) + ")\nVALUES\n" + buildBatchDynamicRows(entity);
+        return "MERGE INTO " + entity.tableName() + Symbol.LF + buildDynamicColumnList(entity, "list", Symbol.ZERO)
+                + Symbol.LF + "KEY(" + keyColumnList(entity) + ")" + Symbol.LF + "VALUES" + Symbol.LF
+                + buildBatchDynamicRows(entity);
     }
 
     /**
@@ -425,9 +438,9 @@ public class BatchProvider extends BasicProvider {
      */
     private static String buildBatchRowValues(TableMeta entity) {
         String valuesPlaceholder = entity.insertColumns().stream().map(col -> "#{item." + col.property() + "}")
-                .collect(Collectors.joining(", "));
-        return "  <foreach collection=\"list\" item=\"item\" separator=\",\">\n    (" + valuesPlaceholder
-                + ")\n  </foreach>";
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
+        return "  <foreach collection=\"list\" item=\"item\" separator=\",\">" + Symbol.LF + "    (" + valuesPlaceholder
+                + Symbol.PARENTHESE_RIGHT + Symbol.LF + "  </foreach>";
     }
 
     /**
@@ -437,8 +450,8 @@ public class BatchProvider extends BasicProvider {
      * @return the generated {@code <foreach>} block
      */
     private static String buildBatchDynamicRows(TableMeta entity) {
-        return "<foreach collection=\"list\" item=\"item\" separator=\",\">\n" + buildDynamicValuesList(entity, "item")
-                + "\n</foreach>";
+        return "<foreach collection=\"list\" item=\"item\" separator=\",\">" + Symbol.LF
+                + buildDynamicValuesList(entity, "item") + Symbol.LF + "</foreach>";
     }
 
     /**
@@ -450,16 +463,18 @@ public class BatchProvider extends BasicProvider {
      */
     private static String buildSelectiveAssignments(TableMeta entity, String mode) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<trim suffixOverrides=\",\">\n");
+        sql.append("<trim suffixOverrides=\",\">").append(Symbol.LF);
         for (ColumnMeta col : entity.updateColumns()) {
-            sql.append("  <if test=\"").append(col.id() ? "true" : "list[0]." + col.property() + " != null\">")
-                    .append(col.column()).append(" = ");
+            String condition = col.id() ? Normal.TRUE
+                    : "list[0]" + Symbol.DOT + col.property() + Symbol.SPACE + Symbol.NE + Symbol.SPACE + Normal.NULL;
+            sql.append("  <if test=\"").append(condition).append("\">").append(col.column()).append(Symbol.SPACE)
+                    .append(Symbol.EQUAL).append(Symbol.SPACE);
             if ("VALUES".equals(mode)) {
-                sql.append("VALUES(").append(col.column()).append(")");
+                sql.append("VALUES(").append(col.column()).append(Symbol.PARENTHESE_RIGHT);
             } else {
-                sql.append("EXCLUDED.").append(col.column());
+                sql.append("EXCLUDED").append(Symbol.DOT).append(col.column());
             }
-            sql.append(",</if>\n");
+            sql.append(Symbol.COMMA).append("</if>").append(Symbol.LF);
         }
         sql.append("</trim>");
         return sql.toString();

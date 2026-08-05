@@ -137,7 +137,7 @@ public class DcmDump implements ImageInputHandler {
             return;
         }
         byte[] b = probeValue(dis);
-        line.append(" [");
+        line.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT);
         if (vr.prompt(b, dis.bigEndian(), attrs.getSpecificCharacterSet(), width - line.length() - 1, line)) {
             line.append(']');
             appendKeyword(dis, privateCreator, line);
@@ -218,7 +218,7 @@ public class DcmDump implements ImageInputHandler {
      * @param line The StringBuilder to append to.
      */
     private void appendPrefix(ImageInputStream dis, StringBuilder line) {
-        line.append(dis.getTagPosition()).append(": ");
+        line.append(dis.getTagPosition()).append(Symbol.COLON).append(Symbol.SPACE);
         int level = dis.level();
         while (level-- > 0)
             line.append(Symbol.C_GT);
@@ -279,7 +279,7 @@ public class DcmDump implements ImageInputHandler {
      */
     private void appendFragment(StringBuilder line, ImageInputStream dis, VR vr) throws IOException {
         byte[] b = probeValue(dis);
-        line.append(" [");
+        line.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT);
         if (vr.prompt(b, dis.bigEndian(), null, width - line.length() - 1, line)) {
             line.append(']');
             appendKeyword(dis, null, line);

@@ -32,6 +32,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
@@ -161,7 +163,7 @@ public final class GitLabFailure {
             for (JsonNode value : message) {
                 values.add(value.asText());
             }
-            return values.isEmpty() ? content : String.join("\n", values);
+            return values.isEmpty() ? content : String.join(Symbol.LF, values);
         }
         return message.isTextual() ? message.asText() : message.toString();
     }
@@ -187,11 +189,14 @@ public final class GitLabFailure {
         if (validationErrors.isEmpty()) {
             return fallback;
         }
-        return "The following fields have validation errors: " + String.join(", ", validationErrors.keySet()) + "\n"
+        String validationItemPrefix = Symbol.LF + Symbol.SPACE.repeat(5) + Symbol.MINUS + Symbol.SPACE;
+        return "The following fields have validation errors: "
+                + String.join(Symbol.COMMA + Symbol.SPACE, validationErrors.keySet()) + Symbol.LF
                 + validationErrors.entrySet().stream().map(
-                        entry -> "* " + entry.getKey()
-                                + entry.getValue().stream().collect(Collectors.joining("\n     - ", "\n     - ", "")))
-                        .collect(Collectors.joining("\n"));
+                        entry -> Symbol.STAR + Symbol.SPACE + entry.getKey()
+                                + entry.getValue().stream().collect(
+                                        Collectors.joining(validationItemPrefix, validationItemPrefix, Normal.EMPTY)))
+                        .collect(Collectors.joining(Symbol.LF));
     }
 
 }

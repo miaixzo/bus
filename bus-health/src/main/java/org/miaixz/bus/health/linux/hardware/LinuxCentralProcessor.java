@@ -309,7 +309,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         long size = 0L;
         for (String line : lscpu) {
             String s = line.trim();
-            if (s.startsWith("}")) {
+            if (s.startsWith(Symbol.BRACE_RIGHT)) {
                 // done with this entry, save it
                 if (level > 0 && type != null) {
                     caches.add(new CentralProcessor.ProcessorCache(level, associativity, lineSize, size, type));
@@ -334,7 +334,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }
             } else if (s.contains("type")) {
                 // "type": "Unified",
-                String[] split = s.split("\"");
+                String[] split = s.split(Symbol.DOUBLE_QUOTES);
                 if (split.length > 2) {
                     type = parseCacheType(split[split.length - 2]);
                 }
@@ -481,7 +481,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         boolean cpu64bit = false;
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
-        String[] flags = new String[0];
+        String[] flags = Normal.EMPTY_STRING_ARRAY;
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = Pattern.SPACES_COLON_SPACE_PATTERN.split(line);

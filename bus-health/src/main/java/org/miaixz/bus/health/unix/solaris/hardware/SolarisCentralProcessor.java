@@ -189,7 +189,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         long max = -1L;
         List<Object[]> results = KstatKit.queryKstat2List(KSTAT_PM_CPU, PSTATE, "supported_frequencies");
         for (Object[] result : results) {
-            for (long freq : result[0] == null ? new long[0] : (long[]) result[0]) {
+            for (long freq : result[0] == null ? Normal.EMPTY_LONG_ARRAY : (long[]) result[0]) {
                 if (freq > max) {
                     max = freq;
                 }

@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
 import org.miaixz.bus.core.text.placeholder.segment.LiteralSegment;
@@ -203,7 +204,7 @@ public class SinglePlaceholderString extends StringTemplate {
      * @return A string array of parameter values.
      */
     public String[] matchesToArray(final String text) {
-        return matches(text).toArray(new String[0]);
+        return matches(text).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**

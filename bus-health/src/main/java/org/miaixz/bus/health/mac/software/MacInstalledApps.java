@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
@@ -92,7 +93,7 @@ public final class MacInstalledApps {
                         String version = dictValues.get("version");
 
                         String lastModified = dictValues.get("lastModified");
-                        long lastModifiedEpoch = Parsing.parseDateToEpoch(lastModified, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+                        long lastModifiedEpoch = Parsing.parseDateToEpoch(lastModified, Fields.UTC);
 
                         Map<String, String> additionalInfo = new LinkedHashMap<>();
                         additionalInfo.put("Kind", Parsing.getStringValueOrUnknown(dictValues.get("arch_kind")));

@@ -899,6 +899,11 @@ public class Normal {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     /**
+     * An empty two-dimensional {@code byte} array.
+     */
+    public static final byte[][] EMPTY_BYTE_ARRAY_ARRAY = new byte[0][];
+
+    /**
      * An empty {@code Byte} array.
      */
     public static final Byte[] EMPTY_BYTE_OBJECT_ARRAY = new Byte[0];
@@ -1110,41 +1115,6 @@ public class Normal {
     public static final String UNDEFINED = "undefined";
 
     /**
-     * URL prefix for file resources: "file:".
-     */
-    public static final String FILE_URL_PREFIX = "file:";
-
-    /**
-     * URL prefix for JAR resources: "jar:".
-     */
-    public static final String JAR_URL_PREFIX = "jar:";
-
-    /**
-     * URL prefix for WAR resources: "war:".
-     */
-    public static final String WAR_URL_PREFIX = "war:";
-
-    /**
-     * Pseudo-protocol prefix for ClassPath resources: "classpath:".
-     */
-    public static final String CLASSPATH = "classpath:";
-
-    /**
-     * Pseudo-protocol prefix for project resources: "project:".
-     */
-    public static final String PROJECT_URL_PREFIX = "project:";
-
-    /**
-     * Metadata directory name: "META-INF".
-     */
-    public static final String META_INF = "META-INF";
-
-    /**
-     * Services metadata directory name: "META-INF/services".
-     */
-    public static final String META_INF_SERVICES = "META-INF/services";
-
-    /**
      * URL protocol for file resources: "file".
      */
     public static final String URL_PROTOCOL_FILE = "file";
@@ -1185,14 +1155,69 @@ public class Normal {
     public static final String URL_PROTOCOL_VFS = "vfs";
 
     /**
+     * Pseudo-protocol for ClassPath resources: "classpath".
+     */
+    public static final String URL_PROTOCOL_CLASSPATH = "classpath";
+
+    /**
+     * Pseudo-protocol for project resources: "project".
+     */
+    public static final String URL_PROTOCOL_PROJECT = "project";
+
+    /**
+     * URL protocol for WAR resources: "war".
+     */
+    public static final String URL_PROTOCOL_WAR = "war";
+
+    /**
+     * URL prefix for file resources: "file:".
+     */
+    public static final String FILE_URL_PREFIX = URL_PROTOCOL_FILE + Symbol.COLON;
+
+    /**
+     * URL prefix for JAR resources: "jar:".
+     */
+    public static final String JAR_URL_PREFIX = URL_PROTOCOL_JAR + Symbol.COLON;
+
+    /**
+     * URL prefix for WAR resources: "war:".
+     */
+    public static final String WAR_URL_PREFIX = URL_PROTOCOL_WAR + Symbol.COLON;
+
+    /**
+     * Pseudo-protocol prefix for ClassPath resources: "classpath:".
+     */
+    public static final String CLASSPATH = URL_PROTOCOL_CLASSPATH + Symbol.COLON;
+
+    /**
+     * Pseudo-protocol prefix for project resources: "project:".
+     */
+    public static final String PROJECT_URL_PREFIX = URL_PROTOCOL_PROJECT + Symbol.COLON;
+
+    /**
+     * Metadata directory name: "META-INF".
+     */
+    public static final String META_INF = "META-INF";
+
+    /**
+     * Services directory name: "services".
+     */
+    public static final String SERVICES = "services";
+
+    /**
+     * Services metadata directory name: "META-INF/services".
+     */
+    public static final String META_INF_SERVICES = META_INF + Symbol.SLASH + SERVICES;
+
+    /**
      * Separator for JAR file paths and internal file paths: "!/".
      */
-    public static final String JAR_URL_SEPARATOR = "!/";
+    public static final String JAR_URL_SEPARATOR = Symbol.NOT + Symbol.SLASH;
 
     /**
      * Separator for WAR file paths and internal file paths.
      */
-    public static final String WAR_URL_SEPARATOR = "*/";
+    public static final String WAR_URL_SEPARATOR = Symbol.STAR + Symbol.SLASH;
 
     /**
      * Hexadecimal error format string.

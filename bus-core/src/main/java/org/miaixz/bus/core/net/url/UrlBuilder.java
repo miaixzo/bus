@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
@@ -188,8 +189,8 @@ public final class UrlBuilder implements Builder<String> {
         Assert.notBlank(httpUrl, "Url must be not blank!");
 
         httpUrl = StringKit.trimPrefix(httpUrl);
-        if (!StringKit.startWithAnyIgnoreCase(httpUrl, "http://", "https://")) {
-            httpUrl = "http://" + httpUrl;
+        if (!StringKit.startWithAnyIgnoreCase(httpUrl, Protocol.HTTP_PREFIX, Protocol.HTTPS_PREFIX)) {
+            httpUrl = Protocol.HTTP_PREFIX + httpUrl;
         }
 
         return of(UrlKit.toUrlForHttp(httpUrl), charset);
@@ -600,9 +601,9 @@ public final class UrlBuilder implements Builder<String> {
 
         try {
             // Create URL string with port logic
-            String urlStr = getSchemeWithDefault() + "://" + host;
+            String urlStr = getSchemeWithDefault() + Symbol.COLON + Symbol.FORWARDSLASH + host;
             if (port > 0 && !isDefaultPort(getSchemeWithDefault(), port)) {
-                urlStr += ":" + port;
+                urlStr += Symbol.COLON + port;
             }
             urlStr += fileBuilder.toString();
             return URI.create(urlStr).toURL();
@@ -615,13 +616,17 @@ public final class UrlBuilder implements Builder<String> {
      * Check if the given port is the default port for the scheme.
      */
     private boolean isDefaultPort(String scheme, int portNum) {
-        return switch (scheme.toLowerCase()) {
-            case "http" -> portNum == 80;
-            case "https" -> portNum == 443;
-            case "ftp" -> portNum == 21;
-            case "sftp" -> portNum == 22;
-            default -> false;
-        };
+        String lowerScheme = scheme.toLowerCase();
+        if (Protocol.HTTP.name.equals(lowerScheme)) {
+            return portNum == Port._80.getPort();
+        }
+        if (Protocol.HTTPS.name.equals(lowerScheme)) {
+            return portNum == Port._443.getPort();
+        }
+        if ("ftp".equals(lowerScheme)) {
+            return portNum == Port._21.getPort();
+        }
+        return "sftp".equals(lowerScheme) && portNum == Port._22.getPort();
     }
 
     /**

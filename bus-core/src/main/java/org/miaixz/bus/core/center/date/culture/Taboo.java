@@ -164,7 +164,7 @@ public class Taboo extends Samsara {
 
     private static List<Taboo> getTaboos(String[] data, int supIndex, int subIndex, int index) {
         List<Taboo> l = new ArrayList<>();
-        String d = data[supIndex].split(";", -1)[subIndex].split(Symbol.COMMA, -1)[index];
+        String d = data[supIndex].split(Symbol.SEMICOLON, -1)[subIndex].split(Symbol.COMMA, -1)[index];
         for (int i = 0, j = d.length(); i < j; i += 2) {
             l.add(Taboo.fromIndex(Integer.parseInt(d.substring(i, i + 2), 16)));
         }

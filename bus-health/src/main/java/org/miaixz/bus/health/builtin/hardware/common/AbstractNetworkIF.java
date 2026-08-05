@@ -156,10 +156,10 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 }
             }
 
-            this.ipv4 = ipv4list.toArray(new String[0]);
-            this.subnetMasks = subnetMaskList.toArray(new Short[0]);
-            this.ipv6 = ipv6list.toArray(new String[0]);
-            this.prefixLengths = prefixLengthList.toArray(new Short[0]);
+            this.ipv4 = ipv4list.toArray(Normal.EMPTY_STRING_ARRAY);
+            this.subnetMasks = subnetMaskList.toArray(Normal.EMPTY_SHORT_OBJECT_ARRAY);
+            this.ipv6 = ipv6list.toArray(Normal.EMPTY_STRING_ARRAY);
+            this.prefixLengths = prefixLengthList.toArray(Normal.EMPTY_SHORT_OBJECT_ARRAY);
         } catch (SocketException e) {
             throw new InstantiationException(e.getMessage());
         }
@@ -392,28 +392,31 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         StringBuilder sb = new StringBuilder();
         sb.append("Name: ").append(getName());
         if (!getName().equals(getDisplayName())) {
-            sb.append(" (").append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT);
+            sb.append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName())
+                    .append(Symbol.PARENTHESE_RIGHT);
         }
         if (!getIfAlias().isEmpty()) {
-            sb.append(" [IfAlias=").append(getIfAlias()).append("]");
+            sb.append(Symbol.SPACE).append(Symbol.BRACKET_LEFT).append("IfAlias=").append(getIfAlias())
+                    .append(Symbol.BRACKET_RIGHT);
         }
-        sb.append("\n");
-        sb.append("  MAC Address: ").append(getMacaddr()).append("\n");
-        sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append("\n");
+        sb.append(Symbol.LF);
+        sb.append("  MAC Address: ").append(getMacaddr()).append(Symbol.LF);
+        sb.append("  MTU: ").append(getMTU()).append(Symbol.COMMA).append(Symbol.SPACE).append("Speed: ")
+                .append(getSpeed()).append(Symbol.LF);
         String[] ipv4withmask = getIPv4addr();
         if (this.ipv4.length == this.subnetMasks.length) {
             for (int i = 0; i < this.subnetMasks.length; i++) {
-                ipv4withmask[i] += "/" + this.subnetMasks[i];
+                ipv4withmask[i] += Symbol.SLASH + this.subnetMasks[i];
             }
         }
-        sb.append("  IPv4: ").append(Arrays.toString(ipv4withmask)).append("\n");
+        sb.append("  IPv4: ").append(Arrays.toString(ipv4withmask)).append(Symbol.LF);
         String[] ipv6withprefixlength = getIPv6addr();
         if (this.ipv6.length == this.prefixLengths.length) {
             for (int j = 0; j < this.prefixLengths.length; j++) {
-                ipv6withprefixlength[j] += "/" + this.prefixLengths[j];
+                ipv6withprefixlength[j] += Symbol.SLASH + this.prefixLengths[j];
             }
         }
-        sb.append("  IPv6: ").append(Arrays.toString(ipv6withprefixlength)).append("\n");
+        sb.append("  IPv6: ").append(Arrays.toString(ipv6withprefixlength)).append(Symbol.LF);
         sb.append("  Traffic: received ").append(getPacketsRecv()).append(" packets/")
                 .append(Formats.formatBytes(getBytesRecv())).append(" (" + getInErrors() + " err, ")
                 .append(getInDrops() + " drop);");

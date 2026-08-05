@@ -41,6 +41,9 @@ import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import org.glassfish.jersey.message.MessageUtils;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
+
 /**
  * This class logs request and response info masking HTTP header values that are known to contain sensitive information.
  *
@@ -56,8 +59,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Default list of header names that should be masked.
      */
-    public static final List<String> DEFAULT_MASKED_HEADER_NAMES = Collections
-            .unmodifiableList(Arrays.asList("PRIVATE-TOKEN", "Authorization", "Proxy-Authorization"));
+    public static final List<String> DEFAULT_MASKED_HEADER_NAMES = Collections.unmodifiableList(
+            Arrays.asList("PRIVATE-TOKEN", Http.Header.AUTHORIZATION, Http.Header.PROXY_AUTHORIZATION));
 
     /**
      * Prefix for request log entries.
@@ -288,19 +291,21 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
             if (values.size() == 1) {
                 String value = (isMaskedHeader ? "********" : values.get(0).toString());
-                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(Symbol.COLON).append(Symbol.SPACE).append(value)
+                        .append(Symbol.C_LF);
             } else {
 
                 final StringBuilder headerBuf = new StringBuilder();
                 for (final Object value : values) {
                     if (headerBuf.length() == 0) {
-                        headerBuf.append(", ");
+                        headerBuf.append(Symbol.COMMA).append(Symbol.SPACE);
                     }
 
                     headerBuf.append(isMaskedHeader ? "********" : value.toString());
                 }
 
-                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(Symbol.COLON).append(Symbol.SPACE)
+                        .append(headerBuf.toString()).append(Symbol.C_LF);
             }
         });
     }

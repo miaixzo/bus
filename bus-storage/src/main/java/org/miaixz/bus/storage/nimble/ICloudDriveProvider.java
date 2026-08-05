@@ -583,7 +583,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             filter.put("fieldName", "path");
             filter.put("comparator", "BEGINS_WITH");
             Map<String, Object> fieldValue = new HashMap<>();
-            fieldValue.put("value", folder.endsWith("/") ? folder : folder + "/");
+            fieldValue.put("value", folder.endsWith(Symbol.SLASH) ? folder : folder + Symbol.SLASH);
             fieldValue.put("type", "STRING");
             filter.put("fieldValue", fieldValue);
             filters.add(filter);

@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 
 import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
@@ -153,7 +154,7 @@ public final class NativeWorkflowAdapter {
                     activityName,
                     method.getReturnType(),
                     method.getGenericReturnType(),
-                    args == null ? new Object[0] : args);
+                    args == null ? Normal.EMPTY_OBJECT_ARRAY : args);
             return defaultValue(result, method.getReturnType());
         };
         Object proxy = Proxy

@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -102,7 +103,7 @@ public class PrometheusProvider implements Provider {
      */
     private String[] labelNames(Tag[] tags) {
         if (tags == null || tags.length == 0)
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         String[] names = new String[tags.length];
         for (int i = 0; i < tags.length; i++)
             names[i] = tags[i].key();
@@ -117,7 +118,7 @@ public class PrometheusProvider implements Provider {
      */
     private String[] labelValues(Tag[] tags) {
         if (tags == null || tags.length == 0)
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         String[] values = new String[tags.length];
         for (int i = 0; i < tags.length; i++)
             values[i] = tags[i].value();
@@ -500,7 +501,8 @@ public class PrometheusProvider implements Provider {
              */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, count(), 0, 0, new long[0], new double[0]);
+                return new TimerSnapshot(name, finalTags, count(), 0, 0, Normal.EMPTY_LONG_ARRAY,
+                        Normal.EMPTY_DOUBLE_ARRAY);
             }
         };
     }
@@ -577,7 +579,8 @@ public class PrometheusProvider implements Provider {
              */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, count(), totalAmount(), 0, new long[0], new double[0]);
+                return new TimerSnapshot(name, finalTags, count(), totalAmount(), 0, Normal.EMPTY_LONG_ARRAY,
+                        Normal.EMPTY_DOUBLE_ARRAY);
             }
         };
     }

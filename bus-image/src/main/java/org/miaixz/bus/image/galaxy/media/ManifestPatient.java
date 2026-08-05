@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -253,7 +254,7 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
      */
     @Override
     public void toXml(Writer writer) throws IOException {
-        writer.append("\n<").append(ManifestXml.Level.PATIENT.getTagName()).append(" ");
+        writer.append(Symbol.LF).append(Symbol.LT).append(ManifestXml.Level.PATIENT.getTagName()).append(Symbol.SPACE);
         ManifestXml.addXmlAttribute(Tag.PatientID, patientID, writer);
         ManifestXml.addXmlAttribute(Tag.IssuerOfPatientID, issuerOfPatientID, writer);
         ManifestXml.addXmlAttribute(Tag.PatientName, patientName, writer);

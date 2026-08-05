@@ -24,6 +24,7 @@ import java.util.*;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.center.list.ListWrapper;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
@@ -137,7 +138,7 @@ public final class CsvRow extends ListWrapper<String> {
         final StringBuilder sb = new StringBuilder("CsvRow{");
         sb.append("originalLineNumber=");
         sb.append(originalLineNumber);
-        sb.append(", ");
+        sb.append(Symbol.COMMA).append(Symbol.SPACE);
 
         sb.append("fields=");
         if (headerMap != null) {
@@ -151,7 +152,7 @@ public final class CsvRow extends ListWrapper<String> {
                     sb.append(entry.getValue());
                 }
                 if (it.hasNext()) {
-                    sb.append(", ");
+                    sb.append(Symbol.COMMA).append(Symbol.SPACE);
                 }
             }
             sb.append('}');

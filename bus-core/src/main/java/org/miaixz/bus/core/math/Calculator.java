@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Stack;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.MathKit;
@@ -214,7 +215,7 @@ public class Calculator {
         }
 
         // If multiple numbers remain, it may be due to omitted multiplication, e.g., (1+2)3 -> 3 * 3
-        return MathKit.mul(resultStack.toArray(new String[0])).doubleValue();
+        return MathKit.mul(resultStack.toArray(Normal.EMPTY_STRING_ARRAY)).doubleValue();
     }
 
     /**

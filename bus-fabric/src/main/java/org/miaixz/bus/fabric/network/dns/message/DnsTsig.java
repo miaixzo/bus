@@ -31,6 +31,7 @@ import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.fabric.network.dns.record.DnsRecordType;
 import org.miaixz.bus.fabric.network.dns.server.DnsTsigKey;
@@ -97,7 +98,7 @@ public final class DnsTsig {
             throw new ProtocolException("DNS TSIG response is shorter than the header");
         }
         if (query == null || query.tsigRecord() == null || key == null) {
-            return response == null ? new byte[0] : Arrays.copyOf(response, response.length);
+            return response == null ? Normal.EMPTY_BYTE_ARRAY : Arrays.copyOf(response, response.length);
         }
         final DnsTsigRecord requestTsig = query.tsigRecord();
         final long timeSigned = Instant.now().getEpochSecond();
@@ -192,7 +193,7 @@ public final class DnsTsig {
                         timeSigned,
                         fudge,
                         DnsResponseCode.NOERROR.code(),
-                        new byte[0]));
+                        Normal.EMPTY_BYTE_ARRAY));
         return truncate(mac.doFinal(), key.macLengthBytes());
     }
 

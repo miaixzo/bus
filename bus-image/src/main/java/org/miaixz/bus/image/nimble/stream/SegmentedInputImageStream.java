@@ -27,6 +27,7 @@ import java.util.Objects;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageInputStreamImpl;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.BulkData;
@@ -126,7 +127,7 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         if (!singleFrame) {
             lastSegment = 2;
         }
-        fragments.add(new byte[0]);
+        fragments.add(Normal.EMPTY_BYTE_ARRAY);
         fragments.add(new BulkData("pixelData://", streamPosition, length, false));
         stream = iis;
         seek(0);
@@ -144,7 +145,7 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     public SegmentedInputImageStream(byte[] data) throws IOException {
         stream = null;
         fragments = new Fragments(VR.OB, false, 2);
-        fragments.add(new byte[0]);
+        fragments.add(Normal.EMPTY_BYTE_ARRAY);
         fragments.add(data);
         lastSegment = 2;
         seek(0);

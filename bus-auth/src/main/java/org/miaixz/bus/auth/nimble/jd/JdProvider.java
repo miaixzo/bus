@@ -36,6 +36,7 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -251,7 +252,7 @@ public class JdProvider extends AbstractProvider {
                 .queryParam("access_token", authorization.getToken()).queryParam("app_key", context.getClientId())
                 .queryParam("method", "jingdong.user.getUserInfoByOpenId")
                 .queryParam("360buy_param_json", "{\"openId\":\"" + authorization.getOpenId() + "\"}")
-                .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern(Fields.NORM_DATETIME)))
                 .queryParam("v", "2.0");
         urlBuilder.queryParam("sign", sign(context.getClientSecret(), urlBuilder.getReadOnlyParams()));
         String response = post(urlBuilder.build(true));

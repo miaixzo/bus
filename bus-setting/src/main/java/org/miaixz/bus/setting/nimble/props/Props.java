@@ -229,7 +229,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
                 "Properties content parse started: contentLength={}, targetPresent={}",
                 content == null ? 0 : content.length(),
                 result != null);
-        String[] lines = content.split("\n");
+        String[] lines = content.split(Symbol.LF);
         for (String line : lines) {
             lineCount++;
             if (StringKit.isBlank(line) || line.startsWith(Symbol.HASH) || !line.contains(Symbol.EQUAL)) {

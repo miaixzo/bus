@@ -311,7 +311,7 @@ final class MapperOptionsResolver {
         }
         Set<String> entityPackages = readValues(properties, "entityPackages", "entity-packages");
         if (entityPackages != null) {
-            schemaOptions.setEntityPackages(entityPackages.toArray(new String[0]));
+            schemaOptions.setEntityPackages(entityPackages.toArray(Normal.EMPTY_STRING_ARRAY));
         }
         applySet(properties, schemaOptions::setIncludeTables, "includeTables", "include-tables");
         applySet(properties, schemaOptions::setExcludeTables, "excludeTables", "exclude-tables");

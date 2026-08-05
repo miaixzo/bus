@@ -573,7 +573,7 @@ public final class Builder {
         if (reportError) {
             Logger.warn(false, "Health", "File not found or not readable: {}", filename);
         }
-        return new byte[0];
+        return Normal.EMPTY_BYTE_ARRAY;
     }
 
     /**

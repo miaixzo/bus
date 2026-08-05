@@ -27,6 +27,7 @@ import java.util.List;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.finder.TextFinder;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -167,7 +168,7 @@ public class StringSplitter extends ComputeIterator<String> implements Serializa
      * @return An array containing the split strings.
      */
     public String[] toArray(final boolean trim) {
-        return toList(trim).toArray(new String[0]);
+        return toList(trim).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**

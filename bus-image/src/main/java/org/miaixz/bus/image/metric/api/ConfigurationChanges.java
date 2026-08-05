@@ -170,8 +170,9 @@ public class ConfigurationChanges {
             sb.append(object.changeType).append(Symbol.C_SPACE).append(object.dn).append(Symbol.C_LF);
             if (null != object.attributes) {
                 for (ModifiedAttribute attr : object.attributes) {
-                    sb.append(Symbol.SPACE).append(attr.name).append(": ").append(attr.removedValues).append("=>")
-                            .append(attr.addedValues).append(Symbol.C_LF);
+                    sb.append(Symbol.SPACE).append(attr.name).append(Symbol.COLON).append(Symbol.SPACE)
+                            .append(attr.removedValues).append(Symbol.EQUAL).append(Symbol.GT).append(attr.addedValues)
+                            .append(Symbol.C_LF);
                 }
             }
         }

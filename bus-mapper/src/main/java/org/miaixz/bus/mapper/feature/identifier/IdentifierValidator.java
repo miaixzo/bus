@@ -78,14 +78,84 @@ public final class IdentifierValidator {
      * database-specific words outside the SQL standard.
      */
     private static final Set<String> STANDARD_RESERVED_WORDS = words(
-            "ADD", "ALL", "ALTER", "AND", "ANY", "AS", "ASC", "AUTHORIZATION", "BETWEEN", "BOTH", "BY",
-            "CASE", "CAST", "CHECK", "COLUMN", "CONSTRAINT", "CREATE", "CROSS", "CURRENT_DATE", "CURRENT_TIME",
-            "CURRENT_TIMESTAMP", "CURRENT_USER", "DEFAULT", "DELETE", "DESC", "DISTINCT", "DROP", "ELSE",
-            "END", "ESCAPE", "EXCEPT", "EXISTS", "FALSE", "FETCH", "FOR", "FOREIGN", "FROM", "FULL", "GRANT",
-            "GROUP", "HAVING", "IN", "INNER", "INSERT", "INTERSECT", "INTO", "IS", "JOIN", "LEADING", "LEFT",
-            "LIKE", "NATURAL", "NOT", "NULL", "ON", "OR", "ORDER", "OUTER", "PRIMARY", "REFERENCES", "RIGHT",
-            "SELECT", "SET", "SOME", "TABLE", "THEN", "TO", "TRAILING", "TRUE", "UNION", "UNIQUE", "UPDATE",
-            "USER", "USING", "VALUES", "WHEN", "WHERE", "WITH");
+            "ADD",
+            "ALL",
+            "ALTER",
+            "AND",
+            "ANY",
+            "AS",
+            "ASC",
+            "AUTHORIZATION",
+            "BETWEEN",
+            "BOTH",
+            "BY",
+            "CASE",
+            "CAST",
+            "CHECK",
+            "COLUMN",
+            "CONSTRAINT",
+            "CREATE",
+            "CROSS",
+            "CURRENT_DATE",
+            "CURRENT_TIME",
+            "CURRENT_TIMESTAMP",
+            "CURRENT_USER",
+            "DEFAULT",
+            "DELETE",
+            "DESC",
+            "DISTINCT",
+            "DROP",
+            "ELSE",
+            "END",
+            "ESCAPE",
+            "EXCEPT",
+            "EXISTS",
+            "FALSE",
+            "FETCH",
+            "FOR",
+            "FOREIGN",
+            "FROM",
+            "FULL",
+            "GRANT",
+            "GROUP",
+            "HAVING",
+            "IN",
+            "INNER",
+            "INSERT",
+            "INTERSECT",
+            "INTO",
+            "IS",
+            "JOIN",
+            "LEADING",
+            "LEFT",
+            "LIKE",
+            "NATURAL",
+            "NOT",
+            "NULL",
+            "ON",
+            "OR",
+            "ORDER",
+            "OUTER",
+            "PRIMARY",
+            "REFERENCES",
+            "RIGHT",
+            "SELECT",
+            "SET",
+            "SOME",
+            "TABLE",
+            "THEN",
+            "TO",
+            "TRAILING",
+            "TRUE",
+            "UNION",
+            "UNIQUE",
+            "UPDATE",
+            "USER",
+            "USING",
+            "VALUES",
+            "WHEN",
+            "WHERE",
+            "WITH");
 
     /**
      * PostgreSQL query returning only fully reserved and type/function-reserved words.
@@ -95,8 +165,7 @@ public final class IdentifierValidator {
      * and context-sensitive keywords through that JDBC method as well.
      * </p>
      */
-    private static final String POSTGRESQL_RESERVED_WORDS_SQL =
-            "SELECT word FROM pg_get_keywords() WHERE catcode IN ('R', 'T')";
+    private static final String POSTGRESQL_RESERVED_WORDS_SQL = "SELECT word FROM pg_get_keywords() WHERE catcode IN ('R', 'T')";
 
     /**
      * Flattened identifier validation configuration.
@@ -275,9 +344,7 @@ public final class IdentifierValidator {
      */
     private Policy policy(Connection connection) throws SQLException {
         DatabaseMetaData metadata = connection.getMetaData();
-        DatabaseKey key = new DatabaseKey(
-                value(metadata.getURL()),
-                value(metadata.getDatabaseProductName()),
+        DatabaseKey key = new DatabaseKey(value(metadata.getURL()), value(metadata.getDatabaseProductName()),
                 value(metadata.getDatabaseProductVersion()));
         Policy cached = policies.get(key);
         if (cached != null) {
@@ -305,8 +372,9 @@ public final class IdentifierValidator {
             addQuote(quotes, new Quote(quote, quote, quote + quote));
         }
         if (product.contains("sql server")) {
-            addQuote(quotes, new Quote(Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT,
-                    Symbol.BRACKET_RIGHT + Symbol.BRACKET_RIGHT));
+            addQuote(
+                    quotes,
+                    new Quote(Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, Symbol.BRACKET_RIGHT + Symbol.BRACKET_RIGHT));
         }
         return new Policy(key.product(), Set.copyOf(reservedWords), List.copyOf(quotes));
     }
@@ -364,36 +432,49 @@ public final class IdentifierValidator {
         addOptional(entries, "CATALOG", entity, table.table(), table.catalog(), "catalog", true);
         addOptional(entries, "SCHEMA", entity, table.table(), table.schema(), "schema", true);
         String physicalTable = prefixed(table.table(), prefixConfig);
-        entries.add(new Entry("TABLE", entity, null, physicalTable, null, physicalTable, physicalTable, "record", true));
+        entries.add(
+                new Entry("TABLE", entity, null, physicalTable, null, physicalTable, physicalTable, "record", true));
 
         for (ColumnMeta column : table.columns()) {
-            entries.add(new Entry("COLUMN", entity, column.property(), physicalTable, column.column(), column.column(),
-                    column.column(), "value", false));
+            entries.add(
+                    new Entry("COLUMN", entity, column.property(), physicalTable, column.column(), column.column(),
+                            column.column(), "value", false));
         }
         for (IndexMeta index : table.indexes()) {
             String columns = joined(index.columns());
-            entries.add(new Entry(index.unique() ? "UNIQUE" : "INDEX", entity, properties(table, index.columns()),
-                    physicalTable, columns, index.name(), physicalTable + Symbol.UNDERLINE + columns,
-                    index.unique() ? "uk" : "idx", false));
+            entries.add(
+                    new Entry(index.unique() ? "UNIQUE" : "INDEX", entity, properties(table, index.columns()),
+                            physicalTable, columns, index.name(), physicalTable + Symbol.UNDERLINE + columns,
+                            index.unique() ? "uk" : "idx", false));
             addColumnReferences(entries, table, entity, physicalTable, index.columns());
         }
         PrimaryKeyMeta primaryKey = table.primaryKey();
         if (primaryKey != null) {
             String columns = joined(primaryKey.columns());
-            entries.add(new Entry("PRIMARY_KEY", entity, properties(table, primaryKey.columns()), physicalTable,
-                    columns, primaryKey.name(), physicalTable, "pk", false));
+            entries.add(
+                    new Entry("PRIMARY_KEY", entity, properties(table, primaryKey.columns()), physicalTable, columns,
+                            primaryKey.name(), physicalTable, "pk", false));
             addColumnReferences(entries, table, entity, physicalTable, primaryKey.columns());
         }
         for (ForeignKeyMeta foreignKey : table.foreignKeys()) {
             String columns = joined(foreignKey.columns());
-            entries.add(new Entry("FOREIGN_KEY", entity, properties(table, foreignKey.columns()), physicalTable,
-                    columns, foreignKey.name(), physicalTable + Symbol.UNDERLINE + columns, "fk", false));
+            entries.add(
+                    new Entry("FOREIGN_KEY", entity, properties(table, foreignKey.columns()), physicalTable, columns,
+                            foreignKey.name(), physicalTable + Symbol.UNDERLINE + columns, "fk", false));
             addColumnReferences(entries, table, entity, physicalTable, foreignKey.columns());
-            addOptional(entries, "REFERENCED_TABLE", entity, physicalTable, foreignKey.referencedTable(), "record", true);
+            addOptional(
+                    entries,
+                    "REFERENCED_TABLE",
+                    entity,
+                    physicalTable,
+                    foreignKey.referencedTable(),
+                    "record",
+                    true);
             if (foreignKey.referencedColumns() != null) {
                 for (String column : foreignKey.referencedColumns()) {
-                    entries.add(new Entry("REFERENCED_COLUMN", entity, null, foreignKey.referencedTable(), column,
-                            column, column, "value", false));
+                    entries.add(
+                            new Entry("REFERENCED_COLUMN", entity, null, foreignKey.referencedTable(), column, column,
+                                    column, "value", false));
                 }
             }
         }
@@ -431,8 +512,9 @@ public final class IdentifierValidator {
         for (String column : columns) {
             ColumnMeta mapped = mapped(table, column);
             if (mapped == null || mapped.column() == null || !plain(mapped.column()).equalsIgnoreCase(plain(column))) {
-                entries.add(new Entry("COLUMN_REFERENCE", entity, mapped == null ? null : mapped.property(),
-                        physicalTable, column, column, column, "value", false));
+                entries.add(
+                        new Entry("COLUMN_REFERENCE", entity, mapped == null ? null : mapped.property(), physicalTable,
+                                column, column, column, "value", false));
             }
         }
     }
@@ -454,8 +536,9 @@ public final class IdentifierValidator {
             return null;
         }
         return columns.stream().map(column -> mapped(table, column))
-                .map(value -> value == null || value.property() == null || value.property().isBlank() ? Symbol.MINUS
-                        : value.property())
+                .map(
+                        value -> value == null || value.property() == null || value.property().isBlank() ? Symbol.MINUS
+                                : value.property())
                 .collect(Collectors.joining(Symbol.COMMA));
     }
 
@@ -502,10 +585,9 @@ public final class IdentifierValidator {
             }
         }
         if (!violations.isEmpty()) {
-            throw new MapperException(
-                    "Mapper identifier validation failed: datasource=" + display(datasourceKey) + ", database="
-                            + display(policy.database()) + ", violations=" + violations.size()
-                            + System.lineSeparator() + String.join(System.lineSeparator(), violations));
+            throw new MapperException("Mapper identifier validation failed: datasource=" + display(datasourceKey)
+                    + ", database=" + display(policy.database()) + ", violations=" + violations.size()
+                    + System.lineSeparator() + String.join(System.lineSeparator(), violations));
         }
     }
 
@@ -603,8 +685,7 @@ public final class IdentifierValidator {
      */
     private String suggestion(Policy policy, Entry entry) {
         String value = plain(entry.candidate()).replaceAll("[^A-Za-z0-9_]+", Symbol.UNDERLINE)
-                .replaceAll("_+", Symbol.UNDERLINE).replaceAll("^_+|_+$", Normal.EMPTY)
-                .toLowerCase(Locale.ROOT);
+                .replaceAll("_+", Symbol.UNDERLINE).replaceAll("^_+|_+$", Normal.EMPTY).toLowerCase(Locale.ROOT);
         if (value.isBlank() || Character.isDigit(value.charAt(0))) {
             value = "mapper" + Symbol.UNDERLINE + value;
         }
@@ -636,10 +717,9 @@ public final class IdentifierValidator {
         if (dot >= 0) {
             value = value.substring(dot + 1);
         }
-        if (value.length() > 1
-                && ((value.startsWith(Symbol.DOUBLE_QUOTES) && value.endsWith(Symbol.DOUBLE_QUOTES))
-                        || (value.startsWith(Symbol.BACKTICK) && value.endsWith(Symbol.BACKTICK))
-                        || (value.startsWith(Symbol.BRACKET_LEFT) && value.endsWith(Symbol.BRACKET_RIGHT)))) {
+        if (value.length() > 1 && ((value.startsWith(Symbol.DOUBLE_QUOTES) && value.endsWith(Symbol.DOUBLE_QUOTES))
+                || (value.startsWith(Symbol.BACKTICK) && value.endsWith(Symbol.BACKTICK))
+                || (value.startsWith(Symbol.BRACKET_LEFT) && value.endsWith(Symbol.BRACKET_RIGHT)))) {
             value = value.substring(1, value.length() - 1);
         }
         return value;

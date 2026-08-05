@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -95,7 +96,7 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
         long vram = 0;
         int cardNum = 0;
         for (String line : sp) {
-            String[] split = line.trim().split(":", 2);
+            String[] split = line.trim().split(Symbol.COLON, 2);
             if (split.length == 2) {
                 String prefix = split[0].toLowerCase(Locale.ROOT);
                 if (prefix.equals("chipset model")) {

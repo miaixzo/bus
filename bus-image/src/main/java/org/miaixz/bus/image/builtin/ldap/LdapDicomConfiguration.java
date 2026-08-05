@@ -253,7 +253,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         sb.append("(|");
         for (T value : values)
             appendFilter(attrid, value, sb);
-        sb.append(")");
+        sb.append(Symbol.PARENTHESE_RIGHT);
     }
 
     /**
@@ -312,7 +312,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
      */
     private static byte[][] byteArrays(Attribute attr) throws NamingException {
         if (attr == null)
-            return new byte[0][];
+            return Normal.EMPTY_BYTE_ARRAY_ARRAY;
 
         byte[][] bb = new byte[attr.size()][];
         for (int i = 0; i < bb.length; i++)
@@ -535,13 +535,13 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             sb.append("(|");
             appendFilter("dicomAETitle", keys.getAETitle(), sb);
             appendFilter("dcmOtherAETitle", keys.getAETitle(), sb);
-            sb.append(")");
+            sb.append(Symbol.PARENTHESE_RIGHT);
         }
         appendFilter("dicomDescription", keys.getDescription(), sb);
         appendFilter("dicomAssociationInitiator", keys.getAssociationInitiator(), sb);
         appendFilter("dicomAssociationAcceptor", keys.getAssociationAcceptor(), sb);
         appendFilter("dicomApplicationCluster", keys.getApplicationClusters(), sb);
-        sb.append(")");
+        sb.append(Symbol.PARENTHESE_RIGHT);
         return sb.toString();
     }
 
@@ -564,7 +564,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         appendFilter("dicomAETitle", keys.getAETitle(), sb);
         appendFilter("dicomApplicationCluster", keys.getApplicationClusters(), sb);
         appendFilter("dcmKeycloakClientID", keys.getKeycloakClientID(), sb);
-        sb.append(")");
+        sb.append(Symbol.PARENTHESE_RIGHT);
         return sb.toString();
     }
 
@@ -1196,7 +1196,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         appendFilter("dicomInstitutionDepartmentName", keys.getInstitutionalDepartmentNames(), sb);
         appendFilter("dicomPrimaryDeviceType", keys.getPrimaryDeviceTypes(), sb);
         appendFilter("dicomInstalled", keys.isInstalled(), sb);
-        sb.append(")");
+        sb.append(Symbol.PARENTHESE_RIGHT);
         return sb.toString();
     }
 
@@ -1502,10 +1502,10 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
      */
     private void register(Device device, List<String> dns) throws InternalException {
         for (String aet : device.getApplicationAETitles())
-            if (!aet.equals("*"))
+            if (!aet.equals(Symbol.STAR))
                 dns.add(registerAET(aet));
         for (String webAppName : device.getWebApplicationNames())
-            if (!webAppName.equals("*"))
+            if (!webAppName.equals(Symbol.STAR))
                 dns.add(registerWebApp(webAppName));
         for (LdapDicomConfigurationExtension ext : extensions)
             ext.register(device, dns);
@@ -1749,10 +1749,10 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
      */
     private void registerDiff(Device prev, Device device, List<String> dns) throws InternalException {
         for (String aet : device.getApplicationAETitles())
-            if (!aet.equals("*") && prev.getApplicationEntity(aet) == null)
+            if (!aet.equals(Symbol.STAR) && prev.getApplicationEntity(aet) == null)
                 dns.add(registerAET(aet));
         for (String webAppName : device.getWebApplicationNames())
-            if (!webAppName.equals("*") && prev.getWebApplication(webAppName) == null)
+            if (!webAppName.equals(Symbol.STAR) && prev.getWebApplication(webAppName) == null)
                 dns.add(registerWebApp(webAppName));
         for (LdapDicomConfigurationExtension ext : extensions)
             ext.registerDiff(prev, device, dns);
@@ -1767,10 +1767,10 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
      */
     private void markForUnregister(Device prev, Device device, List<String> dns) {
         for (String aet : prev.getApplicationAETitles())
-            if (!aet.equals("*") && device.getApplicationEntity(aet) == null)
+            if (!aet.equals(Symbol.STAR) && device.getApplicationEntity(aet) == null)
                 dns.add(aetDN(aet, aetsRegistryDN));
         for (String webAppName : prev.getWebApplicationNames())
-            if (!webAppName.equals("*") && device.getWebApplication(webAppName) == null)
+            if (!webAppName.equals(Symbol.STAR) && device.getWebApplication(webAppName) == null)
                 dns.add(webAppDN(webAppName, webAppsRegistryDN));
         for (LdapDicomConfigurationExtension ext : extensions)
             ext.markForUnregister(prev, device, dns);

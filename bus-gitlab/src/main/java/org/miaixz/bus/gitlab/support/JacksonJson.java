@@ -32,6 +32,7 @@ import jakarta.ws.rs.ext.ContextResolver;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import org.miaixz.bus.core.lang.ZoneId;
 import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.logger.Logger;
 
@@ -56,7 +57,7 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     static {
         iso8601UtcFormat = new SimpleDateFormat(ISO8601.UTC_PATTERN);
         iso8601UtcFormat.setLenient(true);
-        iso8601UtcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        iso8601UtcFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.UTC.name()));
     }
 
     private final ObjectMapper objectMapper;

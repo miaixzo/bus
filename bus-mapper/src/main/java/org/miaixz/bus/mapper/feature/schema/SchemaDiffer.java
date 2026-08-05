@@ -107,13 +107,11 @@ public class SchemaDiffer {
         }
         if (snapshot == null || !sameComment(table.comment(), snapshot.comment())) {
             diffs.add(
-                    SchemaDiff
-                            .of(
-                                    Behavior.MODIFY_TABLE_COMMENT,
-                                    Risk.SAFE,
-                                    table,
-                                    "Table comment differs: " + table.tableName())
-                            .tableCreated(created));
+                    SchemaDiff.of(
+                            Behavior.MODIFY_TABLE_COMMENT,
+                            Risk.SAFE,
+                            table,
+                            "Table comment differs: " + table.tableName()).tableCreated(created));
         }
     }
 
@@ -148,12 +146,13 @@ public class SchemaDiffer {
         PrimaryKeyMeta primaryKey = table.primaryKey();
         if (primaryKey != null) {
             diffs.add(
-                    SchemaDiff.of(
-                            Behavior.CREATE_PRIMARY_KEY,
-                            Risk.SAFE,
-                            table,
-                            "Primary key does not exist: " + primaryKey.name()).primaryKey(primaryKey)
-                            .tableCreated(true));
+                    SchemaDiff
+                            .of(
+                                    Behavior.CREATE_PRIMARY_KEY,
+                                    Risk.SAFE,
+                                    table,
+                                    "Primary key does not exist: " + primaryKey.name())
+                            .primaryKey(primaryKey).tableCreated(true));
         }
     }
 
@@ -183,12 +182,13 @@ public class SchemaDiffer {
     private void diffCreateForeignKeys(TableMeta table, List<SchemaDiff> diffs) {
         for (ForeignKeyMeta foreignKey : table.foreignKeys()) {
             diffs.add(
-                    SchemaDiff.of(
-                            Behavior.CREATE_FOREIGN_KEY,
-                            Risk.SAFE,
-                            table,
-                            "Foreign key does not exist: " + foreignKey.name()).foreignKey(foreignKey)
-                            .tableCreated(true));
+                    SchemaDiff
+                            .of(
+                                    Behavior.CREATE_FOREIGN_KEY,
+                                    Risk.SAFE,
+                                    table,
+                                    "Foreign key does not exist: " + foreignKey.name())
+                            .foreignKey(foreignKey).tableCreated(true));
         }
     }
 

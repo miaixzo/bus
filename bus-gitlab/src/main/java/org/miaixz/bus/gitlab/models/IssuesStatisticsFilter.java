@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.IssueScope;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
@@ -232,7 +233,7 @@ public class IssuesStatisticsFilter implements Serializable {
     @JsonIgnore
     public GitLabForm getQueryParams() {
 
-        return (new GitLabForm().withParam("labels", (labels != null ? String.join(",", labels) : null))
+        return (new GitLabForm().withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("iids", iids).withParam("milestone", milestone).withParam("scope", scope)
                 .withParam("author_id", authorId).withParam("assignee_id", assigneeId)
                 .withParam("my_reaction_emoji", myReactionEmoji).withParam("search", search).withParam("in", in)

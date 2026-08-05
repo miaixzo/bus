@@ -28,6 +28,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 
@@ -884,7 +885,7 @@ public class MergeRequestApi extends AbstractApi {
 
         String[] labelsArray = null;
         if (labels != null) {
-            labelsArray = labels.split(",", -1);
+            labelsArray = labels.split(Symbol.COMMA, -1);
         }
 
         MergeRequestParams params = new MergeRequestParams().withTargetBranch(targetBranch).withTitle(title)

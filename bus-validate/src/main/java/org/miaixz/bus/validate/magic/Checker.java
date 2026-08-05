@@ -177,7 +177,7 @@ public class Checker {
         criterion.setField(field.getName());
 
         // Set the validation groups to an empty array (meaning no group).
-        criterion.setGroup(new String[0]);
+        criterion.setGroup(Normal.EMPTY_STRING_ARRAY);
 
         // Add validation parameters:
         // 1. FIELD parameter: the field name.

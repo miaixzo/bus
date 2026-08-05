@@ -34,6 +34,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -176,7 +177,9 @@ public class McpQualifierStrategy extends QualifierStrategy {
             return Mono.just(exchange);
         }
         if (context.getHttpMethod() != Http.Method.POST) {
-            return Mono.fromRunnable(() -> verifyMcpSignature(exchange.getRequest(), context, assets, new byte[0]))
+            return Mono
+                    .fromRunnable(
+                            () -> verifyMcpSignature(exchange.getRequest(), context, assets, Normal.EMPTY_BYTE_ARRAY))
                     .thenReturn(exchange);
         }
         return exchange.getRequest().getBody().collectList().map(this::readAndRelease).flatMap(
@@ -192,7 +195,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
      */
     private byte[] readAndRelease(List<DataBuffer> buffers) {
         if (buffers == null || buffers.isEmpty()) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         int size = buffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
         byte[] bytes = new byte[size];
@@ -232,7 +235,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
                 + canonicalQuery(request) + Symbol.LF + timestamp + Symbol.LF + nonce + Symbol.LF
                 + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION)) + Symbol.LF
                 + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_SESSION_ID)) + Symbol.LF
-                + Builder.sha256().digestHex(body == null ? new byte[0] : body);
+                + Builder.sha256().digestHex(body == null ? Normal.EMPTY_BYTE_ARRAY : body);
         String secret = StringKit.isNotBlank(context.getBearer()) ? context.getBearer() : getToken(context);
         if (StringKit.isNotBlank(secret)) {
             context.setBearer(secret);

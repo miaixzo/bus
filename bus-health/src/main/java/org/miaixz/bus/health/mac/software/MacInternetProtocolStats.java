@@ -27,6 +27,7 @@ import com.sun.jna.Memory;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -109,13 +110,13 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                     si.psi.soi_proto.read();
                     ini = si.psi.soi_proto.pri_tcp.tcpsi_ini;
                     state = stateLookup(si.psi.soi_proto.pri_tcp.tcpsi_state);
-                    type = "tcp";
+                    type = Protocol.TCP.name;
                 } else if (si.psi.soi_kind == SystemB.SOCKINFO_IN) {
                     si.psi.soi_proto.setType("pri_in");
                     si.psi.soi_proto.read();
                     ini = si.psi.soi_proto.pri_in;
                     state = InternetProtocolStats.TcpState.NONE;
-                    type = "udp";
+                    type = Protocol.UDP.name;
                 } else {
                     return null;
                 }

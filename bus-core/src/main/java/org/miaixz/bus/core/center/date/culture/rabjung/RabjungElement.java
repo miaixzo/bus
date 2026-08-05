@@ -29,6 +29,9 @@ import org.miaixz.bus.core.center.date.culture.Element;
  */
 public class RabjungElement extends Element {
 
+    /**
+     * The names of the Five Elements in the Tibetan calendar, ordered as Wood, Fire, Earth, Iron, and Water.
+     */
     public static final String[] NAMES = { "木", "火", "土", "铁", "水" };
 
     /**

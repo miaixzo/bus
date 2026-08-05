@@ -24,6 +24,7 @@ import java.util.Locale;
 import com.sun.jna.Memory;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -82,7 +83,7 @@ final class FreeBsdSensors extends AbstractSensors {
     @Override
     public int[] queryFanSpeeds() {
         // Nothing known on FreeBSD for this.
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     /**

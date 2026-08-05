@@ -40,6 +40,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
@@ -145,9 +146,12 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             if (StringKit.isNotBlank(clientIp)) {
                 headers.set(
                         "X-Forwarded-For",
-                        StringKit.isBlank(forwardedFor) ? clientIp : forwardedFor + ", " + clientIp);
+                        StringKit.isBlank(forwardedFor) ? clientIp
+                                : forwardedFor + Symbol.COMMA + Symbol.SPACE + clientIp);
             }
-            headers.set("X-Forwarded-Proto", request.uri().getScheme() == null ? "http" : request.uri().getScheme());
+            headers.set(
+                    "X-Forwarded-Proto",
+                    request.uri().getScheme() == null ? Protocol.HTTP.name : request.uri().getScheme());
             headers.set("X-Request-Id", context.getX_request_id());
         });
         Logger.debug(
@@ -360,7 +364,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             return Normal.EMPTY;
         }
         String path = decodedPath.startsWith(Symbol.SLASH) ? decodedPath : Symbol.SLASH + decodedPath;
-        String marker = "http" + Symbol.COLON + Symbol.FORWARDSLASH + "vortex.local";
+        String marker = Protocol.HTTP.name + Symbol.COLON + Symbol.FORWARDSLASH + "vortex.local";
         try {
             return UrlKit.toURI(UrlKit.normalize(marker + path, true)).getRawPath();
         } catch (RuntimeException ex) {

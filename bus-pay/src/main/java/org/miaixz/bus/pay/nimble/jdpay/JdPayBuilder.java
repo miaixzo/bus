@@ -33,6 +33,8 @@ import javax.crypto.Cipher;
 import lombok.SneakyThrows;
 
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PaymentException;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.xyz.BeanKit;
@@ -255,7 +257,7 @@ public class JdPayBuilder {
         try {
             String sourceSignString = signString(object, signKeyList);
             String sha256SourceSignString = Builder.sha256(sourceSignString);
-            byte[] newK = encryptByPrivateKey(sha256SourceSignString.getBytes("UTF-8"), rsaPriKey);
+            byte[] newK = encryptByPrivateKey(sha256SourceSignString.getBytes(Charset.UTF_8), rsaPriKey);
             result = Base64.encode(newK);
         } catch (Exception e) {
             Logger.warn(
@@ -293,7 +295,7 @@ public class JdPayBuilder {
             }
             String value = (String) entry.getValue();
             if (value.trim().length() > 0) {
-                sb.append((String) entry.getKey()).append("=").append(entry.getValue()).append("&");
+                sb.append((String) entry.getKey()).append(Symbol.EQUAL).append(entry.getValue()).append(Symbol.AND);
             }
         }
 
@@ -423,7 +425,7 @@ public class JdPayBuilder {
     public static String encryptMerchant(String sourceSignString, String rsaPriKey) {
         try {
             String sha256SourceSignString = Builder.sha256Hex(sourceSignString);
-            byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes("UTF-8"), rsaPriKey);
+            byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes(Charset.UTF_8), rsaPriKey);
             return Base64.encode(newsks);
         } catch (Exception e) {
             Logger.warn(

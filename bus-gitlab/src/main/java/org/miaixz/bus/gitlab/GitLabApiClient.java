@@ -44,6 +44,8 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -74,7 +76,7 @@ public class GitLabApiClient implements AutoCloseable {
     /**
      * The authorization header value.
      */
-    protected static final String AUTHORIZATION_HEADER = "Authorization";
+    protected static final String AUTHORIZATION_HEADER = Http.Header.AUTHORIZATION;
     /**
      * The x gitlab token header value.
      */
@@ -240,7 +242,7 @@ public class GitLabApiClient implements AutoCloseable {
             String secretToken, Map<String, Object> clientConfigProperties) {
 
         // Remove the trailing "/" from the hostUrl if present
-        this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
+        this.hostUrl = (hostUrl.endsWith(Symbol.SLASH) ? hostUrl.substring(0, hostUrl.length() - 1) : hostUrl);
         this.baseUrl = this.hostUrl;
         this.hostUrl += apiVersion.getApiNamespace();
 
@@ -428,7 +430,7 @@ public class GitLabApiClient implements AutoCloseable {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
             if (pathArg != null) {
-                urlBuilder.append("/");
+                urlBuilder.append(Symbol.SLASH);
                 urlBuilder.append(pathArg.toString());
             }
         }
@@ -622,7 +624,8 @@ public class GitLabApiClient implements AutoCloseable {
                 "GitLab HTTP request started: method=PATCH, urlPath={}, queryParamCount={}",
                 url == null ? null : url.getPath(),
                 queryParams == null ? 0 : queryParams.size());
-        Response response = invocation(url, queryParams).header("X-HTTP-Method-Override", "PATCH").post(empty);
+        Response response = invocation(url, queryParams).header("X-HTTP-Method-Override", Http.Method.PATCH.value())
+                .post(empty);
         Logger.debug(
                 false,
                 "GitLab",
@@ -1249,7 +1252,7 @@ public class GitLabApiClient implements AutoCloseable {
             builder = builder.header(authHeader, authValue).accept(accept);
         }
         if (userAgentHeader != null) {
-            builder.header("User-Agent", userAgentHeader);
+            builder.header(Http.Header.USER_AGENT, userAgentHeader);
         }
         // If sudo as ID is set add the Sudo header
         if (sudoAsId != null && sudoAsId.intValue() > 0)

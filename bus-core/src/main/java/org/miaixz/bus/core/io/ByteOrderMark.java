@@ -40,6 +40,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * <li>FF FE 00 00 = UTF-32LE, little-endian</li>
  * </ul>
  *
+ * @param charsetName The character set name defined by the BOM.
+ * @param bytes       The BOM bytes.
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -98,6 +100,11 @@ public record ByteOrderMark(String charsetName, byte... bytes)
         System.arraycopy(bytes, 0, this.bytes, 0, bytes.length);
     }
 
+    /**
+     * Returns the character set name represented by this byte order mark.
+     *
+     * @return The character set name.
+     */
     @Override
     public String charsetName() {
         return charsetName;
@@ -212,7 +219,7 @@ public record ByteOrderMark(String charsetName, byte... bytes)
         builder.append(getClass().getSimpleName());
         builder.append('[');
         builder.append(charsetName);
-        builder.append(": ");
+        builder.append(Symbol.COLON).append(Symbol.SPACE);
         for (int i = 0; i < bytes.length; i++) {
             if (i > 0) {
                 builder.append(Symbol.COMMA);

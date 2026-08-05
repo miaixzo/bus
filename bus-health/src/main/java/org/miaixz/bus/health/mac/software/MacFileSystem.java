@@ -282,8 +282,8 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Skip non-local drives if requested, and exclude pseudo file systems
                     boolean isLocal = (flags & MNT_LOCAL) != 0;
                     // Skip non-local drives if requested, and exclude pseudo file systems
-                    if ((localOnly && !isLocal)
-                            || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
+                    if ((localOnly && !isLocal) || !path.equals(Symbol.SLASH)
+                            && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                                     path,
                                     volume,
                                     FS_PATH_INCLUDES,

@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -99,7 +101,7 @@ public final class NetStat {
         List<InternetProtocolStats.IPConnection> connections = new ArrayList<>();
         for (String s : lines) {
             String[] split;
-            if (s.startsWith("tcp") || s.startsWith("udp")) {
+            if (s.startsWith(Protocol.TCP.name) || s.startsWith(Protocol.UDP.name)) {
                 split = Pattern.SPACES_PATTERN.split(s);
                 if (split.length >= 5) {
                     String state = (split.length == 6) ? split[5] : null;
@@ -153,11 +155,11 @@ public final class NetStat {
                     }
                     return Pair.of(InetAddress.getByName(ip).getAddress(), port);
                 } catch (UnknownHostException e2) {
-                    return Pair.of(new byte[0], port);
+                    return Pair.of(Normal.EMPTY_BYTE_ARRAY, port);
                 }
             }
         }
-        return Pair.of(new byte[0], 0);
+        return Pair.of(Normal.EMPTY_BYTE_ARRAY, 0);
     }
 
     /**

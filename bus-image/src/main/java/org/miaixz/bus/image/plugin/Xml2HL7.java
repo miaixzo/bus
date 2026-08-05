@@ -93,7 +93,7 @@ public class Xml2HL7 {
             System.out.println(s.substring(s.lastIndexOf('.') + 1) + ": " + p.getImplementationVersion());
             System.exit(0);
         }
-        if (arg0.startsWith("-") && arg0.length() > 1 && !arg0.equals("-")) {
+        if (arg0.startsWith(Symbol.MINUS) && arg0.length() > 1 && !arg0.equals(Symbol.MINUS)) {
             System.err.println("Error: Unknown option " + arg0);
             System.exit(2);
         }

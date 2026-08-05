@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -458,7 +459,7 @@ public class MicrometerProvider implements Provider {
             @Override
             public TimerSnapshot snapshot() {
                 return new TimerSnapshot(name, finalTags, t.count(), t.totalTime(TimeUnit.NANOSECONDS),
-                        t.max(TimeUnit.NANOSECONDS), new long[0], new double[0]);
+                        t.max(TimeUnit.NANOSECONDS), Normal.EMPTY_LONG_ARRAY, Normal.EMPTY_DOUBLE_ARRAY);
             }
         };
     }
@@ -536,8 +537,8 @@ public class MicrometerProvider implements Provider {
              */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, ds.count(), ds.totalAmount(), ds.max(), new long[0],
-                        new double[0]);
+                return new TimerSnapshot(name, finalTags, ds.count(), ds.totalAmount(), ds.max(),
+                        Normal.EMPTY_LONG_ARRAY, Normal.EMPTY_DOUBLE_ARRAY);
             }
         };
     }

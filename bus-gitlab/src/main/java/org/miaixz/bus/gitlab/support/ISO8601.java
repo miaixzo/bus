@@ -32,6 +32,10 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.ZoneId;
+
 /**
  * This class provides utility methods for parsing and formatting ISO8601 formatted dates.
  *
@@ -44,11 +48,11 @@ public class ISO8601 {
      * The pattern value.
      */
 
-    public static final String PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+    public static final String PATTERN = Fields.ISO8601_WITH_ZONE_OFFSET;
     /**
      * The msec pattern value.
      */
-    public static final String MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    public static final String MSEC_PATTERN = Fields.ISO8601_MS_WITH_ZONE_OFFSET;
     /**
      * The spacey pattern value.
      */
@@ -60,23 +64,23 @@ public class ISO8601 {
     /**
      * The pattern msec value.
      */
-    public static final String PATTERN_MSEC = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    public static final String PATTERN_MSEC = Fields.ISO8601_MS_WITH_ZONE_OFFSET;
     /**
      * The output pattern value.
      */
-    public static final String OUTPUT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String OUTPUT_PATTERN = Fields.UTC;
     /**
      * The output msec pattern value.
      */
-    public static final String OUTPUT_MSEC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    public static final String OUTPUT_MSEC_PATTERN = Fields.UTC_MS;
     /**
      * The utc pattern value.
      */
-    public static final String UTC_PATTERN = "yyyy-MM-dd HH:mm:ss 'UTC'";
+    public static final String UTC_PATTERN = Fields.ISO8601_MS_WITH_UTC;
     /**
      * The date only pattern value.
      */
-    public static final String DATE_ONLY_PATTERN = "yyyy-MM-dd";
+    public static final String DATE_ONLY_PATTERN = Fields.NORM_DATE;
 
     private static final DateTimeFormatter ODT_WITH_MSEC_PARSER = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss.SSS[ ][XXXXX][XXXX]]").toFormatter();
@@ -141,8 +145,8 @@ public class ISO8601 {
         } else {
 
             // Convert UTC zoned dates to 0 offset date
-            if (dateTimeString.endsWith("UTC")) {
-                dateTimeString = dateTimeString.replace("UTC", "+0000");
+            if (dateTimeString.endsWith(ZoneId.UTC.name())) {
+                dateTimeString = dateTimeString.replace(ZoneId.UTC.name(), Symbol.PLUS + "0000");
             }
 
             OffsetDateTime odt = (dateTimeString.length() > 25
@@ -227,7 +231,7 @@ public class ISO8601 {
             if (format == null) {
                 format = new SimpleDateFormat(formatSpec);
                 format.setLenient(true);
-                format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                format.setTimeZone(TimeZone.getTimeZone(ZoneId.UTC.name()));
                 formatMap.put(formatSpec, format);
             }
 

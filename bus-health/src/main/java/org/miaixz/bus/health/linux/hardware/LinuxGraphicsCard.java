@@ -26,6 +26,7 @@ import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -297,7 +298,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         boolean found = false;
         String lookupDevice = null;
         for (String line : lspci) {
-            String[] split = line.trim().split(":", 2);
+            String[] split = line.trim().split(Symbol.COLON, 2);
             String prefix = split[0];
             // Skip until line contains "VGA" or "3D controller"
             if (prefix.equals("Class") && (line.contains("VGA") || line.contains("3D controller"))) {
@@ -390,7 +391,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         int cardNum = 0;
         String busInfo = null;
         for (String line : lshw) {
-            String[] split = line.trim().split(":", 2);
+            String[] split = line.trim().split(Symbol.COLON, 2);
             if (split[0].startsWith("*-display")) {
                 // Save previous card
                 if (cardNum++ > 0) {

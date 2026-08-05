@@ -23,6 +23,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
+
 /**
  * Immutable HTTP header used by DICOM web access configuration.
  *
@@ -80,7 +83,8 @@ public final class HttpTag {
      * @return the operation result.
      */
     public static HttpTag authorization(String token) {
-        return new HttpTag("Authorization", "Bearer " + Objects.requireNonNull(token, "Token cannot be null"));
+        return new HttpTag(Http.Header.AUTHORIZATION,
+                "Bearer " + Objects.requireNonNull(token, "Token cannot be null"));
     }
 
     /**
@@ -90,7 +94,8 @@ public final class HttpTag {
      * @return the operation result.
      */
     public static HttpTag contentType(String contentType) {
-        return new HttpTag("Content-Type", Objects.requireNonNull(contentType, "Content type cannot be null"));
+        return new HttpTag(Http.Header.CONTENT_TYPE,
+                Objects.requireNonNull(contentType, "Content type cannot be null"));
     }
 
     /**
@@ -117,7 +122,7 @@ public final class HttpTag {
      * @return true if the condition is met; otherwise false.
      */
     public boolean isAuthorizationHeader() {
-        return "Authorization".equalsIgnoreCase(key);
+        return Http.Header.AUTHORIZATION.equalsIgnoreCase(key);
     }
 
     /**
@@ -137,7 +142,7 @@ public final class HttpTag {
      * @return the operation result.
      */
     public String toHeaderString() {
-        return key + ": " + value;
+        return key + Symbol.COLON + Symbol.SPACE + value;
     }
 
     /**

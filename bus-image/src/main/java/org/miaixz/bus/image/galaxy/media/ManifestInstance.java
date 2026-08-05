@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -38,7 +39,7 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
     /**
      * The key separator value.
      */
-    private static final String KEY_SEPARATOR = "?";
+    private static final String KEY_SEPARATOR = Symbol.QUESTION_MARK;
 
     /**
      * The direct download file attribute.
@@ -219,7 +220,7 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
      */
     @Override
     public void toXml(Writer writer) throws IOException {
-        writer.append("\n<").append(ManifestXml.Level.INSTANCE.getTagName()).append(" ");
+        writer.append(Symbol.LF).append(Symbol.LT).append(ManifestXml.Level.INSTANCE.getTagName()).append(Symbol.SPACE);
         ManifestXml.addXmlAttribute(Tag.SOPInstanceUID, sopInstanceUID, writer);
         ManifestXml.addXmlAttribute(Tag.SOPClassUID, sopClassUID, writer);
         ManifestXml.addXmlAttribute(Tag.TransferSyntaxUID, transferSyntaxUID, writer);

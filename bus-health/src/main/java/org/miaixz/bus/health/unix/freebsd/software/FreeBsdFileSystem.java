@@ -148,7 +148,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             // Skip non-local drives if requested, and exclude pseudo file systems
             boolean isLocal = !NETWORK_FS_TYPES.contains(type);
             if ((localOnly && !isLocal)
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
+                    || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                             path,
                             volume,
                             FS_PATH_INCLUDES,
@@ -169,7 +169,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals("/")) {
+            if (volume.startsWith(Symbol.SLASH + "dev") || path.equals(Symbol.SLASH)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";

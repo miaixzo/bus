@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -112,7 +113,7 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
                 continue;
             }
 
-            String[] parts = trimmed.split(":", 2);
+            String[] parts = trimmed.split(Symbol.COLON, 2);
             if (parts.length == 2) {
                 String key = parts[0].trim();
                 String value = parts[1].trim();
@@ -140,7 +141,8 @@ public final class MacBluetoothDevice extends AbstractBluetoothDevice {
                             break;
 
                         case "battery level":
-                            batteryLevel = Parsing.parseIntOrDefault(value.replace("%", "").trim(), -1);
+                            batteryLevel = Parsing
+                                    .parseIntOrDefault(value.replace(Symbol.PERCENT, Normal.EMPTY).trim(), -1);
                             break;
 
                         default:

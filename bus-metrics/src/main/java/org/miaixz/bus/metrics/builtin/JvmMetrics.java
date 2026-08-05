@@ -25,6 +25,7 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 
@@ -62,7 +63,7 @@ public class JvmMetrics {
 
         List<GarbageCollectorMXBean> gcBeans = ManagementFactory.getGarbageCollectorMXBeans();
         for (GarbageCollectorMXBean gc : gcBeans) {
-            String gcName = gc.getName().replace(" ", "_").toLowerCase();
+            String gcName = gc.getName().replace(Symbol.SPACE, Symbol.UNDERLINE).toLowerCase();
             Metrics.gauge("jvm.gc.collection.count", gc, b -> (double) b.getCollectionCount(), "gc", gcName);
             Metrics.gauge("jvm.gc.collection.time.ms", gc, b -> (double) b.getCollectionTime(), "gc", gcName);
         }

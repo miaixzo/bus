@@ -401,7 +401,7 @@ public class ValidationResult {
             VR.Holder vr = new VR.Holder();
             Object value = attrs.getValue(tag, vr);
             sb.append(Symbol.C_SPACE).append(vr.vr);
-            sb.append(" [");
+            sb.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT);
             vr.vr.prompt(value, attrs.bigEndian(), attrs.getSpecificCharacterSet(vr.vr), 200, sb);
             sb.append(Symbol.C_BRACKET_RIGHT);
             if (iav.reason != Invalid.Item) {

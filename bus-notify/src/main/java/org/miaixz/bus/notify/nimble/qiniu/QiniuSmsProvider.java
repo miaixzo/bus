@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -65,7 +66,7 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
                 "Notify",
                 "Qiniu SMS send started: template={}, targetCount={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length);
         Map<String, String> bodys = new HashMap<>();
         bodys.put("template_id", entity.getTemplate());
         bodys.put("parameters", entity.getParams());
@@ -83,7 +84,7 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
                 "Notify",
                 "Qiniu SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 status,
                 result.getErrcode(),
                 response == null ? 0 : response.length());

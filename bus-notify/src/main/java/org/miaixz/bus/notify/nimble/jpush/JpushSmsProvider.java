@@ -68,7 +68,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
                 "Notify",
                 "JPush SMS send started: template={}, targetCount={}, signaturePresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
 
@@ -107,7 +107,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
                 "Notify",
                 "JPush SMS send completed: template={}, targetCount={}, successCount={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 JsonKit.getValue(response, "success_count"),
                 result.getErrcode(),
                 response == null ? 0 : response.length());

@@ -493,7 +493,7 @@ public class AntPathMatcher {
      * @return the tokenized path parts
      */
     protected String[] tokenizePath(final String path) {
-        return CharsBacker.split(path, this.pathSeparator, this.trimTokens, true).toArray(new String[0]);
+        return CharsBacker.split(path, this.pathSeparator, this.trimTokens, true).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -723,7 +723,7 @@ public class AntPathMatcher {
                     patternBuilder.append('.');
                 } else if (Symbol.STAR.equals(match)) {
                     patternBuilder.append(".*");
-                } else if (match.startsWith("{") && match.endsWith("}")) {
+                } else if (match.startsWith(Symbol.BRACE_LEFT) && match.endsWith(Symbol.BRACE_RIGHT)) {
                     final int colonIdx = match.indexOf(Symbol.C_COLON);
                     if (colonIdx == -1) {
                         patternBuilder.append(DEFAULT_VARIABLE_PATTERN);

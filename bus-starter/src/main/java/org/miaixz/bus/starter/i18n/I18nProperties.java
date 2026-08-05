@@ -27,6 +27,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.starter.GeniusBuilder;
 
@@ -61,8 +62,8 @@ public class I18nProperties {
      * @param defaultEncoding resource bundle encoding
      * @param baseNames       ordered resource bundle base names
      */
-    public I18nProperties(@DefaultValue("false") boolean enabled, @DefaultValue("UTF-8") String defaultEncoding,
-            @DefaultValue("messages") String[] baseNames) {
+    public I18nProperties(@DefaultValue(Normal.FALSE) boolean enabled,
+            @DefaultValue(Charset.DEFAULT_UTF_8) String defaultEncoding, @DefaultValue("messages") String[] baseNames) {
         LinkedHashSet<String> normalized = new LinkedHashSet<>();
         if (baseNames != null) {
             for (String baseName : baseNames) {

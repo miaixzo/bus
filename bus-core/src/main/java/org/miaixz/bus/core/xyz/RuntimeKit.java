@@ -28,6 +28,7 @@ import java.util.Stack;
 
 import org.miaixz.bus.core.data.id.Pid;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
@@ -371,7 +372,7 @@ public class RuntimeKit {
         if (!cache.isEmpty()) {
             cmds.add(cache.toString());
         }
-        return cmds.toArray(new String[0]);
+        return cmds.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
 }

@@ -223,7 +223,7 @@ public abstract class AbstractDialect implements Dialect {
      */
     @Override
     public String toString() {
-        return "Dialect[" + this.databaseName + "]";
+        return "Dialect[" + this.databaseName + Symbol.BRACKET_RIGHT;
     }
 
     /**
@@ -240,10 +240,10 @@ public abstract class AbstractDialect implements Dialect {
 
         StringBuilder sql = new StringBuilder(originalSql.length() + PAGINATION_SQL_EXTRA_CAPACITY);
         sql.append(originalSql);
-        sql.append(" ").append(getLimitKeyword()).append(" ").append(pageable.getPageSize());
+        sql.append(Symbol.SPACE).append(getLimitKeyword()).append(Symbol.SPACE).append(pageable.getPageSize());
 
         if (pageable.getOffset() > 0) {
-            sql.append(" ").append(getOffsetKeyword()).append(" ").append(pageable.getOffset());
+            sql.append(Symbol.SPACE).append(getOffsetKeyword()).append(Symbol.SPACE).append(pageable.getOffset());
         }
 
         return sql.toString();
@@ -361,8 +361,7 @@ public abstract class AbstractDialect implements Dialect {
                 }
                 columns.add(
                         new ColumnSnapshot().name(rs.getString("COLUMN_NAME")).comment(getString(rs, REMARKS_COLUMN))
-                                .type(type)
-                                .nullable(nullable == DatabaseMetaData.columnNullable));
+                                .type(type).nullable(nullable == DatabaseMetaData.columnNullable));
             }
         }
     }
@@ -458,7 +457,9 @@ public abstract class AbstractDialect implements Dialect {
                 if (column == null || referencedColumn == null) {
                     continue;
                 }
-                String key = name == null || name.isBlank() ? table.table() + "_" + column + "_fk" : name;
+                String key = name == null || name.isBlank()
+                        ? table.table() + Symbol.UNDERLINE + column + Symbol.UNDERLINE + "fk"
+                        : name;
                 ForeignKeyMeta foreignKey = foreignKeys.get(key);
                 if (foreignKey == null) {
                     foreignKey = new ForeignKeyMeta().name(key).referencedTable(referencedTable(rs))
@@ -571,8 +572,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String modifyColumnComment(TableMeta table, ColumnMeta column) {
         return "COMMENT ON COLUMN" + Symbol.SPACE + tableName(table) + Symbol.DOT + identifier(column.column())
-                + Symbol.SPACE + "IS" + Symbol.SPACE
-                + stringLiteral(column.comment());
+                + Symbol.SPACE + "IS" + Symbol.SPACE + stringLiteral(column.comment());
     }
 
     /**
@@ -740,9 +740,9 @@ public abstract class AbstractDialect implements Dialect {
         StringBuilder sql = new StringBuilder();
         sql.append("ALTER TABLE ").append(tableName(table));
         sql.append(" ADD CONSTRAINT ").append(identifier(foreignKey.name()));
-        sql.append(" FOREIGN KEY (").append(columnList(foreignKey.columns())).append(")");
+        sql.append(" FOREIGN KEY (").append(columnList(foreignKey.columns())).append(Symbol.PARENTHESE_RIGHT);
         sql.append(" REFERENCES ").append(foreignKey.referencedTable());
-        sql.append(" (").append(columnList(foreignKey.referencedColumns())).append(")");
+        sql.append(" (").append(columnList(foreignKey.referencedColumns())).append(Symbol.PARENTHESE_RIGHT);
         if (foreignKey.onDelete() != null && !foreignKey.onDelete().isBlank()) {
             sql.append(" ON DELETE ").append(foreignKey.onDelete());
         }
@@ -836,8 +836,8 @@ public abstract class AbstractDialect implements Dialect {
      * @return the table comment SQL
      */
     protected String mysqlModifyTableComment(TableMeta table) {
-        return "ALTER TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + "COMMENT" + Symbol.SPACE
-                + Symbol.EQUAL + Symbol.SPACE + stringLiteral(table.comment());
+        return "ALTER TABLE" + Symbol.SPACE + tableName(table) + Symbol.SPACE + "COMMENT" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + stringLiteral(table.comment());
     }
 
     /**
@@ -997,18 +997,16 @@ public abstract class AbstractDialect implements Dialect {
         String exists = "SELECT 1 FROM sys.extended_properties WHERE major_id = OBJECT_ID"
                 + parenthesized(unicodeLiteral(qualified)) + " AND minor_id = 0 AND name = "
                 + unicodeLiteral(SQLSERVER_DESCRIPTION);
-        String levels = "@level0type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
-                + unicodeLiteral(SQLSERVER_SCHEMA) + COMMA_SPACE + "@level0name" + Symbol.SPACE + Symbol.EQUAL
-                + Symbol.SPACE + unicodeLiteral(schema)
+        String levels = "@level0type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(SQLSERVER_SCHEMA)
+                + COMMA_SPACE + "@level0name" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(schema)
                 + COMMA_SPACE + "@level1type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
                 + unicodeLiteral(SQLSERVER_TABLE) + COMMA_SPACE + "@level1name" + Symbol.SPACE + Symbol.EQUAL
                 + Symbol.SPACE + unicodeLiteral(name);
         return "IF EXISTS" + Symbol.SPACE + parenthesized(exists) + Symbol.SPACE
-                + "EXEC sp_updateextendedproperty @name = "
-                + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE + "@value" + Symbol.SPACE + Symbol.EQUAL
-                + Symbol.SPACE + unicodeLiteral(table.comment()) + COMMA_SPACE + levels
-                + " ELSE EXEC sp_addextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE
-                + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(table.comment())
+                + "EXEC sp_updateextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE
+                + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(table.comment()) + COMMA_SPACE
+                + levels + " ELSE EXEC sp_addextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION)
+                + COMMA_SPACE + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(table.comment())
                 + COMMA_SPACE + levels;
     }
 
@@ -1028,23 +1026,20 @@ public abstract class AbstractDialect implements Dialect {
                 "OBJECT_ID" + parenthesized(unicodeLiteral(qualified)) + COMMA_SPACE + unicodeLiteral(columnName)
                         + COMMA_SPACE + unicodeLiteral(SQLSERVER_COLUMN_ID));
         String exists = "SELECT 1 FROM sys.extended_properties WHERE major_id = OBJECT_ID"
-                + parenthesized(unicodeLiteral(qualified)) + " AND minor_id = " + columnId
-                + " AND name = " + unicodeLiteral(SQLSERVER_DESCRIPTION);
-        String levels = "@level0type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
-                + unicodeLiteral(SQLSERVER_SCHEMA) + COMMA_SPACE + "@level0name" + Symbol.SPACE + Symbol.EQUAL
-                + Symbol.SPACE + unicodeLiteral(schema)
+                + parenthesized(unicodeLiteral(qualified)) + " AND minor_id = " + columnId + " AND name = "
+                + unicodeLiteral(SQLSERVER_DESCRIPTION);
+        String levels = "@level0type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(SQLSERVER_SCHEMA)
+                + COMMA_SPACE + "@level0name" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(schema)
                 + COMMA_SPACE + "@level1type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
                 + unicodeLiteral(SQLSERVER_TABLE) + COMMA_SPACE + "@level1name" + Symbol.SPACE + Symbol.EQUAL
-                + Symbol.SPACE + unicodeLiteral(name)
-                + COMMA_SPACE + "@level2type" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
-                + unicodeLiteral(SQLSERVER_COLUMN) + COMMA_SPACE + "@level2name" + Symbol.SPACE + Symbol.EQUAL
-                + Symbol.SPACE + unicodeLiteral(columnName);
+                + Symbol.SPACE + unicodeLiteral(name) + COMMA_SPACE + "@level2type" + Symbol.SPACE + Symbol.EQUAL
+                + Symbol.SPACE + unicodeLiteral(SQLSERVER_COLUMN) + COMMA_SPACE + "@level2name" + Symbol.SPACE
+                + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(columnName);
         return "IF EXISTS" + Symbol.SPACE + parenthesized(exists) + Symbol.SPACE
-                + "EXEC sp_updateextendedproperty @name = "
-                + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE + "@value" + Symbol.SPACE + Symbol.EQUAL
-                + Symbol.SPACE + unicodeLiteral(column.comment()) + COMMA_SPACE + levels
-                + " ELSE EXEC sp_addextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE
-                + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(column.comment())
+                + "EXEC sp_updateextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION) + COMMA_SPACE
+                + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(column.comment()) + COMMA_SPACE
+                + levels + " ELSE EXEC sp_addextendedproperty @name = " + unicodeLiteral(SQLSERVER_DESCRIPTION)
+                + COMMA_SPACE + "@value" + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + unicodeLiteral(column.comment())
                 + COMMA_SPACE + levels;
     }
 

@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -313,7 +314,7 @@ public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
      */
     @Override
     public void toXml(Writer writer) throws IOException {
-        writer.append("\n<").append(ManifestXml.Level.SERIES.getTagName()).append(" ");
+        writer.append(Symbol.LF).append(Symbol.LT).append(ManifestXml.Level.SERIES.getTagName()).append(Symbol.SPACE);
         ManifestXml.addXmlAttribute(Tag.SeriesInstanceUID, seriesInstanceUID, writer);
         ManifestXml.addXmlAttribute(Tag.SeriesDescription, seriesDescription, writer);
         ManifestXml.addXmlAttribute(Tag.SeriesNumber, seriesNumber, writer);

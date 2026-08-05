@@ -23,7 +23,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.Order;
 
@@ -152,8 +154,8 @@ public interface ClassMetaResolver extends Order {
          */
         @Override
         public String toString() {
-            return (mapperType != null ? mapperType.getSimpleName() + "." : "")
-                    + (mapperMethod != null ? mapperMethod.getName() : "");
+            return (mapperType != null ? mapperType.getSimpleName() + Symbol.DOT : Normal.EMPTY)
+                    + (mapperMethod != null ? mapperMethod.getName() : Normal.EMPTY);
         }
 
     }

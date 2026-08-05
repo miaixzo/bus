@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
 import org.miaixz.bus.cortex.Status;
@@ -237,7 +238,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
      */
     private void probeInstance(Instance instance, Prober httpProber, Prober tcpProber) {
         try {
-            Prober prober = "tcp".equalsIgnoreCase(instance.getScheme()) ? tcpProber : httpProber;
+            Prober prober = Protocol.TCP.name.equalsIgnoreCase(instance.getScheme()) ? tcpProber : httpProber;
             Status result = prober.check(instance);
             String newState = result.isHealthy() ? "UP" : "DOWN";
             Integer newHealthy = result.isHealthy() ? 1 : 0;

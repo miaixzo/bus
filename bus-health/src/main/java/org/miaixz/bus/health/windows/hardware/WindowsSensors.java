@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.windows.WmiKit;
@@ -184,7 +185,7 @@ final class WindowsSensors extends AbstractSensors {
         }
 
         // Default
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     /**
@@ -207,7 +208,7 @@ final class WindowsSensors extends AbstractSensors {
             }
             return fanSpeeds;
         }
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     /**
@@ -218,7 +219,7 @@ final class WindowsSensors extends AbstractSensors {
     private static int[] getFansFromLHM() {
         List<?> sensors = getLhmSensors("SuperIO", "Fan");
         if (sensors == null || sensors.isEmpty()) {
-            return new int[0];
+            return Normal.EMPTY_INT_ARRAY;
         }
 
         try {
@@ -245,7 +246,7 @@ final class WindowsSensors extends AbstractSensors {
         } catch (Exception e) {
             Logger.warn(false, "Health", REFLECT_EXCEPTION_MSG, e.getClass().getSimpleName());
         }
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     /**
@@ -263,7 +264,7 @@ final class WindowsSensors extends AbstractSensors {
             }
             return fanSpeeds;
         }
-        return new int[0];
+        return Normal.EMPTY_INT_ARRAY;
     }
 
     /**

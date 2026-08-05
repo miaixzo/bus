@@ -728,8 +728,8 @@ public class PrimitiveArray extends ArrayValidator {
             return null;
         }
         final int length = values.length;
-        if (0 == length) {
-            return new Integer[0];
+        if (Normal._0 == length) {
+            return Normal.EMPTY_INTEGER_OBJECT_ARRAY;
         }
 
         final Integer[] array = new Integer[length];
@@ -752,7 +752,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new int[0];
+            return Normal.EMPTY_INT_ARRAY;
         }
 
         final int[] array = new int[length];
@@ -774,7 +774,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Long[0];
+            return Normal.EMPTY_LONG_OBJECT_ARRAY;
         }
 
         final Long[] array = new Long[length];
@@ -797,7 +797,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new long[0];
+            return Normal.EMPTY_LONG_ARRAY;
         }
 
         final long[] array = new long[length];
@@ -819,7 +819,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Character[0];
+            return Normal.EMPTY_CHARACTER_OBJECT_ARRAY;
         }
 
         final Character[] array = new Character[length];
@@ -842,7 +842,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new char[0];
+            return Normal.EMPTY_CHAR_ARRAY;
         }
 
         final char[] array = new char[length];
@@ -864,7 +864,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Byte[0];
+            return Normal.EMPTY_BYTE_OBJECT_ARRAY;
         }
 
         final Byte[] array = new Byte[length];
@@ -887,7 +887,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
 
         final byte[] array = new byte[length];
@@ -909,7 +909,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Short[0];
+            return Normal.EMPTY_SHORT_OBJECT_ARRAY;
         }
 
         final Short[] array = new Short[length];
@@ -932,7 +932,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new short[0];
+            return Normal.EMPTY_SHORT_ARRAY;
         }
 
         final short[] array = new short[length];
@@ -954,7 +954,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Float[0];
+            return Normal.EMPTY_FLOAT_OBJECT_ARRAY;
         }
 
         final Float[] array = new Float[length];
@@ -977,7 +977,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new float[0];
+            return Normal.EMPTY_FLOAT_ARRAY;
         }
 
         final float[] array = new float[length];
@@ -999,7 +999,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Double[0];
+            return Normal.EMPTY_DOUBLE_OBJECT_ARRAY;
         }
 
         final Double[] array = new Double[length];
@@ -1022,7 +1022,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new double[0];
+            return Normal.EMPTY_DOUBLE_ARRAY;
         }
 
         final double[] array = new double[length];
@@ -1044,7 +1044,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new Boolean[0];
+            return Normal.EMPTY_BOOLEAN_OBJECT_ARRAY;
         }
 
         final Boolean[] array = new Boolean[length];
@@ -1067,7 +1067,7 @@ public class PrimitiveArray extends ArrayValidator {
         }
         final int length = values.length;
         if (0 == length) {
-            return new boolean[0];
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         }
 
         final boolean[] array = new boolean[length];
@@ -1098,7 +1098,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1125,7 +1125,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new int[0];
+            return Normal.EMPTY_INT_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1152,7 +1152,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new long[0];
+            return Normal.EMPTY_LONG_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1179,7 +1179,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new short[0];
+            return Normal.EMPTY_SHORT_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1206,7 +1206,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new char[0];
+            return Normal.EMPTY_CHAR_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1233,7 +1233,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new double[0];
+            return Normal.EMPTY_DOUBLE_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1260,7 +1260,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new float[0];
+            return Normal.EMPTY_FLOAT_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);
@@ -1287,7 +1287,7 @@ public class PrimitiveArray extends ArrayValidator {
             end = tmp;
         }
         if (start >= length)
-            return new boolean[0];
+            return Normal.EMPTY_BOOLEAN_ARRAY;
         if (end > length)
             end = length;
         return Arrays.copyOfRange(array, start, end);

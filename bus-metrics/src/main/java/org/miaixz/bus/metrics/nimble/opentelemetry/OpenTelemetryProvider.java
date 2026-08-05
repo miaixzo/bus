@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
@@ -501,7 +502,7 @@ public class OpenTelemetryProvider implements Provider {
              */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, 0, 0, 0, new long[0], new double[0]);
+                return new TimerSnapshot(name, finalTags, 0, 0, 0, Normal.EMPTY_LONG_ARRAY, Normal.EMPTY_DOUBLE_ARRAY);
             }
         };
     }
@@ -578,7 +579,7 @@ public class OpenTelemetryProvider implements Provider {
              */
             @Override
             public TimerSnapshot snapshot() {
-                return new TimerSnapshot(name, finalTags, 0, 0, 0, new long[0], new double[0]);
+                return new TimerSnapshot(name, finalTags, 0, 0, 0, Normal.EMPTY_LONG_ARRAY, Normal.EMPTY_DOUBLE_ARRAY);
             }
         };
     }

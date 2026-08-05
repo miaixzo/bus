@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ByteKit;
 
@@ -253,7 +254,7 @@ public final class Formats {
      * @return the normalized MAC address, or the original string uppercased if it cannot be parsed
      */
     public static String formatMacAddress(String raw) {
-        String cleaned = raw.replace("-", "").replace(":", "").trim();
+        String cleaned = raw.replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.COLON, Normal.EMPTY).trim();
         if (cleaned.length() == 12 && isHex(cleaned)) {
             return String.format(
                     Locale.ROOT,
@@ -294,7 +295,7 @@ public final class Formats {
         StringBuilder sb = new StringBuilder();
         sb.append("  Manuf. ID=").append(Edid.getManufacturerID(edid));
         sb.append(", Product ID=").append(Edid.getProductID(edid));
-        sb.append(", ").append(Edid.isDigital(edid) ? "Digital" : "Analog");
+        sb.append(Symbol.COMMA).append(Symbol.SPACE).append(Edid.isDigital(edid) ? "Digital" : "Analog");
         sb.append(", Serial=").append(Edid.getSerialNo(edid));
         sb.append(", ManufDate=").append(Edid.getWeek(edid) * 12 / 52 + 1).append('/').append(Edid.getYear(edid));
         sb.append(", EDID v").append(Edid.getVersion(edid));

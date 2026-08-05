@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -64,7 +65,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
                 "Notify",
                 "JDCloud SMS send started: template={}, targetCount={}, signaturePresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
 
@@ -108,7 +109,7 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
                 "Notify",
                 "JDCloud SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 status,
                 result.getErrcode(),
                 response == null ? 0 : response.length());

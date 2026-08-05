@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.MediaType;
 
 /**
@@ -186,7 +187,7 @@ public final class DicomStowConfig {
     private String normalizeUrl(String url) {
         Objects.requireNonNull(url, "Request URL cannot be null");
         String normalized = url.trim();
-        if (normalized.endsWith("/")) {
+        if (normalized.endsWith(Symbol.SLASH)) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
         if (!normalized.endsWith("/studies")) {

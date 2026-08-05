@@ -250,7 +250,7 @@ public final class Executor {
         List<String> command = new ArrayList<>(Arrays.asList(getPrivilegedPrefix().split("\\s+")));
         command.add("cat");
         command.add(filename);
-        return command.toArray(new String[0]);
+        return command.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**

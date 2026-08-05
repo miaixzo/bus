@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Listener;
@@ -565,10 +566,10 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         if (watchKey.equals(key)) {
             return true;
         }
-        if (key.startsWith(watchKey + ":")) {
+        if (key.startsWith(watchKey + Symbol.COLON)) {
             return true;
         }
-        return key.endsWith(":" + watchKey) || key.contains(":" + watchKey + ":");
+        return key.endsWith(Symbol.COLON + watchKey) || key.contains(Symbol.COLON + watchKey + Symbol.COLON);
     }
 
     /**

@@ -28,6 +28,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -79,7 +80,8 @@ public class TlsParameters {
         }
         final SSLParameters parameters = checkedEngine.getSSLParameters();
         if (tlsExtensions) {
-            parameters.setApplicationProtocols(applicationProtocols == null ? new String[0] : applicationProtocols);
+            parameters.setApplicationProtocols(
+                    applicationProtocols == null ? Normal.EMPTY_STRING_ARRAY : applicationProtocols);
             serverNames(host).ifPresent(parameters::setServerNames);
         }
         if (verifyHostname) {

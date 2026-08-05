@@ -224,7 +224,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
             String name = volume;
             String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
-            if (path.equals("/")) {
+            if (path.equals(Symbol.SLASH)) {
                 name = "/";
             }
             String type = split[2];
@@ -232,7 +232,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             // Skip non-local drives if requested, and exclude pseudo file systems
             boolean isLocal = !NETWORK_FS_TYPES.contains(type);
             if ((localOnly && !isLocal)
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
+                    || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                             path,
                             volume,
                             FS_PATH_INCLUDES,

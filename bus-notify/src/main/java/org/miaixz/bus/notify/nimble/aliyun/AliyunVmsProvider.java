@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -63,7 +64,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
                 "Notify",
                 "Aliyun VMS send started: template={}, targetCount={}, senderPresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && entity.getSender() != null);
         Map<String, String> bodys = new HashMap<>();
         // 1. System parameters
@@ -109,7 +110,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
                 "Notify",
                 "Aliyun VMS send completed: template={}, targetCount={}, errcode={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 result == null ? null : result.getErrcode());
         return result;
     }

@@ -30,6 +30,7 @@ import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.type.TypeHandler;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -230,7 +231,7 @@ public class Criteria<T> {
      */
     public Criteria<T> andEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
-            addCriterion(column(fn) + " =", value, fn.toEntityColumn());
+            addCriterion(column(fn) + Symbol.SPACE + Symbol.EQUAL, value, fn.toEntityColumn());
         }
         return this;
     }
@@ -256,7 +257,7 @@ public class Criteria<T> {
      */
     public Criteria<T> andNotEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
-            addCriterion(column(fn) + " <>", value, fn.toEntityColumn());
+            addCriterion(column(fn) + Symbol.SPACE + Symbol.LT + Symbol.GT, value, fn.toEntityColumn());
         }
         return this;
     }
@@ -282,7 +283,7 @@ public class Criteria<T> {
      */
     public Criteria<T> andGreaterThan(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
-            addCriterion(column(fn) + " >", value, fn.toEntityColumn());
+            addCriterion(column(fn) + Symbol.SPACE + Symbol.GT, value, fn.toEntityColumn());
         }
         return this;
     }
@@ -308,7 +309,7 @@ public class Criteria<T> {
      */
     public Criteria<T> andGreaterThanOrEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
-            addCriterion(column(fn) + " >=", value, fn.toEntityColumn());
+            addCriterion(column(fn) + Symbol.SPACE + Symbol.GE, value, fn.toEntityColumn());
         }
         return this;
     }
@@ -334,7 +335,7 @@ public class Criteria<T> {
      */
     public Criteria<T> andLessThan(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
-            addCriterion(column(fn) + " <", value, fn.toEntityColumn());
+            addCriterion(column(fn) + Symbol.SPACE + Symbol.LT, value, fn.toEntityColumn());
         }
         return this;
     }
@@ -360,7 +361,7 @@ public class Criteria<T> {
      */
     public Criteria<T> andLessThanOrEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
-            addCriterion(column(fn) + " <=", value, fn.toEntityColumn());
+            addCriterion(column(fn) + Symbol.SPACE + Symbol.LE, value, fn.toEntityColumn());
         }
         return this;
     }

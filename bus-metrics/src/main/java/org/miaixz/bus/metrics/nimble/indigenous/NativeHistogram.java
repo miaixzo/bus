@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.nimble.indigenous;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
 import org.miaixz.bus.metrics.nimble.Histogram;
 import org.miaixz.bus.metrics.observe.tag.Tag;
@@ -132,7 +133,8 @@ public class NativeHistogram implements Histogram {
      */
     @Override
     public TimerSnapshot snapshot() {
-        return new TimerSnapshot(name, tags, countTotal.get(), sumTotal.sum(), maxValue, new long[0], new double[0]);
+        return new TimerSnapshot(name, tags, countTotal.get(), sumTotal.sum(), maxValue, Normal.EMPTY_LONG_ARRAY,
+                Normal.EMPTY_DOUBLE_ARRAY);
     }
 
 }

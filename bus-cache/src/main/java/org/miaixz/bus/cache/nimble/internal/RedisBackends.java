@@ -28,6 +28,7 @@ import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.cache.nimble.RedisCache;
 import org.miaixz.bus.cache.nimble.RedisClusterCache;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -99,10 +100,11 @@ public final class RedisBackends {
             Logger.warn(false, "Cache", "Redis cluster cache initialization rejected: nodeCount=0");
             throw new IllegalArgumentException("cache.redis.nodes is required for redis-cluster cache");
         }
-        long nodeCount = Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count();
+        long nodeCount = Arrays.stream(nodes.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotBlank)
+                .count();
         Logger.info(true, "Cache", "Redis cluster cache initialization started: nodeCount={}", nodeCount);
-        Set<HostAndPort> hostAndPorts = Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank)
-                .map(RedisBackends::hostAndPort).collect(Collectors.toSet());
+        Set<HostAndPort> hostAndPorts = Arrays.stream(nodes.split(Symbol.COMMA)).map(String::trim)
+                .filter(StringKit::isNotBlank).map(RedisBackends::hostAndPort).collect(Collectors.toSet());
         CacheX<String, Object> cache = new RedisClusterCache<>(new JedisCluster(hostAndPorts));
         Logger.info(false, "Cache", "Redis cluster cache initialization completed: nodeCount={}", hostAndPorts.size());
         return cache;
@@ -115,7 +117,7 @@ public final class RedisBackends {
      * @return parsed node
      */
     private static HostAndPort hostAndPort(String value) {
-        String[] parts = value.split(":");
+        String[] parts = value.split(Symbol.COLON);
         if (parts.length != 2) {
             Logger.warn(
                     false,

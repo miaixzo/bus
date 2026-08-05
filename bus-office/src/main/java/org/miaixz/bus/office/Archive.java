@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Shared archive models and low-level binary archive access helpers.
@@ -237,7 +238,7 @@ public class Archive {
             final SegmentState state = resolveState(segmentIndex, segmentName, attributes);
             state.offsets.add((long) state.outputStream.size());
             state.outputStream.writeLong(recordIndex);
-            final byte[] safePayload = null == payload ? new byte[0] : payload;
+            final byte[] safePayload = null == payload ? Normal.EMPTY_BYTE_ARRAY : payload;
             state.outputStream.writeInt(safePayload.length);
             state.outputStream.write(safePayload);
             state.totalRecords++;

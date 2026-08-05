@@ -26,6 +26,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StreamKit;
@@ -114,7 +115,7 @@ public class HL7Snd extends Device {
      */
     public void sendFiles(List<String> pathnames) throws IOException {
         for (String pathname : pathnames)
-            if (pathname.equals("-"))
+            if (pathname.equals(Symbol.MINUS))
                 send(readFromStdIn());
             else {
                 Path path = Paths.get(pathname);

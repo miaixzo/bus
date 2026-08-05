@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.feature.paging;
 
 import lombok.Getter;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.PooledStringBuilder;
 import org.miaixz.bus.core.text.StringBuilderPool;
 import org.miaixz.bus.mapper.Order;
@@ -89,8 +90,8 @@ public class PageBuilder {
         PooledStringBuilder builder = StringBuilderPool
                 .acquire(sqlWithoutOrderBy.length() + orderByClause.length() + 10);
         builder.append(sqlWithoutOrderBy);
-        if (!sqlWithoutOrderBy.trim().endsWith(";")) {
-            builder.append(" ");
+        if (!sqlWithoutOrderBy.trim().endsWith(Symbol.SEMICOLON)) {
+            builder.append(Symbol.SPACE);
         }
         builder.append(orderByClause);
         return builder.toString();
@@ -253,7 +254,7 @@ public class PageBuilder {
      * @return {@code true} when it belongs to the surrounding token
      */
     private boolean identifierPart(char value) {
-        return Character.isLetterOrDigit(value) || value == '_';
+        return Character.isLetterOrDigit(value) || value == Symbol.C_UNDERLINE;
     }
 
     /**
@@ -269,7 +270,7 @@ public class PageBuilder {
         boolean first = true;
         for (Order order : sort.getOrders()) {
             if (!first) {
-                builder.append(", ");
+                builder.append(Symbol.COMMA).append(Symbol.SPACE);
             }
 
             builder.append(order.getProperty());

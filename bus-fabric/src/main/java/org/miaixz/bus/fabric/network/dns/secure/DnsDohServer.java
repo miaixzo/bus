@@ -368,7 +368,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             throws IOException {
         final HpackCodec hpack = new HpackCodec();
         final ConcurrentHashMap<Integer, Http2RequestState> streams = new ConcurrentHashMap<>();
-        writeFrame(output, H2_SETTINGS, 0, 0, new byte[0]);
+        writeFrame(output, H2_SETTINGS, 0, 0, Normal.EMPTY_BYTE_ARRAY);
         output.flush();
         while (active.get()) {
             final Http2FrameHeader header;
@@ -418,7 +418,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             return;
         }
         if ((header.flags & H2_FLAG_ACK) == 0) {
-            writeFrame(output, H2_SETTINGS, H2_FLAG_ACK, 0, new byte[0]);
+            writeFrame(output, H2_SETTINGS, H2_FLAG_ACK, 0, Normal.EMPTY_BYTE_ARRAY);
         }
     }
 

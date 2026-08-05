@@ -28,6 +28,8 @@ import lombok.experimental.Accessors;
 
 import org.apache.ibatis.type.JdbcType;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * SQL column type descriptor.
  *
@@ -97,13 +99,13 @@ public class SqlTypeDescriptor {
         }
         String normalized = normalizeTypeName(typeName);
         if (length != null && length > 0 && supportsLength(normalized)) {
-            return normalized + "(" + length + ")";
+            return normalized + Symbol.PARENTHESE_LEFT + length + Symbol.PARENTHESE_RIGHT;
         }
         if (precision != null && precision > 0 && supportsPrecision(normalized)) {
             if (scale != null && scale >= 0) {
-                return normalized + "(" + precision + "," + scale + ")";
+                return normalized + Symbol.PARENTHESE_LEFT + precision + Symbol.COMMA + scale + Symbol.PARENTHESE_RIGHT;
             }
-            return normalized + "(" + precision + ")";
+            return normalized + Symbol.PARENTHESE_LEFT + precision + Symbol.PARENTHESE_RIGHT;
         }
         return normalized;
     }
