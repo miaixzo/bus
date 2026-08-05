@@ -25,7 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.miaixz.bus.health.Provider;
+import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.builtin.Disk;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.GlobalMemory;
@@ -67,9 +67,9 @@ public class HealthMetrics {
     private static final int DEFAULT_REFRESH_SECONDS = Builder.HEALTH_DEFAULT_REFRESH_SECONDS;
 
     /**
-     * bus-health Provider used to access hardware and OS data.
+     * Bus Health {@link Collector} used to access hardware and operating-system data.
      */
-    private final Provider provider;
+    private final Collector collector;
 
     /**
      * Interval in seconds between background CPU tick refreshes.
@@ -92,20 +92,20 @@ public class HealthMetrics {
     private final AtomicReference<CpuSnapshot> cpuSnapshot = new AtomicReference<>(new CpuSnapshot(0, 0, 0, 0));
 
     /**
-     * Creates a HealthMetrics instance using the default bus-health Provider and refresh interval.
+     * Creates a HealthMetrics instance using the default Bus Health {@link Collector} and refresh interval.
      */
     public HealthMetrics() {
-        this(new Provider(), DEFAULT_REFRESH_SECONDS);
+        this(new Collector(), DEFAULT_REFRESH_SECONDS);
     }
 
     /**
-     * Creates a HealthMetrics instance with a custom provider and refresh interval.
+     * Creates a HealthMetrics instance with a custom collector and refresh interval.
      *
-     * @param provider       bus-health Provider used to access hardware/OS data
+     * @param collector      Bus Health collector used to access hardware and operating-system data
      * @param refreshSeconds how often (in seconds) to refresh CPU tick-based metrics
      */
-    public HealthMetrics(Provider provider, int refreshSeconds) {
-        this.provider = provider;
+    public HealthMetrics(Collector collector, int refreshSeconds) {
+        this.collector = collector;
         this.refreshSeconds = refreshSeconds;
         this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r, Builder.THREAD_NAME_HEALTH);
@@ -128,7 +128,7 @@ public class HealthMetrics {
         Metrics.gauge("jvm.memory.usage", rt, r -> (r.totalMemory() - r.freeMemory()) * 100.0 / r.totalMemory());
 
         // ── Physical Memory (bus-health GlobalMemory) ─────────────────────
-        GlobalMemory mem = provider.getHardware().getMemory();
+        GlobalMemory mem = collector.getHardware().getMemory();
         Metrics.gauge("system.memory.total.bytes", mem, m -> (double) m.getTotal());
         Metrics.gauge("system.memory.available.bytes", mem, m -> (double) m.getAvailable());
         Metrics.gauge("system.memory.used.bytes", mem, m -> (double) (m.getTotal() - m.getAvailable()));
@@ -139,14 +139,14 @@ public class HealthMetrics {
 
         // ── CPU (sampling via background refresh) ─────────────────────────
         // Initial tick snapshot
-        prevTicks.set(provider.getProcessor().getSystemCpuLoadTicks());
+        prevTicks.set(collector.getProcessor().getSystemCpuLoadTicks());
 
         Metrics.gauge("system.cpu.usage.total", cpuSnapshot, ref -> ref.get().totalUsage());
         Metrics.gauge("system.cpu.usage.user", cpuSnapshot, ref -> ref.get().userUsage());
         Metrics.gauge("system.cpu.usage.sys", cpuSnapshot, ref -> ref.get().sysUsage());
         Metrics.gauge("system.cpu.usage.iowait", cpuSnapshot, ref -> ref.get().ioWait());
 
-        CentralProcessor proc = provider.getProcessor();
+        CentralProcessor proc = collector.getProcessor();
         Metrics.gauge("system.cpu.load.average.1m", proc, p -> p.getSystemLoadAverage(1)[0]);
         Metrics.gauge("system.cpu.physical.cores", proc, p -> (double) p.getPhysicalProcessorCount());
         Metrics.gauge("system.cpu.logical.cores", proc, p -> (double) p.getLogicalProcessorCount());
@@ -155,22 +155,22 @@ public class HealthMetrics {
         // Disk stores change dynamically; register a summary gauge
         Metrics.gauge(
                 "system.disk.total.bytes",
-                provider,
+                collector,
                 p -> p.getDisk().stream().mapToLong(Disk::getTotalSpace).sum());
         Metrics.gauge(
                 "system.disk.used.bytes",
-                provider,
+                collector,
                 p -> p.getDisk().stream().mapToLong(Disk::getUsedSpace).sum());
         Metrics.gauge(
                 "system.disk.free.bytes",
-                provider,
+                collector,
                 p -> p.getDisk().stream().mapToLong(Disk::getFreeSpace).sum());
 
         // ── Network (summary across all interfaces) ───────────────────────
-        Metrics.gauge("system.network.bytes.recv", provider, p -> networkStat(p, false, false));
-        Metrics.gauge("system.network.bytes.sent", provider, p -> networkStat(p, true, false));
-        Metrics.gauge("system.network.packets.recv", provider, p -> networkStat(p, false, true));
-        Metrics.gauge("system.network.packets.sent", provider, p -> networkStat(p, true, true));
+        Metrics.gauge("system.network.bytes.recv", collector, p -> networkStat(p, false, false));
+        Metrics.gauge("system.network.bytes.sent", collector, p -> networkStat(p, true, false));
+        Metrics.gauge("system.network.packets.recv", collector, p -> networkStat(p, false, true));
+        Metrics.gauge("system.network.packets.sent", collector, p -> networkStat(p, true, true));
 
         // ── Thread counts ─────────────────────────────────────────────────
         java.lang.management.ThreadMXBean threads = java.lang.management.ManagementFactory.getThreadMXBean();
@@ -179,7 +179,7 @@ public class HealthMetrics {
         Metrics.gauge("jvm.threads.daemon", threads, t -> (double) t.getDaemonThreadCount());
 
         // ── Process uptime ────────────────────────────────────────────────
-        Metrics.gauge("process.uptime.seconds", provider, p -> (double) p.getJvm().getUptime() / 1000.0);
+        Metrics.gauge("process.uptime.seconds", collector, p -> (double) p.getJvm().getUptime() / 1000.0);
 
         // Start background refresh for CPU tick-based metrics
         scheduler.scheduleAtFixedRate(this::refreshCpu, refreshSeconds, refreshSeconds, TimeUnit.SECONDS);
@@ -210,7 +210,7 @@ public class HealthMetrics {
      */
     private void refreshCpu() {
         try {
-            CentralProcessor proc = provider.getProcessor();
+            CentralProcessor proc = collector.getProcessor();
             long[] prev = prevTicks.get();
             long[] curr = proc.getSystemCpuLoadTicks();
             prevTicks.set(curr);
@@ -268,12 +268,12 @@ public class HealthMetrics {
     /**
      * Sums a network statistic (bytes or packets, sent or received) across all network interfaces.
      *
-     * @param p       the bus-health Provider
+     * @param p       Bus Health collector
      * @param sent    true for sent, false for received
      * @param packets true for packet count, false for byte count
      * @return total value across all interfaces
      */
-    private static double networkStat(Provider p, boolean sent, boolean packets) {
+    private static double networkStat(Collector p, boolean sent, boolean packets) {
         List<NetworkIF> nets = p.getHardware().getNetworkIFs();
         long sum = 0;
         for (NetworkIF n : nets) {
