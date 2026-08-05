@@ -43,6 +43,13 @@ public class StatefulException extends UncheckedException {
     private int status;
 
     /**
+     * Original structured object associated with this exception.
+     *
+     * The value is transient because runtime state is not part of the serialized exception contract.
+     */
+    private transient Object raw;
+
+    /**
      * Constructs a new StatefulException with no detail message.
      */
     public StatefulException() {
@@ -173,6 +180,24 @@ public class StatefulException extends UncheckedException {
      */
     public int getStatus() {
         return status;
+    }
+
+    /**
+     * Retrieves the original structured object associated with this exception.
+     *
+     * @return original object, or {@code null} when unavailable
+     */
+    public Object getRaw() {
+        return raw;
+    }
+
+    /**
+     * Associates an original structured object with this exception.
+     *
+     * @param raw original object, or {@code null} to clear it
+     */
+    public void setRaw(final Object raw) {
+        this.raw = raw;
     }
 
 }
