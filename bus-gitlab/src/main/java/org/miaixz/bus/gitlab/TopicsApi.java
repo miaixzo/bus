@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Topic;
 import org.miaixz.bus.gitlab.models.TopicParams;
 
@@ -62,9 +63,9 @@ public class TopicsApi extends AbstractApi {
      * </pre>
      *
      * @return the list of topics viewable by the authenticated user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Topic> getTopics() throws GitLabApiException {
+    public List<Topic> getTopics() throws RelevantException {
         return (getTopics(getDefaultPerPage()).all());
     }
 
@@ -78,9 +79,9 @@ public class TopicsApi extends AbstractApi {
      * @param page    the page to get
      * @param perPage the number of Topic instances per page
      * @return the list of topics
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Topic> getTopics(int page, int perPage) throws GitLabApiException {
+    public List<Topic> getTopics(int page, int perPage) throws RelevantException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "topics");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -95,9 +96,9 @@ public class TopicsApi extends AbstractApi {
      *
      * @param itemsPerPage the number of Topic instances that will be fetched per page
      * @return the pager of topics
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Topic> getTopics(int itemsPerPage) throws GitLabApiException {
+    public Pager<Topic> getTopics(int itemsPerPage) throws RelevantException {
         return (new Pager<Topic>(this, Topic.class, itemsPerPage, null, "topics"));
     }
 
@@ -109,9 +110,9 @@ public class TopicsApi extends AbstractApi {
      * </pre>
      *
      * @return the stream of topics
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Topic> getTopicsStream() throws GitLabApiException {
+    public Stream<Topic> getTopicsStream() throws RelevantException {
         return (getTopics(getDefaultPerPage()).stream());
     }
 
@@ -124,9 +125,9 @@ public class TopicsApi extends AbstractApi {
      *
      * @param id the topic ID
      * @return the topic for the specified topic id
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Topic getTopic(Integer id) throws GitLabApiException {
+    public Topic getTopic(Integer id) throws RelevantException {
         Response response = get(Response.Status.OK, null, "topics", id);
         return (response.readEntity(Topic.class));
     }
@@ -144,7 +145,7 @@ public class TopicsApi extends AbstractApi {
     public Optional<Topic> getOptionalTopic(Integer id) {
         try {
             return (Optional.ofNullable(getTopic(id)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -158,9 +159,9 @@ public class TopicsApi extends AbstractApi {
      *
      * @param params a TopicParams instance holding the parameters for the topic creation
      * @return the created Topic instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Topic createTopic(TopicParams params) throws GitLabApiException {
+    public Topic createTopic(TopicParams params) throws RelevantException {
         Response response = post(Response.Status.CREATED, new GitLabApiForm(params.getForm(true)), "topics");
         return (response.readEntity(Topic.class));
     }
@@ -175,9 +176,9 @@ public class TopicsApi extends AbstractApi {
      * @param id     the topic id
      * @param params a TopicParams instance holding the properties to Update
      * @return the updated Topic instance
-     * @throws GitLabApiException at any exception
+     * @throws RelevantException at any exception
      */
-    public Topic updateTopic(Integer id, TopicParams params) throws GitLabApiException {
+    public Topic updateTopic(Integer id, TopicParams params) throws RelevantException {
         Response response = putWithFormData(Response.Status.OK, params.getForm(false), "topics", id);
         return (response.readEntity(Topic.class));
     }
@@ -192,9 +193,9 @@ public class TopicsApi extends AbstractApi {
      * @param id         the topic in the form of an Integer
      * @param avatarFile the File instance of the avatar file to upload
      * @return the updated Topic instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Topic updateTopicAvatar(final Integer id, File avatarFile) throws GitLabApiException {
+    public Topic updateTopicAvatar(final Integer id, File avatarFile) throws RelevantException {
         Response response = putUpload(Response.Status.OK, "avatar", avatarFile, "topics", id);
         return (response.readEntity(Topic.class));
     }
@@ -208,9 +209,9 @@ public class TopicsApi extends AbstractApi {
      *
      * @param id the topic in the form of an Integer
      * @return the updated Topic instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Topic deleteTopicAvatar(final Integer id) throws GitLabApiException {
+    public Topic deleteTopicAvatar(final Integer id) throws RelevantException {
         Response response = putUpload(Response.Status.OK, "avatar", null, "topics", id);
         return (response.readEntity(Topic.class));
     }
@@ -224,9 +225,9 @@ public class TopicsApi extends AbstractApi {
      * </pre>
      *
      * @param id the topic to deleted in the form of an Integer
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteTopic(Integer id) throws GitLabApiException {
+    public void deleteTopic(Integer id) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "topics", id);
     }
 
@@ -241,9 +242,9 @@ public class TopicsApi extends AbstractApi {
      * @param sourceTopicId ID of source project topic
      * @param targetTopicId ID of target project topic
      * @return the merged Topic instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Topic mergeTopics(Integer sourceTopicId, Integer targetTopicId) throws GitLabApiException {
+    public Topic mergeTopics(Integer sourceTopicId, Integer targetTopicId) throws RelevantException {
         Response response = post(
                 Response.Status.OK,
                 new GitLabApiForm().withParam("source_topic_id", sourceTopicId)

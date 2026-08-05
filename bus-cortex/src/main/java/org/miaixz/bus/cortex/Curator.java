@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Curator contract.
@@ -134,7 +135,7 @@ public interface Curator {
             if (item == null || item.isBlank()) {
                 continue;
             }
-            String[] parts = item.split(":", 2);
+            String[] parts = item.split(Symbol.COLON, 2);
             if (parts.length != 2) {
                 continue;
             }

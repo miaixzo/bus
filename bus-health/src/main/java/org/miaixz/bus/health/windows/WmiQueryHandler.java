@@ -33,9 +33,10 @@ import com.sun.jna.platform.win32.Ole32;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -62,12 +63,12 @@ public class WmiQueryHandler {
     /**
      * The EMPTY_OBJECT_ARRAY constant.
      */
-    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    private static final Object[] EMPTY_OBJECT_ARRAY = Normal.EMPTY_OBJECT_ARRAY;
 
     /**
      * The globalTimeout constant.
      */
-    private static final int globalTimeout = Config.get(Config._UTIL_WMI_TIMEOUT, -1);
+    private static final int globalTimeout = Builder.get(Builder._UTIL_WMI_TIMEOUT, -1);
     // Factory to create this or a subclass
     /**
      * The customClass value.
@@ -76,7 +77,7 @@ public class WmiQueryHandler {
 
     static {
         if (globalTimeout == 0 || globalTimeout < -1) {
-            throw new NotFoundException("The property does not exist " + Config._UTIL_WMI_TIMEOUT);
+            throw new NotFoundException("The property does not exist " + Builder._UTIL_WMI_TIMEOUT);
         }
     }
 

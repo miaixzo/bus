@@ -22,6 +22,7 @@ package org.miaixz.bus.image.galaxy;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
@@ -68,7 +69,7 @@ public class ImageParam {
      */
     public ImageParam(int[] parentSeqTags, int tag, String... values) {
         this.tag = tag;
-        this.values = values == null ? new String[0] : values.clone();
+        this.values = values == null ? Normal.EMPTY_STRING_ARRAY : values.clone();
         this.parentSeqTags = parentSeqTags == null ? null : parentSeqTags.clone();
     }
 

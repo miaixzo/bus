@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.hooks.system.*;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
@@ -92,9 +93,9 @@ public class SystemHookManager implements HookManager {
      * listeners.
      *
      * @param request the HttpServletRequest to read the Event instance from
-     * @throws GitLabApiException if the parsed event is not supported
+     * @throws RelevantException if the parsed event is not supported
      */
-    public void handleEvent(HttpServletRequest request) throws GitLabApiException {
+    public void handleEvent(HttpServletRequest request) throws RelevantException {
         handleRequest(request);
     }
 
@@ -105,9 +106,9 @@ public class SystemHookManager implements HookManager {
      * @param request the HttpServletRequest to read the Event instance from
      * @return the processed SystemHookEvent instance read from the request,null if the request not contain a system
      *         hook event
-     * @throws GitLabApiException if the parsed event is not supported
+     * @throws RelevantException if the parsed event is not supported
      */
-    public SystemHookEvent handleRequest(HttpServletRequest request) throws GitLabApiException {
+    public SystemHookEvent handleRequest(HttpServletRequest request) throws RelevantException {
 
         String eventName = request.getHeader("X-Gitlab-Event");
         Logger.info(
@@ -138,7 +139,7 @@ public class SystemHookManager implements HookManager {
                     eventName,
                     "credentialMismatch",
                     request.getRequestURI());
-            throw new GitLabApiException(message);
+            throw GitLabFailure.exception(message);
         }
 
         Logger.info(
@@ -155,7 +156,7 @@ public class SystemHookManager implements HookManager {
                     "System hook event rejected: eventName={}, reason={}",
                     eventName,
                     "unsupportedEventName");
-            throw new GitLabApiException(message);
+            throw GitLabFailure.exception(message);
         }
 
         // Get the JSON as a JsonNode tree. We do not directly unmarshal the input as special handling must
@@ -187,7 +188,7 @@ public class SystemHookManager implements HookManager {
                     eventName,
                     request.getRequestURI(),
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
 
         // NOTE: This is a hack based on the GitLab documentation and actual content of the "merge_request" event
@@ -208,7 +209,7 @@ public class SystemHookManager implements HookManager {
                         "System hook event rejected: objectKind={}, reason={}",
                         objectKind,
                         "unsupportedObjectKind");
-                throw new GitLabApiException(message);
+                throw GitLabFailure.exception(message);
             }
         }
 
@@ -239,7 +240,7 @@ public class SystemHookManager implements HookManager {
                     "System hook event decoding failed: eventName={}, exception={}",
                     eventName,
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
 
         try {
@@ -271,7 +272,7 @@ public class SystemHookManager implements HookManager {
                     event.getClass().getSimpleName(),
                     systemHookListeners.size(),
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
     }
 
@@ -279,9 +280,9 @@ public class SystemHookManager implements HookManager {
      * Verifies the provided Event and fires it off to the registered listeners.
      *
      * @param event the Event instance to handle
-     * @throws GitLabApiException if the event is not supported
+     * @throws RelevantException if the event is not supported
      */
-    public void handleEvent(SystemHookEvent event) throws GitLabApiException {
+    public void handleEvent(SystemHookEvent event) throws RelevantException {
         if (event != null) {
             Logger.info(
                     true,
@@ -328,9 +329,9 @@ public class SystemHookManager implements HookManager {
      * Fire the event to the registered listeners.
      *
      * @param event the SystemHookEvent instance to fire to the registered event listeners
-     * @throws GitLabApiException if the event is not supported
+     * @throws RelevantException if the event is not supported
      */
-    public void fireEvent(SystemHookEvent event) throws GitLabApiException {
+    public void fireEvent(SystemHookEvent event) throws RelevantException {
 
         if (event instanceof ProjectSystemHookEvent) {
             fireProjectEvent((ProjectSystemHookEvent) event);
@@ -361,7 +362,7 @@ public class SystemHookManager implements HookManager {
                     event.getEventName(),
                     event.getClass().getSimpleName(),
                     "unsupportedEventType");
-            throw new GitLabApiException(message);
+            throw GitLabFailure.exception(message);
         }
     }
 

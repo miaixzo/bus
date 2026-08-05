@@ -48,6 +48,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -158,7 +159,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
      */
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
-        String[] configuredPackages = basePackages == null ? new String[0]
+        String[] configuredPackages = basePackages == null ? Normal.EMPTY_STRING_ARRAY
                 : Arrays.stream(basePackages).filter(StringKit::isNotBlank).map(String::trim).distinct()
                         .toArray(String[]::new);
         if (configuredPackages.length == 0) {

@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Patient-centric DICOM manifest model.
  *
@@ -304,7 +306,7 @@ public class Manifest implements ManifestXml {
      * @throws IOException if the operation cannot be completed.
      */
     public void toXml(Writer writer, String version) throws IOException {
-        writer.append("\n<").append(TAG_DOCUMENT_ROOT).append(" ");
+        writer.append(Symbol.LF).append(Symbol.LT).append(TAG_DOCUMENT_ROOT).append(Symbol.SPACE);
         ManifestXml.addXmlAttribute(VERSION, version, writer);
         ManifestXml.addXmlAttribute(MANIFEST_UID, uid, writer);
         writer.append(">");

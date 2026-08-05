@@ -33,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.*;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
@@ -940,7 +941,7 @@ public class MergeRequestFilter implements Serializable {
      * @return the reference to this MergeRequestFilter instance
      */
     public MergeRequestFilter withoutLabels(String... labels) {
-        return withNot(MergeRequestField.LABELS, String.join(",", labels));
+        return withNot(MergeRequestField.LABELS, String.join(Symbol.COMMA, labels));
     }
 
     /**
@@ -954,7 +955,7 @@ public class MergeRequestFilter implements Serializable {
         GitLabForm params = new GitLabForm().withParam("iids", iids).withParam("state", state)
                 .withParam("order_by", orderBy).withParam("sort", sort).withParam("milestone", milestone)
                 .withParam("view", (simpleView != null && simpleView ? "simple" : null))
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
+                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("created_after", createdAfter).withParam("created_before", createdBefore)
                 .withParam("updated_after", updatedAfter).withParam("updated_before", updatedBefore)
                 .withParam("scope", scope).withParam("assignee_id", assigneeId).withParam("reviewer_id", reviewerId)

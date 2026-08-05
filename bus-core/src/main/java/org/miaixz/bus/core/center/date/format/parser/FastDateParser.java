@@ -998,9 +998,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
             if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_MINUS) {
-                final TimeZone tz = ZoneKit.getTimeZone("GMT" + value);
+                final TimeZone tz = ZoneKit.getTimeZone(ZoneId.GMT.name() + value);
                 cal.setTimeZone(tz);
-            } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {
+            } else if (value.regionMatches(true, 0, ZoneId.GMT.name(), 0, ZoneId.GMT.name().length())) {
                 final TimeZone tz = ZoneKit.getTimeZone(value.toUpperCase());
                 cal.setTimeZone(tz);
             } else {
@@ -1102,9 +1102,9 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
             if (Objects.equals(value, "Z")) {
-                cal.setTimeZone(ZoneKit.getTimeZone("UTC"));
+                cal.setTimeZone(ZoneKit.getTimeZone(ZoneId.UTC.name()));
             } else {
-                cal.setTimeZone(ZoneKit.getTimeZone("GMT" + value));
+                cal.setTimeZone(ZoneKit.getTimeZone(ZoneId.GMT.name() + value));
             }
         }
 

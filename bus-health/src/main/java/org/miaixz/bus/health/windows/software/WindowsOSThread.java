@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
@@ -210,7 +212,7 @@ public class WindowsOSThread extends AbstractOSThread {
     @Override
     public boolean updateAttributes() {
         Set<Integer> pids = Collections.singleton(getOwningProcessId());
-        String procName = this.name == null ? "" : this.name.split("/")[0];
+        String procName = this.name == null ? Normal.EMPTY : this.name.split(Symbol.SLASH)[0];
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
                 .buildThreadMapFromPerfCounters(pids, procName, getThreadId());
         return updateAttributes(procName, threads == null ? null : threads.get(getThreadId()));
@@ -227,7 +229,7 @@ public class WindowsOSThread extends AbstractOSThread {
         if (pcb == null) {
             this.state = OSProcess.State.INVALID;
             return false;
-        } else if (pcb.getName().contains("/") || procName == null || procName.isEmpty()) {
+        } else if (pcb.getName().contains(Symbol.SLASH) || procName == null || procName.isEmpty()) {
             this.name = pcb.getName();
         } else {
             this.name = procName + "/" + pcb.getName();

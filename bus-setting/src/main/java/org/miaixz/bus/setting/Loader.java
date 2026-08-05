@@ -213,7 +213,7 @@ public class Loader {
                 }
 
                 final String[] keyValue = CharsBacker.split(line, String.valueOf(this.assignFlag), 2, true, false)
-                        .toArray(new String[0]);
+                        .toArray(Normal.EMPTY_STRING_ARRAY);
                 if (keyValue.length < 2) {
                     ignoredLineCount++;
                     Logger.debug(

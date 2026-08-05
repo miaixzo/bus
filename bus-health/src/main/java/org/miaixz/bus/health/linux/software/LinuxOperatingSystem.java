@@ -139,7 +139,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         boolean hasGettid = false;
         boolean hasSyscallGettid = false;
         try {
-            if (Config.get(Config._LINUX_ALLOWUDEV, true)) {
+            if (Builder.get(Builder._LINUX_ALLOWUDEV, true)) {
                 try {
                     Udev lib = Udev.INSTANCE;
                     hasUdev = true;
@@ -566,7 +566,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             // /etc/issue will end up here
             return "Unknown";
         } else {
-            Properties filenameProps = Config.readProperties(Config._LINUX_FILENAME_PROPERTIES);
+            Properties filenameProps = Builder.readProperties(Builder._LINUX_FILENAME_PROPERTIES);
             String family = filenameProps.getProperty(name.toLowerCase(Locale.ROOT));
             return family != null ? family : name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
         }

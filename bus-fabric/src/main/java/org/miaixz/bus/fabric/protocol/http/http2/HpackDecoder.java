@@ -815,14 +815,18 @@ final class HpackDecoder {
      */
     private static int staticExactIndex(final String name, final String value) {
         return switch (name) {
-            case Http.Header.PSEUDO_METHOD -> switch (value) {
-                case "GET" -> Normal._2;
-                case "POST" -> Normal._3;
-                default -> Normal._0;
-            };
+            case Http.Header.PSEUDO_METHOD -> {
+                if (Http.Method.GET.value().equals(value)) {
+                    yield Normal._2;
+                }
+                if (Http.Method.POST.value().equals(value)) {
+                    yield Normal._3;
+                }
+                yield Normal._0;
+            }
             case Http.Header.PSEUDO_PATH -> switch (value) {
                 case Symbol.SLASH -> Normal._4;
-                case "/index.html" -> Normal._5;
+                case Symbol.SLASH + "index.html" -> Normal._5;
                 default -> Normal._0;
             };
             case Http.Header.PSEUDO_SCHEME -> {

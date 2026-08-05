@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -136,7 +137,7 @@ public abstract class FabricX {
         return execute(
                 Http.Method.POST.value(),
                 url,
-                Payload.of(data == null ? new byte[0] : data),
+                Payload.of(data == null ? Normal.EMPTY_BYTE_ARRAY : data),
                 media(contentType),
                 headers);
     }
@@ -154,7 +155,7 @@ public abstract class FabricX {
         return execute(
                 Http.Method.PUT.value(),
                 url,
-                Payload.of(data == null ? new byte[0] : data),
+                Payload.of(data == null ? Normal.EMPTY_BYTE_ARRAY : data),
                 media(contentType),
                 headers);
     }

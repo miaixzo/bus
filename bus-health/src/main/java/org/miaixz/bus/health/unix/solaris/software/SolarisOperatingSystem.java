@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -81,7 +81,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     /**
      * The ALLOW_KSTAT2 constant.
      */
-    private static final boolean ALLOW_KSTAT2 = Config.get(Config._UNIX_SOLARIS_ALLOWKSTAT2, true);
+    private static final boolean ALLOW_KSTAT2 = Builder.get(Builder._UNIX_SOLARIS_ALLOWKSTAT2, true);
 
     /**
      * The BOOTTIME constant.

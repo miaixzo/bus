@@ -40,8 +40,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.galaxy.media.MultipartParser;
 import org.miaixz.bus.logger.Logger;
@@ -167,7 +169,7 @@ public class WadoRS {
         final String uid = uidFrom(url);
         if (!header)
             url = appendAcceptToURL(url);
-        if (url.startsWith("https"))
+        if (url.startsWith(Protocol.HTTPS.name))
             wadoHttps(new URL(url), uid);
         else
             wado(new URL(url), uid);
@@ -184,7 +186,7 @@ public class WadoRS {
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("GET");
+        connection.setRequestMethod(Http.Method.GET.value());
         requestProperties.forEach(connection::setRequestProperty);
         logOutgoing(url, connection.getRequestProperties());
         processWadoResp(connection, uid);
@@ -202,7 +204,7 @@ public class WadoRS {
         final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("GET");
+        connection.setRequestMethod(Http.Method.GET.value());
         requestProperties.forEach(connection::setRequestProperty);
         if (disableTM)
             connection.setSSLSocketFactory(sslContext().getSocketFactory());
@@ -322,7 +324,10 @@ public class WadoRS {
         Logger.info(false, "Image", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
-                Logger.info(false, "Image", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
+                Logger.info(
+                        false,
+                        "Image",
+                        "< " + header.getKey() + " : " + String.join(Symbol.SEMICOLON, header.getValue()));
     }
 
     /**
@@ -386,8 +391,8 @@ public class WadoRS {
      * @return The derived file extension.
      */
     private String partExtension(String partContentType) {
-        String contentType = partContentType.split(";")[0].replaceAll("[-+/]", "_");
-        return contentType.substring(contentType.lastIndexOf("_") + 1);
+        String contentType = partContentType.split(Symbol.SEMICOLON)[0].replaceAll("[-+/]", Symbol.UNDERLINE);
+        return contentType.substring(contentType.lastIndexOf(Symbol.UNDERLINE) + 1);
     }
 
     /**
@@ -397,10 +402,11 @@ public class WadoRS {
      * @return The boundary string, or {@code null} if not found.
      */
     private String boundary(String contentType) {
-        String[] respContentTypeParams = contentType.split(";");
+        String[] respContentTypeParams = contentType.split(Symbol.SEMICOLON);
         for (String respContentTypeParam : respContentTypeParams)
-            if (respContentTypeParam.trim().startsWith("boundary="))
-                return respContentTypeParam.substring(respContentTypeParam.indexOf("=") + 1).replaceAll("\"", "");
+            if (respContentTypeParam.trim().startsWith("boundary" + Symbol.EQUAL))
+                return respContentTypeParam.substring(respContentTypeParam.indexOf(Symbol.EQUAL) + 1)
+                        .replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY);
 
         return null;
     }

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
 import org.miaixz.bus.mapper.behavior.SchemaBehavior;
@@ -77,15 +78,82 @@ public class SchemaDiffer {
             diffs.add(
                     SchemaDiff
                             .of(Behavior.CREATE_TABLE, Risk.SAFE, table, "Table does not exist: " + table.tableName()));
+            diffTableComment(table, snapshot, diffs, true);
+            diffCreateColumnComments(table, diffs);
+            diffCreatePrimaryKey(table, diffs);
             diffCreateIndexes(table, diffs);
             diffCreateForeignKeys(table, diffs);
             return diffs;
         }
+        diffTableComment(table, snapshot, diffs, false);
         diffColumns(table, snapshot, diffs);
         diffPrimaryKey(table, snapshot, diffs);
         diffIndexes(table, snapshot, diffs);
         diffForeignKeys(table, snapshot, diffs);
         return diffs;
+    }
+
+    /**
+     * Adds table comment differences when a target comment is declared.
+     *
+     * @param table    the entity table metadata
+     * @param snapshot the database table snapshot
+     * @param diffs    the difference collector
+     * @param created  whether the table is being created in the same schema plan
+     */
+    private void diffTableComment(TableMeta table, TableSnapshot snapshot, List<SchemaDiff> diffs, boolean created) {
+        if (!hasComment(table.comment())) {
+            return;
+        }
+        if (snapshot == null || !sameComment(table.comment(), snapshot.comment())) {
+            diffs.add(
+                    SchemaDiff.of(
+                            Behavior.MODIFY_TABLE_COMMENT,
+                            Risk.SAFE,
+                            table,
+                            "Table comment differs: " + table.tableName()).tableCreated(created));
+        }
+    }
+
+    /**
+     * Adds column comment differences for a table that will be created.
+     *
+     * @param table the entity table metadata
+     * @param diffs the difference collector
+     */
+    private void diffCreateColumnComments(TableMeta table, List<SchemaDiff> diffs) {
+        for (ColumnMeta column : table.columns()) {
+            if (hasComment(column.comment())) {
+                diffs.add(
+                        SchemaDiff
+                                .of(
+                                        Behavior.MODIFY_COLUMN_COMMENT,
+                                        Risk.SAFE,
+                                        table,
+                                        "Column comment differs: " + column.column())
+                                .columnMeta(column).tableCreated(true).columnCreated(true));
+            }
+        }
+    }
+
+    /**
+     * Adds primary key creation differences for a missing table.
+     *
+     * @param table the entity table metadata
+     * @param diffs the difference collector
+     */
+    private void diffCreatePrimaryKey(TableMeta table, List<SchemaDiff> diffs) {
+        PrimaryKeyMeta primaryKey = table.primaryKey();
+        if (primaryKey != null) {
+            diffs.add(
+                    SchemaDiff
+                            .of(
+                                    Behavior.CREATE_PRIMARY_KEY,
+                                    Risk.SAFE,
+                                    table,
+                                    "Primary key does not exist: " + primaryKey.name())
+                            .primaryKey(primaryKey).tableCreated(true));
+        }
     }
 
     /**
@@ -101,7 +169,7 @@ public class SchemaDiffer {
                             index.unique() ? Behavior.CREATE_UNIQUE : Behavior.CREATE_INDEX,
                             Risk.SAFE,
                             table,
-                            "Index does not exist: " + index.name()).index(index));
+                            "Index does not exist: " + index.name()).index(index).tableCreated(true));
         }
     }
 
@@ -114,11 +182,13 @@ public class SchemaDiffer {
     private void diffCreateForeignKeys(TableMeta table, List<SchemaDiff> diffs) {
         for (ForeignKeyMeta foreignKey : table.foreignKeys()) {
             diffs.add(
-                    SchemaDiff.of(
-                            Behavior.CREATE_FOREIGN_KEY,
-                            Risk.SAFE,
-                            table,
-                            "Foreign key does not exist: " + foreignKey.name()).foreignKey(foreignKey));
+                    SchemaDiff
+                            .of(
+                                    Behavior.CREATE_FOREIGN_KEY,
+                                    Risk.SAFE,
+                                    table,
+                                    "Foreign key does not exist: " + foreignKey.name())
+                            .foreignKey(foreignKey).tableCreated(true));
         }
     }
 
@@ -146,12 +216,32 @@ public class SchemaDiffer {
                                     table,
                                     "Column rename configured: " + renameSource.name() + " -> " + column.column())
                                     .columnMeta(column).actualColumn(renameSource));
+                    if (hasComment(column.comment()) && !sameComment(column.comment(), renameSource.comment())) {
+                        diffs.add(
+                                SchemaDiff
+                                        .of(
+                                                Behavior.MODIFY_COLUMN_COMMENT,
+                                                Risk.SAFE,
+                                                table,
+                                                "Column comment differs: " + column.column())
+                                        .columnMeta(column).actualColumn(renameSource));
+                    }
                     continue;
                 }
                 diffs.add(
                         SchemaDiff
                                 .of(Behavior.ADD_COLUMN, Risk.SAFE, table, "Column does not exist: " + column.column())
                                 .columnMeta(column));
+                if (hasComment(column.comment())) {
+                    diffs.add(
+                            SchemaDiff
+                                    .of(
+                                            Behavior.MODIFY_COLUMN_COMMENT,
+                                            Risk.SAFE,
+                                            table,
+                                            "Column comment differs: " + column.column())
+                                    .columnMeta(column).columnCreated(true));
+                }
                 continue;
             }
             SqlTypeDescriptor expectedType = operations.resolveType(column);
@@ -195,6 +285,16 @@ public class SchemaDiffer {
                                         Risk.CAUTION,
                                         table,
                                         "Column nullable differs: " + column.column())
+                                .columnMeta(column).actualColumn(actual));
+            }
+            if (hasComment(column.comment()) && !sameComment(column.comment(), actual.comment())) {
+                diffs.add(
+                        SchemaDiff
+                                .of(
+                                        Behavior.MODIFY_COLUMN_COMMENT,
+                                        Risk.SAFE,
+                                        table,
+                                        "Column comment differs: " + column.column())
                                 .columnMeta(column).actualColumn(actual));
             }
         }
@@ -538,6 +638,37 @@ public class SchemaDiffer {
      */
     private static boolean equals(Object left, Object right) {
         return left == null ? right == null : left.equals(right);
+    }
+
+    /**
+     * Tests whether an expected comment should be enforced.
+     *
+     * @param comment the expected comment
+     * @return {@code true} when the comment is non-blank
+     */
+    private static boolean hasComment(String comment) {
+        return comment != null && !comment.isBlank();
+    }
+
+    /**
+     * Tests whether expected and actual comments match after trimming metadata padding.
+     *
+     * @param expected the expected comment
+     * @param actual   the actual database comment
+     * @return {@code true} when comments match
+     */
+    private static boolean sameComment(String expected, String actual) {
+        return normalizeComment(expected).equals(normalizeComment(actual));
+    }
+
+    /**
+     * Normalizes a comment for comparison.
+     *
+     * @param comment the comment value
+     * @return the normalized comment
+     */
+    private static String normalizeComment(String comment) {
+        return comment == null ? Normal.EMPTY : comment.trim();
     }
 
 }

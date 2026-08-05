@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
@@ -296,10 +297,10 @@ public class LinuxCgroupInfo implements CgroupInfo {
      */
     private String getV2CgroupBase() {
         String cgroupPath = cgroupPathSupplier.get();
-        if (cgroupPath.isEmpty() || cgroupPath.equals("/")) {
+        if (cgroupPath.isEmpty() || cgroupPath.equals(Symbol.SLASH)) {
             return SysPath.CGROUP;
         }
-        if (cgroupPath.startsWith("/")) {
+        if (cgroupPath.startsWith(Symbol.SLASH)) {
             cgroupPath = cgroupPath.substring(1);
         }
         return SysPath.CGROUP + cgroupPath + "/";
@@ -323,19 +324,19 @@ public class LinuxCgroupInfo implements CgroupInfo {
      */
     private String resolveV1ControllerPath(String controller) {
         for (String line : selfCgroupSupplier.get()) {
-            String[] parts = line.split(":", 3);
+            String[] parts = line.split(Symbol.COLON, 3);
             if (parts.length >= 3) {
                 String controllers = parts[1];
                 if (controllers.isEmpty()) {
                     continue;
                 }
                 String path = parts[2];
-                for (String c : controllers.split(",")) {
+                for (String c : controllers.split(Symbol.COMMA)) {
                     if (c.equals(controller)) {
-                        if (path.startsWith("/")) {
+                        if (path.startsWith(Symbol.SLASH)) {
                             path = path.substring(1);
                         }
-                        return SysPath.CGROUP + controllers + "/" + path + "/";
+                        return SysPath.CGROUP + controllers + Symbol.SLASH + path + Symbol.SLASH;
                     }
                 }
             }

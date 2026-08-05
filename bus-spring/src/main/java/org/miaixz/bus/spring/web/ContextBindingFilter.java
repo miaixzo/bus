@@ -147,11 +147,8 @@ public class ContextBindingFilter implements Filter {
         try (ContextScope ignored = this.contextBuilder.install(ContextState.empty())) {
             this.contextBuilder.setRequestId();
             Map<String, String> headers = this.requestContext.getHeaders(request);
-            Map<String, String> parameters = this.requestContext.getParameters(request);
-            Map<String, Object> jsonBody = this.requestContext.getJsonBody(request);
-            Map<String, String> cookies = this.requestContext.getCookies(request);
-            Http.Auth.Credential tokenCredential = Http.Auth.tokenCredential(headers, parameters, jsonBody, cookies);
-            Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers, parameters, jsonBody, cookies);
+            Http.Auth.Credential tokenCredential = Http.Auth.bearerCredential(headers);
+            Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers);
             this.contextBuilder.setTokenCredential(tokenCredential);
             this.contextBuilder.setApiKeyCredential(apiKeyCredential);
             this.contextBuilder.getAuthorize();

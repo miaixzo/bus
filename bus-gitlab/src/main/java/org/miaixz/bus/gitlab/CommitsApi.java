@@ -30,6 +30,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.gitlab.models.CommitAction.Action;
 import org.miaixz.bus.gitlab.models.CommitRef.RefType;
@@ -63,9 +64,9 @@ public class CommitsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public List<Commit> getCommits(Object projectIdOrPath) throws GitLabApiException {
+    public List<Commit> getCommits(Object projectIdOrPath) throws RelevantException {
         return (getCommits(projectIdOrPath, null, null, null, null, true, null, null, getDefaultPerPage()).all());
     }
 
@@ -79,9 +80,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Pager<Commit> getCommits(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Commit> getCommits(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
         return (getCommits(projectIdOrPath, null, null, null, null, true, null, null, itemsPerPage));
     }
 
@@ -94,9 +95,9 @@ public class CommitsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Stream<Commit> getCommitStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<Commit> getCommitStream(Object projectIdOrPath) throws RelevantException {
         return (getCommits(projectIdOrPath, null, null, null, null, true, null, null, getDefaultPerPage()).stream());
     }
 
@@ -113,10 +114,10 @@ public class CommitsApi extends AbstractApi {
      * @param until           only commits before or on this date will be returned
      * @param path            the path to file of a project
      * @return a list containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public List<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until, String path)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, path, null, null, null, getDefaultPerPage()).all());
     }
 
@@ -131,9 +132,9 @@ public class CommitsApi extends AbstractApi {
      * @param ref             the name of a repository branch or tag or if not given the default branch
      * @param path            the path to file of a project
      * @return a list containing the commits for the specified project ID and file
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public List<Commit> getCommits(Object projectIdOrPath, String ref, String path) throws GitLabApiException {
+    public List<Commit> getCommits(Object projectIdOrPath, String ref, String path) throws RelevantException {
         return (getCommits(projectIdOrPath, ref, null, null, path, null, null, null, getDefaultPerPage()).all());
     }
 
@@ -149,10 +150,10 @@ public class CommitsApi extends AbstractApi {
      * @param since           only commits after or on this date will be returned
      * @param until           only commits before or on this date will be returned
      * @return a list containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public List<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, null, null, null, null, getDefaultPerPage()).all());
     }
 
@@ -168,10 +169,10 @@ public class CommitsApi extends AbstractApi {
      * @param since           only commits after or on this date will be returned
      * @param until           only commits before or on this date will be returned
      * @return a Stream containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Stream<Commit> getCommitsStream(Object projectIdOrPath, String ref, Date since, Date until)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, null, null, null, null, getDefaultPerPage()).stream());
     }
 
@@ -188,10 +189,10 @@ public class CommitsApi extends AbstractApi {
      * @param until           only commits before or on this date will be returned
      * @param path            the path to file of a project
      * @return a Stream containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Stream<Commit> getCommitsStream(Object projectIdOrPath, String ref, Date since, Date until, String path)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, path, null, null, null, getDefaultPerPage()).stream());
     }
 
@@ -208,10 +209,10 @@ public class CommitsApi extends AbstractApi {
      * @param until           only commits before or on this date will be returned
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Pager<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return getCommits(projectIdOrPath, ref, since, until, null, null, null, null, itemsPerPage);
     }
 
@@ -229,7 +230,7 @@ public class CommitsApi extends AbstractApi {
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @param path            the path to file of a project
      * @return a Pager containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Pager<Commit> getCommits(
             Object projectIdOrPath,
@@ -237,7 +238,7 @@ public class CommitsApi extends AbstractApi {
             Date since,
             Date until,
             String path,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, path, null, null, null, itemsPerPage));
     }
 
@@ -257,7 +258,7 @@ public class CommitsApi extends AbstractApi {
      * @param withStats       stats about each commit will be added to the response
      * @param firstParent     follow only the first parent commit upon seeing a merge commit
      * @return a Pager containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public List<Commit> getCommits(
             Object projectIdOrPath,
@@ -267,7 +268,7 @@ public class CommitsApi extends AbstractApi {
             String path,
             Boolean all,
             Boolean withStats,
-            Boolean firstParent) throws GitLabApiException {
+            Boolean firstParent) throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, path, all, withStats, firstParent, getDefaultPerPage())
                 .all());
     }
@@ -289,7 +290,7 @@ public class CommitsApi extends AbstractApi {
      * @param firstParent     follow only the first parent commit upon seeing a merge commit
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Pager<Commit> getCommits(
             Object projectIdOrPath,
@@ -300,7 +301,7 @@ public class CommitsApi extends AbstractApi {
             Boolean all,
             Boolean withStats,
             Boolean firstParent,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         Form formData = new GitLabApiForm().withParam("ref_name", ref)
                 .withParam("since", ISO8601.toString(since, false)).withParam("until", ISO8601.toString(until, false))
                 .withParam("path", (path == null ? null : urlEncode(path))).withParam("all", all)
@@ -325,7 +326,7 @@ public class CommitsApi extends AbstractApi {
      * @param withStats       stats about each commit will be added to the response
      * @param firstParent     follow only the first parent commit upon seeing a merge commit
      * @return a Stream containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Stream<Commit> getCommitsStream(
             Object projectIdOrPath,
@@ -335,7 +336,7 @@ public class CommitsApi extends AbstractApi {
             String path,
             Boolean all,
             Boolean withStats,
-            Boolean firstParent) throws GitLabApiException {
+            Boolean firstParent) throws RelevantException {
         return (getCommits(projectIdOrPath, ref, since, until, path, all, withStats, firstParent, getDefaultPerPage())
                 .stream());
     }
@@ -350,9 +351,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return the Commit instance for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Commit getCommit(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public Commit getCommit(Object projectIdOrPath, String sha) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getDefaultPerPageParam(),
@@ -378,7 +379,7 @@ public class CommitsApi extends AbstractApi {
     public Optional<Commit> getOptionalCommit(Object projectIdOrPath, String sha) {
         try {
             return (Optional.ofNullable(getCommit(projectIdOrPath, sha)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -393,10 +394,10 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return a List of all references (from branches or tags) a commit is pushed to
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since Gitlab 10.6
      */
-    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha) throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, getDefaultPerPage()).all());
     }
 
@@ -411,11 +412,11 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager of references (from branches or tags) a commit is pushed to
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since Gitlab 10.6
      */
     public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, itemsPerPage));
     }
 
@@ -429,10 +430,10 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return a Stream of all references (from branches or tags) a commit is pushed to
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since Gitlab 10.6
      */
-    public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha) throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, getDefaultPerPage()).stream());
     }
 
@@ -447,11 +448,10 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @return a List of all references (from branches or tags) a commit is pushed to
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since Gitlab 10.6
      */
-    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, RefType refType)
-            throws GitLabApiException {
+    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, RefType refType) throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).all());
     }
 
@@ -467,14 +467,14 @@ public class CommitsApi extends AbstractApi {
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager of references (from branches or tags) a commit is pushed to
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since Gitlab 10.6
      */
     public Pager<CommitRef> getCommitRefs(
             Object projectIdOrPath,
             String sha,
             CommitRef.RefType refType,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         Form form = new GitLabApiForm().withParam("type", refType);
         return (new Pager<CommitRef>(this, CommitRef.class, itemsPerPage, form.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "refs"));
@@ -491,11 +491,11 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @return a Stream of all references (from branches or tags) a commit is pushed to
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since Gitlab 10.6
      */
     public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha, RefType refType)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).stream());
     }
 
@@ -510,10 +510,10 @@ public class CommitsApi extends AbstractApi {
      * @param sha             the commit SHA
      * @param filter          the commit statuses file, contains ref, stage, name, all
      * @return a List containing the commit statuses for the specified project and sha that meet the provided filter
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public List<CommitStatus> getCommitStatuses(Object projectIdOrPath, String sha, CommitStatusFilter filter)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommitStatuses(projectIdOrPath, sha, filter, getDefaultPerPage()).all());
     }
 
@@ -530,14 +530,14 @@ public class CommitsApi extends AbstractApi {
      * @param page            the page to get
      * @param perPage         the number of commits statuses per page
      * @return a List containing the commit statuses for the specified project and sha that meet the provided filter
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public List<CommitStatus> getCommitStatuses(
             Object projectIdOrPath,
             String sha,
             CommitStatusFilter filter,
             int page,
-            int perPage) throws GitLabApiException {
+            int perPage) throws RelevantException {
 
         if (projectIdOrPath == null) {
             throw new RuntimeException("projectIdOrPath cannot be null");
@@ -575,13 +575,13 @@ public class CommitsApi extends AbstractApi {
      * @param filter          the commit statuses file, contains ref, stage, name, all
      * @param itemsPerPage    the number of CommitStatus instances that will be fetched per page
      * @return a Pager containing the commit statuses for the specified project and sha that meet the provided filter
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Pager<CommitStatus> getCommitStatuses(
             Object projectIdOrPath,
             String sha,
             CommitStatusFilter filter,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
 
         if (projectIdOrPath == null) {
             throw new RuntimeException("projectIdOrPath cannot be null");
@@ -609,10 +609,10 @@ public class CommitsApi extends AbstractApi {
      * @param sha             the commit SHA
      * @param filter          the commit statuses file, contains ref, stage, name, all
      * @return a Stream containing the commit statuses for the specified project and sha that meet the provided filter
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Stream<CommitStatus> getCommitStatusesStream(Object projectIdOrPath, String sha, CommitStatusFilter filter)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getCommitStatuses(projectIdOrPath, sha, filter, getDefaultPerPage()).stream());
     }
 
@@ -643,10 +643,10 @@ public class CommitsApi extends AbstractApi {
      * @param status          the CommitSatus instance holding the optional parameters: ref, name, target_url,
      *                        description, and coverage
      * @return a CommitStatus instance with the updated info
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public CommitStatus addCommitStatus(Object projectIdOrPath, String sha, CommitBuildState state, CommitStatus status)
-            throws GitLabApiException {
+            throws RelevantException {
         if (projectIdOrPath == null) {
             throw new RuntimeException("projectIdOrPath cannot be null");
         }
@@ -682,9 +682,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return a List of Diff instances for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public List<Diff> getDiff(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public List<Diff> getDiff(Object projectIdOrPath, String sha) throws RelevantException {
         return (getDiff(projectIdOrPath, sha, getDefaultPerPage()).all());
     }
 
@@ -699,9 +699,9 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @param itemsPerPage    the number of Diff instances that will be fetched per page
      * @return a Pager of Diff instances for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Pager<Diff> getDiff(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
+    public Pager<Diff> getDiff(Object projectIdOrPath, String sha, int itemsPerPage) throws RelevantException {
 
         if (projectIdOrPath == null) {
             throw new RuntimeException("projectIdOrPath cannot be null");
@@ -725,9 +725,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return a Stream of Diff instances for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Stream<Diff> getDiffStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public Stream<Diff> getDiffStream(Object projectIdOrPath, String sha) throws RelevantException {
         return (getDiff(projectIdOrPath, sha, getDefaultPerPage()).stream());
     }
 
@@ -741,9 +741,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return a List of Comment instances for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public List<Comment> getComments(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public List<Comment> getComments(Object projectIdOrPath, String sha) throws RelevantException {
         return (getComments(projectIdOrPath, sha, getDefaultPerPage()).all());
     }
 
@@ -758,9 +758,9 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @param itemsPerPage    the number of Comment instances that will be fetched per page
      * @return a List of Comment instances for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Pager<Comment> getComments(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
+    public Pager<Comment> getComments(Object projectIdOrPath, String sha, int itemsPerPage) throws RelevantException {
         return new Pager<Comment>(this, Comment.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "comments");
     }
@@ -775,9 +775,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return a Stream of Comment instances for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Stream<Comment> getCommentsStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public Stream<Comment> getCommentsStream(Object projectIdOrPath, String sha) throws RelevantException {
         return (getComments(projectIdOrPath, sha, getDefaultPerPage()).stream());
     }
 
@@ -796,7 +796,7 @@ public class CommitsApi extends AbstractApi {
      * @param line            the line number where the comment should be placed, optional
      * @param lineType        the line type, optional
      * @return a Comment instance for the posted comment
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Comment addComment(
             Object projectIdOrPath,
@@ -804,7 +804,7 @@ public class CommitsApi extends AbstractApi {
             String note,
             String path,
             Integer line,
-            LineType lineType) throws GitLabApiException {
+            LineType lineType) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("note", note, true).withParam("path", path)
                 .withParam("line", line).withParam("line_type", lineType);
         Response response = post(
@@ -830,9 +830,9 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @param note            the text of the comment, required
      * @return a Comment instance for the posted comment
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Comment addComment(Object projectIdOrPath, String sha, String note) throws GitLabApiException {
+    public Comment addComment(Object projectIdOrPath, String sha, String note) throws RelevantException {
         return (addComment(projectIdOrPath, sha, note, null, null, null));
     }
 
@@ -851,7 +851,7 @@ public class CommitsApi extends AbstractApi {
      * @param authorName      the commit author's name
      * @param action          the CommitAction to commit
      * @return the created Commit instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     public Commit createCommit(
             Object projectIdOrPath,
@@ -860,11 +860,11 @@ public class CommitsApi extends AbstractApi {
             String startBranch,
             String authorEmail,
             String authorName,
-            CommitAction action) throws GitLabApiException {
+            CommitAction action) throws RelevantException {
 
         // Validate the action
         if (action == null) {
-            throw new GitLabApiException("action cannot be null or empty.");
+            throw GitLabFailure.exception("action cannot be null or empty.");
         }
 
         return (createCommit(
@@ -892,7 +892,7 @@ public class CommitsApi extends AbstractApi {
      * @param authorName      the commit author's name
      * @param actions         the array of CommitAction to commit as a batch
      * @return the created Commit instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     public Commit createCommit(
             Object projectIdOrPath,
@@ -901,7 +901,7 @@ public class CommitsApi extends AbstractApi {
             String startBranch,
             String authorEmail,
             String authorName,
-            List<CommitAction> actions) throws GitLabApiException {
+            List<CommitAction> actions) throws RelevantException {
 
         CommitPayload payload = new CommitPayload().withBranch(branch).withStartBranch(startBranch)
                 .withCommitMessage(commitMessage).withAuthorEmail(authorEmail).withAuthorName(authorName)
@@ -919,14 +919,14 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param payload         a CommitPayload instance holding the parameters for the commit
      * @return the created Commit instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    public Commit createCommit(Object projectIdOrPath, CommitPayload payload) throws GitLabApiException {
+    public Commit createCommit(Object projectIdOrPath, CommitPayload payload) throws RelevantException {
 
         // Validate the actions
         List<CommitAction> actions = payload.getActions();
         if (actions == null || actions.isEmpty()) {
-            throw new GitLabApiException("actions cannot be null or empty.");
+            throw GitLabFailure.exception("actions cannot be null or empty.");
         }
 
         for (CommitAction action : actions) {
@@ -936,7 +936,7 @@ public class CommitsApi extends AbstractApi {
             if (actionType == Action.CREATE || actionType == Action.UPDATE) {
                 String content = action.getContent();
                 if (content == null) {
-                    throw new GitLabApiException("Content cannot be null for create or update actions.");
+                    throw GitLabFailure.exception("Content cannot be null for create or update actions.");
                 }
             }
         }
@@ -966,10 +966,10 @@ public class CommitsApi extends AbstractApi {
      * @param sha             the commit SHA to revert
      * @param branch          the target branch to revert the commit on
      * @return a Commit instance holding the reverted commit
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since GitLab 11.5
      */
-    public Commit revertCommit(Object projectIdOrPath, String sha, String branch) throws GitLabApiException {
+    public Commit revertCommit(Object projectIdOrPath, String sha, String branch) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("branch", branch, true);
         Response response = post(
                 Response.Status.CREATED,
@@ -994,10 +994,10 @@ public class CommitsApi extends AbstractApi {
      * @param sha             the commit SHA to cherry pick
      * @param branch          the target branch to cherry pick the commit on
      * @return a Commit instance holding the cherry picked commit
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      * @since GitLab 8.15
      */
-    public Commit cherryPickCommit(Object projectIdOrPath, String sha, String branch) throws GitLabApiException {
+    public Commit cherryPickCommit(Object projectIdOrPath, String sha, String branch) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("branch", branch, true);
         Response response = post(
                 Response.Status.CREATED,
@@ -1021,9 +1021,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             the commit SHA to get merge requests for
      * @return a list containing the MergeRequest instances for the specified project/SHA
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public List<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public List<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha) throws RelevantException {
         return (getMergeRequests(projectIdOrPath, sha, getDefaultPerPage()).all());
     }
 
@@ -1038,10 +1038,10 @@ public class CommitsApi extends AbstractApi {
      * @param sha             the commit SHA to get merge requests for
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager containing the MergeRequest instances for the specified project/SHA
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
     public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "merge_requests"));
     }
@@ -1056,9 +1056,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             the commit SHA to get merge requests for
      * @return a Stream containing the MergeRequest instances for the specified project/SHA
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public Stream<MergeRequest> getMergeRequestsStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public Stream<MergeRequest> getMergeRequestsStream(Object projectIdOrPath, String sha) throws RelevantException {
         return (getMergeRequests(projectIdOrPath, sha, getDefaultPerPage()).stream());
     }
 
@@ -1072,9 +1072,9 @@ public class CommitsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @return the GpgSignature instance for the specified project ID/sha pair
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @throws RelevantException RelevantException if any exception occurs during execution
      */
-    public GpgSignature getGpgSignature(Object projectIdOrPath, String sha) throws GitLabApiException {
+    public GpgSignature getGpgSignature(Object projectIdOrPath, String sha) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 getDefaultPerPageParam(),
@@ -1101,7 +1101,7 @@ public class CommitsApi extends AbstractApi {
     public Optional<GpgSignature> getOptionalGpgSignature(Object projectIdOrPath, String sha) {
         try {
             return (Optional.ofNullable(getGpgSignature(projectIdOrPath, sha)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }

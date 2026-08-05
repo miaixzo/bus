@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
@@ -51,7 +52,7 @@ public final class Who {
      * The BOOT_DATE_FORMAT_AIX constant.
      */
     private static final DateTimeFormatter BOOT_DATE_FORMAT_AIX = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
+            .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
 
     /**
      * Creates a new Who instance.

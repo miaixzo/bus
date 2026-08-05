@@ -92,7 +92,7 @@ public class TokenGuardConfig {
     /**
      * Candidate header names used to discover tokens, aligned with Vortex request parsing.
      */
-    private List<String> headerNames = new ArrayList<>(Http.Auth.TOKEN_KEYS);
+    private List<String> headerNames = new ArrayList<>(Http.Auth.ACCESS_TOKEN_HEADER_KEYS);
 
     /**
      * Candidate cookie names used to discover tokens.

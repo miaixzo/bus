@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Board;
 import org.miaixz.bus.gitlab.models.BoardList;
 
@@ -60,9 +61,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of project's issue boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Board> getProjectIssueBoards(Object projectIdOrPath) throws GitLabApiException {
+    public List<Board> getProjectIssueBoards(Object projectIdOrPath) throws RelevantException {
         return (getProjectIssueBoards(projectIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -77,9 +78,9 @@ public class BoardsApi extends AbstractApi {
      * @param page            the page to get
      * @param perPage         the number of items per page
      * @return a list of project's Boards in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Board> getProjectIssueBoards(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
+    public List<Board> getProjectIssueBoards(Object projectIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -100,9 +101,9 @@ public class BoardsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of items per page
      * @return a Pager of project's issue boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Board> getProjectIssueBoards(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Board> getProjectIssueBoards(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Board>(this, Board.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "boards"));
     }
@@ -116,9 +117,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream of project's issue boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Board> getProjectIssueBoardsStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<Board> getProjectIssueBoardsStream(Object projectIdOrPath) throws RelevantException {
         return (getProjectIssueBoards(projectIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -132,9 +133,9 @@ public class BoardsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param boardId         the ID of the board
      * @return a Board instance for the specified board ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Board getProjectIssueBoard(Object projectIdOrPath, Long boardId) throws GitLabApiException {
+    public Board getProjectIssueBoard(Object projectIdOrPath, Long boardId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -159,7 +160,7 @@ public class BoardsApi extends AbstractApi {
     public Optional<Board> getOptionalProjectIssueBoard(Object projectIdOrPath, Long boardId) {
         try {
             return (Optional.ofNullable(getProjectIssueBoard(projectIdOrPath, boardId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -174,9 +175,9 @@ public class BoardsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param name            the name for the new board
      * @return the created Board instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Board createProjectIssueBoard(Object projectIdOrPath, String name) throws GitLabApiException {
+    public Board createProjectIssueBoard(Object projectIdOrPath, String name) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true);
         Response response = post(
                 Response.Status.CREATED,
@@ -206,7 +207,7 @@ public class BoardsApi extends AbstractApi {
      * @param weight          the weight range from 0 to 9, to which the board should be scoped to, optional (can be
      *                        null)
      * @return the updated Board instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Board updateProjectIssueBoard(
             Object projectIdOrPath,
@@ -217,7 +218,7 @@ public class BoardsApi extends AbstractApi {
             Long assigneeId,
             Long milestoneId,
             String labels,
-            Integer weight) throws GitLabApiException {
+            Integer weight) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name)
                 .withParam("hide_backlog_list", hideBacklogList).withParam("hide_closed_list", hideClosedList)
                 .withParam("assignee_id", assigneeId).withParam("milestone_id", milestoneId).withParam("labels", labels)
@@ -242,9 +243,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param boardId         the ID of the board
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteProjectIssueBoard(Object projectIdOrPath, Long boardId) throws GitLabApiException {
+    public void deleteProjectIssueBoard(Object projectIdOrPath, Long boardId) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "boards", boardId);
     }
 
@@ -258,9 +259,9 @@ public class BoardsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param boardId         the ID of the board
      * @return a list of the issue board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<BoardList> getProjectIssueBoardLists(Object projectIdOrPath, Long boardId) throws GitLabApiException {
+    public List<BoardList> getProjectIssueBoardLists(Object projectIdOrPath, Long boardId) throws RelevantException {
         return (getProjectIssueBoardLists(projectIdOrPath, boardId, getDefaultPerPage()).all());
     }
 
@@ -277,10 +278,10 @@ public class BoardsApi extends AbstractApi {
      * @param page            the page to get
      * @param perPage         the number of Boards per page
      * @return a list of the issue board's lists in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<BoardList> getProjectIssueBoardLists(Object projectIdOrPath, Long boardId, int page, int perPage)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -304,10 +305,10 @@ public class BoardsApi extends AbstractApi {
      * @param boardId         the ID of the board
      * @param itemsPerPage    the number of Board instances that will be fetched per page
      * @return a Pager of the issue board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<BoardList> getProjectIssueBoardLists(Object projectIdOrPath, Long boardId, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<BoardList>(this, BoardList.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "boards", boardId, "lists"));
     }
@@ -322,10 +323,10 @@ public class BoardsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param boardId         the ID of the board
      * @return a Stream of the issue board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<BoardList> getProjectIssueBoardsListsStream(Object projectIdOrPath, Long boardId)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getProjectIssueBoardLists(projectIdOrPath, boardId, getDefaultPerPage()).stream());
     }
 
@@ -340,10 +341,10 @@ public class BoardsApi extends AbstractApi {
      * @param boardId         the ID of the board
      * @param listId          the ID of the board lists to get
      * @return a BoardList instance for the specified board ID and list ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public BoardList getProjectIssueBoardList(Object projectIdOrPath, Long boardId, Long listId)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -371,7 +372,7 @@ public class BoardsApi extends AbstractApi {
     public Optional<BoardList> getOptionalProjectIssueBoardList(Object projectIdOrPath, Long boardId, Long listId) {
         try {
             return (Optional.ofNullable(getProjectIssueBoardList(projectIdOrPath, boardId, listId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -390,7 +391,7 @@ public class BoardsApi extends AbstractApi {
      * @param milestoneId     The ID of a milestone. Premium and Ultimate only, optional (can be null)
      * @param iterationId     The ID of a milestone. Premium and Ultimate only, optional (can be null)
      * @return the created BoardList instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public BoardList createProjectIssueBoardList(
             Object projectIdOrPath,
@@ -398,7 +399,7 @@ public class BoardsApi extends AbstractApi {
             Long labelId,
             Long assigneeId,
             Long milestoneId,
-            Long iterationId) throws GitLabApiException {
+            Long iterationId) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("label_id", labelId).withParam("assignee_id", assigneeId)
                 .withParam("milestone_id", milestoneId).withParam("iteration_id", iterationId);
         Response response = post(
@@ -424,10 +425,10 @@ public class BoardsApi extends AbstractApi {
      * @param listId          the ID of the list
      * @param position        the new position for the list
      * @return the updated BoardList instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public BoardList updateProjectIssueBoardList(Object projectIdOrPath, Long boardId, Long listId, Integer position)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("position", position, true);
         Response response = putWithFormData(
                 Response.Status.OK,
@@ -451,10 +452,10 @@ public class BoardsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param boardId         the ID of the board
      * @param listId          the ID of the list
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public void deleteProjectIssueBoardList(Object projectIdOrPath, Long boardId, Long listId)
-            throws GitLabApiException {
+            throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -475,9 +476,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of group's issue boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Board> getGroupIssueBoards(Object groupIdOrPath) throws GitLabApiException {
+    public List<Board> getGroupIssueBoards(Object groupIdOrPath) throws RelevantException {
         return (getGroupIssueBoards(groupIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -492,9 +493,9 @@ public class BoardsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of items per page
      * @return a list of group's Boards in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Board> getGroupIssueBoards(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
+    public List<Board> getGroupIssueBoards(Object groupIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -515,9 +516,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param itemsPerPage  the number of items per page
      * @return a Pager of group's issue boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Board> getGroupIssueBoards(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Board> getGroupIssueBoards(Object groupIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Board>(this, Board.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "boards"));
     }
@@ -531,9 +532,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a Stream of group's issue boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Board> getGroupIssueBoardsStream(Object groupIdOrPath) throws GitLabApiException {
+    public Stream<Board> getGroupIssueBoardsStream(Object groupIdOrPath) throws RelevantException {
         return (getGroupIssueBoards(groupIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -547,9 +548,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @return a Board instance for the specified board ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Board getGroupIssueBoard(Object groupIdOrPath, Long boardId) throws GitLabApiException {
+    public Board getGroupIssueBoard(Object groupIdOrPath, Long boardId) throws RelevantException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "boards", boardId);
         return (response.readEntity(Board.class));
     }
@@ -568,7 +569,7 @@ public class BoardsApi extends AbstractApi {
     public Optional<Board> getOptionalGroupIssueBoard(Object groupIdOrPath, Long boardId) {
         try {
             return (Optional.ofNullable(getGroupIssueBoard(groupIdOrPath, boardId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -583,9 +584,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param name          the name for the new board
      * @return the created Board instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Board createGroupIssueBoard(Object groupIdOrPath, String name) throws GitLabApiException {
+    public Board createGroupIssueBoard(Object groupIdOrPath, String name) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true);
         Response response = post(
                 Response.Status.CREATED,
@@ -615,7 +616,7 @@ public class BoardsApi extends AbstractApi {
      * @param weight          the weight range from 0 to 9, to which the board should be scoped to, optional (can be
      *                        null)
      * @return the updated Board instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Board updateGroupIssueBoard(
             Object groupIdOrPath,
@@ -626,7 +627,7 @@ public class BoardsApi extends AbstractApi {
             Long assigneeId,
             Long milestoneId,
             String labels,
-            Integer weight) throws GitLabApiException {
+            Integer weight) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name)
                 .withParam("hide_backlog_list", hideBacklogList).withParam("hide_closed_list", hideClosedList)
                 .withParam("assignee_id", assigneeId).withParam("milestone_id", milestoneId).withParam("labels", labels)
@@ -650,9 +651,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteGroupIssueBoard(Object groupIdOrPath, Long boardId) throws GitLabApiException {
+    public void deleteGroupIssueBoard(Object groupIdOrPath, Long boardId) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "groups", getGroupIdOrPath(groupIdOrPath), "boards", boardId);
     }
 
@@ -666,9 +667,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @return a list of the issue board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<BoardList> getGroupIssueBoardLists(Object groupIdOrPath, Long boardId) throws GitLabApiException {
+    public List<BoardList> getGroupIssueBoardLists(Object groupIdOrPath, Long boardId) throws RelevantException {
         return (getGroupIssueBoardLists(groupIdOrPath, boardId, getDefaultPerPage()).all());
     }
 
@@ -685,10 +686,10 @@ public class BoardsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of Boards per page
      * @return a list of the issue board's lists in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<BoardList> getGroupIssueBoardLists(Object groupIdOrPath, Long boardId, int page, int perPage)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -712,10 +713,10 @@ public class BoardsApi extends AbstractApi {
      * @param boardId       the ID of the board
      * @param itemsPerPage  the number of Board instances that will be fetched per page
      * @return a Pager of the issue board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<BoardList> getGroupIssueBoardLists(Object groupIdOrPath, Long boardId, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<BoardList>(this, BoardList.class, itemsPerPage, null, "groups",
                 getGroupIdOrPath(groupIdOrPath), "boards", boardId, "lists"));
     }
@@ -730,10 +731,10 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @return a Stream of the issue board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<BoardList> getGroupIssueBoardsListsStream(Object groupIdOrPath, Long boardId)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getGroupIssueBoardLists(groupIdOrPath, boardId, getDefaultPerPage()).stream());
     }
 
@@ -748,9 +749,9 @@ public class BoardsApi extends AbstractApi {
      * @param boardId       the ID of the board
      * @param listId        the ID of the board lists to get
      * @return a BoardList instance for the specified board ID and list ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public BoardList getGroupIssueBoardList(Object groupIdOrPath, Long boardId, Long listId) throws GitLabApiException {
+    public BoardList getGroupIssueBoardList(Object groupIdOrPath, Long boardId, Long listId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -778,7 +779,7 @@ public class BoardsApi extends AbstractApi {
     public Optional<BoardList> getOptionalGroupIssueBoardList(Object groupIdOrPath, Long boardId, Long listId) {
         try {
             return (Optional.ofNullable(getGroupIssueBoardList(groupIdOrPath, boardId, listId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -797,7 +798,7 @@ public class BoardsApi extends AbstractApi {
      * @param milestoneId   The ID of a milestone. Premium and Ultimate only, optional (can be null)
      * @param iterationId   The ID of a milestone. Premium and Ultimate only, optional (can be null)
      * @return the created BoardList instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public BoardList createGroupIssueBoardList(
             Object groupIdOrPath,
@@ -805,7 +806,7 @@ public class BoardsApi extends AbstractApi {
             Long labelId,
             Long assigneeId,
             Long milestoneId,
-            Long iterationId) throws GitLabApiException {
+            Long iterationId) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("label_id", labelId).withParam("assignee_id", assigneeId)
                 .withParam("milestone_id", milestoneId).withParam("iteration_id", iterationId);
         Response response = post(
@@ -831,10 +832,10 @@ public class BoardsApi extends AbstractApi {
      * @param listId        the ID of the list
      * @param position      the new position for the list
      * @return the updated BoardList instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public BoardList updateGroupIssueBoardList(Object groupIdOrPath, Long boardId, Long listId, Integer position)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("position", position, true);
         Response response = putWithFormData(
                 Response.Status.OK,
@@ -858,9 +859,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @param listId        the ID of the list
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteGroupIssueBoardList(Object groupIdOrPath, Long boardId, Long listId) throws GitLabApiException {
+    public void deleteGroupIssueBoardList(Object groupIdOrPath, Long boardId, Long listId) throws RelevantException {
         delete(
                 Response.Status.NO_CONTENT,
                 null,
@@ -881,9 +882,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of group's epic boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Board> getGroupEpicBoards(Object groupIdOrPath) throws GitLabApiException {
+    public List<Board> getGroupEpicBoards(Object groupIdOrPath) throws RelevantException {
         return (getGroupEpicBoards(groupIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -898,9 +899,9 @@ public class BoardsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of items per page
      * @return a list of group's Boards in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Board> getGroupEpicBoards(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
+    public List<Board> getGroupEpicBoards(Object groupIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -921,9 +922,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param itemsPerPage  the number of items per page
      * @return a Pager of group's epic boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Board> getGroupEpicBoards(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Board> getGroupEpicBoards(Object groupIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Board>(this, Board.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "epic_boards"));
     }
@@ -937,9 +938,9 @@ public class BoardsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a Stream of group's epic boards
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Board> getGroupEpicBoardsStream(Object groupIdOrPath) throws GitLabApiException {
+    public Stream<Board> getGroupEpicBoardsStream(Object groupIdOrPath) throws RelevantException {
         return (getGroupEpicBoards(groupIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -953,9 +954,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @return a Board instance for the specified board ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Board getGroupEpicBoard(Object groupIdOrPath, Long boardId) throws GitLabApiException {
+    public Board getGroupEpicBoard(Object groupIdOrPath, Long boardId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -980,7 +981,7 @@ public class BoardsApi extends AbstractApi {
     public Optional<Board> getOptionalGroupEpicBoard(Object groupIdOrPath, Long boardId) {
         try {
             return (Optional.ofNullable(getGroupEpicBoard(groupIdOrPath, boardId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -995,9 +996,9 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @return a list of the epic board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<BoardList> getGroupEpicBoardLists(Object groupIdOrPath, Long boardId) throws GitLabApiException {
+    public List<BoardList> getGroupEpicBoardLists(Object groupIdOrPath, Long boardId) throws RelevantException {
         return (getGroupEpicBoardLists(groupIdOrPath, boardId, getDefaultPerPage()).all());
     }
 
@@ -1013,10 +1014,10 @@ public class BoardsApi extends AbstractApi {
      * @param page          the page to get
      * @param perPage       the number of Boards per page
      * @return a list of the epic board's lists in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<BoardList> getGroupEpicBoardLists(Object groupIdOrPath, Long boardId, int page, int perPage)
-            throws GitLabApiException {
+            throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -1040,10 +1041,10 @@ public class BoardsApi extends AbstractApi {
      * @param boardId       the ID of the board
      * @param itemsPerPage  the number of Board instances that will be fetched per page
      * @return a Pager of the epic board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<BoardList> getGroupEpicBoardLists(Object groupIdOrPath, Long boardId, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
         return (new Pager<BoardList>(this, BoardList.class, itemsPerPage, null, "groups",
                 getGroupIdOrPath(groupIdOrPath), "epic_boards", boardId, "lists"));
     }
@@ -1058,10 +1059,10 @@ public class BoardsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param boardId       the ID of the board
      * @return a Stream of the epic board's lists
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<BoardList> getGroupEpicBoardsListsStream(Object groupIdOrPath, Long boardId)
-            throws GitLabApiException {
+            throws RelevantException {
         return (getGroupEpicBoardLists(groupIdOrPath, boardId, getDefaultPerPage()).stream());
     }
 
@@ -1076,9 +1077,9 @@ public class BoardsApi extends AbstractApi {
      * @param boardId       the ID of the board
      * @param listId        the ID of the board lists to get
      * @return a BoardList instance for the specified board ID and list ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public BoardList getGroupEpicBoardList(Object groupIdOrPath, Long boardId, Long listId) throws GitLabApiException {
+    public BoardList getGroupEpicBoardList(Object groupIdOrPath, Long boardId, Long listId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -1106,7 +1107,7 @@ public class BoardsApi extends AbstractApi {
     public Optional<BoardList> getOptionalGroupEpicBoardList(Object groupIdOrPath, Long boardId, Long listId) {
         try {
             return (Optional.ofNullable(getGroupEpicBoardList(groupIdOrPath, boardId, listId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }

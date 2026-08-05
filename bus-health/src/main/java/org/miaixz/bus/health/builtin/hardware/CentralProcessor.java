@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -1130,7 +1130,7 @@ public interface CentralProcessor {
          */
         private String queryMicroarchitecture() {
             String arch = null;
-            Properties archProps = Config.readProperties(Config._ARCHITECTURE_PROPERTIES);
+            Properties archProps = Builder.readProperties(Builder._ARCHITECTURE_PROPERTIES);
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix
@@ -1176,7 +1176,7 @@ public interface CentralProcessor {
          * @return the query vendor from implementer result
          */
         private String queryVendorFromImplementer(String cpuVendor) {
-            Properties archProps = Config.readProperties(Config._ARCHITECTURE_PROPERTIES);
+            Properties archProps = Builder.readProperties(Builder._ARCHITECTURE_PROPERTIES);
             return archProps.getProperty("hw_impl." + cpuVendor, cpuVendor);
         }
 

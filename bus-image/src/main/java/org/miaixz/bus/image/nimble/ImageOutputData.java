@@ -29,6 +29,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -345,8 +346,10 @@ public class ImageOutputData {
             } else {
                 destArray = Arrays.copyOf(old, old.length + 1);
                 destArray[destArray.length - 1] = ratio;
-                String[] oldM = Builder
-                        .getStringArrayFromDicomElement(dataSet, Tag.LossyImageCompressionMethod, new String[0]);
+                String[] oldM = Builder.getStringArrayFromDicomElement(
+                        dataSet,
+                        Tag.LossyImageCompressionMethod,
+                        Normal.EMPTY_STRING_ARRAY);
                 methods = Arrays.copyOf(oldM, old.length + 1);
                 methods[methods.length - 1] = method;
                 for (int i = 0; i < methods.length; i++) {

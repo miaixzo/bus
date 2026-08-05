@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Namespace;
 
 /**
@@ -55,9 +56,9 @@ public class NamespaceApi extends AbstractApi {
      * </pre>
      *
      * @return a List of Namespace instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Namespace> getNamespaces() throws GitLabApiException {
+    public List<Namespace> getNamespaces() throws RelevantException {
         return (getNamespaces(getDefaultPerPage()).all());
     }
 
@@ -72,9 +73,9 @@ public class NamespaceApi extends AbstractApi {
      * @param page    the page to get
      * @param perPage the number of Namespace instances per page
      * @return a List of Namespace instances in the specified page range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Namespace> getNamespaces(int page, int perPage) throws GitLabApiException {
+    public List<Namespace> getNamespaces(int page, int perPage) throws RelevantException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "namespaces");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -90,9 +91,9 @@ public class NamespaceApi extends AbstractApi {
      *
      * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of Namespace instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Namespace> getNamespaces(int itemsPerPage) throws GitLabApiException {
+    public Pager<Namespace> getNamespaces(int itemsPerPage) throws RelevantException {
         return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, null, "namespaces"));
     }
 
@@ -105,9 +106,9 @@ public class NamespaceApi extends AbstractApi {
      * </pre>
      *
      * @return a Stream of Namespace instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Namespace> getNamespacesStream() throws GitLabApiException {
+    public Stream<Namespace> getNamespacesStream() throws RelevantException {
         return (getNamespaces(getDefaultPerPage()).stream());
     }
 
@@ -120,9 +121,9 @@ public class NamespaceApi extends AbstractApi {
      *
      * @param query the search string
      * @return the Namespace List with the matching namespaces
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Namespace> findNamespaces(String query) throws GitLabApiException {
+    public List<Namespace> findNamespaces(String query) throws RelevantException {
         return (findNamespaces(query, getDefaultPerPage()).all());
     }
 
@@ -137,9 +138,9 @@ public class NamespaceApi extends AbstractApi {
      * @param page    the page to get
      * @param perPage the number of Namespace instances per page
      * @return the Namespace List with the matching namespaces
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Namespace> findNamespaces(String query, int page, int perPage) throws GitLabApiException {
+    public List<Namespace> findNamespaces(String query, int page, int perPage) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "namespaces");
@@ -157,9 +158,9 @@ public class NamespaceApi extends AbstractApi {
      * @param query        the search string
      * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of Namespace instances with the matching namespaces
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Namespace> findNamespaces(String query, int itemsPerPage) throws GitLabApiException {
+    public Pager<Namespace> findNamespaces(String query, int itemsPerPage) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true);
         return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
     }
@@ -173,9 +174,9 @@ public class NamespaceApi extends AbstractApi {
      *
      * @param query the search string
      * @return a Stream with the matching namespaces
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Namespace> findNamespacesStream(String query) throws GitLabApiException {
+    public Stream<Namespace> findNamespacesStream(String query) throws RelevantException {
         return (findNamespaces(query, getDefaultPerPage()).stream());
     }
 
@@ -189,9 +190,9 @@ public class NamespaceApi extends AbstractApi {
      * @param namespaceIdOrPath the namespace ID, path of the namespace, or a Namespace instance holding the namespace
      *                          ID or path
      * @return the Namespace instance for the specified path
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Namespace getNamespace(Object namespaceIdOrPath) throws GitLabApiException {
+    public Namespace getNamespace(Object namespaceIdOrPath) throws RelevantException {
         Response response = get(Response.Status.OK, null, "namespaces", getNamespaceIdOrPath(namespaceIdOrPath));
         return (response.readEntity(Namespace.class));
     }
@@ -210,7 +211,7 @@ public class NamespaceApi extends AbstractApi {
     public Optional<Namespace> getOptionalNamespace(Object namespaceIdOrPath) {
         try {
             return (Optional.ofNullable(getNamespace(namespaceIdOrPath)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }

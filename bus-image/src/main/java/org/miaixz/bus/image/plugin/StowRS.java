@@ -863,7 +863,7 @@ public class StowRS {
         File tmpFile = stowChunk.getTmpFile();
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(Http.Method.POST.value());
         connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
         requestProperties.forEach(connection::setRequestProperty);
         logOutgoing(connection.getURL(), connection.getRequestProperties());
@@ -914,7 +914,7 @@ public class StowRS {
         File tmpFile = stowChunk.getTmpFile();
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(Http.Method.POST.value());
         if (disableTM)
             connection.setSSLSocketFactory(sslContext().getSocketFactory());
         connection.setRequestProperty(Http.Header.CONTENT_LENGTH, String.valueOf(tmpFile.length()));
@@ -1007,7 +1007,10 @@ public class StowRS {
         Logger.info(false, "Image", "< HTTP/1.1 Response: " + respCode + Symbol.SPACE + respMsg);
         for (Map.Entry<String, List<String>> header : headerFields.entrySet())
             if (header.getKey() != null)
-                Logger.info(false, "Image", "< " + header.getKey() + " : " + String.join(";", header.getValue()));
+                Logger.info(
+                        false,
+                        "Image",
+                        "< " + header.getKey() + " : " + String.join(Symbol.SEMICOLON, header.getValue()));
         Logger.info(false, "Image", "< Response content captured");
         int length = responseBody == null ? 0 : responseBody.length();
         Logger.debug(false, "Image", "Response content captured: chars={}", length);

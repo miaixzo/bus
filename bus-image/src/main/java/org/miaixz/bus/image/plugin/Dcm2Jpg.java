@@ -32,6 +32,7 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.FileImageOutputStream;
 
 import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -154,7 +155,7 @@ public class Dcm2Jpg {
      * @return A predicate that tests if an object's class name matches the given name.
      */
     private static PredicateX<Object> matchClassName(String clazz) {
-        PredicateX<String> predicate = clazz.endsWith("*") ? startsWith(clazz.substring(0, clazz.length() - 1))
+        PredicateX<String> predicate = clazz.endsWith(Symbol.STAR) ? startsWith(clazz.substring(0, clazz.length() - 1))
                 : clazz::equals;
         return w -> predicate.test(w.getClass().getName());
     }

@@ -301,7 +301,7 @@ public enum Dimse {
         sb.append(Builder.LINE_SEPARATOR).append("  tags=[");
         if (tags.length > 0) {
             for (int tag : tags)
-                sb.append(Tag.toString(tag)).append(", ");
+                sb.append(Tag.toString(tag)).append(Symbol.COMMA).append(Symbol.SPACE);
             sb.setLength(sb.length() - 2);
         }
         sb.append(Symbol.C_BRACKET_RIGHT);

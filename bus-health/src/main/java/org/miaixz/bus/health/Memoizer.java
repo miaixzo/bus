@@ -42,7 +42,7 @@ public final class Memoizer {
     }
 
     /**
-     * SupplierX for the default expiration time (in nanoseconds) for memoized values, configured via {@link Config}.
+     * SupplierX for the default expiration time (in nanoseconds) for memoized values, configured via {@link Builder}.
      */
     private static final SupplierX<Long> DEFAULT_EXPIRATION_NANOS = memoize(
             Memoizer::queryExpirationConfig,
@@ -54,7 +54,7 @@ public final class Memoizer {
      * @return The configured expiration time in nanoseconds.
      */
     private static long queryExpirationConfig() {
-        return TimeUnit.MILLISECONDS.toNanos(Config.get(Config._UTIL_MEMOIZER_EXPIRATION, 300));
+        return TimeUnit.MILLISECONDS.toNanos(Builder.get(Builder._UTIL_MEMOIZER_EXPIRATION, 300));
     }
 
     /**
@@ -77,7 +77,7 @@ public final class Memoizer {
 
     /**
      * Returns the default expiration time (in nanoseconds) for memoized values, after which they will be refreshed.
-     * This can be updated by setting the {@link Config} property {@code bus.health.memoizer.expiration} to a value in
+     * This can be updated by setting the {@link Builder} property {@code bus.health.memoizer.expiration} to a value in
      * milliseconds.
      *
      * @return The time in nanoseconds that memoized values are held before being refreshed.

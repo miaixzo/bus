@@ -203,9 +203,9 @@ public class EntitySchemaInitializer {
      */
     private TableMeta copyTable(TableMeta source) {
         TableMeta copy = TableMeta.of(source.entityClass()).table(source.table()).catalog(source.catalog())
-                .schema(source.schema()).style(source.style()).columns(new ArrayList<>(source.columns()))
-                .indexes(copyIndexes(source.indexes())).foreignKeys(copyForeignKeys(source.foreignKeys()))
-                .ready(source.ready());
+                .schema(source.schema()).comment(source.comment()).style(source.style())
+                .columns(new ArrayList<>(source.columns())).indexes(copyIndexes(source.indexes()))
+                .foreignKeys(copyForeignKeys(source.foreignKeys())).ready(source.ready());
         copy.primaryKey(null);
         return copy;
     }
@@ -443,9 +443,14 @@ public class EntitySchemaInitializer {
         if (!dialect.supports(diff.type())) {
             return false;
         }
+        if (diff.tableCreated() && diff.type() != Behavior.CREATE_TABLE && !config.allowCreateTable()) {
+            return false;
+        }
         if (config.mode() == Schema.CREATE) {
             return switch (diff.type()) {
                 case CREATE_TABLE -> config.allowCreateTable();
+                case MODIFY_TABLE_COMMENT, MODIFY_COLUMN_COMMENT -> config.allowCreateTable()
+                        && config.allowModifyComment();
                 case CREATE_PRIMARY_KEY -> config.allowCreatePrimaryKey();
                 case CREATE_UNIQUE -> config.allowCreateUnique();
                 case CREATE_INDEX -> config.allowCreateIndex();
@@ -462,7 +467,18 @@ public class EntitySchemaInitializer {
         }
         boolean allowed = switch (diff.type()) {
             case CREATE_TABLE -> config.allowCreateTable();
+            case MODIFY_TABLE_COMMENT -> config.allowModifyComment()
+                    && (!diff.tableCreated() || config.allowCreateTable());
             case ADD_COLUMN -> config.allowAddColumn();
+            case MODIFY_COLUMN_COMMENT -> {
+                if (!config.allowModifyComment()) {
+                    yield false;
+                }
+                if (diff.tableCreated()) {
+                    yield config.allowCreateTable();
+                }
+                yield !diff.columnCreated() || config.allowAddColumn();
+            }
             case MODIFY_COLUMN_TYPE -> config.allowModifyType();
             case MODIFY_COLUMN_LENGTH -> diff.riskLevel() == Risk.DANGEROUS ? config.allowShrinkLength()
                     : config.allowExpandLength();
@@ -500,7 +516,9 @@ public class EntitySchemaInitializer {
     private String sql(SchemaBehavior operations, SchemaDiff diff) {
         return switch (diff.type()) {
             case CREATE_TABLE -> operations.createTable(diff.tableMeta());
+            case MODIFY_TABLE_COMMENT -> operations.modifyTableComment(diff.tableMeta());
             case ADD_COLUMN -> operations.addColumn(diff.tableMeta(), diff.columnMeta());
+            case MODIFY_COLUMN_COMMENT -> operations.modifyColumnComment(diff.tableMeta(), diff.columnMeta());
             case MODIFY_COLUMN_TYPE -> operations
                     .modifyColumnType(diff.tableMeta(), diff.columnMeta(), diff.actualColumn());
             case MODIFY_COLUMN_LENGTH -> operations
@@ -650,7 +668,12 @@ public class EntitySchemaInitializer {
         /**
          * Foreign key phase.
          */
-        FOREIGN_KEY;
+        FOREIGN_KEY,
+
+        /**
+         * Table and column comment phase.
+         */
+        COMMENT;
 
         /**
          * Resolves the execution phase for a behavior.
@@ -663,6 +686,7 @@ public class EntitySchemaInitializer {
                 case CREATE_TABLE -> TABLE;
                 case CREATE_UNIQUE, DROP_UNIQUE, CREATE_INDEX, DROP_INDEX -> INDEX;
                 case CREATE_FOREIGN_KEY, DROP_FOREIGN_KEY -> FOREIGN_KEY;
+                case MODIFY_TABLE_COMMENT, MODIFY_COLUMN_COMMENT -> COMMENT;
                 default -> STRUCTURE;
             };
         }

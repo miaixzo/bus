@@ -42,7 +42,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -307,20 +306,6 @@ public class MapperConfiguration implements InitializingBean {
             + ".tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
     public TenantProvider contextTenantProvider(ContextBuilder contextBuilder) {
         return new ContextTenantProvider(contextBuilder);
-    }
-
-    /**
-     * Maps a missing authenticated tenant to an empty forbidden response in Servlet applications.
-     *
-     * @return missing-tenant exception advice
-     */
-    @Bean
-    @ConditionalOnMissingBean(TenantExceptionAdvice.class)
-    @ConditionalOnProperty(prefix = GeniusBuilder.MAPPER
-            + ".tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    public TenantExceptionAdvice tenantExceptionAdvice() {
-        return new TenantExceptionAdvice();
     }
 
     /**

@@ -25,7 +25,7 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.FileSystem;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 
@@ -49,13 +49,13 @@ public abstract class AbstractFileSystem implements FileSystem {
      * FileSystem types which are network-based and should be excluded from local-only lists
      */
     protected static final List<String> NETWORK_FS_TYPES = Arrays
-            .asList(Config.get(Config._NETWORK_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
+            .asList(Builder.get(Builder._NETWORK_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
 
     /**
      * The PSEUDO_FS_TYPES constant.
      */
     protected static final List<String> PSEUDO_FS_TYPES = Arrays
-            .asList(Config.get(Config._PSEUDO_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
+            .asList(Builder.get(Builder._PSEUDO_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
 
     /**
      * Returns the file stores.

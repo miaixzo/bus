@@ -528,16 +528,18 @@ public class BoxProvider extends AbstractProvider {
 
             String boundary = "----WebKitFormBoundary" + System.currentTimeMillis();
             StringBuilder bodyBuilder = new StringBuilder();
-            bodyBuilder.append("--").append(boundary).append("\r\n");
-            bodyBuilder.append("Content-Disposition: form-data; name=\"attributes\"\r\n\r\n");
-            bodyBuilder.append(JsonKit.toJsonString(attributes)).append("\r\n");
-            bodyBuilder.append("--").append(boundary).append("\r\n");
+            bodyBuilder.append(Symbol.MINUS).append(Symbol.MINUS).append(boundary).append(Symbol.CRLF);
+            bodyBuilder.append("Content-Disposition: form-data; name=\"attributes\"").append(Symbol.CRLF)
+                    .append(Symbol.CRLF);
+            bodyBuilder.append(JsonKit.toJsonString(attributes)).append(Symbol.CRLF);
+            bodyBuilder.append(Symbol.MINUS).append(Symbol.MINUS).append(boundary).append(Symbol.CRLF);
             bodyBuilder.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(fileName)
-                    .append("\"\r\n");
-            bodyBuilder.append("Content-Type: application/octet-stream\r\n\r\n");
+                    .append(Symbol.DOUBLE_QUOTES).append(Symbol.CRLF);
+            bodyBuilder.append("Content-Type: application/octet-stream").append(Symbol.CRLF).append(Symbol.CRLF);
 
             byte[] header = bodyBuilder.toString().getBytes();
-            byte[] footer = ("\r\n--" + boundary + "--\r\n").getBytes();
+            byte[] footer = (Symbol.CRLF + Symbol.MINUS + Symbol.MINUS + boundary + Symbol.MINUS + Symbol.MINUS
+                    + Symbol.CRLF).getBytes();
             byte[] body = new byte[header.length + content.length + footer.length];
             System.arraycopy(header, 0, body, 0, header.length);
             System.arraycopy(content, 0, body, header.length, content.length);

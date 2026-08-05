@@ -123,9 +123,19 @@ public final class Charter {
         CREATE_TABLE(Group.SCHEMA),
 
         /**
+         * Modify table comment operation.
+         */
+        MODIFY_TABLE_COMMENT(Group.SCHEMA),
+
+        /**
          * Add column operation.
          */
         ADD_COLUMN(Group.SCHEMA),
+
+        /**
+         * Modify column comment operation.
+         */
+        MODIFY_COLUMN_COMMENT(Group.SCHEMA),
 
         /**
          * Modify column SQL type operation.

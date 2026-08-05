@@ -60,7 +60,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     /**
      * The LOG_PROCFS_WARNING constant.
      */
-    private static final boolean LOG_PROCFS_WARNING = Config.get(Config._LINUX_PROCFS_LOGWARNING, false);
+    private static final boolean LOG_PROCFS_WARNING = Builder.get(Builder._LINUX_PROCFS_LOGWARNING, false);
 
     // Get a list of orders to pass to Parsing
     /**
@@ -391,7 +391,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private Map<String, String> queryEnvironmentVariables() {
         return Collections.unmodifiableMap(
                 Parsing.parseByteArrayToStringMap(
-                        Privilege.readAllBytes(
+                        Builder.readAllBytes(
                                 String.format(Locale.ROOT, ProcPath.PID_ENVIRON, getProcessID()),
                                 LOG_PROCFS_WARNING)));
     }
@@ -801,7 +801,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
         // Fetch all the values here
         // check for terminated process race condition after last one.
-        Map<String, String> io = Privilege
+        Map<String, String> io = Builder
                 .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_IO, getProcessID()), Symbol.COLON);
         Map<String, String> status = Builder
                 .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), Symbol.COLON);

@@ -38,6 +38,7 @@ import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.*;
@@ -1610,7 +1611,7 @@ public final class WebSocketSession implements Session {
         if (message.contains("too large") || message.contains("size")) {
             return Builder.WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE;
         }
-        if (message.contains("utf-8")) {
+        if (message.contains(Charset.DEFAULT_UTF_8.toLowerCase(Locale.ROOT))) {
             return Builder.WEBSOCKET_CLOSE_INVALID_PAYLOAD;
         }
         if (cause instanceof ProtocolException || cause instanceof ValidateException) {

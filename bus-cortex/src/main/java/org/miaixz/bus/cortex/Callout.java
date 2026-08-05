@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.MediaType;
@@ -65,7 +66,7 @@ public final class Callout {
 
         @Override
         public Payload encode(String value) {
-            return Payload.of(value == null ? "" : value, StandardCharsets.UTF_8);
+            return Payload.of(value == null ? Normal.EMPTY : value, StandardCharsets.UTF_8);
         }
 
         @Override
@@ -171,12 +172,12 @@ public final class Callout {
      */
     private static String failureMessage(Result result) {
         if (result == null) {
-            return "unknown";
+            return Normal.UNKNOWN;
         }
         if (result.error() != null && result.error().getMessage() != null && !result.error().getMessage().isBlank()) {
             return result.error().getMessage();
         }
-        return result.state() == null ? "unknown" : result.state().name();
+        return result.state() == null ? Normal.UNKNOWN : result.state().name();
     }
 
     /**
@@ -186,7 +187,7 @@ public final class Callout {
      * @return decoded text
      */
     private static String decodeText(Payload payload) {
-        byte[] bytes = payload == null ? new byte[0] : payload.bytes();
+        byte[] bytes = payload == null ? Normal.EMPTY_BYTE_ARRAY : payload.bytes();
         try {
             return StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
                     .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(bytes)).toString();

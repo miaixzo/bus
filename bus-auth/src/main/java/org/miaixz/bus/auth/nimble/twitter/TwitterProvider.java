@@ -145,7 +145,7 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> form = buildOauthParams();
         form.put("oauth_callback", context.getRedirectUri());
-        form.put("oauth_signature", sign(form, "POST", baseUrl, context.getClientSecret(), null));
+        form.put("oauth_signature", sign(form, Http.Method.POST.value(), baseUrl, context.getClientSecret(), null));
 
         Map<String, String> header = new HashMap<>();
         header.put(Http.Header.AUTHORIZATION, buildHeader(form));
@@ -173,7 +173,12 @@ public class TwitterProvider extends AbstractProvider {
         headerMap.put("oauth_verifier", callback.getOauth_verifier());
         headerMap.put(
                 "oauth_signature",
-                sign(headerMap, "POST", this.complex.token(), context.getClientSecret(), callback.getOauth_token()));
+                sign(
+                        headerMap,
+                        Http.Method.POST.value(),
+                        this.complex.token(),
+                        context.getClientSecret(),
+                        callback.getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
         header.put(Http.Header.AUTHORIZATION, buildHeader(headerMap));
@@ -212,7 +217,7 @@ public class TwitterProvider extends AbstractProvider {
                 "oauth_signature",
                 sign(
                         params,
-                        "GET",
+                        Http.Method.GET.value(),
                         this.complex.userinfo(),
                         context.getClientSecret(),
                         authorization.getOauthTokenSecret()));
@@ -268,8 +273,9 @@ public class TwitterProvider extends AbstractProvider {
         final StringBuilder sb = new StringBuilder(PREAMBLE + Symbol.SPACE);
 
         for (Map.Entry<String, String> param : oauthParams.entrySet()) {
-            sb.append(param.getKey()).append("=\"").append(UrlEncoder.encodeAll(param.getValue())).append('"')
-                    .append(", ");
+            sb.append(param.getKey()).append(Symbol.EQUAL).append(Symbol.C_DOUBLE_QUOTES)
+                    .append(UrlEncoder.encodeAll(param.getValue())).append(Symbol.C_DOUBLE_QUOTES).append(Symbol.COMMA)
+                    .append(Symbol.SPACE);
         }
 
         return sb.deleteCharAt(sb.length() - 2).toString();

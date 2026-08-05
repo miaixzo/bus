@@ -349,8 +349,8 @@ public final class TlsChannel implements Conduit, Lifecycle {
                     fail(e);
                     throw e;
                 } catch (final RuntimeException e) {
-                    final TlsException mapped = e instanceof TlsException tls ? tls
-                            : new TlsException("TLS handshake failed", e);
+                    final ProtocolException mapped = e instanceof ProtocolException protocol ? protocol
+                            : new ProtocolException("TLS handshake failed", e);
                     if (Logger.isErrorEnabled()) {
                         Logger.error(
                                 false,
@@ -773,7 +773,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
                     case NEED_TASK -> runTasks();
                     case NEED_WRAP -> handshakeWrap();
                     case NEED_UNWRAP, NEED_UNWRAP_AGAIN -> handshakeUnwrap(status);
-                    default -> throw new TlsException("Unexpected TLS handshake status: " + status);
+                    default -> throw new ProtocolException("Unexpected TLS handshake status: " + status);
                 };
             }
             final TlsHandshake handshake = engine.handshake();
@@ -796,7 +796,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
             }
             return handshake;
         } catch (final IOException e) {
-            throw new TlsException("TLS handshake failed", e);
+            throw new ProtocolException("TLS handshake failed", e);
         } finally {
             handshakeLock.unlock();
         }
@@ -820,7 +820,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 encryptedOutput.flip();
                 writeEncryptedOutput(timeout.connect(), "TLS handshake write timed out");
                 if (result.getStatus() == SSLEngineResult.Status.CLOSED) {
-                    throw new TlsException("TLS engine closed during handshake write");
+                    throw new ProtocolException("TLS engine closed during handshake write");
                 }
                 return result.getHandshakeStatus();
             }
@@ -840,7 +840,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         try {
             if (requested != HandshakeStatus.NEED_UNWRAP_AGAIN && !encryptedInput.hasRemaining()) {
                 if (readEncryptedInput(timeout.connect(), "TLS handshake read timed out") == Normal.__1) {
-                    throw new TlsException("TLS peer closed during handshake");
+                    throw new ProtocolException("TLS peer closed during handshake");
                 }
             }
             while (true) {
@@ -854,12 +854,12 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 if (result.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
                     ensureEncryptedInputCapacity();
                     if (readEncryptedInput(timeout.connect(), "TLS handshake read timed out") == Normal.__1) {
-                        throw new TlsException("TLS peer closed during handshake");
+                        throw new ProtocolException("TLS peer closed during handshake");
                     }
                     continue;
                 }
                 if (result.getStatus() == SSLEngineResult.Status.CLOSED) {
-                    throw new TlsException("TLS peer closed during handshake");
+                    throw new ProtocolException("TLS peer closed during handshake");
                 }
                 return result.getHandshakeStatus();
             }
@@ -1876,37 +1876,6 @@ public final class TlsChannel implements Conduit, Lifecycle {
          * Terminal failure.
          */
         FAILED
-
-    }
-
-    /**
-     * TLS-specific handshake and protocol failure.
-     */
-    private static final class TlsException extends ProtocolException {
-
-        /**
-         * Serialization identifier.
-         */
-        private static final long serialVersionUID = 2853944150347250250L;
-
-        /**
-         * Creates a TLS failure.
-         *
-         * @param message failure message
-         */
-        private TlsException(final String message) {
-            super(message);
-        }
-
-        /**
-         * Creates a TLS failure retaining its cause.
-         *
-         * @param message failure message
-         * @param cause   failure cause
-         */
-        private TlsException(final String message, final Throwable cause) {
-            super(message, cause);
-        }
 
     }
 

@@ -130,8 +130,8 @@ public final class HttpTransport implements HttpStage {
      * @param request request to serialize on the selected connection
      * @param chain   exchange chain containing cancellation state and a network connection
      * @return response with request-sent and response-received timestamps
-     * @throws HttpChain.ExchangeFailure if request writing or response reading fails
-     * @throws ValidateException         if the request, chain, or produced codec is {@code null}
+     * @throws StatefulException if request writing or response reading fails
+     * @throws ValidateException if the request, chain, or produced codec is {@code null}
      */
     @Override
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
@@ -144,20 +144,22 @@ public final class HttpTransport implements HttpStage {
         try {
             try {
                 writeRequest(current, codec);
-            } catch (final HttpChain.ExchangeFailure e) {
-                throw e;
             } catch (final RuntimeException e) {
-                throw failure(context, cancellation, connectionScope(codec), true, e);
+                if (HttpChain.ExchangeFailure.from(e) == null) {
+                    throw failure(context, cancellation, connectionScope(codec), true, e);
+                }
+                throw e;
             }
             final long sentRequestAtMillis = clock.millis();
             cancellation.throwIfCancelled();
             final HttpResponse response;
             try {
                 response = readResponse(current, codec);
-            } catch (final HttpChain.ExchangeFailure e) {
-                throw e;
             } catch (final RuntimeException e) {
-                throw failure(context, cancellation, connectionScope(codec), codec.beforeResponse(), e);
+                if (HttpChain.ExchangeFailure.from(e) == null) {
+                    throw failure(context, cancellation, connectionScope(codec), codec.beforeResponse(), e);
+                }
+                throw e;
             }
             final long receivedResponseAtMillis = clock.millis();
             return response.withTiming(sentRequestAtMillis, receivedResponseAtMillis);
@@ -316,7 +318,7 @@ public final class HttpTransport implements HttpStage {
      * @param cause          original runtime failure
      * @return structured exchange failure
      */
-    private static HttpChain.ExchangeFailure failure(
+    private static StatefulException failure(
             final HttpChain chain,
             final Cancellation cancellation,
             final HttpChain.FailureScope scope,
@@ -329,7 +331,7 @@ public final class HttpTransport implements HttpStage {
         final boolean reusedConnection = lease != null && lease.reusedConnection() && connection != null
                 && !connection.multiplex();
         return new HttpChain.ExchangeFailure(HttpChain.DeliveryState.MAYBE_PROCESSED, scope, reason, reusedConnection,
-                beforeResponse, cause);
+                beforeResponse, cause).exception();
     }
 
     /**

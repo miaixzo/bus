@@ -1460,7 +1460,7 @@ public class ByteKit {
         int len = digits.length();
         // Check if string is valid hex
         if (!Pattern.VALID_HEX_PATTERN.matcher(digits).matches() || (len & 0x1) != 0) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {

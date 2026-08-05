@@ -281,7 +281,8 @@ public final class PageContext {
     /**
      * Parses an Order BY clause string into a {@link Sort} object.
      * <p>
-     * Handles comma-separated fields and optional direction (ASC/DESC). Quotes (` ' ") around field names are stripped.
+     * Handles comma-separated fields and optional direction (ASC/DESC). Explicit identifier quotes are retained for
+     * database-aware validation and SQL assembly.
      * </p>
      *
      * @param orderBy the Order BY clause
@@ -299,7 +300,7 @@ public final class PageContext {
         for (String part : parts) {
             String[] orderParts = part.trim().split("\\s+");
             if (orderParts.length >= 1) {
-                String property = orderParts[0].replace("\"", "").replace("'", "").replace("`", "");
+                String property = orderParts[0];
 
                 Order order;
                 if (orderParts.length >= 2 && "DESC".equalsIgnoreCase(orderParts[1])) {

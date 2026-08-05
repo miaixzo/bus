@@ -6006,54 +6006,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.qrcode.QrCodeException",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Throwable",
-            "boolean",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Throwable",
-            "java.lang.String",
-            "java.lang.Object[]"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.extra.qrcode.QrCodeKit",
       "methods": [
         {

@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Link;
 import org.miaixz.bus.gitlab.models.ReleaseLinkParams;
 
@@ -57,9 +58,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param tagName         the tag name that the release was created from
      * @return the list of assets for the specified release
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Link> getLinks(Object projectIdOrPath, String tagName) throws GitLabApiException {
+    public List<Link> getLinks(Object projectIdOrPath, String tagName) throws RelevantException {
         return (getLinks(projectIdOrPath, tagName, getDefaultPerPage()).all());
     }
 
@@ -74,9 +75,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param tagName         the tag name that the release was created from
      * @param itemsPerPage    the number of Link instances that will be fetched per page
      * @return the Pager of Link instances for the specified project ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Link> getLinks(Object projectIdOrPath, String tagName, int itemsPerPage) throws GitLabApiException {
+    public Pager<Link> getLinks(Object projectIdOrPath, String tagName, int itemsPerPage) throws RelevantException {
         return (new Pager<Link>(this, Link.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "releases", urlEncode(tagName), "assets", "links"));
     }
@@ -91,9 +92,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param tagName         the tag name that the release was created from
      * @return a Stream of Link instances for the specified project ID
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Link> getLinksStream(Object projectIdOrPath, String tagName) throws GitLabApiException {
+    public Stream<Link> getLinksStream(Object projectIdOrPath, String tagName) throws RelevantException {
         return (getLinks(projectIdOrPath, tagName, getDefaultPerPage()).stream());
     }
 
@@ -108,9 +109,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param tagName         the name of the tag to fetch the Link for
      * @param linkId          the id of the Link to fetch for
      * @return a Link instance with info on the specified tag and id
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Link getLink(Object projectIdOrPath, String tagName, Integer linkId) throws GitLabApiException {
+    public Link getLink(Object projectIdOrPath, String tagName, Integer linkId) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -135,13 +136,13 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param tagName         the name of the tag to fetch the Link for
      * @param linkId          the id of the Link to fetch for
      * @return an Optional instance with the specified Link as the value
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Optional<Link> getOptionalLink(Object projectIdOrPath, String tagName, Integer linkId)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return (Optional.ofNullable(getLink(projectIdOrPath, tagName, linkId)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -156,9 +157,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param params          a ReleaseLinksParams instance holding the parameters for the link
      * @return a Link instance containing the newly created Link info
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Link createLink(Object projectIdOrPath, ReleaseLinkParams params) throws GitLabApiException {
+    public Link createLink(Object projectIdOrPath, ReleaseLinkParams params) throws RelevantException {
         String tagName = params.getTagName();
         if (tagName == null || tagName.trim().isEmpty()) {
             throw new RuntimeException("params.tagName cannot be null or empty");
@@ -197,9 +198,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param linkId          the id of the Link to fetch for
      * @param params          a ReleaseLinksParams instance holding the parameters for the Link
      * @return a Link instance containing info on the updated Link
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Link updateLink(Object projectIdOrPath, Integer linkId, ReleaseLinkParams params) throws GitLabApiException {
+    public Link updateLink(Object projectIdOrPath, Integer linkId, ReleaseLinkParams params) throws RelevantException {
         String tagName = params.getTagName();
         if (tagName == null || tagName.trim().isEmpty()) {
             throw new RuntimeException("params.tagName cannot be null or empty");
@@ -232,9 +233,9 @@ public class ReleaseLinksApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param tagName         the tag name that the link was created from
      * @param linkId          the id of the Link to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteLink(Object projectIdOrPath, String tagName, Integer linkId) throws GitLabApiException {
+    public void deleteLink(Object projectIdOrPath, String tagName, Integer linkId) throws RelevantException {
         delete(
                 Response.Status.OK,
                 null,

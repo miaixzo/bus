@@ -133,7 +133,7 @@ public class HL7Charset {
 
             case "UNICODE":
             case "UNICODE UTF-8":
-                return "UTF-8";
+                return org.miaixz.bus.core.lang.Charset.DEFAULT_UTF_8;
         }
         return "US-ASCII";
     }

@@ -27,6 +27,7 @@ import jakarta.persistence.*;
 import org.apache.ibatis.type.TypeHandler;
 
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -127,6 +128,9 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
             if (!column.columnDefinition().isBlank()) {
                 columnMeta.columnDefinition(column.columnDefinition());
             }
+            if (!column.comment().isBlank()) {
+                columnMeta.comment(column.comment());
+            }
         }
 
         // Process the basic annotation.
@@ -192,7 +196,7 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
         String referencedTable = MapperFactory.of(fieldMeta.getType()).tableName();
         String name = foreignKeyName(tableMeta, fieldMeta, joinColumns);
         if (StringKit.isEmpty(name)) {
-            name = tableMeta.table() + "_" + fieldMeta.getName() + "_fk";
+            name = tableMeta.table() + Symbol.UNDERLINE + fieldMeta.getName() + Symbol.UNDERLINE + "fk";
         }
         ForeignKeyMeta foreignKey = new ForeignKeyMeta().name(name).referencedTable(referencedTable);
         for (JoinColumn joinColumn : joinColumns) {
@@ -248,7 +252,7 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
                 return joinColumn.foreignKey().name();
             }
         }
-        return tableMeta.table() + "_" + fieldMeta.getName() + "_fk";
+        return tableMeta.table() + Symbol.UNDERLINE + fieldMeta.getName() + Symbol.UNDERLINE + "fk";
     }
 
 }

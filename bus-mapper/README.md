@@ -95,7 +95,8 @@ bus:
     basePackage:
       ai.deepparser.nexus.mapper
     mapperLocations: classpath:mapper/**/*.xml
-    autoDelimitKeywords: true
+    identifier:
+      enabled: true # Enabled by default; set false to disable strict identifier validation.
     reasonable: false
     supportMethodsArguments: false
     params: count=countSql
@@ -902,6 +903,7 @@ bus:
 | Create unique index | Yes | `allow-create-unique: true` |
 | Create composite index | Yes | `allow-create-index: true` |
 | Create foreign key | Yes | `allow-create-foreign-key: true` |
+| Fix table or column comments | Yes | `allow-modify-comment: true` |
 | Change SQL type | Yes | `allow-modify-type: true` |
 | Expand varchar length | Yes | `allow-expand-length: true` |
 | Shrink varchar length | Blocked by default | `allow-shrink-length: true`, `allow-dangerous: true`, and whitelist |
@@ -922,7 +924,9 @@ Supported modes:
 When a table already exists, Bus Mapper reads current database metadata and compares it with entity metadata. It only
 executes differences that are both supported by the active dialect and enabled by configuration. Missing indexes,
 unique indexes, primary keys, and foreign keys can be added to existing tables. Existing field type changes require
-`allow-modify-type: true`, and length expansion requires `allow-expand-length: true`.
+`allow-modify-type: true`, and length expansion requires `allow-expand-length: true`. Every table or column comment DDL
+requires `allow-modify-comment: true`; when it is `false`, newly created tables, added columns, existing tables, and
+existing columns do not generate comment SQL.
 
 Destructive changes remain blocked unless the matching operation flag, `allow-dangerous: true`, and
 `dangerous-whitelist` all allow the same difference.
@@ -948,6 +952,7 @@ bus:
       allow-create-index: true
       allow-create-unique: true
       allow-create-foreign-key: true
+      allow-modify-comment: true
       allow-modify-type: true
       allow-expand-length: true
 ```
@@ -989,6 +994,7 @@ bus:
             allow-add-column: true
             allow-create-primary-key: true
             allow-create-index: true
+            allow-modify-comment: true
 ```
 
 `bus.mapper.schema` remains compatible: when no namespace-level `schema` exists, the legacy global configuration runs as
@@ -1034,14 +1040,14 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "dp_user")
+@Table(name = "dp_user", comment = "User table")
 public class UserEntity {
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, comment = "Primary key ID")
     private Long id;
 
-    @Column(length = 128)
+    @Column(length = 128, comment = "User name")
     private String name;
 }
 ```
@@ -1088,6 +1094,7 @@ The example above creates:
 * Normal composite index `idx_dp_order_user_code(user_id, code)`.
 * Unique index `uk_dp_order_code(code)`.
 * Foreign key `fk_dp_order_user(user_id) references dp_user(id)`.
+* Table and column comments through `@Table(comment = "...")` and `@Column(comment = "...")`.
 * `remark VARCHAR(512)` through `@Column(length = 512)`.
 * `amount BIGINT` because the Java type is `Long`.
 
@@ -1174,6 +1181,7 @@ public class SchemaBootstrap {
             .allowCreateIndex(true)
             .allowCreateUnique(true)
             .allowCreateForeignKey(true)
+            .allowModifyComment(true)
             .allowModifyType(true)
             .allowExpandLength(true);
 

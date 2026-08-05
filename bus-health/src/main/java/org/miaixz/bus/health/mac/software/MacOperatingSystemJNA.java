@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.sun.jna.platform.mac.SystemB;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
@@ -56,7 +57,7 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
                 // Usually this works. If it doesn't, fall back to text parsing.
                 // Boot time will be the first consecutive string of digits.
                 BOOTTIME = Parsing.parseLongOrDefault(
-                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", ""),
                         System.currentTimeMillis() / 1000);
             } else {
                 // tv now points to a 64-bit timeval structure for boot time.

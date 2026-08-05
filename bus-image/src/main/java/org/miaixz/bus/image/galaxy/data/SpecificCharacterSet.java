@@ -615,7 +615,7 @@ public class SpecificCharacterSet {
             charsetNames[13] = "JIS_X0212-1990";
             charsetNames[14] = "EUC-KR";
             charsetNames[15] = "GB2312";
-            charsetNames[16] = "UTF-8";
+            charsetNames[16] = org.miaixz.bus.core.lang.Charset.DEFAULT_UTF_8;
             charsetNames[17] = "GB18030";
             return charsetNames;
         }

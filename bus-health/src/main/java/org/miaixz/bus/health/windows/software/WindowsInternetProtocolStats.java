@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.WinError;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -206,7 +207,7 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
                         IPHlpAPI.MIB_UDPROW_OWNER_PID row = udpTable.table[i];
                         conns.add(
                                 new InternetProtocolStats.IPConnection("udp4", Parsing.parseIntToIP(row.dwLocalAddr),
-                                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), new byte[0], 0,
+                                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), Normal.EMPTY_BYTE_ARRAY, 0,
                                         InternetProtocolStats.TcpState.NONE, 0, 0, row.dwOwningPid));
                     }
                 }
@@ -257,7 +258,7 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
                         IPHlpAPI.MIB_UDP6ROW_OWNER_PID row = udpTable.table[i];
                         conns.add(
                                 new InternetProtocolStats.IPConnection("udp6", row.ucLocalAddr,
-                                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), new byte[0], 0,
+                                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), Normal.EMPTY_BYTE_ARRAY, 0,
                                         InternetProtocolStats.TcpState.NONE, 0, 0, row.dwOwningPid));
                     }
                 }

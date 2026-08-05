@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.resolve.attribute.AnnotationAttributeValueProvider;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -178,7 +179,7 @@ public class SynthesizedAnnotationProxy implements InvocationHandler {
         final String attributes = Stream.of(MethodKit.getDeclaredMethods(annotation.getAnnotation().annotationType()))
                 .filter(MethodKit::isAttributeMethod)
                 .map(method -> StringKit.format("{}={}", method.getName(), proxyAttributeValue(method)))
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         return StringKit.format("@{}({})", annotation.annotationType().getName(), attributes);
     }
 

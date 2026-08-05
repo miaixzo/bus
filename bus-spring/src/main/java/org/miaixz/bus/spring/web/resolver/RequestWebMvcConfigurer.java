@@ -26,7 +26,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Registers only the explicit RequestObject argument resolver.
+ * Registers the unified application request-object argument resolver.
  *
  * @author Kimi Liu
  * @since Java 21+

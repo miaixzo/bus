@@ -28,6 +28,7 @@ import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.center.map.multiple.RowKeyTable;
 import org.miaixz.bus.core.center.map.multiple.Table;
 import org.miaixz.bus.core.compare.IndexedCompare;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.ExcelConfig;
@@ -350,7 +351,7 @@ public class ExcelWriteConfig extends ExcelConfig {
         Comparator<String> aliasComparator = this.aliasComparator;
         if (null == aliasComparator) {
             final Set<String> keySet = headerAlias.keySet();
-            aliasComparator = new IndexedCompare<>(keySet.toArray(new String[0]));
+            aliasComparator = new IndexedCompare<>(keySet.toArray(Normal.EMPTY_STRING_ARRAY));
             this.aliasComparator = aliasComparator;
         }
         return aliasComparator;

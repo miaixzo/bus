@@ -27,7 +27,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Parsing;
 
 /**
  * C library for Solaris. This class should be considered non-API as it may be removed if/when its code is incorporated
@@ -391,45 +391,45 @@ public interface SolarisLibc extends CLibrary {
          * @param buff the buff
          */
         public SolarisPsInfo(ByteBuffer buff) {
-            this.pr_flag = Builder.readIntFromBuffer(buff);
-            this.pr_nlwp = Builder.readIntFromBuffer(buff);
-            this.pr_pid = Builder.readIntFromBuffer(buff);
-            this.pr_ppid = Builder.readIntFromBuffer(buff);
-            this.pr_pgid = Builder.readIntFromBuffer(buff);
-            this.pr_sid = Builder.readIntFromBuffer(buff);
-            this.pr_uid = Builder.readIntFromBuffer(buff);
-            this.pr_euid = Builder.readIntFromBuffer(buff);
-            this.pr_gid = Builder.readIntFromBuffer(buff);
-            this.pr_egid = Builder.readIntFromBuffer(buff);
-            this.pr_addr = Builder.readPointerFromBuffer(buff);
-            this.pr_size = Builder.readSizeTFromBuffer(buff);
-            this.pr_rssize = Builder.readSizeTFromBuffer(buff);
-            this.pr_rssizepriv = Builder.readSizeTFromBuffer(buff);
-            this.pr_ttydev = Builder.readNativeLongFromBuffer(buff);
-            this.pr_pctcpu = Builder.readShortFromBuffer(buff);
-            this.pr_pctmem = Builder.readShortFromBuffer(buff);
+            this.pr_flag = Parsing.readIntFromBuffer(buff);
+            this.pr_nlwp = Parsing.readIntFromBuffer(buff);
+            this.pr_pid = Parsing.readIntFromBuffer(buff);
+            this.pr_ppid = Parsing.readIntFromBuffer(buff);
+            this.pr_pgid = Parsing.readIntFromBuffer(buff);
+            this.pr_sid = Parsing.readIntFromBuffer(buff);
+            this.pr_uid = Parsing.readIntFromBuffer(buff);
+            this.pr_euid = Parsing.readIntFromBuffer(buff);
+            this.pr_gid = Parsing.readIntFromBuffer(buff);
+            this.pr_egid = Parsing.readIntFromBuffer(buff);
+            this.pr_addr = Parsing.readPointerFromBuffer(buff);
+            this.pr_size = Parsing.readSizeTFromBuffer(buff);
+            this.pr_rssize = Parsing.readSizeTFromBuffer(buff);
+            this.pr_rssizepriv = Parsing.readSizeTFromBuffer(buff);
+            this.pr_ttydev = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_pctcpu = Parsing.readShortFromBuffer(buff);
+            this.pr_pctmem = Parsing.readShortFromBuffer(buff);
             // Force 8 byte alignment
             if (Native.LONG_SIZE > 4) {
-                Builder.readIntFromBuffer(buff);
+                Parsing.readIntFromBuffer(buff);
             }
             this.pr_start = new Timestruc(buff);
             this.pr_time = new Timestruc(buff);
             this.pr_ctime = new Timestruc(buff);
-            Builder.readByteArrayFromBuffer(buff, this.pr_fname);
-            Builder.readByteArrayFromBuffer(buff, this.pr_psargs);
-            this.pr_wstat = Builder.readIntFromBuffer(buff);
-            this.pr_argc = Builder.readIntFromBuffer(buff);
-            this.pr_argv = Builder.readPointerFromBuffer(buff);
-            this.pr_envp = Builder.readPointerFromBuffer(buff);
-            this.pr_dmodel = Builder.readByteFromBuffer(buff);
-            Builder.readByteArrayFromBuffer(buff, this.pr_pad2);
-            this.pr_taskid = Builder.readIntFromBuffer(buff);
-            this.pr_projid = Builder.readIntFromBuffer(buff);
-            this.pr_nzomb = Builder.readIntFromBuffer(buff);
-            this.pr_poolid = Builder.readIntFromBuffer(buff);
-            this.pr_zoneid = Builder.readIntFromBuffer(buff);
-            this.pr_contract = Builder.readIntFromBuffer(buff);
-            this.pr_filler = Builder.readIntFromBuffer(buff);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_fname);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_psargs);
+            this.pr_wstat = Parsing.readIntFromBuffer(buff);
+            this.pr_argc = Parsing.readIntFromBuffer(buff);
+            this.pr_argv = Parsing.readPointerFromBuffer(buff);
+            this.pr_envp = Parsing.readPointerFromBuffer(buff);
+            this.pr_dmodel = Parsing.readByteFromBuffer(buff);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_pad2);
+            this.pr_taskid = Parsing.readIntFromBuffer(buff);
+            this.pr_projid = Parsing.readIntFromBuffer(buff);
+            this.pr_nzomb = Parsing.readIntFromBuffer(buff);
+            this.pr_poolid = Parsing.readIntFromBuffer(buff);
+            this.pr_zoneid = Parsing.readIntFromBuffer(buff);
+            this.pr_contract = Parsing.readIntFromBuffer(buff);
+            this.pr_filler = Parsing.readIntFromBuffer(buff);
             this.pr_lwp = new SolarisLwpsInfo(buff);
         }
 
@@ -550,30 +550,30 @@ public interface SolarisLibc extends CLibrary {
          * @param buff the buff
          */
         public SolarisLwpsInfo(ByteBuffer buff) {
-            this.pr_flag = Builder.readIntFromBuffer(buff);
-            this.pr_lwpid = Builder.readIntFromBuffer(buff);
-            this.pr_addr = Builder.readPointerFromBuffer(buff);
-            this.pr_wchan = Builder.readPointerFromBuffer(buff);
-            this.pr_stype = Builder.readByteFromBuffer(buff);
-            this.pr_state = Builder.readByteFromBuffer(buff);
-            this.pr_sname = Builder.readByteFromBuffer(buff);
-            this.pr_nice = Builder.readByteFromBuffer(buff);
-            this.pr_syscall = Builder.readShortFromBuffer(buff);
-            this.pr_oldpri = Builder.readByteFromBuffer(buff);
-            this.pr_cpu = Builder.readByteFromBuffer(buff);
-            this.pr_pri = Builder.readIntFromBuffer(buff);
-            this.pr_pctcpu = Builder.readShortFromBuffer(buff);
-            this.pr_pad = Builder.readShortFromBuffer(buff);
+            this.pr_flag = Parsing.readIntFromBuffer(buff);
+            this.pr_lwpid = Parsing.readIntFromBuffer(buff);
+            this.pr_addr = Parsing.readPointerFromBuffer(buff);
+            this.pr_wchan = Parsing.readPointerFromBuffer(buff);
+            this.pr_stype = Parsing.readByteFromBuffer(buff);
+            this.pr_state = Parsing.readByteFromBuffer(buff);
+            this.pr_sname = Parsing.readByteFromBuffer(buff);
+            this.pr_nice = Parsing.readByteFromBuffer(buff);
+            this.pr_syscall = Parsing.readShortFromBuffer(buff);
+            this.pr_oldpri = Parsing.readByteFromBuffer(buff);
+            this.pr_cpu = Parsing.readByteFromBuffer(buff);
+            this.pr_pri = Parsing.readIntFromBuffer(buff);
+            this.pr_pctcpu = Parsing.readShortFromBuffer(buff);
+            this.pr_pad = Parsing.readShortFromBuffer(buff);
             this.pr_start = new Timestruc(buff);
             this.pr_time = new Timestruc(buff);
-            Builder.readByteArrayFromBuffer(buff, this.pr_clname);
-            Builder.readByteArrayFromBuffer(buff, this.pr_oldname);
-            this.pr_onpro = Builder.readIntFromBuffer(buff);
-            this.pr_bindpro = Builder.readIntFromBuffer(buff);
-            this.pr_bindpset = Builder.readIntFromBuffer(buff);
-            this.pr_lgrp = Builder.readIntFromBuffer(buff);
-            this.pr_last_onproc = Builder.readLongFromBuffer(buff);
-            Builder.readByteArrayFromBuffer(buff, this.pr_name);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_clname);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_oldname);
+            this.pr_onpro = Parsing.readIntFromBuffer(buff);
+            this.pr_bindpro = Parsing.readIntFromBuffer(buff);
+            this.pr_bindpset = Parsing.readIntFromBuffer(buff);
+            this.pr_lgrp = Parsing.readIntFromBuffer(buff);
+            this.pr_last_onproc = Parsing.readLongFromBuffer(buff);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_name);
         }
 
     }
@@ -713,8 +713,8 @@ public interface SolarisLibc extends CLibrary {
          * @param buff the buff
          */
         public SolarisPrUsage(ByteBuffer buff) {
-            this.pr_lwpid = Builder.readIntFromBuffer(buff);
-            this.pr_count = Builder.readIntFromBuffer(buff);
+            this.pr_lwpid = Parsing.readIntFromBuffer(buff);
+            this.pr_count = Parsing.readIntFromBuffer(buff);
             this.pr_tstamp = new Timestruc(buff);
             this.pr_create = new Timestruc(buff);
             this.pr_term = new Timestruc(buff);
@@ -732,20 +732,20 @@ public interface SolarisLibc extends CLibrary {
             for (int i = 0; i < filltime.length; i++) {
                 this.filltime[i] = new Timestruc(buff);
             }
-            this.pr_minf = Builder.readNativeLongFromBuffer(buff);
-            this.pr_majf = Builder.readNativeLongFromBuffer(buff);
-            this.pr_nswap = Builder.readNativeLongFromBuffer(buff);
-            this.pr_inblk = Builder.readNativeLongFromBuffer(buff);
-            this.pr_oublk = Builder.readNativeLongFromBuffer(buff);
-            this.pr_msnd = Builder.readNativeLongFromBuffer(buff);
-            this.pr_mrcv = Builder.readNativeLongFromBuffer(buff);
-            this.pr_sigs = Builder.readNativeLongFromBuffer(buff);
-            this.pr_vctx = Builder.readNativeLongFromBuffer(buff);
-            this.pr_ictx = Builder.readNativeLongFromBuffer(buff);
-            this.pr_sysc = Builder.readNativeLongFromBuffer(buff);
-            this.pr_ioch = Builder.readNativeLongFromBuffer(buff);
+            this.pr_minf = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_majf = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_nswap = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_inblk = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_oublk = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_msnd = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_mrcv = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_sigs = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_vctx = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_ictx = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_sysc = Parsing.readNativeLongFromBuffer(buff);
+            this.pr_ioch = Parsing.readNativeLongFromBuffer(buff);
             for (int i = 0; i < filler.length; i++) {
-                this.filler[i] = Builder.readNativeLongFromBuffer(buff);
+                this.filler[i] = Parsing.readNativeLongFromBuffer(buff);
             }
         }
 
@@ -774,8 +774,8 @@ public interface SolarisLibc extends CLibrary {
          * @param buff the buff
          */
         public Timestruc(ByteBuffer buff) {
-            this.tv_sec = Builder.readNativeLongFromBuffer(buff);
-            this.tv_nsec = Builder.readNativeLongFromBuffer(buff);
+            this.tv_sec = Parsing.readNativeLongFromBuffer(buff);
+            this.tv_nsec = Parsing.readNativeLongFromBuffer(buff);
         }
 
     }

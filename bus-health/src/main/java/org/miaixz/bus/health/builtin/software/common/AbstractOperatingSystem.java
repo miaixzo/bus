@@ -27,7 +27,7 @@ import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -51,7 +51,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     /**
      * The USE_WHO_COMMAND constant.
      */
-    protected static final boolean USE_WHO_COMMAND = Config.get(Config._UNIX_WHOCOMMAND, false);
+    protected static final boolean USE_WHO_COMMAND = Builder.get(Builder._UNIX_WHOCOMMAND, false);
 
     /**
      * The manufacturer value.

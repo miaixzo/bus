@@ -105,7 +105,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
                 "Notify",
                 "Huawei SMS send started: template={}, targetCount={}, senderPresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && entity.getSender() != null);
         Map<String, String> bodys = new HashMap<>();
         // The sender's number.
@@ -134,7 +134,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
                 "Notify",
                 "Huawei SMS send completed: template={}, targetCount={}, code={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 errcode,
                 result.getErrcode(),
                 response == null ? 0 : response.length());

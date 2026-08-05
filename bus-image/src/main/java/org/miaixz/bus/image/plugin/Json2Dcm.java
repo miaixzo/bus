@@ -25,6 +25,7 @@ import java.util.List;
 import jakarta.json.Json;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -125,7 +126,7 @@ public class Json2Dcm {
      * @throws IOException if an I/O error occurs.
      */
     private static JSONReader parseJSON(String fname, Attributes attrs) throws IOException {
-        try (InputStream in = fname.equals("-") ? System.in : new FileInputStream(fname)) {
+        try (InputStream in = fname.equals(Symbol.MINUS) ? System.in : new FileInputStream(fname)) {
             JSONReader reader = new JSONReader(Json.createParser(new InputStreamReader(in, Charset.UTF_8)));
             reader.readDataset(attrs);
             return reader;

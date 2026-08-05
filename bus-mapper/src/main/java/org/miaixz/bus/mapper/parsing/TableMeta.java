@@ -78,6 +78,11 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     protected String schema;
 
     /**
+     * Table comment used by schema initialization DDL.
+     */
+    protected String comment;
+
+    /**
      * The naming style for converting entity classes and fields to table and column names.
      */
     protected String style;

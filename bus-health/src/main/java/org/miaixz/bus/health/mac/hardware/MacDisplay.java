@@ -37,8 +37,9 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Edid;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.DisplayInfo;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
@@ -261,7 +262,8 @@ final class MacDisplay extends AbstractDisplay {
         String fallbackName = null;
         String ioNameMatched = cfRegistryEntryGetString(fb, "IONameMatched");
         if (ioNameMatched != null) {
-            String shortName = ioNameMatched.contains(",") ? ioNameMatched.substring(0, ioNameMatched.indexOf(','))
+            String shortName = ioNameMatched.contains(Symbol.COMMA)
+                    ? ioNameMatched.substring(0, ioNameMatched.indexOf(Symbol.C_COMMA))
                     : ioNameMatched;
             fallbackName = shortName + " (Built-in Display)";
         }
@@ -289,7 +291,7 @@ final class MacDisplay extends AbstractDisplay {
             }
             displayName = getLocalizedDisplayName(builtInId);
         }
-        return Builder.synthesizeDisplayInfo(
+        return Edid.synthesizeDisplayInfo(
                 legacyMfg,
                 cgModel,
                 cgSerial,

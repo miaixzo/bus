@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -398,7 +399,7 @@ final class LinuxGpuStats implements GpuStats {
      */
     private static long parseDpmActiveMhz(String path) {
         for (String line : Builder.readFile(path, false)) {
-            if (line.endsWith("*")) {
+            if (line.endsWith(Symbol.STAR)) {
                 int mhzIdx = line.toLowerCase(Locale.ROOT).indexOf("mhz");
                 if (mhzIdx > 0) {
                     int start = line.lastIndexOf(' ', mhzIdx - 1);

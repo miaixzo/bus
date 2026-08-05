@@ -34,7 +34,7 @@ Spring Boot 生命周期支持和通用 Web 基础设施。它提供可复用的
 | `boot.banner` | Banner 选择与渲染。 |
 | `boot.condition` | 注解优先的通用 Spring Boot 启用条件。 |
 | `boot.environment` | 早期 EnvironmentPostProcessor。 |
-| `boot.listener` | Spring Boot 和 Spring Cloud 早期 Listener。 |
+| `boot.listener` | Spring Boot 早期 Listener。 |
 | `boot.startup` | 启动阶段测量与报告。 |
 
 根 Package 有意保持非空。`ContextBuilder`、`ContextManager`、`ContextProvider`、`ContextState`、
@@ -106,7 +106,37 @@ Parameter、可用的缓存 JSON Body 和 Cookie。上下文解析绝不直接�
 ## Spring Boot 生命周期
 
 Boot 实现 Package 包含 `SpringApplicationRunListener`、EnvironmentPostProcessor、配置 Listener、Banner 和
-启动指标。它们不单独持有 `spring.factories`；唯一发现清单由 `bus-starter` 提供，并指向这些实现。
+启动指标。`SpringStartupPublisher` 将启动汇总交给可选集成，`bus-starter.metrics` 会发布到 Bus Metrics
+Provider。它们不单独持有 `spring.factories`；唯一发现清单由 `bus-starter` 提供，并指向这些实现。
+
+### 日志命名空间桥接
+
+`LoggingEnvironmentPostProcessor` 在配置数据加载完成后，将所有 `bus.logging.*` 映射到 Spring Boot 原生
+`logging.*` 命名空间。日志配置模型仍由 Spring Boot 维护，因此 `logging.*` 支持的配置项，都可以使用
+`bus.logging.*` 前缀书写；当两者同时存在时，`bus.logging.*` 优先。
+
+示例：
+
+```yaml
+bus:
+  logging:
+    level:
+      root: INFO
+      org.miaixz: DEBUG
+    file:
+      name: app.log
+    pattern:
+      console: "%d %-5level %logger - %msg%n"
+```
+
+启动阶段会暴露为：
+
+```properties
+logging.level.root=INFO
+logging.level.org.miaixz=DEBUG
+logging.file.name=app.log
+logging.pattern.console=%d %-5level %logger - %msg%n
+```
 
 ## Native Image 与 JPMS
 

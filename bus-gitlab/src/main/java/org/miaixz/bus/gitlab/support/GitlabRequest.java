@@ -27,6 +27,8 @@ import java.util.Enumeration;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -59,24 +61,25 @@ public class GitlabRequest {
     public static String getShortRequestDump(String fromMethod, boolean includeHeaders, HttpServletRequest request) {
 
         StringBuilder dump = new StringBuilder();
-        dump.append("Timestamp     : ").append(ISO8601.getTimestamp()).append("\n");
-        dump.append("fromMethod    : ").append(fromMethod).append("\n");
-        dump.append("Method        : ").append(request.getMethod()).append('\n');
-        dump.append("Scheme        : ").append(request.getScheme()).append('\n');
-        dump.append("URI           : ").append(request.getRequestURI()).append('\n');
-        dump.append("Query-String  : ").append(request.getQueryString()).append('\n');
-        dump.append("Auth-Type     : ").append(request.getAuthType()).append('\n');
-        dump.append("Remote-Addr   : ").append(request.getRemoteAddr()).append('\n');
-        dump.append("Scheme        : ").append(request.getScheme()).append('\n');
-        dump.append("Content-Type  : ").append(request.getContentType()).append('\n');
-        dump.append("Content-Length: ").append(request.getContentLength()).append('\n');
+        dump.append("Timestamp     : ").append(ISO8601.getTimestamp()).append(Symbol.LF);
+        dump.append("fromMethod    : ").append(fromMethod).append(Symbol.LF);
+        dump.append("Method        : ").append(request.getMethod()).append(Symbol.C_LF);
+        dump.append("Scheme        : ").append(request.getScheme()).append(Symbol.C_LF);
+        dump.append("URI           : ").append(request.getRequestURI()).append(Symbol.C_LF);
+        dump.append("Query-String  : ").append(request.getQueryString()).append(Symbol.C_LF);
+        dump.append("Auth-Type     : ").append(request.getAuthType()).append(Symbol.C_LF);
+        dump.append("Remote-Addr   : ").append(request.getRemoteAddr()).append(Symbol.C_LF);
+        dump.append("Scheme        : ").append(request.getScheme()).append(Symbol.C_LF);
+        dump.append("Content-Type  : ").append(request.getContentType()).append(Symbol.C_LF);
+        dump.append("Content-Length: ").append(request.getContentLength()).append(Symbol.C_LF);
 
         if (includeHeaders) {
-            dump.append("Headers       :\n");
+            dump.append("Headers       :").append(Symbol.LF);
             Enumeration<String> headers = request.getHeaderNames();
             while (headers.hasMoreElements()) {
                 String header = headers.nextElement();
-                dump.append("\t").append(header).append(": ").append(request.getHeader(header)).append('\n');
+                dump.append(Symbol.TAB).append(header).append(Symbol.COLON).append(Symbol.SPACE)
+                        .append(request.getHeader(header)).append(Symbol.C_LF);
             }
         }
 
@@ -98,39 +101,42 @@ public class GitlabRequest {
         StringBuilder buf = new StringBuilder(shortDump);
         try {
 
-            buf.append("\nAttributes:\n");
+            buf.append(Symbol.LF).append("Attributes:").append(Symbol.LF);
             Enumeration<String> attrs = request.getAttributeNames();
             while (attrs.hasMoreElements()) {
                 String attr = attrs.nextElement();
-                buf.append("\t").append(attr).append(": ").append(request.getAttribute(attr)).append('\n');
+                buf.append(Symbol.TAB).append(attr).append(Symbol.COLON).append(Symbol.SPACE)
+                        .append(request.getAttribute(attr)).append(Symbol.C_LF);
             }
 
-            buf.append("\nHeaders:\n");
+            buf.append(Symbol.LF).append("Headers:").append(Symbol.LF);
             Enumeration<String> headers = request.getHeaderNames();
             while (headers.hasMoreElements()) {
                 String header = headers.nextElement();
-                buf.append("\t").append(header).append(": ").append(request.getHeader(header)).append('\n');
+                buf.append(Symbol.TAB).append(header).append(Symbol.COLON).append(Symbol.SPACE)
+                        .append(request.getHeader(header)).append(Symbol.C_LF);
             }
 
-            buf.append("\nParameters:\n");
+            buf.append(Symbol.LF).append("Parameters:").append(Symbol.LF);
             Enumeration<String> params = request.getParameterNames();
             while (params.hasMoreElements()) {
                 String param = params.nextElement();
-                buf.append("\t").append(param).append(": ").append(request.getParameter(param)).append('\n');
+                buf.append(Symbol.TAB).append(param).append(Symbol.COLON).append(Symbol.SPACE)
+                        .append(request.getParameter(param)).append(Symbol.C_LF);
             }
 
-            buf.append("\nCookies:\n");
+            buf.append(Symbol.LF).append("Cookies:").append(Symbol.LF);
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    String cstr = "\t" + cookie.getDomain() + "." + cookie.getPath() + "." + cookie.getName() + ": "
-                            + cookie.getValue() + "\n";
+                    String cstr = Symbol.TAB + cookie.getDomain() + Symbol.DOT + cookie.getPath() + Symbol.DOT
+                            + cookie.getName() + Symbol.COLON + Symbol.SPACE + cookie.getValue() + Symbol.LF;
                     buf.append(cstr);
                 }
             }
 
             if (includePostData) {
-                buf.append(getPostDataAsString(request)).append("\n");
+                buf.append(getPostDataAsString(request)).append(Symbol.LF);
             }
 
             return (buf.toString());
@@ -158,7 +164,7 @@ public class GitlabRequest {
      */
     public static String getPostDataAsString(HttpServletRequest request) throws IOException {
 
-        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), "UTF-8")) {
+        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), Charset.UTF_8)) {
             return (getReaderContentAsString(reader));
         }
     }

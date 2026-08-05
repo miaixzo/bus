@@ -36,8 +36,12 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.gitlab.GitLabFailure;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -140,7 +144,7 @@ public final class AccessToken {
      * The cookies header value.
      *
      */
-    protected static final String COOKIES_HEADER = "Set-Cookie";
+    protected static final String COOKIES_HEADER = Http.Header.SET_COOKIE;
 
     /**
      * Regular expression used to extract an authenticity token from a new user page.
@@ -207,14 +211,14 @@ public final class AccessToken {
      * @param tokenName the name for the new personal access token
      * @param scopes    an array of scopes for the new personal access token
      * @return the created personal access token
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public static final String createPersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
             final String tokenName,
-            final Scope[] scopes) throws GitLabApiException {
+            final Scope[] scopes) throws RelevantException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -232,14 +236,14 @@ public final class AccessToken {
      * @param tokenName the name for the new personal access token
      * @param scopes    a List of scopes for the new personal access token
      * @return the created personal access token
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public static final String createPersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
             final String tokenName,
-            final List<Scope> scopes) throws GitLabApiException {
+            final List<Scope> scopes) throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -263,21 +267,21 @@ public final class AccessToken {
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure the response code is 200, otherwise there is a failure
             int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Failure loading Access Tokens page, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Failure loading Access Tokens page, aborting!");
             }
 
             String content = getContent(connection);
             Matcher matcher = AUTHENTICITY_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("authenticity_token not found, aborting!");
+                throw GitLabFailure.exception("authenticity_token not found, aborting!");
             }
 
             String csrfToken = matcher.group(1);
@@ -287,13 +291,13 @@ public final class AccessToken {
              * token. *
              *******************************************************************************/
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty(Http.Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", "utf-8");
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(Http.Method.POST.value());
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
@@ -316,30 +320,30 @@ public final class AccessToken {
 
             // Make sure a redirect was provided, otherwise there is a failure
             responseCode = connection.getResponseCode();
-            if (responseCode != 302) {
-                throw new GitLabApiException("Failure creating personal access token, aborting!");
+            if (responseCode != Http.Status.FOUND) {
+                throw GitLabFailure.exception("Failure creating personal access token, aborting!");
             }
 
             // Follow the redirect with the provided session cookie
             String redirectUrl = connection.getHeaderField(Http.Header.LOCATION);
             url = new URL(redirectUrl);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure the response code is 200, otherwise there is a failure
             responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Failure creating personal access token, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Failure creating personal access token, aborting!");
             }
 
             // Extract the personal access token from the page and return it
             content = getContent(connection);
             matcher = PERSONAL_ACCESS_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("created-personal-access-token not found, aborting!");
+                throw GitLabFailure.exception("created-personal-access-token not found, aborting!");
             }
 
             String personalAccessToken = matcher.group(1);
@@ -357,7 +361,7 @@ public final class AccessToken {
                     scopes == null ? 0 : scopes.size(),
                     false,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
 
             if (cookies != null) {
@@ -388,14 +392,14 @@ public final class AccessToken {
      * @param password  the password of the user to revoke the personal access token for
      * @param tokenName the name of the personal access token to revoke
      * @param scopes    an array of scopes of the personal access token to revoke
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public static final void revokePersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
             final String tokenName,
-            final Scope[] scopes) throws GitLabApiException {
+            final Scope[] scopes) throws RelevantException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -412,14 +416,14 @@ public final class AccessToken {
      * @param password  the password of the user to revoke the personal access token for
      * @param tokenName the name of the personal access token to revoke
      * @param scopes    a List of scopes of the personal access token to revoke
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public static final void revokePersonalAccessToken(
             final String baseUrl,
             final String username,
             final String password,
             final String tokenName,
-            final List<Scope> scopes) throws GitLabApiException {
+            final List<Scope> scopes) throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -443,21 +447,21 @@ public final class AccessToken {
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure the response code is 200, otherwise there is a failure
             int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Failure loading Access Tokens page, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Failure loading Access Tokens page, aborting!");
             }
 
             String content = getContent(connection);
             Matcher matcher = AUTHENTICITY_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("authenticity_token not found, aborting!");
+                throw GitLabFailure.exception("authenticity_token not found, aborting!");
             }
 
             String csrfToken = matcher.group(1);
@@ -468,13 +472,13 @@ public final class AccessToken {
              *******************************************************************************/
             int indexOfTokenName = content.indexOf("<td>" + tokenName + "</td>");
             if (indexOfTokenName == -1) {
-                throw new GitLabApiException("personal access token not found, aborting!");
+                throw GitLabFailure.exception("personal access token not found, aborting!");
             }
 
             content = content.substring(indexOfTokenName);
             int indexOfLinkEnd = content.indexOf("</a>");
             if (indexOfTokenName == -1) {
-                throw new GitLabApiException("personal access token not found, aborting!");
+                throw GitLabFailure.exception("personal access token not found, aborting!");
             }
 
             content = content.substring(0, indexOfLinkEnd);
@@ -486,24 +490,24 @@ public final class AccessToken {
             }
 
             if (content.indexOf(scopesText) == -1) {
-                throw new GitLabApiException("personal access token not found, aborting!");
+                throw GitLabFailure.exception("personal access token not found, aborting!");
             }
 
             matcher = REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("personal access token not found, aborting!");
+                throw GitLabFailure.exception("personal access token not found, aborting!");
             }
 
             String revokePath = matcher.group(1);
             url = new URL(baseUrl + revokePath);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty(Http.Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", "utf-8");
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
-            connection.setRequestMethod("PUT");
+            connection.setRequestMethod(Http.Method.PUT.value());
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
@@ -518,23 +522,23 @@ public final class AccessToken {
 
             // Make sure a redirect was provided, otherwise there is a failure
             responseCode = connection.getResponseCode();
-            if (responseCode != 302) {
-                throw new GitLabApiException("Failure revoking personal access token, aborting!");
+            if (responseCode != Http.Status.FOUND) {
+                throw GitLabFailure.exception("Failure revoking personal access token, aborting!");
             }
 
             // Follow the redirect with the provided session cookie
             String redirectUrl = connection.getHeaderField(Http.Header.LOCATION);
             url = new URL(redirectUrl);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure the response code is 200, otherwise there is a failure
             responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Failure revoking personal access token, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Failure revoking personal access token, aborting!");
             }
 
         } catch (IOException ioe) {
@@ -549,7 +553,7 @@ public final class AccessToken {
                     scopes == null ? 0 : scopes.size(),
                     false,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
 
             if (cookies != null) {
@@ -579,10 +583,10 @@ public final class AccessToken {
      * @param username the user name the user to log in with
      * @param password the password of the provided username
      * @return the fetched Feed token
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public static final String getFeedToken(final String baseUrl, final String username, final String password)
-            throws GitLabApiException {
+            throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -606,22 +610,22 @@ public final class AccessToken {
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure the response code is 200, otherwise there is a failure
             int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Failure loading Access Tokens page, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Failure loading Access Tokens page, aborting!");
             }
 
             // Extract the Feed token from the page and return it
             String content = getContent(connection);
             Matcher matcher = FEED_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("Feed token not found, aborting!");
+                throw GitLabFailure.exception("Feed token not found, aborting!");
             }
 
             String feedToken = matcher.group(1);
@@ -637,7 +641,7 @@ public final class AccessToken {
                     username != null && !username.isEmpty(),
                     false,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
 
             if (cookies != null) {
@@ -667,12 +671,12 @@ public final class AccessToken {
      * @param username the user name of an admin user to log in with
      * @param password the password of the provided username
      * @return the fetched health check access token
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public static final String getHealthCheckAccessToken(
             final String baseUrl,
             final String username,
-            final String password) throws GitLabApiException {
+            final String password) throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -696,22 +700,22 @@ public final class AccessToken {
             String urlString = baseUrl + "/admin/health_check";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure the response code is 200, otherwise there is a failure
             int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Failure loading Health Check page, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Failure loading Health Check page, aborting!");
             }
 
             // Extract the personal access token from the page and return it
             String content = getContent(connection);
             Matcher matcher = HEALTH_CHECK_ACCESS_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("health-check-access-token not found, aborting!");
+                throw GitLabFailure.exception("health-check-access-token not found, aborting!");
             }
 
             String healthCheckAccessToken = matcher.group(1);
@@ -727,7 +731,7 @@ public final class AccessToken {
                     username != null && !username.isEmpty(),
                     false,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
 
             if (cookies != null) {
@@ -757,10 +761,10 @@ public final class AccessToken {
      * @param username the user name to to login for
      * @param password the password of the user to login for
      * @return the GitLab seesion token as a cookie value
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
     protected static final String login(final String baseUrl, final String username, final String password)
-            throws GitLabApiException {
+            throws RelevantException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -778,19 +782,19 @@ public final class AccessToken {
             String urlString = baseUrl + "/users/sign_in";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.addRequestProperty("User-Agent", USER_AGENT);
+            connection.setRequestMethod(Http.Method.GET.value());
+            connection.addRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure a redirect was provided, otherwise it is a login failure
             int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Invalid state, aborting!");
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Invalid state, aborting!");
             }
 
             // Get the session cookie from the headers
-            String[] cookieParts = connection.getHeaderField(COOKIES_HEADER).split(";");
+            String[] cookieParts = connection.getHeaderField(COOKIES_HEADER).split(Symbol.SEMICOLON);
             String cookies = cookieParts[0];
 
             // Extract the authenticity token from the content, need this to submit the
@@ -798,7 +802,7 @@ public final class AccessToken {
             String content = getContent(connection);
             Matcher matcher = NEW_USER_AUTHENTICITY_TOKEN_PATTERN.matcher(content);
             if (!matcher.find()) {
-                throw new GitLabApiException("authenticity_token not found, aborting!");
+                throw GitLabFailure.exception("authenticity_token not found, aborting!");
             }
 
             String csrfToken = matcher.group(1);
@@ -808,14 +812,14 @@ public final class AccessToken {
              * cookie along the way. *
              *******************************************************************************/
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty(Http.Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", "utf-8");
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
 
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(Http.Method.POST.value());
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
@@ -832,26 +836,26 @@ public final class AccessToken {
 
             // Make sure a redirect was provided, otherwise it is a login failure
             responseCode = connection.getResponseCode();
-            if (responseCode != 302) {
-                throw new GitLabApiException("Login failure, aborting!", 401);
+            if (responseCode != Http.Status.FOUND) {
+                throw GitLabFailure.exception("Login failure, aborting!", 401);
             }
 
-            cookieParts = connection.getHeaderField(COOKIES_HEADER).split(";");
+            cookieParts = connection.getHeaderField(COOKIES_HEADER).split(Symbol.SEMICOLON);
             cookies = cookieParts[0];
 
             // Follow the redirect with the provided session cookie
             String redirectUrl = connection.getHeaderField(Http.Header.LOCATION);
             url = new URL(redirectUrl);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // The response code should be 200, otherwise something is wrong, consider it a login failure
             responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                throw new GitLabApiException("Login failure, aborting!", 401);
+            if (responseCode != Http.Status.OK) {
+                throw GitLabFailure.exception("Login failure, aborting!", 401);
             }
 
             return (cookies);
@@ -866,7 +870,7 @@ public final class AccessToken {
                     username != null && !username.isEmpty(),
                     false,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
             if (savedFollowRedirects) {
                 HttpURLConnection.setFollowRedirects(true);
@@ -879,9 +883,9 @@ public final class AccessToken {
      *
      * @param baseUrl the GitLab server base URL
      * @param cookies the GitLab session cookie to logout
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    protected static final void logout(final String baseUrl, final String cookies) throws GitLabApiException {
+    protected static final void logout(final String baseUrl, final String cookies) throws RelevantException {
 
         // Save so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -896,16 +900,16 @@ public final class AccessToken {
             String urlString = baseUrl + "/users/sign_out";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", USER_AGENT);
-            connection.setRequestProperty("Cookie", cookies);
-            connection.setRequestMethod("GET");
+            connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
+            connection.setRequestProperty(Http.Header.COOKIE, cookies);
+            connection.setRequestMethod(Http.Method.GET.value());
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
 
             // Make sure a redirect was provided, otherwise it is a logout failure
             int responseCode = connection.getResponseCode();
-            if (responseCode != 302) {
-                throw new GitLabApiException("Logout failure, aborting!");
+            if (responseCode != Http.Status.FOUND) {
+                throw GitLabFailure.exception("Logout failure, aborting!");
             }
 
         } catch (IOException ioe) {
@@ -917,7 +921,7 @@ public final class AccessToken {
                     baseUrl != null,
                     cookies != null && !cookies.isEmpty(),
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         } finally {
             if (savedFollowRedirects) {
                 HttpURLConnection.setFollowRedirects(true);
@@ -933,21 +937,21 @@ public final class AccessToken {
      * @param name     the form param name
      * @param value    the form param value
      * @return the form data StringBuilder
-     * @throws GitLabApiException if any error occurs.
+     * @throws RelevantException if any error occurs.
      */
     public static final StringBuilder addFormData(StringBuilder formData, String name, String value)
-            throws GitLabApiException {
+            throws RelevantException {
 
         if (formData == null) {
             formData = new StringBuilder();
         } else if (formData.length() > 0) {
-            formData.append("&");
+            formData.append(Symbol.AND);
         }
 
         formData.append(name);
-        formData.append("=");
+        formData.append(Symbol.EQUAL);
         try {
-            formData.append(URLEncoder.encode(value, "UTF-8"));
+            formData.append(URLEncoder.encode(value, Charset.UTF_8));
             return (formData);
         } catch (Exception e) {
             Logger.warn(
@@ -958,7 +962,7 @@ public final class AccessToken {
                     name,
                     value != null,
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
     }
 
@@ -967,9 +971,9 @@ public final class AccessToken {
      *
      * @param connection the URLConnection to read the content from
      * @return the read content as a String
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    protected static String getContent(URLConnection connection) throws GitLabApiException {
+    protected static String getContent(URLConnection connection) throws RelevantException {
 
         StringBuilder buf = new StringBuilder();
 
@@ -983,7 +987,7 @@ public final class AccessToken {
                     "GitLab access token content read failed: connectionType={}, exception={}",
                     connection == null ? null : connection.getClass().getName(),
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         }
 
         return (buf.toString());

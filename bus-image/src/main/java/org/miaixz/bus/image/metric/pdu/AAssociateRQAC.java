@@ -23,6 +23,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.center.map.IntHashMap;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Implementation;
@@ -611,7 +612,7 @@ public abstract class AAssociateRQAC {
                 .append(implClassUID).append(Builder.LINE_SEPARATOR).append("  implVersionName: ")
                 .append(implVersionName).append(Builder.LINE_SEPARATOR).append("  maxPDULength: ").append(maxPDULength)
                 .append(Builder.LINE_SEPARATOR).append("  maxOpsInvoked/maxOpsPerformed: ").append(maxOpsInvoked)
-                .append("/").append(maxOpsPerformed).append(Builder.LINE_SEPARATOR);
+                .append(Symbol.SLASH).append(maxOpsPerformed).append(Builder.LINE_SEPARATOR);
         if (identityRQ != null)
             identityRQ.promptTo(sb).append(Builder.LINE_SEPARATOR);
         if (identityAC != null)
@@ -624,7 +625,7 @@ public abstract class AAssociateRQAC {
             extNeg.promptTo(sb).append(Builder.LINE_SEPARATOR);
         for (CommonExtended extNeg : commonExtNegMap.values())
             extNeg.promptTo(sb).append(Builder.LINE_SEPARATOR);
-        return sb.append("]");
+        return sb.append(Symbol.BRACKET_RIGHT);
     }
 
 }

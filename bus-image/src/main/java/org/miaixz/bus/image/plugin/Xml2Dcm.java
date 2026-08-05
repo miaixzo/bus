@@ -28,6 +28,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -144,7 +145,7 @@ public class Xml2Dcm {
     private static void parseXML(String fname, ContentHandlerAdapter ch) throws Exception {
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser p = f.newSAXParser();
-        if (fname.equals("-")) {
+        if (fname.equals(Symbol.MINUS)) {
             p.parse(System.in, ch);
         } else {
             p.parse(new File(fname), ch);

@@ -1978,7 +1978,7 @@ public class CharsBacker extends CharsValidator {
         if (hasEmpty(text, prefix, suffix) ||
         // If the starting string is not contained, there is certainly no substring.
                 !contains(text, prefix)) {
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
 
         final List<String> result = new LinkedList<>();
@@ -2000,7 +2000,7 @@ public class CharsBacker extends CharsValidator {
             }
         }
 
-        return result.toArray(new String[0]);
+        return result.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4190,7 +4190,7 @@ public class CharsBacker extends CharsValidator {
         if (text == null) {
             return new String[] {};
         }
-        return split(text, separator).toArray(new String[0]);
+        return split(text, separator).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4405,7 +4405,7 @@ public class CharsBacker extends CharsValidator {
      * @return An array of split strings.
      */
     public static String[] splitByBlankToArray(final CharSequence text, final int limit) {
-        return splitByBlank(text, limit).toArray(new String[0]);
+        return splitByBlank(text, limit).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4495,7 +4495,7 @@ public class CharsBacker extends CharsValidator {
             final int limit,
             final boolean isTrim,
             final boolean ignoreEmpty) {
-        return splitByRegex(text, separatorPattern, limit, isTrim, ignoreEmpty).toArray(new String[0]);
+        return splitByRegex(text, separatorPattern, limit, isTrim, ignoreEmpty).toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -4507,7 +4507,7 @@ public class CharsBacker extends CharsValidator {
      */
     public static String[] splitByLength(final CharSequence text, final int len) {
         if (isEmpty(text)) {
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
         final StringSplitter stringSplitter = new StringSplitter(text, new LengthFinder(len), -1, false);
         return stringSplitter.toArray(false);
@@ -4541,7 +4541,7 @@ public class CharsBacker extends CharsValidator {
 
         final int length = cs.length();
         if (length == 0) {
-            return new char[0];
+            return Normal.EMPTY_CHAR_ARRAY;
         }
 
         // Performance optimization: Prioritize String implementation

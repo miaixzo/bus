@@ -17,25 +17,28 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.mapper.feature.tenant;
+package org.miaixz.bus.metrics.builtin;
+
+import java.util.Objects;
 
 /**
- * Signals that required tenant isolation has no authenticated tenant identifier.
- * <p>
- * The exception deliberately carries no request, credential, authorization, or persistence context.
+ * Framework-neutral duration for one application startup stage.
  *
+ * @param name           stable stage name used as the metrics tag
+ * @param durationMillis stage duration in milliseconds
  * @author Kimi Liu
  * @since Java 21+
  */
-public final class MissingTenantException extends IllegalStateException {
-
-    private static final long serialVersionUID = 2854009395911422101L;
+public record StartupStage(String name, long durationMillis) {
 
     /**
-     * Creates the fixed, value-free missing-tenant failure.
+     * Validates one startup stage.
      */
-    public MissingTenantException() {
-        super("Authenticated tenant is required but unavailable");
+    public StartupStage {
+        Objects.requireNonNull(name, "name");
+        if (durationMillis < 0) {
+            throw new IllegalArgumentException("durationMillis must not be negative");
+        }
     }
 
 }

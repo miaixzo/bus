@@ -30,6 +30,7 @@ import java.util.stream.StreamSupport;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
@@ -94,10 +95,10 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param itemsPerPage items per page
      * @param queryParams  HTTP query params
      * @param pathArgs     HTTP path arguments
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
     public Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
 
         Logger.info(
                 true,
@@ -152,7 +153,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     type == null ? "null" : type.getSimpleName(),
                     response.getStatus(),
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
 
         if (currentItems == null) {
@@ -163,7 +164,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     type == null ? "null" : type.getSimpleName(),
                     response.getStatus(),
                     "nullItems");
-            throw new GitLabApiException("Invalid response from from GitLab server");
+            throw GitLabFailure.exception("Invalid response from from GitLab server");
         }
 
         this.api = api;
@@ -240,9 +241,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param response the Response instance to get the value from
      * @param key      the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    private String getHeaderValue(Response response, String key) throws GitLabApiException {
+    private String getHeaderValue(Response response, String key) throws RelevantException {
 
         String value = response.getHeaderString(key);
         value = (value != null ? value.trim() : null);
@@ -259,9 +260,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param response the Response instance to get the value from
      * @param key      the HTTP header key to get the value for
      * @return the specified integer header value from the Response instance, or -1 if the header is not present
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    private int getIntHeaderValue(Response response, String key) throws GitLabApiException {
+    private int getIntHeaderValue(Response response, String key) throws RelevantException {
 
         String value = getHeaderValue(response, key);
         if (value == null) {
@@ -280,7 +281,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     key,
                     value.length(),
                     nfe.getClass().getSimpleName());
-            throw new GitLabApiException("Invalid '" + key + "' header value (" + value + ") from server");
+            throw GitLabFailure.exception("Invalid '" + key + "' header value (" + value + ") from server");
         }
     }
 
@@ -356,7 +357,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return the next List in the iteration
      * @throws NoSuchElementException if the iteration has no more elements
-     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped GitLabApiException with the
+     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped RelevantException with the
      *                                details of the error
      */
     @Override
@@ -394,9 +395,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the last page of List. Will set the iterator to the end.
      *
      * @return the last page of List
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    public List<T> last() throws GitLabApiException {
+    public List<T> last() throws RelevantException {
 
         if (kaminariNextPage != 0) {
             Logger.warn(
@@ -406,7 +407,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     "kaminariCountLimitExceeded",
                     currentPage,
                     kaminariNextPage);
-            throw new GitLabApiException("Kaminari count limit exceeded, unable to fetch last page");
+            throw GitLabFailure.exception("Kaminari count limit exceeded, unable to fetch last page");
         }
 
         Logger.debug(true, "GitLab", "GitLab pager last page requested: totalPages={}", totalPages);
@@ -444,7 +445,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param pageNumber the page to get
      * @return the specified page of List
      * @throws NoSuchElementException if the iteration has no more elements
-     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped GitLabApiException with the
+     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped RelevantException with the
      *                                details of the error
      */
     public List<T> page(int pageNumber) {
@@ -528,7 +529,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     kaminariNextPage);
             return (currentItems);
 
-        } catch (GitLabApiException | JacksonException e) {
+        } catch (RelevantException | JacksonException e) {
             Logger.warn(
                     false,
                     "GitLab",
@@ -546,9 +547,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Gets all the items from each page as a single List instance.
      *
      * @return all the items from each page as a single List instance
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    public List<T> all() throws GitLabApiException {
+    public List<T> all() throws RelevantException {
 
         Logger.info(
                 true,
@@ -583,9 +584,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return a Stream instance which is pre-populated with all items from all pages
      * @throws IllegalStateException if Stream has already been issued
-     * @throws GitLabApiException    if any other error occurs
+     * @throws RelevantException     if any other error occurs
      */
-    public Stream<T> stream() throws GitLabApiException, IllegalStateException {
+    public Stream<T> stream() throws RelevantException, IllegalStateException {
 
         if (pagerStream == null) {
             synchronized (this) {

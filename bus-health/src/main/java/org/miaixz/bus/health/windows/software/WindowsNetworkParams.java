@@ -149,14 +149,14 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
             int ret = IPHlpAPI.INSTANCE.GetNetworkParams(null, bufferSize);
             if (ret != WinError.ERROR_BUFFER_OVERFLOW) {
                 Logger.error(false, "Health", "Failed to get network parameters buffer size. Error code: {}", ret);
-                return new String[0];
+                return Normal.EMPTY_STRING_ARRAY;
             }
 
             try (Memory buffer = new Memory(bufferSize.getValue())) {
                 ret = IPHlpAPI.INSTANCE.GetNetworkParams(buffer, bufferSize);
                 if (ret != 0) {
                     Logger.error(false, "Health", "Failed to get network parameters. Error code: {}", ret);
-                    return new String[0];
+                    return Normal.EMPTY_STRING_ARRAY;
                 }
                 FIXED_INFO fixedInfo = new FIXED_INFO(buffer);
 
@@ -173,7 +173,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                     list.add(addr);
                     dns = dns.Next;
                 }
-                return list.toArray(new String[0]);
+                return list.toArray(Normal.EMPTY_STRING_ARRAY);
             }
         }
     }

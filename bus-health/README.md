@@ -69,30 +69,30 @@
 #### 1. Get System Information
 
 ```java
-import org.miaixz.bus.health.Provider;
+import org.miaixz.bus.health.Collector;
 
 public class HealthExample {
     public static void main(String[] args) {
-        Provider provider = new Provider();
+        Collector collector = new Collector();
 
         // Get all system information
-        Map<String, Object> allInfo = provider.getAll();
+        Map<String, Object> allInfo = collector.getAll();
         System.out.println(allInfo);
 
         // Get specific information
-        Map<String, Object> cpuInfo = provider.getSingle(TID.CPU);
+        Map<String, Object> cpuInfo = collector.getSingle(TID.CPU);
         System.out.println(cpuInfo);
     }
 }
 ```
 
-#### 2. Monitor CPU Usage
+#### 2. Collect CPU Usage
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get CPU information
-Cpu cpu = provider.getCpu();
+Cpu cpu = collector.getCpu();
 System.out.println("Physical Cores: " + cpu.getPhysicalCores());
 System.out.println("Logical Cores: " + cpu.getLogicalCores());
 System.out.println("Total Usage: " + cpu.getTotalUsage() + "%");
@@ -101,62 +101,62 @@ System.out.println("System Usage: " + cpu.getSystemUsage() + "%");
 System.out.println("IO Wait: " + cpu.getIoWait() + "%");
 ```
 
-#### 3. Monitor Memory Usage
+#### 3. Collect Memory Usage
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get memory information
-Memory memory = provider.getMemory();
+Memory memory = collector.getMemory();
 System.out.println("Total Memory: " + memory.getTotal());
 System.out.println("Used Memory: " + memory.getUsed());
 System.out.println("Free Memory: " + memory.getFree());
 System.out.println("Usage: " + memory.getUsage() + "%");
 ```
 
-#### 4. Monitor Disk Usage
+#### 4. Collect Disk Usage
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get disk information
-List<Disk> disks = provider.getDisk();
+List<Disk> disks = collector.getDisk();
 for (Disk disk : disks) {
     System.out.println("Device: " + disk.getDeviceName());
     System.out.println("Mount Point: " + disk.getMountPoint());
-    System.out.println("Total Space: " + provider.formatByte(disk.getTotalSpace()));
-    System.out.println("Used Space: " + provider.formatByte(disk.getUsedSpace()));
-    System.out.println("Free Space: " + provider.formatByte(disk.getFreeSpace()));
+    System.out.println("Total Space: " + Formats.formatBytes(disk.getTotalSpace()));
+    System.out.println("Used Space: " + Formats.formatBytes(disk.getUsedSpace()));
+    System.out.println("Free Space: " + Formats.formatBytes(disk.getFreeSpace()));
     System.out.println("Usage: " + disk.getUsagePercent() + "%");
 }
 ```
 
-#### 5. Monitor JVM Information
+#### 5. Collect JVM Information
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get JVM information
-Jvm jvm = provider.getJvm();
+Jvm jvm = collector.getJvm();
 System.out.println("JDK Version: " + jvm.getJdkVersion());
 System.out.println("JDK Home: " + jvm.getJdkHome());
 System.out.println("JVM Name: " + jvm.getJdkName());
-System.out.println("Total Memory: " + provider.formatByte(jvm.getTotalMemory()));
-System.out.println("Max Memory: " + provider.formatByte(jvm.getMaxMemory()));
-System.out.println("Free Memory: " + provider.formatByte(jvm.getFreeMemory()));
+System.out.println("Total Memory: " + Formats.formatBytes(jvm.getTotalMemory()));
+System.out.println("Max Memory: " + Formats.formatBytes(jvm.getMaxMemory()));
+System.out.println("Free Memory: " + Formats.formatBytes(jvm.getFreeMemory()));
 System.out.println("Usage: " + jvm.getUsagePercent() + "%");
 System.out.println("Start Time: " + jvm.getStartTime());
 System.out.println("Uptime: " + jvm.getUptime() + "ms");
 ```
 
-#### 6. Monitor Processes
+#### 6. Collect Processes
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get top 10 processes by CPU usage
 Map<String, Object> result = new HashMap<>();
-provider.appendProcessList(10, TID.PROCESS, result);
+collector.appendProcessList(10, TID.PROCESS, result);
 List<Map<String, Object>> processes = (List<Map<String, Object>>) result.get(TID.PROCESS);
 
 for (Map<String, Object> process : processes) {
@@ -169,10 +169,10 @@ for (Map<String, Object> process : processes) {
 #### 7. Get Host Information
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get host information (includes network statistics)
-Host host = provider.getHost();
+Host host = collector.getHost();
 System.out.println("Host Name: " + host.getName());
 System.out.println("IP Address: " + host.getIp());
 System.out.println("OS: " + host.getOs());
@@ -189,8 +189,8 @@ System.out.println("TX Bytes/s: " + host.getTxBytesPerSecond() + "KB");
 ### 1. Access Hardware Abstraction Layer
 
 ```java
-Provider provider = new Provider();
-HardwareAbstractionLayer hal = provider.getHardware();
+Collector collector = new Collector();
+HardwareAbstractionLayer hal = collector.getHardware();
 
 // Processor information
 CentralProcessor processor = hal.getProcessor();
@@ -242,8 +242,8 @@ for (Display display : displays) {
 ### 2. Access Operating System Information
 
 ```java
-Provider provider = new Provider();
-OperatingSystem os = provider.getOperatingSystem();
+Collector collector = new Collector();
+OperatingSystem os = collector.getOperatingSystem();
 
 // OS info
 System.out.println("Family: " + os.getFamily());
@@ -275,23 +275,23 @@ for (OSFileStore fs : fileStores) {
 ```java
 public class CustomHealthCheck {
 
-    private final Provider provider = new Provider();
+    private final Collector collector = new Collector();
 
     public Map<String, Object> checkSystemHealth() {
         Map<String, Object> health = new HashMap<>();
 
         // CPU health check
-        Cpu cpu = provider.getCpu();
+        Cpu cpu = collector.getCpu();
         health.put("cpu_healthy", cpu.getTotalUsage() < 80.0);
         health.put("cpu_usage", cpu.getTotalUsage());
 
         // Memory health check
-        Memory memory = provider.getMemory();
+        Memory memory = collector.getMemory();
         health.put("memory_healthy", memory.getUsage() < 80.0);
         health.put("memory_usage", memory.getUsage());
 
         // Disk health check
-        List<Disk> disks = provider.getDisk();
+        List<Disk> disks = collector.getDisk();
         boolean diskHealthy = true;
         for (Disk disk : disks) {
             if (disk.getUsagePercent() > 80.0) {
@@ -313,16 +313,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class SystemMonitor {
+public class MetricsScheduler {
 
-    private final Provider provider = new Provider();
+    private final Collector collector = new Collector();
     private final ScheduledExecutorService scheduler =
         Executors.newScheduledThreadPool(1);
 
     public void startMonitoring() {
         scheduler.scheduleAtFixedRate(() -> {
-            Cpu cpu = provider.getCpu();
-            Memory memory = provider.getMemory();
+            Cpu cpu = collector.getCpu();
+            Memory memory = collector.getMemory();
 
             System.out.println("CPU Usage: " + cpu.getTotalUsage() + "%");
             System.out.println("Memory Usage: " + memory.getUsage() + "%");
@@ -346,7 +346,7 @@ public class SystemMonitor {
 ### 5. Query Multiple Metrics
 
 ```java
-Provider provider = new Provider();
+Collector collector = new Collector();
 
 // Get multiple specific metrics
 List<String> metrics = Arrays.asList(
@@ -356,7 +356,7 @@ List<String> metrics = Arrays.asList(
     TID.JVM
 );
 
-Map<String, Object> result = provider.get(metrics);
+Map<String, Object> result = collector.get(metrics);
 result.forEach((key, value) -> System.out.println(key + ": " + value));
 ```
 
@@ -385,20 +385,20 @@ result.forEach((key, value) -> System.out.println(key + ": " + value));
 
 ## 💡 Best Practices
 
-### 1. Use Singleton Provider
+### 1. Use Singleton Collector
 
 ```java
-// ✅ Recommended: Reuse Provider instance
-private static final Provider PROVIDER = new Provider();
+// ✅ Recommended: Reuse Collector instance
+private static final Collector COLLECTOR = new Collector();
 
 public void checkHealth() {
-    Cpu cpu = PROVIDER.getCpu();
+    Cpu cpu = COLLECTOR.getCpu();
     // ...
 }
 
 // ❌ Not Recommended: Create new instance each time
 public void checkHealth() {
-    Provider provider = new Provider(); // Wasteful
+    Collector collector = new Collector(); // Wasteful
     // ...
 }
 ```
@@ -406,8 +406,8 @@ public void checkHealth() {
 ### 2. Handle Platform Differences
 
 ```java
-Provider provider = new Provider();
-OS osType = (OS) provider.type();
+Collector collector = new Collector();
+OS osType = (OS) collector.type();
 
 switch (osType) {
     case WINDOWS:
@@ -424,14 +424,14 @@ switch (osType) {
 }
 ```
 
-### 3. Monitor Specific Metrics Only
+### 3. Collect Specific Metrics Only
 
 ```java
 // ✅ Recommended: Query only what you need
-Map<String, Object> result = provider.getSingle(TID.CPU);
+Map<String, Object> result = collector.getSingle(TID.CPU);
 
 // ❌ Not Recommended: Query all when only one metric is needed
-Map<String, Object> result = provider.getAll(); // Wasteful
+Map<String, Object> result = collector.getAll(); // Wasteful
 ```
 
 ### 4. Use Scheduled Monitoring
@@ -440,13 +440,13 @@ Map<String, Object> result = provider.getAll(); // Wasteful
 // ✅ Recommended: Use scheduled executor for periodic checks
 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 scheduler.scheduleAtFixedRate(() -> {
-    Cpu cpu = provider.getCpu();
+    Cpu cpu = collector.getCpu();
     // Log or alert based on cpu.getTotalUsage()
 }, 0, 5, TimeUnit.SECONDS);
 
 // ❌ Not Recommended: Busy waiting
 while (true) {
-    Cpu cpu = provider.getCpu();
+    Cpu cpu = collector.getCpu();
     Thread.sleep(5000); // Blocks thread
 }
 ```
@@ -456,7 +456,7 @@ while (true) {
 ```java
 public Map<String, Object> safeGetCpu() {
     try {
-        Cpu cpu = provider.getCpu();
+        Cpu cpu = collector.getCpu();
         return Map.of("cpu", cpu);
     } catch (Exception e) {
         Logger.error("Failed to get CPU info", e);
@@ -474,7 +474,7 @@ public Map<String, Object> safeGetCpu() {
 **A**: Use the `getCpu()` method which calculates usage over a 600ms interval:
 
 ```java
-Cpu cpu = provider.getCpu();
+Cpu cpu = collector.getCpu();
 double totalUsage = cpu.getTotalUsage();
 ```
 
@@ -490,8 +490,8 @@ double totalUsage = cpu.getTotalUsage();
 **A**: Use the `getPowerSourceInfo()` method:
 
 ```java
-Map<String, Object> powerInfo = provider.getPowerSourceInfo();
-List<PowerSource> powerSources = provider.getHardware().getPowerSources();
+Map<String, Object> powerInfo = collector.getPowerSourceInfo();
+List<PowerSource> powerSources = collector.getHardware().getPowerSources();
 
 for (PowerSource ps : powerSources) {
     if (!ps.isPowerOnLine()) {
@@ -512,7 +512,7 @@ for (PowerSource ps : powerSources) {
 **A**:
 - Query only necessary metrics
 - Increase monitoring interval (e.g., 5-10 seconds instead of 1 second)
-- Use singleton Provider instance
+- Use singleton Collector instance
 - Cache results when appropriate
 
 ### Q6: Can I integrate with Spring Boot Actuator?
@@ -523,12 +523,12 @@ for (PowerSource ps : powerSources) {
 @Component
 public class SystemHealthIndicator implements HealthIndicator {
 
-    private final Provider provider = new Provider();
+    private final Collector collector = new Collector();
 
     @Override
     public Health health() {
-        Cpu cpu = provider.getCpu();
-        Memory memory = provider.getMemory();
+        Cpu cpu = collector.getCpu();
+        Memory memory = collector.getMemory();
 
         if (cpu.getTotalUsage() > 90.0 || memory.getUsage() > 90.0) {
             return Health.down()
@@ -550,14 +550,14 @@ public class SystemHealthIndicator implements HealthIndicator {
 **A**: Network statistics are calculated over a 3-second interval in `getHost()`:
 
 ```java
-Host host = provider.getHost();
+Host host = collector.getHost();
 System.out.println("RX: " + host.getRxBytesPerSecond() + " KB/s");
 System.out.println("TX: " + host.getTxBytesPerSecond() + " KB/s");
 ```
 
 ### Q8: Is it thread-safe?
 
-**A**: Yes, the Provider is thread-safe and can be safely used in multi-threaded environments.
+**A**: Yes, the Collector is thread-safe and can be safely used in multi-threaded environments.
 
 -----
 
@@ -590,7 +590,7 @@ System.out.println("TX: " + host.getTxBytesPerSecond() + " KB/s");
 
 ### 3. Memory Footprint
 
-- Provider instance: ~1KB
+- Collector instance: ~1KB
 - Cached platform instances: ~50-100KB
 - Query results: Variable depending on data volume
 
@@ -604,7 +604,7 @@ private long lastCpuUpdate = 0;
 public Cpu getCpuWithCache() {
     long now = System.currentTimeMillis();
     if (now - lastCpuUpdate > 5000) { // 5 second cache
-        cachedCpu = provider.getCpu();
+        cachedCpu = collector.getCpu();
         lastCpuUpdate = now;
     }
     return cachedCpu;

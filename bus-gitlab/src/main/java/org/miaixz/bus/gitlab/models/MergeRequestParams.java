@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.StateEvent;
 
 /**
@@ -328,7 +329,7 @@ public class MergeRequestParams implements Serializable {
                 .withParam("title", titleToUse, isCreate).withParam("assignee_id", assigneeId)
                 .withParam("assignee_ids", assigneeIds).withParam("reviewer_ids", reviewerIds)
                 .withParam("milestone_id", milestoneId)
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
+                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("description", description).withParam("remove_source_branch", removeSourceBranch)
                 .withParam("squash", squash).withParam("allow_collaboration", allowCollaboration);
 
@@ -337,8 +338,10 @@ public class MergeRequestParams implements Serializable {
                     .withParam("approvals_before_merge", approvalsBeforeMerge);
         } else {
             form.withParam("state_event", stateEvent).withParam("discussion_locked", discussionLocked)
-                    .withParam("add_labels", (addLabels != null ? String.join(",", addLabels) : null))
-                    .withParam("remove_labels", (removeLabels != null ? String.join(",", removeLabels) : null));
+                    .withParam("add_labels", (addLabels != null ? String.join(Symbol.COMMA, addLabels) : null))
+                    .withParam(
+                            "remove_labels",
+                            (removeLabels != null ? String.join(Symbol.COMMA, removeLabels) : null));
         }
         return (form);
     }

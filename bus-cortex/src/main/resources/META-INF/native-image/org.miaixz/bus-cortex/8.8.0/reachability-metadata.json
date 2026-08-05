@@ -13775,7 +13775,7 @@
           "name": "name"
         },
         {
-          "name": "order"
+          "name": "sort"
         }
       ],
       "methods": [
@@ -13802,7 +13802,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getOrder",
+          "name": "getSort",
           "parameterTypes": []
         },
         {
@@ -13824,7 +13824,7 @@
           ]
         },
         {
-          "name": "setOrder",
+          "name": "setSort",
           "parameterTypes": [
             "java.lang.Integer"
           ]
@@ -13857,7 +13857,7 @@
           ]
         },
         {
-          "name": "order",
+          "name": "sort",
           "parameterTypes": [
             "java.lang.Integer"
           ]

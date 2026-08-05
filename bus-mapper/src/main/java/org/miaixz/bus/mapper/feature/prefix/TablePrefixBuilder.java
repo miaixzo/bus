@@ -50,13 +50,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TablePrefixBuilder {
 
     /**
-     * SQL keywords that should never be treated as table names.
+     * Parser stop words that must not be treated as table names after a table-introducing token.
      * <p>
-     * This list includes keywords that appear after UPDATE in SQL statements (e.g., "DO UPDATE SET" in PostgreSQL
-     * UPSERT). The regex pattern matches "UPDATE <word>", so we need to exclude SQL keywords like SET.
+     * This list only prevents false-positive prefix rewrites such as PostgreSQL {@code DO UPDATE SET}. It is not a
+     * database reserved-word list and does not perform identifier compliance validation.
      * </p>
      */
-    private static final java.util.Set<String> SQL_KEYWORDS = java.util.Set.of(
+    private static final java.util.Set<String> TABLE_NAME_STOP_WORDS = java.util.Set.of(
             "SET", // PostgreSQL UPSERT: DO UPDATE SET
             "VALUES", // INSERT ... VALUES
             "SELECT", // UPDATE ... SELECT
@@ -133,8 +133,8 @@ public class TablePrefixBuilder {
             String tableName = matcher.group(4); // Actual table name
             String endDelim = matcher.group(5); // Ending delimiter (`"])
 
-            // Skip if matched "word" is an SQL keyword (e.g., "UPDATE SET" in UPSERT)
-            if (SQL_KEYWORDS.contains(tableName.toUpperCase())) {
+            // Reject parser false positives such as the SET token in PostgreSQL DO UPDATE SET.
+            if (TABLE_NAME_STOP_WORDS.contains(tableName.toUpperCase())) {
                 continue;
             }
 

@@ -24,6 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Metrics;
@@ -161,8 +162,11 @@ public class CortexExporter {
      */
     private String serializeSnapshot(TimerSnapshot snap) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"count\":").append(snap.count()).append(",\"totalNanos\":").append(snap.totalNanos())
-                .append(",\"maxNanos\":").append(snap.maxNanos()).append("}");
+        sb.append(Symbol.BRACE_LEFT).append(Symbol.DOUBLE_QUOTES).append("count").append(Symbol.DOUBLE_QUOTES)
+                .append(Symbol.COLON).append(snap.count()).append(Symbol.COMMA).append(Symbol.DOUBLE_QUOTES)
+                .append("totalNanos").append(Symbol.DOUBLE_QUOTES).append(Symbol.COLON).append(snap.totalNanos())
+                .append(Symbol.COMMA).append(Symbol.DOUBLE_QUOTES).append("maxNanos").append(Symbol.DOUBLE_QUOTES)
+                .append(Symbol.COLON).append(snap.maxNanos()).append(Symbol.BRACE_RIGHT);
         return sb.toString();
     }
 

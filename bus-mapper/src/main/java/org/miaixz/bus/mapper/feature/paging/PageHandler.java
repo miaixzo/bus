@@ -42,6 +42,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
+import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.mapper.handler.MapperHandler;
 
@@ -88,6 +89,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     private final ConcurrentMap<CountStatementKey, MappedStatement> countMappedStatementCache = new ConcurrentHashMap<>();
 
     /**
+     * Optional physical identifier validator used before pagination SQL assembly.
+     */
+    private final IdentifierValidator identifierValidator;
+
+    /**
      * Pagination builder for sorting and SQL generation
      */
     private final PageBuilder paginationBuilder;
@@ -118,9 +124,19 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     private Properties properties;
 
     /**
-     * Initializes pagination handling with the default SQL pagination builder.
+     * Initializes pagination handling with the default SQL pagination builder and default-enabled identifier validator.
      */
     public PageHandler() {
+        this(IdentifierValidator.createDefault());
+    }
+
+    /**
+     * Initializes pagination handling with an explicitly resolved identifier validator.
+     *
+     * @param identifierValidator identifier validator, or {@code null} when explicitly disabled
+     */
+    public PageHandler(IdentifierValidator identifierValidator) {
+        this.identifierValidator = identifierValidator;
         this.paginationBuilder = new PageBuilder();
     }
 
@@ -344,8 +360,10 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
         Dialect dialect = null;
         try {
-            // Get database dialect
-            dialect = getDialect(executor);
+            Connection connection = executor.getTransaction().getConnection();
+            // Get database dialect and validate sorting before any internal count or pagination query is executed.
+            dialect = getDialect(connection);
+            validateSorting(connection, pageable);
             Logger.trace(
                     false,
                     "Mapper",
@@ -466,13 +484,11 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
     /**
      * Gets the database dialect for the given executor.
      *
-     * @param executor MyBatis executor whose transaction supplies the database connection
+     * @param connection MyBatis-managed connection
      * @return the database dialect
      * @throws SQLException if unable to determine the dialect
      */
-    private Dialect getDialect(Executor executor) throws SQLException {
-        // Do not use try-with-resources here, as the connection is managed by MyBatis
-        Connection connection = executor.getTransaction().getConnection();
+    private Dialect getDialect(Connection connection) throws SQLException {
         String url = connection.getMetaData().getURL();
         return dialectCache.computeIfAbsent(url, DialectRegistry::getDialectByUrl);
     }
@@ -820,6 +836,22 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             return sql;
         }
         return paginationBuilder.applySort(sql, sort);
+    }
+
+    /**
+     * Validates pagination sorting before executing any internal database query.
+     *
+     * @param connection MyBatis-managed connection used for database identifier rules
+     * @param pageable   pagination request containing optional sorting
+     */
+    private void validateSorting(Connection connection, Pageable pageable) {
+        Sort sort = pageable.getSort();
+        if (sort == null || !sort.isSorted()) {
+            return;
+        }
+        if (identifierValidator != null) {
+            identifierValidator.validateSort(connection, getDatasourceKey(), sort);
+        }
     }
 
     /**

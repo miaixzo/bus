@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
@@ -5020,9 +5021,11 @@ public class Attributes implements Serializable {
             int maxLength,
             StringBuilder sb,
             String prefix) {
-        sb.append(prefix).append(Tag.toString(tag)).append(' ').append(vr).append(" [");
+        sb.append(prefix).append(Tag.toString(tag)).append(Symbol.C_SPACE).append(vr).append(Symbol.SPACE)
+                .append(Symbol.C_BRACKET_LEFT);
         if (vr.prompt(value, bigEndian, getSpecificCharacterSet(vr), maxLength - sb.length() - 1, sb)) {
-            sb.append("] ").append(ElementDictionary.keywordOf(tag, privateCreator));
+            sb.append(Symbol.C_BRACKET_RIGHT).append(Symbol.SPACE)
+                    .append(ElementDictionary.keywordOf(tag, privateCreator));
             if (sb.length() > maxLength)
                 sb.setLength(maxLength);
         }

@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.*;
@@ -67,25 +68,25 @@ public class SolarisFileSystem extends AbstractFileSystem {
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_EXCLUDES);
 
     /**
      * The FS_PATH_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_PATH_INCLUDES);
 
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_EXCLUDES);
 
     /**
      * The FS_VOLUME_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_SOLARIS_FS_VOLUME_INCLUDES);
 
     /**
      * Returns the file store matching.
@@ -111,7 +112,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
              2293351 free files     22282240 filesys id
                  ufs fstype       0x00000004 flag             255 filename length
             */
-            if (line.startsWith("/")) {
+            if (line.startsWith(Symbol.SLASH)) {
                 key = Pattern.SPACES_PATTERN.split(line)[0];
                 total = null;
             } else if (line.contains("available") && line.contains("total files")) {
@@ -145,7 +146,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
             // Skip non-local drives if requested, and exclude pseudo file systems
             boolean isLocal = !NETWORK_FS_TYPES.contains(type);
             if ((localOnly && !isLocal)
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                    || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                             path,
                             volume,
                             FS_PATH_INCLUDES,
@@ -170,7 +171,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals("/")) {
+            if (volume.startsWith(Symbol.SLASH + "dev") || path.equals(Symbol.SLASH)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";

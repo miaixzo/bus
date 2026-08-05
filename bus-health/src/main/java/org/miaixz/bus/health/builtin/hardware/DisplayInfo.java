@@ -20,7 +20,7 @@
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Edid;
 
 /**
  * Holds the human-readable information described by a display's EDID.
@@ -49,7 +49,7 @@ public interface DisplayInfo {
      * Gets the manufacturer ID.
      *
      * @return the manufacturer ID
-     * @see Builder#getManufacturerID(byte[])
+     * @see Edid#getManufacturerID(byte[])
      */
     String getManufacturerID();
 
@@ -57,7 +57,7 @@ public interface DisplayInfo {
      * Gets the product ID.
      *
      * @return the product ID
-     * @see Builder#getProductID(byte[])
+     * @see Edid#getProductID(byte[])
      */
     String getProductID();
 
@@ -65,7 +65,7 @@ public interface DisplayInfo {
      * Gets the numeric ID serial number from bytes 12-15 of the EDID.
      *
      * @return the serial number
-     * @see Builder#getSerialNo(byte[])
+     * @see Edid#getSerialNo(byte[])
      */
     String getSerialNo();
 

@@ -27,6 +27,8 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Application;
 
 /**
@@ -55,9 +57,9 @@ public class ApplicationsApi extends AbstractApi {
      * </pre>
      *
      * @return a List of OAUTH Application instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Application> getApplications() throws GitLabApiException {
+    public List<Application> getApplications() throws RelevantException {
         return (getApplications(getDefaultPerPage()).all());
     }
 
@@ -71,9 +73,9 @@ public class ApplicationsApi extends AbstractApi {
      * @param page    the page to get
      * @param perPage the number of items per page
      * @return a list of OAUTH Applications in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Application> getApplications(int page, int perPage) throws GitLabApiException {
+    public List<Application> getApplications(int page, int perPage) throws RelevantException {
         Response response = get(
                 jakarta.ws.rs.core.Response.Status.OK,
                 getPageQueryParams(page, perPage),
@@ -91,9 +93,9 @@ public class ApplicationsApi extends AbstractApi {
      *
      * @param itemsPerPage the number of items per page
      * @return a Pager of Application instances in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Application> getApplications(int itemsPerPage) throws GitLabApiException {
+    public Pager<Application> getApplications(int itemsPerPage) throws RelevantException {
         return (new Pager<Application>(this, Application.class, itemsPerPage, null, "applications"));
     }
 
@@ -105,9 +107,9 @@ public class ApplicationsApi extends AbstractApi {
      * </pre>
      *
      * @return a Stream of OAUTH Application instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Application> getApplicationsStream() throws GitLabApiException {
+    public Stream<Application> getApplicationsStream() throws RelevantException {
         return (getApplications(getDefaultPerPage()).stream());
     }
 
@@ -124,19 +126,19 @@ public class ApplicationsApi extends AbstractApi {
      * @param confidential The application is used where the client secret can be kept confidential. Native mobile apps
      *                     and Single Page Apps are considered non-confidential
      * @return the created Application instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Application createApplication(
             String name,
             String redirectUri,
             List<ApplicationScope> scopes,
-            Boolean confidential) throws GitLabApiException {
+            Boolean confidential) throws RelevantException {
 
         if (scopes == null || scopes.isEmpty()) {
-            throw new GitLabApiException("scopes cannot be null or empty");
+            throw GitLabFailure.exception("scopes cannot be null or empty");
         }
 
-        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(" "));
+        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(Symbol.SPACE));
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name, true)
                 .withParam("redirect_uri", redirectUri, true).withParam("scopes", scopesString, true)
                 .withParam("confidential", confidential);
@@ -152,9 +154,9 @@ public class ApplicationsApi extends AbstractApi {
      * </pre>
      *
      * @param applicationId the ID of the OUAUTH Application to delete
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteApplication(Long applicationId) throws GitLabApiException {
+    public void deleteApplication(Long applicationId) throws RelevantException {
         delete(Response.Status.NO_CONTENT, null, "applications", applicationId);
     }
 
@@ -167,9 +169,9 @@ public class ApplicationsApi extends AbstractApi {
      *
      * @param applicationId the ID of the OUAUTH Application to renew
      * @return the updated Application instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Application renewSecret(Long applicationId) throws GitLabApiException {
+    public Application renewSecret(Long applicationId) throws RelevantException {
         Response response = post(Response.Status.CREATED, (Form) null, "applications", applicationId, "renew-secret");
         return (response.readEntity(Application.class));
     }

@@ -119,11 +119,6 @@ public class MapperOptions {
     private String params;
 
     /**
-     * Automatically delimits SQL keywords in column names.
-     */
-    private String autoDelimitKeywords;
-
-    /**
      * Enables pagination parameter rationalization. When enabled, if pageNum < 1, it will query page 1. If pageNum >
      * total pages, it will query the last page.
      */
@@ -143,6 +138,12 @@ public class MapperOptions {
      * Structured pagination configuration. Legacy top-level pagination fields remain supported.
      */
     private PageOptions page;
+
+    /**
+     * Physical identifier validation configuration. A {@code null} value means that the default-enabled policy remains
+     * in effect unless flattened configuration explicitly disables it.
+     */
+    private IdentifierOptions identifier;
 
     /**
      * Tenant configuration used to set a default tenant column and ignored tables or mappers.
@@ -224,6 +225,16 @@ public class MapperOptions {
     }
 
     /**
+     * Resolves datasource namespace names declared by flattened Mapper feature configuration.
+     *
+     * @param resolvedProperties flattened Mapper configuration
+     * @return ordered namespace names
+     */
+    public static Set<String> resolveNamespaceNames(Properties resolvedProperties) {
+        return MapperOptionsResolver.resolveNamespaceNames(resolvedProperties);
+    }
+
+    /**
      * Operation safety options.
      * <p>
      * These options are consumed by the mapper plugin factory when creating the operation safety handler.
@@ -292,10 +303,29 @@ public class MapperOptions {
          */
         private String params;
 
+    }
+
+    /**
+     * Physical identifier validation options.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @Getter
+    @Setter
+    public static class IdentifierOptions {
+
         /**
-         * Whether SQL keywords used as columns are automatically delimited.
+         * Creates enabled-by-default identifier validation options.
          */
-        private String autoDelimitKeywords;
+        public IdentifierOptions() {
+            // Default values are declared on the fields below.
+        }
+
+        /**
+         * Whether physical identifier validation is enabled.
+         */
+        private boolean enabled = true;
 
     }
 
@@ -616,6 +646,11 @@ public class MapperOptions {
          * Whether column nullable constraints may be changed.
          */
         private boolean allowModifyNullable = false;
+
+        /**
+         * Whether table and column comments may be changed.
+         */
+        private boolean allowModifyComment = false;
 
         /**
          * Whether unmapped database columns may be dropped.

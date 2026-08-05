@@ -31,13 +31,16 @@ import jakarta.servlet.ServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 
-import org.miaixz.bus.spring.annotation.RequestObject;
-
 /**
- * Declares the strict type boundary for explicit RequestObject binding.
+ * Declares the type boundary for automatic application request-object binding.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -52,20 +55,34 @@ public class AutoBindingTypeMatcher {
     }
 
     /**
-     * Returns true only for an explicit, application-owned request object parameter.
+     * Returns true for an unclaimed, application-owned request object parameter.
      *
      * @param parameter controller method parameter
-     * @return {@code true} when explicit request-object binding is allowed
+     * @return {@code true} when automatic request-object binding is allowed
      */
     public boolean matches(MethodParameter parameter) {
         Objects.requireNonNull(parameter, "parameter");
-        if (!parameter.hasParameterAnnotation(RequestObject.class)
-                || parameter.hasParameterAnnotation(RequestBody.class)
-                || parameter.hasParameterAnnotation(RequestPart.class)) {
+        if (hasExplicitBindingAnnotation(parameter)) {
             return false;
         }
         Class<?> type = parameter.getParameterType();
         return !isFrameworkType(type) && !isSimpleType(type);
+    }
+
+    /**
+     * Returns whether Spring MVC already owns the parameter through an explicit binding annotation.
+     *
+     * @param parameter controller method parameter
+     * @return {@code true} when a native Spring resolver must handle the parameter
+     */
+    private static boolean hasExplicitBindingAnnotation(MethodParameter parameter) {
+        return parameter.hasParameterAnnotation(RequestBody.class)
+                || parameter.hasParameterAnnotation(RequestPart.class)
+                || parameter.hasParameterAnnotation(RequestParam.class)
+                || parameter.hasParameterAnnotation(RequestHeader.class)
+                || parameter.hasParameterAnnotation(PathVariable.class)
+                || parameter.hasParameterAnnotation(CookieValue.class)
+                || parameter.hasParameterAnnotation(ModelAttribute.class);
     }
 
     /**
@@ -79,7 +96,7 @@ public class AutoBindingTypeMatcher {
                 || ServletResponse.class.isAssignableFrom(type) || Model.class.isAssignableFrom(type)
                 || BindingResult.class.isAssignableFrom(type)
                 || hasTypeName(type, "org.springframework.data.domain.Pageable")
-                || type.getName().startsWith("org.springframework.security.");
+                || type.getName().startsWith("org.springframework.");
     }
 
     /**

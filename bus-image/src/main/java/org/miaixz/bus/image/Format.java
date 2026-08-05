@@ -1738,7 +1738,7 @@ public class Format extends java.text.Format {
         String getMD5String(String s) {
             try {
                 MessageDigest digest = MessageDigest.getInstance("MD5");
-                digest.update(s == null ? new byte[0] : s.getBytes(Charset.UTF_8));
+                digest.update(s == null ? Normal.EMPTY_BYTE_ARRAY : s.getBytes(Charset.UTF_8));
                 return toString32(digest.digest());
             } catch (NoSuchAlgorithmException e) {
                 return s;

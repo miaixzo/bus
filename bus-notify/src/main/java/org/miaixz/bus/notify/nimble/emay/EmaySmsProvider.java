@@ -29,6 +29,7 @@ import java.util.Map;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.url.UrlEncoder;
@@ -69,7 +70,7 @@ public class EmaySmsProvider extends AbstractProvider<EmayNotice, Context> {
     private static Map<String, String> getParamsMap(String appId, String secretKey, String phone, String message) {
         Map<String, String> params = new HashMap<>();
         // Timestamp (required), format: yyyyMMddHHmmss
-        String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern(Fields.PURE_DATETIME));
         String sign = Builder.md5(appId + secretKey + timestamp);
         params.put("appId", appId);
         params.put("timestamp", timestamp);

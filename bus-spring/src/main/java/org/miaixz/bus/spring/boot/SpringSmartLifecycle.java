@@ -21,34 +21,23 @@ package org.miaixz.bus.spring.boot;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.SmartLifecycle;
 
-import org.miaixz.bus.spring.boot.startup.ChildrenMetrics;
-import org.miaixz.bus.spring.boot.startup.ModuleMetrics;
-import org.miaixz.bus.spring.boot.startup.StartupReporter;
-import org.miaixz.bus.spring.boot.startup.StartupStages;
+import org.miaixz.bus.spring.boot.startup.SpringStartupCollector;
+import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
 
 /**
- * Captures context refresh statistics once and releases its context reference when stopped.
+ * Captures application-context refresh duration once during startup.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
-
-    /**
-     * Root module name used in context refresh statistics.
-     */
-    public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
+public class SpringSmartLifecycle implements SmartLifecycle {
 
     /**
      * Reporter receiving application-context refresh metrics.
      */
-    private final StartupReporter startupReporter;
+    private final SpringStartupCollector startupCollector;
     /**
      * Application-context refresh start timestamp in milliseconds.
      */
@@ -59,33 +48,14 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
     private final AtomicBoolean running = new AtomicBoolean();
 
     /**
-     * Configurable application context whose refresh is being measured.
-     */
-    private volatile ConfigurableApplicationContext applicationContext;
-
-    /**
      * Creates the lifecycle for one startup report.
      *
-     * @param startupReporter  current startup reporter
+     * @param startupCollector current startup collector
      * @param refreshStartTime refresh start time
      */
-    public SpringSmartLifecycle(StartupReporter startupReporter, long refreshStartTime) {
-        this.startupReporter = startupReporter;
+    public SpringSmartLifecycle(SpringStartupCollector startupCollector, long refreshStartTime) {
+        this.startupCollector = startupCollector;
         this.refreshStartTime = refreshStartTime;
-    }
-
-    /**
-     * Retains the configurable context whose completed refresh will be measured.
-     *
-     * @param applicationContext owning application context
-     * @throws BeansException if Spring cannot supply the context callback
-     */
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if (!(applicationContext instanceof ConfigurableApplicationContext configurableContext)) {
-            throw new IllegalArgumentException("SpringSmartLifecycle requires a ConfigurableApplicationContext");
-        }
-        this.applicationContext = configurableContext;
     }
 
     /**
@@ -96,34 +66,16 @@ public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextA
         if (!running.compareAndSet(false, true)) {
             return;
         }
-        ConfigurableApplicationContext context = applicationContext;
-        try {
-            if (context == null || !context.isActive()) {
-                throw new IllegalStateException("Application context is not active");
-            }
-
-            long refreshEndTime = System.currentTimeMillis();
-            ModuleMetrics rootModule = new ModuleMetrics(ROOT_MODULE_NAME, refreshStartTime, refreshEndTime,
-                    Thread.currentThread().getName(), startupReporter.generateBeanStats(context));
-            ChildrenMetrics<ModuleMetrics> refreshStage = new ChildrenMetrics<>(
-                    StartupStages.APPLICATION_CONTEXT_REFRESH_STAGE, refreshStartTime, refreshEndTime,
-                    java.util.List.of(rootModule));
-
-            startupReporter.addCommonStartupStat(refreshStage);
-        } catch (RuntimeException | Error ex) {
-            running.set(false);
-            applicationContext = null;
-            throw ex;
-        }
+        startupCollector.addStage(
+                Stage.between(Stage.APPLICATION_CONTEXT_REFRESH, refreshStartTime, System.currentTimeMillis()));
     }
 
     /**
-     * Stops metric collection and releases the application-context reference.
+     * Stops metric collection.
      */
     @Override
     public void stop() {
         running.set(false);
-        applicationContext = null;
     }
 
     /**

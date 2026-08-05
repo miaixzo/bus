@@ -17,40 +17,51 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.mapper;
+package org.miaixz.bus.starter.metrics;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import java.util.Objects;
 
-import org.miaixz.bus.mapper.feature.tenant.MissingTenantException;
+import org.miaixz.bus.metrics.Provider;
+import org.miaixz.bus.metrics.builtin.StartupMetrics;
+import org.miaixz.bus.metrics.builtin.StartupStage;
+import org.miaixz.bus.spring.boot.startup.SpringStartupPublisher;
+import org.miaixz.bus.spring.boot.startup.SpringStartupSummary;
 
 /**
- * Maps a missing authenticated tenant to a value-free HTTP 403 response.
+ * Publishes Spring Boot startup summaries through the configured Bus metrics provider.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-@RestControllerAdvice
-public class TenantExceptionAdvice {
+public final class StartupMetricsPublisher implements SpringStartupPublisher {
 
     /**
-     * Initializes stateless exception advice for requests that lack an authenticated tenant.
+     * Metrics provider receiving startup measurements.
      */
-    public TenantExceptionAdvice() {
-        // No initialization required.
+    private final Provider provider;
+
+    /**
+     * Creates a startup metrics publisher backed by one provider.
+     *
+     * @param provider metrics provider
+     */
+    public StartupMetricsPublisher(Provider provider) {
+        this.provider = Objects.requireNonNull(provider, "provider");
     }
 
     /**
-     * Returns a fixed forbidden response without exposing authentication state.
+     * Publishes total startup duration, startup count, and stable top-level stage durations.
      *
-     * @param exception missing authenticated tenant failure
-     * @return empty forbidden response
+     * @param summary completed Spring Boot startup summary
      */
-    @ExceptionHandler(MissingTenantException.class)
-    public ResponseEntity<Void> handleMissingTenant(MissingTenantException exception) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    @Override
+    public void publish(SpringStartupSummary summary) {
+        Objects.requireNonNull(summary, "summary");
+        StartupMetrics.record(
+                provider,
+                summary.applicationBootElapsedTime(),
+                summary.stageStats().stream().map(stage -> new StartupStage(stage.name(), stage.durationMillis()))
+                        .toList());
     }
 
 }

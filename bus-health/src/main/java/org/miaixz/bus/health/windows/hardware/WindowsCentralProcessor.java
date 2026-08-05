@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
@@ -73,20 +73,21 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     /**
      * The USE_LEGACY_SYSTEM_COUNTERS constant.
      */
-    private static final boolean USE_LEGACY_SYSTEM_COUNTERS = Config.get(Config._WINDOWS_LEGACY_SYSTEM_COUNTERS, false);
+    private static final boolean USE_LEGACY_SYSTEM_COUNTERS = Builder
+            .get(Builder._WINDOWS_LEGACY_SYSTEM_COUNTERS, false);
 
     // Whether to match task manager using Processor Utility ticks
     /**
      * The USE_CPU_UTILITY constant.
      */
     private static final boolean USE_CPU_UTILITY = VersionHelpers.IsWindows8OrGreater()
-            && Config.get(Config._WINDOWS_CPU_UTILITY, false);
+            && Builder.get(Builder._WINDOWS_CPU_UTILITY, false);
 
     // Whether to start a daemon thread to calculate load average
     /**
      * The USE_LOAD_AVERAGE constant.
      */
-    private static final boolean USE_LOAD_AVERAGE = Config.get(Config._WINDOWS_LOADAVERAGE, false);
+    private static final boolean USE_LOAD_AVERAGE = Builder.get(Builder._WINDOWS_LOADAVERAGE, false);
 
     static {
         if (USE_LOAD_AVERAGE) {
@@ -214,7 +215,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                     cpuStepping,
                     cpuModel,
                     cpuFamily,
-                    cpu64bit ? new String[] { "ia64" } : new String[0]);
+                    cpu64bit ? new String[] { "ia64" } : Normal.EMPTY_STRING_ARRAY);
         }
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
                 processorID, cpu64bit, cpuVendorFreq);

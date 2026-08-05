@@ -22,6 +22,7 @@ package org.miaixz.bus.image.metric.web;
 import java.io.InputStream;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 
 /**
@@ -64,19 +65,23 @@ public record MultipartPart(String contentType, String location, Payload payload
      */
     public String generateHeader(String boundary) {
         Objects.requireNonNull(boundary, "Boundary cannot be null");
-        StringBuilder header = new StringBuilder(256).append("\r\n--").append(boundary).append("\r\n")
-                .append(Http.Header.CONTENT_TYPE).append(": ").append(contentType);
+        StringBuilder header = new StringBuilder(256).append(Symbol.CRLF).append(Symbol.MINUS).append(Symbol.MINUS)
+                .append(boundary).append(Symbol.CRLF).append(Http.Header.CONTENT_TYPE).append(Symbol.COLON)
+                .append(Symbol.SPACE).append(contentType);
 
         long size = payload.size();
         if (size < 0) {
-            header.append("\r\n").append(Http.Header.CONTENT_ENCODING).append(": gzip, identity");
+            header.append(Symbol.CRLF).append(Http.Header.CONTENT_ENCODING).append(Symbol.COLON).append(Symbol.SPACE)
+                    .append("gzip, identity");
         } else {
-            header.append("\r\n").append(Http.Header.CONTENT_LENGTH).append(": ").append(size);
+            header.append(Symbol.CRLF).append(Http.Header.CONTENT_LENGTH).append(Symbol.COLON).append(Symbol.SPACE)
+                    .append(size);
         }
         if (location != null && !location.isEmpty()) {
-            header.append("\r\n").append(Http.Header.CONTENT_LOCATION).append(": ").append(location);
+            header.append(Symbol.CRLF).append(Http.Header.CONTENT_LOCATION).append(Symbol.COLON).append(Symbol.SPACE)
+                    .append(location);
         }
-        return header.append("\r\n\r\n").toString();
+        return header.append(Symbol.CRLF).append(Symbol.CRLF).toString();
     }
 
 }

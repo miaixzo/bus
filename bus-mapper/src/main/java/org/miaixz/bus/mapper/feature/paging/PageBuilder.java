@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.feature.paging;
 
 import lombok.Getter;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.PooledStringBuilder;
 import org.miaixz.bus.core.text.StringBuilderPool;
 import org.miaixz.bus.mapper.Order;
@@ -35,7 +36,7 @@ import org.miaixz.bus.mapper.Order;
  * <li>Apply sorting to SQL queries using the Sort interface</li>
  * <li>Generate pagination SQL for different database dialects</li>
  * <li>Handle complex Order BY clauses</li>
- * <li>Validate and sanitize sort properties</li>
+ * <li>Append sort properties after caller-side validation</li>
  * </ul>
  *
  * <p>
@@ -89,8 +90,8 @@ public class PageBuilder {
         PooledStringBuilder builder = StringBuilderPool
                 .acquire(sqlWithoutOrderBy.length() + orderByClause.length() + 10);
         builder.append(sqlWithoutOrderBy);
-        if (!sqlWithoutOrderBy.trim().endsWith(";")) {
-            builder.append(" ");
+        if (!sqlWithoutOrderBy.trim().endsWith(Symbol.SEMICOLON)) {
+            builder.append(Symbol.SPACE);
         }
         builder.append(orderByClause);
         return builder.toString();
@@ -222,7 +223,10 @@ public class PageBuilder {
     }
 
     /**
-     * Tests whether a keyword starts at the specified index with identifier boundaries.
+     * Tests whether a structural SQL keyword starts at the specified index with token boundaries.
+     * <p>
+     * This method only locates an existing SQL clause; it does not validate database identifiers or reserved words.
+     * </p>
      *
      * @param sql     the SQL query
      * @param index   the index to test
@@ -241,13 +245,16 @@ public class PageBuilder {
     }
 
     /**
-     * Tests whether a character belongs to an SQL identifier.
+     * Tests whether a character belongs to an unquoted SQL token for boundary detection.
+     * <p>
+     * This parser helper is not an identifier compliance rule.
+     * </p>
      *
      * @param value the character to test
-     * @return {@code true} when it belongs to an identifier
+     * @return {@code true} when it belongs to the surrounding token
      */
     private boolean identifierPart(char value) {
-        return Character.isLetterOrDigit(value) || value == '_';
+        return Character.isLetterOrDigit(value) || value == Symbol.C_UNDERLINE;
     }
 
     /**
@@ -263,12 +270,10 @@ public class PageBuilder {
         boolean first = true;
         for (Order order : sort.getOrders()) {
             if (!first) {
-                builder.append(", ");
+                builder.append(Symbol.COMMA).append(Symbol.SPACE);
             }
 
-            // Quote property to handle reserved words and special characters
-            String property = quoteProperty(order.getProperty());
-            builder.append(property);
+            builder.append(order.getProperty());
 
             if (order.isDescending()) {
                 builder.append(" DESC");
@@ -279,98 +284,6 @@ public class PageBuilder {
             first = false;
         }
         return builder.toString();
-    }
-
-    /**
-     * Quotes a property name to handle SQL identifiers.
-     *
-     * @param property the property name
-     * @return quoted property name
-     */
-    private String quoteProperty(String property) {
-        if (property == null || property.trim().isEmpty()) {
-            return property;
-        }
-
-        // If already quoted, return as-is
-        if ((property.startsWith("\"") && property.endsWith("\""))
-                || (property.startsWith("'") && property.endsWith("'"))
-                || (property.startsWith("`") && property.endsWith("`"))) {
-            return property;
-        }
-
-        // Check if property contains special characters or is a reserved word
-        if (needsQuoting(property)) {
-            return "\"" + property.replace("\"", "\"\"") + "\"";
-        }
-
-        return property;
-    }
-
-    /**
-     * Checks if a property name needs to be quoted.
-     *
-     * @param property the property name
-     * @return true if quoting is needed
-     */
-    private boolean needsQuoting(String property) {
-        if (property == null || property.trim().isEmpty()) {
-            return false;
-        }
-
-        // Check for spaces or special characters
-        if (!property.matches("^[a-zA-Z_][a-zA-Z0-9_]*$")) {
-            return true;
-        }
-
-        // Check for SQL keywords
-        String upperProperty = property.toUpperCase();
-        return isSqlKeyword(upperProperty);
-    }
-
-    /**
-     * Checks if a word is a SQL keyword.
-     *
-     * @param word the word to check (uppercase)
-     * @return true if it's a SQL keyword
-     */
-    private boolean isSqlKeyword(String word) {
-        switch (word) {
-            case "SELECT":
-            case "FROM":
-            case "WHERE":
-            case "ORDER":
-            case "BY":
-            case "GROUP":
-            case "HAVING":
-            case "JOIN":
-            case "INNER":
-            case "LEFT":
-            case "RIGHT":
-            case "OUTER":
-            case "ON":
-            case "AND":
-            case "OR":
-            case "NOT":
-            case "NULL":
-            case "IS":
-            case "IN":
-            case "EXISTS":
-            case "BETWEEN":
-            case "LIKE":
-            case "AS":
-            case "DISTINCT":
-            case "ALL":
-            case "ANY":
-            case "SOME":
-            case "UNION":
-            case "INTERSECT":
-            case "EXCEPT":
-                return true;
-
-            default:
-                return false;
-        }
     }
 
     /**

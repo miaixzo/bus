@@ -57,9 +57,9 @@ public class Profile extends Setting {
     private String name;
 
     /**
-     * Display order.
+     * Display sort position.
      */
-    private Integer order;
+    private Integer sort;
 
     /**
      * Whether the profile is built in.

@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.ApplicationSettings;
 import org.miaixz.bus.gitlab.models.Setting;
 import org.miaixz.bus.gitlab.support.ISO8601;
@@ -58,9 +59,9 @@ public class ApplicationSettingsApi extends AbstractApi {
      * </pre>
      *
      * @return an ApplicationSettings instance containing the current application settings of the GitLab instance.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ApplicationSettings getApplicationSettings() throws GitLabApiException {
+    public ApplicationSettings getApplicationSettings() throws RelevantException {
 
         Response response = get(Response.Status.OK, null, "application", "settings");
         JsonNode root = response.readEntity(JsonNode.class);
@@ -77,12 +78,12 @@ public class ApplicationSettingsApi extends AbstractApi {
      *
      * @param appSettings the ApplicationSettings instance holding the settings and values to update
      * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws GitLabApiException {
+    public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws RelevantException {
 
         if (appSettings == null || appSettings.getSettings().isEmpty()) {
-            throw new GitLabApiException("ApplicationSettings cannot be null or empty.");
+            throw GitLabFailure.exception("ApplicationSettings cannot be null or empty.");
         }
 
         final GitLabApiForm form = new GitLabApiForm();
@@ -102,12 +103,12 @@ public class ApplicationSettingsApi extends AbstractApi {
      * @param setting the ApplicationSetting to update
      * @param value   the new value for the application setting
      * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ApplicationSettings updateApplicationSetting(Setting setting, Object value) throws GitLabApiException {
+    public ApplicationSettings updateApplicationSetting(Setting setting, Object value) throws RelevantException {
 
         if (setting == null) {
-            throw new GitLabApiException("setting cannot be null.");
+            throw GitLabFailure.exception("setting cannot be null.");
         }
 
         return (updateApplicationSetting(setting.toString(), value));
@@ -123,12 +124,12 @@ public class ApplicationSettingsApi extends AbstractApi {
      * @param setting the ApplicationSetting to update
      * @param value   the new value for the application setting
      * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ApplicationSettings updateApplicationSetting(String setting, Object value) throws GitLabApiException {
+    public ApplicationSettings updateApplicationSetting(String setting, Object value) throws RelevantException {
 
         if (setting == null || setting.trim().isEmpty()) {
-            throw new GitLabApiException("setting cannot be null or empty.");
+            throw GitLabFailure.exception("setting cannot be null or empty.");
         }
 
         GitLabApiForm form = new GitLabApiForm().withParam(setting, value);
@@ -142,9 +143,9 @@ public class ApplicationSettingsApi extends AbstractApi {
      *
      * @param root the root JsonNode
      * @return the populated ApplicationSettings instance
-     * @throws GitLabApiException if any error occurs
+     * @throws RelevantException if any error occurs
      */
-    public static final ApplicationSettings parseApplicationSettings(JsonNode root) throws GitLabApiException {
+    public static final ApplicationSettings parseApplicationSettings(JsonNode root) throws RelevantException {
 
         ApplicationSettings appSettings = new ApplicationSettings();
 
@@ -170,7 +171,7 @@ public class ApplicationSettingsApi extends AbstractApi {
                                 fieldName,
                                 root.path(fieldName).asText().length(),
                                 pe.getClass().getSimpleName());
-                        throw new GitLabApiException(pe);
+                        throw GitLabFailure.exception(pe);
                     }
                     break;
 
@@ -187,7 +188,7 @@ public class ApplicationSettingsApi extends AbstractApi {
                                 fieldName,
                                 root.path(fieldName).asText().length(),
                                 pe.getClass().getSimpleName());
-                        throw new GitLabApiException(pe);
+                        throw GitLabFailure.exception(pe);
                     }
                     break;
 

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -62,7 +63,7 @@ public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context>
                 "Notify",
                 "Tencent SMS send started: template={}, targetCount={}, smsAppPresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && entity.getSmsAppId() != null);
         Map<String, String> bodys = new HashMap<>();
         bodys.put("SmsSdkAppid", entity.getSmsAppId());
@@ -84,7 +85,7 @@ public class TencentSmsProvider extends AbstractProvider<TencentNotice, Context>
                 "Notify",
                 "Tencent SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 status,
                 result.getErrcode(),
                 response == null ? 0 : response.length());

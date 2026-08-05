@@ -75,6 +75,10 @@ public class MetricsProperties {
      */
     private final Endpoint endpoint;
     /**
+     * Spring Boot startup metric settings.
+     */
+    private final Startup startup;
+    /**
      * Limits applied to metric tag cardinality.
      */
     private final Cardinality cardinality;
@@ -102,6 +106,7 @@ public class MetricsProperties {
      * @param http        HTTP metric settings
      * @param path        configured path
      * @param endpoint    endpoint options
+     * @param startup     Spring Boot startup metric settings
      * @param cardinality metric cardinality settings
      * @param slo         service-level objective settings
      * @param rateWindow  rate window
@@ -110,7 +115,7 @@ public class MetricsProperties {
     public MetricsProperties(@DefaultValue("false") boolean enabled, @DefaultValue("native") String provider,
             @DefaultValue("true") boolean jvm, @DefaultValue("true") boolean system,
             @DefaultValue("true") boolean health, @DefaultValue("true") boolean http,
-            @DefaultValue("/metricz") String path, @DefaultValue Endpoint endpoint,
+            @DefaultValue("/metricz") String path, @DefaultValue Endpoint endpoint, @DefaultValue Startup startup,
             @DefaultValue Cardinality cardinality, @DefaultValue List<SloDefinition> slo,
             @DefaultValue RateWindow rateWindow, @DefaultValue Cortex cortex) {
         this.enabled = enabled;
@@ -121,6 +126,7 @@ public class MetricsProperties {
         this.http = http;
         this.path = path;
         this.endpoint = endpoint == null ? new Endpoint() : endpoint;
+        this.startup = startup == null ? new Startup() : startup;
         this.cardinality = cardinality == null ? new Cardinality() : cardinality;
         this.slo = slo == null ? List.of() : List.copyOf(slo);
         this.rateWindow = rateWindow == null ? new RateWindow() : rateWindow;
@@ -138,6 +144,21 @@ public class MetricsProperties {
          * Creates disabled endpoint defaults.
          */
         public Endpoint() {
+            this(false);
+        }
+    }
+
+    /**
+     * Spring Boot startup metric options.
+     *
+     * @param enabled whether startup metrics are collected and published
+     */
+    public record Startup(@DefaultValue("false") boolean enabled) {
+
+        /**
+         * Creates disabled startup metric defaults.
+         */
+        public Startup() {
             this(false);
         }
     }

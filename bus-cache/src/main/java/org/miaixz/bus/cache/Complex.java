@@ -32,6 +32,7 @@ import org.miaixz.bus.cache.magic.annotation.CachedGet;
 import org.miaixz.bus.cache.magic.annotation.Invalid;
 import org.miaixz.bus.cache.reader.AbstractReader;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 
@@ -200,7 +201,7 @@ public class Complex {
                         method == null ? null : method.getName(),
                         invalid.value(),
                         keys.size());
-                manage.remove(invalid.value(), keys.toArray(new String[0]));
+                manage.remove(invalid.value(), keys.toArray(Normal.EMPTY_STRING_ARRAY));
                 Logger.info(
                         false,
                         "Cache",

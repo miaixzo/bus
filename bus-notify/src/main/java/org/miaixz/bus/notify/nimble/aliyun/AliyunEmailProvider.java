@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -76,14 +77,14 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
                     false,
                     "Notify",
                     "Aliyun email send rejected: reason=missingSubject, targetCount={}",
-                    entity.getReceive().split(",").length);
+                    entity.getReceive().split(Symbol.COMMA).length);
             throw new InternalException("Email subject cannot be empty");
         }
         Logger.info(
                 true,
                 "Notify",
                 "Aliyun email send started: targetCount={}, type={}, senderPresent={}",
-                entity.getReceive().split(",").length,
+                entity.getReceive().split(Symbol.COMMA).length,
                 entity.getType(),
                 entity.getSender() != null);
 
@@ -195,7 +196,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
                 false,
                 "Notify",
                 "Aliyun email send completed: targetCount={}, type={}, errcode={}",
-                entity.getReceive().split(",").length,
+                entity.getReceive().split(Symbol.COMMA).length,
                 entity.getType(),
                 result == null ? null : result.getErrcode());
         return result;

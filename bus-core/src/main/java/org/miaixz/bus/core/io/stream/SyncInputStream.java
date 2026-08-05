@@ -119,7 +119,7 @@ public class SyncInputStream extends FilterInputStream {
     public byte[] readBytes() {
         final FastByteArrayOutputStream bytesOut = new FastByteArrayOutputStream(length > 0 ? (int) length : 1024);
         final long length = copyTo(bytesOut, null);
-        return length > 0 ? bytesOut.toByteArray() : new byte[0];
+        return length > 0 ? bytesOut.toByteArray() : Normal.EMPTY_BYTE_ARRAY;
     }
 
     /**

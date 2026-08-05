@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Parses multipart headers with continuation-line support.
  *
@@ -50,20 +52,20 @@ public final class MultipartHeaderParser {
         String currentFieldName = null;
         StringBuilder currentField = new StringBuilder();
 
-        for (String line : headerContent.split("\r\n")) {
+        for (String line : headerContent.split(Symbol.CRLF)) {
             if (line.isEmpty()) {
                 break;
             }
-            if (line.startsWith(" ") || line.startsWith("\t")) {
+            if (line.startsWith(Symbol.SPACE) || line.startsWith(Symbol.HT)) {
                 if (currentFieldName != null) {
-                    currentField.append(' ').append(line.trim());
+                    currentField.append(Symbol.C_SPACE).append(line.trim());
                 }
                 continue;
             }
             if (currentFieldName != null) {
                 merge(headers, currentFieldName, currentField.toString());
             }
-            int colonIndex = line.indexOf(':');
+            int colonIndex = line.indexOf(Symbol.C_COLON);
             if (colonIndex > 0) {
                 currentFieldName = line.substring(0, colonIndex).trim();
                 currentField = new StringBuilder(line.substring(colonIndex + 1).trim());
@@ -86,7 +88,7 @@ public final class MultipartHeaderParser {
      * @param value   the value.
      */
     private static void merge(Map<String, String> headers, String name, String value) {
-        headers.merge(name, value, (oldVal, newVal) -> oldVal + "," + newVal);
+        headers.merge(name, value, (oldVal, newVal) -> oldVal + Symbol.COMMA + newVal);
     }
 
 }

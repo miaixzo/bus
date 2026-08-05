@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.MethodKit;
 
@@ -153,7 +154,7 @@ public final class AnnotationMappingProxy<T extends Annotation> implements Invoc
                                 "{}={}",
                                 attribute.getName(),
                                 getAttributeValue(attribute.getName(), attribute.getReturnType())))
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
         return CharsBacker.format("@{}({})", mapping.annotationType().getName(), attributes);
     }
 

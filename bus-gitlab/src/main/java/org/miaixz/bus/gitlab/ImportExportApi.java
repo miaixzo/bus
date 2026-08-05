@@ -32,6 +32,7 @@ import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.ExportStatus;
 import org.miaixz.bus.gitlab.models.ImportStatus;
 import org.miaixz.bus.gitlab.models.Project;
@@ -64,9 +65,9 @@ public class ImportExportApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void scheduleExport(Object projectIdOrPath) throws GitLabApiException {
+    public void scheduleExport(Object projectIdOrPath) throws RelevantException {
         scheduleExport(projectIdOrPath, null, null, null, null);
     }
 
@@ -79,9 +80,9 @@ public class ImportExportApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param description     overrides the project description, optional
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void scheduleExport(Object projectIdOrPath, String description) throws GitLabApiException {
+    public void scheduleExport(Object projectIdOrPath, String description) throws RelevantException {
         scheduleExport(projectIdOrPath, description, null, null, null);
     }
 
@@ -98,14 +99,14 @@ public class ImportExportApi extends AbstractApi {
      * @param uploadUrl        the URL to upload the project
      * @param uploadHttpMethod the HTTP method to upload the exported project. Only PUT and POST methods allowed.
      *                         Default is PUT
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public void scheduleExport(
             Object projectIdOrPath,
             String description,
             Map<String, String> upload,
             String uploadUrl,
-            String uploadHttpMethod) throws GitLabApiException {
+            String uploadHttpMethod) throws RelevantException {
 
         Form formData = new GitLabApiForm().withParam("description", description).withParam("upload", upload)
                 .withParam("upload[url]", uploadUrl).withParam("upload[http_method]", uploadHttpMethod);
@@ -121,9 +122,9 @@ public class ImportExportApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return an ExportStatus instance holding information on the export status
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ExportStatus getExportStatus(Object projectIdOrPath) throws GitLabApiException {
+    public ExportStatus getExportStatus(Object projectIdOrPath) throws RelevantException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "export");
         return (response.readEntity(ExportStatus.class));
     }
@@ -139,9 +140,9 @@ public class ImportExportApi extends AbstractApi {
      * @param directory       the File instance of the directory to save the export file to, if null will use
      *                        "java.io.tmpdir"
      * @return a File instance pointing to the download of the project export file
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public File downloadExport(Object projectIdOrPath, File directory) throws GitLabApiException {
+    public File downloadExport(Object projectIdOrPath, File directory) throws RelevantException {
         return downloadExport(projectIdOrPath, directory, null);
     }
 
@@ -158,9 +159,9 @@ public class ImportExportApi extends AbstractApi {
      * @param filename        Name to give to the downloaded file. If null then we try to get from Content-Disposition
      *                        header or to compute one from parameters
      * @return a File instance pointing to the download of the project export file
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public File downloadExport(Object projectIdOrPath, File directory, String filename) throws GitLabApiException {
+    public File downloadExport(Object projectIdOrPath, File directory, String filename) throws RelevantException {
 
         Response response = getWithAccepts(
                 Response.Status.OK,
@@ -217,7 +218,7 @@ public class ImportExportApi extends AbstractApi {
                     directory != null,
                     filename != null && !filename.isEmpty(),
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         }
     }
 
@@ -267,14 +268,14 @@ public class ImportExportApi extends AbstractApi {
      * @param overwrite         if there is a project with the same path the import will overwrite it. Defaults to false
      * @param overrideParams    overriding project params, supports all fields defined by the ProjectApi, optional
      * @return an Importstatus instance with info for the project being imported to
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public ImportStatus startImport(
             Object namespaceIdOrPath,
             File exportFile,
             String path,
             Boolean overwrite,
-            Project overrideParams) throws GitLabApiException {
+            Project overrideParams) throws RelevantException {
 
         URL url;
         try {
@@ -291,7 +292,7 @@ public class ImportExportApi extends AbstractApi {
                     overwrite,
                     overrideParams != null,
                     ioe.getClass().getSimpleName());
-            throw new GitLabApiException(ioe);
+            throw GitLabFailure.exception(ioe);
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("path", path, true)
@@ -346,9 +347,9 @@ public class ImportExportApi extends AbstractApi {
      * @param projectIdOrPath the new (imported) project identifier in the form of an Long(ID), String(path), or Project
      *                        instance
      * @return an ImportStatus instance holding information on the import status
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public ImportStatus getImportStatus(Object projectIdOrPath) throws GitLabApiException {
+    public ImportStatus getImportStatus(Object projectIdOrPath) throws RelevantException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "import");
         return (response.readEntity(ImportStatus.class));
     }

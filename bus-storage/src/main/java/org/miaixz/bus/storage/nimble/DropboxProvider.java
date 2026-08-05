@@ -226,7 +226,7 @@ public class DropboxProvider extends AbstractProvider {
 
             Response response = post(
                     url,
-                    new byte[0],
+                    Normal.EMPTY_BYTE_ARRAY,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)));
@@ -272,7 +272,7 @@ public class DropboxProvider extends AbstractProvider {
 
             try (Response response = post(
                     url,
-                    new byte[0],
+                    Normal.EMPTY_BYTE_ARRAY,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
@@ -330,7 +330,7 @@ public class DropboxProvider extends AbstractProvider {
 
             try (Response response = post(
                     url,
-                    new byte[0],
+                    Normal.EMPTY_BYTE_ARRAY,
                     MediaType.APPLICATION_OCTET_STREAM,
                     header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + context.getExtension()),
                     header("Dropbox-API-Arg", JsonKit.toJsonString(args)))) {
@@ -372,7 +372,7 @@ public class DropboxProvider extends AbstractProvider {
     public Message<List<Blob>> list() {
         try {
             String url = API_BASE + "/files/list_folder";
-            String path = context.getBucket().equals("/") ? "" : context.getBucket();
+            String path = context.getBucket().equals(Symbol.SLASH) ? Normal.EMPTY : context.getBucket();
 
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("path", path);

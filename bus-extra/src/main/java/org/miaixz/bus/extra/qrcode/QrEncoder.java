@@ -24,6 +24,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -64,7 +65,7 @@ public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
      *
      * @param content The content to encode.
      * @return The encoded {@link BitMatrix}.
-     * @throws QrCodeException if a {@link WriterException} occurs during encoding.
+     * @throws InternalException if a {@link WriterException} occurs during encoding
      */
     @Override
     public BitMatrix encode(final CharSequence content) {
@@ -75,7 +76,7 @@ public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
             bitMatrix = multiFormatWriter
                     .encode(StringKit.toString(content), config.format, config.width, config.height, config.toHints());
         } catch (final WriterException e) {
-            throw new QrCodeException(e);
+            throw new InternalException(e);
         }
 
         return bitMatrix;

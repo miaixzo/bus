@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -65,12 +65,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
     /**
      * The USE_BATCH_COMMANDLINE constant.
      */
-    private static final boolean USE_BATCH_COMMANDLINE = Config.get(Config._WINDOWS_COMMANDLINE_BATCH, false);
+    private static final boolean USE_BATCH_COMMANDLINE = Builder.get(Builder._WINDOWS_COMMANDLINE_BATCH, false);
 
     /**
      * The USE_PROCSTATE_SUSPENDED constant.
      */
-    private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
+    private static final boolean USE_PROCSTATE_SUSPENDED = Builder.get(Builder._WINDOWS_PROCSTATE_SUSPENDED, false);
 
     /**
      * The IS_VISTA_OR_GREATER constant.

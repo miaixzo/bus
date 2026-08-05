@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Todo;
 
 /**
@@ -52,9 +53,9 @@ public class TodosApi extends AbstractApi {
      * </pre>
      *
      * @return a List of pending Todos for the current user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Todo> getPendingTodos() throws GitLabApiException {
+    public List<Todo> getPendingTodos() throws RelevantException {
         return (getTodos(null, null, null, null, TodoState.PENDING, null, getDefaultPerPage()).all());
     }
 
@@ -67,9 +68,9 @@ public class TodosApi extends AbstractApi {
      *
      * @param itemsPerPage the number of todo that will be fetched per page
      * @return a Pager containing the pending Todos for the current user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Todo> getPendingTodos(int itemsPerPage) throws GitLabApiException {
+    public Pager<Todo> getPendingTodos(int itemsPerPage) throws RelevantException {
         return (getTodos(null, null, null, null, TodoState.PENDING, null, itemsPerPage));
     }
 
@@ -81,9 +82,9 @@ public class TodosApi extends AbstractApi {
      * </pre>
      *
      * @return a Stream containing the pending Todos for the user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Todo> getPendingTodosStream() throws GitLabApiException {
+    public Stream<Todo> getPendingTodosStream() throws RelevantException {
         return (getTodos(null, null, null, null, TodoState.PENDING, null, getDefaultPerPage()).stream());
     }
 
@@ -95,9 +96,9 @@ public class TodosApi extends AbstractApi {
      * </pre>
      *
      * @return a List of done Todos for the current user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Todo> getDoneTodos() throws GitLabApiException {
+    public List<Todo> getDoneTodos() throws RelevantException {
         return (getTodos(null, null, null, null, TodoState.DONE, null, getDefaultPerPage()).all());
     }
 
@@ -110,9 +111,9 @@ public class TodosApi extends AbstractApi {
      *
      * @param itemsPerPage the number of todo that will be fetched per page
      * @return a Pager containing the done Todos for the current user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Todo> getDoneTodos(int itemsPerPage) throws GitLabApiException {
+    public Pager<Todo> getDoneTodos(int itemsPerPage) throws RelevantException {
         return (getTodos(null, null, null, null, TodoState.DONE, null, itemsPerPage));
     }
 
@@ -124,9 +125,9 @@ public class TodosApi extends AbstractApi {
      * </pre>
      *
      * @return a Stream containing the done Todos for the current user
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Todo> getDoneTodosStream() throws GitLabApiException {
+    public Stream<Todo> getDoneTodosStream() throws RelevantException {
         return (getTodos(null, null, null, null, TodoState.DONE, null, getDefaultPerPage()).stream());
     }
 
@@ -145,7 +146,7 @@ public class TodosApi extends AbstractApi {
      * @param state     the state of the todo. Can be either pending or done
      * @param type      the type of a todo. Can be either Issue or MergeRequest
      * @return Stream of Todo instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public List<Todo> getTodos(
             TodoAction action,
@@ -153,7 +154,7 @@ public class TodosApi extends AbstractApi {
             Long projectId,
             Long groupId,
             TodoState state,
-            TodoType type) throws GitLabApiException {
+            TodoType type) throws RelevantException {
         return (getTodos(action, authorId, projectId, groupId, state, type, getDefaultPerPage()).all());
     }
 
@@ -172,7 +173,7 @@ public class TodosApi extends AbstractApi {
      * @param state     the state of the todo. Can be either pending or done
      * @param type      the type of a todo. Can be either Issue or MergeRequest
      * @return Stream of Todo instances
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Stream<Todo> getTodosStream(
             TodoAction action,
@@ -180,7 +181,7 @@ public class TodosApi extends AbstractApi {
             Long projectId,
             Long groupId,
             TodoState state,
-            TodoType type) throws GitLabApiException {
+            TodoType type) throws RelevantException {
         return (getTodos(action, authorId, projectId, groupId, state, type, getDefaultPerPage()).stream());
     }
 
@@ -201,7 +202,7 @@ public class TodosApi extends AbstractApi {
      * @param type         the type of a todo. Can be either Issue or MergeRequest
      * @param itemsPerPage the number of todo that will be fetched per page
      * @return a list of pages in todo for the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Pager<Todo> getTodos(
             TodoAction action,
@@ -210,7 +211,7 @@ public class TodosApi extends AbstractApi {
             Long groupId,
             TodoState state,
             TodoType type,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action, false)
                 .withParam("author_id", authorId, false).withParam("project_id", projectId, false)
                 .withParam("group_id", groupId, false).withParam("state", state, false).withParam("type", type, false);
@@ -227,9 +228,9 @@ public class TodosApi extends AbstractApi {
      *
      * @param todoId the ID of a todo
      * @return todo instance with info on the created page
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Todo markAsDone(Long todoId) throws GitLabApiException {
+    public Todo markAsDone(Long todoId) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm();
         Response response = post(Response.Status.OK, formData, "todos", todoId, "mark_as_done");
         return (response.readEntity(Todo.class));
@@ -242,9 +243,9 @@ public class TodosApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /todos/mark_as_done</code>
      * </pre>
      *
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void markAllAsDone() throws GitLabApiException {
+    public void markAllAsDone() throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm();
         post(Response.Status.NO_CONTENT, formData, "todos", "mark_as_done");
     }

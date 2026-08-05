@@ -22,6 +22,8 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
+
 /**
  * This class provides an entry point to all the GitLab API Search API calls.
  *
@@ -52,10 +54,10 @@ public class SearchApi extends AbstractApi {
      *               issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
      * @return a List containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
-    public <T> List<T> globalSearch(SearchScope<T> scope, String search) throws GitLabApiException {
+    public <T> List<T> globalSearch(SearchScope<T> scope, String search) throws RelevantException {
         return (globalSearch(scope, search, this.getDefaultPerPage()).all());
     }
 
@@ -70,10 +72,10 @@ public class SearchApi extends AbstractApi {
      *               issues, merge_requests, milestones, snippet_titles, snippet_blobs, users
      * @param search the search query
      * @return a Stream containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
-    public <T> Stream<T> globalSearchStream(SearchScope<T> scope, String search) throws GitLabApiException {
+    public <T> Stream<T> globalSearchStream(SearchScope<T> scope, String search) throws RelevantException {
         return (globalSearch(scope, search, getDefaultPerPage()).stream());
     }
 
@@ -89,10 +91,10 @@ public class SearchApi extends AbstractApi {
      * @param search       the search query
      * @param itemsPerPage the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
-    public <T> Pager<T> globalSearch(SearchScope<T> scope, String search, int itemsPerPage) throws GitLabApiException {
+    public <T> Pager<T> globalSearch(SearchScope<T> scope, String search, int itemsPerPage) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope, true).withParam("search", search, true);
 
@@ -112,11 +114,11 @@ public class SearchApi extends AbstractApi {
      *                      projects, issues, merge_requests, milestones, users
      * @param search        the search query
      * @return a List containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> List<T> groupSearch(Object groupIdOrPath, GroupSearchScope<T> scope, String search)
-            throws GitLabApiException {
+            throws RelevantException {
         return (groupSearch(groupIdOrPath, scope, search, this.getDefaultPerPage()).all());
     }
 
@@ -133,11 +135,11 @@ public class SearchApi extends AbstractApi {
      *                      projects, issues, merge_requests, milestones, users
      * @param search        the search query
      * @return a Stream containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> Stream<T> groupSearchStream(Object groupIdOrPath, GroupSearchScope<T> scope, String search)
-            throws GitLabApiException {
+            throws RelevantException {
         return (groupSearch(groupIdOrPath, scope, search, getDefaultPerPage()).stream());
     }
 
@@ -155,11 +157,11 @@ public class SearchApi extends AbstractApi {
      * @param search        the search query
      * @param itemsPerPage  the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> Pager<T> groupSearch(Object groupIdOrPath, GroupSearchScope<T> scope, String search, int itemsPerPage)
-            throws GitLabApiException {
+            throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope, true).withParam("search", search, true);
 
@@ -180,11 +182,11 @@ public class SearchApi extends AbstractApi {
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
      * @param search          the search query
      * @return a List containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> List<T> projectSearch(Object projectIdOrPath, ProjectSearchScope<T> scope, String search)
-            throws GitLabApiException {
+            throws RelevantException {
         return (projectSearch(projectIdOrPath, scope, search, null, this.getDefaultPerPage()).all());
     }
 
@@ -203,11 +205,11 @@ public class SearchApi extends AbstractApi {
      * @param ref             the name of a repository branch or tag to search on. The project’s default branch is used
      *                        by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @return a List containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> List<T> projectSearch(Object projectIdOrPath, ProjectSearchScope<T> scope, String search, String ref)
-            throws GitLabApiException {
+            throws RelevantException {
         return (projectSearch(projectIdOrPath, scope, search, ref, this.getDefaultPerPage()).all());
     }
 
@@ -224,11 +226,11 @@ public class SearchApi extends AbstractApi {
      *                        issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs, users
      * @param search          the search query
      * @return a Stream containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> Stream<T> projectSearchStream(Object projectIdOrPath, ProjectSearchScope<T> scope, String search)
-            throws GitLabApiException {
+            throws RelevantException {
         return (projectSearch(projectIdOrPath, scope, search, null, getDefaultPerPage()).stream());
     }
 
@@ -247,14 +249,14 @@ public class SearchApi extends AbstractApi {
      * @param ref             the name of a repository branch or tag to search on. The project’s default branch is used
      *                        by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @return a Stream containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> Stream<T> projectSearchStream(
             Object projectIdOrPath,
             ProjectSearchScope<T> scope,
             String search,
-            String ref) throws GitLabApiException {
+            String ref) throws RelevantException {
         return (projectSearch(projectIdOrPath, scope, search, ref, getDefaultPerPage()).stream());
     }
 
@@ -272,14 +274,14 @@ public class SearchApi extends AbstractApi {
      * @param search          the search query
      * @param itemsPerPage    the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> Pager<T> projectSearch(
             Object projectIdOrPath,
             ProjectSearchScope<T> scope,
             String search,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
         return projectSearch(projectIdOrPath, scope, search, null, itemsPerPage);
     }
 
@@ -299,7 +301,7 @@ public class SearchApi extends AbstractApi {
      *                        by default. This is only applicable for scopes: commits, blobs, and wiki_blobs.
      * @param itemsPerPage    the number of items that will be fetched per page
      * @return a Pager containing the object type specified by the scope
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      * @since GitLab 10.5
      */
     public <T> Pager<T> projectSearch(
@@ -307,7 +309,7 @@ public class SearchApi extends AbstractApi {
             ProjectSearchScope<T> scope,
             String search,
             String ref,
-            int itemsPerPage) throws GitLabApiException {
+            int itemsPerPage) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope, true).withParam("search", search, true)
                 .withParam("ref", ref, false);
@@ -315,8 +317,8 @@ public class SearchApi extends AbstractApi {
         if (ref != null) {
             if (!scope.equals(ProjectSearchScope.BLOBS) && !scope.equals(ProjectSearchScope.WIKI_BLOBS)
                     && !scope.equals(ProjectSearchScope.COMMITS)) {
-                throw new GitLabApiException(
-                        "Ref parameter is only applicable for scopes: commits, blobs, and wiki_blobs");
+                throw GitLabFailure
+                        .exception("Ref parameter is only applicable for scopes: commits, blobs, and wiki_blobs");
             }
         }
 

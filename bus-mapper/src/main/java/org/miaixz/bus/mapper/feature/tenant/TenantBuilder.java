@@ -73,7 +73,10 @@ public class TenantBuilder {
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     /**
-     * SQL words that may follow a table name but must not be treated as table aliases.
+     * Parser stop words that may follow a table name but must not be treated as aliases.
+     * <p>
+     * These tokens locate SQL structure only; they are not database reserved-word validation rules.
+     * </p>
      */
     private static final Set<String> ALIAS_STOP_WORDS = Set.of(
             "WHERE",
@@ -425,7 +428,7 @@ public class TenantBuilder {
     }
 
     /**
-     * Returns the next identifier token from a SQL fragment.
+     * Returns the next unquoted alias token from a SQL fragment.
      *
      * @param sql   the SQL fragment
      * @param start the scan start index
@@ -576,7 +579,10 @@ public class TenantBuilder {
     }
 
     /**
-     * Tests whether a keyword starts at the index with word boundaries.
+     * Tests whether a structural SQL keyword starts at the index with token boundaries.
+     * <p>
+     * This parser helper locates clauses and does not validate database identifiers or reserved words.
+     * </p>
      *
      * @param sql     the SQL fragment
      * @param index   the index to test
@@ -594,10 +600,13 @@ public class TenantBuilder {
     }
 
     /**
-     * Tests whether a character is part of an SQL identifier.
+     * Tests whether a character belongs to an unquoted SQL token for boundary detection.
+     * <p>
+     * This parser helper is not an identifier compliance rule.
+     * </p>
      *
      * @param value the character to test
-     * @return {@code true} when it belongs to an identifier
+     * @return {@code true} when it belongs to the surrounding token
      */
     private boolean identifierPart(char value) {
         return Character.isLetterOrDigit(value) || value == '_';

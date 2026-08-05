@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -971,7 +972,7 @@ public class RegistryControlService {
         if (trimmed.isEmpty()) {
             return null;
         }
-        String[] segments = trimmed.split(":", -1);
+        String[] segments = trimmed.split(Symbol.COLON, -1);
         if (segments.length == 3) {
             Integer verb = parseVerbToken(segments[2]);
             if (verb != null) {

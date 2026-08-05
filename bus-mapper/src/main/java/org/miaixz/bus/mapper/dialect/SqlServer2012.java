@@ -92,6 +92,29 @@ public class SqlServer2012 extends AbstractDialect {
     }
 
     /**
+     * Builds the DDL used to set a SQL Server table comment.
+     *
+     * @param table the mapper table metadata
+     * @return the generated table-comment SQL
+     */
+    @Override
+    public String modifyTableComment(TableMeta table) {
+        return sqlServerModifyTableComment(table);
+    }
+
+    /**
+     * Builds the DDL used to set a SQL Server column comment.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column-comment SQL
+     */
+    @Override
+    public String modifyColumnComment(TableMeta table, ColumnMeta column) {
+        return sqlServerModifyColumnComment(table, column);
+    }
+
+    /**
      * Returns the keyword used by SQL Server 2012 to express row limits.
      *
      * @return the keyword {@code FETCH NEXT}

@@ -55,8 +55,8 @@ public class CharsetDetector {
     private static final Charset[] DEFAULT_CHARSETS;
 
     static {
-        final String[] names = { "UTF-8", "GBK", "GB2312", "GB18030", "UTF-16BE", "UTF-16LE", "UTF-16", "BIG5",
-                "UNICODE", "US-ASCII" };
+        final String[] names = { org.miaixz.bus.core.lang.Charset.DEFAULT_UTF_8, "GBK", "GB2312", "GB18030", "UTF-16BE",
+                "UTF-16LE", "UTF-16", "BIG5", "UNICODE", "US-ASCII" };
         DEFAULT_CHARSETS = Convert.convert(Charset[].class, names);
     }
 

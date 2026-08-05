@@ -25,6 +25,7 @@ import java.io.Serializable;
 import org.bouncycastle.crypto.AlphabetMapper;
 import org.bouncycastle.jcajce.spec.FPEParameterSpec;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
 
@@ -103,7 +104,7 @@ public class FPE implements Serializable {
         if (null == tweak) {
             switch (mode) {
                 case FF1:
-                    tweak = new byte[0];
+                    tweak = Normal.EMPTY_BYTE_ARRAY;
                     break;
 
                 case FF3_1:

@@ -94,7 +94,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *
  *         if ("department".equals(strategy)) {
  *             List<Long> deptIds = SecurityContextHolder.getCurrentUserDepartments();
- *             return VisibleProvider.column(tableAlias, "dept_id") + " IN (" + StringUtils.join(deptIds, ",") + ")";
+ *             return VisibleProvider.column(tableAlias, "dept_id") + " IN (" + StringKit.join(deptIds, ",") + ")";
  *         } else {
  *             Long userId = SecurityContextHolder.getCurrentUserId();
  *             return VisibleProvider.column(tableAlias, "user_id") + " = " + userId;
@@ -128,10 +128,10 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  * }
  * }</pre>
  *
+ * @author Kimi Liu
  * @see VisibleConfig
  * @see VisibleHandler
  * @see MapperProvider
- * @author Kimi Liu
  * @since Java 21+
  */
 @FunctionalInterface

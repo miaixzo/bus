@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -67,7 +68,7 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
                 "Notify",
                 "Upyun SMS send started: template={}, targetCount={}, tokenPresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && StringKit.isNotBlank(entity.getToken()));
         Map<String, String> bodys = new HashMap<>();
         // The template ID for the SMS message.
@@ -103,7 +104,7 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
                 "Notify",
                 "Upyun SMS send completed: template={}, targetCount={}, resultCount={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 list.size(),
                 result.getErrcode(),
                 response == null ? 0 : response.length());

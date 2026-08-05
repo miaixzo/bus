@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
 import org.miaixz.bus.health.mac.CFKit;
@@ -73,25 +73,25 @@ public class MacFileSystem extends AbstractFileSystem {
      * The FS_PATH_EXCLUDES constant.
      */
     protected static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._MAC_FS_PATH_EXCLUDES);
 
     /**
      * The FS_PATH_INCLUDES constant.
      */
     protected static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._MAC_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._MAC_FS_PATH_INCLUDES);
 
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     protected static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._MAC_FS_VOLUME_EXCLUDES);
 
     /**
      * The FS_VOLUME_INCLUDES constant.
      */
     protected static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._MAC_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._MAC_FS_VOLUME_INCLUDES);
 
     // Regexp matcher for /dev/disk0s2 etc.
     /**
@@ -282,8 +282,8 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Skip non-local drives if requested, and exclude pseudo file systems
                     boolean isLocal = (flags & MNT_LOCAL) != 0;
                     // Skip non-local drives if requested, and exclude pseudo file systems
-                    if ((localOnly && !isLocal)
-                            || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                    if ((localOnly && !isLocal) || !path.equals(Symbol.SLASH)
+                            && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                                     path,
                                     volume,
                                     FS_PATH_INCLUDES,

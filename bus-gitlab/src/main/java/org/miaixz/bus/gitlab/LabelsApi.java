@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Label;
 
 /**
@@ -52,9 +53,9 @@ public class LabelsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of project's labels
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Label> getProjectLabels(Object projectIdOrPath) throws GitLabApiException {
+    public List<Label> getProjectLabels(Object projectIdOrPath) throws RelevantException {
         return (getProjectLabels(projectIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -64,9 +65,9 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of items per page
      * @return a list of project's labels in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Label> getProjectLabels(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Label> getProjectLabels(Object projectIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Label>(this, Label.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "labels"));
     }
@@ -76,9 +77,9 @@ public class LabelsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream of project's labels
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Label> getProjectLabelsStream(Object projectIdOrPath) throws GitLabApiException {
+    public Stream<Label> getProjectLabelsStream(Object projectIdOrPath) throws RelevantException {
         return (getProjectLabels(projectIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -88,9 +89,9 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @return a Label instance holding the information for the group label
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label getProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Label getProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -107,13 +108,13 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return (Optional.ofNullable(getProjectLabel(projectIdOrPath, labelIdOrName)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -141,9 +142,9 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelProperties a Label instance holding the properties for the new group label
      * @return the created Label instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label createProjectLabel(Object projectIdOrPath, Label labelProperties) throws GitLabApiException {
+    public Label createProjectLabel(Object projectIdOrPath, Label labelProperties) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(labelProperties.getForm(true));
         Response response = post(
                 Response.Status.CREATED,
@@ -176,10 +177,10 @@ public class LabelsApi extends AbstractApi {
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @param labelConfig     a Label instance holding the label properties to update
      * @return the updated Label instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Label updateProjectLabel(Object projectIdOrPath, Object labelIdOrName, Label labelConfig)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(labelConfig.getForm(false));
         Response response = putWithFormData(
                 Response.Status.OK,
@@ -196,9 +197,9 @@ public class LabelsApi extends AbstractApi {
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public void deleteProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws RelevantException {
         delete(
                 Response.Status.OK,
                 null,
@@ -214,9 +215,9 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @return HttpStatusCode 503
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label subscribeProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Label subscribeProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws RelevantException {
         Response response = post(
                 Response.Status.NOT_MODIFIED,
                 getDefaultPerPageParam(),
@@ -234,9 +235,9 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @return HttpStatusCode 503
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label unsubscribeProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Label unsubscribeProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws RelevantException {
         Response response = post(
                 Response.Status.NOT_MODIFIED,
                 getDefaultPerPageParam(),
@@ -253,9 +254,9 @@ public class LabelsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of group's labels
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<Label> getGroupLabels(Object groupIdOrPath) throws GitLabApiException {
+    public List<Label> getGroupLabels(Object groupIdOrPath) throws RelevantException {
         return (getGroupLabels(groupIdOrPath, getDefaultPerPage()).all());
     }
 
@@ -265,9 +266,9 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param itemsPerPage  the number of items per page
      * @return a list of group's labels in the specified range
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Pager<Label> getGroupLabels(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
+    public Pager<Label> getGroupLabels(Object groupIdOrPath, int itemsPerPage) throws RelevantException {
         return (new Pager<Label>(this, Label.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "labels"));
     }
@@ -277,9 +278,9 @@ public class LabelsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a Stream of group's labels
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Stream<Label> getGroupLabelsStream(Object groupIdOrPath) throws GitLabApiException {
+    public Stream<Label> getGroupLabelsStream(Object groupIdOrPath) throws RelevantException {
         return (getGroupLabels(groupIdOrPath, getDefaultPerPage()).stream());
     }
 
@@ -289,9 +290,9 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return a Label instance holding the information for the group label
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label getGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Label getGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws RelevantException {
         Response response = get(
                 Response.Status.OK,
                 null,
@@ -308,12 +309,12 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Optional<Label> getOptionalGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Optional<Label> getOptionalGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws RelevantException {
         try {
             return (Optional.ofNullable(getGroupLabel(groupIdOrPath, labelIdOrName)));
-        } catch (GitLabApiException glae) {
+        } catch (RelevantException glae) {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
@@ -339,9 +340,9 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath   the group in the form of an Long(ID), String(path), or Group instance
      * @param labelProperties a Label instance holding the properties for the new group label
      * @return the created Label instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label createGroupLabel(Object groupIdOrPath, Label labelProperties) throws GitLabApiException {
+    public Label createGroupLabel(Object groupIdOrPath, Label labelProperties) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(labelProperties.getForm(true));
         Response response = post(
                 Response.Status.CREATED,
@@ -374,10 +375,10 @@ public class LabelsApi extends AbstractApi {
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @param labelConfig   a Label instance holding the label properties to update
      * @return the updated Label instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Label updateGroupLabel(Object groupIdOrPath, Object labelIdOrName, Label labelConfig)
-            throws GitLabApiException {
+            throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm(labelConfig.getForm(false));
         Response response = putWithFormData(
                 Response.Status.OK,
@@ -394,9 +395,9 @@ public class LabelsApi extends AbstractApi {
      *
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void deleteGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public void deleteGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws RelevantException {
         delete(
                 Response.Status.OK,
                 null,
@@ -412,9 +413,9 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return HttpStatusCode 503
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label subscribeGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Label subscribeGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws RelevantException {
         Response response = post(
                 Response.Status.NOT_MODIFIED,
                 getDefaultPerPageParam(),
@@ -432,9 +433,9 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Long(ID), String(name), or Label instance
      * @return HttpStatusCode 503
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Label unsubscribeGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Label unsubscribeGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws RelevantException {
         Response response = post(
                 Response.Status.NOT_MODIFIED,
                 getDefaultPerPageParam(),

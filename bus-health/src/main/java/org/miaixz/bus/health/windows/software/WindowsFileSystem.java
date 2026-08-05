@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.windows.software;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
@@ -297,11 +298,11 @@ public class WindowsFileSystem extends AbstractFileSystem {
             String volume;
             if (type != 4) {
                 char[] chrVolume = new char[BUFSIZE];
-                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + "\\", chrVolume, BUFSIZE);
+                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + Symbol.BACKSLASH, chrVolume, BUFSIZE);
                 volume = Native.toString(chrVolume);
             } else {
                 volume = WmiKit.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);
-                String[] split = volume.split("\\\\");
+                String[] split = volume.split(Pattern.quote(Symbol.BACKSLASH));
                 if (split.length > 1 && !split[split.length - 1].isEmpty()) {
                     description = split[split.length - 1];
                 }

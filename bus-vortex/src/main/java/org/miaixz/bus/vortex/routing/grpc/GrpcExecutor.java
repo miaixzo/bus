@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
@@ -214,7 +215,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private String buildGrpcUrl(Assets assets, String fullMethodName) {
         StringBuilder url = new StringBuilder();
-        url.append("http://").append(assets.getHost()).append(Symbol.COLON).append(assets.getPort());
+        url.append(Protocol.HTTP_PREFIX).append(assets.getHost()).append(Symbol.COLON).append(assets.getPort());
 
         if (StringKit.isNotEmpty(fullMethodName)) {
             url.append(Symbol.SLASH).append(fullMethodName);

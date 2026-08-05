@@ -22,13 +22,14 @@ package org.miaixz.bus.health.linux;
 import java.io.File;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.Builder;
 
 /**
  * Provides constants for paths in the {@code /dev} filesystem on Linux. If the user desires to configure a custom
- * {@code /dev} path, it must be declared in the configuration file or updated in the {@link Config} class prior to
+ * {@code /dev} path, it must be declared in the configuration file or updated in the {@link Builder} class prior to
  * initializing this class.
  *
  * @author Kimi Liu
@@ -80,11 +81,11 @@ public final class DevPath {
      * @return the query dev config result
      */
     private static String queryDevConfig() {
-        String devPath = Config.get(Config._UTIL_DEV_PATH, "/dev");
+        String devPath = Builder.get(Builder._UTIL_DEV_PATH, Symbol.SLASH + "dev");
         // Ensure prefix begins with path separator, but doesn't end with one
         devPath = '/' + devPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(devPath).exists()) {
-            throw new NotFoundException(Config._UTIL_DEV_PATH, "The path does not exist");
+            throw new NotFoundException(Builder._UTIL_DEV_PATH, "The path does not exist");
         }
         return devPath;
     }

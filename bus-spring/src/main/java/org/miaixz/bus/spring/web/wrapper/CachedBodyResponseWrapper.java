@@ -192,7 +192,7 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
         refreshPassthroughState();
         flushCachedWriter();
         enforceLimit();
-        return this.passthrough ? new byte[0] : this.cachedBody.toByteArray();
+        return this.passthrough ? Normal.EMPTY_BYTE_ARRAY : this.cachedBody.toByteArray();
     }
 
     /**

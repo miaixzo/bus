@@ -25,6 +25,7 @@ import java.util.*;
 
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -126,13 +127,13 @@ public class SpelCalculator {
     }
 
     private static Object evalSingle(String expr, Map<String, Object> vars) {
-        int neqIdx = indexOfOperator(expr, "!=");
+        int neqIdx = indexOfOperator(expr, Symbol.NE);
         if (neqIdx >= 0) {
             Object left = evalToken(expr.substring(0, neqIdx).trim(), vars);
             Object right = evalToken(expr.substring(neqIdx + 2).trim(), vars);
             return !Objects.equals(left, right);
         }
-        int eqIdx = indexOfOperator(expr, "==");
+        int eqIdx = indexOfOperator(expr, Symbol.EQ);
         if (eqIdx >= 0) {
             Object left = evalToken(expr.substring(0, eqIdx).trim(), vars);
             Object right = evalToken(expr.substring(eqIdx + 2).trim(), vars);

@@ -510,7 +510,7 @@ public class Status {
             if (StringKit.hasText(error)) {
                 hasFailed = true;
                 if (msg.length() > 0) {
-                    msg.append("\n");
+                    msg.append(Symbol.LF);
                 }
                 msg.append("DICOM error");
                 msg.append(Symbol.COLON + Symbol.SPACE);
@@ -519,7 +519,7 @@ public class Status {
 
             if (Status.isFailure(s)) {
                 if (msg.length() > 0) {
-                    msg.append("\n");
+                    msg.append(Symbol.LF);
                 }
                 msg.append("DICOM status");
                 msg.append(Symbol.COLON + Symbol.SPACE);

@@ -25,6 +25,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.logger.Logger;
 
@@ -152,7 +153,7 @@ public final class RegistryKit {
         } else if (val instanceof String) {
             String dateStr = ((String) val).trim();
             // Try yyyyMMdd first
-            long epoch = Parsing.parseDateToEpoch(dateStr, "yyyyMMdd");
+            long epoch = Parsing.parseDateToEpoch(dateStr, Fields.PURE_DATE);
             if (epoch == 0) {
                 // If that fails, try MM/dd/yyyy
                 epoch = Parsing.parseDateToEpoch(dateStr, "MM/dd/yyyy");

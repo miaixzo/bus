@@ -36,10 +36,10 @@ import java.util.regex.Pattern;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -68,7 +68,7 @@ public final class Who {
      * The WHO_DATE_FORMAT_LINUX constant.
      */
     private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
+            .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
 
     /**
      * The LIBC constant.
@@ -78,7 +78,7 @@ public final class Who {
     /**
      * The useSystemd value.
      */
-    private static boolean useSystemd = Config.get(Config._LINUX_ALLOWSYSTEMD, true);
+    private static boolean useSystemd = Builder.get(Builder._LINUX_ALLOWSYSTEMD, true);
 
     /**
      * Creates a new Who instance.

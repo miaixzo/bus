@@ -302,16 +302,17 @@ public class Builder {
             // Do not include the last & character
             if (i == keys.size() - 1) {
                 if (quotes) {
-                    content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"');
+                    content.append(key).append(Symbol.EQUAL).append(Symbol.C_DOUBLE_QUOTES)
+                            .append(encode ? urlEncode(value) : value).append(Symbol.C_DOUBLE_QUOTES);
                 } else {
-                    content.append(key).append("=").append(encode ? urlEncode(value) : value);
+                    content.append(key).append(Symbol.EQUAL).append(encode ? urlEncode(value) : value);
                 }
             } else {
                 if (quotes) {
-                    content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"')
-                            .append(connStr);
+                    content.append(key).append(Symbol.EQUAL).append(Symbol.C_DOUBLE_QUOTES)
+                            .append(encode ? urlEncode(value) : value).append(Symbol.C_DOUBLE_QUOTES).append(connStr);
                 } else {
-                    content.append(key).append("=").append(encode ? urlEncode(value) : value).append(connStr);
+                    content.append(key).append(Symbol.EQUAL).append(encode ? urlEncode(value) : value).append(connStr);
                 }
             }
         }
@@ -417,7 +418,7 @@ public class Builder {
         }
         StringBuilder sbf = new StringBuilder();
         for (String text : signMessage) {
-            sbf.append(text).append("\n");
+            sbf.append(text).append(Symbol.LF);
         }
         return sbf.toString();
     }

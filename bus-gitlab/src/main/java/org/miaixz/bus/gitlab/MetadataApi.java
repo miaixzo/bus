@@ -22,6 +22,7 @@ package org.miaixz.bus.gitlab;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Metadata;
 
 /**
@@ -51,9 +52,9 @@ public class MetadataApi extends AbstractApi {
      * </pre>
      *
      * @return Gitlab metadata
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public Metadata getMetadata() throws GitLabApiException {
+    public Metadata getMetadata() throws RelevantException {
         Response response = get(Status.OK, null, "metadata");
         return (response.readEntity(Metadata.class));
     }

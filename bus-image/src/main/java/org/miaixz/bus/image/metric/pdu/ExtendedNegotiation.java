@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.pdu;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
 
@@ -112,7 +113,7 @@ public class ExtendedNegotiation {
         sb.append("  ExtendedNegotiation[").append(Builder.LINE_SEPARATOR).append("    sopClass: ");
         UID.promptTo(cuid, sb).append(Builder.LINE_SEPARATOR).append("    info: [");
         for (byte b : info)
-            sb.append(b).append(", ");
+            sb.append(b).append(Symbol.COMMA).append(Symbol.SPACE);
         return sb.append(']').append(Builder.LINE_SEPARATOR).append("  ]");
     }
 

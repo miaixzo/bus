@@ -25,6 +25,8 @@ import java.util.*;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -68,7 +70,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
                     false,
                     "Notify",
                     "UniSMS send rejected: reason=missingTemplate, targetCount={}",
-                    entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
+                    entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length);
             throw new ValidateException("Template ID and template variable in the configuration file cannot be empty!");
         }
         Logger.info(
@@ -77,7 +79,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
                 "UniSMS send started: template={}, templateNamePresent={}, targetCount={}",
                 entity == null ? null : entity.getTemplate(),
                 entity != null && entity.getTemplateName() != null,
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length);
 
         Map<String, Object> data = MapKit.newHashMap(4, true);
         // The recipient's mobile number.
@@ -97,7 +99,7 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
                 "Notify",
                 "UniSMS send completed: template={}, targetCount={}, errcode={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 result == null ? null : result.getErrcode());
         return result;
     }
@@ -130,16 +132,16 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
             if (this.context.getAppSecret() != null) {
                 query.put("algorithm", Algorithm.HMACSHA256);
                 query.put("timestamp", System.currentTimeMillis());
-                query.put("nonce", UUID.randomUUID().toString().replaceAll("-", ""));
+                query.put("nonce", UUID.randomUUID().toString().replaceAll(Symbol.MINUS, Normal.EMPTY));
 
                 Map<String, Object> sortedMap = new TreeMap<>();
                 sortedMap.putAll(query);
                 StringBuilder sb = new StringBuilder();
                 for (Map.Entry<String, Object> stringObjectEntry : sortedMap.entrySet()) {
-                    if (sb.length() > 0) {
-                        sb.append('&');
+                    if (sb.length() > Normal._0) {
+                        sb.append(Symbol.AND);
                     }
-                    sb.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append("=")
+                    sb.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append(Symbol.EQUAL)
                             .append(((Map.Entry<?, ?>) stringObjectEntry).getValue());
                 }
                 query.put(

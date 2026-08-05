@@ -27,6 +27,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
@@ -53,6 +55,11 @@ public class TableSnapshot {
      * Database table name.
      */
     private String name;
+
+    /**
+     * Database table comment.
+     */
+    private String comment;
 
     /**
      * Whether the table exists in the database.
@@ -189,8 +196,8 @@ public class TableSnapshot {
     public static boolean sameTable(String actual, String expected) {
         String normalizedActual = normalizeIdentifier(actual);
         String normalizedExpected = normalizeIdentifier(expected);
-        return normalizedActual.equals(normalizedExpected) || normalizedActual.endsWith("." + normalizedExpected)
-                || normalizedExpected.endsWith("." + normalizedActual);
+        return normalizedActual.equals(normalizedExpected) || normalizedActual.endsWith(Symbol.DOT + normalizedExpected)
+                || normalizedExpected.endsWith(Symbol.DOT + normalizedActual);
     }
 
     /**
@@ -219,7 +226,9 @@ public class TableSnapshot {
      * @return the normalized identifier
      */
     public static String normalizeIdentifier(String value) {
-        return value == null ? "" : value.replace("`", "").replace("\"", "").toLowerCase(Locale.ROOT);
+        return value == null ? Normal.EMPTY
+                : value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY)
+                        .toLowerCase(Locale.ROOT);
     }
 
 }

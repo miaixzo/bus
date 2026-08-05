@@ -63,7 +63,7 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
                 "Notify",
                 "Cloopen SMS send started: template={}, targetCount={}, appKeyPresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 this.context != null && this.context.getAppKey() != null);
         Map<String, String> bodys = MapKit.newHashMap(4, true);
         // The recipient's mobile number(s), comma-separated.
@@ -86,7 +86,7 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
                 "Notify",
                 "Cloopen SMS send completed: template={}, targetCount={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 result.getErrcode(),
                 response == null ? 0 : response.length());
         return result;

@@ -25,6 +25,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -74,7 +76,8 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
 
     /**
      * Processes the {@link Table} annotation to set the table name, catalog, and schema, or uses default naming
-     * conventions if the annotation is not present.
+     * conventions if the annotation is not present. Jakarta Persistence 3.2 table comments are preserved for schema
+     * initialization DDL.
      *
      * @param entityClass The entity class.
      * @param tableMeta   The table metadata.
@@ -91,6 +94,9 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             if (StringKit.isNotEmpty(table.schema())) {
                 tableMeta.schema(table.schema());
             }
+            if (StringKit.isNotEmpty(table.comment())) {
+                tableMeta.comment(table.comment());
+            }
             for (jakarta.persistence.Index index : table.indexes()) {
                 String[] columns = splitColumns(index.columnList());
                 if (columns.length == 0) {
@@ -98,7 +104,9 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
                 }
                 IndexMeta definition = IndexMeta.of(
                         StringKit.isNotEmpty(index.name()) ? index.name()
-                                : tableMeta.table() + "_" + index.columnList().replace(",", "_") + "_idx",
+                                : tableMeta.table() + Symbol.UNDERLINE
+                                        + index.columnList().replace(Symbol.COMMA, Symbol.UNDERLINE) + Symbol.UNDERLINE
+                                        + "idx",
                         index.unique(),
                         columns);
                 tableMeta.addIndex(definition);
@@ -110,7 +118,8 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
                 }
                 IndexMeta definition = IndexMeta.of(
                         StringKit.isNotEmpty(unique.name()) ? unique.name()
-                                : tableMeta.table() + "_" + String.join("_", unique.columnNames()) + "_uk",
+                                : tableMeta.table() + Symbol.UNDERLINE
+                                        + String.join(Symbol.UNDERLINE, unique.columnNames()) + Symbol.UNDERLINE + "uk",
                         true,
                         columns);
                 tableMeta.addIndex(definition);
@@ -129,9 +138,9 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
      */
     private String[] splitColumns(String columnList) {
         if (StringKit.isEmpty(columnList)) {
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
-        return splitColumns(columnList.split(","));
+        return splitColumns(columnList.split(Symbol.COMMA));
     }
 
     /**
@@ -142,7 +151,7 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
      */
     private String[] splitColumns(String[] columnNames) {
         if (columnNames == null || columnNames.length == 0) {
-            return new String[0];
+            return Normal.EMPTY_STRING_ARRAY;
         }
         return Arrays.stream(columnNames).filter(StringKit::isNotEmpty).map(String::trim).filter(StringKit::isNotEmpty)
                 .toArray(String[]::new);

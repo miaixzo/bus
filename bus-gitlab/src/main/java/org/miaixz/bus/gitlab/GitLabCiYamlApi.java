@@ -25,6 +25,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.GitLabCiTemplate;
 import org.miaixz.bus.gitlab.models.GitLabCiTemplateElement;
 
@@ -55,9 +56,9 @@ public class GitLabCiYamlApi extends AbstractApi {
      * </pre>
      *
      * @return a list of Gitlab CI YAML Templates
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<GitLabCiTemplateElement> getAllGitLabCiYamlTemplates() throws GitLabApiException {
+    public List<GitLabCiTemplateElement> getAllGitLabCiYamlTemplates() throws RelevantException {
         Response response = get(Response.Status.OK, null, "templates", "gitlab_ci_ymls");
         return (response.readEntity(new GenericType<>() {
         }));
@@ -72,9 +73,9 @@ public class GitLabCiYamlApi extends AbstractApi {
      *
      * @param key The key of the GitLab CI YAML template
      * @return an Gitlab CI YAML Template
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public GitLabCiTemplate getSingleGitLabCiYamlTemplate(String key) throws GitLabApiException {
+    public GitLabCiTemplate getSingleGitLabCiYamlTemplate(String key) throws RelevantException {
         Response response = get(Status.OK, null, "templates", "gitlab_ci_ymls", key);
         return (response.readEntity(GitLabCiTemplate.class));
     }

@@ -23,8 +23,10 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Edid;
+import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Parsing;
 
 /**
@@ -203,7 +205,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getManufacturerID() {
-        return this.synthetic ? this.manufacturerID : Builder.getManufacturerID(this.edid);
+        return this.synthetic ? this.manufacturerID : Edid.getManufacturerID(this.edid);
     }
 
     /**
@@ -213,7 +215,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getProductID() {
-        return this.synthetic ? this.productID : Builder.getProductID(this.edid);
+        return this.synthetic ? this.productID : Edid.getProductID(this.edid);
     }
 
     /**
@@ -223,7 +225,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getSerialNo() {
-        return this.synthetic ? this.serialNo : Builder.getSerialNo(this.edid);
+        return this.synthetic ? this.serialNo : Edid.getSerialNo(this.edid);
     }
 
     /**
@@ -233,7 +235,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public byte getWeek() {
-        return this.synthetic ? this.week : Builder.getWeek(this.edid);
+        return this.synthetic ? this.week : Edid.getWeek(this.edid);
     }
 
     /**
@@ -243,7 +245,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public int getYear() {
-        return this.synthetic ? this.year : Builder.getYear(this.edid);
+        return this.synthetic ? this.year : Edid.getYear(this.edid);
     }
 
     /**
@@ -253,7 +255,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getVersion() {
-        return this.synthetic ? this.version : Builder.getVersion(this.edid);
+        return this.synthetic ? this.version : Edid.getVersion(this.edid);
     }
 
     /**
@@ -263,7 +265,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public boolean isDigital() {
-        return this.synthetic ? this.digital : Builder.isDigital(this.edid);
+        return this.synthetic ? this.digital : Edid.isDigital(this.edid);
     }
 
     /**
@@ -273,7 +275,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public int getHcm() {
-        return this.synthetic ? this.hcm : Builder.getHcm(this.edid);
+        return this.synthetic ? this.hcm : Edid.getHcm(this.edid);
     }
 
     /**
@@ -283,7 +285,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public int getVcm() {
-        return this.synthetic ? this.vcm : Builder.getVcm(this.edid);
+        return this.synthetic ? this.vcm : Edid.getVcm(this.edid);
     }
 
     /**
@@ -293,7 +295,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getPreferredResolution() {
-        return this.synthetic ? this.preferredResolution : Builder.getPreferredResolution(this.edid);
+        return this.synthetic ? this.preferredResolution : Edid.getPreferredResolution(this.edid);
     }
 
     /**
@@ -303,7 +305,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getModel() {
-        return this.synthetic ? this.model : Builder.getModel(this.edid);
+        return this.synthetic ? this.model : Edid.getModel(this.edid);
     }
 
     /**
@@ -313,7 +315,7 @@ public class DisplayInfoImpl implements DisplayInfo {
      */
     @Override
     public String getProductSerialNumber() {
-        return this.synthetic ? this.productSerialNumber : Builder.getProductSerialNumber(this.edid);
+        return this.synthetic ? this.productSerialNumber : Edid.getProductSerialNumber(this.edid);
     }
 
     /**
@@ -322,22 +324,22 @@ public class DisplayInfoImpl implements DisplayInfo {
      * @return the synthesized EDID
      */
     private byte[] synthesizeEdid() {
-        byte[] e = Builder.newEdidTemplate();
-        Builder.setManufacturerID(e, this.manufacturerID);
-        Builder.setProductID(e, this.productID);
+        byte[] e = Edid.newEdidTemplate();
+        Edid.setManufacturerID(e, this.manufacturerID);
+        Edid.setProductID(e, this.productID);
         setSerialNoSafe(e, this.serialNo);
-        Builder.setWeek(e, this.week);
-        Builder.setYear(e, this.year);
-        Builder.setVersion(e, this.version);
-        Builder.setDigital(e, this.digital);
-        Builder.setHcm(e, this.hcm);
-        Builder.setVcm(e, this.vcm);
-        Builder.setPreferredResolution(e, this.preferredResolution);
-        Builder.setModel(e, this.model);
+        Edid.setWeek(e, this.week);
+        Edid.setYear(e, this.year);
+        Edid.setVersion(e, this.version);
+        Edid.setDigital(e, this.digital);
+        Edid.setHcm(e, this.hcm);
+        Edid.setVcm(e, this.vcm);
+        Edid.setPreferredResolution(e, this.preferredResolution);
+        Edid.setModel(e, this.model);
         if (!this.productSerialNumber.isEmpty()) {
-            Builder.setProductSerialNumber(e, this.productSerialNumber);
+            Edid.setProductSerialNumber(e, this.productSerialNumber);
         }
-        Builder.updateChecksum(e);
+        Edid.updateChecksum(e);
         return e;
     }
 
@@ -353,12 +355,12 @@ public class DisplayInfoImpl implements DisplayInfo {
             return;
         }
         try {
-            Builder.setSerialNo(edid, serialNo);
+            Edid.setSerialNo(edid, serialNo);
         } catch (IllegalArgumentException e) {
             if (serialNo.length() == 8) {
                 long numeric = Parsing.hexStringToLong(serialNo, 0L);
                 if (numeric != 0L) {
-                    Builder.setSerialNo(edid, numeric);
+                    Edid.setSerialNo(edid, numeric);
                 }
             }
         }
@@ -372,12 +374,12 @@ public class DisplayInfoImpl implements DisplayInfo {
     @Override
     public String toString() {
         if (!this.synthetic) {
-            return Builder.getEdid(this.edid);
+            return Formats.formatEdid(this.edid);
         }
         StringBuilder sb = new StringBuilder();
         sb.append("  Manuf. ID=").append(this.manufacturerID);
         sb.append(", Product ID=").append(this.productID);
-        sb.append(", ").append(this.digital ? "Digital" : "Analog");
+        sb.append(Symbol.COMMA).append(Symbol.SPACE).append(this.digital ? "Digital" : "Analog");
         sb.append(", Serial=").append(this.serialNo);
         sb.append(", ManufDate=").append(this.week * 12 / 52 + 1).append('/').append(this.year);
         sb.append(", EDID v").append(this.version);

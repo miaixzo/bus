@@ -21,6 +21,7 @@ package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.Commit;
 
 /**
@@ -58,14 +59,14 @@ public class RepositorySubmodulesApi extends AbstractApi {
      * @param commitSha       full commit SHA to update the submodule to
      * @param commitMessage   commit message (optional). If no message is provided, a default is set
      * @return the created commit
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
     public Commit updateExistingSubmoduleReference(
             Object projectIdOrPath,
             String submodule,
             String branch,
             String commitSha,
-            String commitMessage) throws GitLabApiException {
+            String commitMessage) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("branch", branch, true)
                 .withParam("commit_sha", commitSha, true).withParam("commit_message", commitMessage);
         Response response = put(

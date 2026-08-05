@@ -23,6 +23,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.MD5;
@@ -141,8 +142,8 @@ public class SaltParser {
 
         final byte[] passAndSalt = ByteKit.concat(pass, salt);
 
-        byte[] hash = new byte[0];
-        byte[] keyAndIv = new byte[0];
+        byte[] hash = Normal.EMPTY_BYTE_ARRAY;
+        byte[] keyAndIv = Normal.EMPTY_BYTE_ARRAY;
         for (int i = 0; i < 3 && keyAndIv.length < keyLength + ivLength; i++) {
             final byte[] hashData = ByteKit.concat(hash, passAndSalt);
             hash = digest.digest(hashData);

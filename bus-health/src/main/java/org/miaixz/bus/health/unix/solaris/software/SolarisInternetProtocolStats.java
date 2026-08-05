@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -66,7 +67,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
         netstat.addAll(Executor.runNative("netstat -s -P ip"));
         for (String s : netstat) {
             // Two stats per line. Split the strings by index of "tcp"
-            String[] stats = splitOnPrefix(s, "tcp");
+            String[] stats = splitOnPrefix(s, Protocol.TCP.name);
             // Now of form tcpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
@@ -141,7 +142,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
         netstat.addAll(Executor.runNative("netstat -s -P ip"));
         for (String s : netstat) {
             // Two stats per line. Split the strings by index of "udp"
-            String[] stats = splitOnPrefix(s, "udp");
+            String[] stats = splitOnPrefix(s, Protocol.UDP.name);
             // Now of form udpXX = 123
             for (String stat : stats) {
                 if (stat != null) {

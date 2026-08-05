@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cache;
 
+import org.miaixz.bus.core.net.Protocol;
+
 /**
  * Core cache backend options shared by cache consumers and starter-side property binding.
  *
@@ -160,7 +162,7 @@ public class Options {
         /**
          * Redis server hostname. Applies to single-node ({@code redis}) mode.
          */
-        private String host = "localhost";
+        private String host = Protocol.HOST_LOCAL;
 
         /**
          * Redis server port. Applies to single-node ({@code redis}) mode.

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.Printer.PrinterStatus;
@@ -68,7 +69,7 @@ public final class Lpstat {
     static String queryDefaultPrinter(List<String> lines) {
         for (String line : lines) {
             if (line.contains("default destination:")) {
-                String[] parts = line.split(":", 2);
+                String[] parts = line.split(Symbol.COLON, 2);
                 if (parts.length >= 2) {
                     return parts[1].trim();
                 }
@@ -215,7 +216,7 @@ public final class Lpstat {
         if (uri == null) {
             return false;
         }
-        if (uri.startsWith("/dev")) {
+        if (uri.startsWith(Symbol.SLASH + "dev")) {
             return true;
         }
         for (String prefix : LOCAL_URI_PREFIXES) {

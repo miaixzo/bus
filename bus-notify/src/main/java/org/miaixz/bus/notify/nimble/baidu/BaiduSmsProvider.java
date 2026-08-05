@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -62,7 +63,7 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
                 "Notify",
                 "Baidu SMS send started: template={}, targetCount={}, signaturePresent={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 entity != null && entity.getSignature() != null);
         Map<String, String> bodys = new HashMap<>();
         // The recipient's mobile number.
@@ -83,7 +84,7 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduNotice, Context> {
                 "Notify",
                 "Baidu SMS send completed: template={}, targetCount={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 result.getErrcode(),
                 response == null ? 0 : response.length());
         return result;

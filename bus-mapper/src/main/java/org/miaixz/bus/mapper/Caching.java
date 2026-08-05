@@ -99,7 +99,7 @@ public class Caching extends XMLLanguageDriver {
      * @return A cache key, which is interned to be used as a lock object.
      */
     private static String cacheKey(ProviderContext context) {
-        return (context.getMapperType().getName() + "." + context.getMapperMethod().getName()).intern();
+        return (context.getMapperType().getName() + Symbol.DOT + context.getMapperMethod().getName()).intern();
     }
 
     /**

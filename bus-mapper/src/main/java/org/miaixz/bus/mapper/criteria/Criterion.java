@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
@@ -184,14 +185,14 @@ public class Criterion {
      */
     public String variables(String field) {
         StringBuilder variables = new StringBuilder();
-        variables.append("#{").append(field);
+        variables.append(Symbol.HASH_LEFT_BRACE).append(field);
         if (javaType != null && !javaType.isEmpty()) {
             variables.append(",javaType=").append(javaType);
         }
         if (typeHandler != null && !typeHandler.isEmpty()) {
             variables.append(",typeHandler=").append(typeHandler);
         }
-        return variables.append("}").toString();
+        return variables.append(Symbol.BRACE_RIGHT).toString();
     }
 
     /**

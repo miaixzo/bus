@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * JWT Claims authentication class for storing and processing JWT header or payload data.
@@ -166,22 +168,24 @@ public class Claims implements Serializable {
             return result;
         }
         json = json.trim();
-        if (!json.startsWith("{") || !json.endsWith("}")) {
+        if (!json.startsWith(Symbol.BRACE_LEFT) || !json.endsWith(Symbol.BRACE_RIGHT)) {
             throw new IllegalArgumentException("Invalid JSON format");
         }
         json = json.substring(1, json.length() - 1).trim();
         if (json.isEmpty()) {
             return result;
         }
-        String[] pairs = json.split(",");
+        String[] pairs = json.split(Symbol.COMMA);
         for (String pair : pairs) {
-            String[] keyValue = pair.split(":", 2);
+            String[] keyValue = pair.split(Symbol.COLON, 2);
             if (keyValue.length != 2) {
                 continue;
             }
-            String key = keyValue[0].trim().replaceAll("^\"|\"$", "");
+            String key = keyValue[0].trim().replaceAll(
+                    Symbol.CARET + Symbol.DOUBLE_QUOTES + Symbol.OR + Symbol.DOUBLE_QUOTES + Symbol.DOLLAR,
+                    Normal.EMPTY);
             String value = keyValue[1].trim();
-            if (value.startsWith("\"") && value.endsWith("\"")) {
+            if (value.startsWith(Symbol.DOUBLE_QUOTES) && value.endsWith(Symbol.DOUBLE_QUOTES)) {
                 result.put(key, value.substring(1, value.length() - 1));
             } else if (value.matches("-?\\d+")) {
                 result.put(key, Long.parseLong(value));
@@ -204,26 +208,26 @@ public class Claims implements Serializable {
      */
     private String toJsonString(Map<String, Object> map) {
         if (map == null || map.isEmpty()) {
-            return "{}";
+            return Symbol.DELIM;
         }
-        StringBuilder sb = new StringBuilder("{");
+        StringBuilder sb = new StringBuilder(Symbol.BRACE_LEFT);
         boolean first = true;
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if (!first) {
-                sb.append(",");
+                sb.append(Symbol.COMMA);
             }
-            sb.append("\"").append(entry.getKey()).append("\":");
+            sb.append(Symbol.DOUBLE_QUOTES).append(entry.getKey()).append(Symbol.DOUBLE_QUOTES).append(Symbol.COLON);
             Object value = entry.getValue();
             if (value instanceof String) {
-                sb.append("\"").append(value).append("\"");
+                sb.append(Symbol.DOUBLE_QUOTES).append(value).append(Symbol.DOUBLE_QUOTES);
             } else if (value instanceof Number) {
                 sb.append(value);
             } else {
-                sb.append("\"").append(value).append("\"");
+                sb.append(Symbol.DOUBLE_QUOTES).append(value).append(Symbol.DOUBLE_QUOTES);
             }
             first = false;
         }
-        sb.append("}");
+        sb.append(Symbol.BRACE_RIGHT);
         return sb.toString();
     }
 

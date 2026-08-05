@@ -4923,6 +4923,50 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.runtime.MapperOptions"
+          ]
+        },
+        {
+          "name": "createDefault",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "javax.sql.DataSource",
+            "java.lang.String",
+            "java.util.Collection",
+            "org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig"
+          ]
+        },
+        {
+          "name": "validateSort",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "java.lang.String",
+            "org.miaixz.bus.mapper.feature.paging.Sort"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.paging.PageBuilder",
       "methods": [
         {
@@ -4959,24 +5003,6 @@
           "parameterTypes": [
             "java.lang.String",
             "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isSqlKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "needsQuoting",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "quoteProperty",
-          "parameterTypes": [
             "java.lang.String"
           ]
         },
@@ -9855,6 +9881,30 @@
           "name": "setSlowSqlThreshold",
           "parameterTypes": [
             "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$IdentifierOptions",
+      "fields": [
+        {
+          "name": "enabled"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEnabled",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]

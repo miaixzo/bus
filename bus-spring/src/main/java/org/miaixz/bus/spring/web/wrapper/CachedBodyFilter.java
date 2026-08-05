@@ -28,6 +28,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.core.Ordered;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
+
 /**
  * Applies optional hard-bounded request and response body caching.
  *
@@ -82,7 +84,7 @@ public class CachedBodyFilter implements Filter, Ordered {
         if (cacheRequest && !(httpRequest instanceof CachedBodyRequestWrapper)) {
             try {
                 effectiveRequest = new CachedBodyRequestWrapper(httpRequest, this.options.getRequestLimit());
-            } catch (CachedBodyRequestWrapper.PayloadTooLargeException ignored) {
+            } catch (RelevantException ignored) {
                 httpResponse.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
                 return;
             }

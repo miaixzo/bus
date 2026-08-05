@@ -30,6 +30,7 @@ import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.cursor.Cursor;
 
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * A utility class for resolving generic types, based on the source code of MyBatis 3. It adds the
@@ -621,7 +622,7 @@ public class GenericTypeResolver {
         @Override
         public String toString() {
             return "ParameterizedTypes [rawType=" + rawType + ", ownerType=" + ownerType + ", actualTypeArguments="
-                    + Arrays.toString(actualTypeArguments) + "]";
+                    + Arrays.toString(actualTypeArguments) + Symbol.BRACKET_RIGHT;
         }
 
     }

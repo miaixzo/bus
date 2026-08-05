@@ -21,6 +21,8 @@ package org.miaixz.bus.logger;
 
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Immutable log event snapshot passed through the executor before provider output.
  *
@@ -38,7 +40,7 @@ public record Loggable(Level level, Throwable throwable, String format, Object[]
      */
     public Loggable {
         Objects.requireNonNull(level, "level");
-        arguments = arguments == null ? new Object[0] : arguments.clone();
+        arguments = arguments == null ? Normal.EMPTY_OBJECT_ARRAY : arguments.clone();
     }
 
     /**

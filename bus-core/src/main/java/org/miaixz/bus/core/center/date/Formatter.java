@@ -257,7 +257,7 @@ public class Formatter {
      * HTTP header date and time format {@link FormatBuilder}: EEE, dd MMM yyyy HH:mm:ss GMT
      */
     public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder
-            .getInstance(Fields.HTTP_DATETIME, ZoneKit.getTimeZone("GMT"), Locale.US);
+            .getInstance(Fields.HTTP_DATETIME, ZoneKit.getTimeZone(ZoneId.GMT.name()), Locale.US);
 
     /**
      * HTTP header date and time format {@link FormatBuilder}: EEE, dd MMM yyyy HH:mm:ss z

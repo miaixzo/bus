@@ -19,83 +19,74 @@
 */
 package org.miaixz.bus.spring.boot.startup;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.miaixz.bus.spring.boot.startup.SpringStartupSummary.Stage;
 
 /**
- * Immutable aggregate produced for exactly one application startup.
+ * Collects Spring lifecycle stages and creates the completed startup summary.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-public class StartupMetrics {
+public final class SpringStartupCollector {
 
     /**
-     * Application name captured for the startup report.
+     * Application name associated with the current startup.
      */
     private final String appName;
-    /**
-     * Total application startup duration in milliseconds.
-     */
-    private final long applicationBootElapsedTime;
     /**
      * Application startup timestamp in milliseconds since the epoch.
      */
     private final long applicationBootTime;
     /**
-     * Immutable startup-stage metrics in reporting order.
+     * Stages retained in lifecycle order and keyed to prevent duplicate callbacks.
      */
-    private final List<BaseMetrics> stageStats;
+    private final Map<String, Stage> stages = new LinkedHashMap<>();
 
     /**
-     * Creates an immutable application startup metrics snapshot.
+     * Creates an isolated collector for one application startup.
      *
-     * @param appName                    application name
-     * @param applicationBootElapsedTime elapsed boot time in milliseconds
-     * @param applicationBootTime        application boot timestamp
-     * @param stageStats                 ordered startup stage metrics
+     * @param appName             application name
+     * @param applicationBootTime application startup timestamp
      */
-    public StartupMetrics(String appName, long applicationBootElapsedTime, long applicationBootTime,
-            List<? extends BaseMetrics> stageStats) {
+    public SpringStartupCollector(String appName, long applicationBootTime) {
         this.appName = appName;
-        this.applicationBootElapsedTime = applicationBootElapsedTime;
         this.applicationBootTime = applicationBootTime;
-        this.stageStats = List.copyOf(stageStats == null ? List.of() : stageStats);
     }
 
     /**
-     * Exposes the application name associated with this startup snapshot.
+     * Adds a stage unless the same lifecycle stage has already been recorded.
      *
-     * @return the app name
+     * @param stage completed startup stage
      */
-    public String getAppName() {
-        return appName;
+    public synchronized void addStage(Stage stage) {
+        Stage value = Objects.requireNonNull(stage, "stage");
+        stages.putIfAbsent(value.name(), value);
     }
 
     /**
-     * Exposes the measured application startup duration in milliseconds.
+     * Returns whether a lifecycle stage has already completed.
      *
-     * @return the application boot elapsed time
+     * @param name stable stage name
+     * @return whether the stage is present
      */
-    public long getApplicationBootElapsedTime() {
-        return applicationBootElapsedTime;
+    public synchronized boolean containsStage(String name) {
+        return stages.containsKey(name);
     }
 
     /**
-     * Exposes the wall-clock timestamp at which application startup began.
+     * Completes collection and creates an immutable startup summary.
      *
-     * @return the application boot time
+     * @param applicationBootEndTime application startup completion timestamp
+     * @return completed startup summary
      */
-    public long getApplicationBootTime() {
-        return applicationBootTime;
-    }
-
-    /**
-     * Exposes the immutable top-level startup stage snapshots.
-     *
-     * @return the stage stats
-     */
-    public List<BaseMetrics> getStageStats() {
-        return stageStats;
+    public synchronized SpringStartupSummary complete(long applicationBootEndTime) {
+        long elapsedTime = Math.max(0, applicationBootEndTime - applicationBootTime);
+        return new SpringStartupSummary(appName, elapsedTime, applicationBootTime, List.copyOf(stages.values()));
     }
 
 }

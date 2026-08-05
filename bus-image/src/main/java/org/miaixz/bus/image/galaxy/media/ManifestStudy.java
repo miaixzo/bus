@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -275,7 +276,7 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
      */
     @Override
     public void toXml(Writer writer) throws IOException {
-        writer.append("\n<").append(ManifestXml.Level.STUDY.getTagName()).append(" ");
+        writer.append(Symbol.LF).append(Symbol.LT).append(ManifestXml.Level.STUDY.getTagName()).append(Symbol.SPACE);
         ManifestXml.addXmlAttribute(Tag.StudyInstanceUID, studyInstanceUID, writer);
         ManifestXml.addXmlAttribute(Tag.StudyDescription, studyDescription, writer);
         ManifestXml.addXmlAttribute(Tag.StudyDate, studyDate, writer);

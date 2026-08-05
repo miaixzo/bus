@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 
 import com.sun.jna.Native;
 
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Parsing;
 
 /**
  * C library for AIX. This class should be considered non-API as it may be removed if/when its code is incorporated into
@@ -210,33 +210,33 @@ public interface AixLibc extends CLibrary {
          * @param buff The ByteBuffer to read from.
          */
         public AixPsInfo(ByteBuffer buff) {
-            this.pr_flag = Builder.readIntFromBuffer(buff);
-            this.pr_flag2 = Builder.readIntFromBuffer(buff);
-            this.pr_nlwp = Builder.readIntFromBuffer(buff);
-            this.pr__pad1 = Builder.readIntFromBuffer(buff);
-            this.pr_uid = Builder.readLongFromBuffer(buff);
-            this.pr_euid = Builder.readLongFromBuffer(buff);
-            this.pr_gid = Builder.readLongFromBuffer(buff);
-            this.pr_egid = Builder.readLongFromBuffer(buff);
-            this.pr_pid = Builder.readLongFromBuffer(buff);
-            this.pr_ppid = Builder.readLongFromBuffer(buff);
-            this.pr_pgid = Builder.readLongFromBuffer(buff);
-            this.pr_sid = Builder.readLongFromBuffer(buff);
-            this.pr_ttydev = Builder.readLongFromBuffer(buff);
-            this.pr_addr = Builder.readLongFromBuffer(buff);
-            this.pr_size = Builder.readLongFromBuffer(buff);
-            this.pr_rssize = Builder.readLongFromBuffer(buff);
+            this.pr_flag = Parsing.readIntFromBuffer(buff);
+            this.pr_flag2 = Parsing.readIntFromBuffer(buff);
+            this.pr_nlwp = Parsing.readIntFromBuffer(buff);
+            this.pr__pad1 = Parsing.readIntFromBuffer(buff);
+            this.pr_uid = Parsing.readLongFromBuffer(buff);
+            this.pr_euid = Parsing.readLongFromBuffer(buff);
+            this.pr_gid = Parsing.readLongFromBuffer(buff);
+            this.pr_egid = Parsing.readLongFromBuffer(buff);
+            this.pr_pid = Parsing.readLongFromBuffer(buff);
+            this.pr_ppid = Parsing.readLongFromBuffer(buff);
+            this.pr_pgid = Parsing.readLongFromBuffer(buff);
+            this.pr_sid = Parsing.readLongFromBuffer(buff);
+            this.pr_ttydev = Parsing.readLongFromBuffer(buff);
+            this.pr_addr = Parsing.readLongFromBuffer(buff);
+            this.pr_size = Parsing.readLongFromBuffer(buff);
+            this.pr_rssize = Parsing.readLongFromBuffer(buff);
             this.pr_start = new Timestruc(buff);
             this.pr_time = new Timestruc(buff);
-            this.pr_cid = Builder.readShortFromBuffer(buff);
-            this.pr__pad2 = Builder.readShortFromBuffer(buff);
-            this.pr_argc = Builder.readIntFromBuffer(buff);
-            this.pr_argv = Builder.readLongFromBuffer(buff);
-            this.pr_envp = Builder.readLongFromBuffer(buff);
-            Builder.readByteArrayFromBuffer(buff, this.pr_fname);
-            Builder.readByteArrayFromBuffer(buff, this.pr_psargs);
+            this.pr_cid = Parsing.readShortFromBuffer(buff);
+            this.pr__pad2 = Parsing.readShortFromBuffer(buff);
+            this.pr_argc = Parsing.readIntFromBuffer(buff);
+            this.pr_argv = Parsing.readLongFromBuffer(buff);
+            this.pr_envp = Parsing.readLongFromBuffer(buff);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_fname);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_psargs);
             for (int i = 0; i < pr__pad.length; i++) {
-                this.pr__pad[i] = Builder.readLongFromBuffer(buff);
+                this.pr__pad[i] = Parsing.readLongFromBuffer(buff);
             }
             this.pr_lwp = new AixLwpsInfo(buff);
         }
@@ -322,19 +322,19 @@ public interface AixLibc extends CLibrary {
          * @param buff The ByteBuffer to read from.
          */
         public AixLwpsInfo(ByteBuffer buff) {
-            this.pr_lwpid = Builder.readLongFromBuffer(buff);
-            this.pr_addr = Builder.readLongFromBuffer(buff);
-            this.pr_wchan = Builder.readLongFromBuffer(buff);
-            this.pr_flag = Builder.readIntFromBuffer(buff);
-            this.pr_wtype = Builder.readByteFromBuffer(buff);
-            this.pr_state = Builder.readByteFromBuffer(buff);
-            this.pr_sname = Builder.readByteFromBuffer(buff);
-            this.pr_nice = Builder.readByteFromBuffer(buff);
-            this.pr_pri = Builder.readIntFromBuffer(buff);
-            this.pr_policy = Builder.readIntFromBuffer(buff);
-            Builder.readByteArrayFromBuffer(buff, this.pr_clname);
-            this.pr_onpro = Builder.readIntFromBuffer(buff);
-            this.pr_bindpro = Builder.readIntFromBuffer(buff);
+            this.pr_lwpid = Parsing.readLongFromBuffer(buff);
+            this.pr_addr = Parsing.readLongFromBuffer(buff);
+            this.pr_wchan = Parsing.readLongFromBuffer(buff);
+            this.pr_flag = Parsing.readIntFromBuffer(buff);
+            this.pr_wtype = Parsing.readByteFromBuffer(buff);
+            this.pr_state = Parsing.readByteFromBuffer(buff);
+            this.pr_sname = Parsing.readByteFromBuffer(buff);
+            this.pr_nice = Parsing.readByteFromBuffer(buff);
+            this.pr_pri = Parsing.readIntFromBuffer(buff);
+            this.pr_policy = Parsing.readIntFromBuffer(buff);
+            Parsing.readByteArrayFromBuffer(buff, this.pr_clname);
+            this.pr_onpro = Parsing.readIntFromBuffer(buff);
+            this.pr_bindpro = Parsing.readIntFromBuffer(buff);
         }
 
     }
@@ -368,9 +368,9 @@ public interface AixLibc extends CLibrary {
          * @param buff The ByteBuffer to read from.
          */
         public Timestruc(ByteBuffer buff) {
-            this.tv_sec = Builder.readLongFromBuffer(buff);
-            this.tv_nsec = Builder.readIntFromBuffer(buff);
-            this.pad = Builder.readIntFromBuffer(buff);
+            this.tv_sec = Parsing.readLongFromBuffer(buff);
+            this.tv_nsec = Parsing.readIntFromBuffer(buff);
+            this.pad = Parsing.readIntFromBuffer(buff);
         }
 
     }

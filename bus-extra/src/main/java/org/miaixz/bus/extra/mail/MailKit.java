@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Session;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
@@ -533,13 +534,13 @@ public class MailKit {
         final Mail mail = Mail.of(mailAccount).setUseGlobalSession(useGlobalSession);
 
         if (CollKit.isNotEmpty(ccs)) {
-            mail.setCcs(ccs.toArray(new String[0]));
+            mail.setCcs(ccs.toArray(Normal.EMPTY_STRING_ARRAY));
         }
         if (CollKit.isNotEmpty(bccs)) {
-            mail.setBccs(bccs.toArray(new String[0]));
+            mail.setBccs(bccs.toArray(Normal.EMPTY_STRING_ARRAY));
         }
 
-        mail.setTos(tos.toArray(new String[0]));
+        mail.setTos(tos.toArray(Normal.EMPTY_STRING_ARRAY));
         mail.setTitle(subject);
         mail.setContent(content);
         mail.setHtml(isHtml);

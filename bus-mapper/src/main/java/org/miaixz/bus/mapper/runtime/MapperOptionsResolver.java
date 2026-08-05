@@ -236,9 +236,29 @@ final class MapperOptionsResolver {
         int pathDot = path.indexOf(Symbol.C_DOT);
         String scope = pathDot < 0 ? path : path.substring(0, pathDot);
         return switch (scope) {
-            case Args.OPERATION_KEY, Args.PAGE_KEY, Args.TABLE_KEY, Args.TENANT_KEY, Args.POPULATE_KEY, Args.VISIBLE_KEY, Args.AUDIT_KEY, SCHEMA_SCOPE -> namespaceName;
+            case Args.OPERATION_KEY, Args.PAGE_KEY, Args.IDENTIFIER_KEY, Args.TABLE_KEY, Args.TENANT_KEY, Args.POPULATE_KEY, Args.VISIBLE_KEY, Args.AUDIT_KEY, SCHEMA_SCOPE -> namespaceName;
             default -> null;
         };
+    }
+
+    /**
+     * Resolves ordered datasource namespace names from flattened feature configuration.
+     *
+     * @param properties flattened Mapper configuration
+     * @return ordered namespace names
+     */
+    static Set<String> resolveNamespaceNames(Properties properties) {
+        Set<String> namespaces = new LinkedHashSet<>();
+        if (MapKit.isEmpty(properties)) {
+            return namespaces;
+        }
+        for (String key : properties.stringPropertyNames()) {
+            String namespace = namespaceName(key);
+            if (namespace != null) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
     }
 
     /**
@@ -271,6 +291,7 @@ final class MapperOptionsResolver {
                 case "allowexpanddecimal" -> schemaOptions.setAllowExpandDecimal(Boolean.parseBoolean(value));
                 case "allowshrinkdecimal" -> schemaOptions.setAllowShrinkDecimal(Boolean.parseBoolean(value));
                 case "allowmodifynullable" -> schemaOptions.setAllowModifyNullable(Boolean.parseBoolean(value));
+                case "allowmodifycomment" -> schemaOptions.setAllowModifyComment(Boolean.parseBoolean(value));
                 case "allowdropcolumn" -> schemaOptions.setAllowDropColumn(Boolean.parseBoolean(value));
                 case "allowrenamecolumn" -> schemaOptions.setAllowRenameColumn(Boolean.parseBoolean(value));
                 case "allowcreateindex" -> schemaOptions.setAllowCreateIndex(Boolean.parseBoolean(value));
@@ -290,7 +311,7 @@ final class MapperOptionsResolver {
         }
         Set<String> entityPackages = readValues(properties, "entityPackages", "entity-packages");
         if (entityPackages != null) {
-            schemaOptions.setEntityPackages(entityPackages.toArray(new String[0]));
+            schemaOptions.setEntityPackages(entityPackages.toArray(Normal.EMPTY_STRING_ARRAY));
         }
         applySet(properties, schemaOptions::setIncludeTables, "includeTables", "include-tables");
         applySet(properties, schemaOptions::setExcludeTables, "excludeTables", "exclude-tables");
@@ -331,6 +352,7 @@ final class MapperOptionsResolver {
         copy.setAllowExpandDecimal(source.isAllowExpandDecimal());
         copy.setAllowShrinkDecimal(source.isAllowShrinkDecimal());
         copy.setAllowModifyNullable(source.isAllowModifyNullable());
+        copy.setAllowModifyComment(source.isAllowModifyComment());
         copy.setAllowDropColumn(source.isAllowDropColumn());
         copy.setAllowRenameColumn(source.isAllowRenameColumn());
         copy.setAllowCreateIndex(source.isAllowCreateIndex());

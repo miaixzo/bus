@@ -117,7 +117,7 @@ public class CorsProperties {
                     METHOD_DELETE }) String[] allowedMethods,
             @DefaultValue String[] exposedHeaders, @DefaultValue(Normal.FALSE) boolean allowCredentials,
             @DefaultValue("30m") Duration maxAge) {
-        String[] origins = allowedOrigins == null ? new String[0] : allowedOrigins.clone();
+        String[] origins = allowedOrigins == null ? Normal.EMPTY_STRING_ARRAY : allowedOrigins.clone();
         if (allowCredentials && Arrays.asList(origins).contains(Symbol.STAR)) {
             throw new IllegalArgumentException("bus.cors cannot combine wildcard origins with credentials");
         }
@@ -131,7 +131,7 @@ public class CorsProperties {
         this.allowedMethods = allowedMethods == null
                 ? new String[] { METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_OPTIONS, METHOD_DELETE }
                 : allowedMethods.clone();
-        this.exposedHeaders = exposedHeaders == null ? new String[0] : exposedHeaders.clone();
+        this.exposedHeaders = exposedHeaders == null ? Normal.EMPTY_STRING_ARRAY : exposedHeaders.clone();
         this.allowCredentials = allowCredentials;
         this.maxAge = maxAge;
     }

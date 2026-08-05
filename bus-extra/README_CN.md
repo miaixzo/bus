@@ -535,7 +535,7 @@ JsonFactory.use(JsonProvider.FASTJSON2);
 // ✅ 推荐：处理特定异常
 try {
     QrCodeKit.decode(qrFile);
-} catch (QrCodeException e) {
+} catch (InternalException e) {
     log.error("解码二维码失败", e);
 }
 

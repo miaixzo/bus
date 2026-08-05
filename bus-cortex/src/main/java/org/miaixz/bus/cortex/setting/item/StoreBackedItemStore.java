@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
@@ -524,7 +525,7 @@ public class StoreBackedItemStore {
                 entry.getNamespace_id(),
                 entry.getGroup(),
                 entry.getData_id(),
-                profiles == null || profiles.isEmpty() ? null : String.join(",", profiles));
+                profiles == null || profiles.isEmpty() ? null : String.join(Symbol.COMMA, profiles));
     }
 
     /**

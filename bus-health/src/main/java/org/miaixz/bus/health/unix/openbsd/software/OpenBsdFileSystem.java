@@ -28,9 +28,9 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
@@ -58,25 +58,25 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
      * The FS_PATH_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_OPENBSD_FS_PATH_EXCLUDES);
 
     /**
      * The FS_PATH_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_OPENBSD_FS_PATH_INCLUDES);
 
     /**
      * The FS_VOLUME_EXCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_OPENBSD_FS_VOLUME_EXCLUDES);
 
     /**
      * The FS_VOLUME_INCLUDES constant.
      */
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(Config._UNIX_OPENBSD_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(Builder._UNIX_OPENBSD_FS_VOLUME_INCLUDES);
 
     /**
      * Returns the file store matching.
@@ -133,7 +133,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 // Skip non-local drives if requested, and exclude pseudo file systems
                 boolean isLocal = !NETWORK_FS_TYPES.contains(type);
                 if ((localOnly && !isLocal)
-                        || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(
+                        || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Parsing.isFileStoreExcluded(
                                 path,
                                 volume,
                                 FS_PATH_INCLUDES,
@@ -158,7 +158,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 long freeSpace = f.getFreeSpace();
 
                 String description;
-                if (volume.startsWith("/dev") || path.equals("/")) {
+                if (volume.startsWith(Symbol.SLASH + "dev") || path.equals(Symbol.SLASH)) {
                     description = "Local Disk";
                 } else if (volume.equals("tmpfs")) {
                     // dynamic size in memory FS

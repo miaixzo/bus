@@ -22,6 +22,7 @@ package org.miaixz.bus.core.lang.reflect.creator;
 import java.lang.invoke.MethodHandle;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.LookupKit;
@@ -77,7 +78,7 @@ public class DefaultObjectCreator<T> implements ObjectCreator<T> {
         this.constructor = LookupKit.findConstructor(clazz, actualParamTypes);
         Assert.notNull(this.constructor, "Constructor not found!");
         this.paramTypes = actualParamTypes;
-        this.args = null == args ? new Object[0] : args;
+        this.args = null == args ? Normal.EMPTY_OBJECT_ARRAY : args;
     }
 
     /**

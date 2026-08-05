@@ -1783,7 +1783,7 @@ public final class HttpX {
          * @return true when absolute
          */
         private static boolean absolute(final String value) {
-            return value.startsWith("http://") || value.startsWith("https://");
+            return value.startsWith(Protocol.HTTP_PREFIX) || value.startsWith(Protocol.HTTPS_PREFIX);
         }
 
         /**

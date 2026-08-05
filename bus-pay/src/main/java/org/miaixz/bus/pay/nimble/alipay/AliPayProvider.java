@@ -29,6 +29,9 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -710,7 +713,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the HTML form
      */
     public String tradePage(Map<String, String> model, String notifyUrl, String returnUrl) {
-        return buildPagePay("POST", model, notifyUrl, returnUrl, null);
+        return buildPagePay(Http.Method.POST.value(), model, notifyUrl, returnUrl, null);
     }
 
     /**
@@ -736,7 +739,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @return the HTML form
      */
     public String tradePageWithToken(Map<String, String> model, String notifyUrl, String returnUrl, String authToken) {
-        return buildPagePay("POST", model, notifyUrl, returnUrl, authToken);
+        return buildPagePay(Http.Method.POST.value(), model, notifyUrl, returnUrl, authToken);
     }
 
     /**
@@ -749,7 +752,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      * @throws IOException if an I/O error occurs
      */
     public String tradePageByOutput(Map<String, String> model, String notifyUrl, String returnUrl) throws IOException {
-        return buildPagePay("POST", model, notifyUrl, returnUrl, null);
+        return buildPagePay(Http.Method.POST.value(), model, notifyUrl, returnUrl, null);
     }
 
     /**
@@ -767,7 +770,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
             String notifyUrl,
             String returnUrl,
             String authToken) throws IOException {
-        return buildPagePay("POST", model, notifyUrl, returnUrl, authToken);
+        return buildPagePay(Http.Method.POST.value(), model, notifyUrl, returnUrl, authToken);
     }
 
     /**
@@ -1000,7 +1003,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public String getOauth2Url(String appId, String redirectUri) throws java.io.UnsupportedEncodingException {
         return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId)
-                .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8")).toString();
+                .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, Charset.UTF_8)).toString();
     }
 
     /**
@@ -1133,7 +1136,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
      */
     public Map<String, String> batchTrans(Map<String, String> params, String privateKey, String signType) {
         params.put("service", "batch_trans_notify");
-        params.put("_input_charset", "UTF-8");
+        params.put("_input_charset", Charset.DEFAULT_UTF_8);
         params.put("pay_date", DateKit.format(new Date(), "YYYYMMDD"));
         return AliPayBuilder.buildRequestPara(params, privateKey, signType);
     }
@@ -1407,8 +1410,8 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            result.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), Charset.UTF_8))
-                    .append("&");
+            result.append(entry.getKey()).append(Symbol.EQUAL)
+                    .append(URLEncoder.encode(entry.getValue(), Charset.UTF_8)).append(Symbol.AND);
         }
         String request = result.substring(0, result.length() - 1);
         Logger.info(
@@ -1490,11 +1493,11 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
         params.put("return_url", returnUrl);
         params.put("biz_content", JsonKit.toJsonString(model));
         params = AliPayBuilder.buildRequestPara(params, context.getPrivateKey(), Algorithm.RSA2.getValue());
-        if ("GET".equalsIgnoreCase(method)) {
-            StringBuilder url = new StringBuilder(getUrl()).append("?");
+        if (Http.Method.GET.value().equalsIgnoreCase(method)) {
+            StringBuilder url = new StringBuilder(getUrl()).append(Symbol.QUESTION_MARK);
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                url.append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), Charset.UTF_8))
-                        .append("&");
+                url.append(entry.getKey()).append(Symbol.EQUAL)
+                        .append(URLEncoder.encode(entry.getValue(), Charset.UTF_8)).append(Symbol.AND);
             }
             String request = url.substring(0, url.length() - 1);
             Logger.info(
@@ -1538,7 +1541,7 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
         Map<String, String> params = new HashMap<>();
         params.put("method", method);
         params.put("app_id", context.getAppId());
-        params.put("timestamp", DateKit.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        params.put("timestamp", DateKit.format(new Date(), Fields.NORM_DATETIME));
         params.put("charset", Charset.DEFAULT_UTF_8);
         params.put("version", "1.0");
         if (!StringKit.isEmpty(notifyUrl)) {

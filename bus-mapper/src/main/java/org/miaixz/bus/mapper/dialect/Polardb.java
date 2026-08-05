@@ -217,6 +217,37 @@ public final class Polardb extends AbstractDialect {
     }
 
     /**
+     * Builds the DDL used to set a table comment using the resolved internal engine syntax.
+     *
+     * @param table the mapper table metadata
+     * @return the generated table-comment SQL
+     */
+    @Override
+    public String modifyTableComment(TableMeta table) {
+        return switch (engine) {
+            case MYSQL -> mysqlModifyTableComment(table);
+            case POSTGRESQL -> super.modifyTableComment(table);
+            case UNKNOWN -> throw unresolved();
+        };
+    }
+
+    /**
+     * Builds the DDL used to set a column comment using the resolved internal engine syntax.
+     *
+     * @param table  the mapper table metadata
+     * @param column the mapper column metadata
+     * @return the generated column-comment SQL
+     */
+    @Override
+    public String modifyColumnComment(TableMeta table, ColumnMeta column) {
+        return switch (engine) {
+            case MYSQL -> mysqlModifyColumnComment(table, column);
+            case POSTGRESQL -> super.modifyColumnComment(table, column);
+            case UNKNOWN -> throw unresolved();
+        };
+    }
+
+    /**
      * Builds the DDL used to drop an index from a table.
      *
      * @param table the mapper table metadata

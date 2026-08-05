@@ -21,6 +21,7 @@ package org.miaixz.bus.core.bean.path.node;
 
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 
@@ -53,7 +54,7 @@ public class ListNode implements Node {
      * @return An array of names or indices.
      */
     public String[] getNames() {
-        return this.names.toArray(new String[0]);
+        return this.names.toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**

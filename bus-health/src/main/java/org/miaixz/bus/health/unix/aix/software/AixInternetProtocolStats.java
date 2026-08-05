@@ -24,6 +24,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_protocol_t;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
@@ -59,7 +60,7 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         for (perfstat_protocol_t stat : ipstats.get()) {
-            if ("tcp".equals(Native.toString(stat.name))) {
+            if (Protocol.TCP.name.equals(Native.toString(stat.name))) {
                 return new InternetProtocolStats.TcpStats(stat.u.tcp.established, stat.u.tcp.initiated,
                         stat.u.tcp.accepted, stat.u.tcp.dropped, stat.u.tcp.dropped, stat.u.tcp.opackets,
                         stat.u.tcp.ipackets, 0L, stat.u.tcp.ierrors, 0L);
@@ -76,7 +77,7 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         for (perfstat_protocol_t stat : ipstats.get()) {
-            if ("udp".equals(Native.toString(stat.name))) {
+            if (Protocol.UDP.name.equals(Native.toString(stat.name))) {
                 return new InternetProtocolStats.UdpStats(stat.u.udp.opackets, stat.u.udp.ipackets,
                         stat.u.udp.no_socket, stat.u.udp.ierrors);
             }

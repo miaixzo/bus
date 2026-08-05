@@ -1299,19 +1299,28 @@ public final class Http {
         public static final String BEARER_PREFIX = BEARER + Symbol.SPACE;
 
         /**
+         * Preferred request header for API-key transport.
+         */
+        public static final String API_KEY_HEADER = "X-API-Key";
+
+        /**
          * Metadata label used for credentials without an explicit authorization scheme.
          */
         private static final String RAW_SCHEME = "Raw";
 
         /**
-         * Candidate names for backward-compatible access-token transport.
+         * Supported access-token header names for platform-specific token guards.
+         * <p>
+         * Strict Bearer parsing still accepts only {@link Header#AUTHORIZATION}.
+         * </p>
          */
-        public static final List<String> TOKEN_KEYS = List.of(Header.AUTHORIZATION, "X-Access-Token", "X_Access_Token");
+        public static final List<String> ACCESS_TOKEN_HEADER_KEYS = List
+                .of(Header.AUTHORIZATION, "X-Access-Token", "X_Access_Token");
 
         /**
-         * Candidate names for API-key transport.
+         * Fixed names accepted for API-key request headers.
          */
-        public static final List<String> API_KEY_KEYS = List.of(
+        public static final List<String> API_KEY_HEADER_KEYS = List.of(
                 "apiKey",
                 "api_key",
                 "x_api_key",
@@ -1323,304 +1332,69 @@ public final class Http {
                 "API-ID");
 
         /**
-         * Resolves the preferred credential from request headers and parameters.
-         * <p>
-         * Token credentials take precedence over API keys. This overload is intended for request contexts that only
-         * expose headers and query/form parameters.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @return credential, or {@code null} when no credential is present
-         */
-        public static Credential credential(final Map<String, ?> headers, final Map<String, ?> parameters) {
-            return credential(headers, parameters, null, null);
-        }
-
-        /**
-         * Resolves the preferred credential from all supported request value maps.
-         * <p>
-         * The lookup order is token first, then API key. Token lookup checks {@link Header#AUTHORIZATION}, generic
-         * token headers, token parameters, token JSON body values, then token cookies. API-key lookup checks headers,
-         * parameters, JSON body values, then cookies.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @param jsonBody   JSON body values
-         * @param cookies    request cookies
-         * @return credential, or {@code null} when no credential is present
-         */
-        public static Credential credential(
-                final Map<String, ?> headers,
-                final Map<String, ?> parameters,
-                final Map<String, ?> jsonBody,
-                final Map<String, ?> cookies) {
-            Credential credential = tokenCredential(headers, parameters, jsonBody, cookies);
-            if (credential != null) {
-                return credential;
-            }
-            return apiKeyCredential(headers, parameters, jsonBody, cookies);
-        }
-
-        /**
-         * Resolves a token value from request headers and parameters.
-         * <p>
-         * This method returns only the credential value. Use {@link #tokenCredential(Map, Map)} when the caller also
-         * needs metadata about source, key, or scheme.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @return token value, or {@code null} when absent
-         */
-        public static String token(final Map<String, ?> headers, final Map<String, ?> parameters) {
-            return value(tokenCredential(headers, parameters));
-        }
-
-        /**
-         * Resolves a token value from all supported request value maps.
-         * <p>
-         * This method strips a leading {@link #BEARER_PREFIX} when present and returns only the normalized token value.
-         * Use {@link #tokenCredential(Map, Map, Map, Map)} when metadata is required.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @param jsonBody   JSON body values
-         * @param cookies    request cookies
-         * @return token value, or {@code null} when absent
-         */
-        public static String token(
-                final Map<String, ?> headers,
-                final Map<String, ?> parameters,
-                final Map<String, ?> jsonBody,
-                final Map<String, ?> cookies) {
-            return value(tokenCredential(headers, parameters, jsonBody, cookies));
-        }
-
-        /**
-         * Resolves an API key value from request headers and parameters.
-         * <p>
-         * This method returns only the normalized API key value. Use {@link #apiKeyCredential(Map, Map)} when metadata
-         * is required.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @return API key value, or {@code null} when absent
-         */
-        public static String apiKey(final Map<String, ?> headers, final Map<String, ?> parameters) {
-            return value(apiKeyCredential(headers, parameters));
-        }
-
-        /**
-         * Resolves an API key value from all supported request value maps.
-         * <p>
-         * This method returns only the normalized API key value. Use {@link #apiKeyCredential(Map, Map, Map, Map)} when
-         * metadata is required.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @param jsonBody   JSON body values
-         * @param cookies    request cookies
-         * @return API key value, or {@code null} when absent
-         */
-        public static String apiKey(
-                final Map<String, ?> headers,
-                final Map<String, ?> parameters,
-                final Map<String, ?> jsonBody,
-                final Map<String, ?> cookies) {
-            return value(apiKeyCredential(headers, parameters, jsonBody, cookies));
-        }
-
-        /**
-         * Resolves a token credential from request headers and parameters.
-         * <p>
-         * The standard {@link Header#AUTHORIZATION} header is checked before generic token aliases, and the returned
-         * credential includes source, key, and scheme metadata.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @return token credential, or {@code null} when absent
-         */
-        public static Credential tokenCredential(final Map<String, ?> headers, final Map<String, ?> parameters) {
-            return tokenCredential(headers, parameters, null, null);
-        }
-
-        /**
-         * Resolves a token credential from all supported request value maps.
-         * <p>
-         * The lookup order is {@link Header#AUTHORIZATION}, generic token headers, token parameters, token JSON body
-         * values, then token cookies. A leading {@link #BEARER_PREFIX} is stripped from the returned value.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @param jsonBody   JSON body values
-         * @param cookies    request cookies
-         * @return token credential, or {@code null} when absent
-         */
-        public static Credential tokenCredential(
-                final Map<String, ?> headers,
-                final Map<String, ?> parameters,
-                final Map<String, ?> jsonBody,
-                final Map<String, ?> cookies) {
-            Credential credential = authorizationCredential(headers);
-            if (credential != null) {
-                return credential;
-            }
-            credential = tokenCredential(headers, EnumValue.Params.HEADER, true);
-            if (credential != null) {
-                return credential;
-            }
-            credential = tokenCredential(parameters, EnumValue.Params.PARAMETER, true);
-            if (credential != null) {
-                return credential;
-            }
-            credential = tokenCredential(jsonBody, EnumValue.Params.JSON_BODY, true);
-            if (credential != null) {
-                return credential;
-            }
-            return tokenCredential(cookies, EnumValue.Params.COOKIE, true);
-        }
-
-        /**
-         * Resolves an API key credential from request headers and parameters.
-         * <p>
-         * Header aliases take precedence over parameter aliases.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @return API key credential, or {@code null} when absent
-         */
-        public static Credential apiKeyCredential(final Map<String, ?> headers, final Map<String, ?> parameters) {
-            return apiKeyCredential(headers, parameters, null, null);
-        }
-
-        /**
-         * Resolves an API key credential from all supported request value maps.
-         * <p>
-         * The lookup order is API-key headers, parameters, JSON body values, then cookies.
-         * </p>
-         *
-         * @param headers    request headers
-         * @param parameters request parameters
-         * @param jsonBody   JSON body values
-         * @param cookies    request cookies
-         * @return API key credential, or {@code null} when absent
-         */
-        public static Credential apiKeyCredential(
-                final Map<String, ?> headers,
-                final Map<String, ?> parameters,
-                final Map<String, ?> jsonBody,
-                final Map<String, ?> cookies) {
-            Credential credential = apiKeyCredential(headers, EnumValue.Params.HEADER);
-            if (credential != null) {
-                return credential;
-            }
-            credential = apiKeyCredential(parameters, EnumValue.Params.PARAMETER);
-            if (credential != null) {
-                return credential;
-            }
-            credential = apiKeyCredential(jsonBody, EnumValue.Params.JSON_BODY);
-            if (credential != null) {
-                return credential;
-            }
-            return apiKeyCredential(cookies, EnumValue.Params.COOKIE);
-        }
-
-        /**
-         * Resolves a token from the standard {@link Header#AUTHORIZATION} header.
-         * <p>
-         * {@code Bearer} values are returned with the bearer prefix stripped. Scheme-qualified values that do not use
-         * Bearer authentication are rejected so an unknown authorization scheme cannot be mistaken for a raw token.
-         * </p>
+         * Resolves the preferred credential exclusively from standard request headers.
          *
          * @param headers request headers
-         * @return token credential, or {@code null} when the Authorization header is absent or unsupported
+         * @return Bearer token or API-key credential, or {@code null} when absent
          */
-        private static Credential authorizationCredential(final Map<String, ?> headers) {
-            Match match = match(headers, Header.AUTHORIZATION);
-            if (match == null) {
-                return null;
-            }
-            String authorization = normalize(match.value());
-            if (authorization == null) {
-                return null;
-            }
-            if (startsWithIgnoreCase(authorization, BEARER_PREFIX)) {
-                String value = normalize(authorization.substring(BEARER_PREFIX.length()));
-                return value == null ? null
-                        : new Credential(EnumValue.Credential.TOKEN, value, EnumValue.Params.HEADER, match.key(),
-                                BEARER);
-            }
-            if (containsWhitespace(authorization)) {
-                return null;
-            }
-            return new Credential(EnumValue.Credential.TOKEN, authorization, EnumValue.Params.HEADER, match.key(),
-                    RAW_SCHEME);
+        public static Credential credential(final Map<String, ?> headers) {
+            Credential credential = bearerCredential(headers);
+            return credential != null ? credential : apiKeyCredential(headers);
         }
 
         /**
-         * Resolves a token from one source map using {@link #TOKEN_KEYS}.
+         * Resolves a Bearer token value exclusively from the standard Authorization header.
          *
-         * @param values            candidate values from one request source
-         * @param source            source represented by the candidate map
-         * @param skipAuthorization whether the {@link Header#AUTHORIZATION} alias should be skipped because it has
-         *                          already been handled as a dedicated channel
-         * @return token credential, or {@code null} when no token alias has a non-blank value
+         * @param headers request headers
+         * @return token value, or {@code null} when absent or malformed
          */
-        private static Credential tokenCredential(
-                final Map<String, ?> values,
-                final EnumValue.Params source,
-                final boolean skipAuthorization) {
-            Match match = match(values, skipAuthorization, TOKEN_KEYS);
+        public static String bearerToken(final Map<String, ?> headers) {
+            return value(bearerCredential(headers));
+        }
+
+        /**
+         * Resolves an API key value exclusively from supported API-key headers.
+         *
+         * @param headers request headers
+         * @return API key value, or {@code null} when absent
+         */
+        public static String apiKey(final Map<String, ?> headers) {
+            return value(apiKeyCredential(headers));
+        }
+
+        /**
+         * Resolves a strict Bearer token from the standard Authorization header.
+         *
+         * @param headers request headers
+         * @return normalized Bearer credential, or {@code null} when absent or malformed
+         */
+        public static Credential bearerCredential(final Map<String, ?> headers) {
+            Match match = match(headers, List.of(Header.AUTHORIZATION));
             if (match == null) {
                 return null;
             }
-            String value = normalize(match.value());
-            if (value == null) {
+            String authorization = match.value();
+            if (!authorization.regionMatches(true, 0, BEARER_PREFIX, 0, BEARER_PREFIX.length())) {
                 return null;
             }
-            String scheme = RAW_SCHEME;
-            if (startsWithIgnoreCase(value, BEARER_PREFIX)) {
-                value = normalize(value.substring(BEARER_PREFIX.length()));
-                scheme = BEARER;
-            }
+            String value = normalize(authorization.substring(BEARER_PREFIX.length()));
             return value == null ? null
-                    : new Credential(EnumValue.Credential.TOKEN, value, source, match.key(), scheme);
+                    : new Credential(EnumValue.Credential.TOKEN, value, EnumValue.Params.HEADER, match.key(), BEARER);
         }
 
         /**
-         * Resolves an API key from one source map using {@link #API_KEY_KEYS}.
+         * Resolves an API key from the supported request headers.
          *
-         * @param values candidate values from one request source
-         * @param source source represented by the candidate map
+         * @param headers request headers
          * @return API key credential, or {@code null} when no API-key alias has a non-blank value
          */
-        private static Credential apiKeyCredential(final Map<String, ?> values, final EnumValue.Params source) {
-            Match match = match(values, false, API_KEY_KEYS);
+        public static Credential apiKeyCredential(final Map<String, ?> headers) {
+            Match match = match(headers, API_KEY_HEADER_KEYS);
             if (match == null) {
                 return null;
             }
-            String value = normalize(match.value());
-            return value == null ? null
-                    : new Credential(EnumValue.Credential.API_KEY, value, source, match.key(), RAW_SCHEME);
-        }
-
-        /**
-         * Finds a non-blank value for one key using exact lookup first and case-insensitive lookup second.
-         *
-         * @param values candidate values
-         * @param key    key to match
-         * @return matched key and value, or {@code null} when absent
-         */
-        private static Match match(final Map<String, ?> values, final String key) {
-            return match(values, false, List.of(key));
+            return new Credential(EnumValue.Credential.API_KEY, match.value(), EnumValue.Params.HEADER, match.key(),
+                    RAW_SCHEME);
         }
 
         /**
@@ -1630,23 +1404,16 @@ public final class Http {
          * case-insensitive lookup can remain efficient while plain maps still work.
          * </p>
          *
-         * @param values            candidate values
-         * @param skipAuthorization whether the {@link Header#AUTHORIZATION} alias should be skipped
-         * @param keys              candidate keys in lookup priority order
+         * @param values candidate values
+         * @param keys   candidate keys in lookup priority order
          * @return matched key and value, or {@code null} when absent
          */
-        private static Match match(
-                final Map<String, ?> values,
-                final boolean skipAuthorization,
-                final Collection<String> keys) {
-            if (values == null || values.isEmpty() || keys == null || keys.isEmpty()) {
+        private static Match match(final Map<String, ?> values, final Collection<String> keys) {
+            if (values == null || values.isEmpty() || keys.isEmpty()) {
                 return null;
             }
 
             for (String key : keys) {
-                if (skip(skipAuthorization, key)) {
-                    continue;
-                }
                 String value = firstValue(values.get(key));
                 if (value != null) {
                     return new Match(key, value);
@@ -1654,9 +1421,6 @@ public final class Http {
             }
 
             for (String key : keys) {
-                if (skip(skipAuthorization, key)) {
-                    continue;
-                }
                 for (Map.Entry<String, ?> entry : values.entrySet()) {
                     String candidateKey = entry.getKey();
                     if (candidateKey != null && key.equalsIgnoreCase(candidateKey)) {
@@ -1668,17 +1432,6 @@ public final class Http {
                 }
             }
             return null;
-        }
-
-        /**
-         * Determines whether the current key should be skipped during generic alias lookup.
-         *
-         * @param skipAuthorization whether Authorization should be skipped
-         * @param key               candidate key
-         * @return {@code true} when the key is Authorization and dedicated handling already ran
-         */
-        private static boolean skip(final boolean skipAuthorization, final String key) {
-            return skipAuthorization && key != null && Header.AUTHORIZATION.equalsIgnoreCase(key);
         }
 
         /**
@@ -1732,27 +1485,6 @@ public final class Http {
             }
             String normalized = value.trim();
             return normalized.isEmpty() ? null : normalized;
-        }
-
-        /**
-         * Checks whether a value starts with the supplied prefix ignoring case.
-         *
-         * @param value  value to inspect
-         * @param prefix expected prefix
-         * @return {@code true} when the value starts with the prefix
-         */
-        private static boolean startsWithIgnoreCase(final String value, final String prefix) {
-            return value != null && prefix != null && value.regionMatches(true, 0, prefix, 0, prefix.length());
-        }
-
-        /**
-         * Checks whether a normalized value contains whitespace.
-         *
-         * @param value normalized value
-         * @return {@code true} when at least one whitespace character is present
-         */
-        private static boolean containsWhitespace(final String value) {
-            return value.chars().anyMatch(Character::isWhitespace);
         }
 
         /**

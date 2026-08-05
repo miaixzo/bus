@@ -26,6 +26,7 @@ import java.net.Socket;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Compatible;
@@ -490,7 +491,7 @@ public class HL7Application implements Serializable {
                     .setErrorLocation(ERRSegment.SENDING_APPLICATION)
                     .setUserMessage("Sending Application and/or Facility not recognized"));
         String messageType = msh.getMessageType();
-        if (!(acceptedMessageTypes.contains("*") || acceptedMessageTypes.contains(messageType))) {
+        if (!(acceptedMessageTypes.contains(Symbol.STAR) || acceptedMessageTypes.contains(messageType))) {
             if (unsupportedMessageCode(messageType.substring(0, 3)))
                 throw new HL7Exception(new ERRSegment(msh).setHL7ErrorCode(ERRSegment.UNSUPPORTED_MESSAGE_TYPE)
                         .setErrorLocation(ERRSegment.MESSAGE_CODE)

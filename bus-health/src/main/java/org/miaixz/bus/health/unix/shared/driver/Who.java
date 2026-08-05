@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import com.sun.jna.Platform;
 
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -62,7 +63,7 @@ public final class Who {
      * The WHO_DATE_FORMAT_LINUX constant.
      */
     private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm", Locale.ROOT);
+            .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
     // oshi ttys000 May 4 23:50 (192.168.1.23)
     // middle 12 characters from Thu Nov 24 18:22:48 1986
     /**

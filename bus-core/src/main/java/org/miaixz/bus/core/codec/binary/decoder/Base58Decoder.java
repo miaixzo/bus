@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
 import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -70,7 +71,7 @@ public class Base58Decoder implements Decoder<CharSequence, byte[]> {
     @Override
     public byte[] decode(final CharSequence encoded) {
         if (encoded.length() == 0) {
-            return new byte[0];
+            return Normal.EMPTY_BYTE_ARRAY;
         }
         // Convert the base58-encoded ASCII chars to a base58 byte sequence (base58 digits).
         final byte[] input58 = new byte[encoded.length()];

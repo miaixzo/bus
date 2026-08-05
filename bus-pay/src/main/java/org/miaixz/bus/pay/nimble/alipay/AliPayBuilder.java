@@ -30,6 +30,8 @@ import java.util.*;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.logger.Logger;
@@ -49,7 +51,7 @@ public class AliPayBuilder {
         // No initialization required.
     }
 
-    private static final String CHARSET_UTF8 = "UTF-8";
+    private static final String CHARSET_UTF8 = Charset.DEFAULT_UTF_8;
 
     /**
      * Generates the signature result.
@@ -139,9 +141,9 @@ public class AliPayBuilder {
         StringBuilder content = new StringBuilder();
         for (String key : keys) {
             String value = params.get(key);
-            content.append(key).append("=").append(value).append("&");
+            content.append(key).append(Symbol.EQUAL).append(value).append(Symbol.AND);
         }
-        if (content.lastIndexOf("&") == content.length() - 1) {
+        if (content.lastIndexOf(Symbol.AND) == content.length() - 1) {
             content.deleteCharAt(content.length() - 1);
         }
         return content.toString();

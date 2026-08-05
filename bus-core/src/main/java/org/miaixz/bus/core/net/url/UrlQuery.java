@@ -27,6 +27,7 @@ import org.miaixz.bus.core.codec.PercentCodec;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
@@ -253,7 +254,8 @@ public class UrlQuery {
                 if (StringKit.isBlank(query)) {
                     return this;
                 }
-            } else if (StringKit.startWith(query, "http://") || StringKit.startWith(query, "https://")) {
+            } else if (StringKit.startWith(query, Protocol.HTTP_PREFIX)
+                    || StringKit.startWith(query, Protocol.HTTPS_PREFIX)) {
                 return this;
             }
         }
@@ -340,7 +342,7 @@ public class UrlQuery {
                 sb.append(keyCoder.encode(name, charset));
                 value = entry.getValue();
                 if (null != value) {
-                    sb.append("=").append(valueCoder.encode(value, charset));
+                    sb.append(Symbol.EQUAL).append(valueCoder.encode(value, charset));
                 }
             }
         }

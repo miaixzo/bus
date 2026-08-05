@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
@@ -167,7 +168,7 @@ public interface ManifestXml {
      */
     static void addXmlAttribute(String name, int[] values, Writer writer) throws IOException {
         if (hasText(name) && values != null && values.length > 0) {
-            String joined = IntStream.of(values).mapToObj(String::valueOf).collect(Collectors.joining(","));
+            String joined = IntStream.of(values).mapToObj(String::valueOf).collect(Collectors.joining(Symbol.COMMA));
             addXmlAttribute(name, joined, writer);
         }
     }

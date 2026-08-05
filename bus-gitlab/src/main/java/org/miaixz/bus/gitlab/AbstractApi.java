@@ -31,6 +31,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.logger.Logger;
@@ -63,9 +65,9 @@ public abstract class AbstractApi implements Constants {
      *
      * @param obj the object to determine the ID or path from
      * @return the project ID or path from the provided Long, String, or Project instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    public Object getProjectIdOrPath(Object obj) throws GitLabApiException {
+    public Object getProjectIdOrPath(Object obj) throws RelevantException {
 
         if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
@@ -101,9 +103,9 @@ public abstract class AbstractApi implements Constants {
      *
      * @param obj the object to determine the ID or path from
      * @return the group ID or path from the provided Long, String, or Group instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    public Object getGroupIdOrPath(Object obj) throws GitLabApiException {
+    public Object getGroupIdOrPath(Object obj) throws RelevantException {
 
         if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
@@ -139,9 +141,9 @@ public abstract class AbstractApi implements Constants {
      *
      * @param obj the object to determine the ID or username from
      * @return the user ID or username from the provided Long, String, or User instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    public Object getUserIdOrUsername(Object obj) throws GitLabApiException {
+    public Object getUserIdOrUsername(Object obj) throws RelevantException {
 
         if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or username from null object"));
@@ -177,9 +179,9 @@ public abstract class AbstractApi implements Constants {
      *
      * @param obj the object to determine the ID or name from
      * @return the user ID or name from the provided Long, String, or Label instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    public Object getLabelIdOrName(Object obj) throws GitLabApiException {
+    public Object getLabelIdOrName(Object obj) throws RelevantException {
 
         if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or name from null object"));
@@ -215,9 +217,9 @@ public abstract class AbstractApi implements Constants {
      *
      * @param obj the object to determine the ID or path from
      * @return the namespace ID or path from the provided Long, String, or Namespace instance
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    public Object getNamespaceIdOrPath(Object obj) throws GitLabApiException {
+    public Object getNamespaceIdOrPath(Object obj) throws RelevantException {
 
         if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
@@ -293,17 +295,17 @@ public abstract class AbstractApi implements Constants {
      *
      * @param s the string to encode
      * @return encoded version of s with spaces encoded as %2F
-     * @throws GitLabApiException if encoding throws an exception
+     * @throws RelevantException if encoding throws an exception
      */
-    protected String urlEncode(String s) throws GitLabApiException {
+    protected String urlEncode(String s) throws RelevantException {
         try {
             String encoded = URLEncoder.encode(s, Charset.UTF_8);
             // Since the encode method encodes plus signs as %2B,
             // we can simply replace the encoded spaces with the correct encoding here
-            encoded = encoded.replace("+", "%20");
-            encoded = encoded.replace(".", "%2E");
-            encoded = encoded.replace("-", "%2D");
-            encoded = encoded.replace("_", "%5F");
+            encoded = encoded.replace(Symbol.PLUS, "%20");
+            encoded = encoded.replace(Symbol.DOT, "%2E");
+            encoded = encoded.replace(Symbol.MINUS, "%2D");
+            encoded = encoded.replace(Symbol.UNDERLINE, "%5F");
             return (encoded);
         } catch (Exception e) {
             Logger.warn(
@@ -313,7 +315,7 @@ public abstract class AbstractApi implements Constants {
                     "GitLab path segment encoding failed: inputLength={}, exception={}",
                     s == null ? -1 : s.length(),
                     e.getClass().getSimpleName());
-            throw new GitLabApiException(e);
+            throw GitLabFailure.exception(e);
         }
     }
 
@@ -325,12 +327,12 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response get(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().get(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -356,13 +358,13 @@ public abstract class AbstractApi implements Constants {
      * @param accepts        if non-empty will set the Accepts header to this value
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response getWithAccepts(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
             String accepts,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().getWithAccepts(queryParams, accepts, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -388,10 +390,10 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response get(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams, URL url)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().get(queryParams, url), expectedStatus);
         } catch (Exception e) {
@@ -416,12 +418,12 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response head(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().head(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -446,12 +448,12 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response patch(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().patch(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -476,10 +478,10 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response patch(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams, URL url)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().patch(queryParams, url), expectedStatus);
         } catch (Exception e) {
@@ -504,10 +506,10 @@ public abstract class AbstractApi implements Constants {
      * @param formData       the Form containing the name/value pairs for the POST data
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response post(Response.Status expectedStatus, Form formData, Object... pathArgs)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().post(formData, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -532,10 +534,10 @@ public abstract class AbstractApi implements Constants {
      * @param payload        the object instance that will be serialized to JSON and used as the POST data
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response post(Response.Status expectedStatus, Object payload, Object... pathArgs)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().post(payload, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -561,13 +563,13 @@ public abstract class AbstractApi implements Constants {
      * @param mediaType      the content-type for the streamed data
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response post(
             Response.Status expectedStatus,
             StreamingOutput stream,
             String mediaType,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().post(stream, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -593,12 +595,12 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response post(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().post(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -623,9 +625,9 @@ public abstract class AbstractApi implements Constants {
      * @param formData       the Form containing the name/value pairs for the POST data
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
-    protected Response post(Response.Status expectedStatus, Form formData, URL url) throws GitLabApiException {
+    protected Response post(Response.Status expectedStatus, Form formData, URL url) throws RelevantException {
         try {
             return validate(getApiClient().post(formData, url), expectedStatus);
         } catch (Exception e) {
@@ -651,14 +653,14 @@ public abstract class AbstractApi implements Constants {
      * @param mediaType      the uploaded file media type
      * @param pathArgs       the path arguments used to build the URI
      * @return the response returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response upload(
             Response.Status expectedStatus,
             String name,
             File fileToUpload,
             String mediaType,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -687,7 +689,7 @@ public abstract class AbstractApi implements Constants {
      * @param mediaType      the uploaded stream media type
      * @param pathArgs       the path arguments used to build the URI
      * @return the response returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response upload(
             Response.Status expectedStatus,
@@ -695,7 +697,7 @@ public abstract class AbstractApi implements Constants {
             InputStream inputStream,
             String filename,
             String mediaType,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().upload(name, inputStream, filename, mediaType, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -725,10 +727,10 @@ public abstract class AbstractApi implements Constants {
      * @param mediaType      unused; will be removed in the next major version
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response upload(Response.Status expectedStatus, String name, File fileToUpload, String mediaType, URL url)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, url), expectedStatus);
         } catch (Exception e) {
@@ -758,7 +760,7 @@ public abstract class AbstractApi implements Constants {
      * @param formData       the Form containing the name/value pairs
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response upload(
             Response.Status expectedStatus,
@@ -766,7 +768,7 @@ public abstract class AbstractApi implements Constants {
             File fileToUpload,
             String mediaType,
             Form formData,
-            URL url) throws GitLabApiException {
+            URL url) throws RelevantException {
 
         try {
             return validate(getApiClient().upload(name, fileToUpload, mediaType, formData, url), expectedStatus);
@@ -795,12 +797,12 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response put(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().put(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -825,10 +827,10 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response put(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams, URL url)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().put(queryParams, url), expectedStatus);
         } catch (Exception e) {
@@ -853,10 +855,10 @@ public abstract class AbstractApi implements Constants {
      * @param payload        the object instance that will be serialized to JSON and used as the PUT data
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response put(Response.Status expectedStatus, Object payload, Object... pathArgs)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().put(payload, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -881,10 +883,10 @@ public abstract class AbstractApi implements Constants {
      * @param formData       the Form containing the name/value pairs for the POST data
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response putWithFormData(Response.Status expectedStatus, Form formData, Object... pathArgs)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().put(formData, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -909,10 +911,10 @@ public abstract class AbstractApi implements Constants {
      * @param form           the Form containing the name/value pairs for the POST data
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response putWithFormData(Response.Status expectedStatus, GitLabForm form, Object... pathArgs)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().put(new GitLabApiForm(form), pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -938,10 +940,10 @@ public abstract class AbstractApi implements Constants {
      * @param fileToUpload   a File instance pointing to the file to upload
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response putUpload(Response.Status expectedStatus, String name, File fileToUpload, Object... pathArgs)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().putUpload(name, fileToUpload, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -968,10 +970,10 @@ public abstract class AbstractApi implements Constants {
      * @param fileToUpload   a File instance pointing to the file to upload
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response putUpload(Response.Status expectedStatus, String name, File fileToUpload, URL url)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().putUpload(name, fileToUpload, url), expectedStatus);
         } catch (Exception e) {
@@ -997,12 +999,12 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param pathArgs       variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response delete(
             Response.Status expectedStatus,
             MultivaluedMap<String, String> queryParams,
-            Object... pathArgs) throws GitLabApiException {
+            Object... pathArgs) throws RelevantException {
         try {
             return validate(getApiClient().delete(queryParams, pathArgs), expectedStatus);
         } catch (Exception e) {
@@ -1027,10 +1029,10 @@ public abstract class AbstractApi implements Constants {
      * @param queryParams    multivalue map of request parameters
      * @param url            the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
-     * @throws GitLabApiException if any exception occurs during execution
+     * @throws RelevantException if any exception occurs during execution
      */
     protected Response delete(Response.Status expectedStatus, MultivaluedMap<String, String> queryParams, URL url)
-            throws GitLabApiException {
+            throws RelevantException {
         try {
             return validate(getApiClient().delete(queryParams, url), expectedStatus);
         } catch (Exception e) {
@@ -1092,14 +1094,14 @@ public abstract class AbstractApi implements Constants {
 
     /**
      * Validates response the response from the server against the expected HTTP status and the returned secret token,
-     * if either is not correct will throw a GitLabApiException.
+     * if either is not correct will throw a RelevantException.
      *
      * @param response response
      * @param expected expected response status
      * @return original response if the response status is expected
-     * @throws GitLabApiException if HTTP status is not as expected, or the secret token doesn't match
+     * @throws RelevantException if HTTP status is not as expected, or the secret token doesn't match
      */
-    protected Response validate(Response response, Response.Status expected) throws GitLabApiException {
+    protected Response validate(Response response, Response.Status expected) throws RelevantException {
 
         int responseCode = response.getStatus();
         int expectedResponseCode = expected.getStatusCode();
@@ -1137,7 +1139,7 @@ public abstract class AbstractApi implements Constants {
                         expectedResponseCode,
                         response.getHeaderString("RateLimit-Remaining"),
                         response.getHeaderString("Retry-After"));
-                throw new GitLabApiException(response);
+                throw GitLabFailure.exception(response);
             }
         }
 
@@ -1148,7 +1150,7 @@ public abstract class AbstractApi implements Constants {
                     "GitLab API response secret token rejected: status={}, expectedStatus={}",
                     responseCode,
                     expectedResponseCode);
-            throw new GitLabApiException(new NotAuthorizedException("Invalid secret token in response."));
+            throw GitLabFailure.exception(new NotAuthorizedException("Invalid secret token in response."));
         }
 
         Logger.debug(
@@ -1162,20 +1164,20 @@ public abstract class AbstractApi implements Constants {
     }
 
     /**
-     * Wraps an exception in a GitLabApiException if needed.
+     * Wraps an exception in a RelevantException if needed.
      *
      * @param thrown the exception that should be wrapped
-     * @return either the untouched GitLabApiException or a new GitLabApiExceptin wrapping a non-GitLabApiException
+     * @return either the untouched global exception or a new global exception containing the GitLab failure
      */
-    protected GitLabApiException handle(Exception thrown) {
+    protected RelevantException handle(Exception thrown) {
 
-        if (thrown instanceof GitLabApiException) {
+        if (thrown instanceof RelevantException) {
             Logger.warn(
                     false,
                     "GitLab",
                     "GitLab API exception propagated: exception={}",
                     thrown.getClass().getSimpleName());
-            return ((GitLabApiException) thrown);
+            return ((RelevantException) thrown);
         }
 
         Logger.error(
@@ -1184,7 +1186,7 @@ public abstract class AbstractApi implements Constants {
                 thrown,
                 "GitLab API exception wrapped: exception={}",
                 thrown == null ? "null" : thrown.getClass().getSimpleName());
-        return (new GitLabApiException(thrown));
+        return (GitLabFailure.exception(thrown));
     }
 
     /**

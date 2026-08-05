@@ -23,6 +23,8 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -129,9 +131,9 @@ public class DefaultEditors implements Editors {
      */
     private static byte[] decodeHmacKey(String globalKey) {
         String cleanHex = globalKey.startsWith("0x") ? globalKey.substring(2) : globalKey;
-        cleanHex = cleanHex.replace("-", "");
+        cleanHex = cleanHex.replace(Symbol.MINUS, Normal.EMPTY);
         if (cleanHex.length() % 2 != 0) {
-            cleanHex = "0" + cleanHex;
+            cleanHex = Symbol.ZERO + cleanHex;
         }
         try {
             return HexKit.decode(cleanHex);

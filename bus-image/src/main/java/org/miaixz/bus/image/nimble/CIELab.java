@@ -22,6 +22,8 @@ package org.miaixz.bus.image.nimble;
 import java.awt.*;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the CIELab type.
  *
@@ -189,7 +191,7 @@ public class CIELab {
      */
     public static int[] dicomLab2rgb(int[] lab) {
         if (lab == null || lab.length != 3) {
-            return new int[0];
+            return Normal.EMPTY_INT_ARRAY;
         }
         // Dicom lab to lab
         double l = ((lab[0] * 100.0) / 65535.0);

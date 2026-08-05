@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Thread-safe executor that applies neutral log operators in registration order.
  *
@@ -99,7 +101,8 @@ public final class Executor {
                     current = processed;
                 }
             } catch (RuntimeException ignored) {
-                return new Loggable(current.level(), current.throwable(), "[LOG PROCESSING FAILED]", new Object[0]);
+                return new Loggable(current.level(), current.throwable(), "[LOG PROCESSING FAILED]",
+                        Normal.EMPTY_OBJECT_ARRAY);
             }
         }
         return current;

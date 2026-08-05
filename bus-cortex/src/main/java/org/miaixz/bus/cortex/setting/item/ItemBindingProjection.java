@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -213,10 +215,11 @@ public final class ItemBindingProjection {
      */
     private static String normalizeAppId(String value) {
         if (value == null) {
-            return "";
+            return Normal.EMPTY;
         }
         String normalized = value.trim();
-        if (normalized.length() >= 2 && normalized.startsWith("\"") && normalized.endsWith("\"")) {
+        if (normalized.length() >= 2 && normalized.startsWith(Symbol.DOUBLE_QUOTES)
+                && normalized.endsWith(Symbol.DOUBLE_QUOTES)) {
             normalized = normalized.substring(1, normalized.length() - 1).trim();
         }
         return normalized;

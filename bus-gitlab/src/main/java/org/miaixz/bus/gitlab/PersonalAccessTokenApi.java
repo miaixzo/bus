@@ -25,6 +25,7 @@ import java.util.List;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.PersonalAccessToken;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
@@ -56,9 +57,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      * </pre>
      *
      * @return the newly created PersonalAccessToken.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public PersonalAccessToken rotatePersonalAccessToken() throws GitLabApiException {
+    public PersonalAccessToken rotatePersonalAccessToken() throws RelevantException {
         return rotatePersonalAccessToken(null);
     }
 
@@ -72,9 +73,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      *
      * @param expiresAt Expiration date of the access token
      * @return the newly created PersonalAccessToken.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public PersonalAccessToken rotatePersonalAccessToken(Date expiresAt) throws GitLabApiException {
+    public PersonalAccessToken rotatePersonalAccessToken(Date expiresAt) throws RelevantException {
         return rotatePersonalAccessToken("self", expiresAt);
     }
 
@@ -89,9 +90,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      * @param id        ID of the personal access token
      * @param expiresAt Expiration date of the access token
      * @return the newly created PersonalAccessToken.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public PersonalAccessToken rotatePersonalAccessToken(String id, Date expiresAt) throws GitLabApiException {
+    public PersonalAccessToken rotatePersonalAccessToken(String id, Date expiresAt) throws RelevantException {
         GitLabApiForm formData = new GitLabApiForm().withParam("expires_at", ISO8601.dateOnly(expiresAt));
 
         Response response = post(Response.Status.OK, formData, "personal_access_tokens", id, "rotate");
@@ -107,9 +108,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      * </pre>
      *
      * @return the specified PersonalAccessToken.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public List<PersonalAccessToken> getPersonalAccessTokens() throws GitLabApiException {
+    public List<PersonalAccessToken> getPersonalAccessTokens() throws RelevantException {
         Response response = get(Response.Status.OK, null, "personal_access_tokens");
         return response.readEntity(new GenericType<>() {
         });
@@ -124,9 +125,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      * </pre>
      *
      * @return the specified PersonalAccessToken.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public PersonalAccessToken getPersonalAccessToken() throws GitLabApiException {
+    public PersonalAccessToken getPersonalAccessToken() throws RelevantException {
         return getPersonalAccessToken("self");
     }
 
@@ -139,9 +140,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      *
      * @param id ID of the personal access token
      * @return the specified PersonalAccessToken.
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public PersonalAccessToken getPersonalAccessToken(String id) throws GitLabApiException {
+    public PersonalAccessToken getPersonalAccessToken(String id) throws RelevantException {
         Response response = get(Response.Status.OK, null, "personal_access_tokens", id);
         return (response.readEntity(PersonalAccessToken.class));
     }
@@ -154,9 +155,9 @@ public class PersonalAccessTokenApi extends AbstractApi {
      * </pre>
      *
      * @param tokenId the personal access token ID to revoke
-     * @throws GitLabApiException if any exception occurs
+     * @throws RelevantException if any exception occurs
      */
-    public void revokePersonalAccessToken(Long tokenId) throws GitLabApiException {
+    public void revokePersonalAccessToken(Long tokenId) throws RelevantException {
         if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");
         }

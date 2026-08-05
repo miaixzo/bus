@@ -28,6 +28,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.AbstractEpic.EpicState;
 import org.miaixz.bus.gitlab.models.Constants.EpicOrderBy;
 import org.miaixz.bus.gitlab.models.Constants.SortOrder;
@@ -258,7 +259,7 @@ public class EpicFilter implements Serializable {
      * @return the reference to this EpicFilter instance
      */
     public EpicFilter withoutLabels(String... labels) {
-        return withNot(EpicField.LABELS, String.join(",", labels));
+        return withNot(EpicField.LABELS, String.join(Symbol.COMMA, labels));
     }
 
     /**

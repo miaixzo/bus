@@ -56,7 +56,10 @@ public class VisibleBuilder {
             .compile("\\bFROM\\s+([\\w.]+)(?:\\s+(?:AS\\s+)?(\\w+))?", Pattern.CASE_INSENSITIVE);
 
     /**
-     * SQL words that may follow a table name but must not be treated as table aliases.
+     * Parser stop words that may follow a table name but must not be treated as aliases.
+     * <p>
+     * These tokens locate SQL structure only; they are not database reserved-word validation rules.
+     * </p>
      */
     private static final Set<String> ALIAS_STOP_WORDS = Set.of(
             "WHERE",
@@ -282,10 +285,13 @@ public class VisibleBuilder {
     }
 
     /**
-     * Tests whether a character may start a SQL identifier.
+     * Tests whether a character may start an unquoted SQL token during condition parsing.
+     * <p>
+     * This parser helper does not validate identifier compliance.
+     * </p>
      *
      * @param value the character to test
-     * @return {@code true} when the character can start an identifier
+     * @return {@code true} when the character can start the parsed token
      */
     private boolean identifierStart(char value) {
         return Character.isLetter(value) || value == '_';
@@ -436,7 +442,10 @@ public class VisibleBuilder {
     }
 
     /**
-     * Tests whether a keyword starts at the specified index.
+     * Tests whether a structural SQL keyword starts at the specified index.
+     * <p>
+     * This parser helper locates clauses and does not validate database identifiers or reserved words.
+     * </p>
      *
      * @param sql     the SQL statement
      * @param index   the index to test
@@ -469,10 +478,13 @@ public class VisibleBuilder {
     }
 
     /**
-     * Tests whether a character belongs to an SQL identifier.
+     * Tests whether a character belongs to an unquoted SQL token for boundary detection.
+     * <p>
+     * This parser helper is not an identifier compliance rule.
+     * </p>
      *
      * @param value the character to test
-     * @return {@code true} when the character belongs to an identifier
+     * @return {@code true} when the character belongs to the surrounding token
      */
     private boolean identifierPart(char value) {
         return Character.isLetterOrDigit(value) || value == '_';

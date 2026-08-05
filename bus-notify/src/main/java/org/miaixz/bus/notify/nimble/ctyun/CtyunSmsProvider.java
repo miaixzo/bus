@@ -32,6 +32,8 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
@@ -71,7 +73,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
         // Construct timestamp
         Date now = new Date();
         String signatureDate = DateKit.format(now, Formatter.PURE_DATE_FORMATTER);
-        String signatureTime = DateKit.format(now, "yyyyMMdd'T'HHmmss'Z'");
+        String signatureTime = DateKit.format(now, Fields.PURE_DATE + "'T'" + Fields.PURE_TIME + "'Z'");
         // Construct request serial number
         String uuid = UUID.randomUUID().toString();
 
@@ -109,7 +111,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
                 "CTYUN SMS send started: action={}, template={}, targetCount={}",
                 entity == null ? null : entity.getAction(),
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length);
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length);
         Map<String, String> bodys = new HashMap<>(5);
         // The API action to be performed.
         bodys.put("action", entity.getAction());
@@ -137,7 +139,7 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunNotice, Context> {
                 "CTYUN SMS send completed: action={}, template={}, targetCount={}, errcode={}, responseBytes={}",
                 entity == null ? null : entity.getAction(),
                 entity == null ? null : entity.getTemplate(),
-                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(",").length,
+                entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 result.getErrcode(),
                 response == null ? 0 : response.length());
         return result;

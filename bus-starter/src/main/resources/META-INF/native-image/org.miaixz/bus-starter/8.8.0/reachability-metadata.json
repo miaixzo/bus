@@ -421,9 +421,34 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.health.HealthEndpointHandler",
+      "methods": [
+        {
+          "name": "accept",
+          "parameterTypes": []
+        },
+        {
+          "name": "broken",
+          "parameterTypes": []
+        },
+        {
+          "name": "correct",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthz",
           "parameterTypes": [
-            "org.miaixz.bus.starter.health.HealthProperties"
+            "java.lang.String"
           ]
+        },
+        {
+          "name": "refuse",
+          "parameterTypes": []
         }
       ]
     },
@@ -653,10 +678,26 @@
             "boolean",
             "java.lang.String",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Endpoint",
+            "org.miaixz.bus.starter.metrics.MetricsProperties$Startup",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Cardinality",
             "java.util.List",
             "org.miaixz.bus.starter.metrics.MetricsProperties$RateWindow",
             "org.miaixz.bus.starter.metrics.MetricsProperties$Cortex"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.metrics.MetricsProperties$Startup",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]

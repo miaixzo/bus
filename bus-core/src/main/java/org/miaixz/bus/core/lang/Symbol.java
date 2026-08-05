@@ -415,12 +415,12 @@ public class Symbol {
     public static final String U_ONE_THOUSAND = Normal.EMPTY + C_U_ONE_THOUSAND;
 
     /**
-     * Character: '万' (ten thousand)
+     * Character value 10000.
      */
     public static final char C_TEN_THOUSAND = 10000;
 
     /**
-     * String: "10000"
+     * String containing character value 10000.
      */
     public static final String TEN_THOUSAND = Normal.EMPTY + C_TEN_THOUSAND;
 
@@ -485,6 +485,26 @@ public class Symbol {
     public static final String X = Normal.EMPTY + C_X;
 
     /**
+     * Character: 'u'
+     */
+    public static final char C_U = 'u';
+
+    /**
+     * String: "u"
+     */
+    public static final String U = Normal.EMPTY + C_U;
+
+    /**
+     * Character: 'L'
+     */
+    public static final char C_L = 'L';
+
+    /**
+     * String: "L"
+     */
+    public static final String L = Normal.EMPTY + C_L;
+
+    /**
      * Character: comma ','
      */
     public static final char C_COMMA = ',';
@@ -527,7 +547,7 @@ public class Symbol {
     /**
      * Character: tab '\t'
      */
-    public static final char C_TAB = '	';
+    public static final char C_TAB = '\t';
 
     /**
      * String: "\t"
@@ -547,7 +567,7 @@ public class Symbol {
     /**
      * String: ".."
      */
-    public static final String DOUBLE_DOT = Normal.EMPTY + C_DOT + C_DOT;
+    public static final String DOUBLE_DOT = DOT + DOT;
 
     /**
      * Character: semicolon ';'
@@ -578,6 +598,16 @@ public class Symbol {
      * String: "'"
      */
     public static final String SINGLE_QUOTE = Normal.EMPTY + C_SINGLE_QUOTE;
+
+    /**
+     * Character: backtick '`'
+     */
+    public static final char C_BACKTICK = '`';
+
+    /**
+     * String: "`"
+     */
+    public static final String BACKTICK = Normal.EMPTY + C_BACKTICK;
 
     /**
      * Character: double quotes '"'
@@ -795,6 +825,16 @@ public class Symbol {
     public static final String GE = ">=";
 
     /**
+     * String: not equal to "!="
+     */
+    public static final String NE = "!=";
+
+    /**
+     * String: equal comparison "=="
+     */
+    public static final String EQ = "==";
+
+    /**
      * String: less than or equal to "&lt;="
      */
     public static final String LE = "<=";
@@ -917,7 +957,7 @@ public class Symbol {
     /**
      * Character: horizontal tab '\t'
      */
-    public static final char C_HT = '	';
+    public static final char C_HT = '\t';
 
     /**
      * String: "\t"

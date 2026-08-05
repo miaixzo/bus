@@ -23,6 +23,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Provider;
 
@@ -66,7 +67,7 @@ public class BinaryProvider implements Provider<Object, byte[]> {
         return Mono.fromCallable(() -> {
             if (input == null) {
                 Logger.debug(true, "Vortex", "Binary input is empty; returning zero-length buffer");
-                return new byte[0];
+                return Normal.EMPTY_BYTE_ARRAY;
             }
 
             if (input instanceof byte[]) {

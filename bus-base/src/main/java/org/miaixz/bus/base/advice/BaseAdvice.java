@@ -191,6 +191,22 @@ public class BaseAdvice extends Controller {
     }
 
     /**
+     * Handles {@link ForbiddenException}, which indicates that access to a resource or operation is forbidden.
+     *
+     * @param e the caught forbidden-access failure
+     * @return a unified forbidden response object
+     */
+    @ResponseBody
+    @ExceptionHandler(value = ForbiddenException.class)
+    public Message<Void> forbiddenException(ForbiddenException e) {
+        this.defaultExceptionHandler(e);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode._403);
+        }
+        return write(e.getErrcode(), e.getErrmsg());
+    }
+
+    /**
      * Handles {@link SignatureException}, which is thrown when a request signature (e.g., API signature) is invalid.
      *
      * @param e the caught SignatureException

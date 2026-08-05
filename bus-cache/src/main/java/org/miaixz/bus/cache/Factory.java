@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.miaixz.bus.cache.nimble.*;
 import org.miaixz.bus.cache.nimble.internal.RedisBackends;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -215,7 +216,7 @@ public class Factory {
                 true,
                 "Cache",
                 "Memcached cache initialization started: nodeCount={}, maxSize={}, expireMs={}, extendedMode={}",
-                Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count(),
+                Arrays.stream(nodes.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotBlank).count(),
                 maxSize(options),
                 expireMs(options),
                 extendedMode);
@@ -226,7 +227,7 @@ public class Factory {
                     false,
                     "Cache",
                     "Memcached cache initialization completed: nodeCount={}, scan={}, counter={}, mirror={}, extendedMode={}",
-                    Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count(),
+                    Arrays.stream(nodes.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotBlank).count(),
                     backend.scan(),
                     backend.counter(),
                     backend.mirror(),
@@ -240,7 +241,7 @@ public class Factory {
                     "Cache",
                     e,
                     "Memcached cache initialization failed: nodeCount={}, maxSize={}, expireMs={}, extendedMode={}, exception={}",
-                    Arrays.stream(nodes.split(",")).map(String::trim).filter(StringKit::isNotBlank).count(),
+                    Arrays.stream(nodes.split(Symbol.COMMA)).map(String::trim).filter(StringKit::isNotBlank).count(),
                     maxSize(options),
                     expireMs(options),
                     extendedMode,

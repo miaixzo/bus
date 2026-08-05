@@ -345,11 +345,12 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             final byte[] dns = switch (request.method) {
                 case GET -> getDnsFromPath(request.target);
                 case POST -> postDnsFromHttp1(input, headers);
-                default -> throw new HttpStatusException(Http.Status.METHOD_NOT_ALLOWED);
+                default -> throw new StatefulException(Http.Status.METHOD_NOT_ALLOWED,
+                        "HTTP " + Http.Status.METHOD_NOT_ALLOWED);
             };
             sendHttp1Dns(output, resolve(dns, clientAddress));
-        } catch (final HttpStatusException e) {
-            sendHttp1Error(output, e.status);
+        } catch (final StatefulException e) {
+            sendHttp1Error(output, e.getStatus());
         } catch (final IllegalArgumentException | ProtocolException e) {
             sendHttp1Error(output, Http.Status.BAD_REQUEST);
         }
@@ -367,7 +368,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             throws IOException {
         final HpackCodec hpack = new HpackCodec();
         final ConcurrentHashMap<Integer, Http2RequestState> streams = new ConcurrentHashMap<>();
-        writeFrame(output, H2_SETTINGS, 0, 0, new byte[0]);
+        writeFrame(output, H2_SETTINGS, 0, 0, Normal.EMPTY_BYTE_ARRAY);
         output.flush();
         while (active.get()) {
             final Http2FrameHeader header;
@@ -417,7 +418,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             return;
         }
         if ((header.flags & H2_FLAG_ACK) == 0) {
-            writeFrame(output, H2_SETTINGS, H2_FLAG_ACK, 0, new byte[0]);
+            writeFrame(output, H2_SETTINGS, H2_FLAG_ACK, 0, Normal.EMPTY_BYTE_ARRAY);
         }
     }
 
@@ -481,9 +482,15 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             if ((header.flags & H2_FLAG_END_STREAM) != 0) {
                 processHttp2Request(output, hpack, streams, header.streamId, clientAddress);
             }
-        } catch (final HttpStatusException e) {
+        } catch (final StatefulException e) {
             streams.remove(header.streamId);
-            sendHttp2(output, hpack, header.streamId, e.status, MediaType.TEXT_PLAIN, httpStatusBody(e.status));
+            sendHttp2(
+                    output,
+                    hpack,
+                    header.streamId,
+                    e.getStatus(),
+                    MediaType.TEXT_PLAIN,
+                    httpStatusBody(e.getStatus()));
         }
     }
 
@@ -526,7 +533,8 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             final byte[] dns = switch (state.method()) {
                 case GET -> getDnsFromPath(state.path());
                 case POST -> postDnsFromHttp2(state);
-                default -> throw new HttpStatusException(Http.Status.METHOD_NOT_ALLOWED);
+                default -> throw new StatefulException(Http.Status.METHOD_NOT_ALLOWED,
+                        "HTTP " + Http.Status.METHOD_NOT_ALLOWED);
             };
             sendHttp2(
                     output,
@@ -535,8 +543,8 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
                     Http.Status.OK,
                     MediaType.APPLICATION_DNS_MESSAGE,
                     resolve(dns, clientAddress));
-        } catch (final HttpStatusException e) {
-            sendHttp2(output, hpack, streamId, e.status, MediaType.TEXT_PLAIN, httpStatusBody(e.status));
+        } catch (final StatefulException e) {
+            sendHttp2(output, hpack, streamId, e.getStatus(), MediaType.TEXT_PLAIN, httpStatusBody(e.getStatus()));
         } catch (final IllegalArgumentException | ProtocolException e) {
             sendHttp2(
                     output,
@@ -557,7 +565,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      */
     private byte[] resolve(final byte[] request, final InetAddress clientAddress) {
         if (request.length == 0 || request.length > DnsCodec.MAX_MESSAGE_BYTES) {
-            throw new HttpStatusException(Http.Status.CONTENT_TOO_LARGE);
+            throw new StatefulException(Http.Status.CONTENT_TOO_LARGE, "HTTP " + Http.Status.CONTENT_TOO_LARGE);
         }
         return resolver.resolve(request, clientAddress);
     }
@@ -574,15 +582,16 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             throws IOException {
         final String contentType = headers.get(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT));
         if (!isDnsMessageContentType(contentType)) {
-            throw new HttpStatusException(Http.Status.UNSUPPORTED_MEDIA_TYPE);
+            throw new StatefulException(Http.Status.UNSUPPORTED_MEDIA_TYPE,
+                    "HTTP " + Http.Status.UNSUPPORTED_MEDIA_TYPE);
         }
         final int length = contentLength(headers.get(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT)));
         if (length <= 0 || length > DnsCodec.MAX_MESSAGE_BYTES) {
-            throw new HttpStatusException(Http.Status.CONTENT_TOO_LARGE);
+            throw new StatefulException(Http.Status.CONTENT_TOO_LARGE, "HTTP " + Http.Status.CONTENT_TOO_LARGE);
         }
         final byte[] body = input.readNBytes(length);
         if (body.length != length) {
-            throw new HttpStatusException(Http.Status.BAD_REQUEST);
+            throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
         }
         return body;
     }
@@ -596,7 +605,8 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
     private static byte[] postDnsFromHttp2(final Http2RequestState state) {
         final String contentType = state.headers.get(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT));
         if (!isDnsMessageContentType(contentType)) {
-            throw new HttpStatusException(Http.Status.UNSUPPORTED_MEDIA_TYPE);
+            throw new StatefulException(Http.Status.UNSUPPORTED_MEDIA_TYPE,
+                    "HTTP " + Http.Status.UNSUPPORTED_MEDIA_TYPE);
         }
         return state.body.toByteArray();
     }
@@ -625,11 +635,11 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
     private static byte[] getDnsFromPath(final String target) {
         final URI uri = URI.create(target);
         if (!PATH.equals(uri.getPath())) {
-            throw new HttpStatusException(Http.Status.NOT_FOUND);
+            throw new StatefulException(Http.Status.NOT_FOUND, "HTTP " + Http.Status.NOT_FOUND);
         }
         final String encoded = queryParameter(uri.getRawQuery(), "dns");
         if (encoded == null || encoded.isBlank()) {
-            throw new HttpStatusException(Http.Status.BAD_REQUEST);
+            throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
         }
         return Base64.getUrlDecoder().decode(encoded);
     }
@@ -737,7 +747,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             }
             bytes.write(value);
         }
-        throw new HttpStatusException(Http.Status.BAD_REQUEST);
+        throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
     }
 
     /**
@@ -756,7 +766,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
             }
             final int separator = line.indexOf(Symbol.C_COLON);
             if (separator <= 0) {
-                throw new HttpStatusException(Http.Status.BAD_REQUEST);
+                throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
             }
             headers.put(line.substring(0, separator).toLowerCase(Locale.ROOT), line.substring(separator + 1).trim());
         }
@@ -770,12 +780,12 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
      */
     private static int contentLength(final String value) {
         if (value == null) {
-            throw new HttpStatusException(Http.Status.LENGTH_REQUIRED);
+            throw new StatefulException(Http.Status.LENGTH_REQUIRED, "HTTP " + Http.Status.LENGTH_REQUIRED);
         }
         try {
             return Integer.parseInt(value.trim());
         } catch (final NumberFormatException e) {
-            throw new HttpStatusException(Http.Status.BAD_REQUEST);
+            throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
         }
     }
 
@@ -1065,7 +1075,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
         private static Http1RequestLine parse(final String line) {
             final String[] parts = line.split(Symbol.SPACE, 3);
             if (parts.length != 3) {
-                throw new HttpStatusException(Http.Status.BAD_REQUEST);
+                throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
             }
             return new Http1RequestLine(Http.Method.of(parts[0]), parts[1]);
         }
@@ -1190,7 +1200,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
          */
         private void append(final byte[] data) {
             if (body.size() + data.length > DnsCodec.MAX_MESSAGE_BYTES) {
-                throw new HttpStatusException(Http.Status.CONTENT_TOO_LARGE);
+                throw new StatefulException(Http.Status.CONTENT_TOO_LARGE, "HTTP " + Http.Status.CONTENT_TOO_LARGE);
             }
             body.writeBytes(data);
         }
@@ -1203,7 +1213,7 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
         private Http.Method method() {
             final String value = headers.get(":method");
             if (value == null) {
-                throw new HttpStatusException(Http.Status.BAD_REQUEST);
+                throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
             }
             return Http.Method.of(value);
         }
@@ -1216,39 +1226,9 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
         private String path() {
             final String value = headers.get(":path");
             if (value == null) {
-                throw new HttpStatusException(Http.Status.BAD_REQUEST);
+                throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
             }
             return value;
-        }
-
-    }
-
-    /**
-     * Runtime exception carrying an HTTP status for generated DoH errors.
-     *
-     * @author Kimi Liu
-     * @since Java 21+
-     */
-    private static final class HttpStatusException extends RuntimeException {
-
-        /**
-         * Serialization identifier.
-         */
-        private static final long serialVersionUID = 2854162031640204289L;
-
-        /**
-         * HTTP status.
-         */
-        private final int status;
-
-        /**
-         * Creates an HTTP status exception.
-         *
-         * @param status HTTP status
-         */
-        private HttpStatusException(final int status) {
-            super("HTTP " + status);
-            this.status = status;
         }
 
     }

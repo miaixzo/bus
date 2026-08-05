@@ -25,12 +25,22 @@ import java.util.Map;
 import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor;
+import org.springframework.boot.context.properties.source.ConfigurationProperty;
+import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
+import org.springframework.boot.context.properties.source.ConfigurationPropertyName.Form;
+import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
+import org.springframework.boot.context.properties.source.ConfigurationPropertySources;
+import org.springframework.boot.context.properties.source.IterableConfigurationPropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 
 /**
- * Adds opt-in logging defaults through standard Spring Boot environment keys only.
+ * Bridges Bus logging properties to Spring Boot's native logging namespace.
+ * <p>
+ * Any {@code bus.logging.*} property is exposed as the matching {@code logging.*} property with higher priority than
+ * existing native logging properties. Spring Boot remains the owner of the logging configuration model.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -38,65 +48,103 @@ import org.springframework.core.env.MapPropertySource;
 public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
-     * Initializes the post-processor that contributes Bus logging defaults without overriding user properties.
+     * Initializes the post-processor that exposes Bus logging properties as native Spring Boot logging properties.
      */
     public LoggingEnvironmentPostProcessor() {
         // No initialization required.
     }
 
     /**
-     * Name of the generated logging defaults property source.
+     * Name of the generated logging bridge property source.
      */
-    private static final String PROPERTY_SOURCE = "busLoggingDefaults";
-    /**
-     * Default console logging pattern.
-     */
-    private static final String CONSOLE_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSSXXX} [%5p] %-50.50logger{50} %5.5L : %m%n";
-    /**
-     * Default file logging pattern.
-     */
-    private static final String FILE_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSSXXX} [%5p] %-50.50logger{50} %5.5L : %m%n";
+    private static final String PROPERTY_SOURCE = "busLoggingNamespaceBridge";
 
     /**
-     * Adds logging pattern defaults when Bus logging is enabled and the application has not supplied them.
+     * Source namespace for Bus logging properties.
+     */
+    private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName.of("bus.logging");
+    /**
+     * Source namespace element count.
+     */
+    private static final int SOURCE_NAMESPACE_ELEMENTS = SOURCE_NAMESPACE.getNumberOfElements();
+
+    /**
+     * Maps {@code bus.logging.*} properties to {@code logging.*} properties.
      *
      * @param environment configurable application environment
      * @param application current Spring Boot application
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        if (!environment.getProperty(EnvironmentKeys.LOGGING_ENABLED, Boolean.class, false)
-                || environment.getPropertySources().contains(PROPERTY_SOURCE)) {
+        MutablePropertySources propertySources = environment.getPropertySources();
+        if (propertySources.contains(PROPERTY_SOURCE)) {
+            propertySources.remove(PROPERTY_SOURCE);
+        }
+
+        Map<String, Object> bridges = new LinkedHashMap<>();
+        for (ConfigurationPropertySource source : ConfigurationPropertySources.get(environment)) {
+            if (source instanceof IterableConfigurationPropertySource iterableSource) {
+                iterableSource.stream().filter(this::isBusLoggingProperty)
+                        .forEach(name -> addBridgeProperty(source, name, bridges));
+            }
+        }
+
+        if (!bridges.isEmpty()) {
+            propertySources.addFirst(new MapPropertySource(PROPERTY_SOURCE, bridges));
+        }
+    }
+
+    /**
+     * Returns whether the supplied property belongs to the Bus logging namespace.
+     *
+     * @param name property name
+     * @return {@code true} when the property is a descendant of {@code bus.logging}
+     */
+    private boolean isBusLoggingProperty(ConfigurationPropertyName name) {
+        return name != null && name.getNumberOfElements() > SOURCE_NAMESPACE_ELEMENTS
+                && SOURCE_NAMESPACE.isAncestorOf(name);
+    }
+
+    /**
+     * Adds one bridged logging property while preserving the highest-priority Bus source value.
+     *
+     * @param source  property source
+     * @param name    source property name
+     * @param bridges mutable bridge property map
+     */
+    private void addBridgeProperty(
+            ConfigurationPropertySource source,
+            ConfigurationPropertyName name,
+            Map<String, Object> bridges) {
+        String targetName = getTargetName(name);
+        if (bridges.containsKey(targetName)) {
             return;
         }
-        Map<String, Object> defaults = new LinkedHashMap<>();
-        addIfMissing(environment, defaults, EnvironmentKeys.LOGGING_PATTERN_CONSOLE, CONSOLE_PATTERN);
-        addIfMissing(environment, defaults, EnvironmentKeys.LOGGING_PATTERN_FILE, FILE_PATTERN);
-        if (!defaults.isEmpty()) {
-            environment.getPropertySources().addLast(new MapPropertySource(PROPERTY_SOURCE, defaults));
+        ConfigurationProperty property = source.getConfigurationProperty(name);
+        if (property != null && property.getValue() != null) {
+            bridges.put(targetName, property.getValue());
         }
     }
 
     /**
-     * Adds one default property only when the environment does not already define it.
+     * Builds the matching Spring Boot logging property name.
      *
-     * @param environment Spring environment
-     * @param defaults    mutable default property map
-     * @param key         property key
-     * @param value       default property value
+     * @param name source Bus logging property name
+     * @return target Spring Boot logging property name
      */
-    private void addIfMissing(
-            ConfigurableEnvironment environment,
-            Map<String, Object> defaults,
-            String key,
-            String value) {
-        if (!environment.containsProperty(key)) {
-            defaults.put(key, value);
+    private String getTargetName(ConfigurationPropertyName name) {
+        StringBuilder targetName = new StringBuilder(EnvironmentKeys.LOGGING_PREFIX);
+        for (int i = SOURCE_NAMESPACE_ELEMENTS; i < name.getNumberOfElements(); i++) {
+            if (i > SOURCE_NAMESPACE_ELEMENTS) {
+                targetName.append('.');
+            }
+            targetName.append(name.getElement(i, Form.ORIGINAL));
         }
+        return targetName.toString();
     }
 
     /**
-     * Applies defaults immediately after Spring Boot has processed configuration data.
+     * Applies the namespace bridge immediately after Spring Boot has processed configuration data.
      *
      * @return environment post-processor order
      */
