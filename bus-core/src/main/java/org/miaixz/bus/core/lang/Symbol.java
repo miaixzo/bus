@@ -580,6 +580,16 @@ public class Symbol {
     public static final String SINGLE_QUOTE = Normal.EMPTY + C_SINGLE_QUOTE;
 
     /**
+     * Character: backtick '`'
+     */
+    public static final char C_BACKTICK = '`';
+
+    /**
+     * String: "`"
+     */
+    public static final String BACKTICK = Normal.EMPTY + C_BACKTICK;
+
+    /**
      * Character: double quotes '"'
      */
     public static final char C_DOUBLE_QUOTES = '"';
