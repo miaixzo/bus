@@ -22,6 +22,7 @@ package org.miaixz.bus.image.metric.service;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -168,7 +169,7 @@ public class ImageServiceRegistry implements DimseRQHandler {
                 if (service != null)
                     return service;
             }
-            service = services.get("*");
+            service = services.get(Symbol.STAR);
             if (service != null)
                 return service;
         }

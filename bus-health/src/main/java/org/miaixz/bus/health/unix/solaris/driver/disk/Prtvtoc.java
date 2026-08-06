@@ -82,7 +82,7 @@ public final class Prtvtoc {
                         // Format: "* Volume Name: <label>" or similar
                         int idx = line.indexOf("Volume Name");
                         String remainder = line.substring(idx + "Volume Name".length()).trim();
-                        if (remainder.startsWith(":")) {
+                        if (remainder.startsWith(Symbol.COLON)) {
                             remainder = remainder.substring(1).trim();
                         }
                         if (!remainder.isEmpty()) {
@@ -97,7 +97,7 @@ public final class Prtvtoc {
                     // Partition Tag Flags Sector Count Sector Mount
                     split = Pattern.SPACES_PATTERN.split(line.trim());
                     // Partition 2 is always the whole disk so we ignore it
-                    if (split.length >= 6 && !"2".equals(split[0])) {
+                    if (split.length >= 6 && !Symbol.TWO.equals(split[0])) {
                         // First field is partition number
                         String identification = mount + "s" + split[0];
                         // major already defined as method param
@@ -189,12 +189,12 @@ public final class Prtvtoc {
                         // Fifth field is sector count
                         long partSize = bytesPerSector * Parsing.parseLongOrDefault(split[4], 0L);
                         // Seventh field (if present) is mount point
-                        String mountPoint = "";
+                        String mountPoint = Normal.EMPTY;
                         if (split.length > 6) {
                             mountPoint = split[6];
                         }
                         partList.add(
-                                new HWPartition(identification, name, type, "", volumeName, partSize, major, minor,
+                                new HWPartition(identification, name, type, Normal.EMPTY, volumeName, partSize, major, minor,
                                         mountPoint));
                     }
                 }

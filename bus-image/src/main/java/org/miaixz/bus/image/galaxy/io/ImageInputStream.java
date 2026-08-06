@@ -1706,7 +1706,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             boolean limitedStream = in instanceof LimitedInputStream;
             if (limitedStream && valLen > ((LimitedInputStream) in).getRemaining()) {
                 throw new EOFException("Length " + valLen + " for tag " + Tag.toString(tag) + " @ " + tagPos
-                        + " exceeds remaining " + ((LimitedInputStream) in).getRemaining() + " (pos: " + pos + ")");
+                        + " exceeds remaining " + ((LimitedInputStream) in).getRemaining() + " (pos: " + pos + Symbol.PARENTHESE_RIGHT);
             }
             int allocLen = allocateLimit != -1 && !limitedStream ? Math.min(valLen, allocateLimit) : valLen;
             byte[] value = new byte[allocLen];

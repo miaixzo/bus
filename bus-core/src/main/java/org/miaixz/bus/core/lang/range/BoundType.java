@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Enumeration representing the type of a boundary in a range. This defines whether a bound is open or closed, and
  * whether it's a lower or upper bound.
@@ -31,24 +33,24 @@ public enum BoundType {
     /**
      * Represents a closed lower bound, equivalent to {@code {x | x >= a}}. The boundary value is included in the range.
      */
-    CLOSE_LOWER_BOUND("[", ">=", -2),
+    CLOSE_LOWER_BOUND(Symbol.BRACKET_LEFT, ">=", -2),
 
     /**
      * Represents an open lower bound, equivalent to {@code {x | x > a}}. The boundary value is not included in the
      * range.
      */
-    OPEN_LOWER_BOUND("(", ">", -1),
+    OPEN_LOWER_BOUND(Symbol.PARENTHESE_LEFT, Symbol.GT, -1),
 
     /**
      * Represents an open upper bound, equivalent to {@code {x | x < a}}. The boundary value is not included in the
      * range.
      */
-    OPEN_UPPER_BOUND(")", "<", 1),
+    OPEN_UPPER_BOUND(Symbol.PARENTHESE_RIGHT, Symbol.LT, 1),
 
     /**
      * Represents a closed upper bound, equivalent to {@code {x | x <= a}}. The boundary value is included in the range.
      */
-    CLOSE_UPPER_BOUND("]", "<=", 2);
+    CLOSE_UPPER_BOUND(Symbol.BRACKET_RIGHT, "<=", 2);
 
     /**
      * The symbol representing the bound type (e.g., '[' for closed lower bound, '(' for open lower bound).

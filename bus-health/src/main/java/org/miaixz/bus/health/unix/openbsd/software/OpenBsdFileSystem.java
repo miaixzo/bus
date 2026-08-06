@@ -143,10 +143,10 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                     continue;
                 }
 
-                String name = path.substring(path.lastIndexOf('/') + 1);
+                String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
                 // Special case for /, pull last element of volume instead
                 if (name.isEmpty()) {
-                    name = volume.substring(volume.lastIndexOf('/') + 1);
+                    name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
                 }
 
                 if (nameToMatch != null && !nameToMatch.equals(name)) {
@@ -173,7 +173,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 }
 
                 fsList.add(
-                        new OpenBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, "", description, type,
+                        new OpenBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, Normal.EMPTY, description, type,
                                 freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
                                 inodeUsedMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
             }

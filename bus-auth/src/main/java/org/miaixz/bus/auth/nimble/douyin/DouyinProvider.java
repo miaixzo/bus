@@ -160,7 +160,7 @@ public class DouyinProvider extends AbstractProvider {
         }
         Object errorCodeObj = data.get("error_code");
         String errorCode = errorCodeObj != null ? String.valueOf(errorCodeObj) : null;
-        if ("error".equals(message) || !"0".equals(errorCode)) {
+        if ("error".equals(message) || !Symbol.ZERO.equals(errorCode)) {
             String description = (String) data.get("description");
             throw new AuthorizedException(errorCode, description != null ? description : "Unknown error");
         }

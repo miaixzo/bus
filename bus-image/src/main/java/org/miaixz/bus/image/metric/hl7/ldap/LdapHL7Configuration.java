@@ -425,7 +425,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         if (value == null)
             return;
 
-        sb.append('(').append(attrid).append('=').append(value).append(')');
+        sb.append(Symbol.C_PARENTHESE_LEFT).append(attrid).append(Symbol.C_EQUAL).append(value).append(Symbol.C_PARENTHESE_RIGHT);
     }
 
     /**
@@ -824,7 +824,7 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
             while (ne.hasMore()) {
                 String rdn = ne.next().getName();
                 if (!rdn.equals("hl7ApplicationName=*"))
-                    dns.add(rdn + ',' + appNamesRegistryDN);
+                    dns.add(rdn + Symbol.C_COMMA + appNamesRegistryDN);
             }
         } finally {
             LdapBuilder.safeClose(ne);

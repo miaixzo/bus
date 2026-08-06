@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_HEADER;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 
@@ -33,13 +34,13 @@ public class PrivateElementDictionary extends ElementDictionary {
     /**
      * The private creator value.
      */
-    public static final String PrivateCreator = "";
+    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Creates a new instance.
      */
     public PrivateElementDictionary() {
-        super("", PrivateTag.class);
+        super(Normal.EMPTY, PrivateTag.class);
     }
 
     /**

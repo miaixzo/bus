@@ -53,8 +53,8 @@ public class ChineseNumberFormatter {
      * Chinese numeral characters. Odd indices are simplified, even indices are traditional (for accounting). '零' (zero)
      * is shared.
      */
-    static final char[] DIGITS = { '零', '一', '壹', '二', '贰', '三', '叁', '四', '肆', '五', '伍', '六', '陆', '七', '柒', '八', '捌',
-            '九', '玖' };
+    static final char[] DIGITS = { Symbol.C_UL_ZERO, Symbol.C_L_ONE, Symbol.C_U_ONE, Symbol.C_L_TWO, Symbol.C_U_TWO, Symbol.C_L_THREE, Symbol.C_U_THREE, Symbol.C_L_FOUR, Symbol.C_U_FOUR, Symbol.C_L_FIVE, Symbol.C_U_FIVE, Symbol.C_L_SIX, Symbol.C_U_SIX, Symbol.C_L_SEVEN, Symbol.C_U_SEVEN, Symbol.C_L_EIGHT, Symbol.C_U_EIGHT,
+            Symbol.C_L_NINE, Symbol.C_U_NINE };
 
     /**
      * Whether to use traditional characters (financial format).
@@ -79,7 +79,7 @@ public class ChineseNumberFormatter {
     /**
      * The name of the main currency unit (e.g., '元' or '圆').
      */
-    private String unitName = "元";
+    private String unitName = Symbol.CNY_YUAN;
 
     /**
      * Converts an Arabic numeral (integer, positive or negative) to a concise Chinese representation with section units
@@ -94,7 +94,7 @@ public class ChineseNumberFormatter {
         }
         final String res;
         if (amount < 1_0000_0000 && amount > -1_0000_0000) {
-            res = MathKit.div(amount, 1_0000, 2) + "万";
+            res = MathKit.div(amount, 1_0000, 2) + Symbol.L_TEN_THOUSAND;
         } else if (amount < 1_0000_0000_0000L && amount > -1_0000_0000_0000L) {
             res = MathKit.div(amount, 1_0000_0000, 2) + Symbol.L_ONE_HUNDRED_MILLION;
         } else {
@@ -111,7 +111,7 @@ public class ChineseNumberFormatter {
      * @return The Chinese numeral character.
      */
     public static char formatChar(final char c, final boolean isUseTraditional) {
-        if (c < '0' || c > '9') {
+        if (c < Symbol.C_ZERO || c > Symbol.C_NINE) {
             return c;
         }
         return singleNumberToChinese(c - Symbol.C_ZERO, isUseTraditional);
@@ -243,7 +243,7 @@ public class ChineseNumberFormatter {
      */
     public String format(double amount) {
         if (0 == amount) {
-            return this.moneyMode ? "零" + unitName + "整" : String.valueOf(DIGITS[0]);
+            return this.moneyMode ? Symbol.UL_ZERO + unitName + Symbol.CNY_ZHENG : String.valueOf(DIGITS[0]);
         }
         Assert.checkBetween(
                 amount,

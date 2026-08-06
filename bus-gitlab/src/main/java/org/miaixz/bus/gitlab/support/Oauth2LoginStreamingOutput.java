@@ -25,6 +25,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.StreamingOutput;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * This StreamingOutput implementation is utilized to send a OAuth2 token request in a secure manner. The password is
@@ -81,18 +82,18 @@ public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseabl
         writer.write("\"password\": ");
 
         // Output the quoted password
-        writer.write('"');
+        writer.write(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0, length = password.length(); i < length; i++) {
 
             char c = password.charAt(i);
-            if (c == '"' || c == '\\') {
-                writer.write('\\');
+            if (c == Symbol.C_DOUBLE_QUOTES || c == Symbol.C_BACKSLASH) {
+                writer.write(Symbol.C_BACKSLASH);
             }
 
             writer.write(c);
         }
 
-        writer.write('"');
+        writer.write(Symbol.C_DOUBLE_QUOTES);
 
         writer.write(" }");
         writer.flush();

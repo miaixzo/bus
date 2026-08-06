@@ -131,7 +131,7 @@ public class CortexExporter {
             int timerCount = 0;
             for (Timer timer : provider.timers()) {
                 TimerSnapshot snap = timer.snapshot();
-                String key = Builder.CORTEX_KEY_PREFIX + namespace + ":" + serviceId + ":" + snap.name();
+                String key = Builder.CORTEX_KEY_PREFIX + namespace + Symbol.COLON + serviceId + Symbol.COLON + snap.name();
                 // Serialize as compact JSON-like string (no external lib)
                 String value = serializeSnapshot(snap);
                 store.write(key, value, intervalSeconds * Builder.CORTEX_TTL_MULTIPLIER * 1000L);

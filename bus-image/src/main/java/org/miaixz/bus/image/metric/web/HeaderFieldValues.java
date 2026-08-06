@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Parser for HTTP header field values with parameters and quoted strings.
  *
@@ -111,7 +114,7 @@ public final class HeaderFieldValues {
      * @return the operation result.
      */
     private static String normalizeKey(String key) {
-        return key == null ? "" : key.toLowerCase(java.util.Locale.ROOT);
+        return key == null ? Normal.EMPTY : key.toLowerCase(java.util.Locale.ROOT);
     }
 
     /**
@@ -200,7 +203,7 @@ public final class HeaderFieldValues {
             while (hasMoreCharacters()) {
                 String name = parseValue();
                 String value = null;
-                if (hasMoreCharacters() && chars[position] == '=') {
+                if (hasMoreCharacters() && chars[position] == Symbol.C_EQUAL) {
                     position++;
                     value = parseQuotedValue();
                 }
@@ -231,7 +234,7 @@ public final class HeaderFieldValues {
             end = position;
             while (hasMoreCharacters()) {
                 char c = chars[position];
-                if (c == '=' || c == ';') {
+                if (c == Symbol.C_EQUAL || c == Symbol.C_SEMICOLON) {
                     break;
                 }
                 end++;
@@ -253,13 +256,13 @@ public final class HeaderFieldValues {
 
             while (hasMoreCharacters()) {
                 char c = chars[position];
-                if (!quoted && c == ';') {
+                if (!quoted && c == Symbol.C_SEMICOLON) {
                     break;
                 }
-                if (!escaped && c == '"') {
+                if (!escaped && c == Symbol.C_DOUBLE_QUOTES) {
                     quoted = !quoted;
                 }
-                escaped = !escaped && c == '\\';
+                escaped = !escaped && c == Symbol.C_BACKSLASH;
                 end++;
                 position++;
             }
@@ -279,7 +282,7 @@ public final class HeaderFieldValues {
             while (end > start && Character.isWhitespace(chars[end - 1])) {
                 end--;
             }
-            if (quoted && end - start >= 2 && chars[start] == '"' && chars[end - 1] == '"') {
+            if (quoted && end - start >= 2 && chars[start] == Symbol.C_DOUBLE_QUOTES && chars[end - 1] == Symbol.C_DOUBLE_QUOTES) {
                 start++;
                 end--;
             }
@@ -290,7 +293,7 @@ public final class HeaderFieldValues {
          * Executes the skip separator operation.
          */
         private void skipSeparator() {
-            if (hasMoreCharacters() && chars[position] == ';') {
+            if (hasMoreCharacters() && chars[position] == Symbol.C_SEMICOLON) {
                 position++;
             }
         }

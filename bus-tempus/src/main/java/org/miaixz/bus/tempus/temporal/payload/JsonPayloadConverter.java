@@ -27,6 +27,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonProvider;
 
 import io.temporal.common.converter.DataConverterException;
@@ -114,7 +115,7 @@ public final class JsonPayloadConverter implements InvocationHandler {
                 case "toData" -> toData(arguments[0]);
                 case "fromData" -> fromData(arguments);
                 case "withContext" -> proxy;
-                case "toString" -> "BusJsonPayloadConverter[" + provider.name() + "]";
+                case "toString" -> "BusJsonPayloadConverter[" + provider.name() + Symbol.BRACKET_RIGHT;
                 case "hashCode" -> System.identityHashCode(proxy);
                 case "equals" -> proxy == arguments[0];
                 default -> throw new UnsupportedOperationException("Unsupported Temporal converter method: " + method);

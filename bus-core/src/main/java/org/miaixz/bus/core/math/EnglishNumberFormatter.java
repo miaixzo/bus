@@ -143,7 +143,7 @@ public class EnglishNumberFormatter {
                 break;
 
             case 2:
-                lstrrev += "0";
+                lstrrev += Symbol.ZERO;
                 break;
         }
         StringBuilder lm = new StringBuilder(); // Stores the converted integer part.
@@ -212,14 +212,14 @@ public class EnglishNumberFormatter {
             x = x.substring(0, 2);
         } else if (x.length() < 2) {
             // If a single digit appears in the decimal part, treat it as cents.
-            x = x + "0";
+            x = x + Symbol.ZERO;
         }
 
-        if (x.startsWith("0")) { // e.g., 07 -> seven
+        if (x.startsWith(Symbol.ZERO)) { // e.g., 07 -> seven
             value = parseLast(x);
-        } else if (x.startsWith("1")) { // e.g., 17 -> seventeen
+        } else if (x.startsWith(Symbol.ONE)) { // e.g., 17 -> seventeen
             value = parseTeen(x);
-        } else if (x.endsWith("0")) { // e.g., 20 -> twenty
+        } else if (x.endsWith(Symbol.ZERO)) { // e.g., 20 -> twenty
             value = parseTen(x);
         } else {
             value = parseTen(x) + Symbol.SPACE + parseLast(x);
@@ -235,7 +235,7 @@ public class EnglishNumberFormatter {
      */
     private static String transThree(final String x) {
         final String value;
-        if (x.startsWith("0")) { // Less than 100.
+        if (x.startsWith(Symbol.ZERO)) { // Less than 100.
             value = transTwo(x.substring(1));
         } else if ("00".equals(x.substring(1))) { // Divisible by 100.
             value = parseLast(x.substring(0, 1)) + " HUNDRED";

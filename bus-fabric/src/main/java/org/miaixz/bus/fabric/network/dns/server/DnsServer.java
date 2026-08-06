@@ -32,6 +32,7 @@ import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.network.dns.cache.DnsResponseCache;
 import org.miaixz.bus.fabric.network.dns.forward.DnsForwarder;
@@ -664,9 +665,9 @@ public final class DnsServer implements AutoCloseable, Lifecycle {
         final StringBuilder summary = new StringBuilder();
         for (final DnsUpstream upstream : selected) {
             if (!summary.isEmpty()) {
-                summary.append('|');
+                summary.append(Symbol.C_OR);
             }
-            summary.append(upstream.transport().name()).append("://").append(upstream.host()).append(':')
+            summary.append(upstream.transport().name()).append("://").append(upstream.host()).append(Symbol.C_COLON)
                     .append(upstream.port());
         }
         return summary.toString();

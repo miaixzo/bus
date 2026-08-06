@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -290,7 +291,7 @@ public class Pdf2Dcm {
          */
         static FileContentType valueOf(Path path) throws IOException {
             String fileName = path.toFile().getName();
-            String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+            String ext = fileName.substring(fileName.lastIndexOf(Symbol.C_DOT) + 1);
             String contentType = Files.probeContentType(path);
             return fileContentType(contentType != null ? contentType : ext);
         }

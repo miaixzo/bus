@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.ERRSegment;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
@@ -136,7 +137,7 @@ public class HL7DeviceExtension extends DeviceExtension {
     public HL7Application getHL7Application(String name, boolean matchOtherAppNames) {
         HL7Application app = hl7apps.get(name);
         if (app == null)
-            app = hl7apps.get("*");
+            app = hl7apps.get(Symbol.STAR);
         if (app == null && matchOtherAppNames)
             for (HL7Application app1 : getHL7Applications())
                 if (app1.isOtherApplicationName(name))

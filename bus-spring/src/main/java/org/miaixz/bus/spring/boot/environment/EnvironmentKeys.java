@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.spring.boot.environment;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Property keys used by early Spring Boot environment processing.
  *
@@ -38,11 +40,28 @@ public final class EnvironmentKeys {
     /**
      * Spring Boot logging property prefix.
      */
-    public static final String LOGGING_PREFIX = "logging.";
+    public static final String LOGGING_PREFIX = "logging" + Symbol.DOT;
     /**
      * Root Spring logging-level property.
      */
     public static final String LOGGING_LEVEL = LOGGING_PREFIX + "level";
+    /**
+     * Spring Boot console logging-pattern property.
+     */
+    public static final String LOGGING_PATTERN_CONSOLE = LOGGING_PREFIX + "pattern" + Symbol.DOT + "console";
+    /**
+     * Spring Boot file logging-pattern property.
+     */
+    public static final String LOGGING_PATTERN_FILE = LOGGING_PREFIX + "pattern" + Symbol.DOT + "file";
+    /**
+     * Bus logging configuration namespace.
+     */
+    public static final String BUS_LOGGING_PREFIX = "bus" + Symbol.DOT + "logging";
+    /**
+     * Bus logging-pattern defaults flag.
+     */
+    public static final String BUS_LOGGING_PATTERN_DEFAULTS = BUS_LOGGING_PREFIX + Symbol.DOT + "pattern" + Symbol.DOT
+            + "defaults";
     /**
      * Bus configuration-listener flag.
      */

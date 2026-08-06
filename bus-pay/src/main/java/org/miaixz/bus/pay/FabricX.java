@@ -140,7 +140,7 @@ public abstract class FabricX {
      * @return response snapshot
      */
     public static Response post(final String url, final Map<String, ?> headers, final String data) {
-        final var builder = Fabric.http(CONTEXT).post(url).body(data == null ? "" : data, media(headers, FORM));
+        final var builder = Fabric.http(CONTEXT).post(url).body(data == null ? Normal.EMPTY : data, media(headers, FORM));
         apply(builder::header, headers);
         return execute(builder::execute);
     }
@@ -240,7 +240,7 @@ public abstract class FabricX {
      * @return response snapshot
      */
     public static Response put(final String url, final Map<String, ?> headers, final String data) {
-        final var builder = Fabric.http(CONTEXT).put(url).body(data == null ? "" : data, media(headers, FORM));
+        final var builder = Fabric.http(CONTEXT).put(url).body(data == null ? Normal.EMPTY : data, media(headers, FORM));
         apply(builder::header, headers);
         return execute(builder::execute);
     }
@@ -311,7 +311,7 @@ public abstract class FabricX {
             final String certPass,
             final String protocol) {
         try (Context context = certificateContext(certPath, certFile, certPass, protocol)) {
-            final var builder = Fabric.http(context).post(url).body(data == null ? "" : data, FORM);
+            final var builder = Fabric.http(context).post(url).body(data == null ? Normal.EMPTY : data, FORM);
             return execute(builder::execute).body();
         }
     }
@@ -473,7 +473,7 @@ public abstract class FabricX {
          */
         public Response {
             headers = copy(headers);
-            body = body == null ? "" : body;
+            body = body == null ? Normal.EMPTY : body;
         }
 
         /**

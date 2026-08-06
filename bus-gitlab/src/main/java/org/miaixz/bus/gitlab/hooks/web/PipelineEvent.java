@@ -23,6 +23,7 @@ import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Build;
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.Variable;
@@ -74,7 +75,7 @@ public class PipelineEvent extends AbstractEvent {
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind))
-            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
+            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
     }
 
     /**

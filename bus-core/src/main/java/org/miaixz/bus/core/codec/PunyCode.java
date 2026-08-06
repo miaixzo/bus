@@ -350,7 +350,7 @@ public class PunyCode {
             return d + 'a';
         } else if (d < 36) {
             // 26..35 : '0'..'9';
-            return d - 26 + '0';
+            return d - 26 + Symbol.C_ZERO;
         } else {
             throw new InternalException("BAD_INPUT");
         }
@@ -370,9 +370,9 @@ public class PunyCode {
      * @throws InternalException If the input character is not a valid Punycode digit character.
      */
     private static int codepoint2digit(final int c) throws InternalException {
-        if (c - '0' < 10) {
+        if (c - Symbol.C_ZERO < 10) {
             // '0'..'9' : 26..35
-            return c - '0' + 26;
+            return c - Symbol.C_ZERO + 26;
         } else if (c - 'a' < 26) {
             // 'a'..'z' : 0..25
             return c - 'a';

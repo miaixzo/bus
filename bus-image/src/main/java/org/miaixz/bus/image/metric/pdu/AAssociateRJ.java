@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents the AAssociateRJ type.
@@ -101,31 +102,31 @@ public class AAssociateRJ extends IOException {
     /**
      * The results value.
      */
-    private static final String[] RESULTS = { "0", "1 - rejected-permanent", "2 - rejected-transient" };
+    private static final String[] RESULTS = { Symbol.ZERO, "1 - rejected-permanent", "2 - rejected-transient" };
 
     /**
      * The sources value.
      */
-    private static final String[] SOURCES = { "0", "1 - service-user", "2 - service-provider (ACSE related function)",
+    private static final String[] SOURCES = { Symbol.ZERO, "1 - service-user", "2 - service-provider (ACSE related function)",
             "3 - service-provider (Presentation related function)" };
 
     /**
      * The service user reasons value.
      */
-    private static final String[] SERVICE_USER_REASONS = { "0", "1 - no-reason-given",
-            "2 - application-context-name-not-supported", "3 - calling-AE-title-not-recognized", "4", "5", "6",
+    private static final String[] SERVICE_USER_REASONS = { Symbol.ZERO, "1 - no-reason-given",
+            "2 - application-context-name-not-supported", "3 - calling-AE-title-not-recognized", Symbol.FOUR, Symbol.FIVE, Symbol.SIX,
             "7 - called-AE-title-not-recognized", };
 
     /**
      * The service provider acse reasons value.
      */
-    private static final String[] SERVICE_PROVIDER_ACSE_REASONS = { "0", "1 - no-reason-given",
+    private static final String[] SERVICE_PROVIDER_ACSE_REASONS = { Symbol.ZERO, "1 - no-reason-given",
             "2 - protocol-version-not-supported", };
 
     /**
      * The service provider pres reasons value.
      */
-    private static final String[] SERVICE_PROVIDER_PRES_REASONS = { "0", "1 - temporary-congestion",
+    private static final String[] SERVICE_PROVIDER_PRES_REASONS = { Symbol.ZERO, "1 - temporary-congestion",
             "2 - local-limit-exceeded", };
 
     /**
@@ -158,7 +159,7 @@ public class AAssociateRJ extends IOException {
      */
     public AAssociateRJ(int result, int source, int reason) {
         super("A-ASSOCIATE-RJ[result: " + toString(RESULTS, result) + ", source: " + toString(SOURCES, source)
-                + ", reason: " + toReason(source, reason) + ']');
+                + ", reason: " + toReason(source, reason) + Symbol.C_BRACKET_RIGHT);
         this.result = result;
         this.source = source;
         this.reason = reason;

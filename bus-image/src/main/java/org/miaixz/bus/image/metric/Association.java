@@ -945,7 +945,7 @@ public class Association {
      * @throws IOException if the operation cannot be completed.
      */
     public void write(AAssociateRQ rq) throws IOException {
-        name = rq.getCallingAET() + delim() + rq.getCalledAET() + '(' + serialNo + ')';
+        name = rq.getCallingAET() + delim() + rq.getCalledAET() + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
         this.rq = rq;
         Logger.info(false, "Image", "{} << A-ASSOCIATE-RQ", name);
         Logger.debug(false, "Image", "{}", rq);
@@ -1101,7 +1101,7 @@ public class Association {
      * @throws IOException if the operation cannot be completed.
      */
     public void onAAssociateRQ(AAssociateRQ rq) throws IOException {
-        name = rq.getCalledAET() + delim() + rq.getCallingAET() + '(' + serialNo + ')';
+        name = rq.getCalledAET() + delim() + rq.getCallingAET() + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
         Logger.info(false, "Image", "{} >> A-ASSOCIATE-RQ", name);
         Logger.debug(false, "Image", "{}", rq);
         stopTimeout();

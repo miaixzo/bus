@@ -36,6 +36,8 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.feature.keygen.GenId;
 
@@ -397,7 +399,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The property name.
      */
     public String property() {
-        return property("");
+        return property(Normal.EMPTY);
     }
 
     /**
@@ -416,7 +418,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The XML variable string.
      */
     public String variables() {
-        return variables("");
+        return variables(Normal.EMPTY);
     }
 
     /**
@@ -426,8 +428,8 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The prefixed XML variable string.
      */
     public String variables(String prefix) {
-        return "#{" + property(prefix) + jdbcTypeVariables().orElse("") + javaTypeVariables().orElse("")
-                + typeHandlerVariables().orElse("") + numericScaleVariables().orElse("") + "}";
+        return "#{" + property(prefix) + jdbcTypeVariables().orElse(Normal.EMPTY) + javaTypeVariables().orElse(Normal.EMPTY)
+                + typeHandlerVariables().orElse(Normal.EMPTY) + numericScaleVariables().orElse(Normal.EMPTY) + Symbol.BRACE_RIGHT;
     }
 
     /**
@@ -485,7 +487,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The "column AS property" string.
      */
     public String columnAsProperty() {
-        return columnAsProperty("");
+        return columnAsProperty(Normal.EMPTY);
     }
 
     /**
@@ -514,7 +516,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The "column = #{property}" string.
      */
     public String columnEqualsProperty() {
-        return columnEqualsProperty("");
+        return columnEqualsProperty(Normal.EMPTY);
     }
 
     /**
@@ -533,7 +535,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The "property != null" string.
      */
     public String notNullTest() {
-        return notNullTest("");
+        return notNullTest(Normal.EMPTY);
     }
 
     /**
@@ -552,7 +554,7 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The non-empty check string.
      */
     public String notEmptyTest() {
-        return notEmptyTest("");
+        return notEmptyTest(Normal.EMPTY);
     }
 
     /**

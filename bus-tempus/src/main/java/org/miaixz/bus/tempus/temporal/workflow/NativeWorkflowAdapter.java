@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
@@ -92,7 +93,7 @@ public final class NativeWorkflowAdapter {
                 for (Map.Entry<String, Method> entry : activityMethods(activity).entrySet()) {
                     if (registered.containsKey(entry.getKey())) {
                         throw new TypeAlreadyRegisteredException(entry.getKey(),
-                                "\"" + entry.getKey() + "\" activity type is already registered with the worker");
+                                Symbol.DOUBLE_QUOTES + entry.getKey() + "\" activity type is already registered with the worker");
                     }
                     registered.put(entry.getKey(), activityExecutor(taskHandler, activity, entry.getValue()));
                 }

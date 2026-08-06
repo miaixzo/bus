@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.DLX_LKUP_01;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -56,7 +58,7 @@ public class PrivateKeyword {
             case PrivateTag.GrayPaletteColorLookupTableData:
                 return "GrayPaletteColorLookupTableData";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

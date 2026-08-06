@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Fabric;
@@ -170,7 +171,7 @@ public abstract class FabricX {
             final String data,
             final Map<String, ?> headers,
             final String contentType) {
-        final var builder = Fabric.http(CONTEXT).post(url).body(data == null ? "" : data, media(contentType));
+        final var builder = Fabric.http(CONTEXT).post(url).body(data == null ? Normal.EMPTY : data, media(contentType));
         if (headers != null && !headers.isEmpty()) {
             headers.forEach((name, value) -> {
                 if (name != null && value != null) {

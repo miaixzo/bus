@@ -34,6 +34,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -102,7 +103,7 @@ public class QqProvider extends AbstractProvider {
         String openId = this.getOpenId(authorization);
         String response = doGetUserInfo(authorization);
         Map<String, Object> object = JsonKit.toPojo(response, Map.class);
-        if (!"0".equals(object.get("ret"))) {
+        if (!Symbol.ZERO.equals(object.get("ret"))) {
             throw new AuthorizedException((String) object.get("msg"));
         }
         String avatar = (String) object.get("figureurl_qq_2");
@@ -134,8 +135,8 @@ public class QqProvider extends AbstractProvider {
         String response = get(
                 Builder.fromUrl("https://graph.qq.com/oauth2.0/me").queryParam("access_token", authorization.getToken())
                         .queryParam("unionid", context.isFlag() ? 1 : 0).build());
-        String removePrefix = response.replace("callback(", "");
-        String removeSuffix = removePrefix.replace(");", "");
+        String removePrefix = response.replace("callback(", Normal.EMPTY);
+        String removeSuffix = removePrefix.replace(");", Normal.EMPTY);
         String openId = removeSuffix.trim();
         Map<String, Object> object = JsonKit.toPojo(openId, Map.class);
         if (object.containsKey("error")) {
@@ -175,7 +176,7 @@ public class QqProvider extends AbstractProvider {
             throw new AuthorizedException(object.get("msg"));
         }
         return Authorization.builder().token(object.get("access_token"))
-                .expireIn(Integer.parseInt(object.getOrDefault("expires_in", "0"))).refresh(object.get("refresh_token"))
+                .expireIn(Integer.parseInt(object.getOrDefault("expires_in", Symbol.ZERO))).refresh(object.get("refresh_token"))
                 .build();
     }
 

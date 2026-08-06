@@ -197,8 +197,8 @@ public class Condition<T> {
      */
     @SafeVarargs
     public final Condition<T> selectColumns(Fn<T, Object>... fns) {
-        selectColumns = "";
-        simpleSelectColumns = "";
+        selectColumns = Normal.EMPTY;
+        simpleSelectColumns = Normal.EMPTY;
         if (fns == null || fns.length == 0) {
             return this;
         }
@@ -246,8 +246,8 @@ public class Condition<T> {
      */
     @SafeVarargs
     public final Condition<T> excludeColumns(Fn<T, Object>... fns) {
-        selectColumns = "";
-        simpleSelectColumns = "";
+        selectColumns = Normal.EMPTY;
+        simpleSelectColumns = Normal.EMPTY;
         if (fns == null || fns.length == 0) {
             return this;
         }

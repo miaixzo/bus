@@ -24,6 +24,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * The jackson JSON enum helper class.
  *
@@ -107,14 +109,14 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
             StringBuilder nameBuf = new StringBuilder(chars.length);
             boolean nextCharIsCapitalized = firstLetterCapitalized;
             for (char ch : chars) {
-                if (ch == '_') {
+                if (ch == Symbol.C_UNDERLINE) {
                     if (preserveUnderscores) {
                         nameBuf.append(ch);
                     } else {
                         if (camelCased) {
                             nextCharIsCapitalized = true;
                         } else {
-                            nameBuf.append(' ');
+                            nameBuf.append(Symbol.C_SPACE);
                         }
                     }
                 } else if (nextCharIsCapitalized) {

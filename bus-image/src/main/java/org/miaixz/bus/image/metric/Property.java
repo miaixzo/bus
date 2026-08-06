@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Provides DICOM processing details.
  * <p>
@@ -76,7 +78,7 @@ public class Property implements Serializable {
      * @param s the s.
      */
     public Property(String s) {
-        int endParamName = s.indexOf('=');
+        int endParamName = s.indexOf(Symbol.C_EQUAL);
         name = s.substring(0, endParamName);
         value = valueOf(s.substring(endParamName + 1));
     }

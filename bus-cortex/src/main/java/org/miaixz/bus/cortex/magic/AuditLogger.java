@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
@@ -74,7 +75,7 @@ public class AuditLogger {
      */
     public void log(String namespace, String operation, String id, String operator, Map<String, Object> details) {
         long now = DateKit.current();
-        String key = auditPrefix(namespace, operation, id) + ":" + now + ":" + Long.toHexString(System.nanoTime());
+        String key = auditPrefix(namespace, operation, id) + Symbol.COLON + now + Symbol.COLON + Long.toHexString(System.nanoTime());
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("op", operation);
         payload.put("id", id);
@@ -95,7 +96,7 @@ public class AuditLogger {
      * @return serialized audit payload or {@code null}
      */
     public String get(String namespace, String operation, String id) {
-        Map<String, Object> entries = cacheX.scan(auditPrefix(namespace, operation, id) + ":");
+        Map<String, Object> entries = cacheX.scan(auditPrefix(namespace, operation, id) + Symbol.COLON);
         if (entries == null || entries.isEmpty()) {
             return null;
         }
@@ -113,7 +114,7 @@ public class AuditLogger {
      * @return audit-key prefix
      */
     private String auditPrefix(String namespace, String operation, String id) {
-        return Builder.AUDIT_PREFIX + CortexIdentity.namespace(namespace) + ":" + operation + ":" + id;
+        return Builder.AUDIT_PREFIX + CortexIdentity.namespace(namespace) + Symbol.COLON + operation + Symbol.COLON + id;
     }
 
 }

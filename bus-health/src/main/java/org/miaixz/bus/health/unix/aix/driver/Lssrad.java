@@ -27,6 +27,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
@@ -80,7 +81,7 @@ public final class Lssrad {
                 if (Character.isDigit(s.charAt(0))) {
                     node = Parsing.parseIntOrDefault(t, 0);
                 } else {
-                    if (t.contains(".")) {
+                    if (t.contains(Symbol.DOT)) {
                         String[] split = Pattern.SPACES_PATTERN.split(t, 3);
                         slot = Parsing.parseIntOrDefault(split[0], 0);
                         t = split.length > 2 ? split[2] : Normal.EMPTY;

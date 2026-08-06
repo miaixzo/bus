@@ -25,6 +25,7 @@ import java.io.Serializable;
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -116,7 +117,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
 
         if ((len & 0x01) != 0) {
             // If the input has an odd length, pad with a leading zero.
-            encoded = "0" + encoded;
+            encoded = Symbol.ZERO + encoded;
             len = encoded.length();
         }
 

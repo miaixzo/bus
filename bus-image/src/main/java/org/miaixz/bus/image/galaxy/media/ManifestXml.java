@@ -205,11 +205,11 @@ public interface ManifestXml {
         for (int i = 0; i < value.length(); i++) {
             char current = value.charAt(i);
             switch (current) {
-                case '&' -> builder.append("&amp;");
-                case '<' -> builder.append("&lt;");
-                case '>' -> builder.append("&gt;");
-                case '"' -> builder.append("&quot;");
-                case '\'' -> builder.append("&apos;");
+                case Symbol.C_AND -> builder.append("&amp;");
+                case Symbol.C_LT -> builder.append("&lt;");
+                case Symbol.C_GT -> builder.append("&gt;");
+                case Symbol.C_DOUBLE_QUOTES -> builder.append("&quot;");
+                case Symbol.C_SINGLE_QUOTE -> builder.append("&apos;");
                 default -> builder.append(current);
             }
         }

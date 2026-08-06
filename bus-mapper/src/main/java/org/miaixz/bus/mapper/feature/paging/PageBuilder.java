@@ -143,58 +143,58 @@ public class PageBuilder {
         for (int i = 0; i < sql.length(); i++) {
             char current = sql.charAt(i);
             if (singleQuoted) {
-                if (current == '\'' && i + 1 < sql.length() && sql.charAt(i + 1) == '\'') {
+                if (current == Symbol.C_SINGLE_QUOTE && i + 1 < sql.length() && sql.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
                     i++;
                     continue;
                 }
-                if (current == '\'') {
+                if (current == Symbol.C_SINGLE_QUOTE) {
                     singleQuoted = false;
                 }
                 continue;
             }
             if (doubleQuoted) {
-                if (current == '"' && i + 1 < sql.length() && sql.charAt(i + 1) == '"') {
+                if (current == Symbol.C_DOUBLE_QUOTES && i + 1 < sql.length() && sql.charAt(i + 1) == Symbol.C_DOUBLE_QUOTES) {
                     i++;
                     continue;
                 }
-                if (current == '"') {
+                if (current == Symbol.C_DOUBLE_QUOTES) {
                     doubleQuoted = false;
                 }
                 continue;
             }
             if (backtickQuoted) {
-                if (current == '`') {
+                if (current == Symbol.C_BACKTICK) {
                     backtickQuoted = false;
                 }
                 continue;
             }
             if (bracketQuoted) {
-                if (current == ']') {
+                if (current == Symbol.C_BRACKET_RIGHT) {
                     bracketQuoted = false;
                 }
                 continue;
             }
-            if (current == '\'') {
+            if (current == Symbol.C_SINGLE_QUOTE) {
                 singleQuoted = true;
                 continue;
             }
-            if (current == '"') {
+            if (current == Symbol.C_DOUBLE_QUOTES) {
                 doubleQuoted = true;
                 continue;
             }
-            if (current == '`') {
+            if (current == Symbol.C_BACKTICK) {
                 backtickQuoted = true;
                 continue;
             }
-            if (current == '[') {
+            if (current == Symbol.C_BRACKET_LEFT) {
                 bracketQuoted = true;
                 continue;
             }
-            if (current == '(') {
+            if (current == Symbol.C_PARENTHESE_LEFT) {
                 depth++;
                 continue;
             }
-            if (current == ')' && depth > 0) {
+            if (current == Symbol.C_PARENTHESE_RIGHT && depth > 0) {
                 depth--;
                 continue;
             }

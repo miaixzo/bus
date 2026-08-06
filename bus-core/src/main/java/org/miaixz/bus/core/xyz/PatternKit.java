@@ -55,7 +55,7 @@ public class PatternKit extends RegexValidator {
      * Keywords in regular expressions that need to be escaped.
      */
     public static final Set<Character> RE_KEYS = SetKit
-            .of('$', '(', ')', '*', '+', '.', '[', ']', '?', '\\', '^', '{', '}', '|');
+            .of(Symbol.C_DOLLAR, Symbol.C_PARENTHESE_LEFT, Symbol.C_PARENTHESE_RIGHT, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT, Symbol.C_QUESTION_MARK, Symbol.C_BACKSLASH, Symbol.C_CARET, Symbol.C_BRACE_LEFT, Symbol.C_BRACE_RIGHT, Symbol.C_OR);
 
     /**
      * Gets the matched string for group 0.
@@ -860,7 +860,7 @@ public class PatternKit extends RegexValidator {
                 String replacement = replacementTemplate;
                 for (final String var : varNums) {
                     final int group = Integer.parseInt(var);
-                    replacement = StringKit.replace(replacement, "$" + var, matcher.group(group));
+                    replacement = StringKit.replace(replacement, Symbol.DOLLAR + var, matcher.group(group));
                 }
                 matcher.appendReplacement(sb, escape(replacement));
                 result = matcher.find();
@@ -925,7 +925,7 @@ public class PatternKit extends RegexValidator {
     public static String escape(final char c) {
         final StringBuilder builder = new StringBuilder();
         if (RE_KEYS.contains(c)) {
-            builder.append('\\');
+            builder.append(Symbol.C_BACKSLASH);
         }
         builder.append(c);
         return builder.toString();
@@ -948,7 +948,7 @@ public class PatternKit extends RegexValidator {
         for (int i = 0; i < len; i++) {
             current = content.charAt(i);
             if (RE_KEYS.contains(current)) {
-                builder.append('\\');
+                builder.append(Symbol.C_BACKSLASH);
             }
             builder.append(current);
         }

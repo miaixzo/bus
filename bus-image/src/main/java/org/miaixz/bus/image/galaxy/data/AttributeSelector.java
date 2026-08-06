@@ -23,6 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -309,7 +310,7 @@ public class AttributeSelector implements Serializable {
             appendTo(ip.sequenceTag, ip.privateCreator, "\"]/Item", sb);
             if (ip.itemIndex >= 0)
                 sb.append("[@number=\"").append(ip.itemIndex + 1).append("\"]");
-            sb.append('/');
+            sb.append(Symbol.C_SLASH);
         }
         return appendTo(tag, privateCreator, "\"]", sb);
     }

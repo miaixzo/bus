@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
@@ -26095,7 +26096,7 @@ public class Tag {
     /**
      * The hex digits value.
      */
-    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+    private static final char[] HEX_DIGITS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'A', 'B', 'C', 'D',
             'E', 'F' };
 
     /**
@@ -26208,9 +26209,9 @@ public class Tag {
      * @return the string representation.
      */
     public static String toString(int tag) {
-        char[] s = { '(', HEX_DIGITS[(tag >>> 28)], HEX_DIGITS[(tag >>> 24) & 0xF], HEX_DIGITS[(tag >>> 20) & 0xF],
-                HEX_DIGITS[(tag >>> 16) & 0xF], ',', HEX_DIGITS[(tag >>> 12) & 0xF], HEX_DIGITS[(tag >>> 8) & 0xF],
-                HEX_DIGITS[(tag >>> 4) & 0xF], HEX_DIGITS[(tag >>> 0) & 0xF], ')' };
+        char[] s = { Symbol.C_PARENTHESE_LEFT, HEX_DIGITS[(tag >>> 28)], HEX_DIGITS[(tag >>> 24) & 0xF], HEX_DIGITS[(tag >>> 20) & 0xF],
+                HEX_DIGITS[(tag >>> 16) & 0xF], Symbol.C_COMMA, HEX_DIGITS[(tag >>> 12) & 0xF], HEX_DIGITS[(tag >>> 8) & 0xF],
+                HEX_DIGITS[(tag >>> 4) & 0xF], HEX_DIGITS[(tag >>> 0) & 0xF], Symbol.C_PARENTHESE_RIGHT };
         return new String(s);
     }
 
@@ -26372,7 +26373,7 @@ public class Tag {
      * @return the operation result.
      */
     public static int[] parseTagPath(String tagPath) {
-        String[] names = Builder.split(tagPath, '.');
+        String[] names = Builder.split(tagPath, Symbol.C_DOT);
         int[] tags = new int[names.length];
         for (int i = 0; i < tags.length; i++)
             if ((tags[i] = forName(names[i])) == -1)

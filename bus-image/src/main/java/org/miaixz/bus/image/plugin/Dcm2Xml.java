@@ -33,6 +33,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.SAXWriter;
@@ -260,7 +261,7 @@ public class Dcm2Xml {
         Transformer t = th.getTransformer();
         t.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         if (indent) {
-            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Symbol.FOUR);
         }
         t.setOutputProperty(OutputKeys.VERSION, xmlVersion);
         th.setResult(new StreamResult(System.out));

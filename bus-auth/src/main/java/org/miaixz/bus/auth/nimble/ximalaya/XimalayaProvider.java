@@ -96,7 +96,7 @@ public class XimalayaProvider extends AbstractProvider {
             }
         } catch (Exception ignored) {
         }
-        return null == builder ? "" : builder.toString();
+        return null == builder ? Normal.EMPTY : builder.toString();
     }
 
     /**
@@ -163,7 +163,7 @@ public class XimalayaProvider extends AbstractProvider {
                 Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
                         .queryParam("client_id", context.getClientId())
                         .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
-                        .queryParam("client_os_type", "3").queryParam("device_id", context.getDeviceId()).build())
+                        .queryParam("client_os_type", Symbol.THREE).queryParam("device_id", context.getDeviceId()).build())
                 .build();
     }
 

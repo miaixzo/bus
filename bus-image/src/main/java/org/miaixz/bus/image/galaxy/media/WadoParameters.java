@@ -23,6 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * WADO-URI/WADO-RS access parameters for manifest query results.
  *
@@ -70,7 +72,7 @@ public class WadoParameters extends ArchiveParameters {
     public WadoParameters(String archiveID, String wadoURL, boolean requireOnlySOPInstanceUID,
             String additionalParameters, String overrideDicomTagsList, String webLogin, boolean wadoRS) {
         super(Objects.requireNonNull(archiveID, "Archive ID cannot be null"),
-                Objects.requireNonNullElse(validateAndNormalizeUrl(wadoURL), ""), additionalParameters,
+                Objects.requireNonNullElse(validateAndNormalizeUrl(wadoURL), Normal.EMPTY), additionalParameters,
                 overrideDicomTagsList, webLogin);
         this.requireOnlySOPInstanceUID = requireOnlySOPInstanceUID;
         this.wadoRS = wadoRS;
@@ -83,7 +85,7 @@ public class WadoParameters extends ArchiveParameters {
      * @param requireOnlySOPInstanceUID the require only sop instance uid.
      */
     public WadoParameters(String wadoURL, boolean requireOnlySOPInstanceUID) {
-        this("", wadoURL, requireOnlySOPInstanceUID, null, null, null, false);
+        this(Normal.EMPTY, wadoURL, requireOnlySOPInstanceUID, null, null, null, false);
     }
 
     /**
@@ -94,7 +96,7 @@ public class WadoParameters extends ArchiveParameters {
      * @param wadoRS                    the wado rs.
      */
     public WadoParameters(String wadoURL, boolean requireOnlySOPInstanceUID, boolean wadoRS) {
-        this("", wadoURL, requireOnlySOPInstanceUID, null, null, null, wadoRS);
+        this(Normal.EMPTY, wadoURL, requireOnlySOPInstanceUID, null, null, null, wadoRS);
     }
 
     /**
@@ -198,7 +200,7 @@ public class WadoParameters extends ArchiveParameters {
     private static String validateAndNormalizeUrl(String wadoURL) {
         Objects.requireNonNull(wadoURL, "WADO URL cannot be null");
         if (wadoURL.isBlank()) {
-            return "";
+            return Normal.EMPTY;
         }
         try {
             return new URI(wadoURL.trim()).toString();
@@ -218,7 +220,7 @@ public class WadoParameters extends ArchiveParameters {
         /**
          * The archive id value.
          */
-        private String archiveID = "";
+        private String archiveID = Normal.EMPTY;
 
         /**
          * The wado url value.
@@ -268,7 +270,7 @@ public class WadoParameters extends ArchiveParameters {
          * @return the operation result.
          */
         public Builder withArchiveID(String archiveID) {
-            this.archiveID = archiveID == null ? "" : archiveID;
+            this.archiveID = archiveID == null ? Normal.EMPTY : archiveID;
             return this;
         }
 

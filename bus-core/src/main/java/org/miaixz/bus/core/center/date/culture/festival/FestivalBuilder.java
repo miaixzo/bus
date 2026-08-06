@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.center.date.culture.festival;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Builder for constructing {@link Festival} instances.
  *
@@ -35,7 +37,7 @@ public class FestivalBuilder {
     /**
      * Encoded festival data.
      */
-    protected char[] data = { '@', '_', '_', '_', '_', '_', '0', '0', '0' };
+    protected char[] data = { Symbol.C_AT, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_ZERO, Symbol.C_ZERO, Symbol.C_ZERO };
 
     /**
      * Sets the festival name.

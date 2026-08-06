@@ -24,6 +24,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.*;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.template.Template;
@@ -104,7 +105,7 @@ public class ThymeleafProvider implements TemplateProvider {
                 final ClassLoaderTemplateResolver classLoaderResolver = new ClassLoaderTemplateResolver();
                 classLoaderResolver.setCharacterEncoding(config.getCharsetString());
                 classLoaderResolver.setTemplateMode(TemplateMode.HTML);
-                classLoaderResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), "/"));
+                classLoaderResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), Symbol.SLASH));
                 classLoaderResolver.setCacheable(config.isUseCache());
                 resolver = classLoaderResolver;
                 break;
@@ -113,7 +114,7 @@ public class ThymeleafProvider implements TemplateProvider {
                 final FileTemplateResolver fileResolver = new FileTemplateResolver();
                 fileResolver.setCharacterEncoding(config.getCharsetString());
                 fileResolver.setTemplateMode(TemplateMode.HTML);
-                fileResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), "/"));
+                fileResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), Symbol.SLASH));
                 fileResolver.setCacheable(config.isUseCache());
                 resolver = fileResolver;
                 break;
@@ -125,7 +126,7 @@ public class ThymeleafProvider implements TemplateProvider {
                 webRootResolver.setPrefix(
                         StringKit.addSuffixIfNot(
                                 FileKit.getAbsolutePath(FileKit.file(FileKit.getWebRoot(), config.getPath())),
-                                "/"));
+                                Symbol.SLASH));
                 webRootResolver.setCacheable(config.isUseCache());
                 resolver = webRootResolver;
                 break;

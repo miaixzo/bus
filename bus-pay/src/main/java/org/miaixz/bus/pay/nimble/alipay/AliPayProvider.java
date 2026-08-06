@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -1668,14 +1669,14 @@ public class AliPayProvider extends AbstractProvider<Voucher, Context> {
                 true,
                 "Pay",
                 "Alipay HTTP request dispatched: url={}, paramCount={}",
-                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", ""),
+                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", Normal.EMPTY),
                 params == null ? 0 : params.size());
         String response = post(getUrl(), params);
         Logger.info(
                 false,
                 "Pay",
                 "Alipay HTTP request completed: url={}, responseBytes={}",
-                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", ""),
+                getUrl() == null ? null : getUrl().replaceFirst("\\?.*$", Normal.EMPTY),
                 response == null ? 0 : response.getBytes(Charset.UTF_8).length);
         return response;
     }

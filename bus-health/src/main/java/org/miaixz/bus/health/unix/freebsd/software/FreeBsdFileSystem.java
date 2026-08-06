@@ -158,10 +158,10 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf('/') + 1);
+            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf('/') + 1);
+                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
             }
             File f = new File(path);
             long totalSpace = f.getTotalSpace();
@@ -182,7 +182,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             String uuid = uuidMap.getOrDefault(name, Normal.EMPTY);
 
             fsList.add(
-                    new FreeBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, "", description, type,
+                    new FreeBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, Normal.EMPTY, description, type,
                             freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(path, 0L),
                             inodeTotalMap.getOrDefault(path, 0L)));
         }

@@ -147,7 +147,7 @@ class JsonTypeMatcher {
         if (StringKit.isEmpty(className)) {
             return false;
         }
-        if (className.startsWith("[")) {
+        if (className.startsWith(Symbol.BRACKET_LEFT)) {
             return matchesArrayDescriptor(className);
         }
         if (className.endsWith("[]")) {
@@ -188,7 +188,7 @@ class JsonTypeMatcher {
      */
     private boolean matchesArrayDescriptor(String className) {
         int dimensionIndex = 0;
-        while (dimensionIndex < className.length() && className.charAt(dimensionIndex) == '[') {
+        while (dimensionIndex < className.length() && className.charAt(dimensionIndex) == Symbol.C_BRACKET_LEFT) {
             dimensionIndex++;
         }
         if (dimensionIndex >= className.length()) {
@@ -196,7 +196,7 @@ class JsonTypeMatcher {
         }
 
         char componentType = className.charAt(dimensionIndex);
-        if (componentType != 'L') {
+        if (componentType != Symbol.C_L) {
             return true;
         }
 
@@ -221,7 +221,7 @@ class JsonTypeMatcher {
         if (rule.indexOf(Symbol.C_STAR) < 0) {
             String normalizedRule = rule.endsWith(Symbol.DOT) ? rule.substring(0, rule.length() - 1) : rule;
             return className.equals(normalizedRule) || className.startsWith(normalizedRule + Symbol.DOT)
-                    || className.startsWith(normalizedRule + "$") || packageName.equals(normalizedRule)
+                    || className.startsWith(normalizedRule + Symbol.DOLLAR) || packageName.equals(normalizedRule)
                     || packageName.startsWith(normalizedRule + Symbol.DOT);
         }
         // Wildcard rules are evaluated against the package path only.

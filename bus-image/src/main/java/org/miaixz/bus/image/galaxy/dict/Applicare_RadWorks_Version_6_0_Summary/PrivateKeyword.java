@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0_Summary;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -37,7 +39,7 @@ public class PrivateKeyword {
     /**
      * The private creator value.
      */
-    public static final String PrivateCreator = "";
+    public static final String PrivateCreator = Normal.EMPTY;
 
     /**
      * Executes the value of operation.
@@ -63,7 +65,7 @@ public class PrivateKeyword {
             case PrivateTag.ReceiveTime:
                 return "ReceiveTime";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

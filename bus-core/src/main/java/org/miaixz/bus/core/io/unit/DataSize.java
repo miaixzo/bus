@@ -227,7 +227,7 @@ public final class DataSize implements Comparable<DataSize> {
             final DataUnit unit = determineDataUnit(matcher.group(3), defaultUnit);
             return DataSize.of(new BigDecimal(matcher.group(1)), unit);
         } catch (final Exception ex) {
-            throw new IllegalArgumentException("'" + text + "' is not a valid data size", ex);
+            throw new IllegalArgumentException(Symbol.SINGLE_QUOTE + text + "' is not a valid data size", ex);
         }
     }
 
@@ -283,10 +283,10 @@ public final class DataSize implements Comparable<DataSize> {
      */
     public static String format(final long size, final int scale, final String[] unitNames, final String delimiter) {
         if (size <= 0) {
-            return "0";
+            return Symbol.ZERO;
         }
         final int digitGroups = Math.min(unitNames.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
-        return new DecimalFormat("#,##0." + StringKit.repeat('#', scale)).format(size / Math.pow(1024, digitGroups))
+        return new DecimalFormat("#,##0." + StringKit.repeat(Symbol.C_HASH, scale)).format(size / Math.pow(1024, digitGroups))
                 + delimiter + unitNames[digitGroups];
     }
 

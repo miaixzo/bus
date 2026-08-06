@@ -670,7 +670,7 @@ public class MethodKit {
 
         int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_HASH);
         if (splitIndex <= 0) {
-            splitIndex = classNameWithMethodName.lastIndexOf('.');
+            splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_DOT);
         }
         if (splitIndex <= 0) {
             throw new InternalException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);

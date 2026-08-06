@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.image.builtin;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Implements the Phonem algorithm for fuzzy string matching, based on the work of Martin Wilz. This algorithm
  * transforms a string into a phonetic representation, useful for comparing words that sound alike but may have
@@ -60,7 +63,7 @@ public class Phonem implements FuzzyString {
     @Override
     public String toFuzzy(String s) {
         if (s == null || s.length() == 0)
-            return "";
+            return Normal.EMPTY;
 
         char[] in = s.toUpperCase().toCharArray();
         char next = in[0];
@@ -76,7 +79,7 @@ public class Phonem implements FuzzyString {
                     break;
 
                 case 0x4b53: // KS
-                    next = 'X';
+                    next = Symbol.C_X;
                     break;
 
                 case 0x5046: // PF
@@ -211,7 +214,7 @@ public class Phonem implements FuzzyString {
                 case 'B':
                 case 'C':
                 case 'D':
-                case 'L':
+                case Symbol.C_L:
                 case 'M':
                 case 'N':
                 case 'O':
@@ -219,7 +222,7 @@ public class Phonem implements FuzzyString {
                 case 'S':
                 case 'U':
                 case 'V':
-                case 'X':
+                case Symbol.C_X:
                 case 'Y':
                 case 'Ö':
                     break;

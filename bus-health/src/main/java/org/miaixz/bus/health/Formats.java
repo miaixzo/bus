@@ -278,7 +278,7 @@ public final class Formats {
     private static boolean isHex(String s) {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+            if (!((c >= Symbol.C_ZERO && c <= Symbol.C_NINE) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
                 return false;
             }
         }
@@ -297,7 +297,7 @@ public final class Formats {
         sb.append(", Product ID=").append(Edid.getProductID(edid));
         sb.append(Symbol.COMMA).append(Symbol.SPACE).append(Edid.isDigital(edid) ? "Digital" : "Analog");
         sb.append(", Serial=").append(Edid.getSerialNo(edid));
-        sb.append(", ManufDate=").append(Edid.getWeek(edid) * 12 / 52 + 1).append('/').append(Edid.getYear(edid));
+        sb.append(", ManufDate=").append(Edid.getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH).append(Edid.getYear(edid));
         sb.append(", EDID v").append(Edid.getVersion(edid));
         int hSize = Edid.getHcm(edid);
         int vSize = Edid.getVcm(edid);

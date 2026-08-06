@@ -31,6 +31,9 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * The {@code Json2Rst} class converts JSON schema files into reStructuredText (RST) format, primarily for generating
  * documentation for DICOM-related LDAP schemas. It processes a root JSON schema file and recursively transforms any
@@ -164,7 +167,7 @@ public class Json2Rst {
             out.print(Character.toUpperCase(outFileName.charAt(0)));
             out.print(outFileName.substring(1, endIndex));
         }
-        out.println(')');
+        out.println(Symbol.C_PARENTHESE_RIGHT);
         out.println("    :header: Name, Type, Description (LDAP Attribute)");
         out.println("    :widths: 23, 7, 70");
         out.println();
@@ -251,7 +254,7 @@ public class Json2Rst {
             out.println();
             out.print("    .. _");
             out.print(name);
-            out.println(':');
+            out.println(Symbol.C_COLON);
             out.println();
             out.print("    :ref:`");
             out.print(property.getString("title"));
@@ -266,8 +269,8 @@ public class Json2Rst {
         out.print(",\"");
         out.print(
                 ensureNoUndefinedSubstitutionReferenced(
-                        formatURL(property.getString("description")).replace("\"", "\"\"").replaceAll("<br>", "\n\n\t")
-                                .replaceAll("\\(hover on options to see their descriptions\\)", "")));
+                        formatURL(property.getString("description")).replace(Symbol.DOUBLE_QUOTES, "\"\"").replaceAll("<br>", "\n\n\t")
+                                .replaceAll("\\(hover on options to see their descriptions\\)", Normal.EMPTY)));
         JsonArray anEnum = typeObj.getJsonArray("enum");
         if (anEnum != null) {
             out.println();
@@ -279,8 +282,8 @@ public class Json2Rst {
                 out.println();
                 out.println();
                 out.print("    ");
-                String enumOption = anEnum.get(i).toString().replace("\"", "");
-                out.print(enumOption.contains("|") ? enumOption.replaceAll("\\|", " (= ") + ")" : enumOption);
+                String enumOption = anEnum.get(i).toString().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY);
+                out.print(enumOption.contains(Symbol.OR) ? enumOption.replaceAll("\\|", " (= ") + Symbol.PARENTHESE_RIGHT : enumOption);
             }
         }
         if (!isObj) {
@@ -288,9 +291,9 @@ public class Json2Rst {
             out.println();
             out.print("    (");
             out.print(name);
-            out.print(')');
+            out.print(Symbol.C_PARENTHESE_RIGHT);
         }
-        out.println('"');
+        out.println(Symbol.C_DOUBLE_QUOTES);
     }
 
     /**
@@ -306,7 +309,7 @@ public class Json2Rst {
 
         String url = desc.substring(urlIndex + 9, desc.indexOf("\" target"));
         String placeholder = desc.substring(desc.indexOf("target=\"_blank\">") + 16, desc.indexOf("</a>"));
-        String desc2 = desc.substring(0, urlIndex) + '`' + placeholder + " <" + url + ">`_"
+        String desc2 = desc.substring(0, urlIndex) + Symbol.C_BACKTICK + placeholder + " <" + url + ">`_"
                 + desc.substring(desc.indexOf("</a>") + 4);
         return desc2.contains("<a href") ? formatURL(desc2) : desc2;
     }
@@ -318,7 +321,7 @@ public class Json2Rst {
      * @return The escaped description string.
      */
     private String ensureNoUndefinedSubstitutionReferenced(String desc) {
-        if (!desc.contains("|"))
+        if (!desc.contains(Symbol.OR))
             return desc;
 
         StringBuffer sb = new StringBuffer(desc.length());

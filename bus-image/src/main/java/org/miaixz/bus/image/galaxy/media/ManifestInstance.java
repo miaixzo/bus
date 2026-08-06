@@ -356,8 +356,8 @@ public class ManifestInstance implements ManifestXml, Comparable<ManifestInstanc
      */
     private static String normalizeUID(String uid, int paddingLength) {
         char[] padding = new char[paddingLength];
-        Arrays.fill(padding, '0');
-        int lastDotIndex = uid.lastIndexOf('.') + 1;
+        Arrays.fill(padding, Symbol.C_ZERO);
+        int lastDotIndex = uid.lastIndexOf(Symbol.C_DOT) + 1;
         return uid.substring(0, lastDotIndex) + new String(padding) + uid.substring(lastDotIndex);
     }
 

@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.security.GeneralSecurityException;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.HL7Message;
@@ -63,7 +64,7 @@ public class HL7Pix extends Device {
     /**
      * The receiving application and facility, formatted as application^facility.
      */
-    private String receivingApplication = "";
+    private String receivingApplication = Normal.EMPTY;
 
     /**
      * The character set to be specified in the MSH-18 field.

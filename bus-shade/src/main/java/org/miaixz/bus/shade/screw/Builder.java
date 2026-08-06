@@ -65,7 +65,7 @@ public class Builder {
     /**
      * A constant string representing zero decimal digits ("0").
      */
-    public static final String ZERO_DECIMAL_DIGITS = "0";
+    public static final String ZERO_DECIMAL_DIGITS = Symbol.ZERO;
 
     /**
      * The default description for the database design document.
@@ -85,7 +85,7 @@ public class Builder {
     /**
      * The string representation of zero ("0").
      */
-    public static final String ZERO = "0";
+    public static final String ZERO = Symbol.ZERO;
 
     /**
      * The string "N", typically representing "No".

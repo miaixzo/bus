@@ -1376,7 +1376,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
          */
         private void startCondition(String name, Condition cond) throws SAXException {
             if (!(elementConditions || itemConditions))
-                throw new SAXException("unexpected <" + name + '>');
+                throw new SAXException("unexpected <" + name + Symbol.C_GT);
 
             conditionStack.add(cond);
         }
@@ -1397,7 +1397,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                     else
                         memberOf.setValues(values.toArray(new String[values.size()]));
                 } catch (Exception e) {
-                    throw new SAXException("unexpected <Value> contained by <" + name + ">");
+                    throw new SAXException("unexpected <Value> contained by <" + name + Symbol.GT);
                 }
                 values.clear();
             }
@@ -1406,7 +1406,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                 try {
                     ((MemberOf) cond).setValues(codes.toArray(new Code[codes.size()]));
                 } catch (Exception e) {
-                    throw new SAXException("unexpected <Code> contained by <" + name + ">");
+                    throw new SAXException("unexpected <Code> contained by <" + name + Symbol.GT);
                 }
                 codes.clear();
             }

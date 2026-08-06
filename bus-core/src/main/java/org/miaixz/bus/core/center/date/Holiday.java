@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
@@ -78,10 +79,10 @@ public class Holiday extends Loops {
     public Holiday(int year, int month, int day, String data) {
         SolarDay d = SolarDay.fromYmd(year, month, day);
         this.day = d;
-        work = '0' == data.charAt(8);
-        name = NAMES[data.charAt(9) - '0'];
+        work = Symbol.C_ZERO == data.charAt(8);
+        name = NAMES[data.charAt(9) - Symbol.C_ZERO];
         int offset = Integer.parseInt(data.substring(data.length() - 2));
-        target = d.next('-' == data.charAt(10) ? -offset : offset);
+        target = d.next(Symbol.C_MINUS == data.charAt(10) ? -offset : offset);
     }
 
     /**

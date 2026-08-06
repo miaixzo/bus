@@ -681,7 +681,7 @@ public class Calendar extends Calculate {
             // Minute
             final int minute = calendar.get(java.util.Calendar.MINUTE);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(minute));
-            result.append('分');
+            result.append(Symbol.C_CNY_FEN);
             // Second
             final int second = calendar.get(java.util.Calendar.SECOND);
             result.append(ChineseNumberFormatter.of().setColloquialMode(true).format(second));

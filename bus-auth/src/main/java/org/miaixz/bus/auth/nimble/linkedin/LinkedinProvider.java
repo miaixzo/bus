@@ -36,6 +36,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -243,17 +244,17 @@ public class LinkedinProvider extends AbstractProvider {
     private String getUserName(Map<String, Object> data, String nameKey) {
         Map<String, Object> nameObj = (Map<String, Object>) data.get(nameKey);
         if (nameObj == null) {
-            return "";
+            return Normal.EMPTY;
         }
         Map<String, Object> localizedObj = (Map<String, Object>) nameObj.get("localized");
         Map<String, Object> preferredLocaleObj = (Map<String, Object>) nameObj.get("preferredLocale");
         if (localizedObj == null || preferredLocaleObj == null) {
-            return "";
+            return Normal.EMPTY;
         }
         String language = (String) preferredLocaleObj.get("language");
         String country = (String) preferredLocaleObj.get("country");
         if (language == null || country == null) {
-            return "";
+            return Normal.EMPTY;
         }
         return (String) localizedObj.get(language + Symbol.UNDERLINE + country);
     }

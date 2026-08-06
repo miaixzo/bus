@@ -34,6 +34,7 @@ import org.miaixz.bus.core.center.date.builder.DateBuilder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.DateException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.dfa.WordTree;
 import org.miaixz.bus.core.xyz.*;
 
@@ -326,7 +327,7 @@ public class RegexDateParser implements DateParser, Serializable {
     private static int parseZoneOffset(final String zoneOffset) {
         int from = 0;
         final int to = zoneOffset.length();
-        final boolean neg = '-' == zoneOffset.charAt(from);
+        final boolean neg = Symbol.C_MINUS == zoneOffset.charAt(from);
         from++;
         final int hour;
         if (from + 2 <= to && Character.isDigit(zoneOffset.charAt(from + 1))) {
@@ -336,7 +337,7 @@ public class RegexDateParser implements DateParser, Serializable {
             hour = parseInt(zoneOffset, from, from + 1);
             from += 1;
         }
-        if (from + 3 <= to && zoneOffset.charAt(from) == ':') {
+        if (from + 3 <= to && zoneOffset.charAt(from) == Symbol.C_COLON) {
             from++;
         }
         int minute = 0;

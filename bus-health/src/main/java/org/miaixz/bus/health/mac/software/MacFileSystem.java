@@ -366,8 +366,8 @@ public class MacFileSystem extends AbstractFileSystem {
                     }
 
                     fsList.add(
-                            new MacOSFileStore(name, volume, name, path, options.toString(), uuid == null ? "" : uuid,
-                                    isLocal, "", description, type, file.getFreeSpace(), file.getUsableSpace(),
+                            new MacOSFileStore(name, volume, name, path, options.toString(), uuid == null ? Normal.EMPTY : uuid,
+                                    isLocal, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
                                     file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();

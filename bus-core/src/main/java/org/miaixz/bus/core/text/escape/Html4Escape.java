@@ -21,6 +21,7 @@ package org.miaixz.bus.core.text.escape;
 
 import java.io.Serial;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.replacer.LookupReplacer;
 import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
@@ -46,7 +47,7 @@ public class Html4Escape extends ReplacerChain {
             { "\u00A2", "&cent;" }, // cent sign
             { "\u00A3", "&pound;" }, // pound sign
             { "\u00A4", "&curren;" }, // currency sign
-            { "\u00A5", "&yen;" }, // yen sign = yuan sign
+            { Symbol.CNY, "&yen;" }, // yen sign = yuan sign
             { "\u00A6", "&brvbar;" }, // broken bar = broken vertical bar
             { "\u00A7", "&sect;" }, // section sign
             { "\u00A8", "&uml;" }, // diaeresis = spacing diaeresis

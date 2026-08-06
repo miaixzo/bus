@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -270,7 +271,7 @@ public class StgCmtSCU {
     public boolean addInstance(Attributes inst) {
         String cuid = inst.getString(Tag.SOPClassUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
-        String splitkey = splitTag != 0 ? inst.getString(splitTag, "") : "";
+        String splitkey = splitTag != 0 ? inst.getString(splitTag, Normal.EMPTY) : Normal.EMPTY;
         if (cuid == null || iuid == null) {
             return false;
         }

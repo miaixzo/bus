@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.nimble.router;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.magic.Authorization;
 import org.miaixz.bus.auth.magic.Callback;
@@ -160,7 +161,7 @@ public class DingTalkRouter extends AbstractRouter {
                     true,
                     "Auth",
                     "DingTalk client credential request started: endpoint={}, paramCount={}, corpPresent={}",
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     params.size(),
                     StringKit.isNotEmpty(corpId));
 
@@ -218,7 +219,7 @@ public class DingTalkRouter extends AbstractRouter {
                     true,
                     "Auth",
                     "DingTalk user credential request started: endpoint={}, paramCount={}, codePresent={}",
-                    tokenUrl == null ? null : tokenUrl.replaceFirst("\\?.*$", ""),
+                    tokenUrl == null ? null : tokenUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                     params.size(),
                     callback != null && StringKit.isNotEmpty(callback.getCode()));
 
@@ -297,7 +298,7 @@ public class DingTalkRouter extends AbstractRouter {
                     true,
                     "Auth",
                     "DingTalk client userinfo step 1 started: endpoint={}, paramCount={}, tokenPresent={}",
-                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", ""),
+                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                     body.size(),
                     StringKit.isNotEmpty(accessToken));
 
@@ -320,7 +321,7 @@ public class DingTalkRouter extends AbstractRouter {
                     true,
                     "Auth",
                     "DingTalk client userinfo step 2 started: endpoint={}, paramCount={}, userIdPresent={}",
-                    userdetailUrl == null ? null : userdetailUrl.replaceFirst("\\?.*$", ""),
+                    userdetailUrl == null ? null : userdetailUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                     detailBody.size(),
                     StringKit.isNotEmpty(userId));
 
@@ -374,7 +375,7 @@ public class DingTalkRouter extends AbstractRouter {
                     true,
                     "Auth",
                     "DingTalk user userinfo request started: endpoint={}, tokenPresent={}",
-                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", ""),
+                    userinfoUrl == null ? null : userinfoUrl.replaceFirst("\\?.*$", Normal.EMPTY),
                     authorization != null && StringKit.isNotEmpty(authorization.getToken()));
 
             String body = get(userinfoUrl, null, headers);

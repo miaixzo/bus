@@ -175,7 +175,7 @@ public class ERRSegment extends HL7Segment {
      * @return the operation result.
      */
     public ERRSegment setErrorLocation(String errorLocation) {
-        setField(2, errorLocation.replace('^', getComponentSeparator()));
+        setField(2, errorLocation.replace(Symbol.C_CARET, getComponentSeparator()));
         return this;
     }
 

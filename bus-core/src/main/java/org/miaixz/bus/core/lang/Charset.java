@@ -383,7 +383,7 @@ public class Charset {
     public static CharsetDecoder newDecoder(final java.nio.charset.Charset charset, final CodingErrorAction action) {
         return Assert.notNull(charset).newDecoder().onMalformedInput(action).onUnmappableCharacter(action)
                 // Sets the replacement string when an undecodable character is encountered
-                .replaceWith("?");
+                .replaceWith(Symbol.QUESTION_MARK);
     }
 
 }

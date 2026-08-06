@@ -34,6 +34,7 @@ import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonReadOptions;
@@ -80,7 +81,7 @@ public class JsonMessageConverter extends AbstractHttpMessageConverter {
      */
     @Override
     public String name() {
-        return "BusJson(" + provider.name() + ")";
+        return "BusJson(" + provider.name() + Symbol.PARENTHESE_RIGHT;
     }
 
     /**

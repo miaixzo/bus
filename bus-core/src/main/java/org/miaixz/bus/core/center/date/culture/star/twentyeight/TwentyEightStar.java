@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.center.date.culture.star.twentyeight;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.Animal;
 import org.miaixz.bus.core.center.date.culture.Land;
 import org.miaixz.bus.core.center.date.culture.Luck;
@@ -38,7 +39,7 @@ public class TwentyEightStar extends Samsara {
     /**
      * Array of names for the Twenty-Eight Mansions.
      */
-    public static final String[] NAMES = { "角", "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室", "壁", "奎",
+    public static final String[] NAMES = { Symbol.CNY_JIAO, "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室", "壁", "奎",
             "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸" };
 
     /**

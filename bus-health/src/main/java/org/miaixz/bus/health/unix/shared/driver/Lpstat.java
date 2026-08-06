@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.Printer.PrinterStatus;
 
@@ -75,7 +76,7 @@ public final class Lpstat {
                 }
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -99,7 +100,7 @@ public final class Lpstat {
             int forIdx = line.indexOf("device for ");
             if (forIdx >= 0) {
                 int nameStart = forIdx + 11;
-                int colonIdx = line.indexOf(':', nameStart);
+                int colonIdx = line.indexOf(Symbol.C_COLON, nameStart);
                 if (colonIdx > nameStart) {
                     map.put(line.substring(nameStart, colonIdx).trim(), line.substring(colonIdx + 1).trim());
                 }
@@ -133,7 +134,7 @@ public final class Lpstat {
                     currentPrinter = parts[1];
                 }
             } else if (currentPrinter != null && line.trim().startsWith("Description:")) {
-                map.put(currentPrinter, line.substring(line.indexOf(':') + 1).trim());
+                map.put(currentPrinter, line.substring(line.indexOf(Symbol.C_COLON) + 1).trim());
             }
         }
         return map;
@@ -160,13 +161,13 @@ public final class Lpstat {
             int idx = line.indexOf("printer-make-and-model='");
             if (idx >= 0) {
                 int start = idx + 24;
-                int end = line.indexOf('\'', start);
+                int end = line.indexOf(Symbol.C_SINGLE_QUOTE, start);
                 if (end > start) {
                     return line.substring(start, end);
                 }
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**
@@ -200,10 +201,10 @@ public final class Lpstat {
      */
     public static String parseStatusReason(String line) {
         if (line == null) {
-            return "";
+            return Normal.EMPTY;
         }
         int dashIdx = line.indexOf(" - ");
-        return dashIdx > 0 ? line.substring(dashIdx + 3).trim() : "";
+        return dashIdx > 0 ? line.substring(dashIdx + 3).trim() : Normal.EMPTY;
     }
 
     /**

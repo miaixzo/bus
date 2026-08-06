@@ -58,7 +58,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     /**
      * The characters that surround a group name (e.g., '[' and ']').
      */
-    private static final char[] GROUP_SURROUND = { '[', ']' };
+    private static final char[] GROUP_SURROUND = { Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT };
 
     /**
      * The character set used to read the settings file.

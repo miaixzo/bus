@@ -161,16 +161,16 @@ public class NumberValidator {
         boolean foundDigit = false;
         // deal with any possible sign up front
         final int start = (chars[0] == Symbol.C_MINUS || chars[0] == Symbol.C_PLUS) ? 1 : 0;
-        if (sz > start + 1 && chars[start] == '0' && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is
+        if (sz > start + 1 && chars[start] == Symbol.C_ZERO && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is
                                                                                                 // a decimal number
-            if (chars[start + 1] == 'x' || chars[start + 1] == 'X') { // leading 0x/0X
+            if (chars[start + 1] == 'x' || chars[start + 1] == Symbol.C_X) { // leading 0x/0X
                 int i = start + 2;
                 if (i == sz) {
                     return false;
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
-                    if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f')
+                    if ((chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_NINE) && (chars[i] < 'a' || chars[i] > 'f')
                             && (chars[i] < 'A' || chars[i] > 'F')) {
                         return false;
                     }
@@ -181,7 +181,7 @@ public class NumberValidator {
                 // leading 0, but not hex, must be octal
                 int i = start + 1;
                 for (; i < chars.length; i++) {
-                    if (chars[i] < '0' || chars[i] > '7') {
+                    if (chars[i] < Symbol.C_ZERO || chars[i] > Symbol.C_SEVEN) {
                         return false;
                     }
                 }
@@ -194,11 +194,11 @@ public class NumberValidator {
         // loop to the next to last char or to the last char if we need another digit to
         // make a valid number (e.g. chars[0..5] = "1234E")
         while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
                 foundDigit = true;
                 allowSigns = false;
 
-            } else if (chars[i] == '.') {
+            } else if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -227,7 +227,7 @@ public class NumberValidator {
             i++;
         }
         if (i < chars.length) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            if (chars[i] >= Symbol.C_ZERO && chars[i] <= Symbol.C_NINE) {
                 // no type qualifier, OK
                 return true;
             }
@@ -235,7 +235,7 @@ public class NumberValidator {
                 // can't have an E at the last byte
                 return false;
             }
-            if (chars[i] == '.') {
+            if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -246,7 +246,7 @@ public class NumberValidator {
             if (!allowSigns && (chars[i] == 'd' || chars[i] == 'D' || chars[i] == 'f' || chars[i] == 'F')) {
                 return foundDigit;
             }
-            if (chars[i] == 'l' || chars[i] == 'L') {
+            if (chars[i] == 'l' || chars[i] == Symbol.C_L) {
                 // not allowing L with an exponent or decimal point
                 return foundDigit && !hasExp && !hasDecPoint;
             }
@@ -304,7 +304,7 @@ public class NumberValidator {
             return false;
         }
         final char lastChar = s.charAt(s.length() - 1);
-        if (lastChar == 'l' || lastChar == 'L') {
+        if (lastChar == 'l' || lastChar == Symbol.C_L) {
             return true;
         }
         try {
@@ -330,7 +330,7 @@ public class NumberValidator {
         } catch (final NumberFormatException ignore) {
             return false;
         }
-        return s.contains(".");
+        return s.contains(Symbol.DOT);
     }
 
     /**

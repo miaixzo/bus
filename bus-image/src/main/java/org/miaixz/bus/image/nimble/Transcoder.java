@@ -31,6 +31,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.image.Tag;
@@ -218,7 +219,7 @@ public class Transcoder {
      * @return the mask.
      */
     private static Editable<PlanarImage> getMask(Attributes dataSet, TranscodeParam params) {
-        String stationName = dataSet.getString(Tag.StationName, "*");
+        String stationName = dataSet.getString(Tag.StationName, Symbol.STAR);
         return getMaskedImage(params.getMask(stationName));
     }
 

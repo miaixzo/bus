@@ -21,6 +21,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 
 import java.util.Date;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Runner;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -92,7 +93,7 @@ public class BuildEvent extends AbstractEvent {
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind))
-            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
+            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
     }
 
     /**

@@ -322,14 +322,14 @@ public class ManifestSeries implements ManifestXml, Comparable<ManifestSeries> {
         ManifestXml.addXmlAttribute(ATTR_DIRECT_DOWNLOAD_THUMBNAIL, thumbnail, writer);
         ManifestXml.addXmlAttribute(ATTR_WADO_TRANSFER_SYNTAX_UID, wadoTransferSyntaxUID, writer);
         ManifestXml.addXmlAttribute(ATTR_WADO_COMPRESSION_RATE, getCompressionRateString(), writer);
-        writer.append(">");
+        writer.append(Symbol.GT);
 
         ArrayList<ManifestInstance> sortedInstances = new ArrayList<>(instances.values());
         Collections.sort(sortedInstances);
         for (ManifestInstance instance : sortedInstances) {
             instance.toXml(writer);
         }
-        writer.append("\n</").append(ManifestXml.Level.SERIES.getTagName()).append(">");
+        writer.append("\n</").append(ManifestXml.Level.SERIES.getTagName()).append(Symbol.GT);
     }
 
     /**

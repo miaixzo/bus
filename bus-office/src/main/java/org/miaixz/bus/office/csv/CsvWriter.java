@@ -498,7 +498,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
 
         // DDE protection: if enabled, do not execute formulas.
         if (config.ddeSafe && isDDEUnsafeChar(valueChars[0])) {
-            writer.write('\'');
+            writer.write(Symbol.C_SINGLE_QUOTE);
         }
 
         // Content

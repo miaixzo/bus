@@ -274,7 +274,7 @@ public class EntitySchemaInitializer {
      * @return prefixed table name
      */
     private String prefixQualifiedTable(String tableName, String prefix) {
-        int qualifierIndex = tableName.lastIndexOf('.');
+        int qualifierIndex = tableName.lastIndexOf(Symbol.C_DOT);
         if (qualifierIndex < 0) {
             return prefix + tableName;
         }
@@ -288,7 +288,7 @@ public class EntitySchemaInitializer {
      * @return simple table name
      */
     private String simpleTableName(String tableName) {
-        int qualifierIndex = tableName == null ? -1 : tableName.lastIndexOf('.');
+        int qualifierIndex = tableName == null ? -1 : tableName.lastIndexOf(Symbol.C_DOT);
         return qualifierIndex < 0 ? tableName : tableName.substring(qualifierIndex + 1);
     }
 

@@ -114,7 +114,7 @@ public class HuaweiProvider extends AbstractProvider {
         if (StringKit.isEmpty(idToken)) {
             Map<String, String> form = new HashMap<>(7);
             form.put("access_token", authorization.getToken());
-            form.put("getNickName", "1");
+            form.put("getNickName", Symbol.ONE);
             form.put("nsp_svc", "GOpen.User.getInfo");
 
             Map<String, String> header = new HashMap<>(7);

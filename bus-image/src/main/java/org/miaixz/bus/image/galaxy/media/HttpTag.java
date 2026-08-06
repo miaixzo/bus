@@ -84,7 +84,7 @@ public final class HttpTag {
      */
     public static HttpTag authorization(String token) {
         return new HttpTag(Http.Header.AUTHORIZATION,
-                "Bearer " + Objects.requireNonNull(token, "Token cannot be null"));
+                Http.Auth.BEARER_PREFIX + Objects.requireNonNull(token, "Token cannot be null"));
     }
 
     /**

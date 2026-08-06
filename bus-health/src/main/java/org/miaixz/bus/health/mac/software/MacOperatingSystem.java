@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
@@ -140,7 +141,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         if (this.major > 10) {
             codeName = verProps.getProperty(Integer.toString(this.major));
         } else if (this.major == 10) {
-            codeName = verProps.getProperty(this.major + "." + this.minor);
+            codeName = verProps.getProperty(this.major + Symbol.DOT + this.minor);
         }
         if (StringKit.isBlank(codeName)) {
             Logger.warn(false, "Health", "Unable to parse version {}.{} to a codename.", this.major, this.minor);
@@ -261,7 +262,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         for (File f : files) {
             // remove .plist extension
             String name = f.getName().substring(0, f.getName().length() - 6);
-            int index = name.lastIndexOf('.');
+            int index = name.lastIndexOf(Symbol.C_DOT);
             String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
             if (!running.contains(name) && !running.contains(shortName)) {
                 OSService s = new OSService(name, 0, OSService.State.STOPPED);

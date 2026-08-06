@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**
@@ -58,7 +59,7 @@ public final class GpuInformation {
         /**
          * Instance filter for all GPU engine instances.
          */
-        NAME("*"),
+        NAME(Symbol.STAR),
 
         /**
          * Running time in 100ns units.
@@ -107,7 +108,7 @@ public final class GpuInformation {
         /**
          * Instance filter for all GPU adapter memory instances.
          */
-        NAME("*"),
+        NAME(Symbol.STAR),
 
         /**
          * Dedicated memory usage counter.

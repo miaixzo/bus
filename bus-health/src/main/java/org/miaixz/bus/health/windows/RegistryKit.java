@@ -26,6 +26,7 @@ import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.logger.Logger;
 
@@ -104,7 +105,7 @@ public final class RegistryKit {
     public static Object getRegistryValueOrNull(HKEY root, String path, String key, int accessFlag) {
         try {
             Map<String, Object> values = Advapi32Util.registryGetValues(root, path, accessFlag);
-            String valueName = key == null ? "" : key;
+            String valueName = key == null ? Normal.EMPTY : key;
             Object value = values.get(valueName);
             if (value == null) {
                 for (Map.Entry<String, Object> entry : values.entrySet()) {

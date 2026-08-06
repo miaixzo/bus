@@ -335,7 +335,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                     } else if (prefix.equals("Vendor")) {
                         Pair<String, String> pair = Parsing.parseLspciMachineReadable(split[1].trim());
                         if (pair != null) {
-                            vendor = pair.getLeft() + " (0x" + pair.getRight() + ")";
+                            vendor = pair.getLeft() + " (0x" + pair.getRight() + Symbol.PARENTHESE_RIGHT;
                         } else {
                             vendor = split[1].trim();
                         }
@@ -420,8 +420,8 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 } else if (prefix.equals("bus info")) {
                     // lshw reports PCI slot as "pci@0000:01:00.0"; the value contains multiple
                     // colons so we locate the first colon in the original line to get the full value.
-                    int colonIdx = line.indexOf(':');
-                    String raw = colonIdx >= 0 ? line.substring(colonIdx + 1).trim() : "";
+                    int colonIdx = line.indexOf(Symbol.C_COLON);
+                    String raw = colonIdx >= 0 ? line.substring(colonIdx + 1).trim() : Normal.EMPTY;
                     busInfo = raw.startsWith("pci@") ? raw.substring(4) : raw;
                 }
             }
@@ -464,7 +464,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         File drmDir = new File(drmPath);
         File[] cards = drmDir.listFiles(f -> f.getName().matches("card\\d+"));
         if (cards == null) {
-            return new Triplet<>("", "", "");
+            return new Triplet<>(Normal.EMPTY, Normal.EMPTY, Normal.EMPTY);
         }
         Triplet<String, String, String> firstWithDriver = null;
         for (File card : cards) {
@@ -483,7 +483,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
             }
         }
         // Fall back to first card with a driver symlink
-        return firstWithDriver != null ? firstWithDriver : new Triplet<>("", "", "");
+        return firstWithDriver != null ? firstWithDriver : new Triplet<>(Normal.EMPTY, Normal.EMPTY, Normal.EMPTY);
     }
 
     /**
@@ -495,13 +495,13 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      */
     static String readUeventValue(String ueventPath, String key) {
         List<String> lines = Builder.readFile(ueventPath);
-        String prefix = key + "=";
+        String prefix = key + Symbol.EQUAL;
         for (String line : lines) {
             if (line.startsWith(prefix)) {
                 return line.substring(prefix.length()).trim();
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**

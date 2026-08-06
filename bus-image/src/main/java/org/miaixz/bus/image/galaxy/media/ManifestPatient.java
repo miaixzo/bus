@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -60,7 +61,7 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
     /**
      * The patient name value.
      */
-    private String patientName = "";
+    private String patientName = Normal.EMPTY;
 
     /**
      * The patient birth date value.
@@ -131,7 +132,7 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
      * @param patientName the patient name.
      */
     public void setPatientName(String patientName) {
-        this.patientName = patientName == null ? "" : patientName;
+        this.patientName = patientName == null ? Normal.EMPTY : patientName;
     }
 
     /**
@@ -261,14 +262,14 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
         ManifestXml.addXmlAttribute(Tag.PatientBirthDate, patientBirthDate, writer);
         ManifestXml.addXmlAttribute(Tag.PatientBirthTime, patientBirthTime, writer);
         ManifestXml.addXmlAttribute(Tag.PatientSex, patientSex, writer);
-        writer.append(">");
+        writer.append(Symbol.GT);
 
         ArrayList<ManifestStudy> sortedStudies = new ArrayList<>(studies.values());
         Collections.sort(sortedStudies);
         for (ManifestStudy study : sortedStudies) {
             study.toXml(writer);
         }
-        writer.append("\n</").append(ManifestXml.Level.PATIENT.getTagName()).append(">");
+        writer.append("\n</").append(ManifestXml.Level.PATIENT.getTagName()).append(Symbol.GT);
     }
 
     /**

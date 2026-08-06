@@ -109,7 +109,7 @@ public final class GeomPartList {
                         identification = Normal.UNKNOWN;
                         type = Normal.UNKNOWN;
                         uuid = Normal.UNKNOWN;
-                        label = "";
+                        label = Normal.EMPTY;
                         size = 0;
                     }
                     // Verify new entry is a partition

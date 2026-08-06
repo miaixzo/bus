@@ -34,6 +34,8 @@ import com.sun.jna.platform.win32.WinNT.HRESULT;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.windows.driver.DxgiAdapterInfo;
 import org.miaixz.bus.logger.Logger;
 
@@ -504,9 +506,9 @@ public final class WindowsDxgi {
      */
     public static String normalizeName(String name) {
         if (name == null) {
-            return "";
+            return Normal.EMPTY;
         }
-        return name.toLowerCase(java.util.Locale.ROOT).replace("(r)", "").replace("(tm)", "").replaceAll("\\s+", " ")
+        return name.toLowerCase(java.util.Locale.ROOT).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY).replaceAll("\\s+", Symbol.SPACE)
                 .trim();
     }
 

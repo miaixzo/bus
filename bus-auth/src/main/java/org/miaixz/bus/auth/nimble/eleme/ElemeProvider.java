@@ -341,7 +341,7 @@ public class ElemeProvider extends AbstractProvider {
      * @return a unique request ID string
      */
     private String getRequestId() {
-        return (ID.objectId() + "|" + System.currentTimeMillis()).toUpperCase();
+        return (ID.objectId() + Symbol.OR + System.currentTimeMillis()).toUpperCase();
     }
 
     /**

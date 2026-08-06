@@ -30,6 +30,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -137,7 +138,7 @@ public abstract class DicomFiles {
                 boolean b = scb.dicomFile(path, fmi, -1, ds);
                 Logger.debug(false, "Image", "DICOM XML file scanned: fileName={}, accepted={}", path.getFileName(), b);
                 if (printout) {
-                    System.out.print(b ? '.' : 'I');
+                    System.out.print(b ? Symbol.C_DOT : 'I');
                 }
             } catch (Exception e) {
                 Logger.warn(
@@ -168,7 +169,7 @@ public abstract class DicomFiles {
                         dsPos,
                         b);
                 if (printout) {
-                    System.out.print(b ? '.' : 'I');
+                    System.out.print(b ? Symbol.C_DOT : 'I');
                 }
             } catch (Exception e) {
                 Logger.warn(

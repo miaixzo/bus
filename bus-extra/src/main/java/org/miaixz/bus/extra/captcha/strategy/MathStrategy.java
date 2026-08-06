@@ -103,7 +103,7 @@ public class MathStrategy implements CodeStrategy {
         number1 = StringKit.padAfter(number1, this.numberLength, Symbol.C_SPACE);
         number2 = StringKit.padAfter(number2, this.numberLength, Symbol.C_SPACE);
 
-        return StringKit.builder().append(number1).append(operator).append(number2).append('=').toString();
+        return StringKit.builder().append(number1).append(operator).append(number2).append(Symbol.C_EQUAL).toString();
     }
 
     /**
@@ -145,7 +145,7 @@ public class MathStrategy implements CodeStrategy {
      * @return The maximum value for the numbers.
      */
     private int getLimit() {
-        return Integer.parseInt("1" + StringKit.repeat('0', this.numberLength));
+        return Integer.parseInt(Symbol.ONE + StringKit.repeat(Symbol.C_ZERO, this.numberLength));
     }
 
 }

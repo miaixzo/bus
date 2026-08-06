@@ -25,6 +25,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Diff;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
@@ -78,7 +79,7 @@ public class NoteEvent extends AbstractEvent {
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind))
-            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
+            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
     }
 
     /**

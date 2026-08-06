@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CompareKit;
 
@@ -113,7 +114,7 @@ public class Version implements Comparable<Version>, Serializable {
 
         while (i < n) {
             c = v.charAt(i);
-            if (c == '.') {
+            if (c == Symbol.C_DOT) {
                 i++;
                 continue;
             }
@@ -135,7 +136,7 @@ public class Version implements Comparable<Version>, Serializable {
         // Parse pre-release version
         while (i < n) {
             c = v.charAt(i);
-            if (c >= '0' && c <= '9')
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
                 i = takeNumber(v, i, pre);
             else
                 i = takeString(v, i, pre);
@@ -143,7 +144,7 @@ public class Version implements Comparable<Version>, Serializable {
                 break;
             }
             c = v.charAt(i);
-            if (c == '.' || c == Symbol.C_MINUS) {
+            if (c == Symbol.C_DOT || c == Symbol.C_MINUS) {
                 i++;
                 continue;
             }
@@ -160,7 +161,7 @@ public class Version implements Comparable<Version>, Serializable {
         // Parse build version
         while (i < n) {
             c = v.charAt(i);
-            if (c >= '0' && c <= '9') {
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                 i = takeNumber(v, i, build);
             } else {
                 i = takeString(v, i, build);
@@ -169,7 +170,7 @@ public class Version implements Comparable<Version>, Serializable {
                 break;
             }
             c = v.charAt(i);
-            if (c == '.' || c == Symbol.C_MINUS || c == Symbol.C_PLUS) {
+            if (c == Symbol.C_DOT || c == Symbol.C_MINUS || c == Symbol.C_PLUS) {
                 i++;
             }
         }
@@ -266,12 +267,12 @@ public class Version implements Comparable<Version>, Serializable {
      */
     private static int takeNumber(final String s, int i, final List<Object> acc) {
         char c = s.charAt(i);
-        int d = (c - '0');
+        int d = (c - Symbol.C_ZERO);
         final int n = s.length();
         while (++i < n) {
             c = s.charAt(i);
             if (CharKit.isNumber(c)) {
-                d = d * 10 + (c - '0');
+                d = d * 10 + (c - Symbol.C_ZERO);
                 continue;
             }
             break;
@@ -294,7 +295,7 @@ public class Version implements Comparable<Version>, Serializable {
         final int n = s.length();
         while (++i < n) {
             final char c = s.charAt(i);
-            if (c != '.' && c != Symbol.C_MINUS && c != Symbol.C_PLUS && !(c >= '0' && c <= '9')) {
+            if (c != Symbol.C_DOT && c != Symbol.C_MINUS && c != Symbol.C_PLUS && !(c >= Symbol.C_ZERO && c <= Symbol.C_NINE)) {
                 continue;
             }
             break;

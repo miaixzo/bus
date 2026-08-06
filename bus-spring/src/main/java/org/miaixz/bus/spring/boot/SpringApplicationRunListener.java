@@ -32,6 +32,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.boot.environment.EnvironmentKeys;
@@ -292,7 +293,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             }
         }
         if (StringKit.hasText(logging)) {
-            message.append(" with [").append(logging).append(']');
+            message.append(" with [").append(logging).append(Symbol.C_BRACKET_RIGHT);
         }
         return message.append(" in ").append(timeTaken.toMillis() / 1000.0).append(" seconds").toString();
     }

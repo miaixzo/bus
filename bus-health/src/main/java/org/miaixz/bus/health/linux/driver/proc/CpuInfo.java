@@ -27,6 +27,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
@@ -165,22 +166,22 @@ public final class CpuInfo {
      */
     private static String queryBoardManufacturer(char digit) {
         switch (digit) {
-            case '0':
+            case Symbol.C_ZERO:
                 return "Sony UK";
 
-            case '1':
+            case Symbol.C_ONE:
                 return "Egoman";
 
-            case '2':
+            case Symbol.C_TWO:
                 return "Embest";
 
-            case '3':
+            case Symbol.C_THREE:
                 return "Sony Japan";
 
-            case '4':
+            case Symbol.C_FOUR:
                 return "Embest";
 
-            case '5':
+            case Symbol.C_FIVE:
                 return "Stadium";
 
             default:

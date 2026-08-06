@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
 
@@ -186,7 +187,7 @@ public class TranscodeParam {
     public MaskArea getMask(String key) {
         MaskArea mask = maskMap.get(key);
         if (mask == null) {
-            mask = maskMap.get("*");
+            mask = maskMap.get(Symbol.STAR);
         }
         return mask;
     }

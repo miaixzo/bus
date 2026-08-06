@@ -112,7 +112,7 @@ final class LinuxSensors extends AbstractSensors {
     /**
      * The TEMP_INPUT_PATTERN constant.
      */
-    private static final Pattern TEMP_INPUT_PATTERN = Pattern.compile("^" + TEMP + "\\d+" + INPUT_SUFFIX + "$");
+    private static final Pattern TEMP_INPUT_PATTERN = Pattern.compile(Symbol.CARET + TEMP + "\\d+" + INPUT_SUFFIX + Symbol.DOLLAR);
 
     // Base path constants
     /**

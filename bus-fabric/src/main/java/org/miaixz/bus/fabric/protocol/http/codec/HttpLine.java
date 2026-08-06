@@ -86,10 +86,10 @@ public final class HttpLine {
         final char hundreds = value.charAt(codeStart);
         final char tens = value.charAt(codeStart + Normal._1);
         final char units = value.charAt(codeStart + Normal._2);
-        if (hundreds < '0' || hundreds > '9' || tens < '0' || tens > '9' || units < '0' || units > '9') {
+        if (hundreds < Symbol.C_ZERO || hundreds > Symbol.C_NINE || tens < Symbol.C_ZERO || tens > Symbol.C_NINE || units < Symbol.C_ZERO || units > Symbol.C_NINE) {
             throw new ProtocolException("Invalid HTTP status code");
         }
-        final int code = (hundreds - '0') * 100 + (tens - '0') * Normal._10 + units - '0';
+        final int code = (hundreds - Symbol.C_ZERO) * 100 + (tens - Symbol.C_ZERO) * Normal._10 + units - Symbol.C_ZERO;
         if (code < Http.Status.CONTINUE || code >= Normal.KILO) {
             throw new ProtocolException("HTTP status code out of range");
         }
@@ -233,10 +233,10 @@ public final class HttpLine {
      * @return {@code true} when the character belongs to the RFC HTTP token alphabet
      */
     private static boolean tchar(final char c) {
-        return c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c == Symbol.C_NOT
+        return c >= Symbol.C_ZERO && c <= Symbol.C_NINE || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c == Symbol.C_NOT
                 || c == Symbol.C_HASH || c == Symbol.C_DOLLAR || c == Symbol.C_PERCENT || c == Symbol.C_AND
                 || c == Symbol.C_SINGLE_QUOTE || c == Symbol.C_STAR || c == Symbol.C_PLUS || c == Symbol.C_MINUS
-                || c == Symbol.C_DOT || c == Symbol.C_CARET || c == Symbol.C_UNDERLINE || c == '`' || c == Symbol.C_OR
+                || c == Symbol.C_DOT || c == Symbol.C_CARET || c == Symbol.C_UNDERLINE || c == Symbol.C_BACKTICK || c == Symbol.C_OR
                 || c == Symbol.C_TILDE;
     }
 

@@ -22,6 +22,7 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.center.date.Galaxy;
 import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.culture.JulianDay;
@@ -209,7 +210,7 @@ public class LunarMonth extends MonthParts {
      * @return the name
      */
     public String getName() {
-        return (leap ? "闰" : "") + NAMES[month - 1];
+        return (leap ? "闰" : Normal.EMPTY) + NAMES[month - 1];
     }
 
     /**

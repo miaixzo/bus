@@ -865,7 +865,7 @@ final class DefaultDispatcher implements Dispatcher {
             final String retained;
             synchronized (background) {
                 retained = background.values().stream().map(
-                        task -> task.handle.key() + '[' + task.handle.state().name() + "]@" + topFrame(task.runner))
+                        task -> task.handle.key() + Symbol.C_BRACKET_LEFT + task.handle.state().name() + "]@" + topFrame(task.runner))
                         .collect(Collectors.joining(Symbol.COMMA));
             }
             current = append(current, new StatefulException(e.getMessage() + "; retained=" + retained));

@@ -24,6 +24,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -211,7 +212,7 @@ public class MLLPConnection implements Closeable {
         if (!Logger.isInfoEnabled())
             return;
         int mshlen = 0;
-        while (mshlen < len && b[off + mshlen] != '\r')
+        while (mshlen < len && b[off + mshlen] != Symbol.C_CR)
             mshlen++;
         Logger.info(
                 false,

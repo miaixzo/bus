@@ -99,7 +99,7 @@ public class DropboxProvider extends AbstractProvider {
             this.context.setEndpoint(API_BASE);
         }
         if (StringKit.isBlank(this.context.getBucket())) {
-            this.context.setBucket("/");
+            this.context.setBucket(Symbol.SLASH);
         }
     }
 
@@ -401,7 +401,7 @@ public class DropboxProvider extends AbstractProvider {
                             extend.put("client_modified", entry.get("client_modified"));
                             extend.put("server_modified", entry.get("server_modified"));
 
-                            String size = entry.get("size") != null ? entry.get("size").toString() : "0";
+                            String size = entry.get("size") != null ? entry.get("size").toString() : Symbol.ZERO;
                             blobs.add(
                                     Blob.builder().name((String) entry.get("name")).size(size).extend(extend).build());
                         }
@@ -783,7 +783,7 @@ public class DropboxProvider extends AbstractProvider {
         extend.put("rev", metadata.get("rev"));
 
         return Blob.builder().inputStream(inputStream).bucket(bucket).key(path).name((String) metadata.get("name"))
-                .path(path).size(metadata.get("size") == null ? "0" : String.valueOf(metadata.get("size")))
+                .path(path).size(metadata.get("size") == null ? Symbol.ZERO : String.valueOf(metadata.get("size")))
                 .hash((String) metadata.get("content_hash")).extend(extend).build();
     }
 

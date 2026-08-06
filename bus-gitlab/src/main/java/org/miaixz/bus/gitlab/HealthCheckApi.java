@@ -25,6 +25,7 @@ import java.net.URL;
 import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.HealthCheckInfo;
 import org.miaixz.bus.logger.Logger;
 
@@ -76,7 +77,7 @@ public class HealthCheckApi extends AbstractApi {
      */
     public HealthCheckInfo getLiveness(String token) throws RelevantException {
         try {
-            URL livenessUrl = getApiClient().getUrlWithBase("-", "liveness");
+            URL livenessUrl = getApiClient().getUrlWithBase(Symbol.MINUS, "liveness");
             GitLabApiForm formData = new GitLabApiForm().withParam("token", token, false);
             Response response = get(Response.Status.OK, formData.asMap(), livenessUrl);
             return (response.readEntity(HealthCheckInfo.class));
@@ -122,7 +123,7 @@ public class HealthCheckApi extends AbstractApi {
      */
     public HealthCheckInfo getReadiness(String token) throws RelevantException {
         try {
-            URL readinessUrl = getApiClient().getUrlWithBase("-", "readiness");
+            URL readinessUrl = getApiClient().getUrlWithBase(Symbol.MINUS, "readiness");
             GitLabApiForm formData = new GitLabApiForm().withParam("token", token, false);
             Response response = get(Response.Status.OK, formData.asMap(), readinessUrl);
             return (response.readEntity(HealthCheckInfo.class));

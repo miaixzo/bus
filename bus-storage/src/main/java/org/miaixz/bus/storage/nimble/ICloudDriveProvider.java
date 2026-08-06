@@ -101,7 +101,7 @@ public class ICloudDriveProvider extends AbstractProvider {
             this.context.setEndpoint(API_BASE);
         }
         if (StringKit.isBlank(this.context.getBucket())) {
-            this.context.setBucket("/");
+            this.context.setBucket(Symbol.SLASH);
         }
 
         this.apiToken = this.context.getAccessKey();
@@ -838,9 +838,9 @@ public class ICloudDriveProvider extends AbstractProvider {
             Map<String, Object> fields = (Map<String, Object>) record.get("fields");
             String path = (String) ((Map<String, Object>) fields.get("path")).get("value");
             Object sizeObj = ((Map<String, Object>) fields.get("size")).get("value");
-            String sizeStr = sizeObj != null ? String.valueOf(sizeObj) : "0";
+            String sizeStr = sizeObj != null ? String.valueOf(sizeObj) : Symbol.ZERO;
 
-            return Blob.builder().name(path.substring(path.lastIndexOf('/') + 1)).size(sizeStr).build();
+            return Blob.builder().name(path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1)).size(sizeStr).build();
         } catch (Exception e) {
             Logger.error(
                     false,
@@ -901,7 +901,7 @@ public class ICloudDriveProvider extends AbstractProvider {
 
         return Blob.builder().inputStream(inputStream).bucket(bucket).key(path)
                 .name(path.substring(path.lastIndexOf(Symbol.SLASH) + 1)).path(path)
-                .size(sizeObject == null ? "0" : String.valueOf(sizeObject)).extend(extend).build();
+                .size(sizeObject == null ? Symbol.ZERO : String.valueOf(sizeObject)).extend(extend).build();
     }
 
     /**

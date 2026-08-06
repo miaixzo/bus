@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -79,7 +80,7 @@ public final class MacInstalledApps {
         List<String> output = Executor.runNative("system_profiler -xml SPApplicationsDataType");
 
         try {
-            List<Map<String, String>> plistValues = parseItems(String.join("", output));
+            List<Map<String, String>> plistValues = parseItems(String.join(Normal.EMPTY, output));
 
             if (!plistValues.isEmpty()) {
                 Set<ApplicationInfo> appInfoSet = new LinkedHashSet<>();
@@ -105,12 +106,12 @@ public final class MacInstalledApps {
                                 if ("bplist00".equals(new String(readFirstBytes(appPlistFile), Charset.UTF_8))) {
                                     // convert binary plist to xml
                                     output = Executor.runNative(
-                                            new String[] { "plutil", "-convert", "xml1", "-o", "-",
+                                            new String[] { "plutil", "-convert", "xml1", "-o", Symbol.MINUS,
                                                     appPlistFile.getAbsolutePath() });
                                 } else {
                                     output = Builder.readFile(appPlistFile.getAbsolutePath());
                                 }
-                                String xml = String.join("", output);
+                                String xml = String.join(Normal.EMPTY, output);
                                 String getInfoString = readStringValue(xml, "CFBundleGetInfoString");
                                 if (getInfoString != null && !getInfoString.isEmpty()) {
                                     additionalInfo.put("Get Info String", getInfoString);
@@ -243,7 +244,7 @@ public final class MacInstalledApps {
             }
 
             String key = unescape(dictInner.substring(kStart + 5, kEnd).trim());
-            int vOpen = dictInner.indexOf('<', kEnd + 6);
+            int vOpen = dictInner.indexOf(Symbol.C_LT, kEnd + 6);
             if (vOpen < 0) {
                 break;
             }
@@ -280,7 +281,7 @@ public final class MacInstalledApps {
      * @return the parse string array result
      */
     static String parseStringArray(String arrayInner) {
-        int lt = arrayInner.indexOf('<');
+        int lt = arrayInner.indexOf(Symbol.C_LT);
         if (lt >= 0) {
             if (startsWith(arrayInner, lt, TAG_STRING_OPEN)) {
                 String inner = extractSimpleInner(arrayInner, lt, TAG_STRING_OPEN, TAG_STRING_CLOSE);
@@ -315,11 +316,11 @@ public final class MacInstalledApps {
     private static String extractSimpleInner(String s, int openPos, String openTag, String closeTag) {
         int start = s.indexOf(openTag, openPos);
         if (start < 0) {
-            return "";
+            return Normal.EMPTY;
         }
         int end = s.indexOf(closeTag, start + openTag.length());
         if (end < 0) {
-            return "";
+            return Normal.EMPTY;
         }
         return s.substring(start + openTag.length(), end);
     }
@@ -394,8 +395,8 @@ public final class MacInstalledApps {
      * @return the unescape result
      */
     static String unescape(String s) {
-        return s.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"")
-                .replace("&apos;", "'");
+        return s.replace("&amp;", Symbol.AND).replace("&lt;", Symbol.LT).replace("&gt;", Symbol.GT).replace("&quot;", Symbol.DOUBLE_QUOTES)
+                .replace("&apos;", Symbol.SINGLE_QUOTE);
     }
 
     /**

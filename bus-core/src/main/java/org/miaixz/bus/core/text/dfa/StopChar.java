@@ -21,6 +21,7 @@ package org.miaixz.bus.core.text.dfa;
 
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
@@ -44,8 +45,8 @@ public class StopChar {
      * various punctuation marks, symbols, and whitespace characters.
      */
     public static final Set<Character> STOP_WORD = SetKit.of(
-            ' ',
-            '\'',
+            Symbol.C_SPACE,
+            Symbol.C_SINGLE_QUOTE,
             '、',
             '。',
             '·',
@@ -76,7 +77,7 @@ public class StopChar {
             '】',
             '±',
             '＋',
-            '－',
+            Symbol.C_LINE,
             '×',
             '÷',
             '∧',
@@ -312,29 +313,29 @@ public class StopChar {
             '╰',
             '╯',
             '',
-            '_',
+            Symbol.C_UNDERLINE,
             '',
-            '^',
+            Symbol.C_CARET,
             '（',
             '：',
             '！',
-            '/',
-            '\\',
-            '\"',
-            '<',
-            '>',
-            '`',
-            '{',
-            '}',
-            '~',
-            '(',
-            ')',
-            '-',
-            '$',
-            '@',
-            '*',
-            '&',
-            '#',
+            Symbol.C_SLASH,
+            Symbol.C_BACKSLASH,
+            Symbol.C_DOUBLE_QUOTES,
+            Symbol.C_LT,
+            Symbol.C_GT,
+            Symbol.C_BACKTICK,
+            Symbol.C_BRACE_LEFT,
+            Symbol.C_BRACE_RIGHT,
+            Symbol.C_TILDE,
+            Symbol.C_PARENTHESE_LEFT,
+            Symbol.C_PARENTHESE_RIGHT,
+            Symbol.C_MINUS,
+            Symbol.C_DOLLAR,
+            Symbol.C_AT,
+            Symbol.C_STAR,
+            Symbol.C_AND,
+            Symbol.C_HASH,
             '卐',
             '㎎',
             '㎏',
@@ -347,16 +348,16 @@ public class StopChar {
             '㏑',
             '㏒',
             '㏕',
-            '+',
-            '=',
-            '?',
-            ':',
-            '.',
-            '!',
-            ';',
-            ']',
-            '|',
-            '%');
+            Symbol.C_PLUS,
+            Symbol.C_EQUAL,
+            Symbol.C_QUESTION_MARK,
+            Symbol.C_COLON,
+            Symbol.C_DOT,
+            Symbol.C_NOT,
+            Symbol.C_SEMICOLON,
+            Symbol.C_BRACKET_RIGHT,
+            Symbol.C_OR,
+            Symbol.C_PERCENT);
 
     /**
      * Checks if the given character is a stop character. Stop characters are typically ignored during text processing.

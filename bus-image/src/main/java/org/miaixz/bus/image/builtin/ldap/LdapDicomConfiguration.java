@@ -200,7 +200,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         try {
             // split baseDN from LDAP URL
             String s = map.get(Context.PROVIDER_URL);
-            int end = s.lastIndexOf('/');
+            int end = s.lastIndexOf(Symbol.C_SLASH);
             map.put(Context.PROVIDER_URL, s.substring(0, end));
             this.baseDN = s.substring(end + 1);
             this.ctx = new ReconnectDirContext(map);
@@ -231,7 +231,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         if (value == null)
             return;
 
-        sb.append('(').append(attrid).append('=').append(LdapBuilder.toString(value)).append(')');
+        sb.append(Symbol.C_PARENTHESE_LEFT).append(attrid).append(Symbol.C_EQUAL).append(LdapBuilder.toString(value)).append(Symbol.C_PARENTHESE_RIGHT);
     }
 
     /**
@@ -1047,7 +1047,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         } finally {
             LdapBuilder.safeClose(ne);
         }
-        String deviceDN = childDN.substring(childDN.indexOf(',') + 1);
+        String deviceDN = childDN.substring(childDN.indexOf(Symbol.C_COMMA) + 1);
         return loadDevice(deviceDN);
     }
 
@@ -1864,7 +1864,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
             while (aets.hasMore()) {
                 String rdn = aets.next().getName();
                 if (!rdn.equals("dicomAETitle=*"))
-                    dns.add(rdn + ',' + aetsRegistryDN);
+                    dns.add(rdn + Symbol.C_COMMA + aetsRegistryDN);
             }
         } finally {
             LdapBuilder.safeClose(aets);
@@ -1876,7 +1876,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
         try {
             while (webApps.hasMore()) {
                 String rdn = webApps.next().getName();
-                dns.add(rdn + ',' + webAppsRegistryDN);
+                dns.add(rdn + Symbol.C_COMMA + webAppsRegistryDN);
             }
         } finally {
             LdapBuilder.safeClose(webApps);
@@ -2012,7 +2012,7 @@ public final class LdapDicomConfiguration implements DicomConfiguration {
      * @throws InternalException if the operation cannot be completed.
      */
     private void initConfiguration() throws InternalException {
-        setConfigurationDN("cn=" + configurationCN + ',' + baseDN);
+        setConfigurationDN("cn=" + configurationCN + Symbol.C_COMMA + baseDN);
         try {
             createSubcontext(configurationDN, LdapBuilder.attrs(configurationRoot, "cn", configurationCN));
             createSubcontext(devicesDN, LdapBuilder.attrs("dicomDevicesRoot", "cn", "Devices"));

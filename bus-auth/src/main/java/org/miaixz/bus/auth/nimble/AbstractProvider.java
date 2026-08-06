@@ -303,7 +303,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                 "OAuth token request started: provider={}, source={}, method=POST, endpoint={}, codePresent={}",
                 getClass().getSimpleName(),
                 this.complex == null ? null : this.complex.getName(),
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 StringKit.isNotEmpty(code));
         try {
             String response = post(url);
@@ -323,7 +323,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                     "OAuth token request failed: provider={}, source={}, method=POST, endpoint={}, exception={}",
                     getClass().getSimpleName(),
                     this.complex == null ? null : this.complex.getName(),
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw e;
         }
@@ -343,7 +343,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                 "OAuth token request started: provider={}, source={}, method=GET, endpoint={}, codePresent={}",
                 getClass().getSimpleName(),
                 this.complex == null ? null : this.complex.getName(),
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 StringKit.isNotEmpty(code));
         try {
             String response = get(url);
@@ -363,7 +363,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                     "OAuth token request failed: provider={}, source={}, method=GET, endpoint={}, exception={}",
                     getClass().getSimpleName(),
                     this.complex == null ? null : this.complex.getName(),
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw e;
         }
@@ -383,7 +383,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                 "OAuth userinfo request started: provider={}, source={}, endpoint={}, tokenPresent={}",
                 getClass().getSimpleName(),
                 this.complex == null ? null : this.complex.getName(),
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 authorization != null && StringKit.isNotEmpty(authorization.getToken()));
         try {
             String response = get(url);
@@ -403,7 +403,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                     "OAuth userinfo request failed: provider={}, source={}, endpoint={}, exception={}",
                     getClass().getSimpleName(),
                     this.complex == null ? null : this.complex.getName(),
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw e;
         }
@@ -423,7 +423,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                 "OAuth revoke request started: provider={}, source={}, endpoint={}, tokenPresent={}",
                 getClass().getSimpleName(),
                 this.complex == null ? null : this.complex.getName(),
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 authorization != null && StringKit.isNotEmpty(authorization.getToken()));
         try {
             String response = get(url);
@@ -443,7 +443,7 @@ public abstract class AbstractProvider extends FabricX implements Provider {
                     "OAuth revoke request failed: provider={}, source={}, endpoint={}, exception={}",
                     getClass().getSimpleName(),
                     this.complex == null ? null : this.complex.getName(),
-                    url == null ? null : url.replaceFirst("\\?.*$", ""),
+                    url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                     e.getClass().getSimpleName());
             throw e;
         }

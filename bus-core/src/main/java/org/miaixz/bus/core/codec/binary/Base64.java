@@ -385,9 +385,9 @@ public class Base64 {
     private static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
             case Symbol.C_SPACE:
-            case '\n':
-            case '\r':
-            case '\t':
+            case Symbol.C_LF:
+            case Symbol.C_CR:
+            case Symbol.C_TAB:
                 return true;
 
             default:

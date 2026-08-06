@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * An efficient replacer that finds and replaces specified keywords with corresponding values. This implementation is
  * based on the Aho-Corasick automaton algorithm, which significantly improves efficiency when the original string to be
@@ -143,9 +146,9 @@ public class HighMultiReplacer extends StringReplacer {
                 // Add direct keyword format (e.g., field)
                 buildTrieTree(text, text);
                 // Add ${} wrapped format (e.g., ${field})
-                buildTrieTree("${" + text + "}", text);
+                buildTrieTree("${" + text + Symbol.BRACE_RIGHT, text);
                 // Add {} wrapped format (e.g., {field})
-                buildTrieTree("{" + text + "}", text);
+                buildTrieTree(Symbol.BRACE_LEFT + text + Symbol.BRACE_RIGHT, text);
             }
         }
 
@@ -221,7 +224,7 @@ public class HighMultiReplacer extends StringReplacer {
                     if (curr.isWord()) {
                         // Full keyword matched, append the replacement value
                         final Object replacement = target.get(curr.text);
-                        stringBuilder.append(replacement != null ? replacement : "");
+                        stringBuilder.append(replacement != null ? replacement : Normal.EMPTY);
                         curr = root; // Reset the state machine
                     }
                     i++;

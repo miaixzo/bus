@@ -22,6 +22,7 @@ package org.miaixz.bus.image.galaxy.media;
 import java.util.Collection;
 import java.util.Objects;
 
+
 /**
  * Manifest query result enriched with WADO retrieval parameters and viewer message metadata.
  *

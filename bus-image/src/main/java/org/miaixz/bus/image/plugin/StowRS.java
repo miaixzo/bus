@@ -42,6 +42,7 @@ import jakarta.json.stream.JsonGenerator;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -542,7 +543,7 @@ public class StowRS {
         String header = String.format(
                 "STOW-RS server response message: HTTP Status-Code %d: %s",
                 responseCode,
-                responseMessage == null ? "" : responseMessage);
+                responseMessage == null ? Normal.EMPTY : responseMessage);
         if (responseBody != null && !responseBody.isBlank()) {
             Logger.error(false, "Image", "{} - body: {}", header, responseBody);
             throw new IOException(header + " - " + truncate(responseBody, MAX_BODY_MESSAGE));
@@ -560,7 +561,7 @@ public class StowRS {
      * @return the truncated response body.
      */
     private static String truncate(String value, int max) {
-        String stripped = value.replaceAll("\\s+", " ").strip();
+        String stripped = value.replaceAll("\\s+", Symbol.SPACE).strip();
         return stripped.length() <= max ? stripped : stripped.substring(0, max) + "...";
     }
 
@@ -712,7 +713,7 @@ public class StowRS {
         supplementSOPClass(metadata, firstBulkdataFileContentType.getSOPClassUID());
         metadata.addAll(attrs);
         if (!url.endsWith("studies"))
-            metadata.setString(Tag.StudyInstanceUID, VR.UI, url.substring(url.lastIndexOf("/") + 1));
+            metadata.setString(Tag.StudyInstanceUID, VR.UI, url.substring(url.lastIndexOf(Symbol.SLASH) + 1));
         supplementMissingUIDs(metadata);
         return metadata;
     }
@@ -846,7 +847,7 @@ public class StowRS {
             requestProperties.put(Http.Header.AUTHORIZATION, authorization);
         if (httpHeaders != null)
             for (String httpHeader : httpHeaders) {
-                int delim = httpHeader.indexOf(':');
+                int delim = httpHeader.indexOf(Symbol.C_COLON);
                 requestProperties.put(httpHeader.substring(0, delim), httpHeader.substring(delim + 1).trim());
             }
         return requestProperties;
@@ -1427,7 +1428,7 @@ public class StowRS {
          */
         static FileContentType valueOf(String contentType, Path path) {
             String fileName = path.toFile().getName();
-            String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+            String ext = fileName.substring(fileName.lastIndexOf(Symbol.C_DOT) + 1);
             return fileContentType(contentType != null ? contentType : ext);
         }
 

@@ -133,7 +133,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = head(
                     this.context.getEndpoint() + path,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     return Message.<Blob>builder().errcode(toError(response.code()).getKey())
@@ -149,7 +149,7 @@ public class UpyunOssProvider extends AbstractProvider {
                         .errmsg(ErrorCode._SUCCESS.getValue())
                         .data(
                                 Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
-                                        .size(header(response, Http.Header.CONTENT_LENGTH, "0"))
+                                        .size(header(response, Http.Header.CONTENT_LENGTH, Symbol.ZERO))
                                         .type(header(response, Http.Header.CONTENT_TYPE))
                                         .hash(header(response, Http.Header.ETAG)).extend(extend).build())
                         .build();
@@ -215,7 +215,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             Response response = get(
                     this.context.getEndpoint() + path,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date));
             if (!response.successful()) {
                 Errors error = toError(response.code());
@@ -231,7 +231,7 @@ public class UpyunOssProvider extends AbstractProvider {
             return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(stream(response)).bucket(bucket).key(objectKey).name(name)
-                                    .path(objectKey).size(header(response, Http.Header.CONTENT_LENGTH, "0"))
+                                    .path(objectKey).size(header(response, Http.Header.CONTENT_LENGTH, Symbol.ZERO))
                                     .type(header(response, Http.Header.CONTENT_TYPE))
                                     .hash(header(response, Http.Header.ETAG)).extend(extend).build())
                     .build();
@@ -291,7 +291,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
@@ -359,7 +359,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
@@ -406,7 +406,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = get(
                     this.context.getEndpoint() + path,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date),
                     header("x-upyun-list-limit", "100"))) {
                 if (!response.successful()) {
@@ -493,7 +493,7 @@ public class UpyunOssProvider extends AbstractProvider {
             byte[] content;
             try (Response response = get(
                     this.context.getEndpoint() + oldPath,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + getSignature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + getSignature),
                     header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
@@ -509,7 +509,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.context.getEndpoint() + newPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + putSignature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + putSignature),
                     header(Http.Header.DATE, putDate),
                     header(Http.Header.CONTENT_LENGTH, String.valueOf(content.length)))) {
                 if (!response.successful()) {
@@ -523,7 +523,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + oldPath,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + deleteSignature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + deleteSignature),
                     header(Http.Header.DATE, deleteDate))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
@@ -597,7 +597,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.context.getEndpoint() + requestPath,
                     content,
                     MediaType.APPLICATION_OCTET_STREAM,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date),
                     header(Http.Header.CONTENT_LENGTH, String.valueOf(content.length)))) {
                 if (!response.successful()) {
@@ -721,7 +721,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + requestPath,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + ":" + signature),
+                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);

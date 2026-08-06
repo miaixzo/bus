@@ -22,6 +22,7 @@ package org.miaixz.bus.core.text;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.center.function.ConsumerX;
 
 /**
@@ -312,7 +313,7 @@ public final class StringBuilderPool {
      */
     public static String join(String... parts) {
         if (parts == null || parts.length == 0) {
-            return "";
+            return Normal.EMPTY;
         }
 
         // Calculate total length to select the correct pool tier

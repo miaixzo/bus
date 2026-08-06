@@ -126,7 +126,7 @@ public class LambdaX {
                 // If it is an array, it needs to end with ";" to be loaded
                 instantiatedTypeNames[i] += Symbol.SEMICOLON;
             } else {
-                if (instantiatedTypeNames[i].startsWith("L")) {
+                if (instantiatedTypeNames[i].startsWith(Symbol.L)) {
                     // If it starts with "L", remove L
                     instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(1);
                 }

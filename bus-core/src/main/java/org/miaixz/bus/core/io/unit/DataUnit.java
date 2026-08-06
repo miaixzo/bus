@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.io.unit;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -106,7 +107,7 @@ public enum DataUnit {
                 return candidate;
             }
         }
-        throw new IllegalArgumentException("Unknown data unit suffix '" + suffix + "'");
+        throw new IllegalArgumentException("Unknown data unit suffix '" + suffix + Symbol.SINGLE_QUOTE);
     }
 
     /**

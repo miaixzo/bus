@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.io.file;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Enumeration for common line separator types. Line separators include:
  *
@@ -39,11 +41,11 @@ public enum LineSeparator {
     /**
      * Mac system line separator: "\r"
      */
-    MAC("\r"),
+    MAC(Symbol.CR),
     /**
      * Linux system line separator: "\n"
      */
-    LINUX("\n"),
+    LINUX(Symbol.LF),
     /**
      * Windows system line separator: "\r\n"
      */

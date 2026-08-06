@@ -328,11 +328,11 @@ public final class PerfDataKit {
          */
         public String getCounterPath() {
             StringBuilder sb = new StringBuilder();
-            sb.append('\\').append(object);
+            sb.append(Symbol.C_BACKSLASH).append(object);
             if (instance != null) {
                 sb.append(Symbol.C_PARENTHESE_LEFT).append(instance).append(Symbol.C_PARENTHESE_RIGHT);
             }
-            sb.append('\\').append(counter);
+            sb.append(Symbol.C_BACKSLASH).append(counter);
             return sb.toString();
         }
 

@@ -24,6 +24,7 @@ import java.util.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -611,7 +612,7 @@ public class IteratorKit extends IteratorValidator {
      * @return a string representation of the iterator's elements
      */
     public static <E> String toString(final Iterator<E> iterator, final FunctionX<? super E, String> transFunc) {
-        return toString(iterator, transFunc, ", ", "[", "]");
+        return toString(iterator, transFunc, ", ", Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT);
     }
 
     /**

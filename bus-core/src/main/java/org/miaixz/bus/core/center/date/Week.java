@@ -23,6 +23,7 @@ import java.time.DayOfWeek;
 import java.util.Calendar;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.EnumKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -48,27 +49,27 @@ public enum Week {
     /**
      * Monday
      */
-    MONDAY(Calendar.MONDAY, "一"),
+    MONDAY(Calendar.MONDAY, Symbol.L_ONE),
     /**
      * Tuesday
      */
-    TUESDAY(Calendar.TUESDAY, "二"),
+    TUESDAY(Calendar.TUESDAY, Symbol.S_TWO),
     /**
      * Wednesday
      */
-    WEDNESDAY(Calendar.WEDNESDAY, "三"),
+    WEDNESDAY(Calendar.WEDNESDAY, Symbol.S_THREE),
     /**
      * Thursday
      */
-    THURSDAY(Calendar.THURSDAY, "四"),
+    THURSDAY(Calendar.THURSDAY, Symbol.S_FOUR),
     /**
      * Friday
      */
-    FRIDAY(Calendar.FRIDAY, "五"),
+    FRIDAY(Calendar.FRIDAY, Symbol.S_FIVE),
     /**
      * Saturday
      */
-    SATURDAY(Calendar.SATURDAY, "六");
+    SATURDAY(Calendar.SATURDAY, Symbol.L_SIX);
 
     /**
      * Array of all {@link Week} enum constants.
@@ -128,22 +129,22 @@ public enum Week {
             if (StringKit.startWithAny(name, "星期", "周")) {
                 final char chineseNumber = name.charAt(name.length() - 1);
                 switch (chineseNumber) {
-                    case '一':
+                    case Symbol.C_L_ONE:
                         return MONDAY;
 
-                    case '二':
+                    case Symbol.C_L_TWO:
                         return TUESDAY;
 
-                    case '三':
+                    case Symbol.C_L_THREE:
                         return WEDNESDAY;
 
-                    case '四':
+                    case Symbol.C_L_FOUR:
                         return THURSDAY;
 
-                    case '五':
+                    case Symbol.C_L_FIVE:
                         return FRIDAY;
 
-                    case '六':
+                    case Symbol.C_L_SIX:
                         return SATURDAY;
 
                     case '日':
@@ -164,7 +165,7 @@ public enum Week {
 
                 case 't':
                     switch (Character.toLowerCase(name.charAt(1))) {
-                        case 'u':
+                        case Symbol.C_U:
                             return TUESDAY; // tuesday
 
                         case 'h':
@@ -177,7 +178,7 @@ public enum Week {
                         case 'a':
                             return SATURDAY; // saturday
 
-                        case 'u':
+                        case Symbol.C_U:
                             return SUNDAY; // sunday
                     }
                     break;
@@ -274,22 +275,22 @@ public enum Week {
                 return prefix + "日";
 
             case MONDAY:
-                return prefix + "一";
+                return prefix + Symbol.L_ONE;
 
             case TUESDAY:
-                return prefix + "二";
+                return prefix + Symbol.S_TWO;
 
             case WEDNESDAY:
-                return prefix + "三";
+                return prefix + Symbol.S_THREE;
 
             case THURSDAY:
-                return prefix + "四";
+                return prefix + Symbol.S_FOUR;
 
             case FRIDAY:
-                return prefix + "五";
+                return prefix + Symbol.S_FIVE;
 
             case SATURDAY:
-                return prefix + "六";
+                return prefix + Symbol.L_SIX;
 
             default:
                 return null;

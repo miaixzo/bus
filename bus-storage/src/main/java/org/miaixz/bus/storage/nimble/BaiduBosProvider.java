@@ -409,7 +409,7 @@ public class BaiduBosProvider extends AbstractProvider {
             ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(this.context.getBucket())
                     .prefix(
                             StringKit.isBlank(context.getPrefix()) ? null
-                                    : Builder.buildNormalizedPrefix(context.getPrefix()) + "/")
+                                    : Builder.buildNormalizedPrefix(context.getPrefix()) + Symbol.SLASH)
                     .build();
             ListObjectsV2Response response = client.listObjectsV2(request);
             return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())

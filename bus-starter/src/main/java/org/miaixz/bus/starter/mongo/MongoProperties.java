@@ -30,6 +30,7 @@ import org.springframework.validation.annotation.Validated;
 import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterType;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -103,7 +104,7 @@ public class MongoProperties {
      * @param sendBufferSize    send buffer size
      */
     public record Socket(@DefaultValue("10s") Duration connectTimeout, @DefaultValue("10s") Duration readTimeout,
-            @DefaultValue("0") int receiveBufferSize, @DefaultValue("0") int sendBufferSize) {
+            @DefaultValue(Symbol.ZERO) int receiveBufferSize, @DefaultValue(Symbol.ZERO) int sendBufferSize) {
 
         /**
          * Validates socket settings.
@@ -267,9 +268,9 @@ public class MongoProperties {
      * @param maintenanceInitialDelay maintenance initial delay
      * @param maintenanceFrequency    maintenance frequency
      */
-    public record Connection(@DefaultValue("100") int maxSize, @DefaultValue("0") int minSize,
-            @DefaultValue("2m") Duration maxWaitTime, @DefaultValue("0") Duration maxConnectionLifeTime,
-            @DefaultValue("0") Duration maxConnectionIdleTime, @DefaultValue("0") Duration maintenanceInitialDelay,
+    public record Connection(@DefaultValue("100") int maxSize, @DefaultValue(Symbol.ZERO) int minSize,
+            @DefaultValue("2m") Duration maxWaitTime, @DefaultValue(Symbol.ZERO) Duration maxConnectionLifeTime,
+            @DefaultValue(Symbol.ZERO) Duration maxConnectionIdleTime, @DefaultValue(Symbol.ZERO) Duration maintenanceInitialDelay,
             @DefaultValue("1m") Duration maintenanceFrequency) {
 
         /**

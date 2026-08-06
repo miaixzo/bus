@@ -27,6 +27,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -677,7 +679,7 @@ public abstract class NotificationService implements Serializable {
 
     @JsonIgnore
     protected String getProperty(String prop) {
-        return (getProperty(prop, ""));
+        return (getProperty(prop, Normal.EMPTY));
     }
 
     /**
@@ -696,9 +698,9 @@ public abstract class NotificationService implements Serializable {
 
         // HACK: Sometimes GitLab returns "0" or "1" for true/false
         if (value != null && Boolean.class.isInstance(defaultValue)) {
-            if ("0".equals(value)) {
+            if (Symbol.ZERO.equals(value)) {
                 return ((T) Boolean.FALSE);
-            } else if ("1".equals(value)) {
+            } else if (Symbol.ONE.equals(value)) {
                 return ((T) Boolean.TRUE);
             }
         }

@@ -194,10 +194,10 @@ public class BCrypt {
     /**
      * Table for Base64 encoding.
      */
-    static private final char[] BASE64_CODE = { '.', '/', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1',
-            '2', '3', '4', '5', '6', '7', '8', '9' };
+    static private final char[] BASE64_CODE = { Symbol.C_DOT, Symbol.C_SLASH, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', Symbol.C_L,
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v', 'w', 'x', 'y', 'z', Symbol.C_ZERO, Symbol.C_ONE,
+            Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE };
 
     /**
      * Table for Base64 decoding.
@@ -373,7 +373,7 @@ public class BCrypt {
         if (salt.length() < 29) {
             throw new IllegalArgumentException("Invalid salt");
         }
-        if (salt.charAt(0) != Symbol.C_DOLLAR || salt.charAt(1) != '2') {
+        if (salt.charAt(0) != Symbol.C_DOLLAR || salt.charAt(1) != Symbol.C_TWO) {
             throw new IllegalArgumentException("Invalid salt version");
         }
         if (salt.charAt(2) == Symbol.C_DOLLAR) {
@@ -392,7 +392,7 @@ public class BCrypt {
         rounds = Integer.parseInt(salt.substring(off, off + 2));
 
         real_salt = salt.substring(off + 3, off + 25);
-        final byte[] passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes(Charset.UTF_8);
+        final byte[] passwordb = (password + (minor >= 'a' ? "\000" : Normal.EMPTY)).getBytes(Charset.UTF_8);
         saltb = decodeBase64(real_salt, Normal._16);
 
         bcrypt = new BCrypt();
@@ -403,7 +403,7 @@ public class BCrypt {
             rs.append(minor);
         rs.append(Symbol.DOLLAR);
         if (rounds < 10)
-            rs.append("0");
+            rs.append(Symbol.ZERO);
         if (rounds > 30) {
             throw new IllegalArgumentException("rounds exceeds maximum (30)");
         }
@@ -430,7 +430,7 @@ public class BCrypt {
 
         rs.append("$2a$");
         if (log_rounds < 10)
-            rs.append("0");
+            rs.append(Symbol.ZERO);
         if (log_rounds > 30) {
             throw new IllegalArgumentException("log_rounds exceeds maximum (30)");
         }

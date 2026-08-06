@@ -178,7 +178,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      */
     public String tableName() {
         return Stream.of(catalog(), schema(), table()).filter(s -> s != null && !s.isEmpty())
-                .collect(Collectors.joining("."));
+                .collect(Collectors.joining(Symbol.DOT));
     }
 
     /**
@@ -523,10 +523,10 @@ public class TableMeta extends PropertyMeta<TableMeta> {
      * @return The complete {@link ResultMap} ID.
      */
     protected String generateResultMapId(ProviderContext context, String resultMapId) {
-        if (resultMapId.indexOf(".") > 0) {
+        if (resultMapId.indexOf(Symbol.DOT) > 0) {
             return resultMapId;
         }
-        return context.getMapperType().getName() + "." + resultMapId;
+        return context.getMapperType().getName() + Symbol.DOT + resultMapId;
     }
 
     /**

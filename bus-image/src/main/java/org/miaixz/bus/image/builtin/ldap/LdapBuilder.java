@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.*;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -61,8 +62,8 @@ public class LdapBuilder {
      * Character array containing digits and uppercase letters, used for ordinal prefixes. The array includes characters
      * '0' through '9' and 'A' through 'Z'.
      */
-    private final static char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
-            'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+    private final static char[] DIGITS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'A', 'B', 'C', 'D', 'E',
+            'F', 'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y', 'Z' };
 
     /**
      * Checks if the given {@link Attributes} contain a specific object class.
@@ -203,7 +204,7 @@ public class LdapBuilder {
         String[] ss = new String[map.size()];
         int i = 0;
         for (Map.Entry<String, T> entry : map.entrySet())
-            ss[i++] = entry.getKey() + '=' + entry.getValue();
+            ss[i++] = entry.getKey() + Symbol.C_EQUAL + entry.getValue();
         return ss;
     }
 
@@ -585,7 +586,7 @@ public class LdapBuilder {
      * @return The constructed DN string.
      */
     public static String dnOf(String attrID, String attrValue, String parentDN) {
-        return attrID + '=' + attrValue + ',' + parentDN;
+        return attrID + Symbol.C_EQUAL + attrValue + Symbol.C_COMMA + parentDN;
     }
 
     /**
@@ -596,12 +597,12 @@ public class LdapBuilder {
      * @return The value of the attribute, or {@code null} if the attribute is not found in the DN.
      */
     public static String cutAttrValueFromDN(String dn, String attrID) {
-        int beginIndex = dn.indexOf(attrID + '=');
+        int beginIndex = dn.indexOf(attrID + Symbol.C_EQUAL);
         if (beginIndex < 0)
             return null;
 
         beginIndex += attrID.length() + 1;
-        int endIndex = dn.indexOf(',', beginIndex);
+        int endIndex = dn.indexOf(Symbol.C_COMMA, beginIndex);
         return endIndex >= 0 ? dn.substring(beginIndex, endIndex) : dn.substring(beginIndex);
     }
 
@@ -617,7 +618,7 @@ public class LdapBuilder {
      * @return The constructed DN string.
      */
     public static String dnOf(String attrID1, String attrValue1, String attrID2, String attrValue2, String baseDN) {
-        return attrID1 + '=' + attrValue1 + '+' + attrID2 + '=' + attrValue2 + ',' + baseDN;
+        return attrID1 + Symbol.C_EQUAL + attrValue1 + Symbol.C_PLUS + attrID2 + Symbol.C_EQUAL + attrValue2 + Symbol.C_COMMA + baseDN;
     }
 
     /**
@@ -1321,9 +1322,9 @@ public class LdapBuilder {
             String val = vals[i];
             int vallen = val.length();
             char[] cs = new char[3 + vallen];
-            cs[0] = '{';
+            cs[0] = Symbol.C_BRACE_LEFT;
             cs[1] = DIGITS[i];
-            cs[2] = '}';
+            cs[2] = Symbol.C_BRACE_RIGHT;
             val.getChars(0, vallen, cs, 3);
             result[i] = new String(cs);
         }
@@ -1359,7 +1360,7 @@ public class LdapBuilder {
             return null;
 
         start += 16; // Length of "dicomDeviceName="
-        int end = name.indexOf(',', start);
+        int end = name.indexOf(Symbol.C_COMMA, start);
         return end < 0 ? name.substring(start) : name.substring(start, end);
     }
 

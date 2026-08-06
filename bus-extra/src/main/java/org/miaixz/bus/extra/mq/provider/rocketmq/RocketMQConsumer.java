@@ -28,6 +28,7 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import org.miaixz.bus.core.lang.exception.MQueueException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
@@ -70,7 +71,7 @@ public class RocketMQConsumer implements Consumer {
         final long startedAt = System.nanoTime();
         Logger.info(true, "Extra", "RocketMQ topic subscription started: topic={}", topic);
         try {
-            this.consumer.subscribe(topic, "*");
+            this.consumer.subscribe(topic, Symbol.STAR);
             Logger.info(
                     false,
                     "Extra",

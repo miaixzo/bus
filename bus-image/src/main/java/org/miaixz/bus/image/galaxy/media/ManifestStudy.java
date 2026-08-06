@@ -33,6 +33,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -284,14 +285,14 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
         ManifestXml.addXmlAttribute(Tag.AccessionNumber, accessionNumber, writer);
         ManifestXml.addXmlAttribute(Tag.StudyID, studyID, writer);
         ManifestXml.addXmlAttribute(Tag.ReferringPhysicianName, referringPhysicianName, writer);
-        writer.append(">");
+        writer.append(Symbol.GT);
 
         ArrayList<ManifestSeries> sortedSeries = new ArrayList<>(seriesMap.values());
         Collections.sort(sortedSeries);
         for (ManifestSeries series : sortedSeries) {
             series.toXml(writer);
         }
-        writer.append("\n</").append(ManifestXml.Level.STUDY.getTagName()).append(">");
+        writer.append("\n</").append(ManifestXml.Level.STUDY.getTagName()).append(Symbol.GT);
     }
 
     /**
@@ -383,7 +384,7 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
             return null;
         }
         String normalizedTime = digitsOnly(time);
-        return normalizedDate + (normalizedTime == null ? "" : normalizedTime);
+        return normalizedDate + (normalizedTime == null ? Normal.EMPTY : normalizedTime);
     }
 
     /**
@@ -396,7 +397,7 @@ public class ManifestStudy implements ManifestXml, Comparable<ManifestStudy> {
         if (value == null) {
             return null;
         }
-        String digits = value.replaceAll("\\D", "");
+        String digits = value.replaceAll("\\D", Normal.EMPTY);
         return digits.isEmpty() ? null : digits;
     }
 

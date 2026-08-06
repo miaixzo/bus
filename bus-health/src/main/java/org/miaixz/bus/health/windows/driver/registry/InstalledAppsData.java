@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinReg;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.builtin.software.ApplicationInfo;
 import org.miaixz.bus.health.windows.RegistryKit;
 
@@ -86,7 +87,7 @@ public final class InstalledAppsData {
                     try {
                         String[] keys = Advapi32Util.registryGetKeys(rootKey, registryPath, accessFlag);
                         for (String key : keys) {
-                            String fullPath = registryPath + "\\" + key;
+                            String fullPath = registryPath + Symbol.BACKSLASH + key;
                             try {
                                 String name = RegistryKit.getStringValue(rootKey, fullPath, "DisplayName", accessFlag);
                                 if (name == null) {

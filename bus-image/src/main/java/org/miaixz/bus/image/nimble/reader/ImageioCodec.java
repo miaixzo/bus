@@ -28,6 +28,8 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * JDK ImageIO codec facade for non-DICOM still image formats.
  *
@@ -176,7 +178,7 @@ public final class ImageioCodec {
             return null;
         }
         String value = extension.trim();
-        return value.startsWith(".") ? value.substring(1) : value;
+        return value.startsWith(Symbol.DOT) ? value.substring(1) : value;
     }
 
 }

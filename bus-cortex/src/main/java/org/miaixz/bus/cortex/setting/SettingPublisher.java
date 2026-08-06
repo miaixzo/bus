@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex.setting;
 
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Keying.SettingSpec;
@@ -536,7 +537,7 @@ public class SettingPublisher {
         record.setNamespace_id(item.getNamespace_id());
         record.setPayload(JsonKit.toJsonString(revision == null ? item : revision));
         record.setSequence(ItemRevisionNumbers.sortKey(item.getRevision()));
-        record.setIdempotencyKey("setting:" + action + ":" + record.getResourceId() + ":" + item.getRevision());
+        record.setIdempotencyKey("setting:" + action + Symbol.COLON + record.getResourceId() + Symbol.COLON + item.getRevision());
         changeLogStore.append(record);
     }
 

@@ -24,6 +24,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+
 /**
  * Represents text to be displayed, used for storing text information for drawing on an image, including content, font,
  * size, position, and transparency.

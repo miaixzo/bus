@@ -1360,17 +1360,17 @@ public class DateKit extends Calendar {
         final int second = other % 60;
         final StringBuilder sb = new StringBuilder();
         if (hour < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(hour);
         sb.append(Symbol.COLON);
         if (minute < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(minute);
         sb.append(Symbol.COLON);
         if (second < 10) {
-            sb.append("0");
+            sb.append(Symbol.ZERO);
         }
         sb.append(second);
         return sb.toString();

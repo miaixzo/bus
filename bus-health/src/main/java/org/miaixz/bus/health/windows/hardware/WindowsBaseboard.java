@@ -25,6 +25,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
@@ -62,7 +63,7 @@ final class WindowsBaseboard extends AbstractBaseboard {
             model = WmiKit.getString(win32BaseBoard, BaseBoardProperty.MODEL, 0);
             String product = WmiKit.getString(win32BaseBoard, BaseBoardProperty.PRODUCT, 0);
             if (!StringKit.isBlank(product)) {
-                model = StringKit.isBlank(model) ? product : (model + " (" + product + ")");
+                model = StringKit.isBlank(model) ? product : (model + " (" + product + Symbol.PARENTHESE_RIGHT);
             }
             version = WmiKit.getString(win32BaseBoard, BaseBoardProperty.VERSION, 0);
             serialNumber = WmiKit.getString(win32BaseBoard, BaseBoardProperty.SERIALNUMBER, 0);

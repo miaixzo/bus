@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -47,7 +48,7 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
     /**
      * Hexadecimal digits for SHA1 encoding.
      */
-    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+    private static final char[] HEX_DIGITS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'a', 'b', 'c', 'd',
             'e', 'f' };
 
     /**

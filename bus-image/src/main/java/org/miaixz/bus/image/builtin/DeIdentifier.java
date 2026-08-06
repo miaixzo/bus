@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.*;
@@ -328,7 +329,7 @@ public class DeIdentifier {
 
             case IS:
             case DS:
-                return "0";
+                return Symbol.ZERO;
         }
         return "REMOVED";
     }

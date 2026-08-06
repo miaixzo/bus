@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.miaixz.bus.core.codec.binary.Hex;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -50,7 +51,7 @@ public final class Fingerprint {
      * @return 32-character hex string
      */
     public static String of(String host, int port) {
-        String input = host + ":" + port;
+        String input = host + Symbol.COLON + port;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] digest = md.digest(input.getBytes(Charset.UTF_8));

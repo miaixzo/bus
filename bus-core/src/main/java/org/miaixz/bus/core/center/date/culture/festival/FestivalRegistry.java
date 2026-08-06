@@ -64,7 +64,7 @@ public class FestivalRegistry {
      * @param name festival name
      */
     public static void remove(String name) {
-        DATA = DATA.replaceAll(String.format(REGEX, name), "");
+        DATA = DATA.replaceAll(String.format(REGEX, name), Normal.EMPTY);
     }
 
     /**

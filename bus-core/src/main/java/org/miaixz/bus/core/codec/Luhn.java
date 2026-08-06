@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.codec;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -78,7 +79,7 @@ public class Luhn {
         if (withCheckDigit) {
             text = text.substring(0, text.length() - 1);
         }
-        return 10 - (sum(text + "0") % 10);
+        return 10 - (sum(text + Symbol.ZERO) % 10);
     }
 
     /**
@@ -91,9 +92,9 @@ public class Luhn {
     private static int sum(final String text) {
         final char[] strArray = text.toCharArray();
         final int n = strArray.length;
-        int sum = strArray[n - 1] - '0';
+        int sum = strArray[n - 1] - Symbol.C_ZERO;
         for (int i = 2; i <= n; i++) {
-            int a = strArray[n - i] - '0';
+            int a = strArray[n - i] - Symbol.C_ZERO;
             // Double every second digit starting from the right
             if ((i & 1) == 0) {
                 a *= 2;

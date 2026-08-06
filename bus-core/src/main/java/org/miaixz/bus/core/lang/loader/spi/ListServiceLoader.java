@@ -310,7 +310,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
         final int n = line.length();
         for (int i = Character.charCount(cp); i < n; i += Character.charCount(cp)) {
             cp = line.codePointAt(i);
-            if (!Character.isJavaIdentifierPart(cp) && (cp != '.')) {
+            if (!Character.isJavaIdentifierPart(cp) && (cp != Symbol.C_DOT)) {
                 fail(resource, lineNo, "Illegal provider-class name: " + line);
             }
         }

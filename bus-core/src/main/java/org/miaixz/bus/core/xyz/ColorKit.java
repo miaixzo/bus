@@ -370,9 +370,9 @@ public class ColorKit {
         String rHex = Integer.toHexString(Integer.parseInt(splitRgbStr[0]));
         String gHex = Integer.toHexString(Integer.parseInt(splitRgbStr[1]));
         String bHex = Integer.toHexString(Integer.parseInt(splitRgbStr[2]));
-        rHex = rHex.length() == 1 ? "0" + rHex : rHex;
-        gHex = gHex.length() == 1 ? "0" + gHex : gHex;
-        bHex = bHex.length() == 1 ? "0" + bHex : bHex;
+        rHex = rHex.length() == 1 ? Symbol.ZERO + rHex : rHex;
+        gHex = gHex.length() == 1 ? Symbol.ZERO + gHex : gHex;
+        bHex = bHex.length() == 1 ? Symbol.ZERO + bHex : bHex;
         return Symbol.HASH + rHex + gHex + bHex;
     }
 

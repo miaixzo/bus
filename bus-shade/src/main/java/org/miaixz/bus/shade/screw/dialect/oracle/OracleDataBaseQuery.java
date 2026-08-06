@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -98,7 +99,7 @@ public class OracleDataBaseQuery extends AbstractDatabaseQuery {
             if (isDda()) {
                 // If the user has DBA privileges, query DBA_TAB_COMMENTS to handle different schemas.
                 sql = "SELECT TABLE_NAME, COMMENTS AS REMARKS FROM DBA_TAB_COMMENTS WHERE TABLE_TYPE = 'TABLE' AND OWNER = '"
-                        + getSchema() + "'";
+                        + getSchema() + Symbol.SINGLE_QUOTE;
             }
             resultSet = prepareStatement(String.format(sql, getSchema())).executeQuery();
             List<OracleTable> inquires = Mapping.convertList(resultSet, OracleTable.class);
@@ -141,7 +142,7 @@ public class OracleDataBaseQuery extends AbstractDatabaseQuery {
                     sql = "SELECT ut.TABLE_NAME, ut.COLUMN_NAME, uc.comments as REMARKS, concat(concat(concat(ut.DATA_TYPE, '('), ut.DATA_LENGTH), ')') AS COLUMN_TYPE, ut.DATA_LENGTH as COLUMN_LENGTH FROM user_tab_columns ut INNER JOIN user_col_comments uc ON ut.TABLE_NAME = uc.table_name AND ut.COLUMN_NAME = uc.column_name";
                     if (isDda()) {
                         sql = "SELECT ut.TABLE_NAME, ut.COLUMN_NAME, uc.comments as REMARKS, concat(concat(concat(ut.DATA_TYPE, '('), ut.DATA_LENGTH), ')') AS COLUMN_TYPE, ut.DATA_LENGTH as COLUMN_LENGTH FROM dba_tab_columns ut INNER JOIN dba_col_comments uc ON ut.TABLE_NAME = uc.table_name AND ut.COLUMN_NAME = uc.column_name and ut.OWNER = uc.OWNER WHERE ut.OWNER = '"
-                                + getDataBase() + "'";
+                                + getDataBase() + Symbol.SINGLE_QUOTE;
                     }
                     PreparedStatement statement = prepareStatement(sql);
                     resultSet = statement.executeQuery();
@@ -154,7 +155,7 @@ public class OracleDataBaseQuery extends AbstractDatabaseQuery {
                     sql = "SELECT ut.TABLE_NAME, ut.COLUMN_NAME, uc.comments as REMARKS, concat(concat(concat(ut.DATA_TYPE, '('), ut.DATA_LENGTH), ')') AS COLUMN_TYPE, ut.DATA_LENGTH as COLUMN_LENGTH FROM user_tab_columns ut INNER JOIN user_col_comments uc ON ut.TABLE_NAME = uc.table_name AND ut.COLUMN_NAME = uc.column_name WHERE ut.Table_Name = '%s'";
                     if (isDda()) {
                         sql = "SELECT ut.TABLE_NAME, ut.COLUMN_NAME, uc.comments as REMARKS, concat(concat(concat(ut.DATA_TYPE, '('), ut.DATA_LENGTH), ')') AS COLUMN_TYPE, ut.DATA_LENGTH as COLUMN_LENGTH FROM dba_tab_columns ut INNER JOIN dba_col_comments uc ON ut.TABLE_NAME = uc.table_name AND ut.COLUMN_NAME = uc.column_name and ut.OWNER = uc.OWNER WHERE ut.Table_Name = '%s' and ut.OWNER = '"
-                                + getDataBase() + "'";
+                                + getDataBase() + Symbol.SINGLE_QUOTE;
                     }
                     resultSet = prepareStatement(String.format(sql, table)).executeQuery();
                 }

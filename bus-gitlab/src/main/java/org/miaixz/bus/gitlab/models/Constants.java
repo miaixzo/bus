@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
@@ -1909,7 +1910,7 @@ public interface Constants {
         private final String value;
 
         ArchiveFormat() {
-            this.value = name().toLowerCase().replace('_', '.');
+            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);

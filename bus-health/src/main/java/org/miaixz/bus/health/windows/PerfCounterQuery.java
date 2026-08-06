@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Win32Exception;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -67,12 +68,12 @@ public final class PerfCounterQuery {
     /**
      * The NOT_TOTAL_INSTANCE constant.
      */
-    public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+    public static final String NOT_TOTAL_INSTANCE = Symbol.CARET + TOTAL_INSTANCE;
 
     /**
      * The NOT_TOTAL_INSTANCES constant.
      */
-    public static final String NOT_TOTAL_INSTANCES = "^" + TOTAL_INSTANCES;
+    public static final String NOT_TOTAL_INSTANCES = Symbol.CARET + TOTAL_INSTANCES;
 
     /**
      * The IS_VISTA_OR_GREATER constant.

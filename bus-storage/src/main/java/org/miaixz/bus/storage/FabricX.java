@@ -119,7 +119,7 @@ public abstract class FabricX {
         return execute(
                 Http.Method.POST.value(),
                 url,
-                Payload.of(data == null ? "" : data, Charset.UTF_8),
+                Payload.of(data == null ? Normal.EMPTY : data, Charset.UTF_8),
                 media(contentType),
                 headers);
     }
@@ -173,7 +173,7 @@ public abstract class FabricX {
         return execute(
                 Http.Method.PUT.value(),
                 url,
-                Payload.of(data == null ? "" : data, Charset.UTF_8),
+                Payload.of(data == null ? Normal.EMPTY : data, Charset.UTF_8),
                 media(contentType),
                 headers);
     }
@@ -191,7 +191,7 @@ public abstract class FabricX {
         return execute(
                 Http.Method.PATCH.value(),
                 url,
-                Payload.of(data == null ? "" : data, Charset.UTF_8),
+                Payload.of(data == null ? Normal.EMPTY : data, Charset.UTF_8),
                 media(contentType),
                 headers);
     }

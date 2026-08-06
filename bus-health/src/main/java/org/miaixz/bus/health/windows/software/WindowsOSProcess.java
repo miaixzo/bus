@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -656,7 +657,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         }
         // For executing process, set CWD
         if (getProcessID() == this.os.getProcessId()) {
-            String cwd = new File(".").getAbsolutePath();
+            String cwd = new File(Symbol.DOT).getAbsolutePath();
             // trim off trailing "."
             if (!cwd.isEmpty()) {
                 return cwd.substring(0, cwd.length() - 1);

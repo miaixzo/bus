@@ -26,6 +26,7 @@ import java.util.*;
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -119,7 +120,7 @@ public class SpelCalculator {
             StringBuilder sb = new StringBuilder();
             for (String part : parts) {
                 Object val = evalSingle(part.trim(), vars);
-                sb.append(val == null ? "" : val);
+                sb.append(val == null ? Normal.EMPTY : val);
             }
             return sb.toString();
         }
@@ -153,13 +154,13 @@ public class SpelCalculator {
             return Boolean.FALSE;
         }
         int len = token.length();
-        if (len >= 2 && ((token.charAt(0) == '\'' && token.charAt(len - 1) == '\'')
-                || (token.charAt(0) == '"' && token.charAt(len - 1) == '"'))) {
+        if (len >= 2 && ((token.charAt(0) == Symbol.C_SINGLE_QUOTE && token.charAt(len - 1) == Symbol.C_SINGLE_QUOTE)
+                || (token.charAt(0) == Symbol.C_DOUBLE_QUOTES && token.charAt(len - 1) == Symbol.C_DOUBLE_QUOTES))) {
             return token.substring(1, len - 1);
         }
-        if (token.startsWith("#")) {
+        if (token.startsWith(Symbol.HASH)) {
             String rest = token.substring(1);
-            int dot = rest.indexOf('.');
+            int dot = rest.indexOf(Symbol.C_DOT);
             if (dot < 0) {
                 return vars.get(rest);
             }
@@ -177,9 +178,9 @@ public class SpelCalculator {
         if (obj == null || path.isEmpty()) {
             return obj;
         }
-        int dot = path.indexOf('.');
+        int dot = path.indexOf(Symbol.C_DOT);
         String segment = dot < 0 ? path : path.substring(0, dot);
-        String remainder = dot < 0 ? "" : path.substring(dot + 1);
+        String remainder = dot < 0 ? Normal.EMPTY : path.substring(dot + 1);
         Object next = accessSegment(obj, segment);
         return remainder.isEmpty() ? next : navigatePath(next, remainder);
     }
@@ -242,7 +243,7 @@ public class SpelCalculator {
         int end = expr.length() - op.length() + 1;
         for (int i = 0; i < end; i++) {
             char c = expr.charAt(i);
-            if (!inStr && (c == '\'' || c == '"')) {
+            if (!inStr && (c == Symbol.C_SINGLE_QUOTE || c == Symbol.C_DOUBLE_QUOTES)) {
                 inStr = true;
                 strChar = c;
             } else if (inStr && c == strChar) {
@@ -264,12 +265,12 @@ public class SpelCalculator {
         int start = 0;
         for (int i = 0; i < expr.length(); i++) {
             char c = expr.charAt(i);
-            if (!inStr && (c == '\'' || c == '"')) {
+            if (!inStr && (c == Symbol.C_SINGLE_QUOTE || c == Symbol.C_DOUBLE_QUOTES)) {
                 inStr = true;
                 strChar = c;
             } else if (inStr && c == strChar) {
                 inStr = false;
-            } else if (!inStr && c == '+') {
+            } else if (!inStr && c == Symbol.C_PLUS) {
                 parts.add(expr.substring(start, i));
                 start = i + 1;
             }

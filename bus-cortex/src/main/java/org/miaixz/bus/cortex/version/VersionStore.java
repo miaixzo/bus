@@ -23,6 +23,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Durable version-domain store.
  *
@@ -179,8 +182,8 @@ public interface VersionStore {
         String[] rightParts = right.split("[^0-9A-Za-z]+");
         int length = Math.max(leftParts.length, rightParts.length);
         for (int index = 0; index < length; index++) {
-            String leftPart = index < leftParts.length ? leftParts[index] : "0";
-            String rightPart = index < rightParts.length ? rightParts[index] : "0";
+            String leftPart = index < leftParts.length ? leftParts[index] : Symbol.ZERO;
+            String rightPart = index < rightParts.length ? rightParts[index] : Symbol.ZERO;
             int compared = comparePart(leftPart, rightPart);
             if (compared != 0) {
                 return compared;
@@ -242,8 +245,8 @@ public interface VersionStore {
      * @return normalized numeric segment
      */
     private static String trimLeadingZero(String value) {
-        String stripped = value == null ? "" : value.replaceFirst("^0+(?!$)", "");
-        return stripped.isEmpty() ? "0" : stripped;
+        String stripped = value == null ? Normal.EMPTY : value.replaceFirst("^0+(?!$)", Normal.EMPTY);
+        return stripped.isEmpty() ? Symbol.ZERO : stripped;
     }
 
 }

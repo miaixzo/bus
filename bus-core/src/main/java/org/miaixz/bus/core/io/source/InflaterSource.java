@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.Segment;
 import org.miaixz.bus.core.io.buffer.SegmentAllocator;
@@ -168,7 +169,7 @@ public final class InflaterSource implements Source {
 
         releaseInflatedBytes();
         if (inflater.getRemaining() != 0)
-            throw new IllegalStateException("?"); // Should not happen if releaseInflatedBytes is called correctly.
+            throw new IllegalStateException(Symbol.QUESTION_MARK); // Should not happen if releaseInflatedBytes is called correctly.
 
         // If there are compressed bytes in the source, assign them to the inflater.
         if (source.exhausted()) {

@@ -23,6 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.zip.Checksum;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -80,7 +81,7 @@ public abstract class CRC16Checksum implements Checksum, Serializable {
     public String getHexValue(final boolean isPadding) {
         String hex = HexKit.toHex(getValue());
         if (isPadding) {
-            hex = StringKit.padPre(hex, 4, '0');
+            hex = StringKit.padPre(hex, 4, Symbol.C_ZERO);
         }
 
         return hex;

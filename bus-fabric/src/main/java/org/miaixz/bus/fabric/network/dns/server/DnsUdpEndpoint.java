@@ -35,6 +35,8 @@ import org.miaixz.bus.core.Lifecycle;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
@@ -140,7 +142,7 @@ public final class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
                 final AtomicBoolean active = new AtomicBoolean(true);
                 final Thread thread = ThreadKit.newThread(
                         () -> datagramLoop(active, channel),
-                        "fabric-dns-udp-" + endpoint.host() + "-" + endpoint.port() + "-" + index,
+                        "fabric-dns-udp-" + endpoint.host() + Symbol.MINUS + endpoint.port() + Symbol.MINUS + index,
                         true);
                 channels.add(channel);
                 threads.add(thread);
@@ -295,7 +297,7 @@ public final class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
      * @return true on Linux
      */
     private static boolean linux() {
-        return System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("linux");
+        return System.getProperty("os.name", Normal.EMPTY).toLowerCase(Locale.ROOT).contains("linux");
     }
 
     /**

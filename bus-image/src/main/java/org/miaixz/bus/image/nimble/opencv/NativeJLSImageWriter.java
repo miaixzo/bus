@@ -34,6 +34,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
@@ -143,7 +144,7 @@ public class NativeJLSImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR] = jpeglsNLE; // Lossy error for jpeg-ls
 
                 dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");
+                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
                 if (buf.empty()) {
                     throw new IIOException("Native JPEG-LS encoding error: null image");
                 }

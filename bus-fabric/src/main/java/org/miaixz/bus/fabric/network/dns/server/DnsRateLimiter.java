@@ -22,6 +22,8 @@ package org.miaixz.bus.fabric.network.dns.server;
 import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Per-client fixed-window DNS query rate limiter used before resolution.
  *
@@ -74,7 +76,7 @@ final class DnsRateLimiter {
         if (maxPerSecond <= 0) {
             return true;
         }
-        final String key = clientAddress == null ? "" : clientAddress.getHostAddress();
+        final String key = clientAddress == null ? Normal.EMPTY : clientAddress.getHostAddress();
         return counters.computeIfAbsent(key, ignored -> new Counter()).allow(maxPerSecond, System.currentTimeMillis());
     }
 

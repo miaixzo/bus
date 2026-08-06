@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.text;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -159,7 +160,7 @@ public class TextSimilarity {
         return (charValue >= 0x4E00 && charValue <= 0X9FFF) || // Chinese characters
                 (charValue >= 'a' && charValue <= 'z') || // Lowercase letters
                 (charValue >= 'A' && charValue <= 'Z') || // Uppercase letters
-                (charValue >= '0' && charValue <= '9'); // Digits
+                (charValue >= Symbol.C_ZERO && charValue <= Symbol.C_NINE); // Digits
     }
 
     /**

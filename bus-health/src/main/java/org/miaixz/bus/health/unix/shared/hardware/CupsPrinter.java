@@ -29,6 +29,7 @@ import com.sun.jna.ptr.PointerByReference;
 
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.Printer;
@@ -112,11 +113,11 @@ public final class CupsPrinter extends AbstractPrinter {
                     String name = dest.name;
                     boolean isDefault = dest.is_default != 0;
 
-                    String deviceUri = "";
-                    String printerInfo = "";
-                    String printerMakeModel = "";
-                    String printerState = "";
-                    String stateReasons = "";
+                    String deviceUri = Normal.EMPTY;
+                    String printerInfo = Normal.EMPTY;
+                    String printerMakeModel = Normal.EMPTY;
+                    String printerState = Normal.EMPTY;
+                    String stateReasons = Normal.EMPTY;
 
                     if (dest.num_options > 0 && dest.options != null) {
                         deviceUri = getOption(dest, "device-uri");
@@ -127,7 +128,7 @@ public final class CupsPrinter extends AbstractPrinter {
                     }
 
                     PrinterStatus status = parseStateFromCups(printerState, stateReasons);
-                    String statusReason = "none".equals(stateReasons) ? "" : stateReasons;
+                    String statusReason = "none".equals(stateReasons) ? Normal.EMPTY : stateReasons;
                     // Use printer-type bit flag for locality (device-uri not available to non-root)
                     int printerType = Parsing.parseIntOrDefault(getOption(dest, "printer-type"), 0);
                     boolean isLocal = (printerType & Cups.CUPS_PRINTER_REMOTE) == 0;
@@ -152,7 +153,7 @@ public final class CupsPrinter extends AbstractPrinter {
      */
     private static String getOption(Cups.CupsDest dest, String optionName) {
         String value = Cups.INSTANCE.cupsGetOption(optionName, dest.num_options, dest.options);
-        return value != null ? value : "";
+        return value != null ? value : Normal.EMPTY;
     }
 
     /**
@@ -241,10 +242,10 @@ public final class CupsPrinter extends AbstractPrinter {
                     String name = parts[1];
                     PrinterStatus status = Lpstat.parseStatus(line);
                     boolean isDefault = name.equals(defaultPrinter);
-                    String portName = portMap.getOrDefault(name, "");
+                    String portName = portMap.getOrDefault(name, Normal.EMPTY);
                     boolean isLocal = Lpstat.isLocalUri(portName);
                     String driverName = driverLookup.apply(name);
-                    String description = descriptionMap.getOrDefault(name, "");
+                    String description = descriptionMap.getOrDefault(name, Normal.EMPTY);
                     String statusReason = Lpstat.parseStatusReason(line);
 
                     printers.add(

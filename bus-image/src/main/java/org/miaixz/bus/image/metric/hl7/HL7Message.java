@@ -127,7 +127,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
      */
     public static String eventType(HL7Segment msh) {
         String messageType = msh.getMessageType();
-        return messageType == null || messageType.equals("") ? messageType : messageType.substring(4, 7);
+        return messageType == null || messageType.equals(Normal.EMPTY) ? messageType : messageType.substring(4, 7);
     }
 
     /**
@@ -169,7 +169,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
         HL7Segment qpd = new HL7Segment(5);
         qpd.setField(0, "QPD");
         qpd.setField(1, "IHE PDQ Query");
-        qpd.setField(2, "QRY" + msh.getField(9, ""));
+        qpd.setField(2, "QRY" + msh.getField(9, Normal.EMPTY));
         qpd.setField(3, HL7Segment.concat(queryParams, Symbol.C_TILDE));
         qpd.setField(4, HL7Segment.concat(domains, Symbol.C_TILDE));
         HL7Segment rcp = new HL7Segment(8);

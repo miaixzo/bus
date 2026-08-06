@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -123,8 +124,8 @@ public class FunctionProvider {
                                                                 column.notNullTest("entity."),
                                                                 () -> "AND " + column.columnEqualsProperty("entity.")))
                                                 .collect(Collectors.joining(Symbol.LF))))
-                        + entity.groupByColumn().orElse("") + entity.havingColumn().orElse("")
-                        + entity.orderByColumn().orElse("");
+                        + entity.groupByColumn().orElse(Normal.EMPTY) + entity.havingColumn().orElse(Normal.EMPTY)
+                        + entity.orderByColumn().orElse(Normal.EMPTY);
             }
         });
     }

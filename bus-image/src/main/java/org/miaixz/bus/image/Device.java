@@ -2113,7 +2113,7 @@ public class Device implements Serializable {
      */
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(Normal._512), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(Normal._512), "").toString();
     }
 
     /**
@@ -2132,7 +2132,7 @@ public class Device implements Serializable {
             conn.promptTo(sb, indent2).append(Builder.LINE_SEPARATOR);
         for (ApplicationEntity ae : aes.values())
             ae.promptTo(sb, indent2).append(Builder.LINE_SEPARATOR);
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     /**

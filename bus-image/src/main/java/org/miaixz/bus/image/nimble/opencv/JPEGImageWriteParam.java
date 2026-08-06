@@ -23,6 +23,8 @@ import java.util.Locale;
 
 import javax.imageio.ImageWriteParam;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the JPEGImageWriteParam type.
  *
@@ -95,7 +97,7 @@ public class JPEGImageWriteParam extends ImageWriteParam {
      * @return the prediction.
      */
     public int getPrediction() {
-        return isCompressionLossless() ? (compressionType.charAt(9) - '0') : 0;
+        return isCompressionLossless() ? (compressionType.charAt(9) - Symbol.C_ZERO) : 0;
     }
 
     /**
@@ -123,7 +125,7 @@ public class JPEGImageWriteParam extends ImageWriteParam {
      */
     @Override
     public boolean isCompressionLossless() {
-        return compressionType.charAt(0) == 'L';
+        return compressionType.charAt(0) == Symbol.C_L;
     }
 
 }

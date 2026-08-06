@@ -293,14 +293,20 @@ Example:
 ```yaml
 bus:
   logging:
+    pattern:
+      defaults: true
+      console: "%d %-5level %logger - %msg%n"
     level:
       root: INFO
       org.miaixz: DEBUG
     file:
       name: app.log
-    pattern:
-      console: "%d %-5level %logger - %msg%n"
 ```
+
+`bus.logging.pattern.defaults` defaults to `true`. When enabled, Bus contributes low-priority built-in console and
+file logging patterns. Set it to `false` to leave the patterns to Spring Boot. Explicit
+`bus.logging.pattern.console`, `bus.logging.pattern.file`, or corresponding `logging.pattern.*` properties always
+take precedence.
 
 is exposed during startup as:
 

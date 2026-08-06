@@ -24,6 +24,7 @@ import java.io.File;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 
 /**
@@ -227,7 +228,7 @@ public final class ProcPath {
     private static String queryProcConfig() {
         String procPath = Builder.get(Builder._UTIL_PROC_PATH, "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
-        procPath = '/' + procPath.replaceAll("/$|^/", Normal.EMPTY);
+        procPath = Symbol.C_SLASH + procPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(procPath).exists()) {
             throw new NotFoundException("The path does not exist " + Builder._UTIL_PROC_PATH);
         }

@@ -27,6 +27,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Archive access parameters for DICOM manifest and web retrieval workflows.
  *
@@ -83,7 +86,7 @@ public class ArchiveParameters {
     /**
      * The tag delimiter value.
      */
-    public static final String TAG_DELIMITER = ",";
+    public static final String TAG_DELIMITER = Symbol.COMMA;
 
     /**
      * The base url value.
@@ -129,7 +132,7 @@ public class ArchiveParameters {
         this.archiveID = Objects.requireNonNull(archiveID, "Archive ID cannot be null");
         this.baseURL = Objects.requireNonNull(baseURL, "Base URL cannot be null");
         this.webLogin = webLogin == null ? null : webLogin.trim();
-        this.additionalParameters = hasText(additionalParameters) ? additionalParameters : "";
+        this.additionalParameters = hasText(additionalParameters) ? additionalParameters : Normal.EMPTY;
         this.httpTags = new ArrayList<>(2);
         this.overrideDicomTagIDList = parseOverrideTags(overrideDicomTagsList);
     }

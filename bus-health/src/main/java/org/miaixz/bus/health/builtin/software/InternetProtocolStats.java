@@ -24,7 +24,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
@@ -627,12 +626,12 @@ public interface InternetProtocolStats {
          */
         @Override
         public String toString() {
-            String localIp = Symbol.STAR;
+            String localIp = "*";
             try {
                 localIp = InetAddress.getByAddress(localAddress).toString();
             } catch (UnknownHostException e) { // NOSONAR squid:S108
             }
-            String foreignIp = Symbol.STAR;
+            String foreignIp = "*";
             try {
                 foreignIp = InetAddress.getByAddress(foreignAddress).toString();
             } catch (UnknownHostException e) { // NOSONAR squid:S108

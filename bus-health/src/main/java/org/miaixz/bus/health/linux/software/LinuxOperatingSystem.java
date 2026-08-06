@@ -903,7 +903,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 systemctlFound = true;
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);
-                int index = name.lastIndexOf('.');
+                int index = name.lastIndexOf(Symbol.C_DOT);
                 String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
                 if (!running.contains(name) && !running.contains(shortName)) {
                     OSService s = new OSService(name, 0, OSService.State.STOPPED);
@@ -919,7 +919,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 for (File f : confFiles) {
                     // remove .conf extension
                     String name = f.getName().substring(0, f.getName().length() - 5);
-                    int index = name.lastIndexOf('.');
+                    int index = name.lastIndexOf(Symbol.C_DOT);
                     String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
                     if (!running.contains(name) && !running.contains(shortName)) {
                         OSService s = new OSService(name, 0, OSService.State.STOPPED);

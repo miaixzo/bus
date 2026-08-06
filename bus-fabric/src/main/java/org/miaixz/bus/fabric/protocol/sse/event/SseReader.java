@@ -649,7 +649,7 @@ public final class SseReader implements AutoCloseable {
         }
         long millis = Normal.LONG_ZERO;
         for (int i = start; i < end; i++) {
-            final int digit = line[i] - '0';
+            final int digit = line[i] - Symbol.C_ZERO;
             if (digit < Normal._0 || digit > Normal._9 || millis > (Long.MAX_VALUE - digit) / Normal._10) {
                 return null;
             }

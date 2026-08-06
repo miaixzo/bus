@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 
@@ -73,8 +74,8 @@ public class VIN {
     /**
      * The characters used to represent the year.
      */
-    private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R',
-            'S', 'T', 'V', 'W', 'X', 'Y', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+    private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', Symbol.C_L, 'M', 'N', 'P', 'R',
+            'S', 'T', 'V', 'W', Symbol.C_X, 'Y', Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE };
 
     /**
      * A map from year characters to their corresponding index.
@@ -146,7 +147,7 @@ public class VIN {
         }
 
         final int factor = sum % 11;
-        return factor != 10 ? (char) (factor + '0') : 'X';
+        return factor != 10 ? (char) (factor + Symbol.C_ZERO) : Symbol.C_X;
     }
 
     /**
@@ -169,55 +170,55 @@ public class VIN {
      */
     private static int getVinValue(final char vinCodeChar) {
         switch (vinCodeChar) {
-            case '0':
+            case Symbol.C_ZERO:
                 return 0;
 
-            case '1':
+            case Symbol.C_ONE:
             case 'J':
             case 'A':
                 return 1;
 
-            case '2':
+            case Symbol.C_TWO:
             case 'S':
             case 'K':
             case 'B':
                 return 2;
 
-            case '3':
+            case Symbol.C_THREE:
             case 'T':
-            case 'L':
+            case Symbol.C_L:
             case 'C':
                 return 3;
 
-            case '4':
+            case Symbol.C_FOUR:
             case 'U':
             case 'M':
             case 'D':
                 return 4;
 
-            case '5':
+            case Symbol.C_FIVE:
             case 'V':
             case 'N':
             case 'E':
                 return 5;
 
-            case '6':
+            case Symbol.C_SIX:
             case 'W':
             case 'F':
                 return 6;
 
-            case '7':
+            case Symbol.C_SEVEN:
             case 'P':
-            case 'X':
+            case Symbol.C_X:
             case 'G':
                 return 7;
 
-            case '8':
+            case Symbol.C_EIGHT:
             case 'Y':
             case 'H':
                 return 8;
 
-            case '9':
+            case Symbol.C_NINE:
             case 'Z':
             case 'R':
                 return 9;
@@ -262,7 +263,7 @@ public class VIN {
      * @return {@code true} if the annual production is less than 1000, {@code false} otherwise.
      */
     public boolean isLessThan1000() {
-        return '9' == this.code.charAt(2);
+        return Symbol.C_NINE == this.code.charAt(2);
     }
 
     /**

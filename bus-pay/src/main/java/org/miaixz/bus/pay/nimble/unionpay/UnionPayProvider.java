@@ -21,6 +21,7 @@ package org.miaixz.bus.pay.nimble.unionpay;
 
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.logger.Logger;
@@ -80,14 +81,14 @@ public class UnionPayProvider extends AbstractProvider<Voucher, Context> {
                 true,
                 "Pay",
                 "UnionPay request started: url={}, paramCount={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 params == null ? 0 : params.size());
         String response = post(url, XmlKit.mapToXmlString(params));
         Logger.info(
                 false,
                 "Pay",
                 "UnionPay request completed: url={}, paramCount={}, responseBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 params == null ? 0 : params.size(),
                 response == null ? 0 : response.length());
         return response;

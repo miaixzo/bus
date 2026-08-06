@@ -76,7 +76,7 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
         // The recipient's mobile number.
         bodys.put("mobile", entity.getReceive());
         // The parameters for the SMS template, formatted as a string representation of a list.
-        bodys.put("vars", StringKit.split(entity.getParams(), "|").toString());
+        bodys.put("vars", StringKit.split(entity.getParams(), Symbol.OR).toString());
 
         Map<String, String> headers = new HashMap<>();
         headers.put(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);

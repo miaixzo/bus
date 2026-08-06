@@ -156,10 +156,10 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf('/') + 1);
+            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf('/') + 1);
+                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
             }
 
             if (nameToMatch != null && !nameToMatch.equals(name)) {
@@ -182,7 +182,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
             }
 
             fsList.add(
-                    new SolarisOSFileStore(name, volume, name, path, options, "", isLocal, "", description, type,
+                    new SolarisOSFileStore(name, volume, name, path, options, Normal.EMPTY, isLocal, Normal.EMPTY, description, type,
                             freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(path, 0L),
                             inodeTotalMap.getOrDefault(path, 0L)));
         }

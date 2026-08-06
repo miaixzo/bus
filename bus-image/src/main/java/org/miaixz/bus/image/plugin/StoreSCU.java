@@ -360,7 +360,7 @@ public class StoreSCU implements AutoCloseable {
             if (b)
                 filesScanned++;
             if (printout) {
-                System.out.print(b ? '.' : 'I');
+                System.out.print(b ? Symbol.C_DOT : 'I');
             }
         } catch (Exception e) {
             Logger.error(

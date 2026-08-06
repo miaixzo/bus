@@ -78,9 +78,9 @@ final class FreeBsdSoundCard extends AbstractSoundCard {
                 if (line.contains("freebsd.driver =") && "pcm".equals(Parsing.getSingleQuoteStringValue(line))) {
                     sounds.add(key);
                 } else if (line.contains("info.product")) {
-                    productMap.put(key, Parsing.getStringBetween(line, '\''));
+                    productMap.put(key, Parsing.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
                 } else if (line.contains("info.vendor")) {
-                    vendorMap.put(key, Parsing.getStringBetween(line, '\''));
+                    vendorMap.put(key, Parsing.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
                 }
             }
         }

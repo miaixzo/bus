@@ -119,7 +119,7 @@ public class CGetForward implements AutoCloseable {
     /**
      * The C-STORE SCP to handle incoming images.
      */
-    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
+    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP(Symbol.STAR) {
 
         @Override
         protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
@@ -476,7 +476,7 @@ public class CGetForward implements AutoCloseable {
      * @param tsuids the transfer syntax UIDs.
      */
     private static void configureStorageSOPClass(CGetForward getSCU, String cuid, String tsuids) {
-        String[] ts = StringKit.splitToArray(tsuids, ";");
+        String[] ts = StringKit.splitToArray(tsuids, Symbol.SEMICOLON);
         for (int i = 0; i < ts.length; i++) {
             ts[i] = UID.toUID(ts[i]);
         }

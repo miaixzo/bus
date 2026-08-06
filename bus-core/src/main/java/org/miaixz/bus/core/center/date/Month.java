@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Enumeration for months, corresponding to the int values of months in {@link Calendar}.
@@ -159,7 +160,7 @@ public enum Month {
                         case 'p':
                             return APRIL; // april
 
-                        case 'u':
+                        case Symbol.C_U:
                             return AUGUST; // august
                     }
                     break;
@@ -202,39 +203,39 @@ public enum Month {
                 case 'd':
                     return DECEMBER; // december
 
-                case '一':
+                case Symbol.C_L_ONE:
                     return JANUARY;
 
-                case '二':
+                case Symbol.C_L_TWO:
                     return FEBRUARY;
 
-                case '三':
+                case Symbol.C_L_THREE:
                     return MARCH;
 
-                case '四':
+                case Symbol.C_L_FOUR:
                     return APRIL;
 
-                case '五':
+                case Symbol.C_L_FIVE:
                     return MAY;
 
-                case '六':
+                case Symbol.C_L_SIX:
                     return JUNE;
 
-                case '七':
+                case Symbol.C_L_SEVEN:
                     return JULY;
 
-                case '八':
+                case Symbol.C_L_EIGHT:
                     return AUGUST;
 
-                case '九':
+                case Symbol.C_L_NINE:
                     return SEPTEMBER;
 
-                case '十':
+                case Symbol.C_L_TEN:
                     switch (Character.toLowerCase(name.charAt(1))) {
-                        case '一':
+                        case Symbol.C_L_ONE:
                             return NOVEMBER;
 
-                        case '二':
+                        case Symbol.C_L_TWO:
                             return DECEMBER;
                     }
                     return OCTOBER;

@@ -263,7 +263,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
                 return i;
             }
             c = s.codePointAt(i);
-            if ((Character.isISOControl(c) && c != '\n' && c != '\r') || c == Buffer.REPLACEMENT_CHARACTER) {
+            if ((Character.isISOControl(c) && c != Symbol.C_LF && c != Symbol.C_CR) || c == Buffer.REPLACEMENT_CHARACTER) {
                 return -1;
             }
             j++;

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -58,7 +59,7 @@ public class Setting {
         return CACHE_SETTING.computeIfAbsent(name, (filePath) -> {
             final String extName = FileName.extName(filePath);
             if (StringKit.isEmpty(extName)) {
-                filePath = filePath + "." + org.miaixz.bus.setting.Setting.EXT_NAME;
+                filePath = filePath + Symbol.DOT + org.miaixz.bus.setting.Setting.EXT_NAME;
             }
             return new org.miaixz.bus.setting.Setting(filePath, true);
         });

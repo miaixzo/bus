@@ -30,6 +30,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.GitLabApi;
 import org.miaixz.bus.gitlab.models.RepositoryFile;
@@ -351,7 +352,7 @@ public class GitlabFileProvider extends AbstractProvider {
     public Message<List<Blob>> list() {
         try {
             String prefix = StringKit.isBlank(context.getPrefix()) ? null
-                    : Builder.buildNormalizedPrefix(context.getPrefix()) + "/";
+                    : Builder.buildNormalizedPrefix(context.getPrefix()) + Symbol.SLASH;
             // Use getTree method to retrieve the repository tree, with "master" as the branch.
             List<TreeItem> treeItems = client.getRepositoryApi()
                     .getTree(this.context.getBucket(), prefix, "master", true);
@@ -366,7 +367,7 @@ public class GitlabFileProvider extends AbstractProvider {
                                         // If the last commit ID is needed, it can be obtained via RepositoryFileApi or
                                         // CommitsApi.
                                         extend.put("lastModified", null);
-                                        return Blob.builder().name(item.getPath()).size("0").extend(extend).build();
+                                        return Blob.builder().name(item.getPath()).size(Symbol.ZERO).extend(extend).build();
                                     }).collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {

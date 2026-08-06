@@ -29,6 +29,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
 
@@ -84,7 +85,7 @@ public class TCPListener implements Listener {
                     conn.isTls(),
                     conn.getBacklog(),
                     e.getClass().getSimpleName());
-            throw new IOException("Unable to start TCPListener on " + conn.getHostname() + ":" + conn.getPort(), e);
+            throw new IOException("Unable to start TCPListener on " + conn.getHostname() + Symbol.COLON + conn.getPort(), e);
         }
     }
 

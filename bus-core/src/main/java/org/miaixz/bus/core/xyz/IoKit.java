@@ -364,7 +364,7 @@ public class IoKit {
             while (bufferSize > 0) {
                 int count = in.read(buffer, off, (int) Math.min(bufferSize, buffer.length - off));
                 if (count < 0)
-                    throw new InternalException("" + count);
+                    throw new InternalException(Normal.EMPTY + count);
                 bufferSize -= count;
                 count += off;
                 off = count % swapBytes;

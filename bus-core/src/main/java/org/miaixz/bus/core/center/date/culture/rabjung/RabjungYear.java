@@ -22,6 +22,8 @@ package org.miaixz.bus.core.center.date.culture.rabjung;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Zodiac;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
@@ -163,8 +165,8 @@ public class RabjungYear extends Loops {
      * @return The localized display name of this Tibetan year.
      */
     public String getName() {
-        String[] digits = { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
-        String[] units = { "", "十", "百" };
+        String[] digits = { Symbol.UL_ZERO, Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE, Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
+        String[] units = { Normal.EMPTY, Symbol.L_TEN, Symbol.L_ONE_HUNDRED };
         int n = rabByungIndex + 1;
         StringBuilder s = new StringBuilder();
         int pos = 0;

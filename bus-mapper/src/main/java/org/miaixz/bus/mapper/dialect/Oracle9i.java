@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
@@ -120,7 +121,7 @@ public class Oracle9i extends AbstractDialect {
      */
     @Override
     public String buildCountSql(String originalSql) {
-        return "SELECT COUNT(*) FROM (" + originalSql + ")";
+        return "SELECT COUNT(*) FROM (" + originalSql + Symbol.PARENTHESE_RIGHT;
     }
 
     /**

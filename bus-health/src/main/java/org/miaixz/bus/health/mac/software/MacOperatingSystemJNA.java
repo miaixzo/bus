@@ -28,6 +28,7 @@ import com.sun.jna.platform.mac.SystemB;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.Struct;
@@ -57,7 +58,7 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
                 // Usually this works. If it doesn't, fall back to text parsing.
                 // Boot time will be the first consecutive string of digits.
                 BOOTTIME = Parsing.parseLongOrDefault(
-                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", ""),
+                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
                         System.currentTimeMillis() / 1000);
             } else {
                 // tv now points to a 64-bit timeval structure for boot time.
@@ -124,7 +125,7 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
         String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
                 : System.getProperty("os.name");
         String codeName = parseCodeName();
-        String buildNumber = SysctlKit.sysctl("kern.osversion", "");
+        String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
         return new Pair<>(family, new OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 

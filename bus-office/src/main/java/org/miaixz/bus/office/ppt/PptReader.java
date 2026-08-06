@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.poi.xslf.usermodel.*;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
@@ -166,7 +167,7 @@ public class PptReader implements Closeable {
         for (final XSLFShape shape : slide.getShapes()) {
             if (shape instanceof XSLFTextShape textShape) {
                 for (final XSLFTextParagraph paragraph : textShape.getTextParagraphs()) {
-                    sb.append(paragraph.getText()).append('\n');
+                    sb.append(paragraph.getText()).append(Symbol.C_LF);
                 }
             }
         }

@@ -223,7 +223,7 @@ public abstract class AbstractDialect implements Dialect {
      */
     @Override
     public String toString() {
-        return "Dialect[" + this.databaseName + Symbol.BRACKET_RIGHT;
+        return "Dialect[" + this.databaseName + "]";
     }
 
     /**
@@ -663,7 +663,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createIndex(TableMeta table, IndexMeta index) {
         return "CREATE INDEX " + identifier(index.name()) + " ON " + tableName(table) + " ("
-                + columnList(index.columns()) + ")";
+                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT;
     }
 
     /**
@@ -688,7 +688,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createUnique(TableMeta table, IndexMeta index) {
         return "CREATE UNIQUE INDEX " + identifier(index.name()) + " ON " + tableName(table) + " ("
-                + columnList(index.columns()) + ")";
+                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT;
     }
 
     /**
@@ -713,7 +713,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createPrimaryKey(TableMeta table, PrimaryKeyMeta primaryKey) {
         return "ALTER TABLE " + tableName(table) + " ADD CONSTRAINT " + identifier(primaryKeyName(table, primaryKey))
-                + " PRIMARY KEY (" + columnList(primaryKey.columns()) + ")";
+                + " PRIMARY KEY (" + columnList(primaryKey.columns()) + Symbol.PARENTHESE_RIGHT;
     }
 
     /**
@@ -787,7 +787,7 @@ public abstract class AbstractDialect implements Dialect {
         return switch (modifyMode) {
             case ALTER_COLUMN -> "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + columnDefinition(column);
             case MODIFY -> "ALTER TABLE " + tableName(table) + " MODIFY " + columnDefinition(column);
-            case MODIFY_PARENTHESES -> "ALTER TABLE " + tableName(table) + " MODIFY (" + columnDefinition(column) + ")";
+            case MODIFY_PARENTHESES -> "ALTER TABLE " + tableName(table) + " MODIFY (" + columnDefinition(column) + Symbol.PARENTHESE_RIGHT;
             case ALTER_COLUMN_TYPE -> "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + identifier(column.column())
                     + " TYPE " + resolveType(column).definition();
             case SET_DATA_TYPE -> "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + identifier(column.column())
@@ -970,7 +970,7 @@ public abstract class AbstractDialect implements Dialect {
      * @return the column add SQL
      */
     protected String oracleAddColumn(TableMeta table, ColumnMeta column) {
-        return "ALTER TABLE " + tableName(table) + " ADD (" + columnDefinition(column) + ")";
+        return "ALTER TABLE " + tableName(table) + " ADD (" + columnDefinition(column) + Symbol.PARENTHESE_RIGHT;
     }
 
     /**
@@ -981,7 +981,7 @@ public abstract class AbstractDialect implements Dialect {
      * @return the column modification SQL
      */
     protected String oracleModifyColumn(TableMeta table, ColumnMeta column) {
-        return "ALTER TABLE " + tableName(table) + " MODIFY (" + columnDefinition(column) + ")";
+        return "ALTER TABLE " + tableName(table) + " MODIFY (" + columnDefinition(column) + Symbol.PARENTHESE_RIGHT;
     }
 
     /**
@@ -1233,7 +1233,7 @@ public abstract class AbstractDialect implements Dialect {
         String catalog = rs.getString("PKTABLE_CAT");
         String schema = rs.getString("PKTABLE_SCHEM");
         String table = rs.getString("PKTABLE_NAME");
-        StringJoiner joiner = new StringJoiner(".");
+        StringJoiner joiner = new StringJoiner(Symbol.DOT);
         if (catalog != null && !catalog.isBlank()) {
             joiner.add(catalog);
         }

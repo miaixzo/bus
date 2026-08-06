@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.center.date.culture.parts.DayParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
@@ -158,7 +159,7 @@ public class RabjungDay extends DayParts {
      * @return The name of the Tibetan day.
      */
     public String getName() {
-        return (leap ? "闰" : "") + NAMES[day - 1];
+        return (leap ? "闰" : Normal.EMPTY) + NAMES[day - 1];
     }
 
     /**

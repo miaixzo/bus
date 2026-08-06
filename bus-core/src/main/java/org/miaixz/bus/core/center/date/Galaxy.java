@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A utility class for astronomical calculations based on the Shouxing calendar. This class contains highly specialized
  * methods and constants for orbital mechanics and time calculations.
@@ -969,9 +971,9 @@ public class Galaxy {
         } else if (j >= f2) {
             d = qiShuo(qi, false, j, pc);
             char n = fkb.charAt((int) (qi ? (j - f2) / 365.2422 * 24 : (j - f2) / 29.5306));
-            if ('1' == n) {
+            if (Symbol.C_ONE == n) {
                 d += 1;
-            } else if ('2' == n) {
+            } else if (Symbol.C_TWO == n) {
                 d -= 1;
             }
         }

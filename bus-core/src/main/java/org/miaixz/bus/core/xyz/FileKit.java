@@ -301,7 +301,7 @@ public class FileKit extends PathResolve {
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(path.substring(0, index));
-            return ZipKit.listFileNames(jarFile, StringKit.removePrefix(path.substring(index + 1), "/"));
+            return ZipKit.listFileNames(jarFile, StringKit.removePrefix(path.substring(index + 1), Symbol.SLASH));
         } catch (final IOException e) {
             throw new InternalException(StringKit.format("Can not read file path of [{}]", path), e);
         } finally {
@@ -1066,7 +1066,7 @@ public class FileKit extends PathResolve {
         if (isRetainExt) {
             final String extName = FileName.extName(file);
             if (StringKit.isNotBlank(extName)) {
-                newName = newName.concat(".").concat(extName);
+                newName = newName.concat(Symbol.DOT).concat(extName);
             }
         }
         return rename(file.toPath(), newName, isOverride).toFile();
@@ -1407,10 +1407,10 @@ public class FileKit extends PathResolve {
      */
     public static String subPath(String dirPath, String filePath) {
         if (StringKit.isNotEmpty(dirPath) && StringKit.isNotEmpty(filePath)) {
-            dirPath = StringKit.removeSuffix(FileName.normalize(dirPath), "/");
+            dirPath = StringKit.removeSuffix(FileName.normalize(dirPath), Symbol.SLASH);
             filePath = FileName.normalize(filePath);
             final String result = StringKit.removePrefixIgnoreCase(filePath, dirPath);
-            return StringKit.removePrefix(result, "/");
+            return StringKit.removePrefix(result, Symbol.SLASH);
         }
         return filePath;
     }

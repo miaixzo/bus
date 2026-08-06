@@ -164,7 +164,7 @@ public final class Iostat {
                     product = keyValue.replace("Product:", Normal.EMPTY).trim();
                 } else if (keyValue.startsWith("Size:")) {
                     // Size: 1.23GB <1227563008 bytes>
-                    String[] bytes = keyValue.split("<");
+                    String[] bytes = keyValue.split(Symbol.LT);
                     if (bytes.length > 1) {
                         bytes = Pattern.SPACES_PATTERN.split(bytes[1]);
                         size = Parsing.parseLongOrDefault(bytes[0], 0L);

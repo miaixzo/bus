@@ -232,7 +232,7 @@ public class NetKit {
      * @return The IP address with the last part hidden.
      */
     public static String hideIpPart(final String ip) {
-        return StringKit.builder(ip.length()).append(ip, 0, ip.lastIndexOf(".") + 1).append(Symbol.STAR).toString();
+        return StringKit.builder(ip.length()).append(ip, 0, ip.lastIndexOf(Symbol.DOT) + 1).append(Symbol.STAR).toString();
     }
 
     /**

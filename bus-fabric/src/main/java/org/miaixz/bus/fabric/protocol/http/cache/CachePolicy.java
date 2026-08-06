@@ -29,6 +29,7 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
@@ -282,7 +283,7 @@ public final class CachePolicy implements Policy {
         }
         for (int index = 0; index < value.length(); index++) {
             final char current = value.charAt(index);
-            if (current < '0' || current > '9') {
+            if (current < Symbol.C_ZERO || current > Symbol.C_NINE) {
                 throw new ProtocolException("Invalid HTTP Age");
             }
         }

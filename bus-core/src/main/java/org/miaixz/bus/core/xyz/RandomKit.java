@@ -26,6 +26,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Various;
 import org.miaixz.bus.core.lang.Assert;
@@ -183,7 +184,7 @@ public class RandomKit {
      * @return A random Chinese character.
      */
     public static char randomChinese() {
-        return (char) randomInt('\u4E00', '\u9FFF');
+        return (char) randomInt(Symbol.C_L_ONE, '\u9FFF');
     }
 
     /**

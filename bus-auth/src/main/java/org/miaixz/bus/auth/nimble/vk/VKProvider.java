@@ -36,6 +36,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -78,7 +79,7 @@ public class VKProvider extends AbstractProvider {
         String realState = getRealState(state);
 
         Builder builder = Builder.fromUrl((String) super.build(state).getData())
-                .queryParam("scope", this.getScopes(" ", false, this.getScopes(VKScope.values())));
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getScopes(VKScope.values())));
         if (this.context.isPkce()) {
             String cacheKey = this.complex.getName().concat(":code_verifier:").concat(realState);
             String codeVerifier = Builder.codeVerifier();
@@ -139,7 +140,7 @@ public class VKProvider extends AbstractProvider {
         return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Claims.builder().uuid(userObj.get("user_id")).username(userObj.get("first_name"))
-                                .nickname(userObj.get("first_name") + " " + userObj.get("last_name"))
+                                .nickname(userObj.get("first_name") + Symbol.SPACE + userObj.get("last_name"))
                                 .avatar(userObj.get("avatar")).email(userObj.get("email")).token(authorization)
                                 .rawJson(JsonKit.toJsonString(userObj)).source(this.complex.toString()).build())
                 .build();
@@ -178,7 +179,7 @@ public class VKProvider extends AbstractProvider {
         this.checkResponse(object);
         // Return 1 indicates successful authorization cancellation, otherwise failed
 
-        Errors errors = object.get("response").equals("1") ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
+        Errors errors = object.get("response").equals(Symbol.ONE) ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
         return Message.<Void>builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
     }
 

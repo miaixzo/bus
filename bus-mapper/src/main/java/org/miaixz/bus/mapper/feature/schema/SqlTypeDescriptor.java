@@ -29,6 +29,7 @@ import lombok.experimental.Accessors;
 import org.apache.ibatis.type.JdbcType;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * SQL column type descriptor.
@@ -166,7 +167,7 @@ public class SqlTypeDescriptor {
      */
     public static String normalizeTypeName(String value) {
         if (value == null || value.isBlank()) {
-            return "";
+            return Normal.EMPTY;
         }
         String type = value.trim().toUpperCase(Locale.ROOT);
         return switch (type) {

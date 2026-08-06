@@ -521,7 +521,7 @@ public class Keys {
             if (javaSpecVer.startsWith("1.")) {
                 javaSpecVer = javaSpecVer.substring(2);
             }
-            if (javaSpecVer.indexOf('.') == -1) {
+            if (javaSpecVer.indexOf(Symbol.C_DOT) == -1) {
                 jvmVersion = Integer.parseInt(javaSpecVer);
             }
         }

@@ -102,7 +102,7 @@ public class Calculator {
 
             // Treat 'x' or 'X' as multiplication operator '*'
             if (CharKit.equals(c, 'x', true)) {
-                out.append('*');
+                out.append(Symbol.C_STAR);
                 continue;
             }
 
@@ -238,7 +238,7 @@ public class Calculator {
                     postfixStack.push(new String(arr, currentIndex, count));
                 }
                 peekOp = opStack.peek();
-                if (currentOp == ')') {
+                if (currentOp == Symbol.C_PARENTHESE_RIGHT) {
                     // Pop operators to output until a left parenthesis is found
                     while (opStack.peek() != Symbol.C_PARENTHESE_LEFT) {
                         postfixStack.push(String.valueOf(opStack.pop()));
@@ -277,8 +277,8 @@ public class Calculator {
      * @return {@code true} if it is an arithmetic operator, {@code false} otherwise.
      */
     private boolean isOperator(final char c) {
-        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/'
-                || c == Symbol.C_PARENTHESE_LEFT || c == ')' || c == Symbol.C_PERCENT;
+        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == Symbol.C_SLASH
+                || c == Symbol.C_PARENTHESE_LEFT || c == Symbol.C_PARENTHESE_RIGHT || c == Symbol.C_PERCENT;
     }
 
     /**

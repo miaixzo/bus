@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the MultipartInputStream type.
  *
@@ -113,10 +116,10 @@ public class MultipartInputStream extends FilterInputStream {
      */
     private static String unquote(String s) {
         int srcEnd = s.length() - 1;
-        if (srcEnd < 0 || s.charAt(0) != '\"') {
+        if (srcEnd < 0 || s.charAt(0) != Symbol.C_DOUBLE_QUOTES) {
             return s;
         }
-        if (srcEnd == 0 || s.charAt(srcEnd) != '\"') { // missing closing quote
+        if (srcEnd == 0 || s.charAt(srcEnd) != Symbol.C_DOUBLE_QUOTES) { // missing closing quote
             srcEnd++;
         }
         char[] cs = new char[srcEnd - 1];
@@ -124,7 +127,7 @@ public class MultipartInputStream extends FilterInputStream {
         boolean backslash = false;
         int count = 0;
         for (char c : cs) {
-            if (!(backslash = !backslash && c == '\\')) {
+            if (!(backslash = !backslash && c == Symbol.C_BACKSLASH)) {
                 cs[count++] = c;
             }
         }
@@ -286,8 +289,8 @@ public class MultipartInputStream extends FilterInputStream {
         Field field = new Field();
         while (readHeaderParam(field)) {
             String name = field.toString();
-            String value = "";
-            int endName = name.indexOf(':');
+            String value = Normal.EMPTY;
+            int endName = name.indexOf(Symbol.C_COLON);
             if (endName != -1) {
                 value = unquote(name.substring(endName + 1).trim());
                 name = name.substring(0, endName);
@@ -373,7 +376,7 @@ public class MultipartInputStream extends FilterInputStream {
          * @return true if the condition is met; otherwise false.
          */
         boolean append(byte b) {
-            if (b == '\n' && length > 0 && buffer[length - 1] == '\r') {
+            if (b == Symbol.C_LF && length > 0 && buffer[length - 1] == Symbol.C_CR) {
                 length--;
                 return false;
             }

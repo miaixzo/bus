@@ -159,7 +159,7 @@ public class ExcelSaxKit {
         Object result = null;
         switch (cellDataType) {
             case BOOL:
-                result = (value.charAt(0) != '0');
+                result = (value.charAt(0) != Symbol.C_ZERO);
                 break;
 
             case ERROR:
@@ -238,8 +238,8 @@ public class ExcelSaxKit {
     public static int countNullCell(final String preRef, final String ref) {
         // Excel 2007 maximum row count is 1048576, maximum column count is 16384, last column name is XFD.
         // Remove row information from column names.
-        String preXfd = ObjectKit.defaultIfNull(preRef, Symbol.AT).replaceAll("\\d+", "");
-        String xfd = ObjectKit.defaultIfNull(ref, Symbol.AT).replaceAll("\\d+", "");
+        String preXfd = ObjectKit.defaultIfNull(preRef, Symbol.AT).replaceAll("\\d+", Normal.EMPTY);
+        String xfd = ObjectKit.defaultIfNull(ref, Symbol.AT).replaceAll("\\d+", Normal.EMPTY);
 
         // A represents 65, @ represents 64. If A is counted as 1, then @ represents 0.
         // Pad to a maximum of 3 digits.

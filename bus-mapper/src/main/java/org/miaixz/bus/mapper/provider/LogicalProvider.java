@@ -101,9 +101,9 @@ public class LogicalProvider extends BasicProvider {
                         + " FROM " + entity.tableName()
                         + trim(
                                 "WHERE",
-                                "",
+                                Normal.EMPTY,
                                 "WHERE |OR |AND ",
-                                "",
+                                Normal.EMPTY,
                                 () -> ifParameterNotNull(
                                         () -> where(
                                                 () -> entity.whereColumns().stream().map(
@@ -142,9 +142,9 @@ public class LogicalProvider extends BasicProvider {
                         + " FROM " + entity.tableName()
                         + trim(
                                 "WHERE",
-                                "",
+                                Normal.EMPTY,
                                 "WHERE |OR |AND ",
-                                "",
+                                Normal.EMPTY,
                                 () -> ifParameterNotNull(() -> CONDITION_ROOT_WHERE) + logicalCondition(entity, false))
                         + ifTest("orderByClause != null", () -> " Order BY ${orderByClause}")
                         + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(Normal.EMPTY))
@@ -175,13 +175,13 @@ public class LogicalProvider extends BasicProvider {
                         + ifTest(
                                 "simpleSelectColumns != null and simpleSelectColumns != ''",
                                 () -> "${simpleSelectColumns}")
-                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> "*") + ") FROM "
+                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> Symbol.STAR) + ") FROM "
                         + entity.tableName()
                         + trim(
                                 "WHERE",
-                                "",
+                                Normal.EMPTY,
                                 "WHERE |OR |AND ",
-                                "",
+                                Normal.EMPTY,
                                 () -> ifParameterNotNull(() -> CONDITION_ROOT_WHERE) + logicalCondition(entity, false))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
@@ -263,13 +263,13 @@ public class LogicalProvider extends BasicProvider {
                                         .map(column -> column.columnEqualsProperty("entity."))
                                         .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
-                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + trim(
                                 "WHERE",
-                                "",
+                                Normal.EMPTY,
                                 "WHERE |OR |AND ",
-                                "",
+                                Normal.EMPTY,
                                 () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
@@ -303,13 +303,13 @@ public class LogicalProvider extends BasicProvider {
                                                         () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
                                         .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
-                        + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + trim(
                                 "WHERE",
-                                "",
+                                Normal.EMPTY,
                                 "WHERE |OR |AND ",
-                                "",
+                                Normal.EMPTY,
                                 () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
@@ -337,13 +337,13 @@ public class LogicalProvider extends BasicProvider {
                         + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
                         + entity.tableName() + CONDITION_SET_VALUES
                         + variableNotNull("condition", "Condition cannot be null")
-                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("updateByCondition.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + trim(
                                 "WHERE",
-                                "",
+                                Normal.EMPTY,
                                 "WHERE |OR |AND ",
-                                "",
+                                Normal.EMPTY,
                                 () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
@@ -527,7 +527,7 @@ public class LogicalProvider extends BasicProvider {
                 return ifTest("startSql != null and startSql != ''", () -> "${startSql}") + "UPDATE "
                         + entity.tableName() + " SET " + columnEqualsValue(logicColumn, deleteValue(logicColumn))
                         + parameterNotNull("Condition cannot be null")
-                        + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? ""
+                        + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? Normal.EMPTY
                                 : variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
                         + CONDITION_ROOT_WHERE + " AND " + logicalCondition(entity, true)
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");

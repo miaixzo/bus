@@ -399,13 +399,13 @@ public final class Expression implements Serializable, Cloneable {
                 String expr = exprsTok.nextToken().trim();
 
                 // throw an exception if L is used with other days of the month
-                if (exprOn == DAY_OF_MONTH && expr.indexOf('L') != -1 && expr.length() > 1
+                if (exprOn == DAY_OF_MONTH && expr.indexOf(Symbol.C_L) != -1 && expr.length() > 1
                         && expr.contains(Symbol.COMMA)) {
                     throw new ParseException(
                             "Support for specifying 'L' and 'LW' with other days of the month is not implemented", -1);
                 }
                 // throw an exception if L is used with other days of the week
-                if (exprOn == DAY_OF_WEEK && expr.indexOf('L') != -1 && expr.length() > 1
+                if (exprOn == DAY_OF_WEEK && expr.indexOf(Symbol.C_L) != -1 && expr.length() > 1
                         && expr.contains(Symbol.COMMA)) {
                     throw new ParseException(
                             "Support for specifying 'L' with other days of the week is not implemented", -1);
@@ -449,7 +449,7 @@ public final class Expression implements Serializable, Cloneable {
         } catch (ParseException pe) {
             throw pe;
         } catch (Exception e) {
-            throw new ParseException("Illegal cron expression format (" + e + ")", 0);
+            throw new ParseException("Illegal cron expression format (" + e + Symbol.PARENTHESE_RIGHT, 0);
         }
     }
 
@@ -470,14 +470,14 @@ public final class Expression implements Serializable, Cloneable {
             return i;
         }
         char c = s.charAt(i);
-        if ((c >= 'A') && (c <= 'Z') && (!s.equals("L")) && (!s.equals("LW")) && (!s.matches("^L-[0-9]*[W]?"))) {
+        if ((c >= 'A') && (c <= 'Z') && (!s.equals(Symbol.L)) && (!s.equals("LW")) && (!s.matches("^L-[0-9]*[W]?"))) {
             String sub = s.substring(i, i + 3);
             int sval = -1;
             int eval = -1;
             if (type == MONTH) {
                 sval = getMonthNumber(sub) + 1;
                 if (sval <= 0) {
-                    throw new ParseException("Invalid Month value: '" + sub + "'", i);
+                    throw new ParseException("Invalid Month value: '" + sub + Symbol.SINGLE_QUOTE, i);
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
@@ -486,14 +486,14 @@ public final class Expression implements Serializable, Cloneable {
                         sub = s.substring(i, i + 3);
                         eval = getMonthNumber(sub) + 1;
                         if (eval <= 0) {
-                            throw new ParseException("Invalid Month value: '" + sub + "'", i);
+                            throw new ParseException("Invalid Month value: '" + sub + Symbol.SINGLE_QUOTE, i);
                         }
                     }
                 }
             } else if (type == DAY_OF_WEEK) {
                 sval = getDayOfWeekNumber(sub);
                 if (sval < 0) {
-                    throw new ParseException("Invalid Day-of-Week value: '" + sub + "'", i);
+                    throw new ParseException("Invalid Day-of-Week value: '" + sub + Symbol.SINGLE_QUOTE, i);
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
@@ -502,7 +502,7 @@ public final class Expression implements Serializable, Cloneable {
                         sub = s.substring(i, i + 3);
                         eval = getDayOfWeekNumber(sub);
                         if (eval < 0) {
-                            throw new ParseException("Invalid Day-of-Week value: '" + sub + "'", i);
+                            throw new ParseException("Invalid Day-of-Week value: '" + sub + Symbol.SINGLE_QUOTE, i);
                         }
                     } else if (c == Symbol.C_HASH) {
                         try {
@@ -514,14 +514,14 @@ public final class Expression implements Serializable, Cloneable {
                         } catch (Exception e) {
                             throw new ParseException("A numeric value between 1 and 5 must follow the '#' option", i);
                         }
-                    } else if (c == 'L') {
+                    } else if (c == Symbol.C_L) {
                         lastdayOfWeek = true;
                         i++;
                     }
                 }
 
             } else {
-                throw new ParseException("Illegal characters for this position: '" + sub + "'", i);
+                throw new ParseException("Illegal characters for this position: '" + sub + Symbol.SINGLE_QUOTE, i);
             }
             if (eval != -1) {
                 incr = 1;
@@ -579,7 +579,7 @@ public final class Expression implements Serializable, Cloneable {
 
             addToSet(ALL_SPEC_INT, -1, incr, type);
             return i;
-        } else if (c == 'L') {
+        } else if (c == Symbol.C_L) {
             i++;
             if (type == DAY_OF_MONTH) {
                 lastdayOfMonth = true;
@@ -605,14 +605,14 @@ public final class Expression implements Serializable, Cloneable {
                 }
             }
             return i;
-        } else if (c >= '0' && c <= '9') {
+        } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
             int val = Integer.parseInt(String.valueOf(c));
             i++;
             if (i >= s.length()) {
                 addToSet(val, -1, -1, type);
             } else {
                 c = s.charAt(i);
-                if (c >= '0' && c <= '9') {
+                if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                     ValueSet vs = getValue(val, s, i);
                     val = vs.value;
                     i = vs.pos;
@@ -663,13 +663,13 @@ public final class Expression implements Serializable, Cloneable {
 
         char c = s.charAt(pos);
 
-        if (c == 'L') {
+        if (c == Symbol.C_L) {
             if (type == DAY_OF_WEEK) {
                 if (val < 1 || val > 7)
                     throw new ParseException("Day-of-Week values must be between 1 and 7", -1);
                 lastdayOfWeek = true;
             } else {
-                throw new ParseException("'L' option is not valid here. (pos=" + i + ")", i);
+                throw new ParseException("'L' option is not valid here. (pos=" + i + Symbol.PARENTHESE_RIGHT, i);
             }
             TreeSet<Integer> set = getSet(type);
             set.add(val);
@@ -681,7 +681,7 @@ public final class Expression implements Serializable, Cloneable {
             if (type == DAY_OF_MONTH) {
                 nearestWeekday = true;
             } else {
-                throw new ParseException("'W' option is not valid here. (pos=" + i + ")", i);
+                throw new ParseException("'W' option is not valid here. (pos=" + i + Symbol.PARENTHESE_RIGHT, i);
             }
             if (val > 31)
                 throw new ParseException(
@@ -695,7 +695,7 @@ public final class Expression implements Serializable, Cloneable {
 
         if (c == Symbol.C_HASH) {
             if (type != DAY_OF_WEEK) {
-                throw new ParseException("'#' option is not valid here. (pos=" + i + ")", i);
+                throw new ParseException("'#' option is not valid here. (pos=" + i + Symbol.PARENTHESE_RIGHT, i);
             }
             i++;
             try {
@@ -724,7 +724,7 @@ public final class Expression implements Serializable, Cloneable {
                 return i;
             }
             c = s.charAt(i);
-            if (c >= '0' && c <= '9') {
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                 ValueSet vs = getValue(v, s, i);
                 end = vs.value;
                 i = vs.pos;
@@ -739,7 +739,7 @@ public final class Expression implements Serializable, Cloneable {
                     return i;
                 }
                 c = s.charAt(i);
-                if (c >= '0' && c <= '9') {
+                if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                     ValueSet vs = getValue(v2, s, i);
                     int v3 = vs.value;
                     addToSet(val, end, v3, type);
@@ -770,7 +770,7 @@ public final class Expression implements Serializable, Cloneable {
                 return i;
             }
             c = s.charAt(i);
-            if (c >= '0' && c <= '9') {
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
                 ValueSet vs = getValue(v2, s, i);
                 int v3 = vs.value;
                 checkIncrementRange(v3, type, i);
@@ -1126,7 +1126,7 @@ public final class Expression implements Serializable, Cloneable {
     protected ValueSet getValue(int v, String s, int i) {
         char c = s.charAt(i);
         StringBuilder s1 = new StringBuilder(String.valueOf(v));
-        while (c >= '0' && c <= '9') {
+        while (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
             s1.append(c);
             i++;
             if (i >= s.length()) {

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.pay.nimble.jdpay;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.Complex;
@@ -158,14 +159,14 @@ public class JdPayProvider extends AbstractProvider<Voucher, Context> {
                 true,
                 "Pay",
                 "JD Pay request started: url={}, requestBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 reqXml == null ? 0 : reqXml.length());
         String response = post(url, reqXml);
         Logger.info(
                 false,
                 "Pay",
                 "JD Pay request completed: url={}, responseBytes={}",
-                url == null ? null : url.replaceFirst("\\?.*$", ""),
+                url == null ? null : url.replaceFirst("\\?.*$", Normal.EMPTY),
                 response == null ? 0 : response.length());
         return response;
     }

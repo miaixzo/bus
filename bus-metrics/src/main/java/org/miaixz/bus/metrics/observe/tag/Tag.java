@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.metrics.observe.tag;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * An immutable key=value metric tag.
  *
@@ -39,7 +41,7 @@ public record Tag(String key, String value) {
             throw new IllegalArgumentException("Tag key must not be blank");
         }
         if (value == null) {
-            value = "";
+            value = Normal.EMPTY;
         }
     }
 

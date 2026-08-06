@@ -23,6 +23,7 @@ import java.beans.Introspector;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -108,7 +109,7 @@ public class BeanRegistry {
         DefaultListableBeanFactory factory = beanFactory();
         requireName(name);
         if (!factory.containsBeanDefinition(name)) {
-            throw new IllegalStateException("No Bean definition is registered with name '" + name + "'");
+            throw new IllegalStateException("No Bean definition is registered with name '" + name + Symbol.SINGLE_QUOTE);
         }
         factory.removeBeanDefinition(name);
     }
@@ -122,7 +123,7 @@ public class BeanRegistry {
         DefaultListableBeanFactory factory = beanFactory();
         requireName(name);
         if (!factory.containsSingleton(name)) {
-            throw new IllegalStateException("No singleton is registered with name '" + name + "'");
+            throw new IllegalStateException("No singleton is registered with name '" + name + Symbol.SINGLE_QUOTE);
         }
         factory.destroySingleton(name);
     }

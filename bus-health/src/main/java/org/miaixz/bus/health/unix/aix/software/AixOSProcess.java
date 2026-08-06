@@ -712,7 +712,7 @@ public class AixOSProcess extends AbstractOSProcess {
         }
         this.commandLineBackup = Native.toString(info.pr_psargs);
         this.path = Pattern.SPACES_PATTERN.split(commandLineBackup)[0];
-        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         if (this.name.isEmpty()) {
             this.name = Native.toString(info.pr_fname);
         }

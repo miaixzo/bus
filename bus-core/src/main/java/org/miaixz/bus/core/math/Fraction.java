@@ -235,17 +235,17 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     public static Fraction of(String str) {
         Objects.requireNonNull(str, "str");
         // parse double format
-        int pos = str.indexOf('.');
+        int pos = str.indexOf(Symbol.C_DOT);
         if (pos >= 0) {
             return of(Double.parseDouble(str));
         }
 
         // parse X Y/Z format
-        pos = str.indexOf(' ');
+        pos = str.indexOf(Symbol.C_SPACE);
         if (pos > 0) {
             final int whole = Integer.parseInt(str.substring(0, pos));
             str = str.substring(pos + 1);
-            pos = str.indexOf('/');
+            pos = str.indexOf(Symbol.C_SLASH);
             if (pos < 0) {
                 throw new NumberFormatException("The fraction could not be parsed as the format X Y/Z");
             }
@@ -255,7 +255,7 @@ public final class Fraction extends Number implements Comparable<Fraction> {
         }
 
         // parse Y/Z format
-        pos = str.indexOf('/');
+        pos = str.indexOf(Symbol.C_SLASH);
         if (pos < 0) {
             // simple whole number
             return of(Integer.parseInt(str), 1);
@@ -656,9 +656,9 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     public String toProperString() {
         if (toProperString == null) {
             if (numerator == 0) {
-                toProperString = "0";
+                toProperString = Symbol.ZERO;
             } else if (numerator == denominator) {
-                toProperString = "1";
+                toProperString = Symbol.ONE;
             } else if (numerator == -1 * denominator) {
                 toProperString = "-1";
             } else if ((numerator > 0 ? -numerator : numerator) < -denominator) {
@@ -670,10 +670,10 @@ public final class Fraction extends Number implements Comparable<Fraction> {
                 if (properNumerator == 0) {
                     toProperString = Integer.toString(getProperWhole());
                 } else {
-                    toProperString = getProperWhole() + Symbol.SPACE + properNumerator + "/" + getDenominator();
+                    toProperString = getProperWhole() + Symbol.SPACE + properNumerator + Symbol.SLASH + getDenominator();
                 }
             } else {
-                toProperString = getNumerator() + "/" + getDenominator();
+                toProperString = getNumerator() + Symbol.SLASH + getDenominator();
             }
         }
         return toProperString;

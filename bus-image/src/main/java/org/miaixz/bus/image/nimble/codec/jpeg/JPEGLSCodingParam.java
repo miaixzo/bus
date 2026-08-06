@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
+
 /**
  * Represents the JPEGLSCodingParam type.
  *

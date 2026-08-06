@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
@@ -110,7 +111,7 @@ public class Informix extends AbstractDialect {
      */
     @Override
     public String addColumn(TableMeta table, ColumnMeta column) {
-        return "ALTER TABLE " + tableName(table) + " ADD (" + columnDefinition(column) + ")";
+        return "ALTER TABLE " + tableName(table) + " ADD (" + columnDefinition(column) + Symbol.PARENTHESE_RIGHT;
     }
 
     /**

@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * RotN (rotate by N places) cipher, a simple substitution cipher and a variant of the Caesar cipher developed in
@@ -61,12 +62,12 @@ public class RotateN {
     /**
      * Represents the character '0', used as a reference for digits.
      */
-    private static final char CHAR0 = '0';
+    private static final char CHAR0 = Symbol.C_ZERO;
 
     /**
      * Represents the character '9', used as a reference for digits.
      */
-    private static final char CHAR9 = '9';
+    private static final char CHAR9 = Symbol.C_NINE;
 
     /**
      * Encodes the given message using the RotateN-13 cipher, including digits. This is a specific case of the

@@ -959,11 +959,11 @@ public final class DnsDohServer implements AutoCloseable, Lifecycle {
         if (rawQuery == null || rawQuery.isEmpty()) {
             return null;
         }
-        for (final String parameter : rawQuery.split("&")) {
-            final int separator = parameter.indexOf('=');
+        for (final String parameter : rawQuery.split(Symbol.AND)) {
+            final int separator = parameter.indexOf(Symbol.C_EQUAL);
             final String parameterName = separator < 0 ? parameter : parameter.substring(0, separator);
             if (name.equals(URLDecoder.decode(parameterName, StandardCharsets.UTF_8))) {
-                return separator < 0 ? "" : parameter.substring(separator + 1);
+                return separator < 0 ? Normal.EMPTY : parameter.substring(separator + 1);
             }
         }
         return null;

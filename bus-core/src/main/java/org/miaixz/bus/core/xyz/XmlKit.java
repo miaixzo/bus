@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xml.DocumentBuilder;
 import org.miaixz.bus.core.xml.XmlMapper;
 import org.miaixz.bus.core.xml.XmlSaxReader;
@@ -75,7 +76,7 @@ public class XmlKit {
      */
     public static Document readXml(String pathOrContent) {
         pathOrContent = StringKit.trim(pathOrContent);
-        if (StringKit.startWith(pathOrContent, '<')) {
+        if (StringKit.startWith(pathOrContent, Symbol.C_LT)) {
             return parseXml(pathOrContent);
         }
         return readXml(FileKit.file(pathOrContent));

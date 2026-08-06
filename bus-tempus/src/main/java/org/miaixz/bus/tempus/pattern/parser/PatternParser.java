@@ -107,7 +107,7 @@ public class PatternParser {
         }
 
         // The second part. If the expression does not include seconds, default to "0" for matching on the minute.
-        final String secondPart = (1 == offset) ? parts[0] : "0";
+        final String secondPart = (1 == offset) ? parts[0] : Symbol.ZERO;
 
         // The year part.
         final PartMatcher yearMatcher;

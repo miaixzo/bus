@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
 import org.miaixz.bus.fabric.network.dns.message.DnsQuery;
@@ -297,7 +298,7 @@ public final class DnsResponseCache {
      * @return cached response bytes, or {@code null}
      */
     public byte[] get(final DnsQuery query, final boolean stream) {
-        return get(query, stream, "");
+        return get(query, stream, Normal.EMPTY);
     }
 
     /**
@@ -346,7 +347,7 @@ public final class DnsResponseCache {
      * @param response response bytes
      */
     public void put(final DnsQuery query, final boolean stream, final byte[] response) {
-        put(query, stream, "", response);
+        put(query, stream, Normal.EMPTY, response);
     }
 
     /**

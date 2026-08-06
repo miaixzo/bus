@@ -180,7 +180,7 @@ public class EscapeKit {
         while (lastPos < len) {
             pos = content.indexOf(Symbol.PERCENT, lastPos);
             if (pos == lastPos) {
-                if (pos + 1 < len && content.charAt(pos + 1) == 'u') {
+                if (pos + 1 < len && content.charAt(pos + 1) == Symbol.C_U) {
                     if (pos + 6 <= len) {
                         ch = (char) Integer.parseInt(content.substring(pos + 2, pos + 6), 16);
                         tmp.append(ch);

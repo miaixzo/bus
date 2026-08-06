@@ -45,7 +45,7 @@ final class WindowsPrinter extends AbstractPrinter {
     /**
      * The ERROR_STATE_NAMES constant.
      */
-    private static final String[] ERROR_STATE_NAMES = { "Unknown", "Other", "", "Low Paper", "No Paper", "Low Toner",
+    private static final String[] ERROR_STATE_NAMES = { "Unknown", "Other", Normal.EMPTY, "Low Paper", "No Paper", "Low Toner",
             "No Toner", "Door Open", "Jammed", "Offline", "Service Requested", "Output Bin Full" };
 
     /**

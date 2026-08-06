@@ -290,7 +290,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         String alpha = fullName;
         String numeric = Normal.EMPTY;
         for (int c = 0; c < fullName.length(); c++) {
-            if (fullName.charAt(c) >= '0' && fullName.charAt(c) <= '9') {
+            if (fullName.charAt(c) >= Symbol.C_ZERO && fullName.charAt(c) <= Symbol.C_NINE) {
                 alpha = fullName.substring(0, c);
                 numeric = fullName.substring(c);
                 break;
@@ -298,7 +298,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         }
         // Try device style notation
         Object[] results = KstatKit.queryKstat2(
-                "kstat:/disk/" + alpha + "/" + getName() + "/0",
+                "kstat:/disk/" + alpha + Symbol.SLASH + getName() + "/0",
                 "reads",
                 "writes",
                 "nread",
@@ -310,7 +310,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
         // If failure try io notation
         if (results[results.length - 1] == null) {
             results = KstatKit.queryKstat2(
-                    "kstat:/disk/" + alpha + "/" + numeric + "/io",
+                    "kstat:/disk/" + alpha + Symbol.SLASH + numeric + "/io",
                     "reads",
                     "writes",
                     "nread",

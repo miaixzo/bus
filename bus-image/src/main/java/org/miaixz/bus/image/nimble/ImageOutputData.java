@@ -288,7 +288,7 @@ public class ImageOutputData {
                 if (releaseSrc && !writeImg.equals(image)) {
                     image.release();
                 }
-                buf = Imgcodecs.dicomJpgWrite(writeImg.toMat(), dicomParams, "");
+                buf = Imgcodecs.dicomJpgWrite(writeImg.toMat(), dicomParams, Normal.EMPTY);
                 if (buf.empty()) {
                     writeImg.release();
                     throw new IOException("Native encoding error: null image");

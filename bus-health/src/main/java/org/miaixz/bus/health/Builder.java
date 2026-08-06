@@ -855,7 +855,7 @@ public final class Builder {
      * @return The corresponding configuration property key.
      */
     static String envKeyToProperty(String envKey) {
-        return envKey.toLowerCase(Locale.ROOT).replace('_', '.');
+        return envKey.toLowerCase(Locale.ROOT).replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
     }
 
     /**

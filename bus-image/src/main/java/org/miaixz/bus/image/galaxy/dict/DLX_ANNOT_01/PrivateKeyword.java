@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.dict.DLX_ANNOT_01;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Represents the PrivateKeyword type.
  *
@@ -59,7 +61,7 @@ public class PrivateKeyword {
             case PrivateTag.ArrowEnd:
                 return "ArrowEnd";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

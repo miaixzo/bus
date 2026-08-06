@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Abstract base class for date information, providing date format, time zone, and locale information.
@@ -126,7 +125,7 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
      */
     @Override
     public String toString() {
-        return "SimpleDatePrinter[" + pattern + Symbol.COMMA + locale + Symbol.COMMA + timeZone.getID() + "]";
+        return "SimpleDatePrinter[" + pattern + "," + locale + "," + timeZone.getID() + "]";
     }
 
 }

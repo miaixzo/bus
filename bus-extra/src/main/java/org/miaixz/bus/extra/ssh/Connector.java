@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.extra.ssh;
 
+
 /**
  * Represents a connector object that provides basic connection information for services like SSH, FTP, etc. This class
  * encapsulates the following details:

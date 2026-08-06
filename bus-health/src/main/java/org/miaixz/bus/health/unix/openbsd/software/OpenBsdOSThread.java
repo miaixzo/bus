@@ -284,7 +284,7 @@ public class OpenBsdOSThread extends AbstractOSThread {
                 break;
 
             case 'D':
-            case 'L':
+            case Symbol.C_L:
             case 'U':
                 this.state = OSProcess.State.WAITING;
                 break;

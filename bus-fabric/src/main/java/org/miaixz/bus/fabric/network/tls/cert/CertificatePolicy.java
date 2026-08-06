@@ -400,7 +400,7 @@ public final class CertificatePolicy implements Policy {
      */
     private static String validateHost(final String host) {
         final String normalized = NetKit.normalizeHost(host);
-        if (normalized.indexOf('*') >= 0) {
+        if (normalized.indexOf(Symbol.C_STAR) >= 0) {
             throw new ValidateException("Certificate host must not contain wildcards");
         }
         return normalized;
@@ -419,12 +419,12 @@ public final class CertificatePolicy implements Policy {
         final String normalized = host.trim().toLowerCase(Locale.ROOT);
         if (normalized.startsWith("*.")) {
             final String suffix = NetKit.normalizeHost(normalized.substring(Normal._2));
-            if (suffix.isBlank() || suffix.indexOf('*') >= 0 || suffix.indexOf(Symbol.C_DOT) < 0) {
+            if (suffix.isBlank() || suffix.indexOf(Symbol.C_STAR) >= 0 || suffix.indexOf(Symbol.C_DOT) < 0) {
                 throw new ValidateException("Certificate pin wildcard must cover a concrete domain");
             }
             return "*." + suffix;
         }
-        if (normalized.indexOf('*') >= 0) {
+        if (normalized.indexOf(Symbol.C_STAR) >= 0) {
             throw new ValidateException("Certificate pin wildcard must start with *.");
         }
         return normalized;

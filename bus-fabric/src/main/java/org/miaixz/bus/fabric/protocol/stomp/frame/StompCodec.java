@@ -245,7 +245,7 @@ public final class StompCodec {
             throw new ProtocolException("Invalid STOMP content-length");
         }
         for (int i = Normal._0; i < value.length(); i++) {
-            if (value.charAt(i) < '0' || value.charAt(i) > '9') {
+            if (value.charAt(i) < Symbol.C_ZERO || value.charAt(i) > Symbol.C_NINE) {
                 throw new ProtocolException("Invalid STOMP content-length");
             }
         }

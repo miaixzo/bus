@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.*;
 import org.miaixz.bus.gitlab.models.ImportStatus.Status;
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -229,7 +230,7 @@ public class Project implements Serializable {
      * @return a fully qualified project path based on the provided namespace and project path
      */
     public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
+        return (namespace.trim() + Symbol.SLASH + path.trim());
     }
 
     /**

@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;
@@ -184,7 +185,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
         int index = 1;
         String[] keys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, DISPLAY_DEVICES_REGISTRY_PATH);
         for (String key : keys) {
-            if (!key.startsWith("0")) {
+            if (!key.startsWith(Symbol.ZERO)) {
                 continue;
             }
 
@@ -212,9 +213,9 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 // preserved and does not trigger the registry fallback.
                 long vram = -1L;
                 int dxgiIndex = -1;
-                String luidPrefix = "";
+                String luidPrefix = Normal.EMPTY;
                 int pciBusNumber = -1;
-                String pciBusId = "";
+                String pciBusId = Normal.EMPTY;
                 String locationInfo = RegistryKit
                         .getStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, LOCATION_INFORMATION, 0);
                 DxgiAdapterInfo dxgiMatch = WindowsDxgi.findMatch(remainingDxgi, pciVendorId, pciDeviceId, name);
@@ -245,7 +246,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 // it at 0x7FFFF000 (~2 GiB) for GPUs with more VRAM, making it unreliable.
 
                 String lhmParent = lhmParentMap
-                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? "" : name), "");
+                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name), Normal.EMPTY);
 
                 GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
                         StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
@@ -329,7 +330,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
                     } else {
-                        vendor = vendor + " (" + idPair.getLeft() + ")";
+                        vendor = vendor + " (" + idPair.getLeft() + Symbol.PARENTHESE_RIGHT;
                     }
                 }
                 String versionInfo = WmiKit.getString(cards, VideoControllerProperty.DRIVERVERSION, index);
@@ -348,9 +349,9 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 DxgiAdapterInfo dxgiMatch = WindowsDxgi.findMatch(remainingDxgi, pciVendorId, pciDeviceId, name);
                 long vram;
                 int dxgiIndex = -1;
-                String luidPrefix = "";
+                String luidPrefix = Normal.EMPTY;
                 int pciBusNumber = -1;
-                String pciBusId = "";
+                String pciBusId = Normal.EMPTY;
                 if (dxgiMatch != null) {
                     vram = dxgiMatch.getDedicatedVideoMemory();
                     dxgiIndex = dxgiAdapters.indexOf(dxgiMatch);
@@ -361,7 +362,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     vram = WmiKit.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
                 }
                 String lhmParent = lhmParentMap
-                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? "" : name), "");
+                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name), Normal.EMPTY);
                 GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
                         StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram, luidPrefix, lhmParent,
                         pciBusNumber, pciBusId);
@@ -403,7 +404,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     if (map.containsKey(norm)) {
                         // Two adapters with the same normalized name: mark ambiguous so neither
                         // is used (empty string is the "skip LHM" sentinel for callers).
-                        map.put(norm, "");
+                        map.put(norm, Normal.EMPTY);
                     } else {
                         map.put(norm, identifier);
                     }
@@ -437,7 +438,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
             return -1;
         }
         int start = busIdx + 8;
-        int end = lower.indexOf(',', start);
+        int end = lower.indexOf(Symbol.C_COMMA, start);
         String numStr = end > start ? locationInfo.substring(start, end).trim() : locationInfo.substring(start).trim();
         return Parsing.parseIntOrDefault(numStr, -1);
     }
@@ -458,7 +459,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
             return -1;
         }
         int start = devIdx + 7;
-        int end = lower.indexOf(',', start);
+        int end = lower.indexOf(Symbol.C_COMMA, start);
         String numStr = end > start ? locationInfo.substring(start, end).trim() : locationInfo.substring(start).trim();
         return Parsing.parseIntOrDefault(numStr, -1);
     }
@@ -479,7 +480,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
             return -1;
         }
         int start = fnIdx + 9;
-        int end = lower.indexOf(',', start);
+        int end = lower.indexOf(Symbol.C_COMMA, start);
         String numStr = end > start ? locationInfo.substring(start, end).trim() : locationInfo.substring(start).trim();
         return Parsing.parseIntOrDefault(numStr, -1);
     }
@@ -496,7 +497,7 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
         int device = parsePciDevice(locationInfo);
         int function = parsePciFunction(locationInfo);
         if (bus < 0 || device < 0 || function < 0) {
-            return "";
+            return Normal.EMPTY;
         }
         return String.format(Locale.ROOT, "0000:%02x:%02x.%x", bus, device, function);
     }

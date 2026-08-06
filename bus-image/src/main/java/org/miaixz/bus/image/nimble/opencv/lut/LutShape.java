@@ -22,6 +22,7 @@ package org.miaixz.bus.image.nimble.opencv.lut;
 import java.util.Objects;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 
@@ -192,7 +193,7 @@ public final class LutShape {
      * @return the operation result.
      */
     private static String normalizeExplanation(String explanation) {
-        return Objects.toString(explanation, "");
+        return Objects.toString(explanation, Normal.EMPTY);
     }
 
     /**

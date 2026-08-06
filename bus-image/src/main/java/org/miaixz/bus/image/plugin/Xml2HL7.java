@@ -90,7 +90,7 @@ public class Xml2HL7 {
         if (arg0.equals("-V") || arg0.equals("--version")) {
             Package p = Xml2HL7.class.getPackage();
             String s = p.getName();
-            System.out.println(s.substring(s.lastIndexOf('.') + 1) + ": " + p.getImplementationVersion());
+            System.out.println(s.substring(s.lastIndexOf(Symbol.C_DOT) + 1) + ": " + p.getImplementationVersion());
             System.exit(0);
         }
         if (arg0.startsWith(Symbol.MINUS) && arg0.length() > 1 && !arg0.equals(Symbol.MINUS)) {

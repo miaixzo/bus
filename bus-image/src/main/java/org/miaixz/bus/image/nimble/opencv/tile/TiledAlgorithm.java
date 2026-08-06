@@ -22,6 +22,8 @@ package org.miaixz.bus.image.nimble.opencv.tile;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 
+import org.miaixz.bus.core.lang.Normal;
+
 /**
  * Not an API. This class is under development and can be changed or removed at any moment.
  *
@@ -66,7 +68,7 @@ public class TiledAlgorithm {
      */
     void process(Mat sourceImage, Mat resultImage) {
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException(Normal.EMPTY);
         }
 
         final int rows = (sourceImage.rows() / mTileSize) + (sourceImage.rows() % mTileSize != 0 ? 1 : 0);

@@ -608,7 +608,7 @@ public class MppsSCU {
             case 1:
                 map.values().iterator().next().iuid += ".1";
         }
-        return ppsuid + '.' + (size + 1);
+        return ppsuid + Symbol.C_DOT + (size + 1);
     }
 
     /**

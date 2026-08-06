@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+
 /**
  * A decorator for a {@link Map} that returns a default value instead of {@code null} when a key is not found. This
  * provides a "tolerant" or forgiving alternative to a standard map, preventing {@code NullPointerException}s in chains

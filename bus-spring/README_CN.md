@@ -120,14 +120,19 @@ Provider。它们不单独持有 `spring.factories`；唯一发现清单由 `bus
 ```yaml
 bus:
   logging:
+    pattern:
+      defaults: true
+      console: "%d %-5level %logger - %msg%n"
     level:
       root: INFO
       org.miaixz: DEBUG
     file:
       name: app.log
-    pattern:
-      console: "%d %-5level %logger - %msg%n"
 ```
+
+`bus.logging.pattern.defaults` 默认为 `true`，此时 Bus 为控制台和文件日志提供内置的低优先级输出格式。
+设置为 `false` 时不注入内置格式，应用将使用 Spring Boot 的默认格式。显式配置的
+`bus.logging.pattern.console`、`bus.logging.pattern.file` 或对应的 `logging.pattern.*` 始终优先。
 
 启动阶段会暴露为：
 

@@ -79,10 +79,10 @@ public class StringMatcher {
             c = pattern.charAt(i);
             if (inVar) {
                 part.append(c);
-                if ('}' == c) {
+                if (Symbol.C_BRACE_RIGHT == c) {
                     if (!patterns.isEmpty()) {
                         final String lastPart = patterns.get(patterns.size() - 1);
-                        if (StringKit.isWrap(lastPart, "${", "}")) {
+                        if (StringKit.isWrap(lastPart, "${", Symbol.BRACE_RIGHT)) {
                             throw new IllegalArgumentException(StringKit.format(
                                     "Consecutive variables '{}{}' are not supported",
                                     lastPart,
@@ -94,7 +94,7 @@ public class StringMatcher {
                     patterns.add(part.toString());
                     part.setLength(0);
                 }
-            } else if ('{' == c && Symbol.C_DOLLAR == pre) {
+            } else if (Symbol.C_BRACE_LEFT == c && Symbol.C_DOLLAR == pre) {
                 // Variable start
                 inVar = true;
                 final String preText = part.substring(0, part.length() - 1);
@@ -130,7 +130,7 @@ public class StringMatcher {
         String key = null;
         int to;
         for (final String part : patterns) {
-            if (StringKit.isWrap(part, "${", "}")) {
+            if (StringKit.isWrap(part, "${", Symbol.BRACE_RIGHT)) {
                 // Variable
                 key = StringKit.sub(part, 2, part.length() - 1);
             } else {

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.
@@ -63,10 +64,10 @@ public class RabjungMonth extends MonthParts {
                 .split(Symbol.COMMA, -1);
         for (String ys : years) {
             while (!ys.isEmpty()) {
-                int len = ys.charAt(0) - '0';
+                int len = ys.charAt(0) - Symbol.C_ZERO;
                 int[] data = new int[len];
                 for (int i = 0; i < len; i++) {
-                    data[i] = ys.charAt(i + 1) - '5' - 30;
+                    data[i] = ys.charAt(i + 1) - Symbol.C_FIVE - 30;
                 }
                 DAYS.put(y * 13 + m, data);
                 m++;
@@ -176,7 +177,7 @@ public class RabjungMonth extends MonthParts {
      * @return The name of this Tibetan month.
      */
     public String getName() {
-        return (leap ? "闰" : "") + NAMES[month - 1];
+        return (leap ? "闰" : Normal.EMPTY) + NAMES[month - 1];
     }
 
     /**
@@ -185,7 +186,7 @@ public class RabjungMonth extends MonthParts {
      * @return The alias name of this Tibetan month.
      */
     public String getAlias() {
-        return (leap ? "闰" : "") + ALIAS[month - 1];
+        return (leap ? "闰" : Normal.EMPTY) + ALIAS[month - 1];
     }
 
     /**

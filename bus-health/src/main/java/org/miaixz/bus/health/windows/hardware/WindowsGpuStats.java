@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.builtin.gpu.AdlKit;
 import org.miaixz.bus.health.builtin.gpu.NvmlKit;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;
@@ -454,7 +455,7 @@ final class WindowsGpuStats implements GpuStats {
             return cachedNvmlDevice.isEmpty() ? null : cachedNvmlDevice;
         }
         if (!NvmlKit.isAvailable()) {
-            cachedNvmlDevice = "";
+            cachedNvmlDevice = Normal.EMPTY;
             return null;
         }
         String id = null;
@@ -464,7 +465,7 @@ final class WindowsGpuStats implements GpuStats {
         if (id == null) {
             id = NvmlKit.findDeviceByName(cardName);
         }
-        cachedNvmlDevice = id != null ? id : "";
+        cachedNvmlDevice = id != null ? id : Normal.EMPTY;
         return id;
     }
 

@@ -66,7 +66,7 @@ public class InvokeCrontab implements Crontab {
         Logger.debug(true, "Tempus", "Invoke crontab binding started: target={}", classNameWithMethodName);
         int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_HASH);
         if (splitIndex <= 0) {
-            splitIndex = classNameWithMethodName.lastIndexOf('.');
+            splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_DOT);
         }
         if (splitIndex <= 0) {
             Logger.warn(

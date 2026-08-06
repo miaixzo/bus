@@ -21,6 +21,8 @@ package org.miaixz.bus.core.center.date;
 
 import java.time.temporal.ChronoUnit;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Date and time units, each unit is based on milliseconds.
  *
@@ -40,7 +42,7 @@ public enum Chrono {
     /**
      * Number of milliseconds in one minute.
      */
-    MINUTE(SECOND.getMillis() * 60, "分"),
+    MINUTE(SECOND.getMillis() * 60, Symbol.CNY_FEN),
     /**
      * Number of milliseconds in one hour.
      */

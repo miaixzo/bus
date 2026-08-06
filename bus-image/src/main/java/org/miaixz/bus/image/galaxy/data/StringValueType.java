@@ -235,7 +235,7 @@ public enum StringValueType implements ValueType {
      * Represents Integer String (IS) values, stored internally as longs. Multiple values are separated by the backslash
      * character.
      */
-    IS("\\", null) {
+    IS(Symbol.BACKSLASH, null) {
 
         @Override
         public boolean isIntValue() {
@@ -274,7 +274,7 @@ public enum StringValueType implements ValueType {
                 return Long.toString(ls[0]);
             String[] ss = new String[ls.length];
             for (int i = 0; i < ls.length; i++)
-                ss[i] = ls[i] != Integer.MIN_VALUE ? Long.toString(ls[i]) : "";
+                ss[i] = ls[i] != Integer.MIN_VALUE ? Long.toString(ls[i]) : Normal.EMPTY;
             return ss;
         }
 
@@ -377,7 +377,7 @@ public enum StringValueType implements ValueType {
                 sb.setLength(maxLength + 1);
                 return false;
             }
-            sb.append('\\');
+            sb.append(Symbol.C_BACKSLASH);
         }
         sb.setLength(sb.length() - 1);
         return true;
@@ -495,7 +495,7 @@ public enum StringValueType implements ValueType {
         if (val instanceof String)
             return cs(cs).encode((String) val, delimiters);
         if (val instanceof String[])
-            return cs(cs).encode(Builder.concat((String[]) val, '\\'), delimiters);
+            return cs(cs).encode(Builder.concat((String[]) val, Symbol.C_BACKSLASH), delimiters);
         throw new UnsupportedOperationException();
     }
 
@@ -545,7 +545,7 @@ public enum StringValueType implements ValueType {
      * @return A trimmed String or a String array.
      */
     protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
-        return Builder.splitAndTrim(s, '\\');
+        return Builder.splitAndTrim(s, Symbol.C_BACKSLASH);
     }
 
     /**

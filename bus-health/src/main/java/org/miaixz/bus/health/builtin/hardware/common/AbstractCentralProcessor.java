@@ -26,6 +26,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
@@ -536,7 +537,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     public double getSystemCpuLoadBetweenTicks(long[] oldTicks, long[] ticks) {
         if (oldTicks.length != TickType.values().length || ticks.length != TickType.values().length) {
             throw new IllegalArgumentException("Tick arrays must both have " + TickType.values().length
-                    + " elements, but were " + oldTicks.length + " and " + ticks.length + ".");
+                    + " elements, but were " + oldTicks.length + " and " + ticks.length + Symbol.DOT);
         }
         // Calculate total
         long total = 0;

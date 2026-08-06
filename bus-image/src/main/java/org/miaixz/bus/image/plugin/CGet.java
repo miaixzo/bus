@@ -222,7 +222,7 @@ public class CGet {
      * @param tsuids a semicolon-separated string of Transfer Syntax UIDs.
      */
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
-        String[] ts = StringKit.splitToArray(tsuids, ";");
+        String[] ts = StringKit.splitToArray(tsuids, Symbol.SEMICOLON);
         for (int i = 0; i < ts.length; i++) {
             ts[i] = UID.toUID(ts[i]);
         }

@@ -28,7 +28,6 @@ import lombok.Getter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * An interface that defines sorting order and priority to control execution sequence.
@@ -134,7 +133,7 @@ public interface Order extends org.miaixz.bus.core.Order {
      * @return an order instance with empty property
      */
     static Order directionOnly(String directionCode) {
-        return of("", directionCode);
+        return of(Normal.EMPTY, directionCode);
     }
 
     /**
@@ -245,7 +244,7 @@ public interface Order extends org.miaixz.bus.core.Order {
          */
         public SimpleOrder(EnumValue.Sort direction, String property) {
             this.direction = Assert.notNull(direction, "Direction cannot be null");
-            this.property = property != null ? property : "";
+            this.property = property != null ? property : Normal.EMPTY;
         }
 
         /**
@@ -357,7 +356,7 @@ public interface Order extends org.miaixz.bus.core.Order {
             if (property.isEmpty()) {
                 return direction.getCode();
             }
-            return property + Symbol.COLON + Symbol.SPACE + direction;
+            return property + ":" + " " + direction;
         }
 
     }

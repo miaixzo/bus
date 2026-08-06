@@ -34,6 +34,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -233,7 +234,7 @@ public class MeituanProvider extends AbstractProvider {
     @Override
     public Message<String> build(String state) {
         return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(Builder.fromUrl((String) super.build(state).getData()).queryParam("scope", "").build()).build();
+                .data(Builder.fromUrl((String) super.build(state).getData()).queryParam("scope", Normal.EMPTY).build()).build();
     }
 
 }

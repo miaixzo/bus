@@ -33,6 +33,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.ExportStatus;
 import org.miaixz.bus.gitlab.models.ImportStatus;
 import org.miaixz.bus.gitlab.models.Project;
@@ -185,7 +186,7 @@ public class ImportExportApi extends AbstractApi {
                 // On GitLab.com the Content-Disposition returned is null
                 String name = null;
                 if (projectIdOrPath instanceof Project) {
-                    name = ((Project) projectIdOrPath).getPathWithNamespace().replace('/', '_');
+                    name = ((Project) projectIdOrPath).getPathWithNamespace().replace(Symbol.C_SLASH, Symbol.C_UNDERLINE);
                 } else if (projectIdOrPath instanceof String) {
                     name = (String) projectIdOrPath;
                 } else if (projectIdOrPath instanceof Integer) {

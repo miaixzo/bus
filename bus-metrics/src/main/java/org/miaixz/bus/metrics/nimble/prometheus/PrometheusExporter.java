@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.metrics.nimble.prometheus;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.magic.TimerSnapshot;
@@ -125,15 +127,15 @@ public class PrometheusExporter {
         double[] bounds = snap.bucketBounds();
         long[] counts = snap.bucketCounts();
         for (int i = 0; i < bounds.length; i++) {
-            sb.append(baseName).append("_bucket{").append(labels.isEmpty() ? "" : labels + ",").append("le=\"")
-                    .append(bounds[i]).append("\"} ").append(counts[i]).append('\n');
+            sb.append(baseName).append("_bucket{").append(labels.isEmpty() ? Normal.EMPTY : labels + Symbol.COMMA).append("le=\"")
+                    .append(bounds[i]).append("\"} ").append(counts[i]).append(Symbol.C_LF);
         }
-        sb.append(baseName).append("_bucket{").append(labels.isEmpty() ? "" : labels + ",").append("le=\"+Inf\"} ")
-                .append(snap.count()).append('\n');
-        sb.append(baseName).append("_sum").append(labels.isEmpty() ? "" : "{" + labels + "}").append(' ')
-                .append(snap.totalNanos() / 1_000_000_000.0).append('\n');
-        sb.append(baseName).append("_count").append(labels.isEmpty() ? "" : "{" + labels + "}").append(' ')
-                .append(snap.count()).append('\n');
+        sb.append(baseName).append("_bucket{").append(labels.isEmpty() ? Normal.EMPTY : labels + Symbol.COMMA).append("le=\"+Inf\"} ")
+                .append(snap.count()).append(Symbol.C_LF);
+        sb.append(baseName).append("_sum").append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT).append(Symbol.C_SPACE)
+                .append(snap.totalNanos() / 1_000_000_000.0).append(Symbol.C_LF);
+        sb.append(baseName).append("_count").append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT).append(Symbol.C_SPACE)
+                .append(snap.count()).append(Symbol.C_LF);
     }
 
     /**
@@ -147,10 +149,10 @@ public class PrometheusExporter {
         String labels = labelsStr(snap.tags());
 
         sb.append("# TYPE ").append(baseName).append(" histogram\n");
-        sb.append(baseName).append("_sum").append(labels.isEmpty() ? "" : "{" + labels + "}").append(' ')
-                .append(snap.totalNanos()).append('\n');
-        sb.append(baseName).append("_count").append(labels.isEmpty() ? "" : "{" + labels + "}").append(' ')
-                .append(snap.count()).append('\n');
+        sb.append(baseName).append("_sum").append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT).append(Symbol.C_SPACE)
+                .append(snap.totalNanos()).append(Symbol.C_LF);
+        sb.append(baseName).append("_count").append(labels.isEmpty() ? Normal.EMPTY : Symbol.BRACE_LEFT + labels + Symbol.BRACE_RIGHT).append(Symbol.C_SPACE)
+                .append(snap.count()).append(Symbol.C_LF);
     }
 
     /**
@@ -160,7 +162,7 @@ public class PrometheusExporter {
      * @return Prometheus-compatible metric name
      */
     private static String prometheusName(String name) {
-        return name.replace('.', '_').replace('-', '_');
+        return name.replace(Symbol.C_DOT, Symbol.C_UNDERLINE).replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
     }
 
     /**
@@ -171,13 +173,13 @@ public class PrometheusExporter {
      */
     private static String labelsStr(Tag[] tags) {
         if (tags == null || tags.length == 0) {
-            return "";
+            return Normal.EMPTY;
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tags.length; i++) {
             if (i > 0)
-                sb.append(',');
-            sb.append(tags[i].key()).append("=\"").append(tags[i].value()).append('"');
+                sb.append(Symbol.C_COMMA);
+            sb.append(tags[i].key()).append("=\"").append(tags[i].value()).append(Symbol.C_DOUBLE_QUOTES);
         }
         return sb.toString();
     }

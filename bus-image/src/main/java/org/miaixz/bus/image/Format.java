@@ -71,8 +71,8 @@ public class Format extends java.text.Format {
     /**
      * Characters for a custom base-32 encoding used in MD5 hashing.
      */
-    private static final char[] CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
-            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' };
+    private static final char[] CHARS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'a', 'b', 'c', 'd', 'e',
+            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v' };
 
     /**
      * Number of bytes in a Java long primitive type.
@@ -83,8 +83,8 @@ public class Format extends java.text.Format {
      * Parser for DICOM Date (DA) strings. Handles "YYYYMMDD" and "YYYY.MM.DD".
      */
     private static final DateTimeFormatter DA_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
-            .optionalStart().appendLiteral('.').optionalEnd().appendValue(MONTH_OF_YEAR, 2).optionalStart()
-            .appendLiteral('.').optionalEnd().appendValue(DAY_OF_MONTH, 2).toFormatter();
+            .optionalStart().appendLiteral(Symbol.C_DOT).optionalEnd().appendValue(MONTH_OF_YEAR, 2).optionalStart()
+            .appendLiteral(Symbol.C_DOT).optionalEnd().appendValue(DAY_OF_MONTH, 2).toFormatter();
 
     /**
      * Formatter for DICOM Date (DA) strings to "YYYYMMDD".
@@ -96,8 +96,8 @@ public class Format extends java.text.Format {
      * Parser for DICOM Time (TM) strings. Handles "HHMMSS.FFFFFF".
      */
     private static final DateTimeFormatter TM_PARSER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
-            .optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(MINUTE_OF_HOUR, 2)
-            .optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(SECOND_OF_MINUTE, 2)
+            .optionalStart().optionalStart().appendLiteral(Symbol.C_COLON).optionalEnd().appendValue(MINUTE_OF_HOUR, 2)
+            .optionalStart().optionalStart().appendLiteral(Symbol.C_COLON).optionalEnd().appendValue(SECOND_OF_MINUTE, 2)
             .optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).toFormatter();
 
     /**
@@ -418,7 +418,7 @@ public class Format extends java.text.Format {
      */
     private static void appendXXXX(int i, StringBuilder toAppendTo) {
         if (i < 1000)
-            toAppendTo.append('0');
+            toAppendTo.append(Symbol.C_ZERO);
         appendXXX(i, toAppendTo);
     }
 
@@ -427,7 +427,7 @@ public class Format extends java.text.Format {
      */
     private static void appendXXX(int i, StringBuilder toAppendTo) {
         if (i < 100)
-            toAppendTo.append('0');
+            toAppendTo.append(Symbol.C_ZERO);
         appendXX(i, toAppendTo);
     }
 
@@ -436,7 +436,7 @@ public class Format extends java.text.Format {
      */
     private static void appendXX(int i, StringBuilder toAppendTo) {
         if (i < 10)
-            toAppendTo.append('0');
+            toAppendTo.append(Symbol.C_ZERO);
         toAppendTo.append(i);
     }
 
@@ -543,7 +543,7 @@ public class Format extends java.text.Format {
                 second = parseDigit(s, pos++) * 10 + parseDigit(s, pos++);
                 int n = length - pos;
                 if (n > 0) {
-                    if (s.charAt(pos++) != '.')
+                    if (s.charAt(pos++) != Symbol.C_DOT)
                         throw new IllegalArgumentException(s);
 
                     int fraction = 1_000_000_000;
@@ -590,7 +590,7 @@ public class Format extends java.text.Format {
         int length = s.length();
         if (length > 4) {
             char sign = s.charAt(length - 5);
-            if (sign == '+' || sign == '-') {
+            if (sign == Symbol.C_PLUS || sign == Symbol.C_MINUS) {
                 return s.substring(0, length - 5);
             }
         }
@@ -622,7 +622,7 @@ public class Format extends java.text.Format {
                 cal.set(precision.lastField = Calendar.SECOND, parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
                 int n = length - pos;
                 if (n > 0) {
-                    if (s.charAt(pos++) != '.')
+                    if (s.charAt(pos++) != Symbol.C_DOT)
                         throw new IllegalArgumentException(s);
 
                     int d, millis = 0;
@@ -651,7 +651,7 @@ public class Format extends java.text.Format {
      * Parses a single character into a digit.
      */
     private static int parseDigit(String s, int index) {
-        int d = s.charAt(index) - '0';
+        int d = s.charAt(index) - Symbol.C_ZERO;
         if (d < 0 || d > 9)
             throw new IllegalArgumentException(s);
         return d;
@@ -753,7 +753,7 @@ public class Format extends java.text.Format {
 
         int pos = length - 5;
         char sign = s.charAt(pos++);
-        if (sign != '+' && sign != '-') {
+        if (sign != Symbol.C_PLUS && sign != Symbol.C_MINUS) {
             return null;
         }
 
@@ -761,7 +761,7 @@ public class Format extends java.text.Format {
             int hour = parseDigit(s, pos++) * 10 + parseDigit(s, pos++);
             int minute = parseDigit(s, pos++) * 10 + parseDigit(s, pos++);
 
-            if (sign == '-') {
+            if (sign == Symbol.C_MINUS) {
                 hour *= -1;
             }
 
@@ -798,7 +798,7 @@ public class Format extends java.text.Format {
             char[] tzid = { 'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0 };
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
-            if ((tzid[3] == '+' || tzid[3] == '-') && Character.isDigit(tzid[4]) && Character.isDigit(tzid[5])
+            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_MINUS) && Character.isDigit(tzid[4]) && Character.isDigit(tzid[5])
                     && Character.isDigit(tzid[7]) && Character.isDigit(tzid[8])) {
                 return new String(tzid);
             }
@@ -1057,7 +1057,7 @@ public class Format extends java.text.Format {
      */
     private static long nanosToAdd(String tm) {
         int length = tm.length();
-        int index = tm.lastIndexOf(':');
+        int index = tm.lastIndexOf(Symbol.C_COLON);
         if (index > 0) {
             length--;
             if (index > 4)
@@ -1116,7 +1116,7 @@ public class Format extends java.text.Format {
      * Checks if a character is a '+' or '-' sign.
      */
     private static boolean isSign(char ch) {
-        return ch == '+' || ch == '-';
+        return ch == Symbol.C_PLUS || ch == Symbol.C_MINUS;
     }
 
     /**
@@ -1231,20 +1231,20 @@ public class Format extends java.text.Format {
         StringTokenizer stk = new StringTokenizer(s, "{}", true);
         String tk;
         char delim;
-        char prevDelim = '}';
+        char prevDelim = Symbol.C_BRACE_RIGHT;
         int level = 0;
         StringBuilder sb = new StringBuilder();
         while (stk.hasMoreTokens()) {
             tk = stk.nextToken();
             delim = tk.charAt(0);
-            if (delim == '{') {
+            if (delim == Symbol.C_BRACE_LEFT) {
                 if (level++ == 0) {
-                    if (prevDelim == '}')
-                        result.add("");
+                    if (prevDelim == Symbol.C_BRACE_RIGHT)
+                        result.add(Normal.EMPTY);
                 } else {
                     sb.append(delim);
                 }
-            } else if (delim == '}') {
+            } else if (delim == Symbol.C_BRACE_RIGHT) {
                 if (--level == 0) {
                     result.add(sb.toString());
                     sb.setLength(0);
@@ -1273,7 +1273,7 @@ public class Format extends java.text.Format {
         StringBuilder formatBuilder = new StringBuilder(pattern.length());
         int j = 0;
         for (int i = 0; i < tagPaths.length; i++) {
-            formatBuilder.append(tokens.get(j++)).append('{').append(i);
+            formatBuilder.append(tokens.get(j++)).append(Symbol.C_BRACE_LEFT).append(i);
             String tagStr = tokens.get(j++);
             int typeStart = tagStr.indexOf(Symbol.C_COMMA) + 1;
             boolean rnd = tagStr.startsWith("rnd");
@@ -1314,7 +1314,7 @@ public class Format extends java.text.Format {
                 }
                 switch (types[i]) {
                     case number, date, time, choice:
-                        formatBuilder.append(',').append(types[i]).append(tagStr.substring(typeEnd));
+                        formatBuilder.append(Symbol.C_COMMA).append(types[i]).append(tagStr.substring(typeEnd));
                         break;
 
                     case offset:
@@ -1344,7 +1344,7 @@ public class Format extends java.text.Format {
                         throw new IllegalArgumentException(pattern);
                 }
             }
-            formatBuilder.append('}');
+            formatBuilder.append(Symbol.C_BRACE_RIGHT);
         }
         if (j < tokens.size())
             formatBuilder.append(tokens.get(j));
@@ -1771,7 +1771,7 @@ public class Format extends java.text.Format {
          * @param s The string defining the slice indices.
          */
         public Slice(String s) {
-            String[] ss = Builder.split(s, ',');
+            String[] ss = Builder.split(s, Symbol.C_COMMA);
             if (ss.length == 1) {
                 beginIndex = Integer.parseInt(ss[0]);
                 endIndex = 0;

@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.mutable.MutableInt;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollectorKit;
 
@@ -375,7 +376,7 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @see #join(CharSequence, CharSequence, CharSequence)
      */
     default String join() {
-        return this.join("");
+        return this.join(Normal.EMPTY);
     }
 
     /**
@@ -386,7 +387,7 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @see #join(CharSequence, CharSequence, CharSequence)
      */
     default String join(final CharSequence delimiter) {
-        return this.join(delimiter, "", "");
+        return this.join(delimiter, Normal.EMPTY, Normal.EMPTY);
     }
 
     /**

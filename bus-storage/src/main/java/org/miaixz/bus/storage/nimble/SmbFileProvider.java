@@ -893,17 +893,17 @@ public class SmbFileProvider extends AbstractProvider {
      */
     private String parseServerFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
-            return "";
+            return Normal.EMPTY;
         }
         // Remove protocol header (e.g., smb://, cifs://)
-        String server = endpoint.replaceFirst("^(smb|cifs)://", "");
+        String server = endpoint.replaceFirst("^(smb|cifs)://", Normal.EMPTY);
         // Remove share name and path
-        int slashIndex = server.indexOf('/');
+        int slashIndex = server.indexOf(Symbol.C_SLASH);
         if (slashIndex != -1) {
             server = server.substring(0, slashIndex);
         }
         // Remove port information
-        int colonIndex = server.indexOf(':');
+        int colonIndex = server.indexOf(Symbol.C_COLON);
         if (colonIndex != -1) {
             server = server.substring(0, colonIndex);
         }
@@ -922,10 +922,10 @@ public class SmbFileProvider extends AbstractProvider {
         }
         try {
             // Remove protocol header (e.g., smb://, cifs://)
-            String server = endpoint.replaceFirst("^(smb|cifs)://", "");
+            String server = endpoint.replaceFirst("^(smb|cifs)://", Normal.EMPTY);
             // Extract the port part
-            int colonIndex = server.indexOf(':');
-            int slashIndex = server.indexOf('/');
+            int colonIndex = server.indexOf(Symbol.C_COLON);
+            int slashIndex = server.indexOf(Symbol.C_SLASH);
 
             if (colonIndex != -1) {
                 String portStr = server.substring(colonIndex + 1, slashIndex != -1 ? slashIndex : server.length());
@@ -950,16 +950,16 @@ public class SmbFileProvider extends AbstractProvider {
      */
     private String parseDomainFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
-            return "";
+            return Normal.EMPTY;
         }
         // Remove protocol header (e.g., smb://, cifs://)
-        String server = endpoint.replaceFirst("^(smb|cifs)://", "");
+        String server = endpoint.replaceFirst("^(smb|cifs)://", Normal.EMPTY);
         // Check if domain is present
-        int semicolonIndex = server.indexOf(';');
+        int semicolonIndex = server.indexOf(Symbol.C_SEMICOLON);
         if (semicolonIndex != -1) {
             return server.substring(0, semicolonIndex);
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**

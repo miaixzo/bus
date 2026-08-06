@@ -29,6 +29,7 @@ import java.util.Objects;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
+
 /**
  * Defines a lookup table for fast pixel value transformations in image processing.
  * <p>

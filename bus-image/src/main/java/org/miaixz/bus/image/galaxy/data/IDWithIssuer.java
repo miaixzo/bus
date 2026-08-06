@@ -21,6 +21,7 @@ package org.miaixz.bus.image.galaxy.data;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 
@@ -81,7 +82,7 @@ public class IDWithIssuer {
      */
     public IDWithIssuer(String id, String issuer) {
         this.id = id;
-        this.setIssuer(issuer != null ? new Issuer(issuer, '&') : null);
+        this.setIssuer(issuer != null ? new Issuer(issuer, Symbol.C_AND) : null);
     }
 
     /**
@@ -90,11 +91,11 @@ public class IDWithIssuer {
      * @param cx The CX formatted string.
      */
     public IDWithIssuer(String cx) {
-        String[] ss = Builder.split(cx, '^');
+        String[] ss = Builder.split(cx, Symbol.C_CARET);
         this.id = HL7Separator.unescapeAll(ss[0]);
         if (ss.length > 3) {
             if (!ss[3].isEmpty())
-                this.setIssuer(new Issuer(ss[3], '&'));
+                this.setIssuer(new Issuer(ss[3], Symbol.C_AND));
             if (ss.length > 4 && !ss[4].isEmpty())
                 this.setIdentifierTypeCode(HL7Separator.unescapeAll(ss[4]));
         }

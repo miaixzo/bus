@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Enumeration representing the standard separators and their escape sequences used in HL7 messages. This class provides
  * utility methods for escaping and unescaping strings according to HL7 rules.
@@ -31,23 +33,23 @@ public enum HL7Separator {
     /**
      * Field separator: |
      */
-    FIELD("|", "\\F\\"),
+    FIELD(Symbol.OR, "\\F\\"),
     /**
      * Component separator: ^
      */
-    COMPONENT("^", "\\S\\"),
+    COMPONENT(Symbol.CARET, "\\S\\"),
     /**
      * Subcomponent separator: &amp;
      */
-    SUBCOMPONENT("&", "\\T\\"),
+    SUBCOMPONENT(Symbol.AND, "\\T\\"),
     /**
      * Repetition separator: ~
      */
-    REPETITION("~", "\\R\\"),
+    REPETITION(Symbol.TILDE, "\\R\\"),
     /**
      * Escape character: \
      */
-    ESCAPE("\\", "\\E\\");
+    ESCAPE(Symbol.BACKSLASH, "\\E\\");
 
     /**
      * The actual separator character as a string.

@@ -43,6 +43,7 @@ import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
@@ -606,7 +607,7 @@ public class ImageKit {
             for (int j = 0; j < cols; j++) {
                 tag = cut(srcImage, new Rectangle(j * targetWidth, i * targetHeight, targetWidth, targetHeight));
                 // Output to file
-                write(tag, new File(destDir, "_r" + i + "_c" + j + "." + formatName));
+                write(tag, new File(destDir, "_r" + i + "_c" + j + Symbol.DOT + formatName));
             }
         }
     }

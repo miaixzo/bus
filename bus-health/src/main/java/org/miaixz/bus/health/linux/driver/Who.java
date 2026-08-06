@@ -39,6 +39,7 @@ import com.sun.jna.Pointer;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -115,7 +116,7 @@ public final class Who {
             try {
                 whoList.add(
                         new OSSession(m.group(1), m.group(2),
-                                LocalDateTime.parse(m.group(3) + " " + m.group(4), WHO_DATE_FORMAT_LINUX)
+                                LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4), WHO_DATE_FORMAT_LINUX)
                                         .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                                 m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
                 return true;
@@ -246,7 +247,7 @@ public final class Who {
                                 }
 
                                 // Get remote host (optional)
-                                String remoteHost = "";
+                                String remoteHost = Normal.EMPTY;
                                 Pointer remoteHostPointer = null;
                                 try (ByRef.CloseablePointerByReference remoteHostPtr = new ByRef.CloseablePointerByReference()) {
                                     if (Systemd.INSTANCE.sd_session_get_remote_host(sessionId, remoteHostPtr) == 0
@@ -306,12 +307,12 @@ public final class Who {
             if (Objects.nonNull(sessionFiles)) {
                 for (File sessionFile : sessionFiles) {
                     try {
-                        Map<String, String> sessionMap = Builder.getKeyValueMapFromFile(sessionFile.getPath(), "=");
+                        Map<String, String> sessionMap = Builder.getKeyValueMapFromFile(sessionFile.getPath(), Symbol.EQUAL);
 
                         String user = sessionMap.get("USER");
                         if (Objects.nonNull(user) && !user.isEmpty()) {
                             String tty = sessionMap.getOrDefault("TTY", sessionFile.getName());
-                            String remoteHost = sessionMap.getOrDefault("REMOTE_HOST", "");
+                            String remoteHost = sessionMap.getOrDefault("REMOTE_HOST", Normal.EMPTY);
 
                             // Try to get login time from REALTIME field or file modification time
                             long loginTime = 0L;

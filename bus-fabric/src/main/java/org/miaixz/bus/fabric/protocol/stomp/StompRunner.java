@@ -354,7 +354,7 @@ final class StompRunner {
     private static long unsignedMillis(final String value, final int start, final int end) {
         long result = Normal.LONG_ZERO;
         for (int index = start; index < end; index++) {
-            final int digit = value.charAt(index) - '0';
+            final int digit = value.charAt(index) - Symbol.C_ZERO;
             if (digit < Normal._0 || digit > Normal._9 || result > (Long.MAX_VALUE - digit) / Normal._10) {
                 throw new ProtocolException("Invalid STOMP CONNECTED heart-beat header");
             }

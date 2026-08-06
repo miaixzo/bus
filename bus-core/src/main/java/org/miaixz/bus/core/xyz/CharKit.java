@@ -171,7 +171,7 @@ public class CharKit {
      * @return {@code true} if the character is a digit (0-9).
      */
     public static boolean isNumber(final char ch) {
-        return ch >= '0' && ch <= '9';
+        return ch >= Symbol.C_ZERO && ch <= Symbol.C_NINE;
     }
 
     /**
@@ -382,8 +382,8 @@ public class CharKit {
      */
     public static char toCloseChar(final char c) {
         int result = c;
-        if (c >= '1' && c <= '9') {
-            result = '①' + c - '1';
+        if (c >= Symbol.C_ONE && c <= Symbol.C_NINE) {
+            result = '①' + c - Symbol.C_ONE;
         } else if (c >= 'A' && c <= 'Z') {
             result = 'Ⓐ' + c - 'A';
         } else if (c >= 'a' && c <= 'z') {
