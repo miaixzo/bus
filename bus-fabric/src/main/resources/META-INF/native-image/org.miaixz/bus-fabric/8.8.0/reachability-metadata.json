@@ -343,6 +343,17 @@
           ]
         },
         {
+          "name": "encodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "fork",
+          "parameterTypes": []
+        },
+        {
           "name": "of",
           "parameterTypes": [
             "int"
@@ -435,11 +446,35 @@
           ]
         },
         {
+          "name": "decodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "decodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "java.util.Collection"
+          ]
+        },
+        {
           "name": "encode",
           "parameterTypes": [
             "org.miaixz.bus.fabric.codec.frame.Frame",
             "org.miaixz.bus.core.io.buffer.Buffer"
           ]
+        },
+        {
+          "name": "encodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "fork",
+          "parameterTypes": []
         },
         {
           "name": "length",
@@ -494,6 +529,17 @@
             "org.miaixz.bus.fabric.codec.frame.Frame",
             "org.miaixz.bus.core.io.buffer.Buffer"
           ]
+        },
+        {
+          "name": "encodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "fork",
+          "parameterTypes": []
         },
         {
           "name": "headerLength",
@@ -615,11 +661,35 @@
           ]
         },
         {
+          "name": "decodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "decodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "java.util.Collection"
+          ]
+        },
+        {
           "name": "encode",
           "parameterTypes": [
             "org.miaixz.bus.fabric.codec.frame.Frame",
             "org.miaixz.bus.core.io.buffer.Buffer"
           ]
+        },
+        {
+          "name": "encodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "fork",
+          "parameterTypes": []
         },
         {
           "name": "indexOf",
@@ -679,6 +749,13 @@
           "name": "encode",
           "parameterTypes": [
             "org.miaixz.bus.fabric.codec.frame.Frame",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "encodeOwned",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString",
             "org.miaixz.bus.core.io.buffer.Buffer"
           ]
         },
@@ -1180,6 +1257,17 @@
             "org.miaixz.bus.fabric.Listener",
             "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
             "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.network.udp.UdpChannel",
+            "org.miaixz.bus.fabric.Listener",
+            "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
+            "java.lang.Runnable",
+            "org.miaixz.bus.fabric.network.udp.UdpDatagramCodec"
           ]
         },
         {
@@ -4382,12 +4470,6 @@
         {
           "name": "body",
           "parameterTypes": [
-            "org.miaixz.bus.fabric.codec.body.RequestBody"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
             "org.miaixz.bus.fabric.Payload"
           ]
         },
@@ -4396,6 +4478,12 @@
           "parameterTypes": [
             "org.miaixz.bus.fabric.Payload",
             "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
           ]
         },
         {
@@ -4442,10 +4530,6 @@
           "parameterTypes": [
             "org.miaixz.bus.fabric.codec.DataCodec"
           ]
-        },
-        {
-          "name": "configuredProxy",
-          "parameterTypes": []
         },
         {
           "name": "delete",
@@ -4679,6 +4763,10 @@
           "parameterTypes": [
             "java.lang.Object"
           ]
+        },
+        {
+          "name": "inheritProxy",
+          "parameterTypes": []
         },
         {
           "name": "json",
@@ -4916,11 +5004,27 @@
           ]
         },
         {
+          "name": "socksProxy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "socksProxy",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address"
+          ]
+        },
+        {
           "name": "stringValue",
           "parameterTypes": [
             "java.lang.Object",
             "java.lang.String"
           ]
+        },
+        {
+          "name": "systemProxy",
+          "parameterTypes": []
         },
         {
           "name": "tag",
@@ -5045,6 +5149,28 @@
             "org.miaixz.bus.fabric.Clock",
             "org.miaixz.bus.fabric.Timeout",
             "org.miaixz.bus.fabric.runtime.resource.Cancellation"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.network.Connection",
+            "org.miaixz.bus.fabric.network.udp.UdpSession",
+            "org.miaixz.bus.fabric.network.kcp.KcpNetwork",
+            "org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec",
+            "org.miaixz.bus.fabric.Handler",
+            "java.util.Map",
+            "java.lang.AutoCloseable",
+            "org.miaixz.bus.fabric.Listener",
+            "long",
+            "org.miaixz.bus.fabric.protocol.socket.SocketOptions",
+            "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
+            "org.miaixz.bus.fabric.Clock",
+            "org.miaixz.bus.fabric.Timeout",
+            "org.miaixz.bus.fabric.runtime.resource.Cancellation",
+            "boolean",
+            "boolean"
           ]
         },
         {
@@ -5227,7 +5353,30 @@
           ]
         },
         {
+          "name": "createServer",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address",
+            "org.miaixz.bus.fabric.network.Connection",
+            "org.miaixz.bus.fabric.protocol.socket.frame.SocketCodec",
+            "org.miaixz.bus.fabric.Handler",
+            "java.util.Map",
+            "org.miaixz.bus.fabric.Listener",
+            "long",
+            "org.miaixz.bus.fabric.protocol.socket.SocketOptions",
+            "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
+            "org.miaixz.bus.fabric.Clock",
+            "org.miaixz.bus.fabric.Timeout",
+            "org.miaixz.bus.fabric.runtime.resource.Cancellation"
+          ]
+        },
+        {
           "name": "decode",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "decodeOwnedInto",
           "parameterTypes": [
             "org.miaixz.bus.core.io.buffer.Buffer"
           ]
@@ -5320,8 +5469,18 @@
           "parameterTypes": []
         },
         {
+          "name": "readDataPlane",
+          "parameterTypes": []
+        },
+        {
           "name": "readPlainDatagram",
           "parameterTypes": []
+        },
+        {
+          "name": "readStreamFrames",
+          "parameterTypes": [
+            "boolean"
+          ]
         },
         {
           "name": "receive",
@@ -5330,6 +5489,12 @@
         {
           "name": "receiveNow",
           "parameterTypes": []
+        },
+        {
+          "name": "receiveNow",
+          "parameterTypes": [
+            "boolean"
+          ]
         },
         {
           "name": "require",
@@ -5394,8 +5559,28 @@
           ]
         },
         {
+          "name": "snapshot",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Payload",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "socketOptions",
           "parameterTypes": []
+        },
+        {
+          "name": "startDataPlane",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Handler"
+          ]
+        },
+        {
+          "name": "startDataPlane",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Handler",
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
         },
         {
           "name": "startKcpPump",
@@ -5420,6 +5605,24 @@
           "name": "withTrafficBytes",
           "parameterTypes": [
             "org.miaixz.bus.fabric.observe.event.FabricEvent"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Payload"
+          ]
+        },
+        {
+          "name": "writeEncodedBuffer",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer"
+          ]
+        },
+        {
+          "name": "writeEncodedStream",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.ByteString"
           ]
         },
         {
@@ -5827,6 +6030,13 @@
           ]
         },
         {
+          "name": "handoff",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.network.Destination",
+            "org.miaixz.bus.fabric.network.Connection"
+          ]
+        },
+        {
           "name": "hasTurn",
           "parameterTypes": [
             "org.miaixz.bus.fabric.registry.connection.PoolWaiters$Waiter"
@@ -5834,10 +6044,6 @@
         },
         {
           "name": "idle",
-          "parameterTypes": []
-        },
-        {
-          "name": "leased",
           "parameterTypes": []
         },
         {
@@ -5849,11 +6055,23 @@
           ]
         },
         {
+          "name": "leased",
+          "parameterTypes": []
+        },
+        {
           "name": "logicalAcquired",
           "parameterTypes": []
         },
         {
           "name": "logicalReleased",
+          "parameterTypes": []
+        },
+        {
+          "name": "physicalCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "physicalRemoved",
           "parameterTypes": []
         },
         {
@@ -5978,6 +6196,12 @@
           ]
         },
         {
+          "name": "takeHandoff",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.registry.connection.PoolWaiters$Waiter"
+          ]
+        },
+        {
           "name": "usableCapacity",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Connection"
@@ -6012,6 +6236,14 @@
       "methods": [
         {
           "name": "background",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "org.miaixz.bus.fabric.runtime.Activity"
+          ]
+        },
+        {
+          "name": "backgroundPlatform",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.Object",

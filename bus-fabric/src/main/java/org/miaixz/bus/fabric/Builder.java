@@ -593,6 +593,26 @@ public final class Builder {
     public static final String PROXY_PLAN_DIRECT_ID = "direct";
 
     /**
+     * Stable proxy-plan identifier for an inherited policy.
+     */
+    public static final String PROXY_PLAN_INHERIT_ID = "inherit";
+
+    /**
+     * Stable proxy-plan identifier for system proxy selection.
+     */
+    public static final String PROXY_PLAN_SYSTEM_ID = "system";
+
+    /**
+     * Stable proxy-plan identifier for an HTTP proxy.
+     */
+    public static final String PROXY_PLAN_HTTP_ID = "http";
+
+    /**
+     * Stable proxy-plan identifier for a SOCKS proxy.
+     */
+    public static final String PROXY_PLAN_SOCKS_ID = "socks";
+
+    /**
      * Classpath resource name of the encoded public-suffix list.
      */
     public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";

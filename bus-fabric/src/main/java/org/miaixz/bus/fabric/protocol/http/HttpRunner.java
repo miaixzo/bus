@@ -22,13 +22,13 @@ package org.miaixz.bus.fabric.protocol.http;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
-import java.net.ProxySelector;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.exception.ConnectionException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -37,7 +37,8 @@ import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
-import org.miaixz.bus.fabric.network.proxy.ProxySelectorAdapter;
+import org.miaixz.bus.fabric.network.proxy.ProxyPolicyResolver;
+import org.miaixz.bus.fabric.network.proxy.ProxySelection;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
@@ -139,11 +140,6 @@ public final class HttpRunner {
     private final TlsSettings tlsSettings;
 
     /**
-     * Proxy routing plan resolved before the exchange starts.
-     */
-    private final ProxyPlan proxy;
-
-    /**
      * Maximum bytes allowed when materializing a request or response payload.
      */
     private final long materializeMaxBytes;
@@ -202,7 +198,6 @@ public final class HttpRunner {
         this.userAgent = pipeline.userAgent;
         this.tlsContext = pipeline.tlsContext;
         this.tlsSettings = pipeline.tlsSettings;
-        this.proxy = pipeline.proxy(spec.request());
         this.materializeMaxBytes = pipeline.materializeMaxBytes;
         this.bridge = pipeline.bridge;
         this.connect = pipeline.connect;
@@ -372,7 +367,11 @@ public final class HttpRunner {
     }
 
     /**
-     * Performs the configured HTTP/1.1 upgrade.
+     * Performs the configured HTTP/1.1 upgrade through one resolved route candidate.
+     * <p>
+     * The upgrade path acquires its connection outside the normal HTTP stage pipeline, so it performs the same ordered
+     * system-route selection explicitly. Only structured pre-delivery route failures can advance to the next candidate;
+     * authentication, protocol, target, and post-delivery failures propagate unchanged.
      *
      * @param cancellation cancellation scope
      * @return HTTP upgrade result
@@ -381,8 +380,30 @@ public final class HttpRunner {
         final Cancellation currentCancellation = require(cancellation, "Cancellation");
         markExecuted();
         currentCancellation.throwIfCancelled();
-        final HttpRequest request = bridge.prepare(spec.request());
-        final ConnectionLease lease = connect.acquire(request, currentCancellation);
+        final ProxySelection selection = new ProxyPolicyResolver()
+                .resolve(spec.request().proxy(), spec.context().options(), spec.request().url().address());
+        HttpRequest request = null;
+        ConnectionLease lease = null;
+        ConnectionException failure = null;
+        for (final ProxyPlan candidate : selection.candidates()) {
+            request = bridge.prepare(spec.request().toBuilder().proxy(candidate).build());
+            try {
+                lease = connect.acquire(request, currentCancellation);
+                break;
+            } catch (final ConnectionException e) {
+                if (!e.canSwitchRoute()) {
+                    throw e;
+                }
+                selection.connectFailed(candidate, e);
+                if (failure != null && failure != e) {
+                    e.addSuppressed(failure);
+                }
+                failure = e;
+            }
+        }
+        if (lease == null) {
+            throw require(failure, "Proxy candidate failure");
+        }
         try {
             currentCancellation.throwIfCancelled();
             final Connection connection = lease.connection();
@@ -416,7 +437,7 @@ public final class HttpRunner {
      */
     private HttpRequest prepareRequest() {
         final HttpRequest source = spec.request();
-        final HttpRequest request = source.proxy() == proxy ? source : source.toBuilder().proxy(proxy).build();
+        final HttpRequest request = source;
         if (filter == null && spec.guard() == null) {
             return request;
         }
@@ -620,8 +641,6 @@ public final class HttpRunner {
         /**
          * Most recent system proxy decision, keyed by selector identity and immutable URL text.
          */
-        private volatile ProxySelection proxySelection;
-
         /**
          * Optional cache shared by pipeline exchanges.
          */
@@ -692,6 +711,7 @@ public final class HttpRunner {
                     context.listener(), context.reactor().resolver(), context.reactor().dispatcher());
             this.stages = List.of(
                     new HttpRetry(HttpRetryPolicy.resolve(context.options()), authenticator),
+                    new HttpProxyRouting(context.options()),
                     bridge,
                     cache == null ? HttpCoordinator.disabled(context.reactor().clock())
                             : HttpCoordinator.create(cache, context.reactor().clock()),
@@ -709,32 +729,6 @@ public final class HttpRunner {
         }
 
         /**
-         * Resolves explicit proxy policy first and caches the common stable system-selector decision.
-         */
-        private ProxyPlan proxy(final HttpRequest request) {
-            if (!request.proxy().isDirect()) {
-                return request.proxy();
-            }
-            if (context.options().contains(ProxyPlan.OPTION)) {
-                final ProxyPlan configured = context.options().get(ProxyPlan.OPTION);
-                return configured == null ? ProxyPlan.direct() : configured;
-            }
-            final ProxySelector selector = ProxySelector.getDefault();
-            if (selector == null) {
-                return ProxyPlan.direct();
-            }
-            final String url = request.url().toString();
-            final ProxySelection cached = proxySelection;
-            if (cached != null && cached.selector == selector && cached.url.equals(url)) {
-                return cached.plan;
-            }
-            final List<ProxyPlan> selected = ProxySelectorAdapter.of(selector).select(request.url());
-            final ProxyPlan plan = selected.isEmpty() ? ProxyPlan.direct() : selected.get(0);
-            proxySelection = new ProxySelection(selector, url, plan);
-            return plan;
-        }
-
-        /**
          * Creates a context-scoped pipeline.
          *
          * @param context shared context
@@ -743,16 +737,6 @@ public final class HttpRunner {
         private static Pipeline create(final Context context) {
             return new Pipeline(context);
         }
-    }
-
-    /**
-     * Cached system proxy decision for one context pipeline.
-     *
-     * @param selector selector identity that produced the plan
-     * @param url      immutable request URL text
-     * @param plan     normalized proxy plan
-     */
-    private record ProxySelection(ProxySelector selector, String url, ProxyPlan plan) {
     }
 
     /**

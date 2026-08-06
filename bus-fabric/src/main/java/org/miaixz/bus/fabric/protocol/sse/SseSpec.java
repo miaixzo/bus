@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.sse.event.SseEvent;
 import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
@@ -40,6 +41,7 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  * @param headers         request headers sent when opening the stream
  * @param timeout         connect and read timeout policy
  * @param retryPolicy     immutable reconnect policy copied from the builder
+ * @param proxy           outbound proxy policy reused by the initial request and reconnects
  * @param lastEventId     last event id sent during reconnect, or {@code null}
  * @param autoReconnect   whether the runner should reopen the stream after retryable disconnects
  * @param responseHandler callback receiving the opening HTTP status and headers
@@ -52,8 +54,9 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  * @since Java 21+
  */
 record SseSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetryPolicy retryPolicy,
-        String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler, GuardRule guard,
-        Filter filter, EventObserver observer, Consumer<SseEvent> handler, Listener<? super SseSession> listener) {
+        ProxyPlan proxy, String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler,
+        GuardRule guard, Filter filter, EventObserver observer, Consumer<SseEvent> handler,
+        Listener<? super SseSession> listener) {
 
     /**
      * Creates a validated specification.
@@ -64,6 +67,7 @@ record SseSpec(Context context, URI uri, Address address, Headers headers, Timeo
      * @param headers         stream-opening request headers
      * @param timeout         stream timeout policy
      * @param retryPolicy     immutable retry policy
+     * @param proxy           non-null outbound proxy policy
      * @param lastEventId     optional event id supplied during reconnect
      * @param autoReconnect   whether retryable disconnects reopen the stream
      * @param responseHandler opening-response callback
@@ -80,6 +84,7 @@ record SseSpec(Context context, URI uri, Address address, Headers headers, Timeo
         headers = require(headers, "Headers");
         timeout = require(timeout, "Timeout");
         retryPolicy = require(retryPolicy, "SSE retry policy");
+        proxy = require(proxy, "Proxy plan");
         responseHandler = require(responseHandler, "SSE response handler");
         observer = EventObserver.safe(require(observer, "Observer"));
         handler = require(handler, "SSE handler");

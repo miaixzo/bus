@@ -122,6 +122,7 @@ final class StompRunner {
                             spec.uri(),
                             opening.headers(),
                             spec.timeout(),
+                            spec.proxy(),
                             (ignored, message) -> {
                                 try {
                                     final Buffer input = new Buffer();

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.network.proxy;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,10 +26,12 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Options;
+import org.miaixz.bus.fabric.network.Transport;
 import org.miaixz.bus.fabric.observe.tags.Tags;
 
 /**
@@ -42,11 +43,24 @@ import org.miaixz.bus.fabric.observe.tags.Tags;
 public final class ProxyPlan {
 
     /**
-     * Typed option for the HTTP proxy plan.
-     * <p>
-     * Absence selects through the system proxy selector; explicit null forces a direct route without consulting it.
+     * Typed option for the process-independent network proxy policy.
      */
-    public static final Options.Key<ProxyPlan> OPTION = Options.key("http.proxy", ProxyPlan.class);
+    public static final Options.Key<ProxyPlan> OPTION = Options.key("network.proxy", ProxyPlan.class);
+
+    /**
+     * Legacy HTTP-only option retained while callers migrate to {@link #OPTION}.
+     */
+    public static final Options.Key<ProxyPlan> LEGACY_HTTP_OPTION = Options.key("http.proxy", ProxyPlan.class);
+
+    /**
+     * Shared immutable request policy that inherits the context policy.
+     */
+    private static final ProxyPlan INHERIT = new ProxyPlan(Type.INHERIT, null, Headers.empty());
+
+    /**
+     * Shared immutable policy that delegates selection to the JDK system selector.
+     */
+    private static final ProxyPlan SYSTEM = new ProxyPlan(Type.SYSTEM, null, Headers.empty());
 
     /**
      * Shared immutable direct route.
@@ -83,6 +97,24 @@ public final class ProxyPlan {
     }
 
     /**
+     * Returns the request policy that inherits the context network proxy setting.
+     *
+     * @return shared immutable inheritance policy
+     */
+    public static ProxyPlan inherit() {
+        return INHERIT;
+    }
+
+    /**
+     * Returns the policy that explicitly delegates to the system proxy selector.
+     *
+     * @return shared immutable system-selection policy
+     */
+    public static ProxyPlan system() {
+        return SYSTEM;
+    }
+
+    /**
      * Returns a direct proxy plan.
      *
      * @return direct plan
@@ -114,6 +146,9 @@ public final class ProxyPlan {
         Assert.isFalse(
                 checkedProxy.secure(),
                 () -> new ValidateException("HTTP proxy address must be non-null and plain"));
+        Assert.isTrue(
+                Protocol.HTTP.name.equals(checkedProxy.scheme()),
+                () -> new ValidateException("HTTP proxy address must use the http scheme"));
         return new ProxyPlan(Type.HTTP, checkedProxy, Assert
                 .notNull(authorization, () -> new ValidateException("Proxy authorization headers must not be null")));
     }
@@ -125,9 +160,12 @@ public final class ProxyPlan {
      * @return proxy plan
      */
     public static ProxyPlan socks(final Address proxy) {
-        return new ProxyPlan(Type.SOCKS,
-                Assert.notNull(proxy, () -> new ValidateException("SOCKS proxy address must not be null")),
-                Headers.empty());
+        final Address checked = Assert
+                .notNull(proxy, () -> new ValidateException("SOCKS proxy address must not be null"));
+        Assert.isTrue(
+                !checked.secure() && Transport.fromScheme(checked.scheme()).connectionOriented(),
+                () -> new ValidateException("SOCKS proxy address must use a plain stream transport"));
+        return new ProxyPlan(Type.SOCKS, checked, Headers.empty());
     }
 
     /**
@@ -137,6 +175,33 @@ public final class ProxyPlan {
      */
     public Optional<Address> proxy() {
         return Optional.ofNullable(proxy);
+    }
+
+    /**
+     * Returns whether this policy inherits its enclosing context.
+     *
+     * @return {@code true} when policy resolution must continue at the context boundary
+     */
+    public boolean isInherit() {
+        return type == Type.INHERIT;
+    }
+
+    /**
+     * Returns whether this policy explicitly delegates to the system selector.
+     *
+     * @return {@code true} when the current JDK proxy selector must provide candidates
+     */
+    public boolean isSystem() {
+        return type == Type.SYSTEM;
+    }
+
+    /**
+     * Returns whether this plan can be consumed by a physical route connector.
+     *
+     * @return {@code true} for direct, HTTP, and SOCKS plans
+     */
+    public boolean isResolved() {
+        return type == Type.DIRECT || type == Type.HTTP || type == Type.SOCKS;
     }
 
     /**
@@ -204,11 +269,15 @@ public final class ProxyPlan {
      * @return route identifier
      */
     public String id() {
-        if (type == Type.DIRECT) {
-            return Builder.PROXY_PLAN_DIRECT_ID;
-        }
-        return type.name().toLowerCase(Locale.ROOT) + Symbol.COLON + Symbol.FORWARDSLASH + proxy.host() + Symbol.COLON
-                + proxy.port();
+        final String prefix = switch (type) {
+            case INHERIT -> Builder.PROXY_PLAN_INHERIT_ID;
+            case SYSTEM -> Builder.PROXY_PLAN_SYSTEM_ID;
+            case DIRECT -> Builder.PROXY_PLAN_DIRECT_ID;
+            case HTTP -> Builder.PROXY_PLAN_HTTP_ID;
+            case SOCKS -> Builder.PROXY_PLAN_SOCKS_ID;
+        };
+        return proxy == null ? prefix
+                : prefix + Symbol.COLON + Symbol.FORWARDSLASH + proxy.host() + Symbol.COLON + proxy.port();
     }
 
     /**
@@ -272,6 +341,16 @@ public final class ProxyPlan {
      * Proxy type.
      */
     private enum Type {
+
+        /**
+         * Inherit the context proxy policy.
+         */
+        INHERIT,
+
+        /**
+         * Delegate to the system proxy selector.
+         */
+        SYSTEM,
 
         /**
          * Direct connection.

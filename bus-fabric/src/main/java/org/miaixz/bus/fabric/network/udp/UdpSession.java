@@ -54,6 +54,16 @@ public final class UdpSession implements Session {
     private final Address remote;
 
     /**
+     * Physical remote endpoint, which may be a proxy relay.
+     */
+    private final Address transportRemote;
+
+    /**
+     * Optional relay framing codec.
+     */
+    private final UdpDatagramCodec codec;
+
+    /**
      * Exclusively owned local channel.
      */
     private final UdpChannel channel;
@@ -113,7 +123,26 @@ public final class UdpSession implements Session {
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
             final Dispatcher dispatcher, final Runnable onClose) {
+        this(remote, channel, listener, dispatcher, onClose, null);
+    }
+
+    /**
+     * Creates a logical UDP session transported through an optional datagram relay codec.
+     *
+     * @param remote     logical remote endpoint exposed to callers
+     * @param channel    exclusively owned UDP channel connected to the target or physical relay
+     * @param listener   optional lifecycle listener
+     * @param dispatcher optional dispatcher used for asynchronous call submission
+     * @param onClose    non-null owner cleanup hook invoked during termination
+     * @param codec      logical datagram relay codec, or {@code null} for direct transport
+     * @throws ValidateException if {@code remote}, {@code channel}, {@code onClose}, or the codec relay is {@code null}
+     */
+    UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
+            final Dispatcher dispatcher, final Runnable onClose, final UdpDatagramCodec codec) {
         this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
+        this.codec = codec;
+        this.transportRemote = codec == null ? this.remote
+                : Assert.notNull(codec.relay(), () -> new ValidateException("UDP relay address must not be null"));
         this.channel = Assert.notNull(channel, () -> new ValidateException("UDP channel must not be null"));
         this.dispatcher = dispatcher;
         this.scope = LifecycleScope.session(
@@ -293,13 +322,16 @@ public final class UdpSession implements Session {
         if (payload.length() > Normal._65535 - Normal._28) {
             throw new ProtocolException("UDP payload exceeds maximum datagram size");
         }
-        final byte[] bytes = payload.bytes(Normal._65535 - Normal._28 + 1L);
+        final Payload encoded = codec == null ? payload : codec.encode(remote, payload);
+        final byte[] bytes = encoded.bytes(Normal._65535 - Normal._28 + 1L);
         if (bytes.length > Normal._65535 - Normal._28) {
             throw new ProtocolException("UDP payload exceeds maximum datagram size");
         }
         final Buffer source = new Buffer().write(bytes);
         final long requested = source.size();
-        final int written = await(channel.send(source, requested, socket(remote)), "Unable to send UDP datagram");
+        final int written = await(
+                channel.send(source, requested, socket(transportRemote)),
+                "Unable to send UDP datagram");
         if (written != requested || source.size() != Normal._0) {
             throw new ProtocolException("UDP channel did not fully consume the datagram payload");
         }
@@ -316,10 +348,18 @@ public final class UdpSession implements Session {
     private Message receiveMessage() {
         ensureOpened();
         final Message message = await(channel.receive(), "Unable to receive UDP datagram");
-        if (!socket(remote).equals(socket(message.address()))) {
+        if (!socket(transportRemote).equals(socket(message.address()))) {
             throw new ProtocolException("UDP packet remote does not match session");
         }
-        return message;
+        if (codec == null) {
+            return message;
+        }
+        return Message.of(
+                message.protocol(),
+                remote,
+                message.headers(),
+                codec.decode(remote, message.payload()),
+                message.tag());
     }
 
     /**

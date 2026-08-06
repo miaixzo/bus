@@ -27,6 +27,7 @@ import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.guard.GuardRule;
 import org.miaixz.bus.fabric.network.proxy.ProxyHeader;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.observe.EventObserver;
@@ -46,6 +47,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  * @param guard         optional policy guard for socket messages
  * @param filter        optional message filter for socket open, inbound, and outbound messages
  * @param observer      observer receiving socket lifecycle and traffic events
+ * @param proxy         outbound proxy policy resolved when the session opens
  * @param proxyHeader   PROXY protocol metadata to send or inject, or {@code null}
  * @param socketOptions channel and session tuning options
  * @param listener      session lifecycle listener
@@ -55,7 +57,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  */
 record SocketSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, TlsContext tlsContext,
         TlsSettings tlsSettings, FrameCodec frameCodec, Handler handler, GuardRule guard, Filter filter,
-        EventObserver observer, ProxyHeader proxyHeader, SocketOptions socketOptions,
+        EventObserver observer, ProxyPlan proxy, ProxyHeader proxyHeader, SocketOptions socketOptions,
         Listener<? super SocketSession> listener, boolean pooled) {
 
     /**
@@ -73,6 +75,7 @@ record SocketSpec(Context context, URI uri, Address address, Headers headers, Ti
      * @param guard         optional socket-message guard
      * @param filter        optional exchange message filter
      * @param observer      socket lifecycle observer
+     * @param proxy         non-null outbound proxy policy
      * @param proxyHeader   optional PROXY protocol metadata
      * @param socketOptions channel and session tuning options
      * @param listener      session lifecycle listener
@@ -92,6 +95,7 @@ record SocketSpec(Context context, URI uri, Address address, Headers headers, Ti
         frameCodec = require(frameCodec, "Frame codec");
         handler = require(handler, "Handler");
         observer = EventObserver.safe(require(observer, "Observer"));
+        proxy = require(proxy, "Proxy plan");
         socketOptions = require(socketOptions, "Socket options");
     }
 

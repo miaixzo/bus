@@ -51,11 +51,6 @@ public final class ProxySelectorAdapter {
     private static volatile ProxySelectorAdapter cachedAdapter;
 
     /**
-     * Short cache avoids repeatedly parsing an unchanged platform proxy decision.
-     */
-    private volatile SelectionCache selectionCache;
-
-    /**
      * Non-null JDK selector delegated to for decisions and failure reporting.
      */
     private final ProxySelector selector;
@@ -114,11 +109,6 @@ public final class ProxySelectorAdapter {
      */
     public List<ProxyPlan> select(final URI uri) {
         final URI current = Assert.notNull(uri, () -> new ValidateException("URI must not be null"));
-        final long now = System.nanoTime();
-        final SelectionCache cached = selectionCache;
-        if (cached != null && cached.expiresAtNanos() - now > 0L && cached.uri().equals(current)) {
-            return cached.plans();
-        }
         final List<Proxy> proxies = selector.select(current);
         final List<ProxyPlan> selected;
         if (proxies == null || proxies.isEmpty()) {
@@ -130,7 +120,6 @@ public final class ProxySelectorAdapter {
             }
             selected = List.copyOf(plans);
         }
-        selectionCache = new SelectionCache(current, selected, now + 1_000_000_000L);
         return selected;
     }
 
@@ -172,16 +161,6 @@ public final class ProxySelectorAdapter {
             case SOCKS -> ProxyPlan.socks(new Address(Protocol.TCP.name, host, port, Symbol.SLASH));
             case DIRECT -> ProxyPlan.direct();
         };
-    }
-
-    /**
-     * One bounded-lifetime selector result.
-     *
-     * @param uri            URI supplied to the selector
-     * @param plans          normalized proxy plans
-     * @param expiresAtNanos monotonic expiration time
-     */
-    private record SelectionCache(URI uri, List<ProxyPlan> plans, long expiresAtNanos) {
     }
 
 }

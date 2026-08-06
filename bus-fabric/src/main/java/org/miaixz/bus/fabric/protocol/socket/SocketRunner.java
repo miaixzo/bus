@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Message;
@@ -47,6 +48,11 @@ import org.miaixz.bus.fabric.network.aio.AioGroup;
 import org.miaixz.bus.fabric.network.aio.AioNetwork;
 import org.miaixz.bus.fabric.network.kcp.KcpNetwork;
 import org.miaixz.bus.fabric.network.kcp.KcpPolicy;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
+import org.miaixz.bus.fabric.network.proxy.ProxyPolicyResolver;
+import org.miaixz.bus.fabric.network.proxy.ProxySelection;
+import org.miaixz.bus.fabric.network.proxy.Socks5UdpCodec;
+import org.miaixz.bus.fabric.network.proxy.StreamProxyConnector;
 import org.miaixz.bus.fabric.network.tcp.TcpNetwork;
 import org.miaixz.bus.fabric.network.tls.TlsChannel;
 import org.miaixz.bus.fabric.network.tls.TlsEngine;
@@ -125,13 +131,42 @@ final class SocketRunner {
             checkGuard(opening);
             currentCancellation.throwIfCancelled();
             final Transport transport = Transport.fromScheme(spec.address().scheme());
-            final SocketSession session = switch (transport) {
-                case TCP -> openTcp(opening, currentCancellation);
-                case TLS -> openTls(opening, currentCancellation);
-                case UDP -> openUdp(opening, currentCancellation);
-                case KCP -> openKcp(opening, currentCancellation);
-                default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
-            };
+            final ProxySelection selection = new ProxyPolicyResolver()
+                    .resolve(spec.proxy(), spec.context().options(), spec.address());
+            SocketSession session = null;
+            ConnectionException failure = null;
+            for (final ProxyPlan proxy : selection.candidates()) {
+                try {
+                    session = open(opening, currentCancellation, transport, proxy);
+                    break;
+                } catch (final ConnectionException e) {
+                    if (!e.canSwitchRoute()) {
+                        throw e;
+                    }
+                    selection.connectFailed(proxy, e);
+                    if (failure != null && failure != e) {
+                        e.addSuppressed(failure);
+                    }
+                    failure = e;
+                } catch (final AuthorizedException e) {
+                    throw e;
+                } catch (final SocketException | TimeoutException e) {
+                    final ConnectionException routeFailure = connectionFailure(
+                            proxy,
+                            ConnectionException.Phase.TRANSPORT_CONNECT,
+                            ConnectionException.Scope.ROUTE,
+                            "Unable to establish socket route",
+                            e);
+                    selection.connectFailed(proxy, routeFailure);
+                    if (failure != null) {
+                        routeFailure.addSuppressed(failure);
+                    }
+                    failure = routeFailure;
+                }
+            }
+            if (session == null) {
+                throw require(failure, "Proxy candidate failure");
+            }
             final Runnable unregisterCancellation = currentCancellation.onCancel(session::cancel);
             try {
                 currentCancellation.throwIfCancelled();
@@ -175,14 +210,59 @@ final class SocketRunner {
     }
 
     /**
+     * Opens one already resolved physical proxy route.
+     *
+     * @param opening      filtered opening message used to initialize session attributes
+     * @param cancellation cancellation scope governing transport and session establishment
+     * @param transport    target transport selected from the logical address scheme
+     * @param proxy        resolved direct, HTTP, or SOCKS route candidate
+     * @return opened socket session
+     * @throws ProtocolException if the selected transport and route combination is unsupported
+     */
+    private SocketSession open(
+            final Message opening,
+            final Cancellation cancellation,
+            final Transport transport,
+            final ProxyPlan proxy) {
+        return switch (transport) {
+            case TCP -> openTcp(opening, cancellation, proxy);
+            case TLS -> openTls(opening, cancellation, proxy);
+            case UDP -> openUdp(opening, cancellation, proxy);
+            case KCP -> openKcp(opening, cancellation, proxy);
+            default -> throw new ProtocolException("Socket exchange does not support transport: " + transport);
+        };
+    }
+
+    /**
+     * Creates a structured connection failure before the socket session can deliver application data.
+     *
+     * @param proxy   resolved route used by the failed attempt
+     * @param phase   lifecycle phase in which the attempt failed
+     * @param scope   route, target, or configuration component responsible for the failure
+     * @param message human-readable failure description
+     * @param cause   underlying transport or handshake failure
+     * @return structured connection failure with a non-started delivery state
+     */
+    private static ConnectionException connectionFailure(
+            final ProxyPlan proxy,
+            final ConnectionException.Phase phase,
+            final ConnectionException.Scope scope,
+            final String message,
+            final Throwable cause) {
+        return new ConnectionException(phase, scope, ConnectionException.Delivery.NOT_STARTED, proxy.id(), message,
+                cause);
+    }
+
+    /**
      * Opens a TCP session.
      *
      * @param opening      filtered opening message
      * @param cancellation cancellation scope governing connection setup
+     * @param proxy        resolved direct, HTTP, or SOCKS stream route
      * @return session
      */
-    private SocketSession openTcp(final Message opening, final Cancellation cancellation) {
-        if (spec.pooled()) {
+    private SocketSession openTcp(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
+        if (spec.pooled() && proxy.isDirect()) {
             return openPooledTcp(opening, cancellation);
         }
         Logger.debug(
@@ -199,7 +279,9 @@ final class SocketRunner {
                     spec.context().reactor().dispatcher(),
                     spec.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            final Connection connection = await(network.connect(spec.address(), spec.timeout()), cancellation);
+            final Address connectAddress = proxy.proxy().orElse(spec.address());
+            final Connection connection = await(network.connect(connectAddress, spec.timeout()), cancellation);
+            new StreamProxyConnector().connect(connection, spec.address(), proxy, spec.timeout(), cancellation);
             Logger.debug(
                     false,
                     "Fabric",
@@ -220,9 +302,10 @@ final class SocketRunner {
      *
      * @param opening      filtered opening message
      * @param cancellation cancellation scope governing TLS setup
+     * @param proxy        resolved direct, HTTP, or SOCKS stream route
      * @return session
      */
-    private SocketSession openTls(final Message opening, final Cancellation cancellation) {
+    private SocketSession openTls(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
         Logger.debug(
                 true,
                 "Fabric",
@@ -237,7 +320,9 @@ final class SocketRunner {
                     spec.context().reactor().dispatcher(),
                     spec.socketOptions());
             final TcpNetwork network = TcpNetwork.create(aio);
-            final Connection raw = await(network.connect(spec.address(), spec.timeout()), cancellation);
+            final Address connectAddress = proxy.proxy().orElse(spec.address());
+            final Connection raw = await(network.connect(connectAddress, spec.timeout()), cancellation);
+            new StreamProxyConnector().connect(raw, spec.address(), proxy, spec.timeout(), cancellation);
             final TlsChannel tls = TlsChannel.wrap(
                     raw.conduit(),
                     TlsEngine.create(spec.tlsContext(), spec.address(), spec.tlsSettings()),
@@ -254,6 +339,17 @@ final class SocketRunner {
                         spec.address().host(),
                         spec.address().port());
                 return session(new TlsSocketConnection(raw, tls), null, null, opening, network, cancellation);
+            } catch (final ConnectionException e) {
+                closeTls(raw, tls);
+                throw e;
+            } catch (final SocketException | TimeoutException e) {
+                closeTls(raw, tls);
+                throw connectionFailure(
+                        proxy,
+                        ConnectionException.Phase.SECURITY_HANDSHAKE,
+                        ConnectionException.Scope.TARGET,
+                        "Unable to establish socket TLS session",
+                        e);
             } catch (final RuntimeException e) {
                 closeTls(raw, tls);
                 throw e;
@@ -312,17 +408,22 @@ final class SocketRunner {
      *
      * @param opening      filtered opening message
      * @param cancellation cancellation scope governing UDP setup
+     * @param proxy        resolved direct or SOCKS datagram route
      * @return session
+     * @throws ProtocolException if an HTTP proxy is selected for UDP
      */
-    private SocketSession openUdp(final Message opening, final Cancellation cancellation) {
+    private SocketSession openUdp(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
+        if (proxy.isHttp()) {
+            throw new ProtocolException("HTTP proxies do not support UDP transport");
+        }
         Logger.debug(
                 true,
                 "Fabric",
                 "Socket UDP connect started: host={}, port={}",
                 spec.address().host(),
                 spec.address().port());
-        final DatagramOwner owner = DatagramOwner
-                .open(spec.context().listener(), spec.context().reactor().dispatcher());
+        final DatagramOwner owner = proxy.isSocks() ? socksDatagramOwner(proxy, cancellation)
+                : DatagramOwner.open(spec.context().listener(), spec.context().reactor().dispatcher());
         try {
             final UdpSession session = owner.udp().connect(spec.address());
             Logger.debug(
@@ -343,17 +444,22 @@ final class SocketRunner {
      *
      * @param opening      filtered opening message
      * @param cancellation cancellation scope governing KCP setup
+     * @param proxy        resolved direct or SOCKS datagram route
      * @return session
+     * @throws ProtocolException if an HTTP proxy is selected for KCP
      */
-    private SocketSession openKcp(final Message opening, final Cancellation cancellation) {
+    private SocketSession openKcp(final Message opening, final Cancellation cancellation, final ProxyPlan proxy) {
+        if (proxy.isHttp()) {
+            throw new ProtocolException("HTTP proxies do not support KCP transport");
+        }
         Logger.debug(
                 true,
                 "Fabric",
                 "Socket KCP open started: host={}, port={}",
                 spec.address().host(),
                 spec.address().port());
-        final DatagramOwner owner = DatagramOwner
-                .open(spec.context().listener(), spec.context().reactor().dispatcher());
+        final DatagramOwner owner = proxy.isSocks() ? socksDatagramOwner(proxy, cancellation)
+                : DatagramOwner.open(spec.context().listener(), spec.context().reactor().dispatcher());
         try {
             final KcpPolicy configured = spec.context().options().get(KcpPolicy.OPTION);
             final KcpPolicy policy = configured == null
@@ -369,6 +475,46 @@ final class SocketRunner {
                     spec.address().port());
             return session(null, session, kcp, opening, owner, cancellation);
         } catch (final RuntimeException e) {
+            owner.close();
+            throw e;
+        }
+    }
+
+    /**
+     * Opens the SOCKS5 control connection and configures its UDP relay on a private datagram owner.
+     *
+     * @param proxy        resolved SOCKS5 route used for the control connection
+     * @param cancellation cancellation scope governing connection and UDP ASSOCIATE negotiation
+     * @return private datagram owner whose close path also closes the SOCKS control transport
+     */
+    private DatagramOwner socksDatagramOwner(final ProxyPlan proxy, final Cancellation cancellation) {
+        final DatagramOwner owner = DatagramOwner
+                .open(spec.context().listener(), spec.context().reactor().dispatcher());
+        AioNetwork aio = null;
+        Connection control = null;
+        try {
+            aio = AioNetwork.create(
+                    spec.context().listener(),
+                    spec.context().reactor().resolver(),
+                    spec.context().reactor().dispatcher(),
+                    spec.socketOptions());
+            final TcpNetwork network = TcpNetwork.create(aio);
+            control = await(network.connect(proxy.proxy().orElseThrow(), spec.timeout()), cancellation);
+            final Connection ownedControl = control;
+            final AioNetwork ownedAio = aio;
+            final Address relay = new StreamProxyConnector().udpAssociate(control, proxy, spec.timeout(), cancellation);
+            owner.udp().relay(new Socks5UdpCodec(relay), () -> {
+                ownedControl.close();
+                ownedAio.close();
+            });
+            return owner;
+        } catch (final RuntimeException e) {
+            if (control != null) {
+                control.close();
+            }
+            if (aio != null) {
+                aio.close();
+            }
             owner.close();
             throw e;
         }

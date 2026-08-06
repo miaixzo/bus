@@ -38,6 +38,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
+import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.protocol.Itinerary;
 import org.miaixz.bus.fabric.protocol.Mediator;
@@ -78,7 +79,7 @@ public final class SseX {
         final Context current = require(builder.context, "Context");
         final EventObserver currentObserver = builder.observer == null ? EventObserver.noop() : builder.observer;
         this.spec = new SseSpec(current, builder.uri, Address.from(builder.uri), builder.headers.build(),
-                builder.timeout, builder.retryPolicy, builder.lastEventId, builder.autoReconnect,
+                builder.timeout, builder.retryPolicy, builder.proxy, builder.lastEventId, builder.autoReconnect,
                 builder.responseHandler, builder.guard, builder.filter, currentObserver,
                 builder.handler == null ? noopHandler() : builder.handler, builder.listener);
         this.runner = new SseRunner(spec);
@@ -346,6 +347,11 @@ public final class SseX {
         private EventObserver observer;
 
         /**
+         * Outbound proxy policy inherited by every reconnect.
+         */
+        private ProxyPlan proxy;
+
+        /**
          * Callback.
          */
         private Callback<SseSession> callback;
@@ -385,6 +391,7 @@ public final class SseX {
             this.responseHandler = (status, headers) -> {
             };
             this.observer = EventObserver.noop();
+            this.proxy = ProxyPlan.inherit();
             this.callback = null;
             this.handler = noopHandler();
             this.listener = null;
@@ -611,9 +618,67 @@ public final class SseX {
         }
 
         /**
-         * Sets observer.
+         * Sets the outbound proxy policy used by the stream and every reconnect.
          *
-         * @param observer event observer, or {@code null} to disable observation
+         * @param proxy non-null policy propagated to every HTTP connection attempt
+         * @return this builder
+         */
+        public Builder proxy(final ProxyPlan proxy) {
+            this.proxy = require(proxy, "Proxy plan");
+            return this;
+        }
+
+        /**
+         * Inherits the context-level network proxy policy for every connection attempt.
+         *
+         * @return this builder
+         */
+        public Builder inheritProxy() {
+            return proxy(ProxyPlan.inherit());
+        }
+
+        /**
+         * Resolves every connection attempt through the current system proxy selector.
+         *
+         * @return this builder
+         */
+        public Builder systemProxy() {
+            return proxy(ProxyPlan.system());
+        }
+
+        /**
+         * Bypasses configured and system proxies for every connection attempt.
+         *
+         * @return this builder
+         */
+        public Builder directProxy() {
+            return proxy(ProxyPlan.direct());
+        }
+
+        /**
+         * Uses a fixed HTTP proxy for the event stream and every reconnect.
+         *
+         * @param proxy non-null plain HTTP proxy address
+         * @return this builder
+         */
+        public Builder httpProxy(final Address proxy) {
+            return proxy(ProxyPlan.http(require(proxy, "HTTP proxy")));
+        }
+
+        /**
+         * Uses a fixed SOCKS5 proxy for the event stream and every reconnect.
+         *
+         * @param proxy non-null plain stream address of the SOCKS5 server
+         * @return this builder
+         */
+        public Builder socksProxy(final Address proxy) {
+            return proxy(ProxyPlan.socks(require(proxy, "SOCKS proxy")));
+        }
+
+        /**
+         * Sets the event observer used by this stream.
+         *
+         * @param observer observer implementation, or {@code null} to disable observation
          * @return this builder
          */
         public Builder observe(final EventObserver observer) {

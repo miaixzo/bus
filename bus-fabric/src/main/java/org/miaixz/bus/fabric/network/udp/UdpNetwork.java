@@ -72,6 +72,17 @@ public final class UdpNetwork implements AutoCloseable {
     private final Listener<Object> listener;
 
     /**
+     * Optional codec applied to subsequently created logical sessions.
+     */
+    private volatile UdpDatagramCodec relayCodec;
+
+    /**
+     * Cleanup paired with the optional relay codec.
+     */
+    private volatile Runnable relayCloseHook = () -> {
+    };
+
+    /**
      * Creates a UDP network with an optional lifecycle listener.
      *
      * @param group    AIO group that supplies channel dispatchers
@@ -144,6 +155,40 @@ public final class UdpNetwork implements AutoCloseable {
      * @throws SocketException   if the datagram channel or local address cannot be created
      */
     public synchronized UdpSession connect(final Address remote) {
+        return connect(remote, relayCodec, relayCloseHook);
+    }
+
+    /**
+     * Configures relay framing for subsequently opened UDP and KCP sessions.
+     *
+     * @param codec     non-null logical-to-physical datagram codec
+     * @param closeHook non-null cleanup invoked when the relayed session closes
+     * @return this network
+     * @throws ValidateException if an argument is {@code null}
+     */
+    public synchronized UdpNetwork relay(final UdpDatagramCodec codec, final Runnable closeHook) {
+        this.relayCodec = Assert.notNull(codec, () -> new ValidateException("UDP relay codec must not be null"));
+        this.relayCloseHook = Assert
+                .notNull(closeHook, () -> new ValidateException("UDP relay close hook must not be null"));
+        return this;
+    }
+
+    /**
+     * Opens a logical UDP session through an optional physical relay codec.
+     *
+     * @param remote    non-null logical UDP destination exposed by the returned session
+     * @param codec     relay codec, or {@code null} for direct datagram transport
+     * @param closeHook non-null cleanup invoked after the session channel is released
+     * @return connected logical UDP session
+     * @throws ValidateException if {@code remote} or {@code closeHook} is {@code null}
+     * @throws ProtocolException if {@code remote} is not a UDP destination
+     * @throws StatefulException if this network is closed
+     * @throws SocketException   if the datagram channel cannot be opened or bound
+     */
+    public synchronized UdpSession connect(
+            final Address remote,
+            final UdpDatagramCodec codec,
+            final Runnable closeHook) {
         final Address checkedRemote = Assert
                 .notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         requireUdp(checkedRemote);
@@ -155,7 +200,12 @@ public final class UdpNetwork implements AutoCloseable {
             final Address localAddress = new Address(Transport.UDP.scheme(), Protocol.HOST_IPV4, local.getPort(), null);
             final UdpChannel channel = new UdpChannel(localAddress, datagram, group.dispatcher());
             channels.add(channel);
-            return new UdpSession(checkedRemote, channel, listener, group.dispatcher(), () -> channels.remove(channel));
+            final Runnable checkedClose = Assert
+                    .notNull(closeHook, () -> new ValidateException("UDP close hook must not be null"));
+            return new UdpSession(checkedRemote, channel, listener, group.dispatcher(), () -> {
+                channels.remove(channel);
+                checkedClose.run();
+            }, codec);
         } catch (final IOException e) {
             if (listener != null) {
                 listener.failure(this, e);

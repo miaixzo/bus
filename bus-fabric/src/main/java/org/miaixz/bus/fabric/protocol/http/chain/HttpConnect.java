@@ -46,6 +46,10 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.*;
+import org.miaixz.bus.core.lang.exception.ConnectionException;
+import org.miaixz.bus.core.lang.exception.ConnectionException.Delivery;
+import org.miaixz.bus.core.lang.exception.ConnectionException.Phase;
+import org.miaixz.bus.core.lang.exception.ConnectionException.Scope;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
@@ -53,10 +57,12 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.*;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.network.*;
 import org.miaixz.bus.fabric.network.dns.DnsResolver;
 import org.miaixz.bus.fabric.network.dns.DnsResult;
 import org.miaixz.bus.fabric.network.proxy.ProxyPlan;
+import org.miaixz.bus.fabric.network.proxy.StreamProxyConnector;
 import org.miaixz.bus.fabric.network.tls.TlsChannel;
 import org.miaixz.bus.fabric.network.tls.TlsSettings;
 import org.miaixz.bus.fabric.network.tls.TlsSocketChannel;
@@ -136,15 +142,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
      */
     private final HttpRoutePlanner routePlanner;
 
-    /**
-     * HTTP CONNECT handshake component.
-     */
-    private final HttpProxyTunnel proxyTunnel;
-
-    /**
-     * SOCKS handshake component.
-     */
-    private final SocksConnector socksConnector;
+    /** Shared transport-level HTTP CONNECT and SOCKS5 handshake component. */
+    private final StreamProxyConnector proxyConnector;
 
     /**
      * TLS upgrade component.
@@ -326,8 +325,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         this.resolver = require(resolver, "DNS resolver");
         this.dispatcher = require(dispatcher, "Dispatcher");
         this.routePlanner = new HttpRoutePlanner(tlsContext, tlsSettings);
-        this.proxyTunnel = new HttpProxyTunnel();
-        this.socksConnector = new SocksConnector();
+        this.proxyConnector = new StreamProxyConnector();
         this.tlsConnector = new HttpTlsConnector(tlsContext, tlsSettings, this.listener, this.dispatcher);
         this.acquirer = new HttpConnectionAcquirer(this.pool);
         this.directRoutes = new ConcurrentHashMap<>();
@@ -357,7 +355,15 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                     current.url().port(),
                     current.url().address().secure());
         }
-        final ConnectionLease lease = acquire(current, cancellation);
+        final ConnectionLease lease;
+        try {
+            lease = acquireResolved(current, cancellation);
+        } catch (final ConnectionException | ProtocolException | AuthorizedException e) {
+            throw e;
+        } catch (final RuntimeException e) {
+            throw new ConnectionException(Phase.TRANSPORT_CONNECT, Scope.ROUTE, Delivery.NOT_STARTED,
+                    current.proxy().id(), "Unable to establish HTTP route", e);
+        }
         try {
             cancellation.throwIfCancelled();
             final HttpResponse response = next.withConnection(lease, lease.connection()).proceed(current);
@@ -407,6 +413,17 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         final HttpRequest current = require(request, "HTTP request");
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
+        return acquireResolved(current, scope);
+    }
+
+    /**
+     * Acquires a lease for one request whose proxy policy has already been resolved to a physical route.
+     *
+     * @param current request carrying a direct, HTTP, or SOCKS proxy plan
+     * @param scope   cancellation scope governing acquisition and route establishment
+     * @return connection lease for the resolved destination
+     */
+    private ConnectionLease acquireResolved(final HttpRequest current, final Cancellation scope) {
         final Address target = current.url().address();
         final ProxyPlan proxy = routePlanner.proxy(current);
         final HttpRoutePlanner.Plan route = proxy.isDirect() ? directRoutes
@@ -522,11 +539,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Opens a network route for a connection destination.
      *
-     * @param route        immutable route plan
-     * @param target       target address
-     * @param proxy        proxy plan
-     * @param timeout      maximum duration allowed for connection establishment
-     * @param cancellation cancellation scope governing route establishment
+     * @param route               immutable route plan
+     * @param target              target address
+     * @param proxy               proxy plan
+     * @param timeout             maximum duration allowed for connection establishment
+     * @param cancellation        cancellation scope governing route establishment
+     * @param transientConnection whether the physical connection must bypass reusable pooling
      * @return network connection
      */
     private Connection open(
@@ -563,14 +581,22 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         try {
             scope.throwIfCancelled();
             if (proxy.isSocks()) {
-                socksConnector.connect(raw, target, timeout, scope);
+                proxyConnector.connect(raw, target, proxy, timeout, scope);
             }
             if (tunnel) {
-                proxyTunnel.connect(raw, target, proxy, timeout, scope);
+                proxyConnector.connect(raw, target, proxy, timeout, scope);
             }
             scope.throwIfCancelled();
             if (target.secure() && (tunnel || !connector.supports(Transport.TLS))) {
-                final Connection secured = tlsConnection(destination, raw, target, timeout, scope, transientConnection);
+                final Connection secured;
+                try {
+                    secured = tlsConnection(destination, raw, target, timeout, scope, transientConnection);
+                } catch (final ConnectionException | ProtocolException | AuthorizedException e) {
+                    throw e;
+                } catch (final RuntimeException e) {
+                    throw new ConnectionException(Phase.SECURITY_HANDSHAKE, Scope.TARGET, Delivery.NOT_STARTED,
+                            proxy.id(), "Unable to establish HTTP TLS session", e);
+                }
                 if (debug) {
                     Logger.debug(
                             false,
@@ -611,11 +637,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Creates a TLS-routed connection.
      *
-     * @param destination  connection destination
-     * @param raw          raw connection
-     * @param target       target address
-     * @param timeout      request timeout policy
-     * @param cancellation cancellation scope
+     * @param destination    connection destination
+     * @param raw            raw connection
+     * @param target         target address
+     * @param timeout        request timeout policy
+     * @param cancellation   cancellation scope
+     * @param socketFastPath whether the built-in blocking socket can use the optimized JSSE path
      * @return TLS connection
      */
     private Connection tlsConnection(
@@ -636,6 +663,13 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
     /**
      * Uses the JDK's optimized blocking TLS socket for the built-in blocking HTTP transport.
+     *
+     * @param destination  logical destination and pool identity
+     * @param raw          connected plain socket transport to upgrade
+     * @param target       secure target used for peer identity and SNI
+     * @param timeout      TLS handshake timeout policy
+     * @param cancellation cancellation scope governing the upgrade
+     * @return TLS-routed connection backed by the upgraded socket
      */
     private Connection tlsSocketConnection(
             final Destination destination,
@@ -700,6 +734,9 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
     /**
      * Returns transport handshake metadata without exposing the concrete TLS conduit.
+     *
+     * @param connection established direct or TLS-routed connection
+     * @return TLS handshake metadata, or {@code null} for a plain connection
      */
     private static TlsHandshake connectionHandshake(final Connection connection) {
         if (connection instanceof TlsRoutedConnection tls)
@@ -1685,6 +1722,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Opens either the channel transport or the plain-socket shape used by one-shot JSSE routes.
+         *
+         * @param address      unresolved logical destination whose host is resolved by this connector
+         * @param timeout      shared connection timeout policy
+         * @param socketStream whether to create a blocking Socket transport for direct JSSE layering
+         * @return first successfully connected transport
          */
         private Connection open(final Address address, final Timeout timeout, final boolean socketStream) {
             if (closed.get()) {
@@ -1734,11 +1776,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Races at most two stable-order address candidates with a 250 ms stagger.
          *
-         * @param address    unresolved destination retaining the logical host and port
-         * @param timeout    connection timeout policy
-         * @param candidates stable-order resolved address candidates
-         * @param offset     index of the first candidate in this race
-         * @param deadline   shared monotonic connection deadline
+         * @param address      unresolved destination retaining the logical host and port
+         * @param timeout      connection timeout policy
+         * @param candidates   stable-order resolved address candidates
+         * @param offset       index of the first candidate in this race
+         * @param deadline     shared monotonic connection deadline
+         * @param socketStream whether candidates must use the blocking Socket transport
          * @return first successfully established connection
          */
         private Connection race(
@@ -1769,10 +1812,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         /**
          * Connects one resolved address within the shared connect deadline.
          *
-         * @param address   logical destination
-         * @param timeout   timeout policy
-         * @param candidate resolved address
-         * @param deadline  shared connect deadline
+         * @param address      logical destination
+         * @param timeout      timeout policy
+         * @param candidate    resolved address
+         * @param deadline     shared connect deadline
+         * @param socketStream whether to create a blocking Socket instead of a SocketChannel
          * @return connected socket connection
          */
         private Connection connectCandidate(
@@ -1809,6 +1853,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Connects direct HTTPS using the plain Socket shape expected by JSSE.
+         *
+         * @param address   logical secure destination
+         * @param timeout   shared connection timeout policy
+         * @param candidate resolved network address
+         * @param deadline  shared monotonic connection deadline
+         * @return connected plain-socket transport ready for TLS layering
          */
         private Connection connectSecureCandidate(
                 final Address address,
@@ -1918,6 +1968,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Creates a direct plain-socket connection for JSSE layering.
+         *
+         * @param address    logical remote address
+         * @param socket     connected blocking socket owned by the new connection
+         * @param listener   lifecycle listener notified when the connection opens and closes
+         * @param dispatcher runtime dispatcher retained for constructor symmetry with channel connections
+         * @param timeout    operation timeout policy retained for constructor symmetry with channel connections
          */
         private SocketConnection(final Address address, final Socket socket, final Listener<Object> listener,
                 final Dispatcher dispatcher, final Timeout timeout) {
@@ -1932,6 +1988,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
 
         /**
          * Returns the connected blocking socket used for TLS layering.
+         *
+         * @return connected socket owned by this connection
          */
         private Socket socket() {
             return socket;
