@@ -25,10 +25,10 @@ import java.io.OutputStreamWriter;
 
 import com.google.zxing.common.BitMatrix;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.ansi.AnsiElement;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.extra.qrcode.QrConfig;
 

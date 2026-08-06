@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Instance;
@@ -405,7 +405,9 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
         service.setApp_id(app_id);
         service.setMethod(method);
         service.setVersion(version);
-        service.setId(StringKit.isNotEmpty(instance.getServiceId()) ? instance.getServiceId() : method + Symbol.COLON + version);
+        service.setId(
+                StringKit.isNotEmpty(instance.getServiceId()) ? instance.getServiceId()
+                        : method + Symbol.COLON + version);
         service.setType(Type.API.key());
         return service;
     }

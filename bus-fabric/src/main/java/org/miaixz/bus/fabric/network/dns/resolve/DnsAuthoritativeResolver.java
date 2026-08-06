@@ -25,8 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.dnssec.DnsAuthoritativeSigner;
 import org.miaixz.bus.fabric.network.dns.message.DnsName;
 import org.miaixz.bus.fabric.network.dns.message.DnsQuestion;
@@ -336,7 +336,8 @@ public final class DnsAuthoritativeResolver {
      * @return minimal HINFO response
      */
     private static DnsResolution minimalAny(final DnsQuestion question) {
-        return DnsResolution.answer(List.of(DnsRecord.hinfo(question.name(), "RFC8482", Normal.EMPTY, MINIMAL_ANY_TTL)));
+        return DnsResolution
+                .answer(List.of(DnsRecord.hinfo(question.name(), "RFC8482", Normal.EMPTY, MINIMAL_ANY_TTL)));
     }
 
 }

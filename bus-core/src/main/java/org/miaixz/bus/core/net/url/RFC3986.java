@@ -106,8 +106,8 @@ public class RFC3986 {
     /**
      * The set of characters allowed for a query parameter name. The name cannot include "&amp;" or "=".
      */
-    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE).removeSafe(Symbol.C_EQUAL)
-            .build();
+    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE)
+            .removeSafe(Symbol.C_EQUAL).build();
 
     /**
      * A strict encoder for query parameter values, where the value cannot contain any delimiters.

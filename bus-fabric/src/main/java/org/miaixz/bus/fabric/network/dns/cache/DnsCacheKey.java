@@ -24,9 +24,9 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.fabric.network.dns.message.DnsClientSubnet;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 import org.miaixz.bus.fabric.network.dns.message.DnsName;

@@ -295,7 +295,8 @@ public class Version implements Comparable<Version>, Serializable {
         final int n = s.length();
         while (++i < n) {
             final char c = s.charAt(i);
-            if (c != Symbol.C_DOT && c != Symbol.C_MINUS && c != Symbol.C_PLUS && !(c >= Symbol.C_ZERO && c <= Symbol.C_NINE)) {
+            if (c != Symbol.C_DOT && c != Symbol.C_MINUS && c != Symbol.C_PLUS
+                    && !(c >= Symbol.C_ZERO && c <= Symbol.C_NINE)) {
                 continue;
             }
             break;

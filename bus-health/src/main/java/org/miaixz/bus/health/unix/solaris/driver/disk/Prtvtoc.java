@@ -194,8 +194,8 @@ public final class Prtvtoc {
                             mountPoint = split[6];
                         }
                         partList.add(
-                                new HWPartition(identification, name, type, Normal.EMPTY, volumeName, partSize, major, minor,
-                                        mountPoint));
+                                new HWPartition(identification, name, type, Normal.EMPTY, volumeName, partSize, major,
+                                        minor, mountPoint));
                     }
                 }
             }

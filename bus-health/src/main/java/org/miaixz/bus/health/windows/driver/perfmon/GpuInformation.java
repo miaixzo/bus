@@ -22,9 +22,9 @@ package org.miaixz.bus.health.windows.driver.perfmon;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
 /**

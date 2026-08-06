@@ -255,8 +255,8 @@ public class FigmaProvider extends AbstractProvider {
         if (object.containsKey("error")) {
             String error = (String) object.get("error");
             String message = (String) object.get("message");
-            throw new AuthorizedException(
-                    (error != null ? error : "Unknown error") + Symbol.COLON + (message != null ? message : "Unknown message"));
+            throw new AuthorizedException((error != null ? error : "Unknown error") + Symbol.COLON
+                    + (message != null ? message : "Unknown message"));
         }
     }
 

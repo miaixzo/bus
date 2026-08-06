@@ -387,7 +387,8 @@ public class Overlays {
         if (ovlyData == null)
             throw new IllegalArgumentException("Missing " + Tag.toString(tagOverlayData) + " Overlay Data");
         if (ovlyRows <= 0)
-            throw new IllegalArgumentException(Tag.toString(tagOverlayRows) + " Overlay Rows [" + ovlyRows + Symbol.BRACKET_RIGHT);
+            throw new IllegalArgumentException(
+                    Tag.toString(tagOverlayRows) + " Overlay Rows [" + ovlyRows + Symbol.BRACKET_RIGHT);
         if (ovlyColumns <= 0)
             throw new IllegalArgumentException(
                     Tag.toString(tagOverlayColumns) + " Overlay Columns [" + ovlyColumns + Symbol.BRACKET_RIGHT);

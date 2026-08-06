@@ -22,8 +22,8 @@ package org.miaixz.bus.image.galaxy.data;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.logger.Logger;
 

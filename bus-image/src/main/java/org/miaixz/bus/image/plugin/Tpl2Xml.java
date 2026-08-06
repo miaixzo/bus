@@ -38,8 +38,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * The {@code Tpl2Xml} class converts a proprietary text-based template file for private DICOM dictionaries into
@@ -167,7 +167,9 @@ public class Tpl2Xml {
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
-            document.insertBefore(document.createComment(Symbol.LF + licenseBlock + Symbol.LF), document.getDocumentElement());
+            document.insertBefore(
+                    document.createComment(Symbol.LF + licenseBlock + Symbol.LF),
+                    document.getDocumentElement());
             Element root = document.createElement(elements);
             document.appendChild(root);
             Set<String> keywords = new HashSet<>();
@@ -339,7 +341,8 @@ public class Tpl2Xml {
         private void setTagAndKeyword(String tag, String keyword) {
             String groupTag = tag.substring(1, 5).toUpperCase();
             String elementTag = "xx" + tag.substring(8, 10).toUpperCase();
-            this.keyword = keyword.equals(Symbol.QUESTION_MARK) ? Symbol.UNDERLINE + groupTag + Symbol.UNDERLINE + elementTag + Symbol.UNDERLINE
+            this.keyword = keyword.equals(Symbol.QUESTION_MARK)
+                    ? Symbol.UNDERLINE + groupTag + Symbol.UNDERLINE + elementTag + Symbol.UNDERLINE
                     : !Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$").matcher(keyword).matches()
                             ? improveInvalidKeyword(keyword)
                             : keyword;

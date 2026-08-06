@@ -22,8 +22,8 @@ package org.miaixz.bus.health.builtin.software.common;
 import java.util.Locale;
 
 import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OSThread;

@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
 
-
 /**
  * Abstract base class for date information, providing date format, time zone, and locale information.
  *

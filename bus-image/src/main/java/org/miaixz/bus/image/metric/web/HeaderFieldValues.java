@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Parser for HTTP header field values with parameters and quoted strings.
@@ -282,7 +282,8 @@ public final class HeaderFieldValues {
             while (end > start && Character.isWhitespace(chars[end - 1])) {
                 end--;
             }
-            if (quoted && end - start >= 2 && chars[start] == Symbol.C_DOUBLE_QUOTES && chars[end - 1] == Symbol.C_DOUBLE_QUOTES) {
+            if (quoted && end - start >= 2 && chars[start] == Symbol.C_DOUBLE_QUOTES
+                    && chars[end - 1] == Symbol.C_DOUBLE_QUOTES) {
                 start++;
                 end--;
             }

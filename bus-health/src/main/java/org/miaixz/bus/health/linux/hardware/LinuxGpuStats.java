@@ -22,9 +22,9 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.Locale;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.gpu.NvmlKit;

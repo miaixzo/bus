@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.Printer;
 
 /**

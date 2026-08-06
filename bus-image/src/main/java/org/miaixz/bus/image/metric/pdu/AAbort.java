@@ -119,7 +119,8 @@ public class AAbort extends IOException {
      * @param reason the reason.
      */
     public AAbort(int source, int reason) {
-        super("A-ABORT[source: " + toString(SOURCES, source) + ", reason: " + toReason(source, reason) + Symbol.C_BRACKET_RIGHT);
+        super("A-ABORT[source: " + toString(SOURCES, source) + ", reason: " + toReason(source, reason)
+                + Symbol.C_BRACKET_RIGHT);
         this.source = source;
         this.reason = reason;
     }

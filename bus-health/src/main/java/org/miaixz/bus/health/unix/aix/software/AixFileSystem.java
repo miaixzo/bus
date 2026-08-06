@@ -205,9 +205,9 @@ public class AixFileSystem extends AbstractFileSystem {
                 }
 
                 fsList.add(
-                        new AixOSFileStore(name, volume, name, path, options, Normal.EMPTY, isLocal, Normal.EMPTY, description, type,
-                                freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
-                                inodeTotalMap.getOrDefault(volume, 0L)));
+                        new AixOSFileStore(name, volume, name, path, options, Normal.EMPTY, isLocal, Normal.EMPTY,
+                                description, type, freeSpace, usableSpace, totalSpace,
+                                inodeFreeMap.getOrDefault(volume, 0L), inodeTotalMap.getOrDefault(volume, 0L)));
             }
         }
         return fsList;

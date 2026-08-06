@@ -1308,7 +1308,8 @@ public class CollKit extends CollectionStream {
 
         final Iterator iter;
         if (value instanceof CharSequence) {
-            final String arrayStr = StringKit.unWrap((CharSequence) value, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT);
+            final String arrayStr = StringKit
+                    .unWrap((CharSequence) value, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT);
             iter = CharsBacker.splitTrim(arrayStr, Symbol.COMMA).iterator();
         } else if (value instanceof Map && BeanKit.isWritableBean(TypeKit.getClass(elementType))) {
             iter = new ArrayIterator(new Object[] { value });

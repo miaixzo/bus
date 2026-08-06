@@ -28,10 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache.Kind;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;

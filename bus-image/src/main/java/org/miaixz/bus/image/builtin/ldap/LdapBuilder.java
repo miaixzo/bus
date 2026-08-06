@@ -62,8 +62,10 @@ public class LdapBuilder {
      * Character array containing digits and uppercase letters, used for ordinal prefixes. The array includes characters
      * '0' through '9' and 'A' through 'Z'.
      */
-    private final static char[] DIGITS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'A', 'B', 'C', 'D', 'E',
-            'F', 'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y', 'Z' };
+    private final static char[] DIGITS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR,
+            Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'A', 'B', 'C', 'D', 'E', 'F',
+            'G', 'H', 'I', 'J', 'K', Symbol.C_L, 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', Symbol.C_X, 'Y',
+            'Z' };
 
     /**
      * Checks if the given {@link Attributes} contain a specific object class.
@@ -618,7 +620,8 @@ public class LdapBuilder {
      * @return The constructed DN string.
      */
     public static String dnOf(String attrID1, String attrValue1, String attrID2, String attrValue2, String baseDN) {
-        return attrID1 + Symbol.C_EQUAL + attrValue1 + Symbol.C_PLUS + attrID2 + Symbol.C_EQUAL + attrValue2 + Symbol.C_COMMA + baseDN;
+        return attrID1 + Symbol.C_EQUAL + attrValue1 + Symbol.C_PLUS + attrID2 + Symbol.C_EQUAL + attrValue2
+                + Symbol.C_COMMA + baseDN;
     }
 
     /**

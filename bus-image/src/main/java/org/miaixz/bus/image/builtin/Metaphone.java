@@ -214,7 +214,8 @@ public class Metaphone implements FuzzyString {
                 // T otherwise
                 case 'T':
                     if (!(next1 == 'C' || next2 == 'H'))
-                        out[j++] = next1 == 'I' && (next2 == 'A' || next2 == 'O') ? Symbol.C_X : (next1 == 'H') ? Symbol.C_ZERO : 'T';
+                        out[j++] = next1 == 'I' && (next2 == 'A' || next2 == 'O') ? Symbol.C_X
+                                : (next1 == 'H') ? Symbol.C_ZERO : 'T';
                     break;
 
                 // V -> F

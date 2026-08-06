@@ -22,8 +22,8 @@ package org.miaixz.bus.core.text;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Thread-local StringBuilder pool for high-performance string building.

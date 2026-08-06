@@ -173,8 +173,9 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                 }
 
                 fsList.add(
-                        new OpenBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, Normal.EMPTY, description, type,
-                                freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
+                        new OpenBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, Normal.EMPTY,
+                                description, type, freeSpace, usableSpace, totalSpace,
+                                inodeFreeMap.getOrDefault(volume, 0L),
                                 inodeUsedMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
             }
         }

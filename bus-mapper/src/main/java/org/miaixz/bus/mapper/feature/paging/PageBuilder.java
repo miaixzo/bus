@@ -143,7 +143,8 @@ public class PageBuilder {
         for (int i = 0; i < sql.length(); i++) {
             char current = sql.charAt(i);
             if (singleQuoted) {
-                if (current == Symbol.C_SINGLE_QUOTE && i + 1 < sql.length() && sql.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
+                if (current == Symbol.C_SINGLE_QUOTE && i + 1 < sql.length()
+                        && sql.charAt(i + 1) == Symbol.C_SINGLE_QUOTE) {
                     i++;
                     continue;
                 }
@@ -153,7 +154,8 @@ public class PageBuilder {
                 continue;
             }
             if (doubleQuoted) {
-                if (current == Symbol.C_DOUBLE_QUOTES && i + 1 < sql.length() && sql.charAt(i + 1) == Symbol.C_DOUBLE_QUOTES) {
+                if (current == Symbol.C_DOUBLE_QUOTES && i + 1 < sql.length()
+                        && sql.charAt(i + 1) == Symbol.C_DOUBLE_QUOTES) {
                     i++;
                     continue;
                 }

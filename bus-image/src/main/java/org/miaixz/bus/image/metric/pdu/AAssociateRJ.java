@@ -107,15 +107,15 @@ public class AAssociateRJ extends IOException {
     /**
      * The sources value.
      */
-    private static final String[] SOURCES = { Symbol.ZERO, "1 - service-user", "2 - service-provider (ACSE related function)",
-            "3 - service-provider (Presentation related function)" };
+    private static final String[] SOURCES = { Symbol.ZERO, "1 - service-user",
+            "2 - service-provider (ACSE related function)", "3 - service-provider (Presentation related function)" };
 
     /**
      * The service user reasons value.
      */
     private static final String[] SERVICE_USER_REASONS = { Symbol.ZERO, "1 - no-reason-given",
-            "2 - application-context-name-not-supported", "3 - calling-AE-title-not-recognized", Symbol.FOUR, Symbol.FIVE, Symbol.SIX,
-            "7 - called-AE-title-not-recognized", };
+            "2 - application-context-name-not-supported", "3 - calling-AE-title-not-recognized", Symbol.FOUR,
+            Symbol.FIVE, Symbol.SIX, "7 - called-AE-title-not-recognized", };
 
     /**
      * The service provider acse reasons value.

@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
  * A class for parsing and formatting date-time strings based on a pattern. This class is the core of the

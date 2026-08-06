@@ -552,8 +552,8 @@ public class Builder {
      * @return The merchant private key.
      */
     public static String getPrivateKeyByContent(String originalKey) {
-        return originalKey.replace("-----BEGIN PRIVATE KEY-----", Normal.EMPTY).replace("-----END PRIVATE KEY-----", Normal.EMPTY)
-                .replaceAll("\\s+", Normal.EMPTY);
+        return originalKey.replace("-----BEGIN PRIVATE KEY-----", Normal.EMPTY)
+                .replace("-----END PRIVATE KEY-----", Normal.EMPTY).replaceAll("\\s+", Normal.EMPTY);
     }
 
     /**
@@ -563,8 +563,8 @@ public class Builder {
      * @return The merchant public key.
      */
     public static String getPublicKeyByContent(String originalKey) {
-        return originalKey.replace("-----BEGIN PUBLIC KEY-----", Normal.EMPTY).replace("-----END PUBLIC KEY-----", Normal.EMPTY)
-                .replaceAll("\\s+", Normal.EMPTY);
+        return originalKey.replace("-----BEGIN PUBLIC KEY-----", Normal.EMPTY)
+                .replace("-----END PUBLIC KEY-----", Normal.EMPTY).replaceAll("\\s+", Normal.EMPTY);
     }
 
     /**

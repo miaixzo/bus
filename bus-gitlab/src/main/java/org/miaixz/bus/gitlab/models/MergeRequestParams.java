@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.gitlab.models.Constants.StateEvent;
 
 /**

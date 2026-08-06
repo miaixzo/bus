@@ -24,8 +24,8 @@ import java.net.URL;
 
 import jakarta.ws.rs.core.Response;
 
-import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.HealthCheckInfo;
 import org.miaixz.bus.logger.Logger;
 

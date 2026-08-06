@@ -22,12 +22,12 @@ package org.miaixz.bus.core.center.date.culture.rabjung;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.Zodiac;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarYear;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents a year in the Tibetan calendar (Gregorian year 1027 is the first year of the Tibetan calendar, the first
@@ -165,7 +165,8 @@ public class RabjungYear extends Loops {
      * @return The localized display name of this Tibetan year.
      */
     public String getName() {
-        String[] digits = { Symbol.UL_ZERO, Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE, Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
+        String[] digits = { Symbol.UL_ZERO, Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE,
+                Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
         String[] units = { Normal.EMPTY, Symbol.L_TEN, Symbol.L_ONE_HUNDRED };
         int n = rabByungIndex + 1;
         StringBuilder s = new StringBuilder();

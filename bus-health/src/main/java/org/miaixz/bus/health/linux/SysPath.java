@@ -22,9 +22,9 @@ package org.miaixz.bus.health.linux;
 import java.io.File;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.exception.NotFoundException;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Builder;
 
 /**

@@ -4033,7 +4033,8 @@ public class CharsBacker extends CharsValidator {
         }
         final int len = text.length();
         if (startInclude < 0 || endExclude > len || startInclude > endExclude) {
-            throw new IndexOutOfBoundsException("Invalid range: [" + startInclude + ", " + endExclude + Symbol.PARENTHESE_RIGHT);
+            throw new IndexOutOfBoundsException(
+                    "Invalid range: [" + startInclude + ", " + endExclude + Symbol.PARENTHESE_RIGHT);
         }
 
         // Separate the "block to move" and the "remaining string"

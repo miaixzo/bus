@@ -31,8 +31,8 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * The {@code Json2Rst} class converts JSON schema files into reStructuredText (RST) format, primarily for generating
@@ -269,7 +269,8 @@ public class Json2Rst {
         out.print(",\"");
         out.print(
                 ensureNoUndefinedSubstitutionReferenced(
-                        formatURL(property.getString("description")).replace(Symbol.DOUBLE_QUOTES, "\"\"").replaceAll("<br>", "\n\n\t")
+                        formatURL(property.getString("description")).replace(Symbol.DOUBLE_QUOTES, "\"\"")
+                                .replaceAll("<br>", "\n\n\t")
                                 .replaceAll("\\(hover on options to see their descriptions\\)", Normal.EMPTY)));
         JsonArray anEnum = typeObj.getJsonArray("enum");
         if (anEnum != null) {
@@ -283,7 +284,9 @@ public class Json2Rst {
                 out.println();
                 out.print("    ");
                 String enumOption = anEnum.get(i).toString().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY);
-                out.print(enumOption.contains(Symbol.OR) ? enumOption.replaceAll("\\|", " (= ") + Symbol.PARENTHESE_RIGHT : enumOption);
+                out.print(
+                        enumOption.contains(Symbol.OR) ? enumOption.replaceAll("\\|", " (= ") + Symbol.PARENTHESE_RIGHT
+                                : enumOption);
             }
         }
         if (!isObj) {

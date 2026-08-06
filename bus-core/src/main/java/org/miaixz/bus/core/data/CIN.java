@@ -213,7 +213,8 @@ public class CIN {
 
         // Intercept the province code. The new version of the foreigner's permanent residence ID card starts with 9,
         // and the second and third digits are the acceptance place code.
-        final String proCode = StringKit.startWith(idCard, Symbol.C_NINE) ? idCard.substring(1, 3) : idCard.substring(0, 2);
+        final String proCode = StringKit.startWith(idCard, Symbol.C_NINE) ? idCard.substring(1, 3)
+                : idCard.substring(0, 2);
         if (null == CITY_CODES.get(proCode)) {
             return false;
         }

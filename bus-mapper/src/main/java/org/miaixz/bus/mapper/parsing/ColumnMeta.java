@@ -35,8 +35,8 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
-import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.feature.keygen.GenId;
@@ -428,8 +428,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
      * @return The prefixed XML variable string.
      */
     public String variables(String prefix) {
-        return "#{" + property(prefix) + jdbcTypeVariables().orElse(Normal.EMPTY) + javaTypeVariables().orElse(Normal.EMPTY)
-                + typeHandlerVariables().orElse(Normal.EMPTY) + numericScaleVariables().orElse(Normal.EMPTY) + Symbol.BRACE_RIGHT;
+        return "#{" + property(prefix) + jdbcTypeVariables().orElse(Normal.EMPTY)
+                + javaTypeVariables().orElse(Normal.EMPTY) + typeHandlerVariables().orElse(Normal.EMPTY)
+                + numericScaleVariables().orElse(Normal.EMPTY) + Symbol.BRACE_RIGHT;
     }
 
     /**

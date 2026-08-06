@@ -279,7 +279,8 @@ public class VersionPublisher {
         change.setSequence(
                 record.getPublished() == null ? record.getCreated() == null ? 0L : record.getCreated()
                         : record.getPublished());
-        change.setIdempotencyKey("version:" + action + Symbol.COLON + change.getNamespace_id() + Symbol.COLON + change.getResourceId());
+        change.setIdempotencyKey(
+                "version:" + action + Symbol.COLON + change.getNamespace_id() + Symbol.COLON + change.getResourceId());
         changeLogStore.append(change);
     }
 
@@ -389,8 +390,8 @@ public class VersionPublisher {
      * @return watch key
      */
     private String watchKey(VersionRecord record) {
-        return "version:" + record.getNamespace_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack()) + Symbol.COLON
-                + record.getVersion();
+        return "version:" + record.getNamespace_id() + Symbol.COLON + ReleaseTrack.normalize(record.getTrack())
+                + Symbol.COLON + record.getVersion();
     }
 
     /**

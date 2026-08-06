@@ -563,7 +563,8 @@ public class MegaProvider extends AbstractProvider {
             createNode.put("t", rootHandle != null ? rootHandle : Normal.EMPTY);
             createNode.put(
                     "n",
-                    Arrays.asList(Map.of("h", completionHandle, "t", 0, "a", Map.of("n", fileName), "k", Normal.EMPTY)));
+                    Arrays.asList(
+                            Map.of("h", completionHandle, "t", 0, "a", Map.of("n", fileName), "k", Normal.EMPTY)));
             completeCommand.add(createNode);
 
             Map<String, Object> completeResult = makeApiRequest(completeCommand);

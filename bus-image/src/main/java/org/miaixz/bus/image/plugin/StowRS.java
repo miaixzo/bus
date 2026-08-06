@@ -41,8 +41,8 @@ import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;

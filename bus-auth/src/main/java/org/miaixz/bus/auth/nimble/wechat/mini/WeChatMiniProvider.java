@@ -31,9 +31,9 @@ import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -103,10 +103,9 @@ public class WeChatMiniProvider extends AbstractProvider {
         // See https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html
         // documentation
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
-        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
-                .data(
-                        Claims.builder().username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY).uuid(authorization.getOpenId())
-                                .token(authorization).source(complex.toString()).build())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
+                Claims.builder().username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY)
+                        .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
                 .build();
     }
 

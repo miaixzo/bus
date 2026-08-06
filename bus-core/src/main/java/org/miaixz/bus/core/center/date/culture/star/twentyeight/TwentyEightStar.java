@@ -19,13 +19,13 @@
 */
 package org.miaixz.bus.core.center.date.culture.star.twentyeight;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.Animal;
 import org.miaixz.bus.core.center.date.culture.Land;
 import org.miaixz.bus.core.center.date.culture.Luck;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.Winds;
 import org.miaixz.bus.core.center.date.culture.star.seven.SevenStar;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents the Twenty-Eight Mansions (二十八宿), a system of lunar mansions used in Chinese astronomy and astrology. This
@@ -39,8 +39,8 @@ public class TwentyEightStar extends Samsara {
     /**
      * Array of names for the Twenty-Eight Mansions.
      */
-    public static final String[] NAMES = { Symbol.CNY_JIAO, "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室", "壁", "奎",
-            "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸" };
+    public static final String[] NAMES = { Symbol.CNY_JIAO, "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室",
+            "壁", "奎", "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸" };
 
     /**
      * Constructs a {@code TwentyEightStar} instance with the specified index.

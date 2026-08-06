@@ -263,11 +263,17 @@ public class WadoRS {
      * @return The extracted UID string.
      */
     private String uidFrom(String url) {
-        return url.contains("metadata")
-                ? url.substring(url.substring(0, url.lastIndexOf(Symbol.C_SLASH)).lastIndexOf(Symbol.C_SLASH) + 1, url.lastIndexOf(Symbol.C_SLASH))
-                : url.contains(Symbol.QUESTION_MARK)
-                        ? url.substring(url.substring(0, url.indexOf(Symbol.C_QUESTION_MARK)).lastIndexOf(Symbol.C_SLASH) + 1, url.indexOf(Symbol.C_QUESTION_MARK))
-                        : url.substring(url.lastIndexOf(Symbol.C_SLASH) + 1);
+        return url
+                .contains("metadata")
+                        ? url.substring(
+                                url.substring(0, url.lastIndexOf(Symbol.C_SLASH)).lastIndexOf(Symbol.C_SLASH) + 1,
+                                url.lastIndexOf(Symbol.C_SLASH))
+                        : url.contains(Symbol.QUESTION_MARK)
+                                ? url.substring(
+                                        url.substring(0, url.indexOf(Symbol.C_QUESTION_MARK))
+                                                .lastIndexOf(Symbol.C_SLASH) + 1,
+                                        url.indexOf(Symbol.C_QUESTION_MARK))
+                                : url.substring(url.lastIndexOf(Symbol.C_SLASH) + 1);
     }
 
     /**

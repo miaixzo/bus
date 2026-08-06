@@ -31,8 +31,8 @@ import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.*;
 
-import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.gitlab.models.*;
 import org.miaixz.bus.logger.Logger;
 

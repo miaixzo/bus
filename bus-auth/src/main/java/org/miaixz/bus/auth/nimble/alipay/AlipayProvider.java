@@ -35,8 +35,8 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -207,8 +207,10 @@ public class AlipayProvider extends AbstractProvider {
 
         String province = (String) userResponse.get("province");
         String city = (String) userResponse.get("city");
-        String location = String
-                .format("%s %s", StringKit.isEmpty(province) ? Normal.EMPTY : province, StringKit.isEmpty(city) ? Normal.EMPTY : city);
+        String location = String.format(
+                "%s %s",
+                StringKit.isEmpty(province) ? Normal.EMPTY : province,
+                StringKit.isEmpty(city) ? Normal.EMPTY : city);
 
         return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
                 Claims.builder().rawJson(JsonKit.toJsonString(userResponse)).uuid((String) userResponse.get("user_id"))

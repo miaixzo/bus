@@ -26,8 +26,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -61,7 +61,8 @@ public class ListProvider {
 
             @Override
             public String getSql(TableMeta entity) {
-                return "INSERT INTO " + entity.tableName() + Symbol.PARENTHESE_LEFT + entity.insertColumnList() + Symbol.PARENTHESE_RIGHT + " VALUES "
+                return "INSERT INTO " + entity.tableName() + Symbol.PARENTHESE_LEFT + entity.insertColumnList()
+                        + Symbol.PARENTHESE_RIGHT + " VALUES "
                         + foreach(
                                 "list",
                                 "entity",

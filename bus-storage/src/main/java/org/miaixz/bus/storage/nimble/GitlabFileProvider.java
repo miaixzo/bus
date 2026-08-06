@@ -367,7 +367,8 @@ public class GitlabFileProvider extends AbstractProvider {
                                         // If the last commit ID is needed, it can be obtained via RepositoryFileApi or
                                         // CommitsApi.
                                         extend.put("lastModified", null);
-                                        return Blob.builder().name(item.getPath()).size(Symbol.ZERO).extend(extend).build();
+                                        return Blob.builder().name(item.getPath()).size(Symbol.ZERO).extend(extend)
+                                                .build();
                                     }).collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {

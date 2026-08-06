@@ -74,7 +74,8 @@ public class MergeRequestEvent extends AbstractEvent {
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind))
-            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
+            throw new RuntimeException(
+                    "Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
     }
 
     /**

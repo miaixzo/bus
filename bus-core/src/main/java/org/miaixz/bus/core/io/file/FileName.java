@@ -313,7 +313,8 @@ public class FileName {
 
         pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH);
         pathToUse = StringKit.trimPrefix(pathToUse);
-        pathToUse = StringKit.trim(pathToUse, StringTrimer.TrimMode.SUFFIX, (c) -> c == Symbol.C_LF || c == Symbol.C_CR);
+        pathToUse = StringKit
+                .trim(pathToUse, StringTrimer.TrimMode.SUFFIX, (c) -> c == Symbol.C_LF || c == Symbol.C_CR);
 
         String prefix = Normal.EMPTY;
         final int prefixIndex = pathToUse.indexOf(Symbol.COLON);

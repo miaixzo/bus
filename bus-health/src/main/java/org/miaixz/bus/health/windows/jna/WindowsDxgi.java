@@ -508,8 +508,8 @@ public final class WindowsDxgi {
         if (name == null) {
             return Normal.EMPTY;
         }
-        return name.toLowerCase(java.util.Locale.ROOT).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY).replaceAll("\\s+", Symbol.SPACE)
-                .trim();
+        return name.toLowerCase(java.util.Locale.ROOT).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY)
+                .replaceAll("\\s+", Symbol.SPACE).trim();
     }
 
 }

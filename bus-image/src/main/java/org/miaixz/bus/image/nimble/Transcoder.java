@@ -31,8 +31,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.SupplierEx;

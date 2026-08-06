@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.HL7Message;

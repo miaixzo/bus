@@ -37,7 +37,8 @@ public class FestivalBuilder {
     /**
      * Encoded festival data.
      */
-    protected char[] data = { Symbol.C_AT, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_ZERO, Symbol.C_ZERO, Symbol.C_ZERO };
+    protected char[] data = { Symbol.C_AT, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_UNDERLINE,
+            Symbol.C_UNDERLINE, Symbol.C_UNDERLINE, Symbol.C_ZERO, Symbol.C_ZERO, Symbol.C_ZERO };
 
     /**
      * Sets the festival name.

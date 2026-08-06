@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.auth.magic;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Authorization error codes: 110xxx.
@@ -150,34 +150,38 @@ public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
         /**
          * Indicates missing authorization information.
          */
-        public static final Errors EC3 = ErrorRegistry.builder().key(Symbol.THREE).value("Missing authorization information")
-                .build();
+        public static final Errors EC3 = ErrorRegistry.builder().key(Symbol.THREE)
+                .value("Missing authorization information").build();
 
         /**
          * Indicates an incorrect response type.
          */
-        public static final Errors EC4 = ErrorRegistry.builder().key(Symbol.FOUR).value("Incorrect response type").build();
+        public static final Errors EC4 = ErrorRegistry.builder().key(Symbol.FOUR).value("Incorrect response type")
+                .build();
 
         /**
          * Indicates an incorrect authorization type.
          */
-        public static final Errors EC5 = ErrorRegistry.builder().key(Symbol.FIVE).value("Incorrect authorization type").build();
+        public static final Errors EC5 = ErrorRegistry.builder().key(Symbol.FIVE).value("Incorrect authorization type")
+                .build();
 
         /**
          * Indicates an incorrect client_secret.
          */
-        public static final Errors EC6 = ErrorRegistry.builder().key(Symbol.SIX).value("Incorrect client_secret").build();
+        public static final Errors EC6 = ErrorRegistry.builder().key(Symbol.SIX).value("Incorrect client_secret")
+                .build();
 
         /**
          * Indicates that the authorize_code has expired.
          */
-        public static final Errors EC7 = ErrorRegistry.builder().key(Symbol.SEVEN).value("Authorize_code expired").build();
+        public static final Errors EC7 = ErrorRegistry.builder().key(Symbol.SEVEN).value("Authorize_code expired")
+                .build();
 
         /**
          * Indicates that the scheme of the specified URL is not HTTPS.
          */
-        public static final Errors EC8 = ErrorRegistry.builder().key(Symbol.EIGHT).value("Specified URL scheme is not HTTPS")
-                .build();
+        public static final Errors EC8 = ErrorRegistry.builder().key(Symbol.EIGHT)
+                .value("Specified URL scheme is not HTTPS").build();
 
         /**
          * Indicates an internal API error. Please contact Toutiao technical support.

@@ -523,7 +523,9 @@ public class UpyunOssProvider extends AbstractProvider {
 
             try (Response response = delete(
                     this.context.getEndpoint() + oldPath,
-                    header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + deleteSignature),
+                    header(
+                            Http.Header.AUTHORIZATION,
+                            "UPYUN " + context.getAccessKey() + Symbol.COLON + deleteSignature),
                     header(Http.Header.DATE, deleteDate))) {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);

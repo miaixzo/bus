@@ -670,7 +670,8 @@ public final class Fraction extends Number implements Comparable<Fraction> {
                 if (properNumerator == 0) {
                     toProperString = Integer.toString(getProperWhole());
                 } else {
-                    toProperString = getProperWhole() + Symbol.SPACE + properNumerator + Symbol.SLASH + getDenominator();
+                    toProperString = getProperWhole() + Symbol.SPACE + properNumerator + Symbol.SLASH
+                            + getDenominator();
                 }
             } else {
                 toProperString = getNumerator() + Symbol.SLASH + getDenominator();

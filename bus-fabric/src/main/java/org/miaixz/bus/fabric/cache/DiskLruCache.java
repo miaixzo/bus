@@ -853,7 +853,8 @@ public class DiskLruCache implements Closeable, Flushable {
     private void validateKey(String key) {
         Matcher matcher = Builder.DISK_LRU_CACHE_LEGAL_KEY_PATTERN.matcher(key);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("keys must match regex [a-z0-9_-]{1,120}: \"" + key + Symbol.DOUBLE_QUOTES);
+            throw new IllegalArgumentException(
+                    "keys must match regex [a-z0-9_-]{1,120}: \"" + key + Symbol.DOUBLE_QUOTES);
         }
     }
 

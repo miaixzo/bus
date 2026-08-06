@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 

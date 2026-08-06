@@ -29,9 +29,9 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -263,7 +263,8 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             mAnt = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, DriveToPartitionProperty.ANTECEDENT, i));
             mDep = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, DriveToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
-                maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace("\\\\", Symbol.BACKSLASH), x -> new ArrayList<>())
+                maps.driveToPartitionMap
+                        .computeIfAbsent(mAnt.group(1).replace("\\\\", Symbol.BACKSLASH), x -> new ArrayList<>())
                         .add(mDep.group(1));
             }
         }
@@ -277,7 +278,8 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                     - WmiKit.getUint64(diskPartitionMap, DiskToPartitionProperty.STARTINGADDRESS, i) + 1L;
             if (mAnt.matches() && mDep.matches()) {
                 if (maps.partitionToLogicalDriveMap.containsKey(mAnt.group(1))) {
-                    maps.partitionToLogicalDriveMap.get(mAnt.group(1)).add(Pair.of(mDep.group(1) + Symbol.BACKSLASH, size));
+                    maps.partitionToLogicalDriveMap.get(mAnt.group(1))
+                            .add(Pair.of(mDep.group(1) + Symbol.BACKSLASH, size));
                 } else {
                     List<Pair<String, Long>> list = new ArrayList<>();
                     list.add(Pair.of(mDep.group(1) + Symbol.BACKSLASH, size));

@@ -71,8 +71,9 @@ public class Format extends java.text.Format {
     /**
      * Characters for a custom base-32 encoding used in MD5 hashing.
      */
-    private static final char[] CHARS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'a', 'b', 'c', 'd', 'e',
-            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v' };
+    private static final char[] CHARS = { Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR,
+            Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE, 'a', 'b', 'c', 'd', 'e', 'f',
+            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', Symbol.C_U, 'v' };
 
     /**
      * Number of bytes in a Java long primitive type.
@@ -97,8 +98,8 @@ public class Format extends java.text.Format {
      */
     private static final DateTimeFormatter TM_PARSER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
             .optionalStart().optionalStart().appendLiteral(Symbol.C_COLON).optionalEnd().appendValue(MINUTE_OF_HOUR, 2)
-            .optionalStart().optionalStart().appendLiteral(Symbol.C_COLON).optionalEnd().appendValue(SECOND_OF_MINUTE, 2)
-            .optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).toFormatter();
+            .optionalStart().optionalStart().appendLiteral(Symbol.C_COLON).optionalEnd()
+            .appendValue(SECOND_OF_MINUTE, 2).optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).toFormatter();
 
     /**
      * Formatter for DICOM Time (TM) strings to "HHMMSS.FFFFFF".
@@ -798,8 +799,8 @@ public class Format extends java.text.Format {
             char[] tzid = { 'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0 };
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
-            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_MINUS) && Character.isDigit(tzid[4]) && Character.isDigit(tzid[5])
-                    && Character.isDigit(tzid[7]) && Character.isDigit(tzid[8])) {
+            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_MINUS) && Character.isDigit(tzid[4])
+                    && Character.isDigit(tzid[5]) && Character.isDigit(tzid[7]) && Character.isDigit(tzid[8])) {
                 return new String(tzid);
             }
         }

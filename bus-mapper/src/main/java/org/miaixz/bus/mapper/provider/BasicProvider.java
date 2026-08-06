@@ -166,7 +166,8 @@ public abstract class BasicProvider {
      * @return INSERT SQL
      */
     protected static String buildInsertAll(TableMeta entity) {
-        return "INSERT INTO " + entity.tableName() + " (" + entity.insertColumnList() + Symbol.PARENTHESE_RIGHT + " VALUES ("
+        return "INSERT INTO " + entity.tableName() + " (" + entity.insertColumnList() + Symbol.PARENTHESE_RIGHT
+                + " VALUES ("
                 + entity.insertColumns().stream().map(ColumnMeta::variables).collect(Collectors.joining(Symbol.COMMA))
                 + Symbol.PARENTHESE_RIGHT;
     }
@@ -209,9 +210,13 @@ public abstract class BasicProvider {
      * @return UPDATE SQL (dynamic SQL)
      */
     protected static String buildUpdateSelective(TableMeta entity) {
-        return "UPDATE " + entity.tableName() + "<set>" + entity.updateColumns().stream().map(
-                col -> "<if test='" + col.notNullTest() + "'>" + col.column() + " = " + col.variables() + Symbol.COMMA + "</if>")
-                .collect(Collectors.joining(Symbol.LF)) + "</set>" + buildWherePrimaryKey(entity, null);
+        return "UPDATE " + entity.tableName() + "<set>"
+                + entity.updateColumns().stream()
+                        .map(
+                                col -> "<if test='" + col.notNullTest() + "'>" + col.column() + " = " + col.variables()
+                                        + Symbol.COMMA + "</if>")
+                        .collect(Collectors.joining(Symbol.LF))
+                + "</set>" + buildWherePrimaryKey(entity, null);
     }
 
     /**

@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.center.date.culture.parts.DayParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents a day in the Tibetan calendar. Only supports Tibetan calendar from the 1st day of the 12th month of 1950

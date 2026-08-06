@@ -161,8 +161,9 @@ public class NumberValidator {
         boolean foundDigit = false;
         // deal with any possible sign up front
         final int start = (chars[0] == Symbol.C_MINUS || chars[0] == Symbol.C_PLUS) ? 1 : 0;
-        if (sz > start + 1 && chars[start] == Symbol.C_ZERO && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is
-                                                                                                // a decimal number
+        if (sz > start + 1 && chars[start] == Symbol.C_ZERO && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0,
+                                                                                                          // skip if is
+            // a decimal number
             if (chars[start + 1] == 'x' || chars[start + 1] == Symbol.C_X) { // leading 0x/0X
                 int i = start + 2;
                 if (i == sz) {

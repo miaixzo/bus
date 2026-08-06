@@ -278,9 +278,11 @@ public class VisibleBuilder {
             return true;
         }
         char previous = condition.charAt(index - 1);
-        return Character.isWhitespace(previous) || previous == Symbol.C_PARENTHESE_LEFT || previous == Symbol.C_BRACKET_LEFT || previous == Symbol.C_BRACE_LEFT
-                || previous == Symbol.C_COMMA || previous == Symbol.C_EQUAL || previous == Symbol.C_LT || previous == Symbol.C_GT || previous == Symbol.C_NOT
-                || previous == Symbol.C_AND || previous == Symbol.C_OR || previous == Symbol.C_PLUS || previous == Symbol.C_MINUS || previous == Symbol.C_STAR
+        return Character.isWhitespace(previous) || previous == Symbol.C_PARENTHESE_LEFT
+                || previous == Symbol.C_BRACKET_LEFT || previous == Symbol.C_BRACE_LEFT || previous == Symbol.C_COMMA
+                || previous == Symbol.C_EQUAL || previous == Symbol.C_LT || previous == Symbol.C_GT
+                || previous == Symbol.C_NOT || previous == Symbol.C_AND || previous == Symbol.C_OR
+                || previous == Symbol.C_PLUS || previous == Symbol.C_MINUS || previous == Symbol.C_STAR
                 || previous == Symbol.C_SLASH;
     }
 

@@ -538,7 +538,10 @@ public class SchemaDiffer {
         }
         for (ColumnMeta column : table.columns()) {
             if (Boolean.TRUE.equals(column.unique())) {
-                addIndex(indexes, IndexMeta.of(table.table() + Symbol.UNDERLINE + column.column() + "_uk", true, column.column()));
+                addIndex(
+                        indexes,
+                        IndexMeta
+                                .of(table.table() + Symbol.UNDERLINE + column.column() + "_uk", true, column.column()));
             }
         }
         indexes.sort((left, right) -> Boolean.compare(right.unique(), left.unique()));

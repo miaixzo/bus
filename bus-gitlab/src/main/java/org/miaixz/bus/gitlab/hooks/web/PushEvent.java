@@ -63,7 +63,8 @@ public class PushEvent extends AbstractPushEvent implements Event {
 
     public void setObjectKind(String objectKind) {
         if (!OBJECT_KIND.equals(objectKind)) {
-            throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
+            throw new RuntimeException(
+                    "Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + Symbol.SINGLE_QUOTE);
         }
     }
 

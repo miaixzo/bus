@@ -34,9 +34,9 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
@@ -99,9 +99,11 @@ public class QqMiniProvider extends AbstractProvider {
     @Override
     public Message<Claims> userInfo(Authorization authorization) {
         // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
-        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Claims.builder().rawJson(JsonKit.toJsonString(authorization)).username(Normal.EMPTY).nickname(Normal.EMPTY).avatar(Normal.EMPTY)
-                        .uuid(authorization.getOpenId()).token(authorization).source(complex.toString()).build())
+        return Message.<Claims>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Claims.builder().rawJson(JsonKit.toJsonString(authorization)).username(Normal.EMPTY)
+                                .nickname(Normal.EMPTY).avatar(Normal.EMPTY).uuid(authorization.getOpenId())
+                                .token(authorization).source(complex.toString()).build())
                 .build();
     }
 

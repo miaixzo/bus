@@ -80,7 +80,8 @@ public class IdentityAC {
      */
     StringBuilder promptTo(StringBuilder sb) {
         return sb.append("  UserIdentity[").append(Builder.LINE_SEPARATOR).append("    serverResponse: byte[")
-                .append(serverResponse.length).append(Symbol.C_BRACKET_RIGHT).append(Builder.LINE_SEPARATOR).append("  ]");
+                .append(serverResponse.length).append(Symbol.C_BRACKET_RIGHT).append(Builder.LINE_SEPARATOR)
+                .append("  ]");
     }
 
 }

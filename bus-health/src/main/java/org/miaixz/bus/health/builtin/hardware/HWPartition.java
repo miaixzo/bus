@@ -233,11 +233,8 @@ public class HWPartition {
         sb.append(getIdentification()).append(":").append(" ");
         sb.append(getName()).append(" ");
         sb.append("(").append(getType()).append(")").append(" ");
-        sb.append(
-                StringKit.isBlank(getLabel()) ? ""
-                        : "[" + getLabel() + "]" + " ");
-        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(",")
-                .append(" ");
+        sb.append(StringKit.isBlank(getLabel()) ? "" : "[" + getLabel() + "]" + " ");
+        sb.append("Maj:Min=").append(getMajor()).append(":").append(getMinor()).append(",").append(" ");
         sb.append("size: ").append(Formats.formatBytesDecimal(getSize()));
         sb.append(getMountPoint().isEmpty() ? "" : " " + "@" + " " + getMountPoint());
         return sb.toString();

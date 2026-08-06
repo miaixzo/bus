@@ -23,7 +23,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 /**
  * Utility class for coordinate system transformations. Mainstream coordinate systems include:
  * <ul>

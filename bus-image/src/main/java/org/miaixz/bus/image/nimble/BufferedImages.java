@@ -365,7 +365,8 @@ public class BufferedImages {
         try {
             return Integer.parseInt(getStringAttribute(node, name));
         } catch (NumberFormatException e) {
-            throw new IIOInvalidTreeException("Bad value for " + node.getNodeName() + " attribute " + name + Symbol.NOT, node);
+            throw new IIOInvalidTreeException("Bad value for " + node.getNodeName() + " attribute " + name + Symbol.NOT,
+                    node);
         }
     }
 

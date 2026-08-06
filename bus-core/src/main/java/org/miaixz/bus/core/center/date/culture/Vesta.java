@@ -19,9 +19,9 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents Zao Ma Tou (the mount of the Kitchen God) in Chinese culture.
@@ -34,7 +34,9 @@ public class Vesta extends Loops {
     /**
      * Array of Chinese numbers for display.
      */
-    public static final String[] NUMBERS = { Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE, Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE, Symbol.L_TEN, Symbol.L_TEN + Symbol.L_ONE, Symbol.L_TEN + Symbol.S_TWO };
+    public static final String[] NUMBERS = { Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE,
+            Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE, Symbol.L_TEN, Symbol.L_TEN + Symbol.L_ONE,
+            Symbol.L_TEN + Symbol.S_TWO };
 
     /**
      * The SixtyCycle (Gan Zhi) of the first day of the first lunar month.

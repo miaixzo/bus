@@ -140,7 +140,8 @@ public abstract class FabricX {
      * @return response snapshot
      */
     public static Response post(final String url, final Map<String, ?> headers, final String data) {
-        final var builder = Fabric.http(CONTEXT).post(url).body(data == null ? Normal.EMPTY : data, media(headers, FORM));
+        final var builder = Fabric.http(CONTEXT).post(url)
+                .body(data == null ? Normal.EMPTY : data, media(headers, FORM));
         apply(builder::header, headers);
         return execute(builder::execute);
     }
@@ -240,7 +241,8 @@ public abstract class FabricX {
      * @return response snapshot
      */
     public static Response put(final String url, final Map<String, ?> headers, final String data) {
-        final var builder = Fabric.http(CONTEXT).put(url).body(data == null ? Normal.EMPTY : data, media(headers, FORM));
+        final var builder = Fabric.http(CONTEXT).put(url)
+                .body(data == null ? Normal.EMPTY : data, media(headers, FORM));
         apply(builder::header, headers);
         return execute(builder::execute);
     }

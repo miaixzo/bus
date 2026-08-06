@@ -24,7 +24,6 @@ import java.util.Map;
 
 import lombok.Getter;
 
-
 /**
  * SQL Audit Record, used to record detailed information about SQL execution
  *

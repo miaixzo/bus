@@ -256,7 +256,8 @@ public enum QueryRetrieveLevel2 {
         String[] ids = keys.getStrings(uniqueKey);
         if (!multiple && ids != null && ids.length > 1)
             throw invalidAttributeValue(uniqueKey, Builder.concat(ids, Symbol.C_BACKSLASH));
-        if (ids == null || ids.length == 0 || ids[0].indexOf(Symbol.C_STAR) >= 0 || ids[0].indexOf(Symbol.C_QUESTION_MARK) >= 0) {
+        if (ids == null || ids.length == 0 || ids[0].indexOf(Symbol.C_STAR) >= 0
+                || ids[0].indexOf(Symbol.C_QUESTION_MARK) >= 0) {
             if (!optional)
                 if (lenient)
                     Logger.info(

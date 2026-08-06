@@ -22,9 +22,9 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.protocol.http.HttpHeaders;

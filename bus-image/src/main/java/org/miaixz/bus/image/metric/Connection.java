@@ -1616,7 +1616,8 @@ public class Connection implements Serializable {
         String response = new HTTPResponse(s).toString();
         s.setSoTimeout(0);
         if (!response.startsWith("HTTP/1.1 2"))
-            throw new IOException("Unable to tunnel through " + s + ". Proxy returns \"" + response + Symbol.C_DOUBLE_QUOTES);
+            throw new IOException(
+                    "Unable to tunnel through " + s + ". Proxy returns \"" + response + Symbol.C_DOUBLE_QUOTES);
     }
 
     /**

@@ -39,8 +39,8 @@ import reactor.core.publisher.Mono;
  * {@link LlmExecutor}. It extracts the model name from the URL path after the shared qualifier has resolved the route
  * asset and authorized the request credential.
  * <p>
- * Client credentials are resolved uniformly by {@code QualifierStrategy}: a standard Bearer token has priority over
- * the supported API-key headers. Provider API keys remain stored in Assets metadata and are used only for calls to the
+ * Client credentials are resolved uniformly by {@code QualifierStrategy}: a standard Bearer token has priority over the
+ * supported API-key headers. Provider API keys remain stored in Assets metadata and are used only for calls to the
  * underlying LLM service.
  *
  * @author Kimi Liu

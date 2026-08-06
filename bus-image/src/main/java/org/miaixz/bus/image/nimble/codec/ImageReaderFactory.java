@@ -419,9 +419,8 @@ public class ImageReaderFactory implements Serializable {
          */
         @Override
         public String toString() {
-            return "ImageReaderParam{" + "formatName='" + formatName + '\'' + ", className='"
-                    + className + '\'' + ", patchJPEGLS=" + patchJPEGLS + ", imageReadParams="
-                    + Arrays.toString(imageReadParams) + '}';
+            return "ImageReaderParam{" + "formatName='" + formatName + '\'' + ", className='" + className + '\''
+                    + ", patchJPEGLS=" + patchJPEGLS + ", imageReadParams=" + Arrays.toString(imageReadParams) + '}';
         }
 
     }

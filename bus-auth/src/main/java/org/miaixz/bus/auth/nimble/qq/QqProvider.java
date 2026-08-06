@@ -32,9 +32,9 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -176,8 +176,8 @@ public class QqProvider extends AbstractProvider {
             throw new AuthorizedException(object.get("msg"));
         }
         return Authorization.builder().token(object.get("access_token"))
-                .expireIn(Integer.parseInt(object.getOrDefault("expires_in", Symbol.ZERO))).refresh(object.get("refresh_token"))
-                .build();
+                .expireIn(Integer.parseInt(object.getOrDefault("expires_in", Symbol.ZERO)))
+                .refresh(object.get("refresh_token")).build();
     }
 
     /**

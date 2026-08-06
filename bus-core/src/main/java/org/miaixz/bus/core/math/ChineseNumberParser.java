@@ -48,9 +48,12 @@ public class ChineseNumberParser {
      * Mapping of Chinese characters to their numeric values and unit properties.
      */
     private static final ChineseUnit[] CHINESE_NAME_VALUE = { new ChineseUnit(Symbol.C_SPACE, 1, false),
-            new ChineseUnit(Symbol.C_L_TEN, 10, false), new ChineseUnit(Symbol.C_U_TEN, 10, false), new ChineseUnit(Symbol.C_L_ONE_HUNDRED, 100, false),
-            new ChineseUnit(Symbol.C_U_ONE_HUNDRED, 100, false), new ChineseUnit(Symbol.C_L_ONE_THOUSAND, 1000, false), new ChineseUnit(Symbol.C_U_ONE_THOUSAND, 1000, false),
-            new ChineseUnit(Symbol.C_L_TEN_THOUSAND, 1_0000, true), new ChineseUnit(Symbol.C_L_ONE_HUNDRED_MILLION, 1_0000_0000, true), };
+            new ChineseUnit(Symbol.C_L_TEN, 10, false), new ChineseUnit(Symbol.C_U_TEN, 10, false),
+            new ChineseUnit(Symbol.C_L_ONE_HUNDRED, 100, false), new ChineseUnit(Symbol.C_U_ONE_HUNDRED, 100, false),
+            new ChineseUnit(Symbol.C_L_ONE_THOUSAND, 1000, false),
+            new ChineseUnit(Symbol.C_U_ONE_THOUSAND, 1000, false),
+            new ChineseUnit(Symbol.C_L_TEN_THOUSAND, 1_0000, true),
+            new ChineseUnit(Symbol.C_L_ONE_HUNDRED_MILLION, 1_0000_0000, true), };
 
     /**
      * Converts a Chinese numeral string to a BigDecimal. For example, "二百二十" becomes 220.

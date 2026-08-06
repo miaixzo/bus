@@ -175,8 +175,8 @@ public class LogicalProvider extends BasicProvider {
                         + ifTest(
                                 "simpleSelectColumns != null and simpleSelectColumns != ''",
                                 () -> "${simpleSelectColumns}")
-                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> Symbol.STAR) + ") FROM "
-                        + entity.tableName()
+                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> Symbol.STAR)
+                        + ") FROM " + entity.tableName()
                         + trim(
                                 "WHERE",
                                 Normal.EMPTY,

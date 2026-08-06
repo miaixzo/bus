@@ -144,11 +144,13 @@ public final class Edid {
      */
     public static String getManufacturerID(byte[] edid) {
         // Bytes 8-9 are manufacturer ID, 3 5-bit characters
-        String temp = String.format(
-                Locale.ROOT,
-                "%8s%8s",
-                Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET] & 0xFF),
-                Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET + 1] & 0xFF)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
+        String temp = String
+                .format(
+                        Locale.ROOT,
+                        "%8s%8s",
+                        Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET] & 0xFF),
+                        Integer.toBinaryString(edid[MANUFACTURER_ID_OFFSET + 1] & 0xFF))
+                .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         Logger.debug(false, "Health", "Manufacurer ID: {}", temp);
         return String.format(
                 Locale.ROOT,

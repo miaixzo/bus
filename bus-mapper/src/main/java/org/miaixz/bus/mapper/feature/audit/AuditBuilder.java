@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 
-import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.logger.Logger;
 
 /**

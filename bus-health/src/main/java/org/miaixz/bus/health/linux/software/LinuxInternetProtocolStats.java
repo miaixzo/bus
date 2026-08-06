@@ -26,9 +26,9 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Builder;
@@ -105,8 +105,10 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
         for (int line = 0; line < lines.size() - 1; line += 2) {
             if (lines.get(line).startsWith(TCP_COLON) && lines.get(line + 1).startsWith(TCP_COLON)) {
-                Map<TcpStat, String> parsedData = Parsing
-                        .stringToEnumMap(TcpStat.class, lines.get(line + 1).substring(TCP_COLON.length()).trim(), Symbol.C_SPACE);
+                Map<TcpStat, String> parsedData = Parsing.stringToEnumMap(
+                        TcpStat.class,
+                        lines.get(line + 1).substring(TCP_COLON.length()).trim(),
+                        Symbol.C_SPACE);
                 for (Map.Entry<TcpStat, String> entry : parsedData.entrySet()) {
                     tcpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
                 }
@@ -134,8 +136,10 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
         for (int line = 0; line < lines.size() - 1; line += 2) {
             if (lines.get(line).startsWith(UDP_COLON) && lines.get(line + 1).startsWith(UDP_COLON)) {
-                Map<UdpStat, String> parsedData = Parsing
-                        .stringToEnumMap(UdpStat.class, lines.get(line + 1).substring(UDP_COLON.length()).trim(), Symbol.C_SPACE);
+                Map<UdpStat, String> parsedData = Parsing.stringToEnumMap(
+                        UdpStat.class,
+                        lines.get(line + 1).substring(UDP_COLON.length()).trim(),
+                        Symbol.C_SPACE);
                 for (Map.Entry<UdpStat, String> entry : parsedData.entrySet()) {
                     udpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
                 }
@@ -224,7 +228,8 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      */
     private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
         List<IPConnection> conns = new ArrayList<>();
-        for (String s : Builder.readFile(ProcPath.NET + Symbol.SLASH + protocol + (ipver == 6 ? Symbol.SIX : Normal.EMPTY))) {
+        for (String s : Builder
+                .readFile(ProcPath.NET + Symbol.SLASH + protocol + (ipver == 6 ? Symbol.SIX : Normal.EMPTY))) {
             if (s.indexOf(Symbol.C_COLON) >= 0) {
                 String[] split = Pattern.SPACES_PATTERN.split(s.trim());
                 if (split.length > 9) {

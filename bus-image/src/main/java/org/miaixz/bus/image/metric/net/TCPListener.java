@@ -85,7 +85,8 @@ public class TCPListener implements Listener {
                     conn.isTls(),
                     conn.getBacklog(),
                     e.getClass().getSimpleName());
-            throw new IOException("Unable to start TCPListener on " + conn.getHostname() + Symbol.COLON + conn.getPort(), e);
+            throw new IOException(
+                    "Unable to start TCPListener on " + conn.getHostname() + Symbol.COLON + conn.getPort(), e);
         }
     }
 

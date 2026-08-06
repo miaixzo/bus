@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.date.culture.festival.AbstractFestival;
 import org.miaixz.bus.core.center.date.culture.festival.Festival;
 import org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents modern Gregorian festivals.

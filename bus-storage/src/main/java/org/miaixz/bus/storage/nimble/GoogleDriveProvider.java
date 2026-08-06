@@ -846,8 +846,10 @@ public class GoogleDriveProvider extends AbstractProvider {
      * @throws IOException If the search fails.
      */
     private String findFileByName(String fileName, String parentId) throws IOException {
-        String query = String
-                .format("name='%s' and '%s' in parents and trashed=false", fileName.replace(Symbol.SINGLE_QUOTE, "\\'"), parentId);
+        String query = String.format(
+                "name='%s' and '%s' in parents and trashed=false",
+                fileName.replace(Symbol.SINGLE_QUOTE, "\\'"),
+                parentId);
 
         String url = context.getEndpoint() + "/files?q=" + URLEncoder.encode(query, Charset.UTF_8)
                 + "&fields=files(id,name)";

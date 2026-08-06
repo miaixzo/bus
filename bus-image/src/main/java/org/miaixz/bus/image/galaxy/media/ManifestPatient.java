@@ -31,8 +31,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 
 /**

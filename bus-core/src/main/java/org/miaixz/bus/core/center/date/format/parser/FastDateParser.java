@@ -1183,7 +1183,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 final char c = pattern.charAt(currentIdx);
                 if (!activeQuote && isFormatLetter(c)) {
                     break;
-                } else if (c == Symbol.C_SINGLE_QUOTE && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != Symbol.C_SINGLE_QUOTE)) {
+                } else if (c == Symbol.C_SINGLE_QUOTE
+                        && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != Symbol.C_SINGLE_QUOTE)) {
                     activeQuote = !activeQuote;
                     continue;
                 }

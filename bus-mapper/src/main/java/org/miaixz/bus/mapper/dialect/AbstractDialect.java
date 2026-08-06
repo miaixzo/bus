@@ -787,7 +787,8 @@ public abstract class AbstractDialect implements Dialect {
         return switch (modifyMode) {
             case ALTER_COLUMN -> "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + columnDefinition(column);
             case MODIFY -> "ALTER TABLE " + tableName(table) + " MODIFY " + columnDefinition(column);
-            case MODIFY_PARENTHESES -> "ALTER TABLE " + tableName(table) + " MODIFY (" + columnDefinition(column) + Symbol.PARENTHESE_RIGHT;
+            case MODIFY_PARENTHESES -> "ALTER TABLE " + tableName(table) + " MODIFY (" + columnDefinition(column)
+                    + Symbol.PARENTHESE_RIGHT;
             case ALTER_COLUMN_TYPE -> "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + identifier(column.column())
                     + " TYPE " + resolveType(column).definition();
             case SET_DATA_TYPE -> "ALTER TABLE " + tableName(table) + " ALTER COLUMN " + identifier(column.column())

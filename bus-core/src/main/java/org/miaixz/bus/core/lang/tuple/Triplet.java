@@ -22,7 +22,6 @@ package org.miaixz.bus.core.lang.tuple;
 import java.io.Serial;
 import java.util.Objects;
 
-
 /**
  * An immutable triplet consisting of three elements.
  * <p>

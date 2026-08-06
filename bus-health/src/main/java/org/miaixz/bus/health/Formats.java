@@ -297,7 +297,8 @@ public final class Formats {
         sb.append(", Product ID=").append(Edid.getProductID(edid));
         sb.append(Symbol.COMMA).append(Symbol.SPACE).append(Edid.isDigital(edid) ? "Digital" : "Analog");
         sb.append(", Serial=").append(Edid.getSerialNo(edid));
-        sb.append(", ManufDate=").append(Edid.getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH).append(Edid.getYear(edid));
+        sb.append(", ManufDate=").append(Edid.getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH)
+                .append(Edid.getYear(edid));
         sb.append(", EDID v").append(Edid.getVersion(edid));
         int hSize = Edid.getHcm(edid);
         int vSize = Edid.getVcm(edid);

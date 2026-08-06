@@ -134,7 +134,8 @@ public class TomlReader {
                     final char nameFirstChar = nextUseful(false);
                     switch (nameFirstChar) {
                         case Symbol.C_DOUBLE_QUOTES:
-                            if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_DOUBLE_QUOTES && data.charAt(pos + 1) == Symbol.C_DOUBLE_QUOTES) {
+                            if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_DOUBLE_QUOTES
+                                    && data.charAt(pos + 1) == Symbol.C_DOUBLE_QUOTES) {
                                 pos += 2;
                                 name = nextBasicMultilineString();
                             } else {
@@ -143,7 +144,8 @@ public class TomlReader {
                             break;
 
                         case Symbol.C_SINGLE_QUOTE:
-                            if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_SINGLE_QUOTE && data.charAt(pos + 1) == Symbol.C_SINGLE_QUOTE) {
+                            if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_SINGLE_QUOTE
+                                    && data.charAt(pos + 1) == Symbol.C_SINGLE_QUOTE) {
                                 pos += 2;
                                 name = nextLiteralMultilineString();
                             } else {
@@ -272,7 +274,8 @@ public class TomlReader {
 
     private Object nextValue(final char firstChar) {
         return switch (firstChar) {
-            case Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE -> nextNumberOrDate(firstChar);
+            case Symbol.C_PLUS, Symbol.C_MINUS, Symbol.C_ZERO, Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE -> nextNumberOrDate(
+                    firstChar);
             case Symbol.C_DOUBLE_QUOTES -> {
                 if (pos + 1 < data.length()) {
                     final char c2 = data.charAt(pos);
@@ -395,7 +398,8 @@ public class TomlReader {
             String name;
             switch (nameFirstChar) {
                 case Symbol.C_DOUBLE_QUOTES:
-                    if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_DOUBLE_QUOTES && data.charAt(pos + 1) == Symbol.C_DOUBLE_QUOTES) {
+                    if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_DOUBLE_QUOTES
+                            && data.charAt(pos + 1) == Symbol.C_DOUBLE_QUOTES) {
                         pos += 2;
                         name = nextBasicMultilineString();
                     } else {
@@ -404,7 +408,8 @@ public class TomlReader {
                     break;
 
                 case Symbol.C_SINGLE_QUOTE:
-                    if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_SINGLE_QUOTE && data.charAt(pos + 1) == Symbol.C_SINGLE_QUOTE) {
+                    if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_SINGLE_QUOTE
+                            && data.charAt(pos + 1) == Symbol.C_SINGLE_QUOTE) {
                         pos += 2;
                         name = nextLiteralMultilineString();
                     } else {
@@ -517,8 +522,8 @@ public class TomlReader {
                     throw new InternalException(
                             "Forbidden character '" + toString(c) + "' in strict bare key at line " + line);
                 }
-            } else if (c <= Symbol.C_SPACE || c == Symbol.C_HASH || c == Symbol.C_EQUAL || c == Symbol.C_DOT || c == Symbol.C_BRACKET_LEFT
-                    || c == Symbol.C_BRACKET_RIGHT) {
+            } else if (c <= Symbol.C_SPACE || c == Symbol.C_HASH || c == Symbol.C_EQUAL || c == Symbol.C_DOT
+                    || c == Symbol.C_BRACKET_LEFT || c == Symbol.C_BRACKET_RIGHT) {
                 throw new InternalException(
                         "Forbidden character '" + toString(c) + "' in lenient bare key at line " + line);
             }
@@ -544,7 +549,9 @@ public class TomlReader {
             throw new InternalException("Invalid multiline literal String at line " + line + ": it never ends");
         }
         final String text;
-        if (data.charAt(pos) == Symbol.C_CR && pos + 1 < data.length() && data.charAt(pos + 1) == Symbol.C_LF) { // Starts with "\r\n"
+        if (data.charAt(pos) == Symbol.C_CR && pos + 1 < data.length() && data.charAt(pos + 1) == Symbol.C_LF) { // Starts
+                                                                                                                 // with
+                                                                                                                 // "\r\n"
             text = data.substring(pos + 2, index);
             line++;
         } else if (data.charAt(pos) == Symbol.C_LF) { // Starts with '\n'
@@ -611,7 +618,8 @@ public class TomlReader {
             } else if (c == Symbol.C_BACKSLASH) {
                 escape = true;
             } else if (c == Symbol.C_DOUBLE_QUOTES) {
-                if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_DOUBLE_QUOTES && data.charAt(pos + 1) == Symbol.C_DOUBLE_QUOTES) {
+                if (pos + 1 < data.length() && data.charAt(pos) == Symbol.C_DOUBLE_QUOTES
+                        && data.charAt(pos + 1) == Symbol.C_DOUBLE_QUOTES) {
                     pos += 2;
                     return sb.toString();
                 }

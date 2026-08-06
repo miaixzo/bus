@@ -38,8 +38,8 @@ import com.sun.jna.Pointer;
 
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -307,7 +307,8 @@ public final class Who {
             if (Objects.nonNull(sessionFiles)) {
                 for (File sessionFile : sessionFiles) {
                     try {
-                        Map<String, String> sessionMap = Builder.getKeyValueMapFromFile(sessionFile.getPath(), Symbol.EQUAL);
+                        Map<String, String> sessionMap = Builder
+                                .getKeyValueMapFromFile(sessionFile.getPath(), Symbol.EQUAL);
 
                         String user = sessionMap.get("USER");
                         if (Objects.nonNull(user) && !user.isEmpty()) {

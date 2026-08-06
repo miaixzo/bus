@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.network.dns.cache.DnsResponseCache;
 import org.miaixz.bus.fabric.network.dns.forward.DnsForwarder;

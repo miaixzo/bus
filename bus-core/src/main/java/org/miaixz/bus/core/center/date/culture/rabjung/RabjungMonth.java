@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents a month in the Tibetan calendar. Only supports Tibetan calendar from December 1950 to December 2050.

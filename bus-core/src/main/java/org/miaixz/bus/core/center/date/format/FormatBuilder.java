@@ -522,8 +522,8 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
      */
     @Override
     public String toString() {
-        return "FastFormat[" + printer.getPattern() + "," + printer.getLocale() + ","
-                + printer.getTimeZone().getID() + "]";
+        return "FastFormat[" + printer.getPattern() + "," + printer.getLocale() + "," + printer.getTimeZone().getID()
+                + "]";
     }
 
 }

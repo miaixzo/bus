@@ -600,10 +600,12 @@ public class MathKit extends NumberValidator {
             return Long.toBinaryString(number.longValue());
         } else if (number instanceof Byte) {
             // Byte uses 8 bits and is left-padded with zeros.
-            return String.format("%8s", Integer.toBinaryString(number.byteValue() & 0xFF)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
+            return String.format("%8s", Integer.toBinaryString(number.byteValue() & 0xFF))
+                    .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         } else if (number instanceof Short) {
             // Short uses 16 bits and is left-padded with zeros.
-            return String.format("%16s", Integer.toBinaryString(number.shortValue() & 0xFFFF)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
+            return String.format("%16s", Integer.toBinaryString(number.shortValue() & 0xFFFF))
+                    .replace(Symbol.C_SPACE, Symbol.C_ZERO);
         } else if (number instanceof Float) {
             // Float is converted to its IEEE 754 32-bit binary form.
             final int floatBits = Float.floatToIntBits(number.floatValue());

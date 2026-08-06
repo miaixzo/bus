@@ -236,7 +236,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             final URI uri) {
         appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
                 .append(Thread.currentThread().getName()).append(Symbol.C_LF);
-        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(Symbol.C_SPACE).append(uri.toASCIIString()).append(Symbol.C_LF);
+        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(Symbol.C_SPACE).append(uri.toASCIIString())
+                .append(Symbol.C_LF);
     }
 
     /**

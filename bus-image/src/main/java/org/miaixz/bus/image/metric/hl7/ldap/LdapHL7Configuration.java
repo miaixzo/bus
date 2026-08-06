@@ -425,7 +425,8 @@ public class LdapHL7Configuration extends LdapDicomConfigurationExtension implem
         if (value == null)
             return;
 
-        sb.append(Symbol.C_PARENTHESE_LEFT).append(attrid).append(Symbol.C_EQUAL).append(value).append(Symbol.C_PARENTHESE_RIGHT);
+        sb.append(Symbol.C_PARENTHESE_LEFT).append(attrid).append(Symbol.C_EQUAL).append(value)
+                .append(Symbol.C_PARENTHESE_RIGHT);
     }
 
     /**

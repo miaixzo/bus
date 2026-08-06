@@ -159,11 +159,13 @@ public class XimalayaProvider extends AbstractProvider {
      */
     @Override
     public Message<String> build(String state) {
-        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey()).data(
-                Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
-                        .queryParam("client_id", context.getClientId())
-                        .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
-                        .queryParam("client_os_type", Symbol.THREE).queryParam("device_id", context.getDeviceId()).build())
+        return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
+                .data(
+                        Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                                .queryParam("client_id", context.getClientId())
+                                .queryParam("redirect_uri", context.getRedirectUri())
+                                .queryParam("state", getRealState(state)).queryParam("client_os_type", Symbol.THREE)
+                                .queryParam("device_id", context.getDeviceId()).build())
                 .build();
     }
 

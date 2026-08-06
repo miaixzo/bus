@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
-
 /**
  * Represents information about a DICOM Fileset, including its UID, ID, descriptor file, and character set. This class
  * provides a structured way to store and access metadata related to a DICOM fileset.

@@ -54,8 +54,21 @@ public class PatternKit extends RegexValidator {
     /**
      * Keywords in regular expressions that need to be escaped.
      */
-    public static final Set<Character> RE_KEYS = SetKit
-            .of(Symbol.C_DOLLAR, Symbol.C_PARENTHESE_LEFT, Symbol.C_PARENTHESE_RIGHT, Symbol.C_STAR, Symbol.C_PLUS, Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT, Symbol.C_QUESTION_MARK, Symbol.C_BACKSLASH, Symbol.C_CARET, Symbol.C_BRACE_LEFT, Symbol.C_BRACE_RIGHT, Symbol.C_OR);
+    public static final Set<Character> RE_KEYS = SetKit.of(
+            Symbol.C_DOLLAR,
+            Symbol.C_PARENTHESE_LEFT,
+            Symbol.C_PARENTHESE_RIGHT,
+            Symbol.C_STAR,
+            Symbol.C_PLUS,
+            Symbol.C_DOT,
+            Symbol.C_BRACKET_LEFT,
+            Symbol.C_BRACKET_RIGHT,
+            Symbol.C_QUESTION_MARK,
+            Symbol.C_BACKSLASH,
+            Symbol.C_CARET,
+            Symbol.C_BRACE_LEFT,
+            Symbol.C_BRACE_RIGHT,
+            Symbol.C_OR);
 
     /**
      * Gets the matched string for group 0.

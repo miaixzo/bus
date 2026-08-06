@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 import org.miaixz.bus.fabric.network.dns.message.DnsDecodedResponse;
 import org.miaixz.bus.fabric.network.dns.message.DnsQuery;

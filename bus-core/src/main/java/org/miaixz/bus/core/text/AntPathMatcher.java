@@ -576,7 +576,8 @@ public class AntPathMatcher {
         final Map<String, String> variables = new LinkedHashMap<>();
         final boolean result = doMatch(pattern, path, true, variables);
         if (!result) {
-            throw new IllegalStateException("Pattern \"" + pattern + "\" is not a match for \"" + path + Symbol.DOUBLE_QUOTES);
+            throw new IllegalStateException(
+                    "Pattern \"" + pattern + "\" is not a match for \"" + path + Symbol.DOUBLE_QUOTES);
         }
         return variables;
     }

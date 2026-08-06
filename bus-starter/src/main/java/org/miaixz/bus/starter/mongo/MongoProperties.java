@@ -270,7 +270,8 @@ public class MongoProperties {
      */
     public record Connection(@DefaultValue("100") int maxSize, @DefaultValue(Symbol.ZERO) int minSize,
             @DefaultValue("2m") Duration maxWaitTime, @DefaultValue(Symbol.ZERO) Duration maxConnectionLifeTime,
-            @DefaultValue(Symbol.ZERO) Duration maxConnectionIdleTime, @DefaultValue(Symbol.ZERO) Duration maintenanceInitialDelay,
+            @DefaultValue(Symbol.ZERO) Duration maxConnectionIdleTime,
+            @DefaultValue(Symbol.ZERO) Duration maintenanceInitialDelay,
             @DefaultValue("1m") Duration maintenanceFrequency) {
 
         /**

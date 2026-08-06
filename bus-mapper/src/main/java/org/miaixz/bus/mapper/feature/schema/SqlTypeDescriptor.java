@@ -28,8 +28,8 @@ import lombok.experimental.Accessors;
 
 import org.apache.ibatis.type.JdbcType;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * SQL column type descriptor.

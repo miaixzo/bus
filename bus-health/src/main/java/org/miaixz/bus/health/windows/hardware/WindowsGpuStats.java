@@ -26,9 +26,9 @@ import java.util.Map;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.health.builtin.gpu.AdlKit;
 import org.miaixz.bus.health.builtin.gpu.NvmlKit;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;

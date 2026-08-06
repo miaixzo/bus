@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.core.codec;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 

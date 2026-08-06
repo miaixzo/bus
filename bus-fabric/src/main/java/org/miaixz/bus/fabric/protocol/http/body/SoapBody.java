@@ -124,8 +124,9 @@ public final class SoapBody implements RequestBody {
     public String xml() {
         final StringBuilder builder = new StringBuilder(256);
         builder.append("<?xml version=\"1.0\" encoding=\"").append(charset.name()).append("\"?>");
-        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:").append(SOAP_BODY_SOAP_PREFIX)
-                .append("=\"").append(SOAP_BODY_SOAP_NAMESPACE).append(Symbol.C_DOUBLE_QUOTES);
+        builder.append(Symbol.C_LT).append(SOAP_BODY_SOAP_PREFIX).append(":Envelope xmlns:")
+                .append(SOAP_BODY_SOAP_PREFIX).append("=\"").append(SOAP_BODY_SOAP_NAMESPACE)
+                .append(Symbol.C_DOUBLE_QUOTES);
         if (!namespace.isBlank()) {
             builder.append(" xmlns:").append(SOAP_METHOD_PREFIX).append("=\"").append(escapeAttribute(namespace))
                     .append(Symbol.C_DOUBLE_QUOTES);

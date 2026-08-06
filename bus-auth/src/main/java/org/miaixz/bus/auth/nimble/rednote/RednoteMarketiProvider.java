@@ -32,8 +32,8 @@ import org.miaixz.bus.auth.magic.ErrorCode;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
@@ -76,7 +76,9 @@ public class RednoteMarketiProvider extends AbstractProvider {
         return Message.<String>builder().errcode(ErrorCode._SUCCESS.getKey())
                 .data(
                         Builder.fromUrl(this.complex.authorize()).queryParam("appId", this.context.getClientId())
-                                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(RednoteMarketiScope.values())))
+                                .queryParam(
+                                        "scope",
+                                        this.getScopes(Symbol.SPACE, true, getScopes(RednoteMarketiScope.values())))
                                 .queryParam("redirectUri", this.context.getRedirectUri())
                                 .queryParam("state", getRealState(state)).build())
                 .build();

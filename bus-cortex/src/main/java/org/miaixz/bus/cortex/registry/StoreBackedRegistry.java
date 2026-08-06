@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
@@ -548,8 +548,8 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "registry:" + event.getType() + Symbol.COLON + event.getNamespace_id() + Symbol.COLON + event.getId() + Symbol.COLON
-                        + record.getAction() + Symbol.COLON + registryOutboxResource(event));
+                "registry:" + event.getType() + Symbol.COLON + event.getNamespace_id() + Symbol.COLON + event.getId()
+                        + Symbol.COLON + record.getAction() + Symbol.COLON + registryOutboxResource(event));
         changeLogStore.append(record);
     }
 

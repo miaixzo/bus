@@ -74,8 +74,9 @@ public class VIN {
     /**
      * The characters used to represent the year.
      */
-    private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', Symbol.C_L, 'M', 'N', 'P', 'R',
-            'S', 'T', 'V', 'W', Symbol.C_X, 'Y', Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR, Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE };
+    private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', Symbol.C_L, 'M', 'N', 'P',
+            'R', 'S', 'T', 'V', 'W', Symbol.C_X, 'Y', Symbol.C_ONE, Symbol.C_TWO, Symbol.C_THREE, Symbol.C_FOUR,
+            Symbol.C_FIVE, Symbol.C_SIX, Symbol.C_SEVEN, Symbol.C_EIGHT, Symbol.C_NINE };
 
     /**
      * A map from year characters to their corresponding index.

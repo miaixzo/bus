@@ -666,7 +666,8 @@ public class VortexBridge
         record.setPayload(JsonKit.toJsonString(event));
         record.setSequence(event.getSequence());
         record.setIdempotencyKey(
-                "vortex:" + event.getNamespace_id() + Symbol.COLON + record.getAction() + Symbol.COLON + record.getResourceId());
+                "vortex:" + event.getNamespace_id() + Symbol.COLON + record.getAction() + Symbol.COLON
+                        + record.getResourceId());
         return record;
     }
 

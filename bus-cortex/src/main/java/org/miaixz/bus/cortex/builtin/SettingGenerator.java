@@ -112,8 +112,8 @@ public class SettingGenerator implements Keying<SettingSpec> {
      * @return item identifier
      */
     private String itemId(SettingSpec spec) {
-        return CortexIdentity.namespace(spec.namespace()) + Symbol.COLON + StringKit.emptyIfNull(spec.groupPart()) + Symbol.COLON
-                + StringKit.emptyIfNull(spec.dataIdPart());
+        return CortexIdentity.namespace(spec.namespace()) + Symbol.COLON + StringKit.emptyIfNull(spec.groupPart())
+                + Symbol.COLON + StringKit.emptyIfNull(spec.dataIdPart());
     }
 
     /**

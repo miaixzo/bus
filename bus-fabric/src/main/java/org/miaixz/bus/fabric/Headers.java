@@ -435,7 +435,8 @@ public final class Headers {
      * @return true for RFC tchar
      */
     private static boolean isTokenCharacter(final char value) {
-        if ((value >= Symbol.C_ZERO && value <= Symbol.C_NINE) || (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z')) {
+        if ((value >= Symbol.C_ZERO && value <= Symbol.C_NINE) || (value >= 'A' && value <= 'Z')
+                || (value >= 'a' && value <= 'z')) {
             return true;
         }
         return switch (value) {

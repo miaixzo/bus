@@ -26,9 +26,9 @@ import java.io.OutputStreamWriter;
 
 import com.google.zxing.common.BitMatrix;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.image.ImageKit;

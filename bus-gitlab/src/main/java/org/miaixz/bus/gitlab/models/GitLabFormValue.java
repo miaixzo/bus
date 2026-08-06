@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-
 /**
  * The Git lab form value class.
  *

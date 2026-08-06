@@ -395,8 +395,8 @@ public final class MacInstalledApps {
      * @return the unescape result
      */
     static String unescape(String s) {
-        return s.replace("&amp;", Symbol.AND).replace("&lt;", Symbol.LT).replace("&gt;", Symbol.GT).replace("&quot;", Symbol.DOUBLE_QUOTES)
-                .replace("&apos;", Symbol.SINGLE_QUOTE);
+        return s.replace("&amp;", Symbol.AND).replace("&lt;", Symbol.LT).replace("&gt;", Symbol.GT)
+                .replace("&quot;", Symbol.DOUBLE_QUOTES).replace("&apos;", Symbol.SINGLE_QUOTE);
     }
 
     /**

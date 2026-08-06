@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Constants used in Perfmon driver classes

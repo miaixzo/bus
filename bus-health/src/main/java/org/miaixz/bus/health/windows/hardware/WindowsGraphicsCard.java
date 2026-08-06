@@ -25,10 +25,10 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;
@@ -245,8 +245,9 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 // HardwareInformation.MemorySize (32-bit) is intentionally omitted: Windows caps
                 // it at 0x7FFFF000 (~2 GiB) for GPUs with more VRAM, making it unreliable.
 
-                String lhmParent = lhmParentMap
-                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name), Normal.EMPTY);
+                String lhmParent = lhmParentMap.getOrDefault(
+                        WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name),
+                        Normal.EMPTY);
 
                 GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
                         StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
@@ -361,8 +362,9 @@ public final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 } else {
                     vram = WmiKit.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
                 }
-                String lhmParent = lhmParentMap
-                        .getOrDefault(WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name), Normal.EMPTY);
+                String lhmParent = lhmParentMap.getOrDefault(
+                        WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name),
+                        Normal.EMPTY);
                 GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
                         StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram, luidPrefix, lhmParent,
                         pciBusNumber, pciBusId);

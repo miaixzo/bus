@@ -105,7 +105,8 @@ public class Code implements Serializable {
      */
     public Code(String s) {
         int len = s.length();
-        if (len < 9 || s.charAt(0) != Symbol.C_PARENTHESE_LEFT || s.charAt(len - 2) != Symbol.C_DOUBLE_QUOTES || s.charAt(len - 1) != Symbol.C_PARENTHESE_RIGHT)
+        if (len < 9 || s.charAt(0) != Symbol.C_PARENTHESE_LEFT || s.charAt(len - 2) != Symbol.C_DOUBLE_QUOTES
+                || s.charAt(len - 1) != Symbol.C_PARENTHESE_RIGHT)
             throw new IllegalArgumentException(s);
 
         int endVal = s.indexOf(Symbol.C_COMMA);
@@ -292,11 +293,9 @@ public class Code implements Serializable {
         if (codingSchemeDesignator != null) {
             sb.append(codingSchemeDesignator);
             if (codingSchemeVersion != null)
-                sb.append(" ").append('[').append(codingSchemeVersion)
-                        .append(']');
+                sb.append(" ").append('[').append(codingSchemeVersion).append(']');
         }
-        sb.append(",").append(" ").append('"').append(codeMeaning)
-                .append('"').append(')');
+        sb.append(",").append(" ").append('"').append(codeMeaning).append('"').append(')');
         return sb.toString();
     }
 

@@ -37,7 +37,8 @@ public class NineStar extends Samsara {
     /**
      * Array of names for the Nine Stars.
      */
-    public static final String[] NAMES = { Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE, Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
+    public static final String[] NAMES = { Symbol.L_ONE, Symbol.S_TWO, Symbol.S_THREE, Symbol.S_FOUR, Symbol.S_FIVE,
+            Symbol.L_SIX, Symbol.L_SEVEN, Symbol.L_EIGHT, Symbol.L_NINE };
 
     /**
      * Constructs a {@code NineStar} instance with the specified index.

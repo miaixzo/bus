@@ -24,8 +24,8 @@ import java.util.Objects;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
 
 /**
@@ -77,8 +77,8 @@ public final class Win32LogicalDisk {
             where = true;
         }
         if (nameToMatch != null) {
-            wmiClassName.append(where ? " AND" : " WHERE").append(" Name=\"").append(nameToMatch.replace(Symbol.DOUBLE_QUOTES, "\\\""))
-                    .append(Symbol.C_DOUBLE_QUOTES);
+            wmiClassName.append(where ? " AND" : " WHERE").append(" Name=\"")
+                    .append(nameToMatch.replace(Symbol.DOUBLE_QUOTES, "\\\"")).append(Symbol.C_DOUBLE_QUOTES);
         }
         return wmiClassName.toString();
     }

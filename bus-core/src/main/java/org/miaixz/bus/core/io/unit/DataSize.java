@@ -286,8 +286,8 @@ public final class DataSize implements Comparable<DataSize> {
             return Symbol.ZERO;
         }
         final int digitGroups = Math.min(unitNames.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
-        return new DecimalFormat("#,##0." + StringKit.repeat(Symbol.C_HASH, scale)).format(size / Math.pow(1024, digitGroups))
-                + delimiter + unitNames[digitGroups];
+        return new DecimalFormat("#,##0." + StringKit.repeat(Symbol.C_HASH, scale))
+                .format(size / Math.pow(1024, digitGroups)) + delimiter + unitNames[digitGroups];
     }
 
     /**

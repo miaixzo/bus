@@ -537,7 +537,8 @@ public class SettingPublisher {
         record.setNamespace_id(item.getNamespace_id());
         record.setPayload(JsonKit.toJsonString(revision == null ? item : revision));
         record.setSequence(ItemRevisionNumbers.sortKey(item.getRevision()));
-        record.setIdempotencyKey("setting:" + action + Symbol.COLON + record.getResourceId() + Symbol.COLON + item.getRevision());
+        record.setIdempotencyKey(
+                "setting:" + action + Symbol.COLON + record.getResourceId() + Symbol.COLON + item.getRevision());
         changeLogStore.append(record);
     }
 

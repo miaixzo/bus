@@ -448,8 +448,8 @@ public class SharePointProvider extends AbstractProvider {
                             }
 
                             files.add(
-                                    Blob.builder().name((String) item.get("name"))
-                                            .size(item.containsKey("size") ? String.valueOf(item.get("size")) : Symbol.ZERO)
+                                    Blob.builder().name((String) item.get("name")).size(
+                                            item.containsKey("size") ? String.valueOf(item.get("size")) : Symbol.ZERO)
                                             .extend(extend).build());
                         }
                     }

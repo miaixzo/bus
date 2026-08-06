@@ -23,8 +23,8 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Caching;
 
 /**

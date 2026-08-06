@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
@@ -181,8 +181,8 @@ public class ConditionProvider extends BasicProvider {
                         + ifTest(
                                 "simpleSelectColumns != null and simpleSelectColumns != ''",
                                 () -> "${simpleSelectColumns}")
-                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> Symbol.STAR) + ") FROM "
-                        + entity.tableName() + ifParameterNotNull(() -> CONDITION_ROOT_WHERE)
+                        + ifTest("simpleSelectColumns == null or simpleSelectColumns == ''", () -> Symbol.STAR)
+                        + ") FROM " + entity.tableName() + ifParameterNotNull(() -> CONDITION_ROOT_WHERE)
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
         });

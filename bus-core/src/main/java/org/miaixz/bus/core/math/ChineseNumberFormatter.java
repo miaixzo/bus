@@ -53,7 +53,9 @@ public class ChineseNumberFormatter {
      * Chinese numeral characters. Odd indices are simplified, even indices are traditional (for accounting). '零' (zero)
      * is shared.
      */
-    static final char[] DIGITS = { Symbol.C_UL_ZERO, Symbol.C_L_ONE, Symbol.C_U_ONE, Symbol.C_L_TWO, Symbol.C_U_TWO, Symbol.C_L_THREE, Symbol.C_U_THREE, Symbol.C_L_FOUR, Symbol.C_U_FOUR, Symbol.C_L_FIVE, Symbol.C_U_FIVE, Symbol.C_L_SIX, Symbol.C_U_SIX, Symbol.C_L_SEVEN, Symbol.C_U_SEVEN, Symbol.C_L_EIGHT, Symbol.C_U_EIGHT,
+    static final char[] DIGITS = { Symbol.C_UL_ZERO, Symbol.C_L_ONE, Symbol.C_U_ONE, Symbol.C_L_TWO, Symbol.C_U_TWO,
+            Symbol.C_L_THREE, Symbol.C_U_THREE, Symbol.C_L_FOUR, Symbol.C_U_FOUR, Symbol.C_L_FIVE, Symbol.C_U_FIVE,
+            Symbol.C_L_SIX, Symbol.C_U_SIX, Symbol.C_L_SEVEN, Symbol.C_U_SEVEN, Symbol.C_L_EIGHT, Symbol.C_U_EIGHT,
             Symbol.C_L_NINE, Symbol.C_U_NINE };
 
     /**

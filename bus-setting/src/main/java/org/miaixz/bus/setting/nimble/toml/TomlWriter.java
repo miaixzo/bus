@@ -127,8 +127,8 @@ public class TomlWriter {
     }
 
     private static boolean isValidCharOfKey(final char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) || c == Symbol.C_MINUS
-                || c == Symbol.C_UNDERLINE;
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
+                || c == Symbol.C_MINUS || c == Symbol.C_UNDERLINE;
     }
 
     static void addEscaped(final char c, final StringBuilder sb) {
