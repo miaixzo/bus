@@ -27,8 +27,8 @@ import java.util.List;
 import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.xslf.usermodel.*;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
 /**

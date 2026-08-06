@@ -27,8 +27,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 
 /**
