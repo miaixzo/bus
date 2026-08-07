@@ -101,7 +101,7 @@ public class MapperOptions {
      * Externalized properties for MyBatis configuration and mapper handlers.
      * <p>
      * The value supports both existing flattened keys and indexed namespace keys such as {@code namespaces[0].name},
-     * {@code namespaces[0].tenant.column}, {@code namespaces[0].table.prefix}, and
+     * {@code namespaces[0].tenant.column}, {@code namespaces[0].prefix.prefix}, and
      * {@code namespaces[0].schema.enabled}.
      */
     private Properties configurationProperties;

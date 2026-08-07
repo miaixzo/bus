@@ -65,9 +65,9 @@ public class Args {
     public static final String IDENTIFIER_KEY = "identifier";
 
     /**
-     * Configuration key for table-related settings (prefix, ignore).
+     * Table prefix configuration scope.
      */
-    public static final String TABLE_KEY = "table";
+    public static final String PREFIX_KEY = "prefix";
 
     /**
      * Configuration key for tenant (multi-tenancy) settings.

@@ -41,14 +41,14 @@ import org.miaixz.bus.mapper.Charter.Isolation;
  *
  * <pre>
  * com_deepparser:
- *   table:
+ *   prefix:
  *     prefix: dp_
  *   tenant:
  *     column: tenant_id
  *     ignore: tenant,assets,license,token,user
  *
  * com_deepparser_dev:
- *   table:
+ *   prefix:
  *     prefix: dev_
  *   tenant:
  *     column: tenant_id

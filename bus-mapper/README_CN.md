@@ -106,22 +106,21 @@ bus:
         initSize: 1024
         concurrency: 1000
       dev_db:
-        table:
+        prefix:
           prefix: dp_
         tenant:
           column: tenant_id
           ignore: tenant,token,user
       test_db:
-        table:
+        prefix:
           prefix: dev_
         tenant:
           column: tenant_id
           ignore: tenant,token,user
 ```
 
-Spring Boot 配置 key 保持不变。内部实现上，`bus-mapper` 提供 `MapperOptions` 作为纯 Java/MyBatis 配置模型，承载 mapper
-属性；插件装配、配置归一化和类型解析由独立组件负责。starter 继续只负责 Spring Boot 绑定、资源解析、Mapper 扫描和生命周期装配，因此现有
-`bus.mapper.*` YAML 不需要迁移。
+Spring Boot 配置模型使用 `prefix` 作为表前缀插件作用域。内部实现上，`bus-mapper` 提供 `MapperOptions` 作为纯 Java/MyBatis 配置模型，承载 mapper
+属性；插件装配、配置归一化和类型解析由独立组件负责。starter 继续只负责 Spring Boot 绑定、资源解析、Mapper 扫描和生命周期装配。
 
 #### 3. 启用 Mapper 扫描
 
@@ -479,7 +478,7 @@ bus:
     configurationProperties:
       # 数据源 1 配置
       dev_db:
-        table:
+        prefix:
           prefix: dp_
         tenant:
           column: tenant_id
@@ -487,7 +486,7 @@ bus:
 
       # 数据源 2 配置
       prod_db:
-        table:
+        prefix:
           prefix: prod_
         tenant:
           column: tenant_id
@@ -953,9 +952,9 @@ bus:
 ### 按数据库初始化
 
 当项目使用 `configurationProperties.namespaces` 配置多个数据库时，可以把 `schema` 放在对应 namespace 下。表前缀不在
-`schema` 下重复配置，初始化时会读取同一个 namespace 的现有 `table.prefix` / `table.ignore` 表前缀插件配置。
-表前缀兼容全局和按数据库两种配置：按数据库的 `namespace.table.prefix` 优先，其次使用 `shared.table.prefix`、
-`default.table.prefix` 或顶层 `bus.mapper.prefix`。
+`schema` 下重复配置，初始化时会读取同一个 namespace 的现有 `prefix.prefix` / `prefix.ignore` 表前缀插件配置。
+表前缀支持全局和按数据库两种配置：按数据库的 `namespace.prefix.prefix` 优先，其次使用 `shared.prefix.prefix`、
+`default.prefix.prefix` 或顶层 `bus.mapper.prefix`。
 
 ```yaml
 bus:
@@ -963,7 +962,7 @@ bus:
     configurationProperties:
       namespaces:
         - name: com_deepparser
-          table:
+          prefix:
             prefix: dp_
             ignore: tenant,assets,license
           tenant:
@@ -1239,14 +1238,14 @@ mapper:
     ignore: sys_admin_table
 
   # 表前缀
-  table:
-    value: prod_
+  prefix:
+    prefix: prod_
     ignore: sys_log,sys_config
 
   # 按数据库配置(覆盖全局)
   configurationProperties:
     com_deepparser:
-      table:
+      prefix:
         prefix: dp_
         ignore: tenant,assets,license
       tenant:

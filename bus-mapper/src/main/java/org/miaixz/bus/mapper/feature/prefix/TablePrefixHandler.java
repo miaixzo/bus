@@ -85,7 +85,7 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
      */
     @Override
     protected String scope() {
-        return Args.TABLE_KEY;
+        return Args.PREFIX_KEY;
     }
 
     /**
@@ -204,9 +204,9 @@ public class TablePrefixHandler extends ScopedProviderHandler<Object, TablePrefi
             return TablePrefixConfig.builder().provider(provider).ignore(Collections.emptyList()).build();
         }
         String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Normal.DEFAULT;
-        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-        String legacyDefaultPrefix = "default" + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-        String dsPrefix = key + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+        String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
+        String legacyDefaultPrefix = Normal.DEFAULT + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
+        String dsPrefix = key + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
 
         String prefixValue = properties.getProperty(
                 dsPrefix + Args.TABLE_PREFIX,

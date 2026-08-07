@@ -137,8 +137,8 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
     protected TenantConfig resolve(String datasourceKey, Properties properties, TenantProvider provider) {
         String sharedTenantPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
         String dsTenantPrefix = datasourceKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
-        String sharedTablePrefix = Args.SHARED_KEY + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
-        String dsTablePrefix = datasourceKey + Symbol.DOT + Args.TABLE_KEY + Symbol.DOT;
+        String sharedTablePrefix = Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
+        String dsTablePrefix = datasourceKey + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
 
         // Check if tenant.column is explicitly configured (datasource-specific or shared)
         // If not configured, tenant feature should be disabled
