@@ -22,10 +22,8 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -45,8 +43,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
-import org.miaixz.bus.fabric.network.Conduit;
 import org.miaixz.bus.fabric.network.Connection;
+import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
@@ -552,10 +550,7 @@ public final class Http1Codec implements HttpCodec {
      * @param duration      duration applied to every timeout phase
      */
     private static void configureTimeout(final Timeout timeoutPolicy, final Duration duration) {
-        if (timeoutPolicy == null || duration == null || duration.isZero() || duration.isNegative()) {
-            return;
-        }
-        timeoutPolicy.timeout(duration.toNanos(), TimeUnit.NANOSECONDS);
+        NetworkTimeout.apply(timeoutPolicy, duration);
     }
 
     /**
@@ -592,24 +587,9 @@ public final class Http1Codec implements HttpCodec {
     private static final class NetworkReader {
 
         /**
-         * Minimum body read size that bypasses asynchronous source adaptation after buffered bytes are drained.
-         */
-        private static final int DIRECT_BODY_READ_BYTES = Normal._8192;
-
-        /**
          * Buffered source over the bound connection.
          */
         private final BufferSource source;
-
-        /**
-         * Physical conduit used for large cleartext body reads after buffered header bytes are drained.
-         */
-        private final Conduit conduit;
-
-        /**
-         * Whether the protocol source is the cleartext conduit and can therefore be bypassed safely.
-         */
-        private final boolean directBodyReads;
 
         /**
          * Creates a reader.
@@ -619,8 +599,6 @@ public final class Http1Codec implements HttpCodec {
         private NetworkReader(final Connection connection) {
             final Connection current = require(connection, "Network connection");
             this.source = IoKit.buffer(current.source());
-            this.conduit = current.conduit();
-            this.directBodyReads = true;
         }
 
         /**
@@ -659,11 +637,7 @@ public final class Http1Codec implements HttpCodec {
                 configureTimeout(source.timeout(), timeout);
                 final int read;
                 try {
-                    if (directBodyReads && length >= DIRECT_BODY_READ_BYTES && source.getBuffer().size() == Normal._0) {
-                        read = conduit.readSynchronously(ByteBuffer.wrap(target, offset, length));
-                    } else {
-                        read = source.read(target, offset, length);
-                    }
+                    read = source.read(target, offset, length);
                 } catch (final IOException e) {
                     throw new SocketException("HTTP read failed", e);
                 }
@@ -679,8 +653,8 @@ public final class Http1Codec implements HttpCodec {
         }
 
         /**
-         * Fills one known-length body array while allocating a single ByteBuffer view for all physical reads. Header
-         * read-ahead bytes are consumed first so the conduit is bypassed only at the exact stream position.
+         * Fills one known-length body array through the timeout-aware buffered source. Header read-ahead bytes are
+         * consumed before subsequent socket reads.
          */
         private void readFixed(final byte[] target, final int offset, final int length, final Duration timeout) {
             int written = Normal._0;
@@ -694,11 +668,10 @@ public final class Http1Codec implements HttpCodec {
                 return;
             }
             configureTimeout(source.timeout(), timeout);
-            final ByteBuffer destination = ByteBuffer.wrap(target, offset + written, length - written);
-            while (destination.hasRemaining()) {
+            while (written < length) {
                 final int read;
                 try {
-                    read = conduit.readSynchronously(destination);
+                    read = source.read(target, offset + written, length - written);
                 } catch (final IOException e) {
                     throw new SocketException("HTTP fixed body read failed", e);
                 }
@@ -707,7 +680,9 @@ public final class Http1Codec implements HttpCodec {
                 }
                 if (read == Normal._0) {
                     Thread.yield();
+                    continue;
                 }
+                written += read;
             }
         }
 

@@ -52,6 +52,7 @@ public final class GitLabFailure {
      * Prevents utility class instantiation.
      */
     private GitLabFailure() {
+        // No initialization required.
     }
 
     /**

@@ -35,15 +35,15 @@ import org.miaixz.bus.vortex.strategy.StrategyFactory;
 public abstract class AbstractFilter implements Filter {
 
     /**
+     * The factory used to dynamically select the appropriate strategy chain for the current request.
+     */
+    public StrategyFactory factory;
+
+    /**
      * Creates an abstract filter.
      */
     protected AbstractFilter() {
         // No initialization required.
     }
-
-    /**
-     * The factory used to dynamically select the appropriate strategy chain for the current request.
-     */
-    public StrategyFactory factory;
 
 }

@@ -86,8 +86,10 @@ public class Vortex implements SmartLifecycle {
     }
 
     /**
-     * Stops the HTTP server. This method is called by the Spring container during a graceful shutdown. It disposes of
-     * the server resources, closes the connection pool, and logs the outcome.
+     * Stops the HTTP server during graceful Spring shutdown.
+     * <p>
+     * The listener is disposed first, followed by the outbound connection pool and event loops. Finally, the memory
+     * sampler and byte budgets are closed so queued capacity waiters fail instead of surviving shutdown.
      */
     @Override
     public void stop() {
@@ -117,6 +119,13 @@ public class Vortex implements SmartLifecycle {
                 }
             } catch (Exception e) {
                 Logger.error(false, "Vortex", "Runtime HTTP event loops close failed", e);
+            }
+
+            try {
+                Holder.closeCapacityResources();
+                Logger.info(false, "Vortex", "Runtime capacity resources closed");
+            } catch (Exception e) {
+                Logger.error(false, "Vortex", "Runtime capacity resource close failed", e);
             }
         }
     }

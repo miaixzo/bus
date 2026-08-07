@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 
@@ -31,6 +32,7 @@ import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.exception.ConnectionException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
+import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.fabric.*;
@@ -347,13 +349,20 @@ public final class HttpRunner {
             return response;
         } catch (final CancellationException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            if (Logger.isWarnEnabled()) {
-                Logger.warn(false, "Fabric", e, "HTTP exchange cancelled: method={}", spec.request().method());
+            if (timeoutCause(e) != null) {
+                Logger.warn(false, "Fabric", "HTTP exchange timed out: method={}", spec.request().method());
+            } else if (Logger.isDebugEnabled()) {
+                Logger.debug(false, "Fabric", "HTTP exchange cancelled: method={}", spec.request().method());
             }
             throw e;
         } catch (final RuntimeException e) {
             emit(ObservationMarker.HTTP_FAILED, null, e);
-            if (Logger.isErrorEnabled()) {
+            final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(e);
+            if (failure != null && failure.reason() == HttpChain.FailureReason.TIMEOUT) {
+                Logger.warn(false, "Fabric", "HTTP exchange timed out: method={}", spec.request().method());
+            } else if (failure != null && failure.reason() == HttpChain.FailureReason.CANCELLED) {
+                Logger.debug(false, "Fabric", "HTTP exchange cancelled: method={}", spec.request().method());
+            } else if (Logger.isErrorEnabled()) {
                 Logger.error(
                         false,
                         "Fabric",
@@ -364,6 +373,27 @@ public final class HttpRunner {
             }
             throw e;
         }
+    }
+
+    /**
+     * Finds a timeout in a bounded causal chain.
+     *
+     * @param failure failure candidate
+     * @return timeout cause, or {@code null}
+     */
+    private static Throwable timeoutCause(final Throwable failure) {
+        Throwable current = failure;
+        for (int depth = 0; current != null && depth < 16; depth++) {
+            if (current instanceof TimeoutException || current instanceof SocketTimeoutException) {
+                return current;
+            }
+            final Throwable next = current.getCause();
+            if (next == current) {
+                break;
+            }
+            current = next;
+        }
+        return null;
     }
 
     /**

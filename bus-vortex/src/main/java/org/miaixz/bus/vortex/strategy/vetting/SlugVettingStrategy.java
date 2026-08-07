@@ -40,6 +40,13 @@ import reactor.core.publisher.Mono;
 public class SlugVettingStrategy extends VettingStrategy {
 
     /**
+     * Creates the stateless public-slug vetting strategy.
+     */
+    public SlugVettingStrategy() {
+        // No initialization required.
+    }
+
+    /**
      * Returns this strategy's dynamic protocol.
      *
      * @return slug protocol number

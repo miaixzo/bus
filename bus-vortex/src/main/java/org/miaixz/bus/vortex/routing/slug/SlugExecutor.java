@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -43,14 +45,22 @@ import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.Executor;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.magic.ErrorCode;
+import org.miaixz.bus.vortex.routing.StreamingRelay;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Executes public slug forwarding requests.
+ * Executes public slug forwarding requests as strict realtime streams or protected file downloads.
+ * <p>
+ * Slug responses are never aggregated: route assets must declare {@code stream=2} or {@code stream=3}. The response
+ * body is passed through {@link StreamingRelay}, so admission, memory pressure, backpressure and cancellation semantics
+ * match other streaming protocols.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -124,8 +134,8 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                 request.path(),
                 target);
 
-        return bodySpec
-                .exchangeToMono(clientResponse -> clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
+        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
                     responseBuilder.headers(headers -> {
                         headers.addAll(responseEntity.getHeaders());
@@ -133,12 +143,23 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                         headers.remove(HttpHeaders.TRANSFER_ENCODING);
                         headers.remove(HttpHeaders.CONTENT_LENGTH);
                     });
-                    byte[] body = responseEntity.getBody();
-                    if (body == null || body.length == 0 || context.getHttpMethod() == Http.Method.HEAD) {
-                        return responseBuilder.build();
+                    Flux<DataBuffer> body = responseEntity.getBody() == null ? Flux.empty()
+                            : responseEntity.getBody().doOnDiscard(PooledDataBuffer.class, Octets::release);
+                    if (context.getHttpMethod() == Http.Method.HEAD) {
+                        return Octets.discard(body).then(responseBuilder.build());
                     }
-                    return responseBuilder.bodyValue(body);
-                }));
+                    Delivery delivery = Delivery.of(context.getAssets().getStream());
+                    if (delivery == Delivery.BUFFERED) {
+                        return Octets.discard(body).then(
+                                Mono.error(
+                                        new IllegalStateException(
+                                                "Slug responses must use stream mode 2 or download mode 3")));
+                    }
+                    if (responseEntity.getHeaders().getContentLength() >= 0) {
+                        responseBuilder.contentLength(responseEntity.getHeaders().getContentLength());
+                    }
+                    return responseBuilder.body(BodyInserters.fromDataBuffers(StreamingRelay.relay(body, delivery)));
+                });
     }
 
     /**

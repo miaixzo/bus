@@ -65,6 +65,9 @@ module bus.vortex {
     requires static spring.web;
     requires static spring.webflux;
     requires static io.netty.handler;
+    requires static io.netty.buffer;
+    requires static io.netty.common;
+    requires static io.netty.transport;
     requires static org.reactivestreams;
     requires static reactor.core;
     requires static reactor.netty.core;

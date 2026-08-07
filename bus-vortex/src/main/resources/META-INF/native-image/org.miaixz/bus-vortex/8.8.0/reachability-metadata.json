@@ -1609,7 +1609,16 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Performance",
+      "allDeclaredConstructors": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
       "fields": [
+        {
+          "name": "directMemoryHighWatermark"
+        },
+        {
+          "name": "directMemoryLowWatermark"
+        },
         {
           "name": "cacheExpireMs"
         },
@@ -1623,6 +1632,15 @@
           "name": "maxConnections"
         },
         {
+          "name": "maxBufferedRequestSize"
+        },
+        {
+          "name": "maxBufferedResponseSize"
+        },
+        {
+          "name": "maxInFlightRequests"
+        },
+        {
           "name": "maxMultipartRequestSize"
         },
         {
@@ -1630,6 +1648,9 @@
         },
         {
           "name": "maxRequestSize"
+        },
+        {
+          "name": "maxRetries"
         },
         {
           "name": "mcpTrustedOrigins"
@@ -1662,9 +1683,6 @@
           "name": "startupDelaySeconds"
         },
         {
-          "name": "streamingRequestThreshold"
-        },
-        {
           "name": "syncIntervalSeconds"
         },
         {
@@ -1672,6 +1690,14 @@
         }
       ],
       "methods": [
+        {
+          "name": "$default$directMemoryHighWatermark",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$directMemoryLowWatermark",
+          "parameterTypes": []
+        },
         {
           "name": "$default$cacheExpireMs",
           "parameterTypes": []
@@ -1689,6 +1715,18 @@
           "parameterTypes": []
         },
         {
+          "name": "$default$maxBufferedRequestSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxBufferedResponseSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxInFlightRequests",
+          "parameterTypes": []
+        },
+        {
           "name": "$default$maxMultipartRequestSize",
           "parameterTypes": []
         },
@@ -1698,6 +1736,10 @@
         },
         {
           "name": "$default$maxRequestSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxRetries",
           "parameterTypes": []
         },
         {
@@ -1741,10 +1783,6 @@
           "parameterTypes": []
         },
         {
-          "name": "$default$streamingRequestThreshold",
-          "parameterTypes": []
-        },
-        {
           "name": "$default$syncIntervalSeconds",
           "parameterTypes": []
         },
@@ -1755,31 +1793,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long",
-            "long",
-            "long",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "int",
-            "long",
-            "long",
-            "int",
-            "boolean",
-            "int",
-            "int",
-            "boolean",
-            "java.util.List"
-          ]
         },
         {
           "name": "<init>",
@@ -1800,7 +1813,27 @@
           "parameterTypes": []
         },
         {
+          "name": "getDirectMemoryHighWatermark",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDirectMemoryLowWatermark",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxBufferedRequestSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxBufferedResponseSize",
+          "parameterTypes": []
+        },
+        {
           "name": "getMaxConnections",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxInFlightRequests",
           "parameterTypes": []
         },
         {
@@ -1813,6 +1846,10 @@
         },
         {
           "name": "getMaxRequestSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxRetries",
           "parameterTypes": []
         },
         {
@@ -1852,10 +1889,6 @@
           "parameterTypes": []
         },
         {
-          "name": "getStreamingRequestThreshold",
-          "parameterTypes": []
-        },
-        {
           "name": "getSyncIntervalSeconds",
           "parameterTypes": []
         },
@@ -1884,6 +1917,30 @@
           ]
         },
         {
+          "name": "setDirectMemoryHighWatermark",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setDirectMemoryLowWatermark",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "setMaxBufferedRequestSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setMaxBufferedResponseSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
           "name": "setFullSyncOnStartup",
           "parameterTypes": [
             "boolean"
@@ -1891,6 +1948,12 @@
         },
         {
           "name": "setMaxConnections",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxInFlightRequests",
           "parameterTypes": [
             "int"
           ]
@@ -1911,6 +1974,12 @@
           "name": "setMaxRequestSize",
           "parameterTypes": [
             "long"
+          ]
+        },
+        {
+          "name": "setMaxRetries",
+          "parameterTypes": [
+            "int"
           ]
         },
         {
@@ -1974,12 +2043,6 @@
           ]
         },
         {
-          "name": "setStreamingRequestThreshold",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
           "name": "setSyncIntervalSeconds",
           "parameterTypes": [
             "int"
@@ -1995,6 +2058,8 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Performance$PerformanceBuilder",
+      "allDeclaredConstructors": true,
+      "allDeclaredMethods": true,
       "methods": [
         {
           "name": "<init>",
@@ -2100,12 +2165,6 @@
           "name": "startupDelaySeconds",
           "parameterTypes": [
             "int"
-          ]
-        },
-        {
-          "name": "streamingRequestThreshold",
-          "parameterTypes": [
-            "long"
           ]
         },
         {

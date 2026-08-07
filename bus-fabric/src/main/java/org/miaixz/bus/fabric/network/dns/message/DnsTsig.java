@@ -63,6 +63,7 @@ public final class DnsTsig {
      * Prevents instantiation of this utility class.
      */
     private DnsTsig() {
+        // No initialization required.
     }
 
     /**

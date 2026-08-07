@@ -136,6 +136,7 @@ public final class DnsCodec {
      * Prevents instantiation of this utility class.
      */
     private DnsCodec() {
+        // No initialization required.
     }
 
     /**

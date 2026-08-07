@@ -74,9 +74,9 @@ public class VortexProperties {
     private Args.Limit limit = Args.Limit.builder().build();
 
     /**
-     * Performance optimization settings for request body processing and connection pooling.
+     * Capacity, memory, streaming, download and outbound connection settings.
      * <p>
-     * These settings allow fine-tuning of memory usage and throughput trade-offs.
+     * The defaults admit 5000 complete request lifecycles while bounding every body category independently.
      */
     private Performance performance = Performance.builder().build();
 
@@ -86,17 +86,42 @@ public class VortexProperties {
     private Assets assets = new Assets();
 
     /**
-     * Validates network, timeout, connection, cache, and refresh limits after binding.
+     * Validates bound values and cross-field capacity invariants before shared runtime resources are created.
+     * <p>
+     * In addition to positive ranges, this ensures child streaming limits fit under their parent limit, each byte
+     * budget can hold one maximum body, and all logical byte budgets together remain within one-sixteenth of the JVM
+     * maximum heap.
      */
     public void validate() {
         if (port < 1 || port > 65535) {
             throw new IllegalArgumentException("bus.vortex.port must be in 1..65535");
         }
-        if (performance == null || performance.getStreamingRequestThreshold() <= 0
-                || performance.getMaxRequestSize() <= 0 || performance.getMaxMultipartRequestSize() <= 0
-                || performance.getStreamingRequestThreshold() > performance.getMaxRequestSize()
+        if (performance == null || performance.getMaxRequestSize() <= 0 || performance.getMaxMultipartRequestSize() <= 0
+                || performance.getMultipartMemoryThresholdBytes() <= 0
+                || performance.getMultipartMemoryThresholdBytes() > performance.getMaxBufferedRequestSize()
+                || performance.getMaxBufferedRequestSize() <= 0 || performance.getMaxBufferedResponseSize() <= 0
+                || performance.getMaxTransformResponseSize() <= 0
+                || performance.getRequestBufferBudgetBytes() < performance.getMaxBufferedRequestSize()
+                || performance.getResponseBufferBudgetBytes() < performance.getMaxBufferedResponseSize()
+                || performance.getTransformBufferBudgetBytes() < performance.getMaxTransformResponseSize()
+                || performance.getMaxBufferedRequestSize() > performance.getMaxRequestSize()
+                || performance.getMaxInFlightRequests() <= 0 || performance.getMaxTotalStreamingRequests() <= 0
+                || performance.getMaxTotalStreamingRequests() > performance.getMaxInFlightRequests()
+                || performance.getMaxDownloadRequests() <= 0
+                || performance.getMaxDownloadRequests() > performance.getMaxTotalStreamingRequests()
+                || performance.getMaxRealtimeStreamingRequests() <= 0
+                || performance.getMaxRealtimeStreamingRequests() > performance.getMaxTotalStreamingRequests()
+                || performance.getBufferAcquireTimeoutSeconds() <= 0 || performance.getMemorySampleIntervalMillis() <= 0
+                || performance.getWriteBufferLowWatermarkBytes() <= 0
+                || performance.getWriteBufferHighWatermarkBytes() <= performance.getWriteBufferLowWatermarkBytes()
+                || performance.getDownloadNoProgressTimeoutSeconds() <= 0
+                || performance.getDownloadMinimumBytesPerSecond() <= 0
+                || performance.getDirectMemoryHighWatermark() <= 0
+                || performance.getDirectMemoryHighWatermark() >= 0.90d || performance.getDirectMemoryLowWatermark() < 0
+                || performance.getDirectMemoryLowWatermark() >= performance.getDirectMemoryHighWatermark()
                 || performance.getMaxConnections() <= 0 || performance.getPendingAcquireTimeoutSeconds() <= 0
                 || performance.getPendingAcquireMaxCount() < 0 || performance.getOutboundRetryBackoffMillis() <= 0
+                || performance.getMaxRetries() < 0 || performance.getMaxRetries() > 2
                 || performance.getOutboundRetryMaxBackoffMillis() < performance.getOutboundRetryBackoffMillis()
                 || performance.getOutboundMaxIdleSeconds() <= 0 || performance.getOutboundMaxLifeMinutes() <= 0
                 || performance.getOutboundEvictSeconds() <= 0 || performance.getMaxProducerCacheSize() <= 0
@@ -104,6 +129,15 @@ public class VortexProperties {
                 || performance.getSyncIntervalSeconds() <= 0 || performance.getStartupDelaySeconds() < 0
                 || performance.getTimestampToleranceMinutes() <= 0) {
             throw new IllegalArgumentException("bus.vortex performance limits and timeouts are invalid");
+        }
+        long logicalBufferedBytes = Math.addExact(
+                Math.addExact(performance.getRequestBufferBudgetBytes(), performance.getResponseBufferBudgetBytes()),
+                performance.getTransformBufferBudgetBytes());
+        long heapSafeBufferedBytes = Runtime.getRuntime().maxMemory() / 16L;
+        if (logicalBufferedBytes > heapSafeBufferedBytes) {
+            throw new IllegalArgumentException(
+                    "bus.vortex logical buffered-byte budgets must not exceed 1/16 of the JVM maximum heap ("
+                            + heapSafeBufferedBytes + " bytes)");
         }
         if (assets == null || assets.getIncrementalRefreshIntervalSeconds() <= 0
                 || assets.getFullCalibrationIntervalSeconds() <= 0 || assets.getModifiedOverlapMs() <= 0

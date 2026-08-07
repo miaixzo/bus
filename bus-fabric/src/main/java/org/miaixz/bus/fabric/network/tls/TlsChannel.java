@@ -46,6 +46,7 @@ import org.miaixz.bus.crypto.builtin.TlsHandshake;
 import org.miaixz.bus.fabric.Listener;
 import org.miaixz.bus.fabric.Timeout;
 import org.miaixz.bus.fabric.network.Conduit;
+import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter;
 import org.miaixz.bus.fabric.observe.metrics.FabricMeter.Counter;
 import org.miaixz.bus.fabric.runtime.Activity;
@@ -85,6 +86,17 @@ public final class TlsChannel implements Conduit, Lifecycle {
      * Operation timeout policy.
      */
     private final Timeout timeout;
+
+    /**
+     * Protocol-configurable plaintext read timeout. HTTP, WebSocket and Socket owners mutate this policy without
+     * reaching through TLS to the encrypted transport.
+     */
+    private final org.miaixz.bus.core.io.timout.Timeout readTimeout;
+
+    /**
+     * Protocol-configurable plaintext write timeout kept separate from reads for full-duplex TLS traffic.
+     */
+    private final org.miaixz.bus.core.io.timout.Timeout writeTimeout;
 
     /**
      * Borrowed runtime meter, or null when metrics are disabled.
@@ -240,6 +252,10 @@ public final class TlsChannel implements Conduit, Lifecycle {
         this.listener = listener;
         this.dispatcher = dispatcher;
         this.timeout = timeout;
+        this.readTimeout = new org.miaixz.bus.core.io.timout.Timeout();
+        this.writeTimeout = new org.miaixz.bus.core.io.timout.Timeout();
+        NetworkTimeout.apply(this.readTimeout, timeout.read());
+        NetworkTimeout.apply(this.writeTimeout, timeout.write());
         this.meter = meter;
         this.handshakeLock = new ReentrantLock();
         this.readLock = new ReentrantLock();
@@ -882,7 +898,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         }
         while (true) {
             if (!encryptedInput.hasRemaining()) {
-                final long read = readEncryptedInput(timeout.read(), "TLS read timed out");
+                final long read = readEncryptedInput(null, "TLS read timed out");
                 if (read == Normal.__1) {
                     return Normal.__1;
                 }
@@ -899,7 +915,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
             }
             if (result.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
                 ensureEncryptedInputCapacity();
-                final long read = readEncryptedInput(timeout.read(), "TLS read timed out");
+                final long read = readEncryptedInput(null, "TLS read timed out");
                 if (read == Normal.__1) {
                     return Normal.__1;
                 }
@@ -934,7 +950,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
         }
         while (true) {
             if (!encryptedInput.hasRemaining()) {
-                final long read = readEncryptedInput(timeout.read(), "TLS read timed out");
+                final long read = readEncryptedInput(null, "TLS read timed out");
                 if (read <= Normal._0) {
                     return (int) read;
                 }
@@ -950,7 +966,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
             }
             if (direct.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
                 ensureEncryptedInputCapacity();
-                if (readEncryptedInput(timeout.read(), "TLS read timed out") == Normal.__1) {
+                if (readEncryptedInput(null, "TLS read timed out") == Normal.__1) {
                     return Normal.__1;
                 }
                 continue;
@@ -973,7 +989,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
             }
             if (result.getStatus() == SSLEngineResult.Status.BUFFER_UNDERFLOW) {
                 ensureEncryptedInputCapacity();
-                if (readEncryptedInput(timeout.read(), "TLS read timed out") == Normal.__1) {
+                if (readEncryptedInput(null, "TLS read timed out") == Normal.__1) {
                     return Normal.__1;
                 }
                 continue;
@@ -1032,7 +1048,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
                 continue;
             }
             encryptedOutput.flip();
-            writeEncryptedOutput(timeout.write(), "TLS write timed out");
+            writeEncryptedOutput(null, "TLS write timed out");
             consume(source, result.bytesConsumed());
             remaining -= result.bytesConsumed();
             if (result.getHandshakeStatus() == HandshakeStatus.NEED_TASK) {
@@ -1119,8 +1135,12 @@ public final class TlsChannel implements Conduit, Lifecycle {
     /**
      * Reads encrypted bytes while retaining any unconsumed prefix.
      *
-     * @param duration timeout duration
-     * @param message  timeout message
+     * The selected timeout is copied to the encrypted conduit immediately before the physical read. A non-null duration
+     * is reserved for TLS-owned phases such as handshake; {@code null} uses the active protocol-configured plaintext
+     * policy.
+     *
+     * @param duration TLS-owned phase timeout, or {@code null} to use the protocol read policy
+     * @param message  failure message retained by the TLS wrapper
      * @return network read count
      */
     private long readEncryptedInput(final Duration duration, final String message) {
@@ -1133,6 +1153,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
         final int writable = encryptedInput.remaining();
         final int read;
         try {
+            if (duration == null) {
+                NetworkTimeout.apply(conduit.source().timeout(), readTimeout);
+            } else {
+                NetworkTimeout.apply(conduit.source().timeout(), duration);
+            }
             read = conduit.readSynchronously(encryptedInput);
         } catch (final IOException e) {
             throw new SocketException(message, e);
@@ -1150,8 +1175,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
     /**
      * Writes all bytes currently staged in encrypted output.
      *
-     * @param duration timeout duration
-     * @param message  timeout message
+     * The selected timeout is copied to the encrypted conduit immediately before the physical write. Each native
+     * progress step is timed independently by the underlying conduit.
+     *
+     * @param duration TLS-owned phase timeout, or {@code null} to use the protocol write policy
+     * @param message  failure message retained by the TLS wrapper
      */
     private void writeEncryptedOutput(final Duration duration, final String message) {
         if (!encryptedOutput.hasRemaining()) {
@@ -1160,6 +1188,11 @@ public final class TlsChannel implements Conduit, Lifecycle {
         final int bytes = encryptedOutput.remaining();
         final int written;
         try {
+            if (duration == null) {
+                NetworkTimeout.apply(conduit.sink().timeout(), writeTimeout);
+            } else {
+                NetworkTimeout.apply(conduit.sink().timeout(), duration);
+            }
             written = conduit.writeSynchronously(encryptedOutput);
         } catch (final IOException e) {
             throw new SocketException(message, e);
@@ -1780,7 +1813,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
          */
         @Override
         public org.miaixz.bus.core.io.timout.Timeout timeout() {
-            return org.miaixz.bus.core.io.timout.Timeout.NONE;
+            return readTimeout;
         }
 
         /**
@@ -1829,7 +1862,7 @@ public final class TlsChannel implements Conduit, Lifecycle {
          */
         @Override
         public org.miaixz.bus.core.io.timout.Timeout timeout() {
-            return org.miaixz.bus.core.io.timout.Timeout.NONE;
+            return writeTimeout;
         }
 
         /**

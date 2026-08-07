@@ -41,7 +41,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
-import reactor.util.retry.Retry;
 
 /**
  * Request handling entry class, responsible for routing requests and asynchronously invoking multiple interceptor
@@ -251,7 +250,7 @@ public class VortexHandler {
                 }
 
                 return router.route(request).timeout(Duration.ofSeconds(routeTimeoutSeconds(assets, request)))
-                        .retryWhen(buildRetrySpec(assets, ip, method, path)).cast(ServerResponse.class)
+                        .cast(ServerResponse.class)
                         .flatMap(response -> executePostHandlers(exchange, router, response, null).thenReturn(response))
                         .doOnSuccess(serverResponse -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
@@ -370,65 +369,6 @@ public class VortexHandler {
             }
             return Mono.empty();
         }).then(Mono.error(error));
-    }
-
-    /**
-     * Builds a retry specification based on the Assets configuration.
-     * <p>
-     * This method creates a retry strategy that:
-     * <ul>
-     * <li>Retries up to {@link Assets#getRetries()} times</li>
-     * <li>Uses the configured exponential backoff</li>
-     * <li>Only retries on transient errors (network timeouts, 5xx errors)</li>
-     * <li>Logs each retry attempt for observability</li>
-     * </ul>
-     * </p>
-     *
-     * @param assets The asset configuration containing retry policy
-     * @param ip     The client IP for logging
-     * @param method The HTTP method for logging
-     * @param path   The request path for logging
-     * @return A configured {@link Retry} specification
-     */
-    private Retry buildRetrySpec(Assets assets, String ip, String method, String path) {
-        int maxRetries = Egress.retryAttempts(assets);
-
-        if (maxRetries == 0) {
-            return Retry.max(0);
-        }
-
-        return Retry.backoff(maxRetries, Duration.ofMillis(Holder.outboundRetryBackoffMillis()))
-                .maxBackoff(Duration.ofMillis(Holder.outboundRetryMaxBackoffMillis())).filter(Egress::isRetryable)
-                .doBeforeRetry(retrySignal -> {
-                    long attempt = retrySignal.totalRetries() + 1;
-                    Throwable failure = retrySignal.failure();
-                    Throwable root = Egress.rootCause(failure);
-                    Logger.warn(
-                            true,
-                            "Vortex",
-                            "Retry attempt {}/{} after error: clientIp={}, method={}, path={}, event=RETRY_ATTEMPT, failure={}, root={}",
-                            attempt,
-                            maxRetries,
-                            ip,
-                            method,
-                            path,
-                            failure == null ? null : failure.getClass().getSimpleName(),
-                            root == null ? null : root.getClass().getSimpleName());
-                }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
-                    Throwable failure = retrySignal.failure();
-                    Throwable root = Egress.rootCause(failure);
-                    Logger.error(
-                            true,
-                            "Vortex",
-                            "All {} retry attempts exhausted: clientIp={}, method={}, path={}, event=RETRY_EXHAUSTED, failure={}, root={}",
-                            maxRetries,
-                            ip,
-                            method,
-                            path,
-                            failure == null ? null : failure.getClass().getSimpleName(),
-                            root == null ? null : root.getClass().getSimpleName());
-                    return failure;
-                });
     }
 
     /**

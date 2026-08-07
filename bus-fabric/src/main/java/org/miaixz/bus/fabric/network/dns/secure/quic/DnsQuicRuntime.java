@@ -54,6 +54,7 @@ public final class DnsQuicRuntime {
      * Prevents instantiation of this utility class.
      */
     private DnsQuicRuntime() {
+        // No initialization required.
     }
 
     /**

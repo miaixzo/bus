@@ -22,17 +22,26 @@ package org.miaixz.bus.vortex.routing.llm;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
+import org.miaixz.bus.vortex.guard.AdmissionGate;
+import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -66,7 +75,11 @@ public class LlmExecutor extends Coordinator {
     }
 
     /**
-     * Executes an LLM request.
+     * Executes an LLM request under bounded request and streaming capacity.
+     * <p>
+     * The JSON request requires Content-Length and retains its exact logical-byte lease while the parsed request model
+     * is live. Streaming responses additionally own a realtime-stream permit through completion, failure or client
+     * cancellation.
      *
      * @param context The request context containing Assets, model name, and request body.
      * @param args    Additional arguments (not used for LLM requests).
@@ -141,70 +154,93 @@ public class LlmExecutor extends Coordinator {
         }
 
         final ServerRequest serverRequest = (ServerRequest) context.getParameters().get("serverRequest");
-        return serverRequest.bodyToMono(String.class).flatMap(body -> {
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request parameter snapshot: clientIp={}, model={}, bodyChars={}",
-                    context.getX_request_ip(),
-                    modelName,
-                    body.length());
-            Logger.debug(
-                    true,
-                    "Vortex",
-                    "Request parameters: clientIp={}, parameters={}",
-                    context.getX_request_ip(),
-                    Map.of("body", body));
-            final LlmRequest request;
-            try {
-                request = parseRequest(body, modelName);
-            } catch (Exception e) {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        e,
-                        "{} Failed to parse request: exception={}",
-                        context.getX_request_ip(),
-                        e.getClass().getSimpleName());
-                return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
-                        "{\"error\":{\"message\":\"Invalid request body\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request_body\"}}");
-            }
+        return Octets
+                .readForParsing(
+                        serverRequest.bodyToFlux(DataBuffer.class),
+                        Math.toIntExact(Holder.get().getMaxBufferedRequestSize()),
+                        Holder.requestBufferBudget(),
+                        serverRequest.headers().contentLength().orElse(-1))
+                .onErrorMap(DataBufferLimitException.class, error -> new ValidateException(ErrorCode._100530))
+                .flatMap(bufferedBody -> {
+                    String body = new String(bufferedBody.bytes(), Charset.UTF_8);
+                    bufferedBody.discardBytes();
+                    Logger.debug(
+                            true,
+                            "Vortex",
+                            "Request parameter snapshot: clientIp={}, model={}, bodyChars={}",
+                            context.getX_request_ip(),
+                            modelName,
+                            body.length());
+                    Logger.debug(
+                            true,
+                            "Vortex",
+                            "Request parameters: clientIp={}, parameters={}",
+                            context.getX_request_ip(),
+                            Map.of("body", body));
+                    final LlmRequest request;
+                    try {
+                        request = parseRequest(body, modelName);
+                    } catch (Exception e) {
+                        Logger.error(
+                                false,
+                                "Vortex",
+                                e,
+                                "{} Failed to parse request: exception={}",
+                                context.getX_request_ip(),
+                                e.getClass().getSimpleName());
+                        return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
+                                "{\"error\":{\"message\":\"Invalid request body\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request_body\"}}")
+                                .doFinally(signal -> bufferedBody.close());
+                    }
 
-            final boolean stream = request.isStream();
+                    final boolean stream = request.isStream();
 
-            if (stream) {
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "{} Streaming response for model: {}",
-                        context.getX_request_ip(),
-                        modelName);
-                return ServerResponse.ok().contentType(org.springframework.http.MediaType.TEXT_EVENT_STREAM)
-                        .body(provider.stream(request), String.class);
-            } else {
-                Logger.debug(
-                        true,
-                        "Vortex",
-                        "{} Non-streaming response for model: {}",
-                        context.getX_request_ip(),
-                        modelName);
-                return provider.chat(request).flatMap(
-                        response -> ServerResponse.ok().contentType(org.springframework.http.MediaType.APPLICATION_JSON)
-                                .bodyValue(response))
-                        .onErrorResume(e -> {
-                            Logger.error(
-                                    false,
-                                    "Vortex",
-                                    e,
-                                    "{} LLM request failed: exception={}",
-                                    context.getX_request_ip(),
-                                    e.getClass().getSimpleName());
-                            return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
-                                    "{\"error\":{\"message\":\"LLM request failed: " + e.getMessage()
-                                            + "\",\"type\":\"server_error\",\"code\":\"llm_request_failed\"}}");
-                        });
-            }
-        });
+                    if (stream) {
+                        Logger.debug(
+                                true,
+                                "Vortex",
+                                "{} Streaming response for model: {}",
+                                context.getX_request_ip(),
+                                modelName);
+                        Flux<String> streamBody = Flux.using(() -> {
+                            AdmissionGate.Lease lease = Holder.admissionGate().tryAcquireRealtimeStream();
+                            if (lease == null || Holder.memoryPressure().rejectStreaming()) {
+                                if (lease != null) {
+                                    lease.close();
+                                }
+                                throw new org.springframework.web.server.ResponseStatusException(
+                                        HttpStatus.SERVICE_UNAVAILABLE, "Realtime streaming capacity exhausted");
+                            }
+                            return lease;
+                        }, lease -> provider.stream(request), AdmissionGate.Lease::close);
+                        return ServerResponse.ok().contentType(org.springframework.http.MediaType.TEXT_EVENT_STREAM)
+                                .body(streamBody, String.class).doFinally(signal -> bufferedBody.close());
+                    } else {
+                        Logger.debug(
+                                true,
+                                "Vortex",
+                                "{} Non-streaming response for model: {}",
+                                context.getX_request_ip(),
+                                modelName);
+                        return provider.chat(request)
+                                .flatMap(
+                                        response -> ServerResponse.ok()
+                                                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                                                .bodyValue(response))
+                                .onErrorResume(e -> {
+                                    Logger.error(
+                                            false,
+                                            "Vortex",
+                                            e,
+                                            "{} LLM request failed: exception={}",
+                                            context.getX_request_ip(),
+                                            e.getClass().getSimpleName());
+                                    return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
+                                            "{\"error\":{\"message\":\"LLM request failed: " + e.getMessage()
+                                                    + "\",\"type\":\"server_error\",\"code\":\"llm_request_failed\"}}");
+                                }).doFinally(signal -> bufferedBody.close());
+                    }
+                });
     }
 
     /**

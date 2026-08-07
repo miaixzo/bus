@@ -83,6 +83,7 @@ module bus.starter {
     requires static elasticsearch.rest5.client;
     requires static io.vertx.core;
     requires static io.vertx.web;
+    requires static io.netty.transport;
     requires static micrometer.core;
     requires static org.apache.httpcomponents.client5.httpclient5;
     requires static org.apache.httpcomponents.core5.httpcore5;
@@ -92,6 +93,7 @@ module bus.starter {
     requires static org.mybatis.spring;
     requires static org.slf4j;
     requires static reactor.core;
+    requires static reactor.netty.core;
     requires static reactor.netty.http;
 
     exports org.miaixz.bus.starter.annotation;

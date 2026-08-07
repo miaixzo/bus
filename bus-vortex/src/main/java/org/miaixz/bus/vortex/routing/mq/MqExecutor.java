@@ -39,6 +39,7 @@ import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.Performance;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -61,8 +62,9 @@ import reactor.core.scheduler.Schedulers;
  * <li>Fail-fast rejection policy so blocking broker calls never run on reactive request threads</li>
  * </ul>
  * <ul>
- * <li>Buffering mode (stream = 1 or null): Returns a simple JSON acknowledgment response</li>
- * <li>Streaming mode (stream = 2): Returns the acknowledgment as a streaming response</li>
+ * <li>{@code stream=1}: returns one bounded JSON acknowledgment</li>
+ * <li>{@code stream=2}: uses the realtime acknowledgment branch, still as one bounded JSON document</li>
+ * <li>{@code stream=3}: rejected because an MQ acknowledgment is not a file download</li>
  * </ul>
  * Generic type parameters: {@code Executor<String, ServerResponse>}
  *
@@ -144,7 +146,8 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
      * Executes an MQ request using the provided context and String payload.
      * <p>
      * This method is required by the {@link org.miaixz.bus.vortex.Executor} interface. It sends the message to the MQ
-     * broker and returns an acknowledgment response. The response format (streaming vs buffering) is selected based on.
+     * broker and selects the configured acknowledgment branch. MQ acknowledgments are always small, single JSON
+     * documents; they do not hold a long-lived response stream.
      *
      * @param context The request context containing the assets configuration
      * @param input   The String payload to send to the message queue
@@ -157,7 +160,11 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
 
         Mono<String> ackMono = send(assets, payload);
 
-        boolean isStreaming = assets.getStream() != null && assets.getStream() == 2;
+        Delivery delivery = Delivery.of(assets.getStream());
+        if (delivery == Delivery.DOWNLOAD) {
+            return Mono.error(new IllegalStateException("MQ acknowledgements do not support download mode"));
+        }
+        boolean isStreaming = delivery == Delivery.STREAMING;
 
         if (isStreaming) {
             return executeStreaming(ackMono, assets);
@@ -167,13 +174,14 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
     }
 
     /**
-     * Executes the MQ acknowledgment in streaming mode.
+     * Executes the realtime acknowledgment branch.
      * <p>
-     * Returns the acknowledgment as a streaming JSON response.
+     * The broker API produces one acknowledgment value, so this branch returns one bounded JSON document rather than a
+     * long-lived data-buffer stream.
      *
      * @param ackMono The mono containing the acknowledgment JSON
      * @param assets  The asset configuration
-     * @return A streaming ServerResponse
+     * @return a single-value JSON response
      */
     private Mono<ServerResponse> executeStreaming(Mono<String> ackMono, Assets assets) {
         return ackMono.flatMap(ack -> {

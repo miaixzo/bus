@@ -102,7 +102,12 @@ public class Assets extends Nature {
     private Integer protocol;
 
     /**
-     * Streaming output flag. {@code 1} = atomic (buffered), {@code 2} = streaming (flushed).
+     * Mandatory output ownership mode.
+     * <ul>
+     * <li>{@code 1}: bounded atomic response; the gateway requires Content-Length and materializes the complete body</li>
+     * <li>{@code 2}: realtime stream such as SSE or LLM output</li>
+     * <li>{@code 3}: file download with separate admission and progress protection</li>
+     * </ul>
      */
     private Integer stream;
 

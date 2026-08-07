@@ -47,6 +47,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.network.Connection;
+import org.miaixz.bus.fabric.network.NetworkTimeout;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
@@ -354,6 +355,8 @@ public final class Http2Connection implements AutoCloseable {
     private Http2Connection(final Connection connection, final PushObserver pushObserver, final Dispatcher dispatcher,
             final boolean ownsDispatcher, final long maxQueuedInboundBytes) {
         this.connection = require(connection, "Network connection");
+        // Request read deadlines are stream-local under multiplexing; never retain an HTTP/1 socket timeout here.
+        NetworkTimeout.apply(this.connection.source().timeout(), Duration.ZERO);
         this.source = IoKit.buffer(this.connection.source());
         this.sink = this.connection.sink();
         this.frameWriter = new Http2FrameWriter(this.sink);

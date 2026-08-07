@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -50,9 +51,13 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Delivery;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
+import org.miaixz.bus.vortex.routing.StreamingRelay;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -62,7 +67,7 @@ import reactor.core.publisher.Mono;
  * <p>
  * This executor follows the same WebClient execution shape as {@link org.miaixz.bus.vortex.routing.rest.RestExecutor}:
  * it validates the resolved runtime route asset, builds a downstream request, configures headers and body content, then
- * chooses between streaming and buffering response handling.
+ * selects buffered, realtime-streaming or download response ownership from the strict route asset mode.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -83,8 +88,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Executes a standard MCP Streamable HTTP request.
      * <p>
      * The method validates the qualified route context and resolved MCP route asset, builds the downstream URI, copies
-     * MCP-specific request headers, attaches the POST JSON body when present, and then delegates to either streaming or
-     * buffering response handling based on the request method and route asset configuration.
+     * MCP-specific request headers, attaches the POST JSON body when present, and delegates to buffered,
+     * realtime-streaming or download response handling based on the route asset configuration.
      *
      * @param context The request context populated by the strategy chain.
      * @param request The incoming MCP {@link ServerRequest}.
@@ -206,8 +211,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path);
 
-        boolean isStreaming = context.getHttpMethod() == Http.Method.GET
-                || (target.getStream() != null && target.getStream() == 2);
+        Delivery delivery = Delivery.of(target.getStream());
+        boolean isStreaming = delivery != Delivery.BUFFERED;
         if (isStreaming) {
             Logger.info(
                     true,
@@ -226,8 +231,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     path);
         }
 
-        return isStreaming ? executeStreaming(bodySpec, context, ip, method, path)
-                : executeBuffering(bodySpec, ip, method, path);
+        return isStreaming ? executeStreaming(bodySpec, context, delivery, ip, method, path)
+                : executeBuffering(bodySpec, context, ip, method, path);
     }
 
     /**
@@ -395,13 +400,14 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     }
 
     /**
-     * Handles the execution for a STREAMING MCP request.
+     * Handles a realtime-streaming or download MCP response without body aggregation.
      * <p>
      * This path uses {@code exchangeToMono} and forwards the downstream response body as a {@link Flux} of
-     * {@link DataBuffer}s. It is used for SSE-style MCP responses and long-lived GET streams, and mirrors the streaming
-     * response branch used by REST routing.
+     * {@link DataBuffer}s. The selected mode controls admission and whether download progress protection is applied.
      *
      * @param bodySpec The request body specification.
+     * @param context  qualified MCP request context used for endpoint rewriting
+     * @param delivery realtime-stream or download delivery mode
      * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
@@ -410,6 +416,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     private Mono<ServerResponse> executeStreaming(
             WebClient.RequestBodySpec bodySpec,
             Context context,
+            Delivery delivery,
             String ip,
             String method,
             String path) {
@@ -450,7 +457,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             responseEntity.getHeaders(),
                             ip,
                             method,
-                            path);
+                            path).doOnDiscard(PooledDataBuffer.class, Octets::release);
+                    bodyFlux = StreamingRelay.relay(bodyFlux, delivery);
 
                     return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
                 })
@@ -620,13 +628,14 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     }
 
     /**
-     * Handles the execution for a BUFFERING MCP request.
+     * Handles an atomic MCP response under the bounded response-byte budget.
      * <p>
      * This path mirrors REST buffering behavior by consuming the downstream response body inside the WebClient exchange
-     * before the {@link ServerResponse} is returned. It is used for non-streaming MCP responses such as JSON
-     * acknowledgements.
+     * before the {@link ServerResponse} is returned. Content-Length is mandatory and the exact logical-byte lease is
+     * retained until the gateway response write terminates.
      *
      * @param bodySpec The request body specification.
+     * @param context  qualified MCP request context
      * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
@@ -634,70 +643,73 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      */
     private Mono<ServerResponse> executeBuffering(
             WebClient.RequestBodySpec bodySpec,
+            Context context,
             String ip,
             String method,
             String path) {
-        return bodySpec.exchangeToMono(clientResponse -> {
-            Logger.info(
-                    false,
-                    "Vortex",
-                    "Received downstream status: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_BUFFERED, {}",
-                    ip,
-                    method,
-                    path,
-                    clientResponse.statusCode());
-
-            return clientResponse.toEntity(byte[].class).flatMap(responseEntity -> {
-                Logger.info(
-                        false,
-                        "Vortex",
-                        "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
-                        ip,
-                        method,
-                        path,
-                        responseEntity.getHeaders());
-
-                byte[] body = responseEntity.getBody();
-                if (body != null && body.length > 0) {
+        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+                .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     Logger.info(
                             false,
                             "Vortex",
-                            "Received buffered content: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED, bytes={}",
+                            "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
                             ip,
                             method,
                             path,
-                            body.length);
-                } else {
-                    Logger.warn(
-                            false,
-                            "Vortex",
-                            "Received buffered content is empty: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_CONTENT_BUFFERED",
-                            ip,
-                            method,
-                            path);
-                }
+                            responseEntity.getHeaders());
 
-                ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
-                responseBuilder.headers(headers -> {
-                    headers.addAll(responseEntity.getHeaders());
-                    headers.remove(HttpHeaders.HOST);
-                    headers.remove(HttpHeaders.TRANSFER_ENCODING);
-                    headers.remove(HttpHeaders.CONTENT_LENGTH);
-                });
+                    ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
+                    responseBuilder.headers(headers -> {
+                        headers.addAll(responseEntity.getHeaders());
+                        headers.remove(HttpHeaders.HOST);
+                        headers.remove(HttpHeaders.TRANSFER_ENCODING);
+                        headers.remove(HttpHeaders.CONTENT_LENGTH);
+                    });
 
-                if (body != null && body.length > 0) {
-                    return responseBuilder.bodyValue(body);
-                }
-                return responseBuilder.build();
-            });
-        }).doOnSubscribe(
-                subscription -> Logger.info(
-                        true,
-                        "Vortex",
-                        "Request subscribed (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
-                        ip,
-                        method,
-                        path))
+                    Flux<DataBuffer> bodyFlux = responseEntity.getBody() == null ? Flux.empty()
+                            : responseEntity.getBody();
+                    boolean bodyForbidden = HttpMethod.HEAD.matches(method)
+                            || responseEntity.getStatusCode().is1xxInformational()
+                            || responseEntity.getStatusCode().value() == 204
+                            || responseEntity.getStatusCode().value() == 304;
+                    if (bodyForbidden) {
+                        return Octets.discard(bodyFlux).then(responseBuilder.build());
+                    }
+
+                    long declaredLength = responseEntity.getHeaders().getContentLength();
+                    if (declaredLength < 0
+                            || declaredLength > Math.toIntExact(Holder.get().getMaxBufferedResponseSize())) {
+                        return Octets.discard(bodyFlux).then(
+                                Mono.error(
+                                        new DataBufferLimitException(
+                                                "Atomic MCP response requires Content-Length in range 0.."
+                                                        + Math.toIntExact(Holder.get().getMaxBufferedResponseSize()))));
+                    }
+                    return Octets.readForRelay(
+                            bodyFlux,
+                            Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                            Holder.responseBufferBudget(),
+                            declaredLength).flatMap(bufferedBody -> {
+                                int bodyLength = bufferedBody.length();
+                                if (bodyLength != declaredLength) {
+                                    bufferedBody.close();
+                                    return Mono.error(
+                                            new DataBufferLimitException(
+                                                    "Atomic MCP response length mismatch: declared=" + declaredLength
+                                                            + ", actual=" + bodyLength));
+                                }
+                                return responseBuilder.contentLength(bodyLength)
+                                        .body(BodyInserters.fromDataBuffers(Octets.chunksAndClose(bufferedBody)));
+                            });
+                })
+                .doOnSubscribe(
+                        subscription -> Logger.info(
+                                true,
+                                "Vortex",
+                                "Request subscribed (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_SUBSCRIBE",
+                                ip,
+                                method,
+                                path))
                 .doOnSuccess(
                         serverResponse -> Logger.info(
                                 false,

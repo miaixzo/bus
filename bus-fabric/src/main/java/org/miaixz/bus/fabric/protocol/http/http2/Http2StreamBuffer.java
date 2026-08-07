@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
@@ -30,6 +31,7 @@ import java.util.function.LongConsumer;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.exception.SocketException;
+import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -218,12 +220,40 @@ final class Http2StreamBuffer {
      * @throws IOException when the wait is interrupted or the stream fails
      */
     long read(final Buffer target, final long limit) throws IOException {
+        return read(target, limit, Duration.ZERO);
+    }
+
+    /**
+     * Reads one available range or waits up to the configured no-progress timeout. The deadline belongs only to this
+     * consumer invocation; expiry is reported to the owning stream, which sends RST_STREAM without closing the shared
+     * HTTP/2 connection.
+     *
+     * @param target  destination buffer
+     * @param limit   maximum bytes to transfer
+     * @param timeout non-negative wait duration; zero waits indefinitely
+     * @return bytes read, or {@code -1} after a clean remote end
+     * @throws IOException      when the waiter is interrupted or the stream fails
+     * @throws TimeoutException when a positive timeout expires without data or a terminal signal
+     */
+    long read(final Buffer target, final long limit, final Duration timeout) throws IOException {
         if (target == null || limit < 0L) {
             throw new ValidateException("Invalid HTTP/2 stream read request");
+        }
+        if (timeout == null || timeout.isNegative()) {
+            throw new ValidateException("Invalid HTTP/2 stream read timeout");
         }
         if (limit == 0L) {
             return 0L;
         }
+        long timeoutNanos = Long.MAX_VALUE;
+        if (!timeout.isZero()) {
+            try {
+                timeoutNanos = timeout.toNanos();
+            } catch (final ArithmeticException ignored) {
+                timeoutNanos = Long.MAX_VALUE;
+            }
+        }
+        final long started = System.nanoTime();
         for (;;) {
             final long consumer = consumerIndex;
             final long producer = (long) PRODUCER_INDEX.getAcquire(this);
@@ -271,7 +301,16 @@ final class Http2StreamBuffer {
             }
             waiter = Thread.currentThread();
             if (consumerIndex == (long) PRODUCER_INDEX.getAcquire(this) && !isTerminal()) {
-                LockSupport.park(this);
+                if (timeoutNanos == Long.MAX_VALUE) {
+                    LockSupport.park(this);
+                } else {
+                    final long remaining = timeoutNanos - (System.nanoTime() - started);
+                    if (remaining <= 0L) {
+                        waiter = null;
+                        throw new TimeoutException("Timed out waiting for HTTP/2 response body data");
+                    }
+                    LockSupport.parkNanos(this, remaining);
+                }
             }
             waiter = null;
             if (Thread.interrupted()) {

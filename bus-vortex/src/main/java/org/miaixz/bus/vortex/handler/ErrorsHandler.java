@@ -28,6 +28,7 @@ import lombok.*;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -51,14 +52,12 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 /**
- * Global exception handler that processes exceptions in Web applications and returns standardized JSON responses.
+ * Global exception handler that maps gateway failures to transport status codes and standardized response bodies.
  * <p>
- * This handler implements {@link WebExceptionHandler} to catch various exceptions that occur during request processing.
- * It sets the HTTP status to OK (200) and the content type to JSON, then constructs a {@link Message} object based on
- * the exception type. The message is then serialized to JSON and written to the response body.
- * <p>
- * This version is enhanced to correctly identify wrapped exceptions by checking the root cause before determining the
- * error code.
+ * Wrapped causes are inspected before selecting the status and application error code. Capacity and memory-pressure
+ * failures return HTTP 503 with {@code Retry-After: 1}; timeout, downstream and size failures retain their
+ * corresponding gateway status. The response format follows the request context and falls back to JSON when no context
+ * exists.
  *
  * @author Kimi Liu
  * @since Java 21+
@@ -75,9 +74,8 @@ public class ErrorsHandler implements WebExceptionHandler {
     /**
      * Handles exceptions, generating a standardized error response.
      * <p>
-     * This method is invoked when an exception occurs during request processing. It sets the response status to
-     * {@code HttpStatus.OK} and content type to {@code MediaType.APPLICATION_JSON}. It then builds an error message
-     * based on the exception type and writes the serialized JSON message to the response body.
+     * Selects the transport status, builds the application error message, serializes it in the negotiated format and
+     * writes an exact Content-Length. A response that has already been committed is left unchanged.
      * </p>
      *
      * @param exchange The current {@link ServerWebExchange} object, containing the request and response.
@@ -100,7 +98,11 @@ public class ErrorsHandler implements WebExceptionHandler {
         String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
         Formats formats = (context != null) ? context.getFormat() : Formats.JSON;
-        response.setStatusCode(HttpStatus.OK);
+        HttpStatus status = statusFor(ex);
+        response.setStatusCode(status);
+        if (status == HttpStatus.SERVICE_UNAVAILABLE) {
+            response.getHeaders().set(HttpHeaders.RETRY_AFTER, "1");
+        }
 
         AtomicInteger responseBytes = new AtomicInteger();
         Mono<DataBuffer> dataBufferMono = Mono.fromCallable(() -> buildErrorMessage(ex, method, path))
@@ -156,6 +158,40 @@ public class ErrorsHandler implements WebExceptionHandler {
                         exceptionName);
             }
         });
+    }
+
+    /**
+     * Maps gateway failure categories to transport-level status codes.
+     *
+     * @param error failure chain
+     * @return HTTP status that represents the actual gateway outcome
+     */
+    private HttpStatus statusFor(Throwable error) {
+        ResponseStatusException responseStatus = findCause(error, ResponseStatusException.class);
+        if (responseStatus != null && responseStatus.getStatusCode() instanceof HttpStatus status) {
+            return status;
+        }
+        if (findCause(error, DataBufferLimitException.class) != null) {
+            return HttpStatus.BAD_GATEWAY;
+        }
+        org.miaixz.bus.core.lang.exception.ValidateException validate = findCause(
+                error,
+                org.miaixz.bus.core.lang.exception.ValidateException.class);
+        if (validate != null && ErrorCode._100530.getKey().equals(validate.getErrcode())) {
+            return HttpStatus.PAYLOAD_TOO_LARGE;
+        }
+        if (findCause(error, TimeoutException.class) != null
+                || findCause(error, SocketTimeoutException.class) != null) {
+            return HttpStatus.GATEWAY_TIMEOUT;
+        }
+        if (findCause(error, WebClientException.class) != null
+                || findCause(error, UnknownHostException.class) != null) {
+            return HttpStatus.BAD_GATEWAY;
+        }
+        if (findCause(error, UncheckedException.class) != null) {
+            return HttpStatus.BAD_REQUEST;
+        }
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     /**

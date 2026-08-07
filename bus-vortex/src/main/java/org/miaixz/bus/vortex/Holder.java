@@ -25,8 +25,15 @@ import java.util.List;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.guard.AdmissionGate;
+import org.miaixz.bus.vortex.guard.AsyncByteBudget;
+import org.miaixz.bus.vortex.guard.MemoryPressure;
 import org.miaixz.bus.vortex.magic.Performance;
 
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufAllocatorMetricProvider;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.util.internal.PlatformDependent;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.resources.LoopResources;
 
@@ -39,9 +46,13 @@ import reactor.netty.resources.LoopResources;
  * <p>
  * <b>Managed Resources:</b>
  * <ul>
- * <li>{@link Performance} - Performance configuration (request limits, streaming thresholds, etc.)</li>
- * <li>{@link ConnectionProvider} - HTTP connection pool for REST requests</li>
- * <li>{@link LoopResources} - HTTP event loops for outbound REST requests</li>
+ * <li>{@link Performance} - request, connection, buffering and streaming limits</li>
+ * <li>{@link ConnectionProvider} - shared outbound HTTP connection pool</li>
+ * <li>{@link LoopResources} - shared outbound HTTP event loops</li>
+ * <li>{@link ByteBufAllocator} - unified pooled allocator for inbound and outbound channels</li>
+ * <li>{@link AdmissionGate} - request and streaming concurrency ownership</li>
+ * <li>{@link AsyncByteBudget} - independent request, response and transformation byte budgets</li>
+ * <li>{@link MemoryPressure} - sampled heap and direct-memory pressure state</li>
  * </ul>
  * <p>
  * <b>Thread Safety:</b> This class is thread-safe as it delegates to {@link Instances} which provides thread-safe
@@ -68,6 +79,36 @@ public final class Holder {
     public static final String LOOP_RESOURCES_KEY = "vortex:loop-resources";
 
     /**
+     * Key for the unified allocator used by inbound and outbound Reactor Netty channels.
+     */
+    public static final String ALLOCATOR_KEY = "vortex:allocator";
+
+    /**
+     * Key for the process-wide buffered-request byte budget.
+     */
+    public static final String REQUEST_BUFFER_BUDGET_KEY = "vortex:request-buffer-budget";
+
+    /**
+     * Key for the process-wide buffered-response byte budget.
+     */
+    public static final String RESPONSE_BUFFER_BUDGET_KEY = "vortex:response-buffer-budget";
+
+    /**
+     * Key for the process-wide response-transformation byte budget.
+     */
+    public static final String TRANSFORM_BUFFER_BUDGET_KEY = "vortex:transform-buffer-budget";
+
+    /**
+     * Key for hierarchical request and streaming admission.
+     */
+    public static final String ADMISSION_GATE_KEY = "vortex:admission-gate";
+
+    /**
+     * Key for the sampled heap and direct-memory pressure state.
+     */
+    public static final String MEMORY_PRESSURE_KEY = "vortex:memory-pressure";
+
+    /**
      * Marker key to track initialization status.
      */
     private static final String INIT_MARKER_KEY = "vortex:performance:initialized";
@@ -82,8 +123,8 @@ public final class Holder {
     /**
      * Initializes the global performance configuration.
      * <p>
-     * <b>Thread Safety:</b> This method is thread-safe. Multiple concurrent calls will use the last configuration
-     * provided (ConcurrentHashMap ensures consistency).
+     * This method must run once during startup before any lazily created shared resource is requested. Replacing the
+     * configuration after resources have been created does not resize those existing resources.
      * <p>
      * <b>Example:</b>
      *
@@ -107,11 +148,6 @@ public final class Holder {
         Instances.put(PERFORMANCE_KEY, performance);
         Instances.put(INIT_MARKER_KEY, Boolean.TRUE);
         Logger.info(true, "Vortex", "Performance profile applied");
-        Logger.info(
-                true,
-                "Vortex",
-                "- Streaming Request Threshold: {} MB",
-                performance.getStreamingRequestThreshold() / (1024 * 1024));
         Logger.info(true, "Vortex", "- Max Request Size: {} MB", performance.getMaxRequestSize() / (1024 * 1024));
         Logger.info(
                 true,
@@ -119,6 +155,25 @@ public final class Holder {
                 "- Max Multipart Request Size: {} MB",
                 performance.getMaxMultipartRequestSize() / (1024 * 1024));
         Logger.info(true, "Vortex", "- Max Connections: {}", performance.getMaxConnections());
+        Logger.info(true, "Vortex", "- Max In-Flight Requests: {}", performance.getMaxInFlightRequests());
+        Logger.info(true, "Vortex", "- Max Streaming Requests: {}", performance.getMaxTotalStreamingRequests());
+        Logger.info(true, "Vortex", "- Max Downloads: {}", performance.getMaxDownloadRequests());
+        Logger.info(true, "Vortex", "- Max Realtime Streams: {}", performance.getMaxRealtimeStreamingRequests());
+        Logger.info(
+                true,
+                "Vortex",
+                "- Request Buffer Budget: {} MB",
+                performance.getRequestBufferBudgetBytes() / (1024 * 1024));
+        Logger.info(
+                true,
+                "Vortex",
+                "- Response Buffer Budget: {} MB",
+                performance.getResponseBufferBudgetBytes() / (1024 * 1024));
+        Logger.info(
+                true,
+                "Vortex",
+                "- Transform Buffer Budget: {} MB",
+                performance.getTransformBufferBudgetBytes() / (1024 * 1024));
         Logger.info(true, "Vortex", "- Pending Acquire Timeout: {} seconds", pendingAcquireTimeoutSeconds(performance));
         Logger.info(true, "Vortex", "- Pending Acquire Max Count: {}", pendingAcquireMaxCount(performance));
         Logger.info(true, "Vortex", "- Outbound Max Idle: {} seconds", outboundMaxIdleSeconds(performance));
@@ -189,13 +244,87 @@ public final class Holder {
     }
 
     /**
+     * Returns the only allocator used by Vortex network channels and buffer factories.
+     *
+     * @return shared pooled direct allocator with built-in metrics
+     */
+    public static ByteBufAllocator allocator() {
+        return Instances.get(ALLOCATOR_KEY, () -> new PooledByteBufAllocator(true));
+    }
+
+    /**
+     * Returns hierarchical request and streaming admission initialized from the startup profile.
+     *
+     * @return process-wide admission gate
+     */
+    public static AdmissionGate admissionGate() {
+        Performance performance = get();
+        return Instances.get(
+                ADMISSION_GATE_KEY,
+                () -> new AdmissionGate(performance.getMaxInFlightRequests(),
+                        performance.getMaxTotalStreamingRequests(), performance.getMaxDownloadRequests(),
+                        performance.getMaxRealtimeStreamingRequests()));
+    }
+
+    /**
+     * Returns the process-wide logical-byte budget for buffered request bodies.
+     *
+     * @return buffered-request byte budget
+     */
+    public static AsyncByteBudget requestBufferBudget() {
+        return Instances.get(REQUEST_BUFFER_BUDGET_KEY, () -> new AsyncByteBudget(get().getRequestBufferBudgetBytes()));
+    }
+
+    /**
+     * Returns the process-wide logical-byte budget for buffered downstream responses.
+     *
+     * @return buffered-response byte budget
+     */
+    public static AsyncByteBudget responseBufferBudget() {
+        return Instances
+                .get(RESPONSE_BUFFER_BUDGET_KEY, () -> new AsyncByteBudget(get().getResponseBufferBudgetBytes()));
+    }
+
+    /**
+     * Returns the process-wide logical-byte budget for response transformations.
+     *
+     * @return response-transformation byte budget
+     */
+    public static AsyncByteBudget transformBufferBudget() {
+        return Instances
+                .get(TRANSFORM_BUFFER_BUDGET_KEY, () -> new AsyncByteBudget(get().getTransformBufferBudgetBytes()));
+    }
+
+    /**
+     * Returns the lazily started heap and direct-memory pressure state.
+     *
+     * @return process-wide memory pressure
+     */
+    public static MemoryPressure memoryPressure() {
+        return Instances.get(
+                MEMORY_PRESSURE_KEY,
+                () -> new MemoryPressure(Holder::usedDirectMemoryBytes, PlatformDependent.maxDirectMemory(),
+                        get().getDirectMemoryHighWatermark(), get().getDirectMemoryLowWatermark(),
+                        get().getMemorySampleIntervalMillis()));
+    }
+
+    /**
+     * Returns direct bytes currently allocated by the unified Netty allocator.
+     *
+     * @return allocated direct bytes
+     */
+    public static long usedDirectMemoryBytes() {
+        return ((ByteBufAllocatorMetricProvider) allocator()).metric().usedDirectMemory();
+    }
+
+    /**
      * Resolves the pending connection acquisition timeout.
      *
      * @param performance performance configuration
      * @return timeout in seconds
      */
     private static int pendingAcquireTimeoutSeconds(Performance performance) {
-        return performance.getPendingAcquireTimeoutSeconds() > 0 ? performance.getPendingAcquireTimeoutSeconds() : 45;
+        return performance.getPendingAcquireTimeoutSeconds() > 0 ? performance.getPendingAcquireTimeoutSeconds() : 5;
     }
 
     /**
@@ -208,8 +337,7 @@ public final class Holder {
         if (performance.getPendingAcquireMaxCount() > 0) {
             return performance.getPendingAcquireMaxCount();
         }
-        long derived = Math.max(1L, performance.getMaxConnections()) * 2L;
-        return derived > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) derived;
+        return Math.max(1, performance.getMaxConnections());
     }
 
     /**
@@ -305,6 +433,30 @@ public final class Holder {
     }
 
     /**
+     * Stops the memory sampler and closes every byte budget during gateway shutdown.
+     * <p>
+     * Closing a budget fails queued acquisitions; already granted leases can still return their ownership safely.
+     */
+    public static void closeCapacityResources() {
+        MemoryPressure pressure = Instances.get(MEMORY_PRESSURE_KEY, () -> null);
+        if (pressure != null) {
+            pressure.close();
+        }
+        AsyncByteBudget request = Instances.get(REQUEST_BUFFER_BUDGET_KEY, () -> null);
+        AsyncByteBudget response = Instances.get(RESPONSE_BUFFER_BUDGET_KEY, () -> null);
+        AsyncByteBudget transform = Instances.get(TRANSFORM_BUFFER_BUDGET_KEY, () -> null);
+        if (request != null) {
+            request.close();
+        }
+        if (response != null) {
+            response.close();
+        }
+        if (transform != null) {
+            transform.close();
+        }
+    }
+
+    /**
      * Gets the global performance configuration.
      * <p>
      * Returns the configuration instance initialized at startup. If not explicitly initialized, returns the default
@@ -325,18 +477,6 @@ public final class Holder {
      */
     public static boolean isInitialized() {
         return Instances.get(INIT_MARKER_KEY, () -> Boolean.FALSE);
-    }
-
-    /**
-     * Gets the streaming request threshold in bytes.
-     * <p>
-     * Request bodies smaller than this threshold will be cached in memory for faster processing. Request bodies larger
-     * than this threshold will use streaming processing.
-     *
-     * @return The streaming request threshold in bytes
-     */
-    public static long getStreamingRequestThreshold() {
-        return get().getStreamingRequestThreshold();
     }
 
     /**

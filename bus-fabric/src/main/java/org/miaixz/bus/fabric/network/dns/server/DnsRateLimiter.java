@@ -109,6 +109,7 @@ final class DnsRateLimiter {
          * Creates an empty counter.
          */
         private Counter() {
+            // No initialization required.
         }
 
         /**

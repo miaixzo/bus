@@ -19,7 +19,15 @@
 */
 package org.miaixz.bus.vortex.strategy.request;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.server.ServerWebExchange;
+
 import org.miaixz.bus.core.Order;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.strategy.RequestStrategy;
+
+import reactor.core.publisher.Mono;
 
 /**
  * CST URL-based request parsing strategy.
@@ -31,13 +39,36 @@ import org.miaixz.bus.core.Order;
  * @since Java 21+
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
-public class CstRequestStrategy extends RestRequestStrategy {
+public class CstRequestStrategy extends RequestStrategy {
 
     /**
      * Creates a CST request strategy.
      */
     public CstRequestStrategy() {
         super();
+    }
+
+    /**
+     * Streams non-GET JSON bodies without consuming them because CST resolves the route from the URL.
+     *
+     * @param exchange current exchange
+     * @param chain    remaining strategy chain
+     * @return processing completion
+     */
+    @Override
+    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
+        return Mono.deferContextual(contextView -> {
+            Context context = contextView.get(Context.class);
+            ServerWebExchange prepared = prepare(exchange, context, true);
+            MediaType contentType = prepared.getRequest().getHeaders().getContentType();
+            boolean rawJson = prepared.getRequest().getMethod() != HttpMethod.GET && contentType != null
+                    && org.miaixz.bus.core.net.MediaType.isJson(contentType.toString());
+            if (rawJson) {
+                prepared.getAttributes().put(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE, Boolean.TRUE);
+                return chain.apply(prepared);
+            }
+            return parse(prepared, chain, context);
+        });
     }
 
 }

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
+import java.net.SocketTimeoutException;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -26,6 +27,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
+import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -324,14 +326,51 @@ public final class HttpTransport implements HttpStage {
             final HttpChain.FailureScope scope,
             final boolean beforeResponse,
             final RuntimeException cause) {
-        final HttpChain.FailureReason reason = cancellation.cancelled() ? HttpChain.FailureReason.CANCELLED
-                : cause instanceof ProtocolException ? HttpChain.FailureReason.PROTOCOL : HttpChain.FailureReason.IO;
+        final Throwable cancellationCause = cancellation.cause();
+        final Throwable cancellationTimeout = timeoutCause(cancellationCause);
+        final Throwable timeoutCause = cancellationTimeout != null ? cancellationTimeout : timeoutCause(cause);
+        final HttpChain.FailureReason reason;
+        final Throwable effectiveCause;
+        if (timeoutCause != null) {
+            reason = HttpChain.FailureReason.TIMEOUT;
+            effectiveCause = timeoutCause;
+        } else if (cancellation.cancelled()) {
+            reason = HttpChain.FailureReason.CANCELLED;
+            effectiveCause = cancellationCause != null ? cancellationCause : cause;
+        } else if (cause instanceof ProtocolException) {
+            reason = HttpChain.FailureReason.PROTOCOL;
+            effectiveCause = cause;
+        } else {
+            reason = HttpChain.FailureReason.IO;
+            effectiveCause = cause;
+        }
         final ConnectionLease lease = chain.lease();
         final Connection connection = chain.connection();
         final boolean reusedConnection = lease != null && lease.reusedConnection() && connection != null
                 && !connection.multiplex();
         return new HttpChain.ExchangeFailure(HttpChain.DeliveryState.MAYBE_PROCESSED, scope, reason, reusedConnection,
-                beforeResponse, cause).exception();
+                beforeResponse, effectiveCause).exception();
+    }
+
+    /**
+     * Finds a configured or socket-level timeout in a bounded causal chain.
+     *
+     * @param failure failure candidate
+     * @return timeout cause, or {@code null}
+     */
+    private static Throwable timeoutCause(final Throwable failure) {
+        Throwable current = failure;
+        for (int depth = 0; current != null && depth < 16; depth++) {
+            if (current instanceof TimeoutException || current instanceof SocketTimeoutException) {
+                return current;
+            }
+            final Throwable next = current.getCause();
+            if (next == current) {
+                break;
+            }
+            current = next;
+        }
+        return null;
     }
 
     /**

@@ -75,6 +75,7 @@ public final class DnsName {
      * Prevents instantiation of this utility class.
      */
     private DnsName() {
+        // No initialization required.
     }
 
     /**

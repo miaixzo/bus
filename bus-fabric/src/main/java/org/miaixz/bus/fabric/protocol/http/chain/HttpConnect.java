@@ -42,6 +42,7 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -2340,6 +2341,16 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         private final Timeout timeout;
 
         /**
+         * Per-read timeout that closes the blocking channel and preserves timeout semantics.
+         */
+        private final AsyncTimeout readTimeout;
+
+        /**
+         * Per-write timeout that closes the blocking channel and preserves timeout semantics.
+         */
+        private final AsyncTimeout writeTimeout;
+
+        /**
          * Source view for protocol readers.
          */
         private final Source source;
@@ -2366,6 +2377,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             this.dispatcher = require(dispatcher, "Dispatcher");
             this.timeout = require(timeout, "Timeout");
             this.readBuffer = ByteBuffer.allocateDirect(Builder.BYTES_64_KIB);
+            this.readTimeout = new SocketOperationTimeout("Socket read timed out");
+            this.writeTimeout = new SocketOperationTimeout("Socket write timed out");
             this.source = new SocketSource();
             this.sink = new SocketSink();
         }
@@ -2382,13 +2395,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (!checkedTarget.hasRemaining()) {
                 return CompletableFuture.completedFuture(Normal._0);
             }
-            return direct(() -> {
-                try {
-                    return socket.read(checkedTarget);
-                } catch (final IOException e) {
-                    throw new SocketException("Socket read failed", e);
-                }
-            });
+            try {
+                return CompletableFuture.completedFuture(readSocket(checkedTarget));
+            } catch (final IOException e) {
+                return CompletableFuture.failedFuture(e);
+            }
         }
 
         /**
@@ -2404,60 +2415,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (requested == Normal._0) {
                 return CompletableFuture.completedFuture(Normal._0);
             }
-            return direct(() -> {
+            try {
                 int written = Normal._0;
                 int zeroProgress = Normal._0;
-                try {
-                    while (checkedSource.hasRemaining()) {
-                        final int count = socket.write(checkedSource);
-                        if (count == Normal._0) {
-                            if (++zeroProgress >= Normal._16) {
-                                throw new SocketException("Socket write made no progress after 16 attempts");
-                            }
-                            Thread.onSpinWait();
-                            continue;
-                        }
-                        zeroProgress = Normal._0;
-                        written += count;
-                    }
-                    return written;
-                } catch (final IOException e) {
-                    throw new SocketException("Socket write failed", e);
-                }
-            });
-        }
-
-        /**
-         * Reads directly from the blocking socket into the caller-owned NIO buffer.
-         *
-         * @param target writable destination
-         * @return bytes read or EOF
-         */
-        @Override
-        public int readSynchronously(final ByteBuffer target) {
-            final ByteBuffer checkedTarget = require(target, "Read target");
-            try {
-                return socket.read(checkedTarget);
-            } catch (final IOException e) {
-                throw new SocketException("Socket read failed", e);
-            }
-        }
-
-        /**
-         * Writes the complete caller-owned NIO buffer directly to the blocking socket.
-         *
-         * @param source source buffer
-         * @return number of bytes written
-         */
-        @Override
-        public int writeSynchronously(final ByteBuffer source) {
-            final ByteBuffer checkedSource = require(source, "Write source");
-            final int requested = checkedSource.remaining();
-            int written = Normal._0;
-            int zeroProgress = Normal._0;
-            try {
                 while (checkedSource.hasRemaining()) {
-                    final int count = socket.write(checkedSource);
+                    final int count = writeSocket(checkedSource);
                     if (count == Normal._0) {
                         if (++zeroProgress >= Normal._16) {
                             throw new SocketException("Socket write made no progress after 16 attempts");
@@ -2468,10 +2430,49 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                     zeroProgress = Normal._0;
                     written += count;
                 }
-                return written == requested ? written : requested;
+                return CompletableFuture.completedFuture(written);
             } catch (final IOException e) {
-                throw new SocketException("Socket write failed", e);
+                return CompletableFuture.failedFuture(e);
             }
+        }
+
+        /**
+         * Reads directly from the blocking socket into the caller-owned NIO buffer.
+         *
+         * @param target writable destination
+         * @return bytes read or EOF
+         */
+        @Override
+        public int readSynchronously(final ByteBuffer target) throws IOException {
+            final ByteBuffer checkedTarget = require(target, "Read target");
+            return readSocket(checkedTarget);
+        }
+
+        /**
+         * Writes the complete caller-owned NIO buffer directly to the blocking socket.
+         *
+         * @param source source buffer
+         * @return number of bytes written
+         */
+        @Override
+        public int writeSynchronously(final ByteBuffer source) throws IOException {
+            final ByteBuffer checkedSource = require(source, "Write source");
+            final int requested = checkedSource.remaining();
+            int written = Normal._0;
+            int zeroProgress = Normal._0;
+            while (checkedSource.hasRemaining()) {
+                final int count = writeSocket(checkedSource);
+                if (count == Normal._0) {
+                    if (++zeroProgress >= Normal._16) {
+                        throw new SocketException("Socket write made no progress after 16 attempts");
+                    }
+                    Thread.onSpinWait();
+                    continue;
+                }
+                zeroProgress = Normal._0;
+                written += count;
+            }
+            return written == requested ? written : requested;
         }
 
         /**
@@ -2488,7 +2489,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (byteCount == Normal._0) {
                 return CompletableFuture.completedFuture(0L);
             }
-            return direct(() -> readSynchronously(checkedTarget, byteCount));
+            try {
+                return CompletableFuture.completedFuture(readSynchronously(checkedTarget, byteCount));
+            } catch (final IOException e) {
+                return CompletableFuture.failedFuture(e);
+            }
         }
 
         /**
@@ -2499,7 +2504,7 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * @return number of bytes read, zero when the channel makes no progress, or -1 at end-of-stream
          */
         @Override
-        public long readSynchronously(final Buffer target, final long byteCount) {
+        public long readSynchronously(final Buffer target, final long byteCount) throws IOException {
             final Buffer checkedTarget = require(target, "Read target");
             Assert.isTrue(byteCount >= Normal._0, () -> new ValidateException("Read byte count must not be negative"));
             if (byteCount == Normal._0) {
@@ -2507,16 +2512,12 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             }
             readBuffer.clear();
             readBuffer.limit(readCapacity(Math.min(byteCount, readBuffer.capacity())));
-            try {
-                final int read = socket.read(readBuffer);
-                if (read > Normal._0) {
-                    readBuffer.flip();
-                    checkedTarget.write(readBuffer);
-                }
-                return read;
-            } catch (final IOException e) {
-                throw new SocketException("Socket read failed", e);
+            final int read = readSocket(readBuffer);
+            if (read > Normal._0) {
+                readBuffer.flip();
+                checkedTarget.write(readBuffer);
             }
+            return read;
         }
 
         /**
@@ -2536,7 +2537,11 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
             if (byteCount == Normal._0) {
                 return CompletableFuture.completedFuture(0L);
             }
-            return direct(() -> writeSynchronously(checkedSource, byteCount));
+            try {
+                return CompletableFuture.completedFuture(writeSynchronously(checkedSource, byteCount));
+            } catch (final IOException e) {
+                return CompletableFuture.failedFuture(e);
+            }
         }
 
         /**
@@ -2547,33 +2552,29 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
          * @return requested byte count after all bytes have been written
          */
         @Override
-        public long writeSynchronously(final Buffer source, final long byteCount) {
+        public long writeSynchronously(final Buffer source, final long byteCount) throws IOException {
             final Buffer checkedSource = require(source, "Write source");
             Assert.isTrue(
                     byteCount >= Normal._0 && byteCount <= checkedSource.size(),
                     () -> new ValidateException("Write byte count must be between zero and source size"));
             long written = Normal._0;
             int zeroProgress = Normal._0;
-            try {
-                while (written < byteCount) {
-                    final long remaining = byteCount - written;
-                    final ByteBuffer view = checkedSource.nioBuffer(toIntSize(remaining));
-                    final int count = socket.write(view);
-                    if (count == Normal._0) {
-                        if (++zeroProgress >= Normal._16) {
-                            throw new SocketException("Socket write made no progress after 16 attempts");
-                        }
-                        Thread.onSpinWait();
-                        continue;
+            while (written < byteCount) {
+                final long remaining = byteCount - written;
+                final ByteBuffer view = checkedSource.nioBuffer(toIntSize(remaining));
+                final int count = writeSocket(view);
+                if (count == Normal._0) {
+                    if (++zeroProgress >= Normal._16) {
+                        throw new SocketException("Socket write made no progress after 16 attempts");
                     }
-                    zeroProgress = Normal._0;
-                    checkedSource.skip(count);
-                    written += count;
+                    Thread.onSpinWait();
+                    continue;
                 }
-                return written;
-            } catch (final IOException e) {
-                throw new SocketException("Socket write failed", e);
+                zeroProgress = Normal._0;
+                checkedSource.skip(count);
+                written += count;
             }
+            return written;
         }
 
         /**
@@ -2696,6 +2697,97 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
         }
 
         /**
+         * Per-direction watchdog that closes the physical socket when one blocking operation exceeds its configured
+         * no-progress timeout.
+         */
+        private final class SocketOperationTimeout extends AsyncTimeout {
+
+            /** Message identifying the timed operation. */
+            private final String message;
+
+            /**
+             * Creates a socket operation watchdog.
+             *
+             * @param message timeout message exposed to callers
+             */
+            private SocketOperationTimeout(final String message) {
+                this.message = message;
+            }
+
+            /** Creates the checked timeout while retaining a close-induced socket failure. */
+            @Override
+            protected IOException newTimeoutException(final IOException cause) {
+                final SocketTimeoutException failure = new SocketTimeoutException(message);
+                if (cause != null) {
+                    failure.initCause(cause);
+                }
+                return failure;
+            }
+
+            /** Closes the socket so its current blocking read or write returns promptly. */
+            @Override
+            protected void timedOut() {
+                try {
+                    socket.close();
+                } catch (final IOException ignored) {
+                    // The timeout has already won; channel-close failures are cleanup-only.
+                }
+            }
+        }
+
+        /**
+         * Performs one timeout-aware physical socket read. Every cleartext and TLS read path ultimately reaches this
+         * method, so expiration has one authoritative connection-closing boundary.
+         *
+         * @param target writable native destination
+         * @return bytes read, zero for no progress, or {@code -1} at end-of-stream
+         * @throws IOException when the socket fails or the configured read timeout expires
+         */
+        private int readSocket(final ByteBuffer target) throws IOException {
+            readTimeout.enter();
+            try {
+                final int read = socket.read(target);
+                if (readTimeout.exit()) {
+                    throw new SocketTimeoutException("Socket read timed out");
+                }
+                return read;
+            } catch (final IOException failure) {
+                if (readTimeout.exit() && !(failure instanceof SocketTimeoutException)) {
+                    final SocketTimeoutException timeoutFailure = new SocketTimeoutException("Socket read timed out");
+                    timeoutFailure.initCause(failure);
+                    throw timeoutFailure;
+                }
+                throw failure;
+            }
+        }
+
+        /**
+         * Performs one timeout-aware physical socket write. Complete writes invoke this once per native progress step,
+         * resetting the no-progress timeout whenever bytes are accepted.
+         *
+         * @param source readable native source
+         * @return bytes accepted by the socket
+         * @throws IOException when the socket fails or the configured write timeout expires
+         */
+        private int writeSocket(final ByteBuffer source) throws IOException {
+            writeTimeout.enter();
+            try {
+                final int written = socket.write(source);
+                if (writeTimeout.exit()) {
+                    throw new SocketTimeoutException("Socket write timed out");
+                }
+                return written;
+            } catch (final IOException failure) {
+                if (writeTimeout.exit() && !(failure instanceof SocketTimeoutException)) {
+                    final SocketTimeoutException timeoutFailure = new SocketTimeoutException("Socket write timed out");
+                    timeoutFailure.initCause(failure);
+                    throw timeoutFailure;
+                }
+                throw failure;
+            }
+        }
+
+        /**
          * Source backed by the socket conduit.
          */
         private final class SocketSource implements Source {
@@ -2708,18 +2800,14 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
              * @return read byte count
              */
             @Override
-            public long read(final Buffer sink, final long byteCount) {
-                return await(SocketConduit.this.read(sink, byteCount), Duration.ZERO, "Socket source read failed");
+            public long read(final Buffer sink, final long byteCount) throws IOException {
+                return SocketConduit.this.readSynchronously(sink, byteCount);
             }
 
-            /**
-             * Returns the no-op timeout.
-             *
-             * @return timeout
-             */
+            /** Returns the physical socket read timeout. */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
-                return org.miaixz.bus.core.io.timout.Timeout.NONE;
+                return readTimeout;
             }
 
             /**
@@ -2744,8 +2832,8 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
              * @param byteCount byte count
              */
             @Override
-            public void write(final Buffer source, final long byteCount) {
-                await(SocketConduit.this.write(source, byteCount), Duration.ZERO, "Socket sink write failed");
+            public void write(final Buffer source, final long byteCount) throws IOException {
+                SocketConduit.this.writeSynchronously(source, byteCount);
             }
 
             /**
@@ -2756,14 +2844,10 @@ public final class HttpConnect implements HttpStage, AutoCloseable {
                 // SocketChannel writes are flushed by the operating system.
             }
 
-            /**
-             * Returns the no-op timeout.
-             *
-             * @return timeout
-             */
+            /** Returns the physical socket write timeout. */
             @Override
             public org.miaixz.bus.core.io.timout.Timeout timeout() {
-                return org.miaixz.bus.core.io.timout.Timeout.NONE;
+                return writeTimeout;
             }
 
             /**

@@ -23,9 +23,11 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -34,6 +36,8 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -129,7 +133,8 @@ public class OpenAIProvider implements LlmProvider {
      * Sends a non-streaming chat completion request to the LLM service.
      * <p>
      * This method sends a POST request to the {@code /v1/chat/completions} endpoint with the provided request
-     * parameters. The response is buffered and returned as a complete {@link LlmResponse} object.
+     * parameters. The response requires Content-Length, is read directly into an exact bounded array, and retains its
+     * response-byte lease until parsing completes.
      * </p>
      *
      * @param request The LLM request containing messages, model, and optional parameters (temperature, max_tokens,
@@ -146,7 +151,20 @@ public class OpenAIProvider implements LlmProvider {
         return Egress.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
                 .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
-                .bodyToMono(String.class).map(this::parseResponse)
+                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class)
+                .flatMap(
+                        responseEntity -> Octets
+                                .readForParsing(
+                                        responseEntity.getBody() == null ? Flux.empty() : responseEntity.getBody(),
+                                        Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                                        Holder.responseBufferBudget(),
+                                        responseEntity.getHeaders().getContentLength())
+                                .flatMap(
+                                        bufferedBody -> Mono
+                                                .fromCallable(
+                                                        () -> this.parseResponse(
+                                                                new String(bufferedBody.bytes(), Charset.UTF_8)))
+                                                .doFinally(signalType -> bufferedBody.close())))
                 .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
     }
 

@@ -19,12 +19,14 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.List;
+import java.time.Duration;
 
 import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.PooledDataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
@@ -32,6 +34,8 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Formats;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Octets;
 import org.miaixz.bus.vortex.Provider;
 
 import reactor.core.publisher.Flux;
@@ -125,9 +129,9 @@ public class ResponseStrategy extends AbstractStrategy {
     /**
      * Creates a response decorator to serialize the response body to XML.
      * <p>
-     * This method wraps the original response and overrides the writeWith method to intercept the response body. It
-     * assumes the original body is a JSON string, converts it to XML, and sets the Content-Type header to
-     * 'application/xml'.
+     * This method wraps the original response and intercepts its bounded JSON body. Input and worst-case output
+     * capacity are acquired asynchronously from the transformation budget, retained through the actual network write,
+     * and released on completion, failure or cancellation.
      * </p>
      *
      * @param exchange The {@link ServerWebExchange} object.
@@ -142,41 +146,56 @@ public class ResponseStrategy extends AbstractStrategy {
              * <p>
              * This override:
              * <ol>
-             * <li>Collects the original response body buffers</li>
-             * <li>Merges them into a single byte array</li>
-             * <li>Converts to string (assumes original is JSON)</li>
-             * <li>Serializes to XML using the XML provider</li>
-             * <li>Wraps the XML result in a new DataBuffer</li>
+             * <li>Requires and validates the original Content-Length</li>
+             * <li>Acquires exact input capacity and reads directly into one array</li>
+             * <li>Acquires bounded output capacity before serialization</li>
+             * <li>Serializes the JSON text through the XML provider</li>
+             * <li>Retains both leases until the transformed response write terminates</li>
              * </ol>
              *
-             * @param body The publisher emitting the original response body data buffers
-             * @return A Mono signaling completion of the write operation
+             * @param body publisher emitting the original response buffers
+             * @return completion of the transformed network write
              */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                Mono<DataBuffer> formattedBufferMono = flux.collectList().flatMap(dataBuffers -> {
-                    byte[] allBytes = merge(dataBuffers);
-                    String bodyString = new String(allBytes, Charset.UTF_8);
-
-                    Provider provider = Formats.XML.getProvider();
-
-                    return provider.serialize(bodyString).map(xmlBody -> {
-                        String xmlString = xmlBody.toString();
-                        Logger.trace(
-                                false,
-                                "Vortex",
-                                "Response formatted to XML: strategy=response, clientIp={}, xml={}",
-                                context.getX_request_ip(),
-                                xmlString);
-                        return bufferFactory().wrap(xmlString.getBytes(Charset.UTF_8));
-                    });
-                });
-
                 getDelegate().getHeaders().setContentType(Formats.XML.getMediaType());
-
-                return super.writeWith(formattedBufferMono);
+                return Octets.readForParsing(
+                        flux,
+                        Math.toIntExact(Holder.get().getMaxTransformResponseSize()),
+                        Holder.transformBufferBudget(),
+                        getDelegate().getHeaders().getContentLength()).flatMap(bufferedBody -> {
+                            String bodyString = new String(bufferedBody.bytes(), Charset.UTF_8);
+                            Provider provider = Formats.XML.getProvider();
+                            return Holder.transformBufferBudget().acquire(Holder.get().getMaxTransformResponseSize())
+                                    .timeout(Duration.ofSeconds(Holder.get().getBufferAcquireTimeoutSeconds()))
+                                    .onErrorMap(
+                                            java.util.concurrent.TimeoutException.class,
+                                            error -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                                                    "Transform output capacity wait timed out", error))
+                                    .flatMap(outputLease -> provider.serialize(bodyString).flatMap(xmlBody -> {
+                                        String xmlString = xmlBody.toString();
+                                        byte[] xmlBytes = xmlString.getBytes(Charset.UTF_8);
+                                        if (xmlBytes.length > Math
+                                                .toIntExact(Holder.get().getMaxTransformResponseSize())) {
+                                            return Mono.error(
+                                                    new DataBufferLimitException("Exceeded XML response limit of "
+                                                            + Math.toIntExact(
+                                                                    Holder.get().getMaxTransformResponseSize())
+                                                            + " bytes"));
+                                        }
+                                        getDelegate().getHeaders().setContentLength(xmlBytes.length);
+                                        Logger.trace(
+                                                false,
+                                                "Vortex",
+                                                "Response formatted to XML: strategy=response, clientIp={}, xml={}",
+                                                context.getX_request_ip(),
+                                                xmlString);
+                                        return super.writeWith(Mono.just(bufferFactory().wrap(xmlBytes)));
+                                    }).doFinally(signalType -> outputLease.close()))
+                                    .doFinally(signalType -> bufferedBody.close());
+                        });
             }
         };
     }
@@ -225,35 +244,6 @@ public class ResponseStrategy extends AbstractStrategy {
                 return super.writeWith(flux);
             }
         };
-    }
-
-    /**
-     * Merges multiple data buffers into a single byte array.
-     *
-     * @param dataBuffers The list of data buffers.
-     * @return The merged byte array.
-     */
-    private byte[] merge(List<? extends DataBuffer> dataBuffers) {
-        try {
-            int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
-
-            byte[] result = new byte[totalBytes];
-
-            int position = 0;
-            for (DataBuffer buffer : dataBuffers) {
-                int length = buffer.readableByteCount();
-                buffer.read(result, position, length);
-                position += length;
-            }
-
-            return result;
-        } finally {
-            dataBuffers.forEach(dataBuffer -> {
-                if (dataBuffer instanceof PooledDataBuffer pooledDataBuffer && pooledDataBuffer.isAllocated()) {
-                    pooledDataBuffer.release();
-                }
-            });
-        }
     }
 
 }
