@@ -23,9 +23,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
+import org.miaixz.bus.mapper.feature.affix.AffixValueProvider;
 import org.miaixz.bus.mapper.feature.audit.AuditConfig;
 import org.miaixz.bus.mapper.feature.populate.PopulateConfig;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
 import org.miaixz.bus.mapper.feature.tenant.TenantConfig;
 import org.miaixz.bus.mapper.feature.visible.VisibleConfig;
 
@@ -177,35 +178,67 @@ public class Context extends org.miaixz.bus.core.Context {
             // Update existing config with new tenant ID
             tenantConfig = TenantConfig.builder().mode(tenantConfig.getMode()).column(tenantConfig.getColumn())
                     .ignore(tenantConfig.getIgnore()).ignoreMappers(tenantConfig.getIgnoreMappers())
-                    .tablePrefix(tenantConfig.getTablePrefix()).enableSqlCache(tenantConfig.isEnableSqlCache())
+                    .affixPrefix(tenantConfig.getAffixPrefix()).affixSuffix(tenantConfig.getAffixSuffix())
+                    .enableSqlCache(tenantConfig.isEnableSqlCache()).required(tenantConfig.isRequired())
                     .provider(() -> tenantId).build();
             config.setTenant(tenantConfig);
         }
     }
 
     /**
-     * Set table prefix for current thread (simplified API).
+     * Sets table prefix and suffix values for the current thread.
      *
-     * @param prefix       the table prefix
-     * @param ignoreTables the tables to ignore prefix (optional)
+     * @param prefix       table prefix
+     * @param suffix       table suffix
+     * @param ignoreTables logical tables excluded from affix handling
      */
-    public static void setPrefix(String prefix, String... ignoreTables) {
+    public static void setAffix(String prefix, String suffix, String... ignoreTables) {
+        java.util.List<String> ignore = ignoreTables == null ? java.util.Collections.emptyList()
+                : java.util.Arrays.asList(ignoreTables);
+        setAffix(prefix, ignore, suffix, ignore);
+    }
+
+    /**
+     * Sets independent prefix and suffix rules for the current thread.
+     *
+     * @param prefix       table prefix
+     * @param prefixIgnore logical tables excluded only from prefix handling
+     * @param suffix       table suffix
+     * @param suffixIgnore logical tables excluded only from suffix handling
+     */
+    public static void setAffix(
+            String prefix,
+            java.util.List<String> prefixIgnore,
+            String suffix,
+            java.util.List<String> suffixIgnore) {
         MapperConfig config = getMapperConfig();
         if (config == null) {
             config = new MapperConfig();
             setMapperConfig(config);
         }
+        AffixValueProvider provider = new AffixValueProvider() {
 
-        TablePrefixConfig tablePrefixConfig = TablePrefixConfig.builder().provider(() -> prefix).build();
-        config.setPrefix(tablePrefixConfig);
+            @Override
+            public String getPrefix() {
+                return prefix;
+            }
+
+            @Override
+            public String getSuffix() {
+                return suffix;
+            }
+        };
+        config.setAffix(
+                AffixRuleConfig.builder().provider(provider).prefixIgnore(prefixIgnore).suffixIgnore(suffixIgnore)
+                        .build());
 
         TenantConfig tenantConfig = config.getTenant();
         if (tenantConfig != null) {
             config.setTenant(
                     TenantConfig.builder().mode(tenantConfig.getMode()).column(tenantConfig.getColumn())
                             .ignore(tenantConfig.getIgnore()).ignoreMappers(tenantConfig.getIgnoreMappers())
-                            .tablePrefix(prefix).enableSqlCache(tenantConfig.isEnableSqlCache())
-                            .provider(tenantConfig.getProvider()).build());
+                            .affixPrefix(prefix).affixSuffix(suffix).enableSqlCache(tenantConfig.isEnableSqlCache())
+                            .required(tenantConfig.isRequired()).provider(tenantConfig.getProvider()).build());
         }
     }
 
@@ -247,9 +280,9 @@ public class Context extends org.miaixz.bus.core.Context {
         private VisibleConfig visible;
 
         /**
-         * Table prefix rewriting configuration.
+         * Table prefix and suffix rewriting configuration.
          */
-        private TablePrefixConfig prefix;
+        private AffixRuleConfig affix;
 
         /**
          * Create builder for fluent API.
@@ -325,13 +358,13 @@ public class Context extends org.miaixz.bus.core.Context {
             }
 
             /**
-             * Configure prefix settings.
+             * Configures prefix and suffix rewrite rules.
              *
-             * @param prefix the prefix configuration
+             * @param affix affix rule configuration
              * @return this builder
              */
-            public Builder prefix(TablePrefixConfig prefix) {
-                config.setPrefix(prefix);
+            public Builder affix(AffixRuleConfig affix) {
+                config.setAffix(affix);
                 return this;
             }
 

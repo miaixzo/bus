@@ -81,6 +81,7 @@ public interface InternetProtocolStats {
      * @since Java 21+
      */
     enum TcpState {
+
         /**
          * Unknown TCP state.
          */
@@ -145,6 +146,147 @@ public interface InternetProtocolStats {
          * No TCP state.
          */
         NONE
+
+        ;
+
+        /**
+         * Maps a BSD TCP state code to a {@link TcpState}.
+         *
+         * @param state the BSD TCP state code
+         * @return the corresponding TCP state, or {@link #UNKNOWN}
+         */
+        public static TcpState fromBsdState(int state) {
+            switch (state) {
+                case 0:
+                    return CLOSED;
+
+                case 1:
+                    return LISTEN;
+
+                case 2:
+                    return SYN_SENT;
+
+                case 3:
+                    return SYN_RECV;
+
+                case 4:
+                    return ESTABLISHED;
+
+                case 5:
+                    return CLOSE_WAIT;
+
+                case 6:
+                    return FIN_WAIT_1;
+
+                case 7:
+                    return CLOSING;
+
+                case 8:
+                    return LAST_ACK;
+
+                case 9:
+                    return FIN_WAIT_2;
+
+                case 10:
+                    return TIME_WAIT;
+
+                default:
+                    return UNKNOWN;
+            }
+        }
+
+        /**
+         * Maps a Windows {@code MIB_TCP_STATE} code to a {@link TcpState}.
+         *
+         * @param state the Windows TCP state code
+         * @return the corresponding TCP state, or {@link #UNKNOWN}
+         */
+        public static TcpState fromWindowsMibState(int state) {
+            switch (state) {
+                case 1:
+                case 12:
+                    return CLOSED;
+
+                case 2:
+                    return LISTEN;
+
+                case 3:
+                    return SYN_SENT;
+
+                case 4:
+                    return SYN_RECV;
+
+                case 5:
+                    return ESTABLISHED;
+
+                case 6:
+                    return FIN_WAIT_1;
+
+                case 7:
+                    return FIN_WAIT_2;
+
+                case 8:
+                    return CLOSE_WAIT;
+
+                case 9:
+                    return CLOSING;
+
+                case 10:
+                    return LAST_ACK;
+
+                case 11:
+                    return TIME_WAIT;
+
+                default:
+                    return UNKNOWN;
+            }
+        }
+
+        /**
+         * Maps a Linux TCP state code to a {@link TcpState}.
+         *
+         * @param state the Linux TCP state code
+         * @return the corresponding TCP state, or {@link #UNKNOWN}
+         */
+        public static TcpState fromLinuxState(int state) {
+            switch (state) {
+                case 0x01:
+                    return ESTABLISHED;
+
+                case 0x02:
+                    return SYN_SENT;
+
+                case 0x03:
+                    return SYN_RECV;
+
+                case 0x04:
+                    return FIN_WAIT_1;
+
+                case 0x05:
+                    return FIN_WAIT_2;
+
+                case 0x06:
+                    return TIME_WAIT;
+
+                case 0x07:
+                    return CLOSED;
+
+                case 0x08:
+                    return CLOSE_WAIT;
+
+                case 0x09:
+                    return LAST_ACK;
+
+                case 0x0A:
+                    return LISTEN;
+
+                case 0x0B:
+                    return CLOSING;
+
+                default:
+                    return UNKNOWN;
+            }
+        }
 
     }
 

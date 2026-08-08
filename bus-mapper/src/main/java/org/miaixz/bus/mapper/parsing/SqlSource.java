@@ -50,7 +50,7 @@ import org.miaixz.bus.mapper.dialect.DialectRegistry;
  * correct parameter mappings. This ensures that:
  * </p>
  * <ul>
- * <li>Modified SQL (with table prefix, tenant conditions, etc.) is preserved</li>
+ * <li>Modified SQL (with affix rewrites, tenant conditions, etc.) is preserved</li>
  * <li>Parameter mappings are dynamically generated based on current parameters (no cache pollution)</li>
  * <li>Subsequent interceptors can process the modified SQL correctly</li>
  * <li>Correctness is prioritized over performance</li>
@@ -89,7 +89,7 @@ public class SqlSource implements org.apache.ibatis.mapping.SqlSource {
     /**
      * The actual SQL (after interceptor processing).
      * <p>
-     * This SQL includes all modifications from previous interceptors (table prefix, tenant conditions, etc.). It is
+     * This SQL includes all modifications from previous interceptors (affix rewrites, tenant conditions, etc.). It is
      * "global" in the sense that it's saved and reused across invocations.
      * </p>
      */

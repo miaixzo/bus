@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.gpu.NvmlKit;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
@@ -268,18 +269,29 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      */
     private static List<GraphicsCard> getGraphicsCardsFromLspci() {
         return getGraphicsCardsFromLspci(
-                Executor.runNative("lspci -vnnm"),
+                Executor.runNative("lspci -vnnmm"),
                 attrs -> new LinuxGraphicsCard(attrs.getName(), attrs.getDeviceId(), attrs.getVendor(),
-                        attrs.getVersionInfo(), attrs.getVram(), attrs.getDrmDevicePath(), attrs.getDriverName(),
+                        attrs.getVersionInfo(), vram(attrs), attrs.getDrmDevicePath(), attrs.getDriverName(),
                         attrs.getPciBusId()),
                 slot -> queryLspciMemorySize(Executor.runNative("lspci -v -s " + slot)),
                 LinuxGraphicsCard::findDrmInfo);
     }
 
     /**
+     * Returns NVML total VRAM when available, otherwise the parsed lspci VRAM.
+     *
+     * @param attrs the parsed graphics card attributes
+     * @return the best available VRAM total
+     */
+    private static long vram(Attrs attrs) {
+        long total = NvmlKit.getVramTotal(NvmlKit.findDevice(attrs.getPciBusId()));
+        return total > 0 ? total : attrs.getVram();
+    }
+
+    /**
      * Parse graphics card information from lspci machine-readable output.
      *
-     * @param lspci      output of {@code lspci -vnnm}
+     * @param lspci      output of {@code lspci -vnnmm}
      * @param factory    function that creates a concrete {@link GraphicsCard} from parsed attributes
      * @param vramLookup function to look up VRAM for a PCI slot address
      * @param drmLookup  function to look up DRM info for a PCI slot address
@@ -296,21 +308,22 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         String vendor = Normal.UNKNOWN;
         List<String> versionInfoList = new ArrayList<>();
         boolean found = false;
+        String slot = null;
         String lookupDevice = null;
         for (String line : lspci) {
             String[] split = line.trim().split(Symbol.COLON, 2);
             String prefix = split[0];
-            // Skip until line contains "VGA" or "3D controller"
-            if (prefix.equals("Class") && (line.contains("VGA") || line.contains("3D controller"))) {
+            // Skip until the class field identifies a display controller.
+            if (prefix.equals("Class") && isDisplayClass(split.length > 1 ? split[1].trim() : Normal.EMPTY)) {
                 found = true;
-                lookupDevice = null;
+                lookupDevice = slot;
                 name = Normal.UNKNOWN;
                 deviceId = Normal.UNKNOWN;
                 vendor = Normal.UNKNOWN;
                 versionInfoList.clear();
             } else if (prefix.equals("Slot") && split.length > 1) {
                 // Capture PCI slot address (e.g. "01:00.0") for use with lspci -s
-                lookupDevice = split[1].trim();
+                slot = split[1].trim();
             }
             if (found) {
                 if (split.length < 2) {
@@ -356,6 +369,21 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                                     drmInfo.getMiddle(), drmInfo.getRight())));
         }
         return cardList;
+    }
+
+    /**
+     * Tests whether an lspci {@code Class:} value denotes a display controller.
+     *
+     * @param classValue the trimmed class field value
+     * @return {@code true} if the class denotes a display controller
+     */
+    static boolean isDisplayClass(String classValue) {
+        Pair<String, String> pair = Parsing.parseLspciMachineReadable(classValue);
+        if (pair != null && pair.getRight().length() >= 2) {
+            return pair.getRight().startsWith("03");
+        }
+        return classValue.startsWith("VGA compatible controller") || classValue.startsWith("3D controller")
+                || classValue.startsWith("Display controller");
     }
 
     /**
@@ -482,7 +510,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 return new Triplet<>(devicePath, driver, slotName);
             }
         }
-        // Fall back to first card with a driver symlink
+        if (pciSlot != null) {
+            return new Triplet<>(Normal.EMPTY, Normal.EMPTY, Normal.EMPTY);
+        }
+        // Fall back to first card with a driver symlink.
         return firstWithDriver != null ? firstWithDriver : new Triplet<>(Normal.EMPTY, Normal.EMPTY, Normal.EMPTY);
     }
 

@@ -252,33 +252,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
                 if (byte2 == 0xDA) {
                     break;
                 }
-                // Start of Frame, also known as SOF55, indicates a JPEG-LS file.
-                if (byte2 == 0xF7) {
-                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
-                }
-                // 0xffc0: // SOF_0: JPEG baseline
-                // 0xffc1: // SOF_1: JPEG extended sequential DCT
-                // 0xffc2: // SOF_2: JPEG progressive DCT
-                // 0xffc3: // SOF_3: JPEG lossless sequential
-                if ((byte2 >= 0xC0) && (byte2 <= 0xC3)) {
-                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
-                }
-                // 0xffc5: // SOF_5: differential (hierarchical) extended sequential, Huffman
-                // 0xffc6: // SOF_6: differential (hierarchical) progressive, Huffman
-                // 0xffc7: // SOF_7: differential (hierarchical) lossless, Huffman
-                if ((byte2 >= 0xC5) && (byte2 <= 0xC7)) {
-                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
-                }
-                // 0xffc9: // SOF_9: extended sequential, arithmetic
-                // 0xffca: // SOF_10: progressive, arithmetic
-                // 0xffcb: // SOF_11: lossless, arithmetic
-                if ((byte2 >= 0xC9) && (byte2 <= 0xCB)) {
-                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
-                }
-                // 0xffcd: // SOF_13: differential (hierarchical) extended sequential, arithmetic
-                // 0xffce: // SOF_14: differential (hierarchical) progressive, arithmetic
-                // 0xffcf: // SOF_15: differential (hierarchical) lossless, arithmetic
-                if ((byte2 >= 0xCD) && (byte2 <= 0xCF)) {
+                // SOF55 (0xF7) marks a JPEG-LS file; 0xC0..0xCF are JPEG SOF markers except DHT/JPG/DAC.
+                if (byte2 == 0xF7 || isSOFMarker(byte2)) {
                     return getSOF(iis, jfif, (byte1 << 8) + byte2);
                 }
                 if (byte2 == 0xE0) {
@@ -295,6 +270,16 @@ public class NativeImageReader extends ImageReader implements Closeable {
         } finally {
             iis.reset();
         }
+    }
+
+    /**
+     * Determines whether the marker is a JPEG Start-Of-Frame marker.
+     *
+     * @param marker the marker
+     * @return true if the marker is a JPEG Start-Of-Frame marker
+     */
+    static boolean isSOFMarker(int marker) {
+        return marker >= 0xC0 && marker <= 0xCF && marker != 0xC4 && marker != 0xC8 && marker != 0xCC;
     }
 
     /**

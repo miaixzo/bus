@@ -380,12 +380,6 @@ public class MacOSProcess extends AbstractOSProcess {
      */
     private Pair<List<String>, Map<String, String>> queryArgsAndEnvironment() {
         int pid = getProcessID();
-        // Set up return objects
-        List<String> args = new ArrayList<>();
-        // API does not specify any particular order of entries, but it is reasonable to
-        // maintain whatever order the OS provided to the end user
-        Map<String, String> env = new LinkedHashMap<>();
-
         // Get command line via sysctl
         int[] mib = new int[3];
         mib[0] = 1; // CTL_KERN
@@ -397,44 +391,8 @@ public class MacOSProcess extends AbstractOSProcess {
             size_t.ByReference size = new size_t.ByReference(ARGMAX);
             // Fetch arguments
             if (0 == SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, size_t.ZERO)) {
-                // Procargs contains an int representing total # of args, followed by a
-                // null-terminated execpath string and then the arguments, each
-                // null-terminated (possible multiple consecutive nulls),
-                // The execpath string is also the first arg.
-                // Following this is an int representing total # of env, followed by
-                // null-terminated envs in similar format
-                int nargs = procargs.getInt(0);
-                // Sanity check
-                if (nargs > 0 && nargs <= 1024) {
-                    // Skip first int (containing value of nargs)
-                    long offset = SystemB.INT_SIZE;
-                    // Skip exec_command, as
-                    offset += procargs.getString(offset).length();
-                    // Iterate character by character using offset
-                    // Build each arg and add to list
-                    while (offset < size.longValue()) {
-                        // Advance through additional nulls
-                        while (procargs.getByte(offset) == 0) {
-                            if (++offset >= size.longValue()) {
-                                break;
-                            }
-                        }
-                        // Grab a string. This should go until the null terminator
-                        String arg = procargs.getString(offset);
-                        if (nargs-- > 0) {
-                            // If we havent found nargs yet, it's an arg
-                            args.add(arg);
-                        } else {
-                            // otherwise it's an env
-                            int idx = arg.indexOf(Symbol.C_EQUAL);
-                            if (idx > 0) {
-                                env.put(arg.substring(0, idx), arg.substring(idx + 1));
-                            }
-                        }
-                        // Advance offset to next null
-                        offset += arg.length();
-                    }
-                }
+                int length = (int) size.longValue();
+                return parseProcArgs(procargs.getByteArray(0, length), length);
             } else {
                 // Don't warn for pid 0
                 if (pid > 0 && LOG_MAC_SYSCTL_WARNING) {
@@ -447,7 +405,84 @@ public class MacOSProcess extends AbstractOSProcess {
                 }
             }
         }
+        return Pair.of(Collections.emptyList(), Collections.emptyMap());
+    }
+
+    /**
+     * Parses the {@code KERN_PROCARGS2} buffer into arguments and environment variables.
+     *
+     * @param procargs the raw sysctl buffer
+     * @param size     the number of valid bytes in the buffer
+     * @return a pair containing the argument list and environment map
+     */
+    static Pair<List<String>, Map<String, String>> parseProcArgs(byte[] procargs, int size) {
+        List<String> args = new ArrayList<>();
+        Map<String, String> env = new LinkedHashMap<>();
+        int limit = Math.min(size, procargs.length);
+        if (limit > Integer.BYTES) {
+            int nargs = (int) Parsing.byteArrayToLong(procargs, Integer.BYTES, false);
+            if (nargs > 0 && nargs <= limit - Integer.BYTES) {
+                int offset = nextNull(procargs, Integer.BYTES, limit);
+                while (offset < limit && procargs[offset] == 0) {
+                    offset++;
+                }
+                for (int i = 0; i < nargs && offset < limit; i++) {
+                    int end = nextNull(procargs, offset, limit);
+                    if (end == limit) {
+                        break;
+                    }
+                    args.add(decode(procargs, offset, end));
+                    offset = end + 1;
+                }
+                while (offset < limit) {
+                    while (offset < limit && procargs[offset] == 0) {
+                        offset++;
+                    }
+                    if (offset >= limit) {
+                        break;
+                    }
+                    int end = nextNull(procargs, offset, limit);
+                    if (end == limit) {
+                        break;
+                    }
+                    String entry = decode(procargs, offset, end);
+                    int idx = entry.indexOf(Symbol.C_EQUAL);
+                    if (idx > 0) {
+                        env.put(entry.substring(0, idx), entry.substring(idx + 1));
+                    }
+                    offset = end + 1;
+                }
+            }
+        }
         return Pair.of(Collections.unmodifiableList(args), Collections.unmodifiableMap(env));
+    }
+
+    /**
+     * Decodes the byte range as UTF-8.
+     *
+     * @param buffer the source buffer
+     * @param from   the inclusive start offset
+     * @param to     the exclusive end offset
+     * @return the decoded string
+     */
+    private static String decode(byte[] buffer, int from, int to) {
+        return new String(buffer, from, to - from, Charset.UTF_8);
+    }
+
+    /**
+     * Finds the next NUL byte.
+     *
+     * @param buffer the source buffer
+     * @param from   the starting offset
+     * @param limit  the exclusive upper bound
+     * @return the NUL byte index, or {@code limit} if none is found
+     */
+    private static int nextNull(byte[] buffer, int from, int limit) {
+        int index = from;
+        while (index < limit && buffer[index] != 0) {
+            index++;
+        }
+        return index;
     }
 
     /**

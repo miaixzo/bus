@@ -235,7 +235,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                 if (split.length > 9) {
                     Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
                     Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
-                    TcpState state = stateLookup(Parsing.hexStringToInt(split[3], 0));
+                    TcpState state = TcpState.fromLinuxState(Parsing.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
                     long inode = Parsing.parseLongOrDefault(split[9], 0);
                     conns.add(
@@ -287,53 +287,6 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
             return new Pair<>(first, second);
         }
         return new Pair<>(0, 0);
-    }
-
-    /**
-     * Returns the state lookup result.
-     *
-     * @param state the state
-     * @return the state lookup result
-     */
-    private static InternetProtocolStats.TcpState stateLookup(int state) {
-        switch (state) {
-            case 0x01:
-                return InternetProtocolStats.TcpState.ESTABLISHED;
-
-            case 0x02:
-                return InternetProtocolStats.TcpState.SYN_SENT;
-
-            case 0x03:
-                return InternetProtocolStats.TcpState.SYN_RECV;
-
-            case 0x04:
-                return InternetProtocolStats.TcpState.FIN_WAIT_1;
-
-            case 0x05:
-                return InternetProtocolStats.TcpState.FIN_WAIT_2;
-
-            case 0x06:
-                return InternetProtocolStats.TcpState.TIME_WAIT;
-
-            case 0x07:
-                return InternetProtocolStats.TcpState.CLOSED;
-
-            case 0x08:
-                return InternetProtocolStats.TcpState.CLOSE_WAIT;
-
-            case 0x09:
-                return InternetProtocolStats.TcpState.LAST_ACK;
-
-            case 0x0A:
-                return InternetProtocolStats.TcpState.LISTEN;
-
-            case 0x0B:
-                return InternetProtocolStats.TcpState.CLOSING;
-
-            case 0x00:
-            default:
-                return InternetProtocolStats.TcpState.UNKNOWN;
-        }
     }
 
 }

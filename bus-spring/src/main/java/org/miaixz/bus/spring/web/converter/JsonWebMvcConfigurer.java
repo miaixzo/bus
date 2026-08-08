@@ -68,7 +68,10 @@ public class JsonWebMvcConfigurer implements WebMvcConfigurer {
                 registrar.register(busConverters);
                 Logger.info(false, "Starter", "HTTP registered {} message converter", registrar.name());
             });
-            converters.addAll(busConverters);
+            // Spring builds its default converters before invoking this callback. Bus converters must therefore be
+            // inserted at the front; appending them would allow the default Gson or Jackson converter to claim
+            // application/json responses before Bus annotation filtering is reached.
+            converters.addAll(0, busConverters);
         });
     }
 

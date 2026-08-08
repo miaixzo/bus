@@ -197,6 +197,17 @@ public final class NvmlKit {
     }
 
     /**
+     * Tests whether an NVML identifier matches a sought fragment.
+     *
+     * @param candidate the identifier read from NVML
+     * @param needle    the sought fragment
+     * @return {@code true} if the two identify the same device
+     */
+    private static boolean matches(String candidate, String needle) {
+        return candidate != null && !candidate.isEmpty() && (candidate.contains(needle) || needle.contains(candidate));
+    }
+
+    /**
      * Acquires a fresh device handle within the current init scope by matching the given PCI bus ID fragment. Must be
      * called while NVML is initialized.
      *
@@ -221,8 +232,7 @@ public final class NvmlKit {
                 pci.read();
                 String busId = Native.toString(pci.busId).toLowerCase(Locale.ROOT);
                 String legacyId = Native.toString(pci.busIdLegacy).toLowerCase(Locale.ROOT);
-                if (busId.contains(needle) || needle.contains(busId) || legacyId.contains(needle)
-                        || needle.contains(legacyId)) {
+                if (matches(busId, needle) || matches(legacyId, needle)) {
                     return handle;
                 }
             }
@@ -253,7 +263,7 @@ public final class NvmlKit {
             byte[] nameBuf = new byte[Nvml.NVML_DEVICE_NAME_BUFFER_SIZE];
             if (Holder.LIB.nvmlDeviceGetName(handle, nameBuf, nameBuf.length) == Nvml.NVML_SUCCESS) {
                 String name = Native.toString(nameBuf).toLowerCase(Locale.ROOT);
-                if (name.contains(needle) || needle.contains(name)) {
+                if (matches(name, needle)) {
                     return handle;
                 }
             }
@@ -283,7 +293,7 @@ public final class NvmlKit {
             byte[] nameBuf = new byte[Nvml.NVML_DEVICE_NAME_BUFFER_SIZE];
             if (Holder.LIB.nvmlDeviceGetName(handleRef.getValue(), nameBuf, nameBuf.length) == Nvml.NVML_SUCCESS) {
                 String name = Native.toString(nameBuf).toLowerCase(Locale.ROOT);
-                if (name.contains(needle) || needle.contains(name)) {
+                if (matches(name, needle)) {
                     matches++;
                 }
             }
@@ -331,12 +341,13 @@ public final class NvmlKit {
             // Verify a handle can be acquired (device exists), then return the canonical bus ID
             // from the enumerated set that matches — not the handle itself.
             String needle = pciBusId.toLowerCase(Locale.ROOT);
+            String best = null;
             for (String id : DEVICE_BUS_IDS.get()) {
-                if (id.contains(needle) || needle.contains(id)) {
-                    return id;
+                if (matches(id, needle) && (best == null || id.length() > best.length())) {
+                    best = id;
                 }
             }
-            return null;
+            return best;
         } finally {
             nvmlUninit();
         }
@@ -392,6 +403,10 @@ public final class NvmlKit {
                 String busId = Native.toString(pci.busId).toLowerCase(Locale.ROOT);
                 if (!busId.isEmpty()) {
                     return busId;
+                }
+                String legacyId = Native.toString(pci.busIdLegacy).toLowerCase(Locale.ROOT);
+                if (!legacyId.isEmpty()) {
+                    return legacyId;
                 }
             }
             return null;
@@ -453,6 +468,36 @@ public final class NvmlKit {
             if (Holder.LIB.nvmlDeviceGetMemoryInfo(device, mem) == Nvml.NVML_SUCCESS) {
                 mem.read();
                 return mem.used;
+            }
+            return -1L;
+        } finally {
+            nvmlUninit();
+        }
+    }
+
+    /**
+     * Returns total VRAM in bytes, or -1 if unavailable.
+     *
+     * @param deviceId stable device identifier returned by {@link #findDevice} or {@link #findDeviceByName}
+     * @return bytes total or -1
+     */
+    public static long getVramTotal(String deviceId) {
+        if (deviceId == null || deviceId.isEmpty()) {
+            return -1L;
+        }
+        boolean init = nvmlInit();
+        if (!init) {
+            return -1L;
+        }
+        try {
+            Pointer device = acquireHandleByBusId(deviceId);
+            if (device == null) {
+                return -1L;
+            }
+            Nvml.NvmlMemory mem = new Nvml.NvmlMemory();
+            if (Holder.LIB.nvmlDeviceGetMemoryInfo(device, mem) == Nvml.NVML_SUCCESS) {
+                mem.read();
+                return mem.total;
             }
             return -1L;
         } finally {

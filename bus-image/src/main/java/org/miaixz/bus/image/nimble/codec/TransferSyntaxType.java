@@ -65,6 +65,10 @@ public enum TransferSyntaxType {
      */
     JPEG_2000(true, true, true, 16, 0),
     /**
+     * Constant for the jpeg xl value.
+     */
+    JPEG_XL(true, true, true, 24, 0),
+    /**
      * Constant for the rle value.
      */
     RLE(true, false, true, 16, 1),
@@ -173,6 +177,11 @@ public enum TransferSyntaxType {
             case UID.HTJ2K:
                 return JPEG_2000;
 
+            case UID.JPEGXLLossless:
+            case UID.JPEGXLJPEGRecompression:
+            case UID.JPEGXL:
+                return JPEG_XL;
+
             case UID.JPIPReferenced:
             case UID.JPIPReferencedDeflate:
             case UID.JPIPHTJ2KReferenced:
@@ -221,6 +230,8 @@ public enum TransferSyntaxType {
             case UID.JPEG2000:
             case UID.JPEG2000MC:
             case UID.HTJ2K:
+            case UID.JPEGXLJPEGRecompression:
+            case UID.JPEGXL:
             case UID.MPEG2MPML:
             case UID.MPEG2MPMLF:
             case UID.MPEG2MPHL:
@@ -261,6 +272,7 @@ public enum TransferSyntaxType {
             case UID.HTJ2KLossless:
             case UID.HTJ2KLosslessRPCL:
             case UID.HTJ2K:
+            case UID.JPEGXLJPEGRecompression:
                 return true;
 
             default:

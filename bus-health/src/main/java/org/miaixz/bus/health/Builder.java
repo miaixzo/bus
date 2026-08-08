@@ -155,6 +155,21 @@ public final class Builder {
     public static final String _MAC_SYSCTL_LOGWARNING = "bus.health.mac.sysctl.logwarning";
 
     /**
+     * macOS configuration: comma-separated SMC keys for Apple Silicon GPU temperature.
+     */
+    public static final String _MAC_SENSORS_GPUTEMPERATURE_KEYS = "bus.health.mac.sensors.gputemperature.keys";
+
+    /**
+     * macOS configuration: comma-separated SMC keys for fan speed readings.
+     */
+    public static final String _MAC_SENSORS_FANSPEED_KEYS = "bus.health.mac.sensors.fanspeed.keys";
+
+    /**
+     * macOS configuration: comma-separated SMC keys for CPU voltage readings.
+     */
+    public static final String _MAC_SENSORS_CPUVOLTAGE_KEYS = "bus.health.mac.sensors.cpuvoltage.keys";
+
+    /**
      * Linux configuration: filesystem path exclusion list.
      */
     public static final String _LINUX_FS_PATH_EXCLUDES = "bus.health.linux.filesystem.path.excludes";

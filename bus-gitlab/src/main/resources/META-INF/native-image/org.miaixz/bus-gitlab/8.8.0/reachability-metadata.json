@@ -44321,6 +44321,9 @@
     },
     {
       "type": "org.miaixz.bus.gitlab.support.MaskingLoggingFilter",
+      "condition": {
+        "typeReached": "jakarta.ws.rs.client.ClientRequestFilter"
+      },
       "fields": [
         {
           "name": "_id"
@@ -44559,6 +44562,9 @@
     },
     {
       "type": "org.miaixz.bus.gitlab.support.MaskingLoggingFilter$LoggingStream",
+      "condition": {
+        "typeReached": "jakarta.ws.rs.client.ClientRequestFilter"
+      },
       "fields": [
         {
           "name": "outputStream"

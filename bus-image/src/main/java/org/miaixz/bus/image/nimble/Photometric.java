@@ -102,6 +102,11 @@ public enum Photometric {
                 case UID.JPEG2000MC:
                 case UID.HTJ2K:
                     return YBR_ICT;
+
+                case UID.JPEGXL:
+                case UID.JPEGXLLossless:
+                case UID.JPEGXLJPEGRecompression:
+                    return XYB;
             }
             return this;
         }
@@ -203,6 +208,16 @@ public enum Photometric {
      * The ybr rct value.
      */
     YBR_RCT(false, false, true, false) {
+
+        @Override
+        public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
+            throw new UnsupportedOperationException();
+        }
+    },
+    /**
+     * The xyb value.
+     */
+    XYB(false, false, true, false) {
 
         @Override
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {

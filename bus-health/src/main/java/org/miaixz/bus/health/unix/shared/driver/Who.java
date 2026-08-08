@@ -20,13 +20,9 @@
 package org.miaixz.bus.health.unix.shared.driver;
 
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +36,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSSession;
 
 /**
@@ -73,11 +70,9 @@ public final class Who {
             .compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
 
     /**
-     * The WHO_DATE_FORMAT_UNIX constant.
+     * The WHO_DATE_PATTERN_UNIX constant.
      */
-    private static final DateTimeFormatter WHO_DATE_FORMAT_UNIX = new DateTimeFormatterBuilder()
-            .appendPattern("MMM d HH:mm").parseDefaulting(ChronoField.YEAR, Year.now(ZoneId.systemDefault()).getValue())
-            .toFormatter(Locale.US);
+    private static final String WHO_DATE_PATTERN_UNIX = "MMM d HH:mm";
 
     /**
      * Creates a new Who instance.
@@ -140,21 +135,14 @@ public final class Who {
     public static boolean matchUnix(List<OSSession> whoList, String s) {
         Matcher m = WHO_FORMAT_UNIX.matcher(s);
         if (m.matches()) {
-            try {
-                // Missing year, parse date time with current year
-                LocalDateTime login = LocalDateTime.parse(
-                        m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5),
-                        WHO_DATE_FORMAT_UNIX);
-                // If this date is in the future, subtract a year
-                if (login.isAfter(LocalDateTime.now(ZoneId.systemDefault()))) {
-                    login = login.minus(1, ChronoUnit.YEARS);
-                }
-                long millis = login.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            long millis = Parsing.parseYearlessDateToEpoch(
+                    m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5),
+                    WHO_DATE_PATTERN_UNIX,
+                    LocalDateTime.now(ZoneId.systemDefault()));
+            if (millis > 0) {
                 whoList.add(
                         new OSSession(m.group(1), m.group(2), millis, m.group(6) == null ? Normal.EMPTY : m.group(6)));
                 return true;
-            } catch (DateTimeParseException | NullPointerException e) {
-                // shouldn't happen if regex matches and OS is producing sensible dates
             }
         }
         return false;

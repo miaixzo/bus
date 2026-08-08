@@ -17,16 +17,39 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.mapper.feature.affix;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.mapper.provider.MapperProvider;
 
 /**
- * Dynamic table prefix support for multi-environment and multi-datasource scenarios.
+ * Supplies prefix and suffix values used to rewrite physical table names in the current execution context.
  *
  * <p>
- * This package provides comprehensive table prefix functionality that applies prefixes to table names dynamically at
- * SQL execution time. Unlike static configuration, this approach enables runtime flexibility for complex deployment
- * scenarios such as multi-environment management and dynamic data source switching.
+ * The prefix is the functional operation, allowing prefix-only rules to use a lambda. Implementations that also supply
+ * a suffix override {@link #getSuffix()}.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 21+
  */
-package org.miaixz.bus.mapper.feature.prefix;
+@FunctionalInterface
+public interface AffixValueProvider extends MapperProvider<AffixRuleConfig> {
+
+    /**
+     * Returns the text prepended to physical table names.
+     *
+     * @return table prefix, or an empty string when no prefix is required
+     */
+    String getPrefix();
+
+    /**
+     * Returns the text appended to physical table names.
+     *
+     * @return table suffix, or an empty string when no suffix is required
+     */
+    default String getSuffix() {
+        return Normal.EMPTY;
+    }
+
+}

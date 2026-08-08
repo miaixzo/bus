@@ -43,12 +43,12 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.builder.MapperEntityResolver;
+import org.miaixz.bus.mapper.feature.affix.AffixRewriteHandler;
+import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
+import org.miaixz.bus.mapper.feature.affix.AffixValueProvider;
 import org.miaixz.bus.mapper.feature.audit.AuditProvider;
 import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
 import org.miaixz.bus.mapper.feature.populate.PopulateProvider;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixConfig;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixHandler;
-import org.miaixz.bus.mapper.feature.prefix.TablePrefixProvider;
 import org.miaixz.bus.mapper.feature.schema.EntitySchemaInitializer;
 import org.miaixz.bus.mapper.feature.schema.SchemaConfig;
 import org.miaixz.bus.mapper.feature.schema.SchemaProvider;
@@ -199,9 +199,9 @@ public final class MapperPluginBuilder {
                 || hasProviderBean(beanProvider, TenantProvider.class)) {
             providers.setTenantProvider(provider(beanProvider, TenantProvider.class));
         }
-        if (properties.getPrefix() != null || hasScope(resolved, Args.PREFIX_KEY)
-                || hasProviderBean(beanProvider, TablePrefixProvider.class)) {
-            providers.setPrefixProvider(provider(beanProvider, TablePrefixProvider.class));
+        if (properties.getAffix() != null || hasScope(resolved, Args.AFFIX_KEY)
+                || hasProviderBean(beanProvider, AffixValueProvider.class)) {
+            providers.setAffixProvider(provider(beanProvider, AffixValueProvider.class));
         }
         if (properties.getVisible() != null || hasScope(resolved, Args.VISIBLE_KEY)
                 || hasProviderBean(beanProvider, VisibleProvider.class)) {
@@ -259,18 +259,18 @@ public final class MapperPluginBuilder {
     }
 
     /**
-     * Resolves the effective table prefix configuration for Mapper startup operations.
+     * Resolves effective physical table-name affix rules for Mapper startup operations.
      * <p>
-     * Prefix configuration follows the same provider and property resolution path used by the table prefix plugin, so
+     * Affix rules follow the same provider and property resolution path used by the runtime handler, so
      * identifier validation and schema DDL generation observe the same global and datasource-specific table names.
      *
      * @param properties         mapper properties
      * @param providers          provider holder
      * @param datasourceKey      data source key
      * @param resolvedProperties flattened mapper configuration properties
-     * @return table prefix configuration, or {@code null}
+     * @return effective affix rules, or {@code null} when no affix feature is configured
      */
-    private static TablePrefixConfig resolveTablePrefixConfig(
+    private static AffixRuleConfig resolveAffixRuleConfig(
             MapperProperties properties,
             MapperPluginProviders providers,
             String datasourceKey,
@@ -278,43 +278,75 @@ public final class MapperPluginBuilder {
         if (properties == null) {
             return null;
         }
-        MapperOptions.PrefixOptions prefixOptions = properties.getPrefix();
-        if (prefixOptions != null && !prefixOptions.isEnabled()) {
+        MapperOptions.AffixOptions affixOptions = properties.getAffix();
+        if (affixOptions != null && !affixOptions.isEnabled()) {
             return null;
         }
-        TablePrefixProvider provider = providers == null ? null : providers.getPrefixProvider();
+        AffixValueProvider provider = providers == null ? null : providers.getAffixProvider();
         if (provider != null) {
-            TablePrefixConfig providerConfig = provider.getConfig();
+            AffixRuleConfig providerConfig = provider.getConfig();
             if (providerConfig != null) {
                 return providerConfig;
             }
         }
-        Properties prefixProperties = new Properties();
+        Properties affixProperties = new Properties();
         if (resolvedProperties != null) {
-            prefixProperties.putAll(resolvedProperties);
+            affixProperties.putAll(resolvedProperties);
         }
-        if (prefixOptions != null) {
-            String sharedPrefix = Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
-            String defaultPrefix = Normal.DEFAULT + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
-            if (StringKit.isNotEmpty(prefixOptions.getPrefix())
-                    && !prefixProperties.containsKey(sharedPrefix + Args.TABLE_PREFIX)) {
-                prefixProperties.setProperty(sharedPrefix + Args.TABLE_PREFIX, prefixOptions.getPrefix());
+        String sharedAffixScope = Args.SHARED_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
+        String defaultAffixScope = Normal.DEFAULT + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
+        MapperOptions.AffixPartOptions prefixPart = affixOptions == null ? null : affixOptions.getPrefix();
+        MapperOptions.AffixPartOptions suffixPart = affixOptions == null ? null : affixOptions.getSuffix();
+        String configuredPrefix = prefixPart == null ? null : prefixPart.getValue();
+        String configuredSuffix = suffixPart == null ? null : suffixPart.getValue();
+        String configuredPrefixIgnore = prefixPart == null ? null : prefixPart.getIgnore();
+        String configuredSuffixIgnore = suffixPart == null ? null : suffixPart.getIgnore();
+        if (StringKit.isNotEmpty(configuredPrefix)) {
+            if (!affixProperties.containsKey(sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
+                affixProperties
+                        .setProperty(sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredPrefix);
             }
-            if (StringKit.isNotEmpty(prefixOptions.getPrefix())
-                    && !prefixProperties.containsKey(defaultPrefix + Args.TABLE_PREFIX)) {
-                prefixProperties.setProperty(defaultPrefix + Args.TABLE_PREFIX, prefixOptions.getPrefix());
+            if (!affixProperties.containsKey(defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
+                affixProperties
+                        .setProperty(defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredPrefix);
             }
-            if (StringKit.isNotEmpty(prefixOptions.getIgnore())
-                    && !prefixProperties.containsKey(sharedPrefix + Args.PROP_IGNORE)) {
-                prefixProperties.setProperty(sharedPrefix + Args.PROP_IGNORE, prefixOptions.getIgnore());
+        }
+        if (StringKit.isNotEmpty(configuredSuffix)) {
+            if (!affixProperties.containsKey(sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
+                affixProperties
+                        .setProperty(sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredSuffix);
             }
-            if (StringKit.isNotEmpty(prefixOptions.getIgnore())
-                    && !prefixProperties.containsKey(defaultPrefix + Args.PROP_IGNORE)) {
-                prefixProperties.setProperty(defaultPrefix + Args.PROP_IGNORE, prefixOptions.getIgnore());
+            if (!affixProperties.containsKey(defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE)) {
+                affixProperties
+                        .setProperty(defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE, configuredSuffix);
+            }
+        }
+        if (StringKit.isNotEmpty(configuredPrefixIgnore)) {
+            if (!affixProperties.containsKey(sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE)) {
+                affixProperties.setProperty(
+                        sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        configuredPrefixIgnore);
+            }
+            if (!affixProperties.containsKey(defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE)) {
+                affixProperties.setProperty(
+                        defaultAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        configuredPrefixIgnore);
+            }
+        }
+        if (StringKit.isNotEmpty(configuredSuffixIgnore)) {
+            if (!affixProperties.containsKey(sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE)) {
+                affixProperties.setProperty(
+                        sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        configuredSuffixIgnore);
+            }
+            if (!affixProperties.containsKey(defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE)) {
+                affixProperties.setProperty(
+                        defaultAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_IGNORE,
+                        configuredSuffixIgnore);
             }
         }
         String key = StringKit.isNotEmpty(datasourceKey) ? datasourceKey : Normal.DEFAULT;
-        return TablePrefixHandler.resolveConfig(key, prefixProperties, provider);
+        return AffixRewriteHandler.resolveConfig(key, affixProperties, provider);
     }
 
     /**
@@ -437,7 +469,7 @@ public final class MapperPluginBuilder {
      * Runs one schema initialization pass for a data source target.
      * <p>
      * Entity classes are collected from mapper generic declarations, configured entity packages, and the optional
-     * {@link SchemaProvider}. Provider lookups and table prefix resolution receive the namespace explicitly and do not
+     * {@link SchemaProvider}. Provider lookups and affix rule resolution receive the namespace explicitly and do not
      * mutate Mapper runtime context.
      *
      * @param properties         mapper properties
@@ -470,11 +502,7 @@ public final class MapperPluginBuilder {
         entityClasses.addAll(resolveMapperEntityClassesFromBeanFactory(beanFactory));
         entityClasses.addAll(scanSchemaEntityClasses(schemaProperties, environment, resourceLoader));
         entityClasses.addAll(resolveProviderEntityClasses(schemaProvider, namespace));
-        TablePrefixConfig tablePrefixConfig = resolveTablePrefixConfig(
-                properties,
-                providers,
-                namespace,
-                resolvedProperties);
+        AffixRuleConfig affixRuleConfig = resolveAffixRuleConfig(properties, providers, namespace, resolvedProperties);
         Logger.info(
                 true,
                 "Starter",
@@ -483,7 +511,7 @@ public final class MapperPluginBuilder {
                 schemaConfig.mode(),
                 entityClasses.size());
         SchemaReport report = new EntitySchemaInitializer()
-                .initialize(dataSource, entityClasses, schemaConfig, tablePrefixConfig);
+                .initialize(dataSource, entityClasses, schemaConfig, affixRuleConfig);
         Logger.info(
                 false,
                 "Starter",
@@ -524,8 +552,8 @@ public final class MapperPluginBuilder {
             if (!identifierValidator.isEnabled(null)) {
                 return;
             }
-            TablePrefixConfig prefix = resolveTablePrefixConfig(properties, providers, null, resolvedProperties);
-            identifierValidator.validate(primaryDataSource, null, entityClasses, prefix);
+            AffixRuleConfig affix = resolveAffixRuleConfig(properties, providers, null, resolvedProperties);
+            identifierValidator.validate(primaryDataSource, null, entityClasses, affix);
             return;
         }
         for (String namespace : namespaces) {
@@ -533,8 +561,8 @@ public final class MapperPluginBuilder {
                 continue;
             }
             ResolvedDataSource target = resolveDataSourceTarget(primaryDataSource, beanFactory, namespace);
-            TablePrefixConfig prefix = resolveTablePrefixConfig(properties, providers, namespace, resolvedProperties);
-            identifierValidator.validate(target.dataSource(), namespace, entityClasses, prefix);
+            AffixRuleConfig affix = resolveAffixRuleConfig(properties, providers, namespace, resolvedProperties);
+            identifierValidator.validate(target.dataSource(), namespace, entityClasses, affix);
         }
     }
 

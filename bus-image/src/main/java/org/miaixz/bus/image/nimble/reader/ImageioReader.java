@@ -134,6 +134,11 @@ public class ImageioReader extends ImageReader implements Closeable {
     private int frames;
 
     /**
+     * The frame start fragments value.
+     */
+    private int[] frameStartFragments;
+
+    /**
      * The flushed frames value.
      */
     private int flushedFrames;
@@ -806,11 +811,118 @@ public class ImageioReader extends ImageReader implements Closeable {
             iisOfFrame = epdiis;
         } else if (pixelDataFragments == null) {
             return null;
-        } else {
-            iisOfFrame = new SegmentedInputImageStream(iis, pixelDataFragments, frames == 1 ? -1 : frameIndex);
+        } else if (frames == 1 || frameIndex < 0) {
+            iisOfFrame = new SegmentedInputImageStream(iis, pixelDataFragments, -1);
             ((SegmentedInputImageStream) iisOfFrame).setImageDescriptor(imageDescriptor);
+            ((SegmentedInputImageStream) iisOfFrame).setFile(pixelDataFile);
+        } else {
+            int[] starts = frameStartFragments();
+            int first = starts[frameIndex];
+            int last = frameIndex + 1 < starts.length ? starts[frameIndex + 1] : pixelDataFragments.size();
+            iisOfFrame = new SegmentedInputImageStream(iis, pixelDataFragments, first, last);
+            ((SegmentedInputImageStream) iisOfFrame).setImageDescriptor(imageDescriptor);
+            ((SegmentedInputImageStream) iisOfFrame).setFile(pixelDataFile);
         }
         return patchJpegLS != null ? new PatchJPEGLSInputStream(iisOfFrame, patchJpegLS) : iisOfFrame;
+    }
+
+    /**
+     * Gets the cached frame start fragments.
+     *
+     * @return the frame start fragments
+     * @throws IOException if the operation cannot be completed
+     */
+    private int[] frameStartFragments() throws IOException {
+        if (frameStartFragments == null) {
+            frameStartFragments = resolveFrameFragments();
+        }
+        return frameStartFragments;
+    }
+
+    /**
+     * Resolves the fragment index at which each frame starts.
+     *
+     * @return the frame start fragments
+     * @throws IOException if the frame fragments cannot be resolved
+     */
+    private int[] resolveFrameFragments() throws IOException {
+        if (pixelDataFragments.size() < 2) {
+            return identityFrameStarts();
+        }
+        Object frag1 = pixelDataFragments.get(1);
+        if (!(frag1 instanceof BulkData)) {
+            return identityFrameStarts();
+        }
+        if (pixelDataFragments.size() - 1 > frames) {
+            return groupFragmentsIntoFrames();
+        }
+        BulkData firstFrag = (BulkData) frag1;
+        long start = firstFrag.offset() - 8;
+        if (start < 0) {
+            return identityFrameStarts();
+        }
+        openiis();
+        byte[] hdr = new byte[8];
+        iis.seek(start);
+        iis.readFully(hdr);
+        if (ByteKit.bytesToTagLE(hdr, 0) != Tag.Item || ByteKit.bytesToIntLE(hdr, 4) == firstFrag.length()) {
+            return identityFrameStarts();
+        }
+        rebuildPerFragment(start);
+        return groupFragmentsIntoFrames();
+    }
+
+    /**
+     * Rebuilds the pixel data fragments using the real item boundaries.
+     *
+     * @param start the first item header offset
+     * @throws IOException if the fragments cannot be rebuilt
+     */
+    private void rebuildPerFragment(long start) throws IOException {
+        boolean bigEndian = pixelDataFragments.bigEndian();
+        Fragments perFragment = new Fragments(pixelDataVR, bigEndian, frames);
+        perFragment.add(pixelDataFragments.get(0));
+        byte[] hdr = new byte[8];
+        long pos = start;
+        while (true) {
+            iis.seek(pos);
+            try {
+                iis.readFully(hdr);
+            } catch (EOFException e) {
+                break;
+            }
+            if (ByteKit.bytesToTagLE(hdr, 0) != Tag.Item) {
+                break;
+            }
+            int len = ByteKit.bytesToIntLE(hdr, 4);
+            perFragment.add(new BulkData("compressedPixelData://", pos + 8, len, bigEndian));
+            pos += 8 + (len & 0xFFFFFFFFL);
+        }
+        pixelDataFragments = perFragment;
+    }
+
+    /**
+     * Groups one fragment per {@link BulkData} into frame start indices.
+     *
+     * @return the frame start fragments
+     * @throws IOException if the fragments cannot be grouped
+     */
+    private int[] groupFragmentsIntoFrames() throws IOException {
+        openiis();
+        return SegmentedInputImageStream.frameStartFragments(pixelDataFragments, frames, iis);
+    }
+
+    /**
+     * Creates frame starts for the legacy one-fragment-per-frame mapping.
+     *
+     * @return the frame start fragments
+     */
+    private int[] identityFrameStarts() {
+        int[] starts = new int[frames];
+        for (int i = 0; i < frames; i++) {
+            starts[i] = i + 1;
+        }
+        return starts;
     }
 
     /**
@@ -1204,6 +1316,7 @@ public class ImageioReader extends ImageReader implements Closeable {
         pixeldataBytes = null;
         pixelDataFile = null;
         frames = 0;
+        frameStartFragments = null;
         flushedFrames = 0;
         width = 0;
         height = 0;

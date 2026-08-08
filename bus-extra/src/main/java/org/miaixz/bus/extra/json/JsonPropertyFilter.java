@@ -30,9 +30,9 @@ package org.miaixz.bus.extra.json;
 public interface JsonPropertyFilter {
 
     /**
-     * Shared filter that includes every property.
+     * Shared filter that accepts every property.
      */
-    JsonPropertyFilter INCLUDE_ALL = (source, name, value) -> true;
+    JsonPropertyFilter ALWAYS = (source, name, value) -> true;
 
     /**
      * Determines whether a property should be serialized.
@@ -40,17 +40,17 @@ public interface JsonPropertyFilter {
      * @param source owning object, or {@code null} when the JSON framework cannot expose it
      * @param name   serialized property name
      * @param value  current property value, or {@code null}
-     * @return {@code true} to include the property; {@code false} to omit it
+     * @return {@code true} to accept the property; {@code false} to omit it
      */
-    boolean include(Object source, String name, Object value);
+    boolean accept(Object source, String name, Object value);
 
     /**
-     * Returns the shared filter that includes every property.
+     * Returns the shared filter that accepts every property.
      *
-     * @return include-all property filter
+     * @return always-accept property filter
      */
-    static JsonPropertyFilter includeAll() {
-        return INCLUDE_ALL;
+    static JsonPropertyFilter always() {
+        return ALWAYS;
     }
 
 }

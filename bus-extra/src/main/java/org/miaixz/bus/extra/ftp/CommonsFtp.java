@@ -897,11 +897,16 @@ public class CommonsFtp extends AbstractFtp {
         if (outFile.isDirectory()) {
             outFile = new File(outFile, fileName);
         }
+
+        boolean createdFile = false;
         if (!outFile.exists()) {
             FileKit.touch(outFile);
+            createdFile = true;
         }
+
+        boolean success = false;
         try (final OutputStream out = FileKit.getOutputStream(outFile)) {
-            return download(path, fileName, out);
+            success = download(path, fileName, out);
         } catch (final IOException e) {
             Logger.warn(
                     false,
@@ -911,7 +916,13 @@ public class CommonsFtp extends AbstractFtp {
                     "CommonsFtp",
                     e.getClass().getSimpleName());
             throw new InternalException(e);
+        } finally {
+            if (!success && createdFile) {
+                FileKit.remove(outFile);
+            }
         }
+
+        return success;
     }
 
     /**

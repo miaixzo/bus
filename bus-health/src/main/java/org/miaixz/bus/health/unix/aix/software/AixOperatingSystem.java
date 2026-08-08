@@ -22,6 +22,7 @@ package org.miaixz.bus.health.unix.aix.software;
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
@@ -64,9 +65,9 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * The BOOTTIME constant.
+     * The BOOT_TIME_SECONDS value.
      */
-    private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
+    private static final AtomicLong BOOT_TIME_SECONDS = new AtomicLong(0L);
 
     /**
      * The config value.
@@ -91,11 +92,40 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
      * @return the query system boot time millis result
      */
     private static long querySystemBootTimeMillis() {
-        long bootTime = Who.queryBootTime();
-        if (bootTime >= 1000L) {
-            return bootTime;
+        return resolveBootTimeMillis(Who.queryBootTime(), Uptime.queryUpTime(), System.currentTimeMillis());
+    }
+
+    /**
+     * Returns the cached boot time, querying it on first use and after a failed query.
+     *
+     * @return boot time in seconds since the epoch, or {@code 0} if unavailable
+     */
+    private static long bootTimeSeconds() {
+        long cached = BOOT_TIME_SECONDS.get();
+        if (cached > 0L) {
+            return cached;
         }
-        return System.currentTimeMillis() - Uptime.queryUpTime();
+        long queried = querySystemBootTimeMillis() / 1000L;
+        if (queried > 0L) {
+            BOOT_TIME_SECONDS.compareAndSet(0L, queried);
+            return BOOT_TIME_SECONDS.get();
+        }
+        return 0L;
+    }
+
+    /**
+     * Resolves boot time from uptime duration or {@code who -b}.
+     *
+     * @param whoBootTimeMillis boot time reported by {@code who -b}, or {@code 0} if unavailable
+     * @param upTimeMillis      uptime duration in milliseconds, or {@code 0} if unavailable
+     * @param nowMillis         current time in milliseconds since the epoch
+     * @return boot time in milliseconds since the epoch, or {@code 0} if unavailable
+     */
+    static long resolveBootTimeMillis(long whoBootTimeMillis, long upTimeMillis, long nowMillis) {
+        if (upTimeMillis > 0L) {
+            return nowMillis - upTimeMillis;
+        }
+        return whoBootTimeMillis >= 1000L ? whoBootTimeMillis : 0L;
     }
 
     /**
@@ -292,7 +322,8 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public long getSystemUptime() {
-        return System.currentTimeMillis() / 1000L - BOOTTIME;
+        long bootTime = bootTimeSeconds();
+        return bootTime > 0L ? System.currentTimeMillis() / 1000L - bootTime : 0L;
     }
 
     /**
@@ -302,7 +333,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
      */
     @Override
     public long getSystemBootTime() {
-        return BOOTTIME;
+        return bootTimeSeconds();
     }
 
     /**

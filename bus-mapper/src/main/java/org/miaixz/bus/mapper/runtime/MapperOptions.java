@@ -101,7 +101,7 @@ public class MapperOptions {
      * Externalized properties for MyBatis configuration and mapper handlers.
      * <p>
      * The value supports both existing flattened keys and indexed namespace keys such as {@code namespaces[0].name},
-     * {@code namespaces[0].tenant.column}, {@code namespaces[0].prefix.prefix}, and
+     * {@code namespaces[0].tenant.column}, {@code namespaces[0].affix.prefix.value}, and
      * {@code namespaces[0].schema.enabled}.
      */
     private Properties configurationProperties;
@@ -166,9 +166,9 @@ public class MapperOptions {
     private VisibleOptions visible;
 
     /**
-     * Prefix configuration used to apply a default table prefix and ignored table list.
+     * Affix configuration used to apply default prefixes, suffixes, and ignored table lists.
      */
-    private PrefixOptions prefix;
+    private AffixOptions affix;
 
     /**
      * Entity schema initialization configuration used by starter-side table structure initialization.
@@ -515,37 +515,56 @@ public class MapperOptions {
     }
 
     /**
-     * Table prefix options.
+     * Affix rewrite options.
      * <p>
-     * These options control the mapper table prefix handler when no provider-specific prefix configuration is supplied.
+     * These options control table prefix and suffix handling when no provider-specific configuration is supplied.
      *
      * @author Kimi Liu
      * @since Java 21+
      */
     @Getter
     @Setter
-    public static class PrefixOptions {
+    public static class AffixOptions {
 
         /**
-         * Initializes table prefix handling with its declared enablement defaults.
+         * Initializes affix rewriting with its declared defaults.
          */
-        public PrefixOptions() {
+        public AffixOptions() {
             // No initialization required.
         }
 
         /**
-         * Enable/disable prefix handler (default: true).
+         * Enables or disables affix rewriting (default: true).
          */
         private boolean enabled = true;
 
-        /**
-         * Table prefix value applied to mapper SQL when the table is not ignored.
-         */
-        private String prefix;
+        /** Prefix value and its independently ignored tables. */
+        private AffixPartOptions prefix;
 
-        /**
-         * Tables to ignore prefix handling. Multiple table names may be separated with commas.
-         */
+        /** Suffix value and its independently ignored tables. */
+        private AffixPartOptions suffix;
+
+    }
+
+    /**
+     * One side of an affix configuration.
+     *
+     * @author Kimi Liu
+     * @since Java 21+
+     */
+    @Getter
+    @Setter
+    public static class AffixPartOptions {
+
+        /** Creates an empty affix-side configuration. */
+        public AffixPartOptions() {
+            // No initialization required.
+        }
+
+        /** Text applied to the corresponding side of a table name. */
+        private String value;
+
+        /** Logical table names excluded only from this side. */
         private String ignore;
 
     }

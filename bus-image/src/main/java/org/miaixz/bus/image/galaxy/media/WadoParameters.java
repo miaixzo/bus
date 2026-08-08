@@ -59,6 +59,11 @@ public class WadoParameters extends ArchiveParameters {
     private final boolean wadoRS;
 
     /**
+     * The query mode value.
+     */
+    private final QueryMode queryMode;
+
+    /**
      * Creates a new instance.
      *
      * @param archiveID                 the archive id.
@@ -71,11 +76,31 @@ public class WadoParameters extends ArchiveParameters {
      */
     public WadoParameters(String archiveID, String wadoURL, boolean requireOnlySOPInstanceUID,
             String additionalParameters, String overrideDicomTagsList, String webLogin, boolean wadoRS) {
+        this(archiveID, wadoURL, requireOnlySOPInstanceUID, additionalParameters, overrideDicomTagsList, webLogin,
+                wadoRS, QueryMode.DEFAULT);
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param archiveID                 the archive id.
+     * @param wadoURL                   the wado url.
+     * @param requireOnlySOPInstanceUID the require only sop instance uid.
+     * @param additionalParameters      the additional parameters.
+     * @param overrideDicomTagsList     the override dicom tags list.
+     * @param webLogin                  the web login.
+     * @param wadoRS                    the wado rs.
+     * @param queryMode                 the query mode.
+     */
+    public WadoParameters(String archiveID, String wadoURL, boolean requireOnlySOPInstanceUID,
+            String additionalParameters, String overrideDicomTagsList, String webLogin, boolean wadoRS,
+            QueryMode queryMode) {
         super(Objects.requireNonNull(archiveID, "Archive ID cannot be null"),
                 Objects.requireNonNullElse(validateAndNormalizeUrl(wadoURL), Normal.EMPTY), additionalParameters,
                 overrideDicomTagsList, webLogin);
         this.requireOnlySOPInstanceUID = requireOnlySOPInstanceUID;
         this.wadoRS = wadoRS;
+        this.queryMode = Objects.requireNonNullElse(queryMode, QueryMode.DEFAULT);
     }
 
     /**
@@ -158,6 +183,15 @@ public class WadoParameters extends ArchiveParameters {
     }
 
     /**
+     * Gets the query mode.
+     *
+     * @return the query mode.
+     */
+    public QueryMode getQueryMode() {
+        return queryMode;
+    }
+
+    /**
      * Compares this instance with another object for equality.
      *
      * @param object the object.
@@ -166,7 +200,8 @@ public class WadoParameters extends ArchiveParameters {
     @Override
     public boolean equals(Object object) {
         return this == object || (object instanceof WadoParameters other && super.equals(other)
-                && requireOnlySOPInstanceUID == other.requireOnlySOPInstanceUID && wadoRS == other.wadoRS);
+                && requireOnlySOPInstanceUID == other.requireOnlySOPInstanceUID && wadoRS == other.wadoRS
+                && queryMode == other.queryMode);
     }
 
     /**
@@ -176,7 +211,7 @@ public class WadoParameters extends ArchiveParameters {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), requireOnlySOPInstanceUID, wadoRS);
+        return Objects.hash(super.hashCode(), requireOnlySOPInstanceUID, wadoRS, queryMode);
     }
 
     /**
@@ -187,8 +222,9 @@ public class WadoParameters extends ArchiveParameters {
     @Override
     public String toString() {
         return "WadoParameters{" + "archiveID='" + getArchiveID() + '\'' + ", wadoURL='" + getBaseURL() + '\''
-                + ", protocol='" + getProtocolName() + '\'' + ", requireOnlySOPInstanceUID=" + requireOnlySOPInstanceUID
-                + ", httpTagCount=" + getHttpTags().size() + '}';
+                + ", protocol='" + getProtocolName() + '\'' + ", queryMode=" + queryMode
+                + ", requireOnlySOPInstanceUID=" + requireOnlySOPInstanceUID + ", httpTagCount=" + getHttpTags().size()
+                + '}';
     }
 
     /**
@@ -251,6 +287,11 @@ public class WadoParameters extends ArchiveParameters {
          * The wado rs value.
          */
         private final boolean wadoRS;
+
+        /**
+         * The query mode value.
+         */
+        private QueryMode queryMode = QueryMode.DEFAULT;
 
         /**
          * Creates a new instance.
@@ -319,13 +360,24 @@ public class WadoParameters extends ArchiveParameters {
         }
 
         /**
+         * Creates a copy configured with the query mode.
+         *
+         * @param queryMode the query mode.
+         * @return the operation result.
+         */
+        public Builder withQueryMode(QueryMode queryMode) {
+            this.queryMode = queryMode == null ? QueryMode.DEFAULT : queryMode;
+            return this;
+        }
+
+        /**
          * Executes the build operation.
          *
          * @return the operation result.
          */
         public WadoParameters build() {
             return new WadoParameters(archiveID, wadoURL, requireOnlySOPInstanceUID, additionalParameters,
-                    overrideDicomTagsList, webLogin, wadoRS);
+                    overrideDicomTagsList, webLogin, wadoRS, queryMode);
         }
 
     }

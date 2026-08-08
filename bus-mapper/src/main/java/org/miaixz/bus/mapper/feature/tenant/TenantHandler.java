@@ -135,16 +135,16 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
      */
     @Override
     protected TenantConfig resolve(String datasourceKey, Properties properties, TenantProvider provider) {
-        String sharedTenantPrefix = Args.SHARED_KEY + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
-        String dsTenantPrefix = datasourceKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
-        String sharedTablePrefix = Args.SHARED_KEY + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
-        String dsTablePrefix = datasourceKey + Symbol.DOT + Args.PREFIX_KEY + Symbol.DOT;
+        String sharedTenantScope = Args.SHARED_KEY + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
+        String datasourceTenantScope = datasourceKey + Symbol.DOT + Args.TENANT_KEY + Symbol.DOT;
+        String sharedAffixScope = Args.SHARED_KEY + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
+        String datasourceAffixScope = datasourceKey + Symbol.DOT + Args.AFFIX_KEY + Symbol.DOT;
 
         // Check if tenant.column is explicitly configured (datasource-specific or shared)
         // If not configured, tenant feature should be disabled
-        String column = properties.getProperty(dsTenantPrefix + Args.TENANT_COLUMN);
+        String column = properties.getProperty(datasourceTenantScope + Args.TENANT_COLUMN);
         if (column == null) {
-            column = properties.getProperty(sharedTenantPrefix + Args.TENANT_COLUMN);
+            column = properties.getProperty(sharedTenantScope + Args.TENANT_COLUMN);
         }
 
         // If column is not configured, tenant feature is disabled
@@ -159,26 +159,31 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         }
 
         String ignoreTablesStr = properties.getProperty(
-                dsTenantPrefix + Args.PROP_IGNORE,
-                properties.getProperty(sharedTenantPrefix + Args.PROP_IGNORE, Normal.EMPTY));
-        String tablePrefix = properties.getProperty(
-                dsTablePrefix + Args.TABLE_PREFIX,
-                properties.getProperty(sharedTablePrefix + Args.TABLE_PREFIX, Normal.EMPTY));
+                datasourceTenantScope + Args.PROP_IGNORE,
+                properties.getProperty(sharedTenantScope + Args.PROP_IGNORE, Normal.EMPTY));
+        String affixPrefix = properties.getProperty(
+                datasourceAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                properties
+                        .getProperty(sharedAffixScope + Args.PREFIX_KEY + Symbol.DOT + Args.PROP_VALUE, Normal.EMPTY));
+        String affixSuffix = properties.getProperty(
+                datasourceAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE,
+                properties
+                        .getProperty(sharedAffixScope + Args.SUFFIX_KEY + Symbol.DOT + Args.PROP_VALUE, Normal.EMPTY));
         String modeValue = properties.getProperty(
-                dsTenantPrefix + Args.TENANT_MODE,
-                properties.getProperty(sharedTenantPrefix + Args.TENANT_MODE, Isolation.COLUMN.name()));
+                datasourceTenantScope + Args.TENANT_MODE,
+                properties.getProperty(sharedTenantScope + Args.TENANT_MODE, Isolation.COLUMN.name()));
         Isolation mode = Isolation.valueOf(modeValue.trim().toUpperCase(java.util.Locale.ROOT));
         String ignoreMappersStr = properties.getProperty(
-                dsTenantPrefix + Args.TENANT_IGNORE_MAPPERS,
-                properties.getProperty(sharedTenantPrefix + Args.TENANT_IGNORE_MAPPERS, Normal.EMPTY));
+                datasourceTenantScope + Args.TENANT_IGNORE_MAPPERS,
+                properties.getProperty(sharedTenantScope + Args.TENANT_IGNORE_MAPPERS, Normal.EMPTY));
         boolean enableSqlCache = Boolean.parseBoolean(
                 properties.getProperty(
-                        dsTenantPrefix + Args.TENANT_ENABLE_SQL_CACHE,
-                        properties.getProperty(sharedTenantPrefix + Args.TENANT_ENABLE_SQL_CACHE, "true")));
+                        datasourceTenantScope + Args.TENANT_ENABLE_SQL_CACHE,
+                        properties.getProperty(sharedTenantScope + Args.TENANT_ENABLE_SQL_CACHE, "true")));
         boolean required = Boolean.parseBoolean(
                 properties.getProperty(
-                        dsTenantPrefix + Args.TENANT_REQUIRED,
-                        properties.getProperty(sharedTenantPrefix + Args.TENANT_REQUIRED, "false")));
+                        datasourceTenantScope + Args.TENANT_REQUIRED,
+                        properties.getProperty(sharedTenantScope + Args.TENANT_REQUIRED, "false")));
 
         Logger.trace(
                 false,
@@ -186,7 +191,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
                 "Tenant config resolve started: datasourceKey={}, columnPresent={}, ignoreConfigKey={}",
                 datasourceKey,
                 true,
-                dsTenantPrefix + Args.PROP_IGNORE);
+                datasourceTenantScope + Args.PROP_IGNORE);
 
         List<String> ignoreTables = Arrays.stream(ignoreTablesStr.split(Symbol.COMMA)).map(String::trim)
                 .filter(ObjectKit::isNotEmpty).collect(Collectors.toList());
@@ -197,10 +202,11 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
                 false,
                 "Mapper",
                 "Tenant config resolve completed: datasourceKey={}, ignoreTableCount={}, "
-                        + "tablePrefixPresent={}, providerPresent={}",
+                        + "affixPrefixPresent={}, affixSuffixPresent={}, providerPresent={}",
                 datasourceKey,
                 ignoreTables.size(),
-                ObjectKit.isNotEmpty(tablePrefix),
+                ObjectKit.isNotEmpty(affixPrefix),
+                ObjectKit.isNotEmpty(affixSuffix),
                 provider != null);
 
         // If column is configured, create a default provider that gets tenant ID from TenantContext
@@ -210,7 +216,8 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         }
 
         return TenantConfig.builder().mode(mode).column(column).ignore(ignoreTables).ignoreMappers(ignoreMappers)
-                .tablePrefix(tablePrefix).enableSqlCache(enableSqlCache).required(required).provider(provider).build();
+                .affixPrefix(affixPrefix).affixSuffix(affixSuffix).enableSqlCache(enableSqlCache).required(required)
+                .provider(provider).build();
     }
 
     /**

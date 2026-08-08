@@ -49,6 +49,11 @@ public class ArchiveParameters {
     public static final String MANIFEST_UID = "uid";
 
     /**
+     * The schema value.
+     */
+    public static final String SCHEMA = "xmlns=\"http://www.weasis.org/xsd/2.5\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+
+    /**
      * The tag arc query value.
      */
     public static final String TAG_ARC_QUERY = "arcQuery";
@@ -62,6 +67,11 @@ public class ArchiveParameters {
      * The base url value.
      */
     public static final String BASE_URL = "baseUrl";
+
+    /**
+     * The query mode value.
+     */
+    public static final String QUERY_MODE = "queryMode";
 
     /**
      * The tag http tag value.
@@ -273,11 +283,13 @@ public class ArchiveParameters {
      * @return the operation result.
      */
     private static int[] parseOverrideTags(String overrideDicomTagsList) {
-        if (!hasText(overrideDicomTagsList)) {
+        String[] tagStrings = overrideDicomTagsList == null ? Normal.EMPTY_STRING_ARRAY
+                : Arrays.stream(overrideDicomTagsList.split(TAG_DELIMITER)).map(String::trim)
+                        .filter(ArchiveParameters::hasText).toArray(String[]::new);
+        if (tagStrings.length == 0) {
             return null;
         }
-        return Arrays.stream(overrideDicomTagsList.split(TAG_DELIMITER + "\\s*")).map(String::trim)
-                .mapToInt(ArchiveParameters::parseTagId).filter(tagId -> tagId != -1).toArray();
+        return Arrays.stream(tagStrings).mapToInt(ArchiveParameters::parseTagId).filter(tagId -> tagId != -1).toArray();
     }
 
     /**

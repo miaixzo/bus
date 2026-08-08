@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
 
 /**
  * Queries logged in users.
@@ -53,6 +54,17 @@ public final class Who {
      */
     private static final DateTimeFormatter BOOT_DATE_FORMAT_AIX = DateTimeFormatter
             .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
+
+    /**
+     * The BOOT_FORMAT_AIX_NO_YEAR constant.
+     */
+    private static final Pattern BOOT_FORMAT_AIX_NO_YEAR = Pattern
+            .compile("\\D+?([A-Z][a-z]{2})\\s+(\\d{1,2})\\s+(\\d{2}:\\d{2}).*");
+
+    /**
+     * The BOOT_NO_YEAR_PATTERN_AIX constant.
+     */
+    private static final String BOOT_NO_YEAR_PATTERN_AIX = "MMM d HH:mm";
 
     /**
      * Creates a new Who instance.
@@ -79,6 +91,13 @@ public final class Who {
             } catch (DateTimeParseException | NullPointerException e) {
                 // Shouldn't happen with regex matching
             }
+        }
+        m = BOOT_FORMAT_AIX_NO_YEAR.matcher(s);
+        if (m.matches()) {
+            return Parsing.parseYearlessDateToEpoch(
+                    m.group(1) + Symbol.SPACE + m.group(2) + Symbol.SPACE + m.group(3),
+                    BOOT_NO_YEAR_PATTERN_AIX,
+                    LocalDateTime.now(ZoneId.systemDefault()));
         }
         return 0L;
     }

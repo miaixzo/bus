@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -87,6 +88,11 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     private ImageDescriptor imageDescriptor;
 
     /**
+     * The file value.
+     */
+    private File file;
+
+    /**
      * Create a segmented input stream, that updates the bulk data entries as required, frameIndex of -1 means the
      * entire object/value.
      *
@@ -113,6 +119,26 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     }
 
     /**
+     * Creates a stream over the fragment list range {@code [firstSegment, lastSegment)}. Index {@code 0} is the Basic
+     * Offset Table, so encoded pixel data starts at index {@code 1}.
+     *
+     * @param stream             the stream value
+     * @param pixeldataFragments the pixel data fragments value
+     * @param firstSegment       the first fragment index
+     * @param lastSegment        the exclusive last fragment index
+     * @throws IOException if the operation fails
+     */
+    public SegmentedInputImageStream(ImageInputStream stream, Fragments pixeldataFragments, int firstSegment,
+            int lastSegment) throws IOException {
+        this.fragments = pixeldataFragments;
+        this.stream = stream;
+        this.firstSegment = firstSegment;
+        this.lastSegment = lastSegment;
+        this.curSegment = firstSegment;
+        seek(0);
+    }
+
+    /**
      * Creates a new instance.
      *
      * @param iis            the iis.
@@ -131,6 +157,58 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         fragments.add(new BulkData("pixelData://", streamPosition, length, false));
         stream = iis;
         seek(0);
+    }
+
+    /**
+     * Groups a one-{@link BulkData}-per-fragment list into the fragment index where each frame starts. The Basic Offset
+     * Table is used when it covers all frames; otherwise the first code-stream word is used as the frame boundary
+     * marker.
+     *
+     * @param fragments the pixel data fragments
+     * @param frames    the frame count
+     * @param stream    the source stream
+     * @return the first fragment index of each frame
+     * @throws IOException if the frame starts cannot be resolved
+     */
+    public static int[] frameStartFragments(List<Object> fragments, int frames, ImageInputStream stream)
+            throws IOException {
+        int fragmentCount = fragments.size() - 1;
+        int[] starts = new int[frames];
+        if (fragmentCount <= frames) {
+            for (int i = 0; i < frames; i++) {
+                starts[i] = i + 1;
+            }
+            return starts;
+        }
+        long start = ((BulkData) fragments.get(1)).offset() - 8;
+        byte[] bot = fragments.get(0) instanceof byte[] ? (byte[]) fragments.get(0) : Normal.EMPTY_BYTE_ARRAY;
+        boolean useBot = bot.length >= frames * 4;
+        int n = 0;
+        int frameStartWord = -1;
+        for (int idx = 1; idx <= fragmentCount && n < frames; idx++) {
+            BulkData frag = (BulkData) fragments.get(idx);
+            boolean frameStart;
+            if (useBot) {
+                frameStart = (frag.offset() - 8 - start) == (ByteKit.bytesToIntLE(bot, n * 4) & 0xFFFFFFFFL);
+            } else {
+                stream.seek(frag.offset());
+                int word = (stream.read() << 8) | stream.read();
+                if (idx == 1) {
+                    frameStartWord = word;
+                    frameStart = true;
+                } else {
+                    frameStart = word == frameStartWord;
+                }
+            }
+            if (frameStart) {
+                starts[n++] = idx;
+            }
+        }
+        if (n != frames) {
+            throw new IOException("Cannot map " + fragmentCount + " pixel data fragments to " + frames
+                    + " frames (found " + n + " frame starts)");
+        }
+        return starts;
     }
 
     /**
@@ -167,6 +245,24 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
      */
     public void setImageDescriptor(ImageDescriptor imageDescriptor) {
         this.imageDescriptor = imageDescriptor;
+    }
+
+    /**
+     * Gets the backing file.
+     *
+     * @return the backing file, or {@code null} when the fragments are not backed by a file
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Sets the backing file.
+     *
+     * @param file the backing file
+     */
+    public void setFile(File file) {
+        this.file = file;
     }
 
     /**

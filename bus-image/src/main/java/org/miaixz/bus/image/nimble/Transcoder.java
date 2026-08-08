@@ -94,7 +94,7 @@ public class Transcoder {
             MatOfInt map = format == Format.JPEG
                     ? new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, getCompressionRatio(params))
                     : null;
-            reader.setInput(inputStream);
+            reader.setInput(inputStream, false, false);
             int nbFrames = reader.getImageDescriptor().getFrames();
             int indexSize = (int) Math.log10(nbFrames);
             indexSize = nbFrames > 1 ? indexSize + 1 : 0;
@@ -149,9 +149,12 @@ public class Transcoder {
      */
     public static void dcm2dcm(Path srcPath, OutputStream outputStream, TranscodeParam params) throws IOException {
         ImageReader reader = new ImageReader(IMAGE_READER_SPI);
-        reader.setInput(new ImageFileInputStream(srcPath));
+        reader.setInput(new ImageFileInputStream(srcPath), false, false);
 
         ImageMetaData imageMetaData = reader.getStreamMetadata();
+        if (imageMetaData == null) {
+            throw new IOException("No DICOM metadata available from the image reader");
+        }
         Attributes dataSet = new Attributes(imageMetaData.getDicomObject());
         dataSet.remove(Tag.PixelData);
 

@@ -21,7 +21,6 @@ package org.miaixz.bus.starter.wrapper.converter;
 
 import java.util.List;
 
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -80,17 +79,13 @@ public class MessageConverterConfiguration {
     /**
      * Creates the json message converter.
      *
-     * @param providers ordered providers
+     * @param provider application JSON provider managed by JSON configuration
      * @return the HTTP message converter backed by the selected JSON Provider
      */
     @Bean
     @ConditionalOnBean(JsonProvider.class)
     @ConditionalOnMissingBean(JsonMessageConverter.class)
-    public JsonMessageConverter jsonMessageConverter(ObjectProvider<JsonProvider> providers) {
-        JsonProvider provider = providers.getIfUnique();
-        if (provider == null) {
-            throw new IllegalStateException("Multiple JsonProvider beans require exactly one @Primary bean");
-        }
+    public JsonMessageConverter jsonMessageConverter(JsonProvider provider) {
         return new JsonMessageConverter(provider);
     }
 

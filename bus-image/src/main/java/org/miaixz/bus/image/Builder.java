@@ -417,6 +417,19 @@ public class Builder {
     }
 
     /**
+     * Checks if the given Transfer Syntax UID corresponds to a JPEG XL compression type.
+     *
+     * @param uid the Transfer Syntax UID.
+     * @return {@code true} if the UID is a known JPEG XL Transfer Syntax.
+     */
+    public static boolean isJpegXL(String uid) {
+        return switch (UID.from(uid)) {
+            case UID.JPEGXLLossless, UID.JPEGXLJPEGRecompression, UID.JPEGXL -> true;
+            default -> false;
+        };
+    }
+
+    /**
      * Checks if the given Transfer Syntax UID is a native (uncompressed) DICOM format.
      *
      * @param uid the Transfer Syntax UID.

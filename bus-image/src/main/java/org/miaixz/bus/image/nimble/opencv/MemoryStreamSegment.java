@@ -19,14 +19,9 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
-import javax.imageio.stream.MemoryCacheImageInputStream;
-
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents the MemoryStreamSegment type.
@@ -50,27 +45,6 @@ public class MemoryStreamSegment extends StreamSegment {
     MemoryStreamSegment(ByteBuffer b, ImageDescriptor imageDescriptor) {
         super(new long[] { 0 }, new long[] { b.limit() }, imageDescriptor);
         this.cache = b;
-    }
-
-    /**
-     * Gets the byte array input stream.
-     *
-     * @param inputStream the input stream.
-     * @return the byte array input stream.
-     */
-    public static ByteArrayInputStream getByteArrayInputStream(MemoryCacheImageInputStream inputStream) {
-        if (inputStream != null) {
-            try {
-                Field fid = MemoryCacheImageInputStream.class.getDeclaredField("stream");
-                if (fid != null) {
-                    fid.setAccessible(true);
-                    return (ByteArrayInputStream) fid.get(inputStream);
-                }
-            } catch (Exception e) {
-                Logger.error(false, "Image", "Cannot get inputstream", e);
-            }
-        }
-        return null;
     }
 
     /**

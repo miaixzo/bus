@@ -40,16 +40,20 @@ import org.miaixz.bus.mapper.Charter.Isolation;
  * </p>
  *
  * <pre>
- * com_deepparser:
- *   prefix:
- *     prefix: dp_
+ * com_database:
+ *   affix:
+ *     prefix:
+ *       value: dp_
+ *     suffix:
+ *       value: _2026
  *   tenant:
  *     column: tenant_id
  *     ignore: tenant,assets,license,token,user
  *
- * com_deepparser_dev:
- *   prefix:
- *     prefix: dev_
+ * com_database_dev:
+ *   affix:
+ *     prefix:
+ *       value: dev_
  *   tenant:
  *     column: tenant_id
  *     ignore: tenant,assets,license,token,user
@@ -110,7 +114,13 @@ public class TenantConfig {
      * Table prefix applied before tenant filtering.
      */
     @Builder.Default
-    private final String tablePrefix = Normal.EMPTY;
+    private final String affixPrefix = Normal.EMPTY;
+
+    /**
+     * Table suffix applied before tenant filtering.
+     */
+    @Builder.Default
+    private final String affixSuffix = Normal.EMPTY;
 
     /**
      * Whether SQL cache is enabled.
@@ -136,17 +146,35 @@ public class TenantConfig {
      * @param column         the tenant id column name
      * @param ignore         ignored table names
      * @param ignoreMappers  ignored mapper class names
-     * @param tablePrefix    table prefix applied before tenant filtering
+     * @param affixPrefix    prefix removed before matching ignored tables
      * @param enableSqlCache whether SQL cache is enabled
      * @param provider       tenant id resolver
      */
     public TenantConfig(Isolation mode, String column, List<String> ignore, List<String> ignoreMappers,
-            String tablePrefix, boolean enableSqlCache, TenantProvider provider) {
+            String affixPrefix, boolean enableSqlCache, TenantProvider provider) {
+        this(mode, column, ignore, ignoreMappers, affixPrefix, Normal.EMPTY, enableSqlCache, provider);
+    }
+
+    /**
+     * Creates a tenant configuration with affix normalization for ignored-table matching.
+     *
+     * @param mode           the tenant isolation strategy
+     * @param column         the tenant id column name
+     * @param ignore         ignored table names
+     * @param ignoreMappers  ignored mapper class names
+     * @param affixPrefix    prefix removed before matching ignored tables
+     * @param affixSuffix    suffix removed before matching ignored tables
+     * @param enableSqlCache whether SQL cache is enabled
+     * @param provider       tenant id resolver
+     */
+    public TenantConfig(Isolation mode, String column, List<String> ignore, List<String> ignoreMappers,
+            String affixPrefix, String affixSuffix, boolean enableSqlCache, TenantProvider provider) {
         this.mode = mode;
         this.column = column;
         this.ignore = ignore;
         this.ignoreMappers = ignoreMappers;
-        this.tablePrefix = tablePrefix;
+        this.affixPrefix = affixPrefix;
+        this.affixSuffix = affixSuffix;
         this.enableSqlCache = enableSqlCache;
         this.provider = provider;
     }
@@ -181,26 +209,28 @@ public class TenantConfig {
             return false;
         }
 
-        // Remove table prefix before comparison
-        String tableNameWithoutPrefix = removeTablePrefix(tableName);
+        String logicalTableName = removeAffixes(tableName);
 
         return ignore.stream().anyMatch(
-                ignore -> tableNameWithoutPrefix.equalsIgnoreCase(ignore)
-                        || tableNameWithoutPrefix.matches(ignore.replace(Symbol.STAR, Symbol.DOT + Symbol.STAR)));
+                ignore -> logicalTableName.equalsIgnoreCase(ignore)
+                        || logicalTableName.matches(ignore.replace(Symbol.STAR, Symbol.DOT + Symbol.STAR)));
     }
 
     /**
-     * Remove table prefix.
+     * Removes the configured prefix and suffix from a physical table name.
      *
      * @param tableName the table name
-     * @return the table name without prefix
+     * @return the logical table name without affixes
      */
-    private String removeTablePrefix(String tableName) {
-        if (StringKit.isNotEmpty(tablePrefix) && tableName.startsWith(tablePrefix)) {
-            return tableName.substring(tablePrefix.length());
+    private String removeAffixes(String tableName) {
+        String logicalTableName = tableName;
+        if (StringKit.isNotEmpty(affixPrefix) && tableName.startsWith(affixPrefix)) {
+            logicalTableName = tableName.substring(affixPrefix.length());
         }
-
-        return tableName;
+        if (StringKit.isNotEmpty(affixSuffix) && logicalTableName.endsWith(affixSuffix)) {
+            logicalTableName = logicalTableName.substring(0, logicalTableName.length() - affixSuffix.length());
+        }
+        return logicalTableName;
     }
 
     /**

@@ -48,6 +48,7 @@ import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.health.linux.jna.Systemd;
 import org.miaixz.bus.health.unix.shared.jna.CLibrary;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Queries logged in users.
@@ -57,6 +58,11 @@ import org.miaixz.bus.health.unix.shared.jna.CLibrary;
  */
 @ThreadSafe
 public final class Who {
+
+    /**
+     * Directory where systemd records one file per active session.
+     */
+    private static final File SYSTEMD_SESSIONS_DIR = new File("/run/systemd/sessions");
 
     // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
     /**
@@ -296,43 +302,47 @@ public final class Who {
      * @return A list of logged in user sessions from systemd
      */
     private static List<OSSession> querySystemdFiles() {
+        return querySystemdFiles(SYSTEMD_SESSIONS_DIR);
+    }
+
+    /**
+     * Query systemd sessions from files in the supplied directory.
+     *
+     * @param sessionsDir The directory holding one file per session.
+     * @return A list of logged in user sessions from systemd.
+     */
+    static List<OSSession> querySystemdFiles(File sessionsDir) {
         List<OSSession> sessionList = new ArrayList<>();
 
-        // Directly iterate /run/systemd/sessions/ directory
-        File sessionsDir = new File("/run/systemd/sessions");
-        if (sessionsDir.exists() && sessionsDir.isDirectory()) {
-            File[] sessionFiles = sessionsDir
-                    .listFiles(file -> Pattern.compile("\\d+").matcher(file.getName()).matches());
+        if (!sessionsDir.isDirectory()) {
+            return sessionList;
+        }
+        File[] sessionFiles = sessionsDir.listFiles(file -> Pattern.compile("\\d+").matcher(file.getName()).matches());
+        if (sessionFiles == null) {
+            return sessionList;
+        }
+        for (File sessionFile : sessionFiles) {
+            try {
+                Map<String, String> sessionMap = Builder.getKeyValueMapFromFile(sessionFile.getPath(), Symbol.EQUAL);
 
-            if (Objects.nonNull(sessionFiles)) {
-                for (File sessionFile : sessionFiles) {
-                    try {
-                        Map<String, String> sessionMap = Builder
-                                .getKeyValueMapFromFile(sessionFile.getPath(), Symbol.EQUAL);
-
-                        String user = sessionMap.get("USER");
-                        if (Objects.nonNull(user) && !user.isEmpty()) {
-                            String tty = sessionMap.getOrDefault("TTY", sessionFile.getName());
-                            String remoteHost = sessionMap.getOrDefault("REMOTE_HOST", Normal.EMPTY);
-
-                            // Try to get login time from REALTIME field or file modification time
-                            long loginTime = 0L;
-                            String realtime = sessionMap.get("REALTIME");
-                            if (Objects.nonNull(realtime)) {
-                                loginTime = Parsing.parseLongOrDefault(realtime, 0L) / 1000L; // Convert µs to ms
-                            }
-                            if (loginTime == 0L) {
-                                loginTime = sessionFile.lastModified(); // Fallback to file modification time
-                            }
-
-                            if (Builder.isSessionValid(user, tty, loginTime)) {
-                                sessionList.add(new OSSession(user, tty, loginTime, remoteHost));
-                            }
-                        }
-                    } catch (Exception e) {
-                        // Skip invalid session files
-                    }
+                String user = sessionMap.get("USER");
+                if (user == null || user.isEmpty()) {
+                    continue;
                 }
+                String tty = sessionMap.getOrDefault("TTY", sessionFile.getName());
+                String remoteHost = sessionMap.getOrDefault("REMOTE_HOST", Normal.EMPTY);
+
+                // REALTIME is microseconds since the epoch; fall back to the file's own timestamp.
+                long loginTime = Parsing.parseLongOrDefault(sessionMap.get("REALTIME"), 0L) / 1000L;
+                if (loginTime == 0L) {
+                    loginTime = sessionFile.lastModified();
+                }
+
+                if (Builder.isSessionValid(user, tty, loginTime)) {
+                    sessionList.add(new OSSession(user, tty, loginTime, remoteHost));
+                }
+            } catch (Exception e) {
+                Logger.debug(false, "Health", "Skipping unreadable systemd session file {}", sessionFile, e);
             }
         }
 

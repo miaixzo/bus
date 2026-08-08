@@ -46,6 +46,7 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
+import org.miaixz.bus.health.unix.shared.driver.ProcLimits;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -883,27 +884,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * @return the get process open file limit result
      */
     private long getProcessOpenFileLimit(long processId, int index) {
-        final String limitsPath = String.format(Locale.ROOT, "/proc/%d/limits", processId);
-        if (!Files.exists(Paths.get(limitsPath))) {
-            return -1; // not supported
-        }
-        final List<String> lines = Builder.readFile(limitsPath);
-        final Optional<String> maxOpenFilesLine = lines.stream().filter(line -> line.startsWith("Max open files"))
-                .findFirst();
-        if (!maxOpenFilesLine.isPresent()) {
-            return -1;
-        }
-
-        final String line = maxOpenFilesLine.get();
-        if (line.contains("unlimited")) {
-            return -1;
-        }
-        // Split all non-Digits away -> ["", "{soft-limit}", "{hard-limit}"]
-        final String[] split = line.split("\\D+");
-        if (split.length <= index) {
-            return -1;
-        }
-        return Parsing.parseLongOrDefault(split[index], -1);
+        return ProcLimits.queryOpenFileLimit(processId, index);
     }
 
     /**

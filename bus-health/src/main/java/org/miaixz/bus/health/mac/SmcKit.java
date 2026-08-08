@@ -34,6 +34,7 @@ import com.sun.jna.platform.mac.IOKit.IOService;
 import com.sun.jna.platform.mac.IOKitUtil;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseableNativeLongByReference;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseablePointerByReference;
@@ -106,16 +107,64 @@ public final class SmcKit {
     public static final String SMC_KEY_CPU_VOLTAGE = "VC0C";
 
     /**
-     * Apple Silicon keys, tried in order until one returns a positive value.
+     * Apple Silicon CPU-die aggregate temperature keys, tried in order until one returns a plausible value.
+     */
+    public static final List<String> SMC_KEYS_CPU_TEMP_AGGREGATE_AS = Collections
+            .unmodifiableList(Arrays.asList("TCMb", "TCMz"));
+
+    /**
+     * Apple Silicon CPU temperature keys, tried in order until one returns a plausible value.
      */
     public static final List<String> SMC_KEYS_CPU_TEMP_AS = Collections
             .unmodifiableList(Arrays.asList("Tp09", "Tp0T", "Tp01", "Tp05", "Tp0D"));
 
     /**
-     * Apple Silicon GPU temperature keys, tried in order until one returns a positive value.
+     * Fallback Apple Silicon GPU temperature keys, used when runtime discovery cannot complete.
      */
-    public static final List<String> SMC_KEYS_GPU_TEMP_AS = Collections
-            .unmodifiableList(Arrays.asList("Tg05", "Tg0D", "Tg0f", "Tg0j"));
+    public static final List<String> SMC_KEYS_GPU_TEMP_AS = Collections.unmodifiableList(
+            Arrays.asList(
+                    "Tg05",
+                    "Tg0D",
+                    "Tg0f",
+                    "Tg0j",
+                    "Tg0C",
+                    "Tg04",
+                    "Tg0K",
+                    "Tg0L",
+                    "Tg0d",
+                    "Tg0e",
+                    "Tg1k",
+                    "Tg0X",
+                    "Tg0S",
+                    "Tg0y",
+                    "Tg0z"));
+
+    /**
+     * SMC key whose value is the number of keys in the key index.
+     */
+    public static final String SMC_KEY_COUNT = "#KEY";
+
+    /**
+     * Prefix shared by Apple Silicon GPU cluster temperature keys.
+     */
+    private static final String GPU_KEY_PREFIX = "Tg";
+
+    /**
+     * Prefix shared by fan keys.
+     */
+    private static final String FAN_KEY_PREFIX = "F";
+
+    /**
+     * GPU temperature keys, discovered on first use.
+     */
+    private static final SmcKeyCache GPU_KEYS = new SmcKeyCache(Builder._MAC_SENSORS_GPUTEMPERATURE_KEYS,
+            "GPU temperature", SMC_KEYS_GPU_TEMP_AS);
+
+    /**
+     * Fan speed keys, discovered on first use.
+     */
+    private static final SmcKeyCache FAN_KEYS = new SmcKeyCache(Builder._MAC_SENSORS_FANSPEED_KEYS, "fan speed",
+            Collections.emptyList());
 
     /**
      * SMC key for CPU voltage.
@@ -123,9 +172,20 @@ public final class SmcKit {
     public static final String SMC_KEY_CPU_VOLTAGE_AS = "VP0C";
 
     /**
+     * CPU voltage keys, tried in order until one returns a plausible value.
+     */
+    public static final List<String> SMC_KEYS_CPU_VOLTAGE = Collections
+            .unmodifiableList(Arrays.asList(SMC_KEY_CPU_VOLTAGE_AS, SMC_KEY_CPU_VOLTAGE));
+
+    /**
      * SMC command to read bytes.
      */
     public static final byte SMC_CMD_READ_BYTES = 5;
+
+    /**
+     * SMC command to read a key name at an index in the key index.
+     */
+    public static final byte SMC_CMD_READ_INDEX = 8;
 
     /**
      * SMC command to read key information.
@@ -220,6 +280,190 @@ public final class SmcKit {
             }
         }
         return 0d;
+    }
+
+    /**
+     * Lowest reading accepted as a genuine temperature, in degrees Celsius.
+     */
+    public static final double MIN_PLAUSIBLE_TEMPERATURE = 15d;
+
+    /**
+     * Tests whether a reading is plausible as a temperature.
+     *
+     * @param celsius The reading to test, in degrees Celsius.
+     * @return {@code true} if the reading is plausible.
+     */
+    public static boolean isPlausibleTemperature(double celsius) {
+        return celsius >= MIN_PLAUSIBLE_TEMPERATURE;
+    }
+
+    /**
+     * Gets the first plausible temperature from a list of SMC keys.
+     *
+     * @param conn The connection.
+     * @param keys The keys to try in order.
+     * @return The first plausible temperature, or {@code 0} if no key returned one.
+     */
+    public static double smcGetFirstTemperature(IOConnect conn, List<String> keys) {
+        return SmcKeyIndex
+                .firstPlausible(keys, key -> smcGetFloat(conn, key), SmcKit::isPlausibleTemperature, "temperature");
+    }
+
+    /**
+     * Gets the highest plausible temperature among a list of SMC keys.
+     *
+     * @param conn The connection.
+     * @param keys The keys to read.
+     * @return The highest plausible temperature, or {@code 0} if none were plausible.
+     */
+    public static double smcGetMaxTemperature(IOConnect conn, List<String> keys) {
+        return SmcKeyIndex.maxPlausible(keys, key -> smcGetFloat(conn, key), SmcKit::isPlausibleTemperature);
+    }
+
+    /**
+     * Gets the name of the key at an index in the SMC key index.
+     *
+     * @param conn  The connection.
+     * @param index The index to read.
+     * @return The four-character key name, or {@code null} if it could not be read.
+     */
+    public static String smcReadKeyAtIndex(IOConnect conn, int index) {
+        try (SMCKeyData input = new SMCKeyData(); SMCKeyData output = new SMCKeyData()) {
+            input.data8 = SMC_CMD_READ_INDEX;
+            input.data32 = index;
+            if (smcCall(conn, KERNEL_INDEX_SMC, input, output) != 0) {
+                return null;
+            }
+            byte[] keyBytes = Parsing.longToByteArray(output.key, 4, 4);
+            StringBuilder sb = new StringBuilder(4);
+            for (byte b : keyBytes) {
+                sb.append((char) (b & 0xFF));
+            }
+            return sb.toString();
+        }
+    }
+
+    /**
+     * Gets the SMC data type of a key, for example {@code flt} or {@code sp78}.
+     *
+     * @param conn The connection.
+     * @param key  The key to query.
+     * @return The data type, or an empty string if it could not be read.
+     */
+    public static String smcGetDataType(IOConnect conn, String key) {
+        try (SMCVal val = new SMCVal()) {
+            if (smcReadKey(conn, key, val) != 0 || val.dataType == null) {
+                return "";
+            }
+            StringBuilder sb = new StringBuilder(4);
+            for (byte b : val.dataType) {
+                if (b == 0) {
+                    break;
+                }
+                sb.append((char) b);
+            }
+            return sb.toString().trim();
+        }
+    }
+
+    /**
+     * Gets Apple Silicon GPU temperature keys for this machine.
+     *
+     * @return The keys to read for GPU temperature, never {@code null}.
+     */
+    public static List<String> getGpuTemperatureKeys() {
+        return GPU_KEYS.get(SmcKit::discoverGpuTemperatureKeys);
+    }
+
+    /**
+     * Gets the keys to read for fan speeds.
+     *
+     * @return The keys to read for fan speeds, never {@code null}.
+     */
+    public static List<String> getFanSpeedKeys() {
+        return FAN_KEYS.get(SmcKit::discoverFanSpeedKeys);
+    }
+
+    /**
+     * Discovers fan speed keys from the SMC key index.
+     *
+     * @return The keys to read, or {@code null} if neither the key index nor {@code FNum} could be read.
+     */
+    private static List<String> discoverFanSpeedKeys() {
+        IOConnect conn = smcOpen();
+        if (conn == null) {
+            return null;
+        }
+        try {
+            int keyCount = (int) smcGetLong(conn, SMC_KEY_COUNT);
+            List<String> discovered = SmcKeyIndex
+                    .findKeys(keyCount, i -> smcReadKeyAtIndex(conn, i), FAN_KEY_PREFIX, SmcKeyIndex::isFanSpeedKey);
+            return SmcKeyIndex.reconcileFanKeys(discovered, smcGetLong(conn, SMC_KEY_FAN_NUM));
+        } finally {
+            smcClose(conn);
+        }
+    }
+
+    /**
+     * Gets the keys to read for CPU voltage, in the order they should be tried.
+     *
+     * @return The keys to read for CPU voltage, never {@code null}.
+     */
+    public static List<String> getCpuVoltageKeys() {
+        List<String> configured = SmcKeyIndex
+                .parseConfiguredKeys(Builder.get(Builder._MAC_SENSORS_CPUVOLTAGE_KEYS, ""));
+        return configured.isEmpty() ? SMC_KEYS_CPU_VOLTAGE : configured;
+    }
+
+    /**
+     * Lowest reading accepted as a plausible CPU voltage, in volts.
+     */
+    public static final double MIN_PLAUSIBLE_VOLTAGE = SmcSensorValues.MIN_PLAUSIBLE_VOLTAGE;
+
+    /**
+     * Tests whether a reading is plausible as a CPU voltage.
+     *
+     * @param volts The reading to test, in volts.
+     * @return {@code true} if the reading is plausible.
+     */
+    public static boolean isPlausibleVoltage(double volts) {
+        return SmcSensorValues.isPlausibleVoltage(volts);
+    }
+
+    /**
+     * Gets the first plausible CPU voltage from a list of SMC keys.
+     *
+     * @param conn The connection.
+     * @param keys The keys to try in order.
+     * @return The first plausible voltage, or {@code 0} if no key returned one.
+     */
+    public static double smcGetFirstVoltage(IOConnect conn, List<String> keys) {
+        return SmcKeyIndex.firstPlausible(keys, key -> {
+            double raw = smcGetFloat(conn, key);
+            return raw == 0d ? 0d : SmcSensorValues.scaleVoltage(raw, smcGetDataType(conn, key));
+        }, SmcKit::isPlausibleVoltage, "voltage");
+    }
+
+    /**
+     * Discovers Apple Silicon GPU temperature keys from the SMC key index.
+     *
+     * @return The discovered keys, or {@code null} if the SMC key index could not be read.
+     */
+    private static List<String> discoverGpuTemperatureKeys() {
+        IOConnect conn = smcOpen();
+        if (conn == null) {
+            return null;
+        }
+        try {
+            int keyCount = (int) smcGetLong(conn, SMC_KEY_COUNT);
+            return SmcKeyIndex.findKeys(
+                    keyCount,
+                    i -> smcReadKeyAtIndex(conn, i),
+                    GPU_KEY_PREFIX,
+                    SmcKeyIndex::isGpuTemperatureKey);
+        } finally {
+            smcClose(conn);
+        }
     }
 
     /**

@@ -271,7 +271,8 @@ public class Json2Rst {
                 ensureNoUndefinedSubstitutionReferenced(
                         formatURL(property.getString("description")).replace(Symbol.DOUBLE_QUOTES, "\"\"")
                                 .replaceAll("<br>", "\n\n\t")
-                                .replaceAll("\\(hover on options to see their descriptions\\)", Normal.EMPTY)));
+                                .replaceAll("\\(hover on options to see their descriptions\\)", Normal.EMPTY)
+                                .replaceAll("&lt;", "<").replaceAll("&gt;", ">")));
         JsonArray anEnum = typeObj.getJsonArray("enum");
         if (anEnum != null) {
             out.println();

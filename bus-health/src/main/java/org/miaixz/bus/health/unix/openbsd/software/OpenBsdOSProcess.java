@@ -738,7 +738,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * @param psMap the ps map
      * @return the update attributes result
      */
-    private boolean updateAttributes(Map<PsKeywords, String> psMap) {
+    private synchronized boolean updateAttributes(Map<PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(PsKeywords.STATE).charAt(0)) {
             case 'R':
@@ -781,7 +781,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         long elapsedTime = Parsing.parseDHMSOrDefault(psMap.get(PsKeywords.ETIME), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         this.startTime = now - this.upTime;
-        this.userTime = Parsing.parseDHMSOrDefault(psMap.get(PsKeywords.CPUTIME), 0L);
+        this.userTime = monotonic(this.userTime, Parsing.parseDHMSOrDefault(psMap.get(PsKeywords.CPUTIME), 0L));
         // kernel time is included in user time
         this.kernelTime = 0L;
         this.path = psMap.get(PsKeywords.COMM);
@@ -793,6 +793,17 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         this.contextSwitches = this.voluntaryContextSwitches + this.involuntaryContextSwitches;
         this.commandLineBackup = psMap.get(PsKeywords.ARGS);
         return true;
+    }
+
+    /**
+     * Clamps a freshly parsed CPU-time counter so it never falls below the value already reported.
+     *
+     * @param previous The value last reported.
+     * @param parsed   The value just parsed from {@code ps}.
+     * @return {@code parsed}, or {@code previous} if that would be a decrease.
+     */
+    static long monotonic(long previous, long parsed) {
+        return Math.max(previous, parsed);
     }
 
     /**

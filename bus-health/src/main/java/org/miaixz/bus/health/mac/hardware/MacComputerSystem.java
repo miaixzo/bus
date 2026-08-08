@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 
@@ -30,6 +29,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
@@ -66,11 +66,11 @@ final class MacComputerSystem extends AbstractComputerSystem {
         if (platformExpert != null) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
-                manufacturer = Native.toString(data, Charset.UTF_8);
+                manufacturer = Parsing.decodeNulTerminated(data, Charset.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("model");
             if (data != null) {
-                model = Native.toString(data, Charset.UTF_8);
+                model = Parsing.decodeNulTerminated(data, Charset.UTF_8);
             }
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
             uuid = platformExpert.getStringProperty("IOPlatformUUID");

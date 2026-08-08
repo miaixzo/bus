@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -36,6 +37,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -402,7 +404,6 @@ public final class Parsing {
     public static long parseHertz(String hertz) {
         Matcher matcher = HERTZ_PATTERN.matcher(hertz.trim());
         if (matcher.find()) {
-            // Regex forces #(.#) format, no need to check for NumberFormatException
             Map<String, Long> map = new HashMap<>() {
 
                 {
@@ -414,9 +415,10 @@ public final class Parsing {
                     put("PHz", 1_000_000_000_000_000L);
                 }
             };
-            double value = Double.valueOf(matcher.group(1)) * map.getOrDefault(matcher.group(3), -1L);
-            if (value >= 0d) {
-                return (long) value;
+            double value = parseDoubleOrDefault(matcher.group(1), -1d);
+            long multiplier = map.getOrDefault(matcher.group(3), -1L);
+            if (value >= 0d && multiplier > 0L) {
+                return (long) (value * multiplier);
             }
         }
         return -1L;
@@ -1402,6 +1404,28 @@ public final class Parsing {
     }
 
     /**
+     * Converts the 16 bytes of an IPv6 address, offset two bytes into the given array, to the four-integer array
+     * expected by {@link #parseUtAddrV6toIP(int[])}.
+     * <p>
+     * Per the {@code WTS_INFO_CLASS} documentation, the IP address is offset by two bytes from the start of the
+     * {@code Address} member of the {@code WTS_CLIENT_ADDRESS} structure.
+     *
+     * @param address A byte array holding a big-endian IPv6 address in bytes 2 through 17.
+     * @return A four-integer array for {@link #parseUtAddrV6toIP(int[])}.
+     * @throws IllegalArgumentException If the array holds fewer than 18 bytes.
+     */
+    public static int[] parseIPv6BytesToIntArray(byte[] address) {
+        if (address == null || address.length < 18) {
+            throw new IllegalArgumentException("address must have at least 18 elements");
+        }
+        IntBuffer intBuf = ByteBuffer.wrap(Arrays.copyOfRange(address, 2, 18)).order(ByteOrder.BIG_ENDIAN)
+                .asIntBuffer();
+        int[] array = new int[intBuf.remaining()];
+        intBuf.get(array);
+        return array;
+    }
+
+    /**
      * Parses an integer array into an IPv4 or IPv6 address, as appropriate.
      * <p>
      * Applicable for the {@code ut_addr_v6} element of the Utmp structure.
@@ -1735,6 +1759,73 @@ public final class Parsing {
         } catch (DateTimeParseException e) {
             Logger.trace(false, "Health", "Unable to parse date string: " + dateString);
             return 0;
+        }
+    }
+
+    /**
+     * Parses a timestamp that carries no year into epoch milliseconds, resolving it to the most recent occurrence at or
+     * before {@code now}.
+     * <p>
+     * Several UNIX commands report timestamps without a year, such as the {@code MMM d HH:mm} form of {@code who} and
+     * {@code who -b}. If the parsed value lands in the future, this method reparses it against the previous year.
+     *
+     * @param dateString  The timestamp to parse, carrying no year.
+     * @param datePattern The expected format pattern, for example {@code "MMM d HH:mm"}.
+     * @param now         The moment to resolve the missing year against.
+     * @return The epoch time in milliseconds since January 1, 1970, UTC, or {@code 0} if parsing fails.
+     */
+    public static long parseYearlessDateToEpoch(String dateString, String datePattern, LocalDateTime now) {
+        if (dateString == null || dateString.isEmpty() || datePattern.isEmpty()) {
+            return 0;
+        }
+        LocalDateTime thisYear = parseWithDefaultYear(dateString, datePattern, now.getYear());
+        if (thisYear != null && !thisYear.isAfter(now)) {
+            return thisYear.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+        LocalDateTime lastYear = parseWithDefaultYear(dateString, datePattern, now.getYear() - 1);
+        if (lastYear != null) {
+            return lastYear.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        }
+        Logger.trace(false, "Health", "Unable to parse yearless date string: {}", dateString);
+        return 0;
+    }
+
+    /**
+     * Decodes a NUL-terminated byte array to a string, stopping at the first NUL byte.
+     *
+     * @param bytes   The byte array to decode.
+     * @param charset The charset to use for decoding.
+     * @return The decoded string up to the first NUL byte, or an empty string if the array is null or empty.
+     */
+    public static String decodeNulTerminated(byte[] bytes, java.nio.charset.Charset charset) {
+        if (bytes == null || bytes.length == 0) {
+            return Normal.EMPTY;
+        }
+        int len = 0;
+        while (len < bytes.length && bytes[len] != 0) {
+            len++;
+        }
+        return new String(bytes, 0, len, charset);
+    }
+
+    /**
+     * Parses a date string with a default year under strict resolver rules.
+     *
+     * @param dateString  The date string to parse.
+     * @param datePattern The expected date format pattern.
+     * @param year        The default year.
+     * @return The parsed local date time, or {@code null} when parsing fails.
+     */
+    private static LocalDateTime parseWithDefaultYear(String dateString, String datePattern, int year) {
+        try {
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendPattern(datePattern)
+                    .parseDefaulting(ChronoField.YEAR, year).parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                    .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter(Locale.US)
+                    .withResolverStyle(ResolverStyle.STRICT);
+            return LocalDateTime.parse(dateString, formatter);
+        } catch (DateTimeParseException e) {
+            return null;
         }
     }
 

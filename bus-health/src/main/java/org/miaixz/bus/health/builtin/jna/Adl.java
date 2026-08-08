@@ -47,6 +47,11 @@ public interface Adl {
     int ADL_OVERDRIVE_VERSION_N = 8;
 
     /**
+     * The ADL_OVERDRIVE_VERSION_6 value.
+     */
+    int ADL_OVERDRIVE_VERSION_6 = 6;
+
+    /**
      * The ADL_FAN_SPEED_MODE_PERCENT value.
      */
     int ADL_FAN_SPEED_MODE_PERCENT = 1;

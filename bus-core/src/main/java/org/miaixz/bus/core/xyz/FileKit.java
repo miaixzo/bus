@@ -1391,8 +1391,20 @@ public class FileKit extends PathResolve {
      * @return The relative sub-path.
      */
     public static String subPath(final String rootDir, final File file) {
+        return subPath(rootDir, file, true);
+    }
+
+    /**
+     * Gets the relative path of a file with respect to a root directory.
+     *
+     * @param rootDir       The absolute root directory.
+     * @param file          The file.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return The relative sub-path.
+     */
+    public static String subPath(final String rootDir, final File file, final boolean isFollowLinks) {
         try {
-            return subPath(rootDir, file.getCanonicalPath());
+            return subPath(rootDir, isFollowLinks ? file.getCanonicalPath() : file.getAbsolutePath());
         } catch (final IOException e) {
             throw new InternalException(e);
         }

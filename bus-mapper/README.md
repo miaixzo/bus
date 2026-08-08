@@ -82,7 +82,7 @@ Supports **18** mainstream and domestic databases:
 # application.yml
 spring:
   datasource:
-    name: com_deepparser
+    name: com_miaixz
     url: jdbc:postgresql://localhost:5432/miaixz?useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
     username: postgres
     password: password
@@ -93,7 +93,7 @@ spring:
 bus:
   mapper:
     basePackage:
-      ai.deepparser.nexus.mapper
+      com.miaixz.nexus.mapper
     mapperLocations: classpath:mapper/**/*.xml
     identifier:
       enabled: true # Enabled by default; set false to disable strict identifier validation.
@@ -106,20 +106,22 @@ bus:
         initSize: 1024
         concurrency: 1000
       dev_db:
-        prefix:
-          prefix: dp_
+        affix:
+          prefix:
+            value: dp_
         tenant:
           column: tenant_id
           ignore: tenant,token,user
       test_db:
-        prefix:
-          prefix: dev_
+        affix:
+          prefix:
+            value: dev_
         tenant:
           column: tenant_id
           ignore: tenant,token,user
 ```
 
-The Spring Boot configuration model uses `prefix` as the table-prefix plugin scope. Internally, `bus-mapper` exposes `MapperOptions` as the pure
+The Spring Boot configuration model uses `affix` as the prefix-and-suffix rewrite scope. Internally, `bus-mapper` exposes `MapperOptions` as the pure
 Java/MyBatis option model for mapper properties. Plugin assembly, configuration normalization, and type-resolution
 helpers live in separate components. The starter keeps Spring Boot binding, resource resolution, mapper scanning, and
 lifecycle wiring.
@@ -480,16 +482,18 @@ bus:
     configurationProperties:
       # Data Source 1 Configuration
       dev_db:
-        prefix:
-          prefix: dp_
+        affix:
+          prefix:
+            value: dp_
         tenant:
           column: tenant_id
           ignore: sys_config,sys_dict,sys_log
 
       # Data Source 2 Configuration
       prod_db:
-        prefix:
-          prefix: prod_
+        affix:
+          prefix:
+            value: prod_
         tenant:
           column: tenant_id
           ignore: sys_config,sys_dict,sys_log
@@ -937,7 +941,7 @@ Destructive changes remain blocked unless the matching operation flag, `allow-da
 bus:
   mapper:
     basePackage:
-      ai.deepparser.nexus.mapper
+      com.miaixz.nexus.mapper
     schema:
       enabled: true
       mode: UPDATE
@@ -945,7 +949,7 @@ bus:
       print-sql: true
       fail-fast: true
       entity-packages:
-        - ai.deepparser.nexus.entity
+        - com.miaixz.nexus.entity
       allow-create-table: true
       allow-add-column: true
       allow-create-primary-key: true
@@ -962,20 +966,25 @@ bus:
 ### Per-Database Initialization
 
 When a project configures multiple databases through `configurationProperties.namespaces`, `schema` can be placed under
-the matching namespace. Table prefixes are not duplicated under `schema`; initialization reads the existing
-`prefix.prefix` / `prefix.ignore` table-prefix plugin configuration from the same namespace.
-Table prefixes support both global and datasource-bound configuration: `namespace.prefix.prefix` wins first,
-then `shared.prefix.prefix`, `default.prefix.prefix`, or the top-level `bus.mapper.prefix` is used.
+the matching namespace. Affix rules are not duplicated under `schema`; initialization reads the existing
+`affix.prefix.value/ignore` and `affix.suffix.value/ignore` configuration from the same namespace. Prefix and suffix
+ignore lists are independent: ignoring one side does not prevent the other side from being applied.
+Affixes support both global and datasource-bound configuration: datasource `affix.*` values win first, followed by
+`shared.affix.*`, `default.affix.*`, or top-level `bus.mapper.affix`.
 
 ```yaml
 bus:
   mapper:
     configurationProperties:
       namespaces:
-        - name: com_deepparser
-          prefix:
-            prefix: dp_
-            ignore: tenant,assets,license
+        - name: com_miaixz
+          affix:
+            prefix:
+              value: dp_
+              ignore: tenant,assets
+            suffix:
+              value: _2026
+              ignore: license
           tenant:
             column: tenant_id
             ignore: tenant,assets,license,token,user
@@ -986,10 +995,10 @@ bus:
             print-sql: true
             fail-fast: true
             entity-packages:
-              - ai.deepparser.nexus.entity
+              - com.miaixz.nexus.entity
             include-entities:
-              - ai.deepparser.nexus.entity.License
-              - ai.deepparser.nexus.entity.Token
+              - com.miaixz.nexus.entity.License
+              - com.miaixz.nexus.entity.Token
             allow-create-table: true
             allow-add-column: true
             allow-create-primary-key: true
@@ -1015,7 +1024,7 @@ bus:
       dry-run: false
       script-location: ./target/bus-mapper-schema.sql
       entity-packages:
-        - ai.deepparser.nexus.entity
+        - com.miaixz.nexus.entity
       allow-create-table: true
       allow-create-primary-key: true
       allow-create-index: true
@@ -1252,17 +1261,26 @@ mapper:
     enabled: true
     ignore: sys_admin_table
 
-  # Table Prefix
-  prefix:
-    prefix: prod_
-    ignore: sys_log,sys_config
+  # Affix Rules
+  affix:
+    enabled: true
+    prefix:
+      value: prod_
+      ignore: sys_log,sys_config
+    suffix:
+      value: _archive
+      ignore: sys_log
 
   # Per-Database Configuration (overrides global)
   configurationProperties:
-    com_deepparser:
-      prefix:
-        prefix: dp_
-        ignore: tenant,assets,license
+    com_miaixz:
+      affix:
+        prefix:
+          value: dp_
+          ignore: tenant,assets,license
+        suffix:
+          value: _archive
+          ignore: tenant,assets
       tenant:
         column: tenant_id
         ignore: tenant,assets,license

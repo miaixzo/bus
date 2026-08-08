@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.ToIntFunction;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -121,6 +122,11 @@ public final class AdlKit {
 
     // Lazy adapter enumeration state — written once, read-only thereafter
     /**
+     * The ENUM_LOCK constant.
+     */
+    private static final Object ENUM_LOCK = new Object();
+
+    /**
      * The adaptersEnumerated value.
      */
     private static volatile boolean adaptersEnumerated = false;
@@ -176,13 +182,18 @@ public final class AdlKit {
         if (adaptersEnumerated) {
             return;
         }
-        Map<Integer, Integer> result = enumerateAdapters(context);
-        if (result != null) {
-            BUS_TO_INDEX.set(result);
-            adaptersEnumerated = true;
-            Logger.debug(false, "Health", "ADL enumerated {} adapter(s)", BUS_TO_INDEX.get().size());
-        } else {
-            Logger.debug(false, "Health", "ADL adapter enumeration failed; will retry on next call");
+        synchronized (ENUM_LOCK) {
+            if (adaptersEnumerated) {
+                return;
+            }
+            Map<Integer, Integer> result = enumerateAdapters(context);
+            if (result != null) {
+                BUS_TO_INDEX.set(result);
+                adaptersEnumerated = true;
+                Logger.debug(false, "Health", "ADL enumerated {} adapter(s)", BUS_TO_INDEX.get().size());
+            } else {
+                Logger.debug(false, "Health", "ADL adapter enumeration failed; will retry on next call");
+            }
         }
     }
 
@@ -225,13 +236,66 @@ public final class AdlKit {
      * @return the supports overdrive n result
      */
     private static boolean supportsOverdriveN(Pointer context, int adapterIndex) {
+        return supportsOverdriveVersion(context, adapterIndex, Adl.ADL_OVERDRIVE_VERSION_N);
+    }
+
+    /**
+     * Returns the supports overdrive 6 result.
+     *
+     * @param context      the context
+     * @param adapterIndex the adapter index
+     * @return the supports overdrive 6 result
+     */
+    private static boolean supportsOverdrive6(Pointer context, int adapterIndex) {
+        return supportsOverdriveVersion(context, adapterIndex, Adl.ADL_OVERDRIVE_VERSION_6);
+    }
+
+    /**
+     * Returns the supports overdrive version result.
+     *
+     * @param context      the context
+     * @param adapterIndex the adapter index
+     * @param minVersion   the minimum overdrive version
+     * @return the supports overdrive version result
+     */
+    private static boolean supportsOverdriveVersion(Pointer context, int adapterIndex, int minVersion) {
         IntByReference supported = new IntByReference();
         IntByReference enabled = new IntByReference();
         IntByReference version = new IntByReference();
         if (Holder.LIB.ADL2_Overdrive_Caps(context, adapterIndex, supported, enabled, version) == Adl.ADL_OK) {
-            return version.getValue() >= Adl.ADL_OVERDRIVE_VERSION_N;
+            return supported.getValue() != 0 && version.getValue() >= minVersion;
         }
         return false;
+    }
+
+    /**
+     * Reads one clock from the OverdriveN performance status in MHz.
+     *
+     * @param adapterIndex the ADL adapter index
+     * @param clock        the selected clock reader
+     * @return the clock in MHz, or {@code -1}
+     */
+    private static long performanceClockMhz(int adapterIndex, ToIntFunction<Adl.ADLODNPerformanceStatus> clock) {
+        if (adapterIndex < 0) {
+            return -1L;
+        }
+        Pointer ctx = adlInit();
+        if (ctx == null) {
+            return -1L;
+        }
+        try {
+            if (!supportsOverdriveN(ctx, adapterIndex)) {
+                return -1L;
+            }
+            Adl.ADLODNPerformanceStatus perf = new Adl.ADLODNPerformanceStatus();
+            if (Holder.LIB.ADL2_OverdriveN_PerformanceStatus_Get(ctx, adapterIndex, perf) == Adl.ADL_OK) {
+                perf.read();
+                return clock.applyAsInt(perf) / 100L;
+            }
+            return -1L;
+        } finally {
+            adlUninit(ctx);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -338,27 +402,7 @@ public final class AdlKit {
      * @return core clock in MHz or -1
      */
     public static long getCoreClockMhz(int adapterIndex) {
-        if (adapterIndex < 0) {
-            return -1L;
-        }
-        Pointer ctx = adlInit();
-        if (ctx == null) {
-            return -1L;
-        }
-        try {
-            if (!supportsOverdriveN(ctx, adapterIndex)) {
-                return -1L;
-            }
-            Adl.ADLODNPerformanceStatus perf = new Adl.ADLODNPerformanceStatus();
-            if (Holder.LIB.ADL2_OverdriveN_PerformanceStatus_Get(ctx, adapterIndex, perf) == Adl.ADL_OK) {
-                perf.read();
-                // iCoreClock is in 10 kHz units; divide by 100 to get MHz
-                return perf.iCoreClock / 100L;
-            }
-            return -1L;
-        } finally {
-            adlUninit(ctx);
-        }
+        return performanceClockMhz(adapterIndex, perf -> perf.iCoreClock);
     }
 
     /**
@@ -368,31 +412,12 @@ public final class AdlKit {
      * @return memory clock in MHz or -1
      */
     public static long getMemoryClockMhz(int adapterIndex) {
-        if (adapterIndex < 0) {
-            return -1L;
-        }
-        Pointer ctx = adlInit();
-        if (ctx == null) {
-            return -1L;
-        }
-        try {
-            if (!supportsOverdriveN(ctx, adapterIndex)) {
-                return -1L;
-            }
-            Adl.ADLODNPerformanceStatus perf = new Adl.ADLODNPerformanceStatus();
-            if (Holder.LIB.ADL2_OverdriveN_PerformanceStatus_Get(ctx, adapterIndex, perf) == Adl.ADL_OK) {
-                perf.read();
-                return perf.iMemoryClock / 100L;
-            }
-            return -1L;
-        } finally {
-            adlUninit(ctx);
-        }
+        return performanceClockMhz(adapterIndex, perf -> perf.iMemoryClock);
     }
 
     /**
-     * Returns GPU power draw in watts, or -1 if unavailable. Uses Overdrive 6 power API which is available on Overdrive
-     * N adapters. Power is reported in units of 1/256 watts.
+     * Returns GPU power draw in watts, or -1 if unavailable. Uses Overdrive 6 power API. Power is reported in units of
+     * 1/256 watts.
      *
      * @param adapterIndex ADL adapter index
      * @return power in watts or -1
@@ -406,7 +431,7 @@ public final class AdlKit {
             return -1d;
         }
         try {
-            if (!supportsOverdriveN(ctx, adapterIndex)) {
+            if (!supportsOverdrive6(ctx, adapterIndex)) {
                 return -1d;
             }
             IntByReference power = new IntByReference();

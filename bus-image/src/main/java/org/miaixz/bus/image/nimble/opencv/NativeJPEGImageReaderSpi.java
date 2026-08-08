@@ -131,33 +131,12 @@ public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
                 if (byte2 == 0xDA) {
                     break;
                 }
-                // Start of Frame, also known as SOF55, indicates a JPEG-LS file. Not supported in this reader
+                // SOF55 (0xF7) marks a JPEG-LS file, which is not supported by this reader.
                 if (byte2 == 0xF7) {
                     return false;
                 }
-                // 0xffc0: // SOF_0: JPEG baseline
-                // 0xffc1: // SOF_1: JPEG extended sequential DCT
-                // 0xffc2: // SOF_2: JPEG progressive DCT
-                // 0xffc3: // SOF_3: JPEG lossless sequential
-                if ((byte2 >= 0xC0) && (byte2 <= 0xC3)) {
-                    return true;
-                }
-                // 0xffc5: // SOF_5: differential (hierarchical) extended sequential, Huffman
-                // 0xffc6: // SOF_6: differential (hierarchical) progressive, Huffman
-                // 0xffc7: // SOF_7: differential (hierarchical) lossless, Huffman
-                if ((byte2 >= 0xC5) && (byte2 <= 0xC7)) {
-                    return true;
-                }
-                // 0xffc9: // SOF_9: extended sequential, arithmetic
-                // 0xffca: // SOF_10: progressive, arithmetic
-                // 0xffcb: // SOF_11: lossless, arithmetic
-                if ((byte2 >= 0xC9) && (byte2 <= 0xCB)) {
-                    return true;
-                }
-                // 0xffcd: // SOF_13: differential (hierarchical) extended sequential, arithmetic
-                // 0xffce: // SOF_14: differential (hierarchical) progressive, arithmetic
-                // 0xffcf: // SOF_15: differential (hierarchical) lossless, arithmetic
-                if ((byte2 >= 0xCD) && (byte2 <= 0xCF)) {
+                // Any JPEG Start-Of-Frame marker means this reader can decode the stream.
+                if (NativeImageReader.isSOFMarker(byte2)) {
                     return true;
                 }
                 int length = iis.read() << 8;

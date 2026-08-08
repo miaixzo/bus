@@ -28,15 +28,16 @@ import org.miaixz.bus.starter.wrapper.WrapperConfiguration;
 /**
  * Enables request/response wrapping and XSS protection.
  * <p>
- * This annotation imports the {@link WrapperConfiguration}, which sets up filters to wrap HTTP requests and responses,
- * allowing for features like repeatable-read request bodies and XSS sanitization. It also customizes request mapping
- * behavior.
+ * This annotation enables the application JSON provider and imports {@link WrapperConfiguration}, which assembles
+ * request binding, message conversion, body caching, response advice, and route-prefix support. JSON is enabled because
+ * the default wrapper message converter requires the application-wide provider.
  *
  * @author Kimi Liu
  * @since Java 21+
  */
 @Inherited
 @Documented
+@EnableJson
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
 @Import(WrapperConfiguration.class)

@@ -244,6 +244,18 @@ public enum UID {
      */
     HEVCM10P51("1.2.840.10008.1.2.4.108", "HEVC/H.265 Main 10 Profile / Level 5.1"),
     /**
+     * JPEG XL Lossless.
+     */
+    JPEGXLLossless("1.2.840.10008.1.2.4.110", "JPEG XL Lossless"),
+    /**
+     * JPEG XL JPEG Recompression.
+     */
+    JPEGXLJPEGRecompression("1.2.840.10008.1.2.4.111", "JPEG XL JPEG Recompression"),
+    /**
+     * JPEG XL.
+     */
+    JPEGXL("1.2.840.10008.1.2.4.112", "JPEG XL"),
+    /**
      * High-Throughput JPEG 2000 Image Compression (Lossless Only).
      */
     HTJ2KLossless("1.2.840.10008.1.2.4.201", "High-Throughput JPEG 2000 Image Compression (Lossless Only)"),

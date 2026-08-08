@@ -21,22 +21,15 @@ package org.miaixz.bus.image.nimble.opencv;
 
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.nio.ByteOrder;
 
-import javax.imageio.*;
-import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.stream.ImageOutputStream;
 
 import org.opencv.core.CvType;
-import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.nimble.Photometric;
-import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
 
@@ -46,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class NativeJPEGImageWriter extends ImageWriter {
+public class NativeJPEGImageWriter extends AbstractNativeImageWriter {
 
     /**
      * Creates a new instance.
@@ -92,153 +85,80 @@ public class NativeJPEGImageWriter extends ImageWriter {
     }
 
     /**
-     * Executes the write operation.
+     * Gets the codec name.
      *
-     * @param streamMetadata the stream metadata.
-     * @param image          the image.
-     * @param param          the param.
-     * @throws IOException if the operation cannot be completed.
+     * @return the codec name.
      */
     @Override
-    public void write(IIOMetadata streamMetadata, IIOImage image, ImageWriteParam param) throws IOException {
-        if (output == null) {
-            throw new IllegalStateException("input cannot be null");
-        }
+    String codecName() {
+        return "JPEG";
+    }
 
-        if (!(output instanceof ImageOutputStream stream)) {
-            throw new IllegalArgumentException("input is not an ImageInputStream!");
-        }
-        stream.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+    /**
+     * Validates the write parameters.
+     *
+     * @param param the write param.
+     * @param desc  the image descriptor.
+     */
+    @Override
+    void validate(ImageWriteParam param, ImageDescriptor desc) {
+        rejectChromaSubsampledLossless(param.isCompressionLossless(), desc.getPhotometricInterpretation());
+    }
 
+    /**
+     * Converts the image to a native matrix.
+     *
+     * @param image the image.
+     * @param param the write param.
+     * @param desc  the image descriptor.
+     * @return the native matrix.
+     */
+    @Override
+    ImageCV toMat(RenderedImage image, ImageWriteParam param, ImageDescriptor desc) {
+        // Band interleaved mode (PlanarConfiguration = 1) is converted to pixel interleaved.
+        return ImageConversion.toMat(image, param.getSourceRegion(), false);
+    }
+
+    /**
+     * Builds the native DICOM parameters.
+     *
+     * @param mat   the native matrix.
+     * @param image the image.
+     * @param param the write param.
+     * @param desc  the image descriptor.
+     * @return the native DICOM parameters.
+     */
+    @Override
+    MatOfInt buildDicomParams(ImageCV mat, RenderedImage image, ImageWriteParam param, ImageDescriptor desc) {
         JPEGImageWriteParam jpegParams = (JPEGImageWriteParam) param;
-
-        if (!(stream instanceof BytesWithImageImageDescriptor)) {
-            throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
+        int channels = CvType.channels(mat.type());
+        boolean signed = desc.isSigned();
+        int dcmFlags = signed ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
+        int bitCompressed = desc.getBitsCompressed();
+        if (signed && jpegParams.getPrediction() > 1) {
+            Logger.warn(false, "Image", "Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
+            bitCompressed = 16;
         }
-        ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
-        Photometric pi = desc.getPhotometricInterpretation();
-
-        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi || Photometric.YBR_PARTIAL_422 == pi
-                || Photometric.YBR_PARTIAL_420 == pi || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
-            throw new IllegalArgumentException(
-                    "True lossless encoder: Photometric interpretation is not supported: " + pi);
+        // The JPEG and JPEG-LS encoders can reduce non-byte streams to 8-bit unless promoted.
+        if (bitCompressed == 8 && image.getSampleModel().getTransferType() != DataBuffer.TYPE_BYTE) {
+            bitCompressed = 12;
         }
-        int epi = getCodecColorSpace(pi);
 
-        RenderedImage renderedImage = image.getRenderedImage();
-        Mat buf = null;
-        MatOfInt dicomParams = null;
-        try {
-            ImageCV mat = null;
-            try {
-                // Band interleaved mode (PlanarConfiguration = 1) is converted to pixel interleaved
-                // So the input image has always a pixel interleaved mode mode((PlanarConfiguration = 0)
-                mat = ImageConversion.toMat(renderedImage, param.getSourceRegion(), false);
-
-                int cvType = mat.type();
-                int channels = CvType.channels(cvType);
-                boolean signed = desc.isSigned();
-                int dcmFlags = signed ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
-                int bitCompressed = desc.getBitsCompressed();
-                if (signed && jpegParams.getPrediction() > 1) {
-                    Logger.warn(
-                            false,
-                            "Image",
-                            "Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
-                    bitCompressed = 16;
-                }
-                // Specific case not well supported by jpeg and jpeg-ls encoder that reduce the stream to 8-bit
-                if (bitCompressed == 8 && renderedImage.getSampleModel().getTransferType() != DataBuffer.TYPE_BYTE) {
-                    bitCompressed = 12;
-                }
-
-                int[] params = new int[16];
-                params[Imgcodecs.DICOM_PARAM_IMREAD] = Imgcodecs.IMREAD_UNCHANGED; // Image flags
-                params[Imgcodecs.DICOM_PARAM_DCM_IMREAD] = dcmFlags; // DICOM flags
-                params[Imgcodecs.DICOM_PARAM_WIDTH] = mat.width(); // Image width
-                params[Imgcodecs.DICOM_PARAM_HEIGHT] = mat.height(); // Image height
-                params[Imgcodecs.DICOM_PARAM_COMPRESSION] = Imgcodecs.DICOM_CP_JPG; // Type of compression
-                params[Imgcodecs.DICOM_PARAM_COMPONENTS] = channels; // Number of components
-                params[Imgcodecs.DICOM_PARAM_BITS_PER_SAMPLE] = bitCompressed; // Bits per sample
-                params[Imgcodecs.DICOM_PARAM_INTERLEAVE_MODE] = Imgcodecs.ILV_SAMPLE; // Interleave mode
-                params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = epi; // Photometric interpretation
-                params[Imgcodecs.DICOM_PARAM_JPEG_MODE] = jpegParams.getMode(); // JPEG Codec mode
-                params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] = (int) (jpegParams.getCompressionQuality() * 100); // JPEG
-                                                                                                               // lossy
-                                                                                                               // quality
-                params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] = jpegParams.getPrediction(); // JPEG lossless prediction
-                params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = jpegParams.getPointTransform(); // JPEG lossless
-                                                                                                  // transformation
-                                                                                                  // point
-
-                dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
-                if (buf.empty()) {
-                    throw new IIOException("Native JPEG encoding error: null image");
-                }
-            } finally {
-                if (mat != null) {
-                    mat.release();
-                }
-            }
-
-            byte[] bSrcData = new byte[buf.width() * buf.height() * (int) buf.elemSize()];
-            buf.get(0, 0, bSrcData);
-            stream.write(bSrcData);
-        } catch (Throwable t) {
-            throw new IIOException("Native JPEG encoding error", t);
-        } finally {
-            NativeImageReader.closeMat(dicomParams);
-            NativeImageReader.closeMat(buf);
-        }
-    }
-
-    /**
-     * Gets the default stream metadata.
-     *
-     * @param param the param.
-     * @return the default stream metadata.
-     */
-    @Override
-    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam param) {
-        return null;
-    }
-
-    /**
-     * Gets the default image metadata.
-     *
-     * @param imageType the image type.
-     * @param param     the param.
-     * @return the default image metadata.
-     */
-    @Override
-    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier imageType, ImageWriteParam param) {
-        return null;
-    }
-
-    /**
-     * Executes the convert stream metadata operation.
-     *
-     * @param inData the in data.
-     * @param param  the param.
-     * @return the operation result.
-     */
-    @Override
-    public IIOMetadata convertStreamMetadata(IIOMetadata inData, ImageWriteParam param) {
-        return null;
-    }
-
-    /**
-     * Executes the convert image metadata operation.
-     *
-     * @param inData    the in data.
-     * @param imageType the image type.
-     * @param param     the param.
-     * @return the operation result.
-     */
-    @Override
-    public IIOMetadata convertImageMetadata(IIOMetadata inData, ImageTypeSpecifier imageType, ImageWriteParam param) {
-        return null;
+        int[] params = new int[16];
+        params[Imgcodecs.DICOM_PARAM_IMREAD] = Imgcodecs.IMREAD_UNCHANGED; // Image flags
+        params[Imgcodecs.DICOM_PARAM_DCM_IMREAD] = dcmFlags; // DICOM flags
+        params[Imgcodecs.DICOM_PARAM_WIDTH] = mat.width(); // Image width
+        params[Imgcodecs.DICOM_PARAM_HEIGHT] = mat.height(); // Image height
+        params[Imgcodecs.DICOM_PARAM_COMPRESSION] = Imgcodecs.DICOM_CP_JPG; // Type of compression
+        params[Imgcodecs.DICOM_PARAM_COMPONENTS] = channels; // Number of components
+        params[Imgcodecs.DICOM_PARAM_BITS_PER_SAMPLE] = bitCompressed; // Bits per sample
+        params[Imgcodecs.DICOM_PARAM_INTERLEAVE_MODE] = Imgcodecs.ILV_SAMPLE; // Interleave mode
+        params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = getCodecColorSpace(desc.getPhotometricInterpretation());
+        params[Imgcodecs.DICOM_PARAM_JPEG_MODE] = jpegParams.getMode(); // JPEG codec mode
+        params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] = (int) (jpegParams.getCompressionQuality() * 100);
+        params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] = jpegParams.getPrediction(); // JPEG lossless prediction
+        params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = jpegParams.getPointTransform();
+        return new MatOfInt(params);
     }
 
 }

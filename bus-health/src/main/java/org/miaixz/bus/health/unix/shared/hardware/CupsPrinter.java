@@ -52,6 +52,21 @@ public final class CupsPrinter extends AbstractPrinter {
      */
     private static final boolean HAS_CUPS;
 
+    /**
+     * The IPP_PRINTER_IDLE constant.
+     */
+    private static final int IPP_PRINTER_IDLE = 3;
+
+    /**
+     * The IPP_PRINTER_PROCESSING constant.
+     */
+    private static final int IPP_PRINTER_PROCESSING = 4;
+
+    /**
+     * The IPP_PRINTER_STOPPED constant.
+     */
+    private static final int IPP_PRINTER_STOPPED = 5;
+
     static {
         boolean hasCups = false;
         try {
@@ -163,7 +178,7 @@ public final class CupsPrinter extends AbstractPrinter {
      * @param stateReasons the state reasons
      * @return the parse state from cups result
      */
-    private static PrinterStatus parseStateFromCups(String state, String stateReasons) {
+    static PrinterStatus parseStateFromCups(String state, String stateReasons) {
         if (!stateReasons.isEmpty() && !"none".equals(stateReasons)) {
             String lower = stateReasons.toLowerCase(Locale.ROOT);
             if (lower.contains("error") || lower.contains("fault")) {
@@ -175,13 +190,13 @@ public final class CupsPrinter extends AbstractPrinter {
         }
         int stateInt = Parsing.parseIntOrDefault(state, -1);
         switch (stateInt) {
-            case Cups.IPP_PRINTER_IDLE:
+            case IPP_PRINTER_IDLE:
                 return PrinterStatus.IDLE;
 
-            case Cups.IPP_PRINTER_PROCESSING:
+            case IPP_PRINTER_PROCESSING:
                 return PrinterStatus.PRINTING;
 
-            case Cups.IPP_PRINTER_STOPPED:
+            case IPP_PRINTER_STOPPED:
                 return PrinterStatus.OFFLINE;
 
             default:
