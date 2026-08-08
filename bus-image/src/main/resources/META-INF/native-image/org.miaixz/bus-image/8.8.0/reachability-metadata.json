@@ -1065,6 +1065,12 @@
           ]
         },
         {
+          "name": "isJpegXL",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "isNative",
           "parameterTypes": [
             "java.lang.String"
@@ -31230,6 +31236,142 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.image.galaxy.media.JsonManifestSerializer",
+      "fields": [
+        {
+          "name": "writer"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.Writer"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.Manifest",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeArchiveQuery",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.image.galaxy.media.ManifestQueryResult"
+          ]
+        },
+        {
+          "name": "writeHttpTags",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "writeViewerMessages",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "writePatients",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "writePatient",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.ManifestPatient"
+          ]
+        },
+        {
+          "name": "writeStudies",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "writeStudy",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.ManifestStudy"
+          ]
+        },
+        {
+          "name": "writeSeries",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "writeSeries",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.ManifestSeries"
+          ]
+        },
+        {
+          "name": "writeInstances",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "writeInstance",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.ManifestInstance"
+          ]
+        },
+        {
+          "name": "writeBooleanAttribute",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "writeAttribute",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeString",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeComma",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "keyword",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.image.galaxy.media.Manifest",
       "fields": [
         {
@@ -31367,10 +31509,61 @@
           ]
         },
         {
+          "name": "writeManifest",
+          "parameterTypes": [
+            "java.io.Writer",
+            "java.lang.String",
+            "org.miaixz.bus.image.galaxy.media.ManifestFormat"
+          ]
+        },
+        {
           "name": "xmlManifest",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "jsonManifest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "manifest",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.image.galaxy.media.ManifestFormat"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.galaxy.media.ManifestFormat",
+      "fields": [
+        {
+          "name": "XML"
+        },
+        {
+          "name": "JSON"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
         }
       ]
     },
@@ -31701,10 +31894,10 @@
       "type": "org.miaixz.bus.image.galaxy.media.ManifestQueryResult",
       "fields": [
         {
-          "name": "viewerMessage"
+          "name": "wadoParameters"
         },
         {
-          "name": "wadoParameters"
+          "name": "viewerMessages"
         }
       ],
       "methods": [
@@ -31726,12 +31919,55 @@
           "parameterTypes": []
         },
         {
+          "name": "getViewerMessages",
+          "parameterTypes": []
+        },
+        {
+          "name": "addViewerMessage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.ViewerMessage"
+          ]
+        },
+        {
           "name": "getWadoParameters",
           "parameterTypes": []
         },
         {
           "name": "setViewerMessage",
           "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.ViewerMessage"
+          ]
+        },
+        {
+          "name": "toXml",
+          "parameterTypes": [
+            "java.io.Writer"
+          ]
+        },
+        {
+          "name": "toXml",
+          "parameterTypes": [
+            "java.io.Writer",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeArchiveQuery",
+          "parameterTypes": [
+            "java.io.Writer"
+          ]
+        },
+        {
+          "name": "writeHttpTag",
+          "parameterTypes": [
+            "java.io.Writer",
+            "org.miaixz.bus.image.galaxy.media.HttpTag"
+          ]
+        },
+        {
+          "name": "writeViewerMessage",
+          "parameterTypes": [
+            "java.io.Writer",
             "org.miaixz.bus.image.galaxy.media.ViewerMessage"
           ]
         },
@@ -32350,6 +32586,48 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.image.galaxy.media.QueryMode",
+      "fields": [
+        {
+          "name": "DB"
+        },
+        {
+          "name": "DICOM"
+        },
+        {
+          "name": "DICOM_WEB"
+        },
+        {
+          "name": "DEFAULT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "fromValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.image.galaxy.media.RecordFactory",
       "fields": [
         {
@@ -32753,6 +33031,9 @@
         },
         {
           "name": "wadoRS"
+        },
+        {
+          "name": "queryMode"
         }
       ],
       "methods": [
@@ -32784,6 +33065,19 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "org.miaixz.bus.image.galaxy.media.QueryMode"
+          ]
+        },
+        {
           "name": "builder",
           "parameterTypes": [
             "java.lang.String"
@@ -32797,6 +33091,10 @@
         },
         {
           "name": "getProtocolName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getQueryMode",
           "parameterTypes": []
         },
         {
@@ -32878,6 +33176,12 @@
           "name": "withWebLogin",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "withQueryMode",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.media.QueryMode"
           ]
         }
       ]
@@ -46834,6 +47138,9 @@
           "name": "JPEG_2000"
         },
         {
+          "name": "JPEG_XL"
+        },
+        {
           "name": "JPEG_BASELINE"
         },
         {
@@ -48214,6 +48521,459 @@
         {
           "name": "reset",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.ImageOutputData",
+      "fields": [
+        {
+          "name": "images"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "tsuid"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.SupplierEx",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "adaptTagsToRawImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "adaptSuitableSyntax",
+          "parameterTypes": [
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isAdaptableSyntax",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isNativeSyntax",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isSupportedSyntax",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getFirstImage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImages",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTsuid",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeCompressedImageData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageOutputStream",
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int[]"
+          ]
+        },
+        {
+          "name": "frameSizeInBytes",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage"
+          ]
+        },
+        {
+          "name": "adaptCompressionRatio",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int[]",
+            "double"
+          ]
+        },
+        {
+          "name": "setLossyCompressionTags",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "getCompressionMethod",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "updateCompressionRatios",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "double"
+          ]
+        },
+        {
+          "name": "appendToArray",
+          "parameterTypes": [
+            "double[]",
+            "double"
+          ]
+        },
+        {
+          "name": "updateCompressionMethods",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sanitizeCompressionMethods",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "writRawImageData",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.io.ImageOutputStream",
+            "org.miaixz.bus.image.galaxy.data.Attributes"
+          ]
+        },
+        {
+          "name": "adaptTagsToCompressedImage",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.Attributes",
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "org.miaixz.bus.image.nimble.JpegWriteParam"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.ImageReader",
+      "fields": [
+        {
+          "name": "BULK_TAGS"
+        },
+        {
+          "name": "BULK_DATA_DESCRIPTOR"
+        },
+        {
+          "name": "series2FloatImages"
+        },
+        {
+          "name": "allowFloatImageConversion"
+        },
+        {
+          "name": "fragmentsPositions"
+        },
+        {
+          "name": "bdis"
+        },
+        {
+          "name": "dis"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageReaderSpi"
+          ]
+        },
+        {
+          "name": "isYbrModel",
+          "parameterTypes": [
+            "java.nio.channels.SeekableByteChannel",
+            "org.miaixz.bus.image.nimble.Photometric",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "ybr2rgb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.Photometric",
+            "java.lang.String",
+            "java.util.function.BooleanSupplier"
+          ]
+        },
+        {
+          "name": "applyReleaseImageAfterProcessing",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageCV",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "isReleaseImageAfterProcessing",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "closeMat",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "isSupportedSyntax",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setInput",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "getImageDescriptor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumImages",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getHeight",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getImageTypes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getDefaultReadParam",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStreamMetadata",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImageMetadata",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "canReadRaster",
+          "parameterTypes": []
+        },
+        {
+          "name": "readRaster",
+          "parameterTypes": [
+            "int",
+            "javax.imageio.ImageReadParam"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "int",
+            "javax.imageio.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getDefaultReadParam",
+          "parameterTypes": [
+            "javax.imageio.ImageReadParam"
+          ]
+        },
+        {
+          "name": "resetInternalState",
+          "parameterTypes": []
+        },
+        {
+          "name": "checkIndex",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "dispose",
+          "parameterTypes": []
+        },
+        {
+          "name": "fileYbr2rgb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.Photometric",
+            "java.lang.String",
+            "org.miaixz.bus.image.nimble.stream.ExtendSegmentedInputImageStream",
+            "int",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "byteYbr2rgb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.Photometric",
+            "java.lang.String",
+            "int",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getLazyPlanarImages",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.ImageReadParam",
+            "org.miaixz.bus.image.metric.Editable"
+          ]
+        },
+        {
+          "name": "getPlanarImages",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlanarImages",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getPlanarImage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlanarImage",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "rangeOutsideLut",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.PlanarImage",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "rangeOutsideLut",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.tuple.Pair",
+            "org.miaixz.bus.image.nimble.stream.ImageDescriptor"
+          ]
+        },
+        {
+          "name": "getRescaleSlopeAndIntercept",
+          "parameterTypes": [
+            "double",
+            "double",
+            "org.opencv.core.Core$MinMaxLocResult"
+          ]
+        },
+        {
+          "name": "getRawImage",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getRawImageFromFile",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getRawImageFromBytes",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.nimble.ImageReadParam"
+          ]
+        },
+        {
+          "name": "buildSegmentedImageInputStream",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.galaxy.data.Fragments",
+            "org.miaixz.bus.image.galaxy.data.BulkData"
+          ]
+        },
+        {
+          "name": "addSeriesToFloatImages",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "getForceToFloatImages",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "removeSeriesToFloatImages",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setAllowFloatImageConversion",
+          "parameterTypes": [
+            "boolean"
+          ]
         }
       ]
     },
@@ -52127,6 +52887,9 @@
         },
         {
           "name": "rescaleType"
+        },
+        {
+          "name": "reset"
         }
       ],
       "methods": [
@@ -52137,9 +52900,29 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Double",
+            "java.lang.Double",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "adaptWithOverlayBitMask",
           "parameterTypes": [
             "int"
+          ]
+        },
+        {
+          "name": "getResetInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResetInstance",
+          "parameterTypes": [
+            "java.lang.Double",
+            "java.lang.Double",
+            "java.lang.String"
           ]
         },
         {
@@ -52152,6 +52935,10 @@
         },
         {
           "name": "getLut",
+          "parameterTypes": []
+        },
+        {
+          "name": "isReset",
           "parameterTypes": []
         },
         {
@@ -52649,6 +53436,175 @@
             "javax.imageio.metadata.IIOMetadata",
             "javax.imageio.IIOImage",
             "javax.imageio.ImageWriteParam"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.image.nimble.opencv.NativeImageReader",
+      "fields": [
+        {
+          "name": "canEncodeSigned"
+        },
+        {
+          "name": "params"
+        },
+        {
+          "name": "iis"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.spi.ImageReaderSpi",
+            "boolean"
+          ]
+        },
+        {
+          "name": "createImageType",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageParameters",
+            "java.awt.color.ColorSpace",
+            "byte[]",
+            "byte[]",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "createColorModel",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageParameters",
+            "java.awt.color.ColorSpace",
+            "byte[]",
+            "byte[]",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "createImageType",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.opencv.ImageParameters",
+            "java.awt.image.ColorModel"
+          ]
+        },
+        {
+          "name": "closeMat",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "getSOFSegment",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageInputStream"
+          ]
+        },
+        {
+          "name": "isSOFMarker",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getSOF",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageInputStream",
+            "boolean",
+            "int"
+          ]
+        },
+        {
+          "name": "readUnsignedByte",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageInputStream"
+          ]
+        },
+        {
+          "name": "readUnsignedShort",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageInputStream"
+          ]
+        },
+        {
+          "name": "dispose",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "setInput",
+          "parameterTypes": [
+            "java.lang.Object",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "resetInternalState",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNumImages",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getHeight",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getImageTypes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getStreamMetadata",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImageMetadata",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "int",
+            "javax.imageio.ImageReadParam"
+          ]
+        },
+        {
+          "name": "getNativeImage",
+          "parameterTypes": [
+            "javax.imageio.ImageReadParam"
+          ]
+        },
+        {
+          "name": "ybr2rgb",
+          "parameterTypes": [
+            "org.miaixz.bus.image.nimble.Photometric"
+          ]
+        },
+        {
+          "name": "buildImage",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageInputStream"
           ]
         }
       ]
@@ -54288,6 +55244,9 @@
         },
         {
           "name": "YBR_RCT"
+        },
+        {
+          "name": "XYB"
         }
       ],
       "methods": [
@@ -54702,6 +55661,9 @@
           "name": "height"
         },
         {
+          "name": "frameStartFragments"
+        },
+        {
           "name": "metadata"
         },
         {
@@ -54913,6 +55875,28 @@
           "parameterTypes": [
             "int"
           ]
+        },
+        {
+          "name": "frameStartFragments",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveFrameFragments",
+          "parameterTypes": []
+        },
+        {
+          "name": "rebuildPerFragment",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "groupFragmentsIntoFrames",
+          "parameterTypes": []
+        },
+        {
+          "name": "identityFrameStarts",
+          "parameterTypes": []
         },
         {
           "name": "initPixelDataFile",
@@ -56048,6 +57032,51 @@
             "org.miaixz.bus.image.galaxy.data.Attributes",
             "int"
           ]
+        },
+        {
+          "name": "getMinMaxPixelValue",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMinMaxPixelValue",
+          "parameterTypes": [
+            "int",
+            "org.opencv.core.Core$MinMaxLocResult"
+          ]
+        },
+        {
+          "name": "getVoiLutForFrame",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setVoiLutForFrame",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.nimble.opencv.lut.VoiLutModule"
+          ]
+        },
+        {
+          "name": "getModalityLutForFrame",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setModalityLutForFrame",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule"
+          ]
+        },
+        {
+          "name": "resetModalityLutForFrame",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
@@ -56252,6 +57281,9 @@
           "name": "imageDescriptor"
         },
         {
+          "name": "file"
+        },
+        {
           "name": "lastSegment"
         },
         {
@@ -56283,6 +57315,23 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageInputStream",
+            "org.miaixz.bus.image.galaxy.data.Fragments",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "frameStartFragments",
+          "parameterTypes": [
+            "java.util.List",
+            "int",
+            "javax.imageio.stream.ImageInputStream"
+          ]
+        },
+        {
           "name": "getCurSegment",
           "parameterTypes": []
         },
@@ -56293,6 +57342,16 @@
         {
           "name": "getImageDescriptor",
           "parameterTypes": []
+        },
+        {
+          "name": "getFile",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFile",
+          "parameterTypes": [
+            "java.io.File"
+          ]
         },
         {
           "name": "getLastSegment",
@@ -64116,6 +65175,15 @@
         },
         {
           "name": "JPEG2000Lossless"
+        },
+        {
+          "name": "JPEGXLLossless"
+        },
+        {
+          "name": "JPEGXLJPEGRecompression"
+        },
+        {
+          "name": "JPEGXL"
         },
         {
           "name": "JPEG2000MC"

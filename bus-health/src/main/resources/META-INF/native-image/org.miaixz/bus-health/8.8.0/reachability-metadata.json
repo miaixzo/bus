@@ -981,6 +981,20 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "long",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "getFamily",
           "parameterTypes": []
         },
@@ -11198,6 +11212,24 @@
         {
           "name": "values",
           "parameterTypes": []
+        },
+        {
+          "name": "fromBsdState",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "fromWindowsMibState",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "fromLinuxState",
+          "parameterTypes": [
+            "int"
+          ]
         }
       ]
     },
@@ -13463,6 +13495,18 @@
             "org.miaixz.bus.core.center.function.FunctionX",
             "java.util.function.ToLongFunction",
             "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        },
+        {
+          "name": "vram",
+          "parameterTypes": [
+            "org.miaixz.bus.health.linux.hardware.LinuxGraphicsCard$Attrs"
+          ]
+        },
+        {
+          "name": "isDisplayClass",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         },
         {
@@ -24070,6 +24114,13 @@
           ]
         },
         {
+          "name": "decodeNulTerminated",
+          "parameterTypes": [
+            "byte[]",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
           "name": "decodeIntOrDefault",
           "parameterTypes": [
             "java.lang.String",
@@ -24223,6 +24274,14 @@
           ]
         },
         {
+          "name": "parseYearlessDateToEpoch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
           "name": "parseDecimalMemorySizeToBinary",
           "parameterTypes": [
             "java.lang.String"
@@ -24270,6 +24329,12 @@
           "name": "parseIntArrayToIP",
           "parameterTypes": [
             "int[]"
+          ]
+        },
+        {
+          "name": "parseIPv6BytesToIntArray",
+          "parameterTypes": [
+            "byte[]"
           ]
         },
         {
@@ -25646,6 +25711,10 @@
           "parameterTypes": []
         },
         {
+          "name": "bootTimeSeconds",
+          "parameterTypes": []
+        },
+        {
           "name": "getCurrentThread",
           "parameterTypes": []
         },
@@ -25738,6 +25807,14 @@
         {
           "name": "querySystemBootTimeMillis",
           "parameterTypes": []
+        },
+        {
+          "name": "resolveBootTimeMillis",
+          "parameterTypes": [
+            "long",
+            "long",
+            "long"
+          ]
         }
       ]
     },
@@ -28298,6 +28375,29 @@
           "name": "readString",
           "parameterTypes": [
             "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.ProcLimits",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryOpenFileLimit",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "parseOpenFileLimit",
+          "parameterTypes": [
+            "java.util.List",
+            "int"
           ]
         }
       ]
