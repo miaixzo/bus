@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
@@ -36,6 +35,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
@@ -63,41 +63,9 @@ import org.miaixz.bus.logger.Logger;
 final class MacCentralProcessor extends AbstractCentralProcessor {
 
     /**
-     * The ARM_P_CORES constant.
-     */
-    private static final Set<String> ARM_P_CORES = Stream
-            .of("apple,firestorm arm,v8", "apple,avalanche arm,v8", "apple,everest arm,v8", "apple,donan arm,v8")
-            .collect(Collectors.toSet());
-
-    /**
      * The ARM_CPUTYPE constant.
      */
     private static final int ARM_CPUTYPE = 0x0100000C;
-
-    /**
-     * The M1_CPUFAMILY constant.
-     */
-    private static final int M1_CPUFAMILY = 0x1b588bb3;
-
-    /**
-     * The M2_CPUFAMILY constant.
-     */
-    private static final int M2_CPUFAMILY = 0xda33d83d;
-
-    /**
-     * The M3_CPUFAMILY constant.
-     */
-    private static final int M3_CPUFAMILY = 0x8765edea;
-
-    /**
-     * The M3_PRO_CPUFAMILY constant.
-     */
-    private static final int M3_PRO_CPUFAMILY = 0x5f4dea93;
-
-    /**
-     * The M4_CPUFAMILY constant.
-     */
-    private static final int M4_CPUFAMILY = 0x6f5129ac;
 
     /**
      * The DEFAULT_FREQUENCY constant.
@@ -108,6 +76,16 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      * The CPU_N constant.
      */
     private static final Pattern CPU_N = Pattern.compile("^cpu(\\d+)");
+
+    /**
+     * The APPLE_CORE constant.
+     */
+    private static final Pattern APPLE_CORE = Pattern.compile("apple,([a-z0-9_.-]+)");
+
+    /**
+     * The MICROARCH_PREFIX constant.
+     */
+    private static final String MICROARCH_PREFIX = "ARM64 SoC: ";
 
     /**
      * The vendor value.
@@ -143,7 +121,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             // Get manufacturer from IOPlatformExpertDevice
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
-                manufacturer = Native.toString(data, Charset.UTF_8);
+                manufacturer = Parsing.decodeNulTerminated(data, Charset.UTF_8);
             }
             platformExpert.release();
         }
@@ -151,14 +129,14 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Queries compatible strings for each CPU from the I/O Registry.
+     * Queries core properties for each CPU from the I/O Registry.
      *
-     * @return A map where the key is the processor ID and the value is the compatible string.
+     * @return A map where the key is the processor ID and the value is the compatible and cluster-type properties.
      */
-    private static Map<Integer, String> queryCompatibleStrings() {
-        Map<Integer, String> compatibleStrMap = new HashMap<>();
+    private static Map<Integer, Pair<String, String>> queryCoreProperties() {
+        Map<Integer, Pair<String, String>> coreProperties = new HashMap<>();
         // All CPUs are an IOPlatformDevice
-        // Iterate each CPU and save frequency and "compatible" strings
+        // Iterate each CPU and save "compatible" and "cluster-type" strings
         IOIterator iter = IOKitUtil.getMatchingServices("IOPlatformDevice");
         if (iter != null) {
             IORegistryEntry cpu = iter.next();
@@ -167,20 +145,161 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                 if (m.matches()) {
                     int procId = Parsing.parseIntOrDefault(m.group(1), 0);
                     // Compatible key is null-delimited C string array in byte array
-                    byte[] data = cpu.getByteArrayProperty("compatible");
-                    if (data != null) {
-                        // Byte array is null delimited
-                        // Example value for M2: "apple,blizzard", "ARM,v8"
-                        compatibleStrMap
-                                .put(procId, new String(data, Charset.UTF_8).replace('\0', Symbol.C_SPACE).trim());
-                    }
+                    coreProperties.put(
+                            procId,
+                            Pair.of(
+                                    ioRegString(cpu.getByteArrayProperty("compatible")),
+                                    ioRegString(cpu.getByteArrayProperty("cluster-type"))));
                 }
                 cpu.release();
                 cpu = iter.next();
             }
             iter.release();
         }
-        return compatibleStrMap;
+        return coreProperties;
+    }
+
+    /**
+     * Decodes an IORegistry byte-array property. These values may hold more than one NUL-terminated string.
+     *
+     * @param data the raw property bytes
+     * @return the decoded string, or {@code null} if the property is absent
+     */
+    private static String ioRegString(byte[] data) {
+        return data == null ? null : new String(data, Charset.UTF_8).replace('\0', Symbol.C_SPACE).trim();
+    }
+
+    /**
+     * Derives an efficiency class for each physical core.
+     *
+     * @param coreKeys          the physical core keys
+     * @param coreProperties    the per-core compatible and cluster-type properties
+     * @param topPerfLevelCores the number of cores in the highest performance level
+     * @return a map from core key to efficiency class
+     */
+    static Map<Integer, Integer> deriveEfficiencyClasses(
+            List<Integer> coreKeys,
+            Map<Integer, Pair<String, String>> coreProperties,
+            int topPerfLevelCores) {
+        Map<Integer, Integer> efficiencyMap = new HashMap<>();
+        Map<String, Integer> classByCodename = new HashMap<>();
+        for (Integer key : coreKeys) {
+            Integer efficiency = clusterTypeClass(coreProperties.get(key));
+            if (efficiency != null) {
+                efficiencyMap.put(key, efficiency);
+                String codename = codename(coreProperties.get(key));
+                if (codename != null) {
+                    classByCodename.put(codename, efficiency);
+                }
+            }
+        }
+        if (!efficiencyMap.isEmpty() && efficiencyMap.size() < coreKeys.size()) {
+            for (Integer key : coreKeys) {
+                if (!efficiencyMap.containsKey(key)) {
+                    String codename = codename(coreProperties.get(key));
+                    Integer efficiency = codename == null ? null : classByCodename.get(codename);
+                    if (efficiency != null) {
+                        efficiencyMap.put(key, efficiency);
+                    }
+                }
+            }
+        }
+        if (efficiencyMap.size() == coreKeys.size()) {
+            return efficiencyMap;
+        }
+        Map<String, List<Integer>> groups = new LinkedHashMap<>();
+        if (efficiencyMap.isEmpty()) {
+            for (Integer key : coreKeys) {
+                String codename = codename(coreProperties.get(key));
+                if (codename == null) {
+                    groups.clear();
+                    break;
+                }
+                groups.computeIfAbsent(codename, ignored -> new ArrayList<>()).add(key);
+            }
+        }
+        List<List<Integer>> ordered = new ArrayList<>(groups.values());
+        if (ordered.size() == 2 && topPerfLevelCores > 0 && ordered.get(0).size() == topPerfLevelCores
+                && ordered.get(1).size() != topPerfLevelCores) {
+            Collections.reverse(ordered);
+        }
+        for (int i = 0; i < ordered.size(); i++) {
+            for (Integer key : ordered.get(i)) {
+                efficiencyMap.put(key, i);
+            }
+        }
+        for (Integer key : coreKeys) {
+            efficiencyMap.putIfAbsent(key, 0);
+        }
+        return efficiencyMap;
+    }
+
+    /**
+     * Maps a core's cluster type to an efficiency class.
+     *
+     * @param properties the core properties
+     * @return the efficiency class, or {@code null} if unknown
+     */
+    private static Integer clusterTypeClass(Pair<String, String> properties) {
+        String clusterType = properties == null ? null : properties.getRight();
+        if (clusterType == null || clusterType.isEmpty()) {
+            return null;
+        }
+        char c = Character.toUpperCase(clusterType.charAt(0));
+        if (c == 'P') {
+            return 1;
+        }
+        return c == 'E' ? 0 : null;
+    }
+
+    /**
+     * Extracts the Apple core codename from a core compatible string.
+     *
+     * @param properties the core properties
+     * @return the codename, or {@code null} if absent
+     */
+    private static String codename(Pair<String, String> properties) {
+        String compatible = properties == null ? null : properties.getLeft();
+        if (compatible == null) {
+            return null;
+        }
+        Matcher matcher = APPLE_CORE.matcher(compatible.toLowerCase(Locale.ROOT));
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    /**
+     * Derives a microarchitecture description from Apple core codenames.
+     *
+     * @param physicalProcessors the physical processors
+     * @return the microarchitecture description, or {@code null} if no codename is found
+     */
+    static String deriveMicroarchitecture(List<CentralProcessor.PhysicalProcessor> physicalProcessors) {
+        Map<String, Pair<Integer, Integer>> codenames = new LinkedHashMap<>();
+        for (CentralProcessor.PhysicalProcessor processor : physicalProcessors) {
+            Matcher matcher = APPLE_CORE.matcher(processor.getIdString().toLowerCase(Locale.ROOT));
+            if (matcher.find() && !codenames.containsKey(matcher.group(1))) {
+                codenames.put(
+                        matcher.group(1),
+                        Pair.of(processor.getEfficiency(), processor.getPhysicalProcessorNumber()));
+            }
+        }
+        if (codenames.isEmpty()) {
+            return null;
+        }
+        List<Map.Entry<String, Pair<Integer, Integer>>> entries = new ArrayList<>(codenames.entrySet());
+        entries.sort((left, right) -> {
+            int byEfficiency = right.getValue().getLeft().compareTo(left.getValue().getLeft());
+            return byEfficiency == 0 ? left.getValue().getRight().compareTo(right.getValue().getRight()) : byEfficiency;
+        });
+        StringBuilder builder = new StringBuilder(MICROARCH_PREFIX);
+        for (int i = 0; i < entries.size(); i++) {
+            String codename = entries.get(i).getKey();
+            if (i > 0) {
+                builder.append(" + ");
+            }
+            builder.append(codename.substring(0, 1).toUpperCase(Locale.ROOT)).append(codename.substring(1));
+        }
+        return builder.toString();
     }
 
     /**
@@ -194,6 +313,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         String cpuModel;
         String cpuFamily;
         String processorID;
+        String microarchitecture = null;
         // Initial M1 chips said "Apple Processor". Later branding includes M1, M1 Pro,
         // M1 Max, M2, etc. So if it starts with Apple it's M-something.
         if (cpuName.startsWith("Apple")) {
@@ -206,26 +326,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             if (isArmCpu) {
                 type = ARM_CPUTYPE;
                 family = SysctlKit.sysctl("hw.cpufamily", 0);
-                if (family == 0) {
-                    int mSeries = Parsing.getFirstIntValue(cpuName);
-                    switch (mSeries) {
-                        case 2:
-                            family = M2_CPUFAMILY;
-                            break;
-
-                        case 3:
-                            family = M3_CPUFAMILY;
-                            break;
-
-                        case 4:
-                            family = M4_CPUFAMILY;
-                            break;
-
-                        default:
-                            // Some M1 did not brand as such
-                            family = M1_CPUFAMILY;
-                    }
-                }
+                microarchitecture = deriveMicroarchitecture(getPhysicalProcessors());
             } else {
                 type = SysctlKit.sysctl("hw.cputype", 0);
                 family = SysctlKit.sysctl("hw.cpufamily", 0);
@@ -255,7 +356,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
 
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
-                processorID, cpu64bit, cpuFreq);
+                processorID, cpu64bit, cpuFreq, microarchitecture);
     }
 
     /**
@@ -274,17 +375,20 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             logProcs.add(new CentralProcessor.LogicalProcessor(i, coreId, pkgId));
             pkgCoreKeys.add((pkgId << 16) + coreId);
         }
-        Map<Integer, String> compatMap = queryCompatibleStrings();
+        Map<Integer, Pair<String, String>> coreProps = queryCoreProperties();
         int perflevels = SysctlKit.sysctl("hw.nperflevels", 1, false);
-        List<CentralProcessor.PhysicalProcessor> physProcs = pkgCoreKeys.stream().sorted().map(k -> {
-            String compat = compatMap.getOrDefault(k, Normal.EMPTY).toLowerCase(Locale.ROOT);
-            // This is brittle. A better long term solution is to use sysctls
-            // hw.perflevel1.physicalcpu: 2
-            // hw.perflevel0.physicalcpu: 8
-            // Note the 1 and 0 values are reversed from API definition
-            int efficiency = ARM_P_CORES.contains(compat) ? 1 : 0;
-            return new CentralProcessor.PhysicalProcessor(k >> 16, k & 0xffff, efficiency, compat);
-        }).collect(Collectors.toList());
+        int topPerfLevelCores = SysctlKit.sysctl("hw.perflevel0.physicalcpu", 0, false);
+        List<Integer> coreKeys = pkgCoreKeys.stream().sorted().collect(Collectors.toList());
+        Map<Integer, Integer> efficiencyMap = deriveEfficiencyClasses(coreKeys, coreProps, topPerfLevelCores);
+        List<CentralProcessor.PhysicalProcessor> physProcs = new ArrayList<>(coreKeys.size());
+        for (Integer key : coreKeys) {
+            Pair<String, String> props = coreProps.get(key);
+            String compat = props == null || props.getLeft() == null ? Normal.EMPTY
+                    : props.getLeft().toLowerCase(Locale.ROOT);
+            physProcs.add(
+                    new CentralProcessor.PhysicalProcessor(key >> 16, key & 0xffff, efficiencyMap.getOrDefault(key, 0),
+                            compat));
+        }
         List<CentralProcessor.ProcessorCache> caches = orderedProcCaches(getCacheValues(perflevels));
         List<String> featureFlags = getFeatureFlagsFromSysctl();
         return new Tuple(logProcs, physProcs, caches, featureFlags);

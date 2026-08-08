@@ -271,7 +271,7 @@ public class FreeBsdOSThread extends AbstractOSThread {
      * @param threadMap the thread map
      * @return the update attributes result
      */
-    private boolean updateAttributes(Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap) {
+    private synchronized boolean updateAttributes(Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap) {
         this.name = threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDNAME);
         this.threadId = Parsing.parseIntOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.LWP), 0);
         switch (threadMap.get(FreeBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {
@@ -307,9 +307,11 @@ public class FreeBsdOSThread extends AbstractOSThread {
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         long now = System.currentTimeMillis();
         this.startTime = now - this.upTime;
-        this.kernelTime = Parsing.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.SYSTIME), 0L);
-        this.userTime = Parsing.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TIME), 0L)
-                - this.kernelTime;
+        long sysTime = Parsing.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.SYSTIME), 0L);
+        this.kernelTime = FreeBsdOSProcess.monotonic(this.kernelTime, sysTime);
+        this.userTime = FreeBsdOSProcess.monotonic(
+                this.userTime,
+                Parsing.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TIME), 0L) - sysTime);
         this.startMemoryAddress = Parsing.hexStringToLong(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDADDR), 0L);
         this.contextSwitches = Parsing.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NVCSW), 0L)
                 + Parsing.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NIVCSW), 0L);

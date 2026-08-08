@@ -19,13 +19,14 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import java.util.Locale;
+import java.util.List;
 
 import com.sun.jna.platform.mac.IOKit.IOConnect;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.mac.SmcKit;
+import org.miaixz.bus.health.mac.SmcSensorValues;
 
 /**
  * <p>
@@ -39,11 +40,6 @@ import org.miaixz.bus.health.mac.SmcKit;
 final class MacSensors extends AbstractSensors {
 
     /**
-     * The number of fans, initialized to 0 and determined once.
-     */
-    private int numFans = 0;
-
-    /**
      * Queries the CPU temperature from the SMC (System Management Controller).
      *
      * @return The CPU temperature in Celsius, or 0.0 if unable to retrieve.
@@ -55,9 +51,13 @@ final class MacSensors extends AbstractSensors {
             return 0d;
         }
         try {
-            double temp = SmcKit.smcGetFirstFloat(conn, SmcKit.SMC_KEYS_CPU_TEMP_AS);
+            double temp = SmcKit.smcGetFirstTemperature(conn, SmcKit.SMC_KEYS_CPU_TEMP_AGGREGATE_AS);
             if (temp <= 0d) {
-                temp = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_TEMP);
+                temp = SmcKit.smcGetFirstTemperature(conn, SmcKit.SMC_KEYS_CPU_TEMP_AS);
+            }
+            if (temp <= 0d) {
+                double intelTemp = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_TEMP);
+                temp = SmcKit.isPlausibleTemperature(intelTemp) ? intelTemp : 0d;
             }
             return temp;
         } finally {
@@ -72,17 +72,15 @@ final class MacSensors extends AbstractSensors {
      */
     @Override
     public int[] queryFanSpeeds() {
+        List<String> keys = SmcKit.getFanSpeedKeys();
         IOConnect conn = SmcKit.smcOpen();
         if (conn == null) {
-            return new int[this.numFans];
+            return new int[keys.size()];
         }
         try {
-            if (this.numFans == 0) {
-                this.numFans = (int) SmcKit.smcGetLong(conn, SmcKit.SMC_KEY_FAN_NUM);
-            }
-            int[] fanSpeeds = new int[this.numFans];
-            for (int i = 0; i < this.numFans; i++) {
-                fanSpeeds[i] = (int) SmcKit.smcGetFloat(conn, String.format(Locale.ROOT, SmcKit.SMC_KEY_FAN_SPEED, i));
+            int[] fanSpeeds = new int[keys.size()];
+            for (int i = 0; i < keys.size(); i++) {
+                fanSpeeds[i] = SmcSensorValues.toRpm(SmcKit.smcGetFloat(conn, keys.get(i)));
             }
             return fanSpeeds;
         } finally {
@@ -102,13 +100,7 @@ final class MacSensors extends AbstractSensors {
             return 0d;
         }
         try {
-            // Apple Silicon: VP0C is flt already in volts, no scaling needed
-            double volts = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_VOLTAGE_AS);
-            if (volts > 0d) {
-                return volts;
-            }
-            // Intel: VC0C is FPE2 in millivolts, divide by 1000 to get volts
-            return SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_VOLTAGE) / 1000d;
+            return SmcKit.smcGetFirstVoltage(conn, SmcKit.getCpuVoltageKeys());
         } finally {
             SmcKit.smcClose(conn);
         }

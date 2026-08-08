@@ -54,10 +54,29 @@ public final class Uptime {
     // 18:36pm up 10 days 8:11, 2 users, load average: 3.14, 2.74, 2.41
 
     /**
+     * The PREFIX constant.
+     */
+    private static final String PREFIX = ".*\\sup\\s+";
+
+    /**
+     * The DAYS constant.
+     */
+    private static final String DAYS = "((\\d+)\\s+days?,?\\s+)?";
+
+    /**
+     * The HOURS_MINUTES constant.
+     */
+    private static final String HOURS_MINUTES = "\\b((\\d+):)?(\\d+)(\\s+min(utes?)?)?";
+
+    /**
+     * The USERS constant.
+     */
+    private static final String USERS = ",\\s+\\d+\\s+user.+";
+
+    /**
      * The UPTIME_FORMAT_AIX constant.
      */
-    private static final Pattern UPTIME_FORMAT_AIX = Pattern
-            .compile(".*\\sup\\s+((\\d+)\\s+days?,?\\s+)?\\b((\\d+):)?(\\d+)(\\s+min(utes?)?)?,\\s+\\d+\\s+user.+"); // NOSONAR:squid:S5843
+    private static final Pattern UPTIME_FORMAT_AIX = Pattern.compile(PREFIX + DAYS + HOURS_MINUTES + USERS);
 
     /**
      * Creates a new Uptime instance.

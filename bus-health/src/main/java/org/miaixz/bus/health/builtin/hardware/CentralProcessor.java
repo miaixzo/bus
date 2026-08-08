@@ -948,6 +948,11 @@ public interface CentralProcessor {
         private final long cpuVendorFreq;
 
         /**
+         * The derivedMicroarchitecture value.
+         */
+        private final String derivedMicroarchitecture;
+
+        /**
          * The microArchictecture value.
          */
         private final SupplierX<String> microArchictecture = Memoizer.memoize(this::queryMicroarchitecture);
@@ -982,6 +987,25 @@ public interface CentralProcessor {
          */
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
                 String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq) {
+            this(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit, vendorFreq, null);
+        }
+
+        /**
+         * Creates a new ProcessorIdentifier instance with a platform-derived microarchitecture fallback.
+         *
+         * @param cpuVendor         the cpu vendor
+         * @param cpuName           the cpu name
+         * @param cpuFamily         the cpu family
+         * @param cpuModel          the cpu model
+         * @param cpuStepping       the cpu stepping
+         * @param processorID       the processor id
+         * @param cpu64bit          the cpu64bit
+         * @param vendorFreq        the vendor freq
+         * @param microarchitecture the platform-derived microarchitecture fallback
+         */
+        public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
+                String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq, String microarchitecture) {
+            this.derivedMicroarchitecture = microarchitecture;
             this.cpuVendor = cpuVendor.startsWith("0x") ? queryVendorFromImplementer(cpuVendor) : cpuVendor;
             this.cpuName = cpuName;
             this.cpuFamily = cpuFamily;
@@ -1164,6 +1188,13 @@ public interface CentralProcessor {
                 // Append stepping
                 sb.append(Symbol.C_DOT).append(this.cpuStepping);
                 arch = archProps.getProperty(sb.toString());
+            }
+
+            if (StringKit.isBlank(arch)) {
+                // Only after every table lookup has missed: a value the platform derived at runtime, which covers
+                // processors released since the table was last updated. A table entry always wins, because it may
+                // carry a curated name that a derivation cannot reproduce.
+                arch = this.derivedMicroarchitecture;
             }
 
             return StringKit.isBlank(arch) ? Normal.UNKNOWN : arch;

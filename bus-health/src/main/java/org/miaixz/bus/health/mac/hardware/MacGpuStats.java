@@ -276,7 +276,7 @@ final class MacGpuStats implements GpuStats {
             IOConnect conn = SmcKit.smcOpen();
             if (conn != null) {
                 try {
-                    double temp = SmcKit.smcGetFirstFloat(conn, SmcKit.SMC_KEYS_GPU_TEMP_AS);
+                    double temp = SmcKit.smcGetMaxTemperature(conn, SmcKit.getGpuTemperatureKeys());
                     if (temp > 0) {
                         return temp;
                     }

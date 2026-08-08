@@ -49,9 +49,29 @@ public final class PerfstatProcess {
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
     /**
-     * The slack added to the perfstat process count between count and fill calls.
+     * Minimum slack added to the perfstat process count between count and fill calls.
      */
-    private static final int PROC_COUNT_PAD = 10;
+    private static final int MIN_PROC_COUNT_PAD = 64;
+
+    /**
+     * Divisor for proportional process-count padding.
+     */
+    private static final int PROC_COUNT_PAD_DIVISOR = 10;
+
+    /**
+     * Maximum number of buffer-fill retries after an exactly full result.
+     */
+    private static final int MAX_BUFFER_RETRIES = 3;
+
+    /**
+     * Returns the padded allocation size for a reported process count.
+     *
+     * @param count the reported process count
+     * @return the padded allocation size
+     */
+    private static int paddedSize(int count) {
+        return count + Math.max(MIN_PROC_COUNT_PAD, count / PROC_COUNT_PAD_DIVISOR);
+    }
 
     /**
      * Queries perfstat_process for per-process usage statistics
@@ -62,14 +82,22 @@ public final class PerfstatProcess {
         perfstat_process_t process = new perfstat_process_t();
         // With null, null, ..., 0, returns total # of elements
         int procCount = PERF.perfstat_process(null, null, process.size(), 0);
-        if (procCount > 0) {
-            int padded = procCount + PROC_COUNT_PAD;
+        for (int attempt = 0; procCount > 0; attempt++) {
+            int padded = paddedSize(procCount);
             perfstat_process_t[] proct = (perfstat_process_t[]) process.toArray(padded);
             perfstat_id_t firstprocess = new perfstat_id_t(); // name is ""
             int ret = PERF.perfstat_process(firstprocess, proct, process.size(), padded);
-            if (ret > 0) {
-                return Arrays.copyOf(proct, ret);
+            if (ret <= 0) {
+                break;
             }
+            if (ret == padded && attempt < MAX_BUFFER_RETRIES) {
+                int recount = PERF.perfstat_process(null, null, process.size(), 0);
+                if (recount > 0) {
+                    procCount = recount;
+                    continue;
+                }
+            }
+            return Arrays.copyOf(proct, ret);
         }
         return new perfstat_process_t[0];
     }

@@ -97,6 +97,9 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
         // Populate lv map from udev
         Udev.UdevContext udev = Udev.INSTANCE.udev_new();
+        if (udev == null) {
+            return Collections.emptyList();
+        }
         try {
             Udev.UdevEnumerate enumerate = udev.enumerateNew();
             try {
@@ -104,6 +107,9 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 enumerate.scanDevices();
                 for (Udev.UdevListEntry entry = enumerate.getListEntry(); entry != null; entry = entry.getNext()) {
                     String syspath = entry.getName();
+                    if (syspath == null) {
+                        continue;
+                    }
                     Udev.UdevDevice device = udev.deviceNewFromSyspath(syspath);
                     if (device != null) {
                         try {

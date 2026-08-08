@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.health.unix.freebsd.software;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +32,6 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -43,6 +40,7 @@ import org.miaixz.bus.health.builtin.software.OSThread;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
 import org.miaixz.bus.health.unix.freebsd.ProcstatKit;
+import org.miaixz.bus.health.unix.shared.driver.ProcLimits;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
 
@@ -725,7 +723,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
      * @param psMap the ps map
      * @return the update attributes result
      */
-    private boolean updateAttributes(Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
+    private synchronized boolean updateAttributes(Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(FreeBsdOperatingSystem.PsKeywords.STATE).charAt(0)) {
             case 'R':
@@ -769,9 +767,11 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         long elapsedTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.ETIMES), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         this.startTime = now - this.upTime;
-        this.kernelTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.SYSTIME), 0L);
-        this.userTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L)
-                - this.kernelTime;
+        long sysTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.SYSTIME), 0L);
+        this.kernelTime = monotonic(this.kernelTime, sysTime);
+        this.userTime = monotonic(
+                this.userTime,
+                Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L) - sysTime);
         this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
         this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
@@ -786,6 +786,17 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
+     * Clamps a freshly parsed CPU-time counter so it never falls below the value already reported.
+     *
+     * @param previous The value last reported.
+     * @param parsed   The value just parsed from {@code ps}.
+     * @return {@code parsed}, or {@code previous} if that would be a decrease.
+     */
+    static long monotonic(long previous, long parsed) {
+        return Math.max(previous, parsed);
+    }
+
+    /**
      * Returns the process open file limit.
      *
      * @param processId the process id
@@ -793,23 +804,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
      * @return the get process open file limit result
      */
     private long getProcessOpenFileLimit(long processId, int index) {
-        final String limitsPath = String.format(Locale.ROOT, "/proc/%d/limits", processId);
-        if (!Files.exists(Paths.get(limitsPath))) {
-            return -1; // not supported
-        }
-        final List<String> lines = Builder.readFile(limitsPath);
-        final Optional<String> maxOpenFilesLine = lines.stream().filter(line -> line.startsWith("Max open files"))
-                .findFirst();
-        if (!maxOpenFilesLine.isPresent()) {
-            return -1;
-        }
-
-        // Split all non-Digits away -> ["", "{soft-limit}, "{hard-limit}"]
-        final String[] split = maxOpenFilesLine.get().split("\\D+");
-        if (split.length <= index) {
-            return -1;
-        }
-        return Parsing.parseLongOrDefault(split[index], -1);
+        return ProcLimits.queryOpenFileLimit(processId, index);
     }
 
     /*

@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.windows;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
@@ -99,7 +98,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
                 success = PerfDataKit.removeCounter(href);
             }
         }
-        if (counterHandleMap.isEmpty()) {
+        if (counterHandleMap.isEmpty() && this.queryHandle != null) {
             PerfDataKit.closeQuery(this.queryHandle);
             this.queryHandle.close();
             this.queryHandle = null;
@@ -162,7 +161,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
                         "Health",
                         "Error querying counter {}: {}",
                         counter.getCounterPath(),
-                        String.format(Locale.ROOT, Formats.formatError((int) value)));
+                        Formats.formatError((int) value));
             }
             return 0L;
         }

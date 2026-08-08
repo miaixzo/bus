@@ -271,7 +271,7 @@ public class OpenBsdOSThread extends AbstractOSThread {
      * @param threadMap the thread map
      * @return the update attributes result
      */
-    private boolean updateAttributes(Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
+    private synchronized boolean updateAttributes(Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
         this.threadId = Parsing.parseIntOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID), 0);
         switch (threadMap.get(OpenBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {
             case 'R':
@@ -308,7 +308,9 @@ public class OpenBsdOSThread extends AbstractOSThread {
         this.startTime = now - this.upTime;
         // ps does not provide kerneltime on OpenBSD
         this.kernelTime = 0L;
-        this.userTime = Parsing.parseDHMSOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.CPUTIME), 0L);
+        this.userTime = OpenBsdOSProcess.monotonic(
+                this.userTime,
+                Parsing.parseDHMSOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.CPUTIME), 0L));
         this.startMemoryAddress = 0L;
         this.contextSwitches = Parsing.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NVCSW), 0L)
                 + Parsing.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NIVCSW), 0L);

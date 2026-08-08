@@ -292,11 +292,16 @@ public interface OperatingSystem {
 
     /**
      * Gets the current process.
+     * <p>
+     * The current process exists by definition. If the platform query fails to return it, this method returns a minimal
+     * stand-in reporting the current process ID and a running state.
      *
-     * @return the current process
+     * @return the current process, never {@code null}
      */
     default OSProcess getCurrentProcess() {
-        return getProcess(getProcessId());
+        int pid = getProcessId();
+        OSProcess process = getProcess(pid);
+        return process == null ? new CurrentProcessStub(pid) : process;
     }
 
     /**
