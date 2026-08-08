@@ -49,7 +49,7 @@ public record JsonReadOptions(JsonTypeFilter typeFilter) {
      * @return permissive read options
      */
     public static JsonReadOptions defaults() {
-        return new JsonReadOptions(JsonTypeFilter.allowAll());
+        return new JsonReadOptions(JsonTypeFilter.always());
     }
 
     /**
@@ -72,7 +72,7 @@ public record JsonReadOptions(JsonTypeFilter typeFilter) {
     private void validateType(Type type) {
         if (type instanceof Class<?> clazz) {
             Class<?> candidate = clazz.isArray() ? clazz.getComponentType() : clazz;
-            if (!candidate.isPrimitive() && !typeFilter.allow(candidate)) {
+            if (!candidate.isPrimitive() && !typeFilter.accept(candidate)) {
                 throw new IllegalArgumentException("JSON target type is not allowed: " + candidate.getName());
             }
             return;

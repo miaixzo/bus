@@ -30,6 +30,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
 
 /**
@@ -128,7 +129,8 @@ public class GsonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object) {
-        return gson.toJson(object);
+        return new String(write(object, new JsonWriteOptions(null, false, JsonPropertyFilter.always())),
+                StandardCharsets.UTF_8);
     }
 
     /**
@@ -136,7 +138,8 @@ public class GsonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object, String format) {
-        return gson.newBuilder().setDateFormat(format).create().toJson(object);
+        return new String(write(object, new JsonWriteOptions(format, false, JsonPropertyFilter.always())),
+                StandardCharsets.UTF_8);
     }
 
     /**
@@ -334,7 +337,7 @@ public class GsonProvider extends AbstractJsonProvider {
             Map.Entry<String, JsonElement> entry = entries.next();
             Object propertyValue = readFieldValue(source, entry.getKey());
             if ((!options.writeNulls() && entry.getValue().isJsonNull())
-                    || !options.propertyFilter().include(source, entry.getKey(), propertyValue)) {
+                    || !options.propertyFilter().accept(source, entry.getKey(), propertyValue)) {
                 entries.remove();
             }
         }

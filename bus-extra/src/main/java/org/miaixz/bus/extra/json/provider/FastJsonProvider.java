@@ -32,6 +32,7 @@ import com.alibaba.fastjson2.filter.Filter;
 import com.alibaba.fastjson2.filter.PropertyFilter;
 import com.alibaba.fastjson2.filter.ValueFilter;
 
+import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
 
 /**
@@ -83,7 +84,7 @@ public class FastJsonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object) {
-        return JSON.toJSONString(object, FILTERS, WRITER_FEATURES);
+        return new String(write(object, JsonWriteOptions.defaults()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -91,7 +92,8 @@ public class FastJsonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object, String format) {
-        return JSON.toJSONString(object, format, FILTERS, WRITER_FEATURES);
+        return new String(write(object, new JsonWriteOptions(format, true, JsonPropertyFilter.always())),
+                StandardCharsets.UTF_8);
     }
 
     /**
@@ -105,9 +107,7 @@ public class FastJsonProvider extends AbstractJsonProvider {
     public byte[] write(Object object, JsonWriteOptions options) {
         JsonWriteOptions resolved = options == null ? JsonWriteOptions.defaults() : options;
         List<Filter> filters = new ArrayList<>(List.of(FILTERS));
-        if (resolved.hasPropertyFilter()) {
-            filters.add((PropertyFilter) resolved.propertyFilter()::include);
-        }
+        filters.add((PropertyFilter) resolved.propertyFilter()::accept);
         JSONWriter.Feature[] features = resolved.writeNulls() ? WRITER_FEATURES : NON_NULL_WRITER_FEATURES;
         String json = resolved.dateFormat() == null
                 ? JSON.toJSONString(object, filters.toArray(Filter[]::new), features)

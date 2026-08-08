@@ -29,25 +29,25 @@ package org.miaixz.bus.extra.json;
 public interface JsonTypeFilter {
 
     /**
-     * Shared filter that allows every requested target class.
+     * Shared filter that accepts every requested target class.
      */
-    JsonTypeFilter ALLOW_ALL = type -> true;
+    JsonTypeFilter ALWAYS = type -> true;
 
     /**
      * Determines whether a target class may be deserialized.
      *
      * @param type requested target class
-     * @return {@code true} when the type is allowed; {@code false} otherwise
+     * @return {@code true} when the type is accepted; {@code false} otherwise
      */
-    boolean allow(Class<?> type);
+    boolean accept(Class<?> type);
 
     /**
-     * Returns the shared filter that allows every target class.
+     * Returns the shared filter that accepts every target class.
      *
-     * @return allow-all type filter
+     * @return always-accept type filter
      */
-    static JsonTypeFilter allowAll() {
-        return ALLOW_ALL;
+    static JsonTypeFilter always() {
+        return ALWAYS;
     }
 
 }

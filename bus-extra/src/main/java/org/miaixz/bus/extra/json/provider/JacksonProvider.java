@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
 import org.miaixz.bus.logger.Logger;
 
@@ -95,18 +96,7 @@ public class JacksonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object) {
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JacksonException e) {
-            Logger.warn(
-                    false,
-                    "Extra",
-                    e,
-                    "JSON operation failed: provider={}, exception={}",
-                    "JacksonProvider",
-                    e.getClass().getSimpleName());
-            throw new RuntimeException(e);
-        }
+        return new String(write(object, JsonWriteOptions.defaults()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -114,19 +104,8 @@ public class JacksonProvider extends AbstractJsonProvider {
      */
     @Override
     public String toJsonString(Object object, String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
-        try {
-            return objectMapper.writer(sdf).writeValueAsString(object);
-        } catch (JacksonException e) {
-            Logger.warn(
-                    false,
-                    "Extra",
-                    e,
-                    "JSON operation failed: provider={}, exception={}",
-                    "JacksonProvider",
-                    e.getClass().getSimpleName());
-            throw new RuntimeException(e);
-        }
+        return new String(write(object, new JsonWriteOptions(format, true, JsonPropertyFilter.always())),
+                StandardCharsets.UTF_8);
     }
 
     /**
@@ -382,7 +361,7 @@ public class JacksonProvider extends AbstractJsonProvider {
             }
             Object value = beanProperty.get(source);
             if ((options.writeNulls() || value != null)
-                    && options.propertyFilter().include(source, beanProperty.getName(), value)) {
+                    && options.propertyFilter().accept(source, beanProperty.getName(), value)) {
                 property.serializeAsProperty(source, output, context);
             } else if (!output.canOmitProperties()) {
                 output.writeName(property.getName());

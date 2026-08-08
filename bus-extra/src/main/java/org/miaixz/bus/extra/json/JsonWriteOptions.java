@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * @param dateFormat     optional legacy date format; blank means provider default
  * @param writeNulls     whether null-valued properties should be written
- * @param propertyFilter callback controlling property inclusion
+ * @param propertyFilter annotation-aware callback controlling property inclusion
  * @author Kimi Liu
  * @since Java 21+
  */
@@ -37,29 +37,30 @@ public record JsonWriteOptions(String dateFormat, boolean writeNulls, JsonProper
      *
      * @param dateFormat     optional legacy date format
      * @param writeNulls     whether null-valued properties should be written
-     * @param propertyFilter callback controlling property inclusion
+     * @param propertyFilter caller-supplied callback; automatically decorated with mandatory Bus annotation rules
      */
     public JsonWriteOptions {
         dateFormat = dateFormat == null || dateFormat.isBlank() ? null : dateFormat;
-        propertyFilter = Objects.requireNonNull(propertyFilter, "propertyFilter");
+        propertyFilter = JsonAnnotationFilter.of(Objects.requireNonNull(propertyFilter, "propertyFilter"));
     }
 
     /**
-     * Creates compatibility options that preserve provider defaults and include every property.
+     * Creates compatibility options that preserve provider defaults, apply Bus annotation rules, and impose no
+     * additional caller property restrictions.
      *
      * @return default write options
      */
     public static JsonWriteOptions defaults() {
-        return new JsonWriteOptions(null, true, JsonPropertyFilter.includeAll());
+        return new JsonWriteOptions(null, true, JsonPropertyFilter.always());
     }
 
     /**
-     * Determines whether a custom property filter is configured.
+     * Determines whether the caller configured a property rule in addition to mandatory annotation filtering.
      *
-     * @return {@code true} when property filtering is requested
+     * @return {@code true} when an additional caller filter is configured
      */
     public boolean hasPropertyFilter() {
-        return propertyFilter != JsonPropertyFilter.INCLUDE_ALL;
+        return propertyFilter instanceof JsonAnnotationFilter annotationFilter && annotationFilter.hasDelegateFilter();
     }
 
 }
