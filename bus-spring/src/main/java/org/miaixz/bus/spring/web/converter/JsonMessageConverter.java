@@ -20,11 +20,9 @@
 package org.miaixz.bus.spring.web.converter;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.http.HttpInputMessage;
@@ -35,11 +33,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.extra.json.JsonPropertyFilter;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonReadOptions;
 import org.miaixz.bus.extra.json.JsonWriteOptions;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * Spring HTTP converter backed by the application-wide Bus JSON provider.
@@ -47,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  * @since Java 21+
  */
-public class JsonMessageConverter extends AbstractHttpMessageConverter {
+public class JsonMessageConverter implements MessageConverterRegistrar {
 
     /**
      * Media types handled by the unified JSON converter.
@@ -102,7 +99,7 @@ public class JsonMessageConverter extends AbstractHttpMessageConverter {
     @Override
     public void register(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
         JsonReadOptions readOptions = new JsonReadOptions(typeMatcher::matches);
-        JsonWriteOptions writeOptions = new JsonWriteOptions(null, false, this::includeProperty);
+        JsonWriteOptions writeOptions = new JsonWriteOptions(null, false, JsonPropertyFilter.always());
         converters.add(new ProviderHttpMessageConverter(provider, readOptions, writeOptions));
     }
 
@@ -114,37 +111,6 @@ public class JsonMessageConverter extends AbstractHttpMessageConverter {
     @Override
     public void autoType(String autoType) {
         this.typeMatcher = JsonTypeMatcher.of(autoType);
-    }
-
-    /**
-     * Applies the existing Bus HTTP annotation and empty-value policy through the framework-independent property filter
-     * contract.
-     *
-     * @param source owning object
-     * @param name   serialized property name
-     * @param value  property value being considered for serialization
-     * @return {@code true} when the property should be serialized
-     */
-    private boolean includeProperty(Object source, String name, Object value) {
-        if (source == null || source instanceof Map<?, ?>) {
-            return true;
-        }
-        if (isClassIgnored(source.getClass())) {
-            return false;
-        }
-        try {
-            Field field = FieldKit.getField(source.getClass(), name);
-            return !shouldSkipField(field, value);
-        } catch (RuntimeException e) {
-            Logger.debug(
-                    false,
-                    "Starter",
-                    "JSON property metadata unavailable; property retained: sourceType={}, property={}, exception={}",
-                    source.getClass().getName(),
-                    name,
-                    e.getClass().getSimpleName());
-            return true;
-        }
     }
 
     /**
